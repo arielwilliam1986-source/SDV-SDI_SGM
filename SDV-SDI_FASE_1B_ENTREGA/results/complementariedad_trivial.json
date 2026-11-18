@@ -1,0 +1,23 @@
+[
+ {
+  "caso": "trivial_SDV=mix_SDI=0",
+  "snr_e_db": 336.86784391472963,
+  "max_abs_e": 0.0,
+  "complementaria_100dB": true,
+  "separacion_real": "nula"
+ },
+ {
+  "caso": "trivial_SDV=0_SDI=mix",
+  "snr_e_db": 336.86784391472963,
+  "max_abs_e": 0.0,
+  "complementaria_100dB": true,
+  "separacion_real": "nula"
+ },
+ {
+  "caso": "correcto_SDV=V_SDI=I",
+  "snr_e_db": 325.82549849301876,
+  "max_abs_e": 5.551115123125783e-17,
+  "complementaria_100dB": true,
+  "separacion_real": "ground truth exacta"
+ }
+]

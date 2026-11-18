@@ -1,0 +1,128 @@
+### 1. inventario estatico
+  v3              cli_consensus=1851 cli_order=None cfm=None bloque_iguales=None
+  hardened_3.1.1  cli_consensus=1869 cli_order=1865 cfm=837 bloque_iguales=1541
+  evo_3.1.1       cli_consensus=2015 cli_order=2011 cfm=872 bloque_iguales=1651
+  mqr             cli_consensus=3371 cli_order=None cfm=1382 bloque_iguales=None
+
+### 2. extremo a extremo (--consensus cambia la salida?)
+  hardened_3.1.1 order=magnitudes_first   weighted_mean            rc=0 audio_sdv=e6beac25a8fb
+  hardened_3.1.1 order=magnitudes_first   median                   rc=0 audio_sdv=e6beac25a8fb
+  hardened_3.1.1 order=magnitudes_first   confidence_weighted_mean rc=0 audio_sdv=e6beac25a8fb
+  hardened_3.1.1 order=masks_first        weighted_mean            rc=0 audio_sdv=1cfced96b587
+  hardened_3.1.1 order=masks_first        median                   rc=0 audio_sdv=26d82eafa64b
+  hardened_3.1.1 order=masks_first        confidence_weighted_mean rc=0 audio_sdv=0d32fc24ba3e
+  evo_3.1.1      order=magnitudes_first   weighted_mean            rc=0 audio_sdv=e6beac25a8fb
+  evo_3.1.1      order=magnitudes_first   median                   rc=0 audio_sdv=e6beac25a8fb
+  evo_3.1.1      order=magnitudes_first   confidence_weighted_mean rc=0 audio_sdv=e6beac25a8fb
+  evo_3.1.1      order=masks_first        weighted_mean            rc=0 audio_sdv=1cfced96b587
+  evo_3.1.1      order=masks_first        median                   rc=0 audio_sdv=26d82eafa64b
+  evo_3.1.1      order=masks_first        confidence_weighted_mean rc=0 audio_sdv=0d32fc24ba3e
+  evo_3.1.1      order=hybrid_asymmetric  weighted_mean            rc=0 audio_sdv=9ab899047eb0
+  evo_3.1.1      order=hybrid_asymmetric  median                   rc=0 audio_sdv=d5a01fd86b68
+  evo_3.1.1      order=hybrid_asymmetric  confidence_weighted_mean rc=0 audio_sdv=5b0b90986638
+  v3             order=None               magnitudes_first         rc=0 audio_sdv=3a9e2b4ad7e0
+  v3             order=None               mean                     rc=0 audio_sdv=8d61818ee84f
+  v3             order=None               median                   rc=0 audio_sdv=facb101cc777
+  v3             order=None               median_ri                rc=0 audio_sdv=3bab9dfdcc02
+  mqr            order=None               weighted_mean            rc=0 audio_sdv=d51bf4cb7661
+  mqr            order=None               median                   rc=0 audio_sdv=5ffceae2afb9
+  mqr            order=None               confidence_weighted_mean rc=0 audio_sdv=c4e046d62ec9
+
+  nota de metodo: comparar SHA-256 de fichero entre corridas produce falsos positivos de 'diferencia'; la comparacion valida es sobre el audio decodificado
+
+  VEREDICTO por (motor, orden):
+    hardened_3.1.1 order=magnitudes_first   salidas distintas=1/3 -> llega_a_operacion=False
+    hardened_3.1.1 order=masks_first        salidas distintas=3/3 -> llega_a_operacion=True
+    evo_3.1.1      order=magnitudes_first   salidas distintas=1/3 -> llega_a_operacion=False
+    evo_3.1.1      order=masks_first        salidas distintas=3/3 -> llega_a_operacion=True
+    evo_3.1.1      order=hybrid_asymmetric  salidas distintas=3/3 -> llega_a_operacion=True
+    v3             order=None               salidas distintas=4/4 -> llega_a_operacion=True
+    mqr            order=None               salidas distintas=3/3 -> llega_a_operacion=True
+
+### 3. consenso enmascarado (K x modelo)
+  K=2 independiente      identicos=True  d(wm,med)=0.000e+00 d(wm,cwm)=0.000e+00
+  K=2 rho_0              identicos=True  d(wm,med)=0.000e+00 d(wm,cwm)=0.000e+00
+  K=2 rho_0.6            identicos=True  d(wm,med)=0.000e+00 d(wm,cwm)=0.000e+00
+  K=2 rho_0.95           identicos=True  d(wm,med)=0.000e+00 d(wm,cwm)=0.000e+00
+  K=2 outlier_1          identicos=True  d(wm,med)=0.000e+00 d(wm,cwm)=0.000e+00
+  K=2 outlier_2          identicos=True  d(wm,med)=0.000e+00 d(wm,cwm)=0.000e+00
+  K=2 mayoria_degradada  identicos=True  d(wm,med)=0.000e+00 d(wm,cwm)=0.000e+00
+  K=2 escalas            identicos=True  d(wm,med)=0.000e+00 d(wm,cwm)=0.000e+00
+  K=2 polaridad          identicos=True  d(wm,med)=0.000e+00 d(wm,cwm)=0.000e+00
+  K=3 independiente      identicos=False d(wm,med)=1.242e-01 d(wm,cwm)=2.217e-02
+  K=3 rho_0              identicos=False d(wm,med)=1.175e-01 d(wm,cwm)=1.845e-02
+  K=3 rho_0.6            identicos=False d(wm,med)=1.225e-01 d(wm,cwm)=2.099e-02
+  K=3 rho_0.95           identicos=False d(wm,med)=1.314e-01 d(wm,cwm)=2.353e-02
+  K=3 outlier_1          identicos=False d(wm,med)=3.333e-01 d(wm,cwm)=3.333e-01
+  K=3 outlier_2          identicos=False d(wm,med)=3.333e-01 d(wm,cwm)=3.333e-01
+  K=3 mayoria_degradada  identicos=False d(wm,med)=3.333e-01 d(wm,cwm)=3.333e-01
+  K=3 escalas            identicos=False d(wm,med)=1.555e-01 d(wm,cwm)=7.438e-02
+  K=3 polaridad          identicos=False d(wm,med)=3.333e-01 d(wm,cwm)=3.333e-01
+  K=5 independiente      identicos=False d(wm,med)=9.957e-02 d(wm,cwm)=2.066e-02
+  K=5 rho_0              identicos=False d(wm,med)=1.020e-01 d(wm,cwm)=1.448e-02
+  K=5 rho_0.6            identicos=False d(wm,med)=1.100e-01 d(wm,cwm)=1.513e-02
+  K=5 rho_0.95           identicos=False d(wm,med)=1.056e-01 d(wm,cwm)=1.386e-02
+  K=5 outlier_1          identicos=False d(wm,med)=2.444e-01 d(wm,cwm)=1.993e-01
+  K=5 outlier_2          identicos=False d(wm,med)=3.360e-01 d(wm,cwm)=2.000e-01
+  K=5 mayoria_degradada  identicos=False d(wm,med)=3.639e-01 d(wm,cwm)=2.000e-01
+  K=5 escalas            identicos=False d(wm,med)=1.545e-01 d(wm,cwm)=5.034e-02
+  K=5 polaridad          identicos=False d(wm,med)=2.000e-01 d(wm,cwm)=2.000e-01
+  K=7 independiente      identicos=False d(wm,med)=7.813e-02 d(wm,cwm)=1.399e-02
+  K=7 rho_0              identicos=False d(wm,med)=8.749e-02 d(wm,cwm)=1.408e-02
+  K=7 rho_0.6            identicos=False d(wm,med)=9.316e-02 d(wm,cwm)=1.157e-02
+  K=7 rho_0.95           identicos=False d(wm,med)=8.552e-02 d(wm,cwm)=1.351e-02
+  K=7 outlier_1          identicos=False d(wm,med)=1.717e-01 d(wm,cwm)=1.429e-01
+  K=7 outlier_2          identicos=False d(wm,med)=2.604e-01 d(wm,cwm)=1.565e-01
+  K=7 mayoria_degradada  identicos=False d(wm,med)=2.763e-01 d(wm,cwm)=1.727e-01
+  K=7 escalas            identicos=False d(wm,med)=1.706e-01 d(wm,cwm)=3.486e-02
+  K=7 polaridad          identicos=False d(wm,med)=1.429e-01 d(wm,cwm)=1.429e-01
+
+### 4. consenso complejo (v3)
+  K=2 independiente      maxdif=0.3116 mae(medf)=0.1265 fase(mean)=37.59deg
+  K=2 rho_0              maxdif=0.3349 mae(medf)=0.1266 fase(mean)=37.94deg
+  K=2 rho_0.6            maxdif=0.2780 mae(medf)=0.1277 fase(mean)=38.57deg
+  K=2 rho_0.95           maxdif=0.3412 mae(medf)=0.1270 fase(mean)=38.26deg
+  K=2 outlier_1          maxdif=0.9863 mae(medf)=0.4383 fase(mean)=59.51deg
+  K=2 outlier_2          maxdif=1.8037 mae(medf)=0.7000 fase(mean)=64.84deg
+  K=2 mayoria_degradada  maxdif=1.6661 mae(medf)=0.6989 fase(mean)=64.59deg
+  K=2 escalas            maxdif=0.0000 mae(medf)=0.1500 fase(mean)=0.00deg
+  K=2 polaridad          maxdif=1.0438 mae(medf)=0.3814 fase(mean)=43.73deg
+  K=2 fase_45            maxdif=0.0795 mae(medf)=0.1171 fase(mean)=22.50deg
+  K=2 fase_180           maxdif=1.0438 mae(medf)=0.3814 fase(mean)=43.73deg
+  K=3 independiente      maxdif=0.5862 mae(medf)=0.1170 fase(mean)=34.96deg
+  K=3 rho_0              maxdif=0.6094 mae(medf)=0.1160 fase(mean)=34.42deg
+  K=3 rho_0.6            maxdif=0.6126 mae(medf)=0.1167 fase(mean)=34.51deg
+  K=3 rho_0.95           maxdif=0.5973 mae(medf)=0.1158 fase(mean)=34.42deg
+  K=3 outlier_1          maxdif=2.0062 mae(medf)=0.2053 fase(mean)=52.52deg
+  K=3 outlier_2          maxdif=2.7360 mae(medf)=0.4768 fase(mean)=57.61deg
+  K=3 mayoria_degradada  maxdif=2.3657 mae(medf)=0.4788 fase(mean)=57.71deg
+  K=3 escalas            maxdif=0.2435 mae(medf)=0.1200 fase(mean)=0.00deg
+  K=3 polaridad          maxdif=0.6958 mae(medf)=0.0000 fase(mean)=0.00deg
+  K=3 fase_45            maxdif=0.2663 mae(medf)=0.0764 fase(mean)=14.64deg
+  K=3 fase_180           maxdif=0.6958 mae(medf)=0.0000 fase(mean)=0.00deg
+  K=5 independiente      maxdif=0.6071 mae(medf)=0.1034 fase(mean)=29.79deg
+  K=5 rho_0              maxdif=0.5475 mae(medf)=0.1033 fase(mean)=29.56deg
+  K=5 rho_0.6            maxdif=0.6219 mae(medf)=0.1032 fase(mean)=29.39deg
+  K=5 rho_0.95           maxdif=0.5900 mae(medf)=0.1036 fase(mean)=29.37deg
+  K=5 outlier_1          maxdif=2.0173 mae(medf)=0.1546 fase(mean)=45.34deg
+  K=5 outlier_2          maxdif=2.2962 mae(medf)=0.2043 fase(mean)=49.86deg
+  K=5 mayoria_degradada  maxdif=2.3598 mae(medf)=0.3746 fase(mean)=53.35deg
+  K=5 escalas            maxdif=0.3549 mae(medf)=0.0750 fase(mean)=0.00deg
+  K=5 polaridad          maxdif=0.4175 mae(medf)=0.0000 fase(mean)=0.00deg
+  K=5 fase_45            maxdif=0.1598 mae(medf)=0.0447 fase(mean)=8.54deg
+  K=5 fase_180           maxdif=0.4175 mae(medf)=0.0000 fase(mean)=0.00deg
+  K=7 independiente      maxdif=0.5360 mae(medf)=0.0954 fase(mean)=26.22deg
+  K=7 rho_0              maxdif=0.5860 mae(medf)=0.0956 fase(mean)=25.93deg
+  K=7 rho_0.6            maxdif=0.5427 mae(medf)=0.0958 fase(mean)=25.85deg
+  K=7 rho_0.95           maxdif=0.5972 mae(medf)=0.0956 fase(mean)=26.11deg
+  K=7 outlier_1          maxdif=1.9315 mae(medf)=0.1320 fase(mean)=40.26deg
+  K=7 outlier_2          maxdif=1.9148 mae(medf)=0.1620 fase(mean)=44.47deg
+  K=7 mayoria_degradada  maxdif=2.8067 mae(medf)=0.3220 fase(mean)=50.03deg
+  K=7 escalas            maxdif=0.3802 mae(medf)=0.0750 fase(mean)=0.00deg
+  K=7 polaridad          maxdif=0.2982 mae(medf)=0.0000 fase(mean)=0.00deg
+  K=7 fase_45            maxdif=0.1141 mae(medf)=0.0315 fase(mean)=6.02deg
+  K=7 fase_180           maxdif=0.2982 mae(medf)=0.0000 fase(mean)=0.00deg
+
+real	1m2.241s
+user	1m4.785s
+sys	0m5.162s

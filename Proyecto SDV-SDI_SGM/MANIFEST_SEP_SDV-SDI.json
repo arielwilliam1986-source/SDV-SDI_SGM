@@ -1,0 +1,59 @@
+{
+  "manifest_version": "3.0.0-Master-Sfumato",
+  "project_name": "Nombre_Del_Proyecto_Musical",
+  "documentation": {
+    "engine_target": "MOTOR_SEP_SDV-SDI.py",
+    "scientific_purpose": "Bifurcación primaria Mix -> SDV (Vocales) + SDI (Instrumental) con fase 100% inmutable.",
+    "downstream_intent": "SDV e SDI actuarán como fuentes inmutables para el Motor 2 de deconstrucción multi-stem (Drums, Bass, Guitars, Strings, Lead, Backings)."
+  },
+  "source_mix_file": "/ruta/absoluta/al/Mix_Original.wav",
+  "output_directory": "./Resultados_SDV_SDI",
+  "calibration_parameters": {
+    "power_p": 1.8,
+    "epsilon": 1e-12,
+    "beta_consensus": 1.0,
+    "use_physical_residuals": true,
+    "n_fft": 4096,
+    "hop_length": 1024,
+    "window": "hann",
+    "output_subtype": "FLOAT"
+  },
+  "guide_pairs": [
+    {
+      "pair_id": "pair_01_roformer_karaoke",
+      "family": "Transformer_RoFormer",
+      "variant": "mt_0_viperx",
+      "configuration": "residual_informed",
+      "vocal_guide": "/ruta/a/par1_roformer_vocals_full.wav",
+      "instrumental_guide": "/ruta/a/par1_roformer_instrum_only.wav",
+      "source_service": "MVSEP"
+    },
+    {
+      "pair_id": "pair_02_mdxb_karaoke",
+      "family": "Convolutional_MDXB",
+      "variant": "mt_1",
+      "configuration": "residual_informed",
+      "vocal_guide": "/ruta/a/par2_mdxb_vocals_full.wav",
+      "instrumental_guide": "/ruta/a/par2_mdxb_instrum_only.wav",
+      "source_service": "MVSEP"
+    },
+    {
+      "pair_id": "pair_03_dereverb_sucial",
+      "family": "DeReverb_Suvialv2",
+      "variant": "mt_5",
+      "configuration": "residual_informed",
+      "vocal_guide": "/ruta/a/par3_sucial_vocals_full.wav",
+      "instrumental_guide": "/ruta/a/par3_sucial_instrum_only.wav",
+      "source_service": "MVSEP"
+    },
+    {
+      "pair_id": "pair_04_dereverb_anvuew",
+      "family": "DeReverb_Room_Stereo",
+      "variant": "mt_7_o_mt_6",
+      "configuration": "residual_informed",
+      "vocal_guide": "/ruta/a/par4_anvuew_vocals_full.wav",
+      "instrumental_guide": "/ruta/a/par4_anvuew_instrum_only.wav",
+      "source_service": "MVSEP"
+    }
+  ]
+}

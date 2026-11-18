@@ -1,0 +1,3352 @@
+{
+ "auditoria": {
+  "fichero": "/home/user/fase1b/fuentes/Proyecto SDV-SDI_SGM/orquestador_maestro.py",
+  "lineas_totales": 75,
+  "sha256": "ea16344ae64eea4ee0ce931b43ee1377dfa1bbb037024aa456b495c2c8db373d",
+  "hallazgos": [
+   {
+    "id": "D-01",
+    "tipo": "VERIFICADO",
+    "afirmacion": "Solo busca pares con sufijo _instrum.wav / _vocals.wav",
+    "linea": 27,
+    "texto": "for instrum_path in glob.glob(os.path.join(dir_simples, \"*_instrum.wav\")):",
+    "confirmado": true
+   },
+   {
+    "id": "D-02",
+    "tipo": "VERIFICADO",
+    "afirmacion": "Si falta _vocals.wav para un _instrum.wav, se salta EN SILENCIO",
+    "linea": 30,
+    "texto": "if os.path.exists(vocals_path):",
+    "confirmado": true
+   },
+   {
+    "id": "D-03",
+    "tipo": "VERIFICADO",
+    "afirmacion": "En Reverb Removal itera SOLO dos nombres de modelo cableados",
+    "linea": 47,
+    "texto": "for model in [\"sucial\", \"anvuew\"]:",
+    "confirmado": true
+   },
+   {
+    "id": "D-04",
+    "tipo": "VERIFICADO",
+    "afirmacion": "Reconoce A, C y D; no hay ninguna referencia a [B] ni a [E]",
+    "linea": 51,
+    "texto": "if \"_[A]\" in f: path_A = os.path.join(dir_reverb, f)",
+    "confirmado": true
+   },
+   {
+    "id": "D-05",
+    "tipo": "VERIFICADO",
+    "afirmacion": "no existe '[B]' ni '[E]' en todo el fichero",
+    "linea": null,
+    "texto": null,
+    "confirmado": true
+   },
+   {
+    "id": "D-06",
+    "tipo": "VERIFICADO",
+    "afirmacion": "Formula SDV en Reverb: mix - A + D",
+    "linea": 61,
+    "texto": "sdv = mix[:min_len] - A[:min_len] + D[:min_len]",
+    "confirmado": true
+   },
+   {
+    "id": "D-07",
+    "tipo": "VERIFICADO",
+    "afirmacion": "Formula SDI en Reverb: mix - C - D",
+    "linea": 62,
+    "texto": "sdi = mix[:min_len] - C[:min_len] - D[:min_len]",
+    "confirmado": true
+   },
+   {
+    "id": "D-08",
+    "tipo": "VERIFICADO",
+    "afirmacion": "Asignacion por recorrido: un segundo fichero con el mismo rol PISA al primero sin diagnostico",
+    "linea": 49,
+    "texto": "for f in os.listdir(dir_reverb):",
+    "confirmado": true
+   },
+   {
+    "id": "D-09",
+    "tipo": "VERIFICADO",
+    "afirmacion": "Recorta todo al minimo de muestras (Reverb)",
+    "linea": 60,
+    "texto": "min_len = min(len(mix), len(A), len(C), len(D))",
+    "confirmado": true
+   },
+   {
+    "id": "D-10",
+    "tipo": "VERIFICADO",
+    "afirmacion": "Recorta todo al minimo de muestras (Simples)",
+    "linea": 34,
+    "texto": "min_len = min(len(mix), len(instrum), len(vocals))",
+    "confirmado": true
+   },
+   {
+    "id": "D-11",
+    "tipo": "VERIFICADO",
+    "afirmacion": "Escribe SIEMPRE con el sample rate del Mix, sin comprobar el de los stems",
+    "linea": 40,
+    "texto": "sf.write(out_sdv, sdv, sr, subtype='FLOAT')",
+    "confirmado": true
+   },
+   {
+    "id": "D-12",
+    "tipo": "VERIFICADO",
+    "afirmacion": "Exige A, C y D a la vez; si falta uno, el modelo se omite EN SILENCIO",
+    "linea": 55,
+    "texto": "if path_A and path_C and path_D:",
+    "confirmado": true
+   },
+   {
+    "id": "D-13",
+    "tipo": "VERIFICADO",
+    "afirmacion": "no se comprueba sample rate en ningun punto",
+    "linea": null,
+    "texto": null,
+    "confirmado": true
+   },
+   {
+    "id": "D-14",
+    "tipo": "VERIFICADO",
+    "afirmacion": "no se comprueba numero de canales en ningun punto",
+    "linea": null,
+    "texto": null,
+    "confirmado": true
+   },
+   {
+    "id": "D-15",
+    "tipo": "VERIFICADO",
+    "afirmacion": "el manifiesto no guarda ningun hash",
+    "linea": null,
+    "texto": null,
+    "confirmado": true
+   },
+   {
+    "id": "D-16",
+    "tipo": "VERIFICADO",
+    "afirmacion": "escribe DENTRO del arbol de entrada (no hay --out)",
+    "linea": 17,
+    "texto": null,
+    "confirmado": true
+   }
+  ],
+  "confirmados": 16,
+  "total": 16
+ },
+ "demos_original": [
+  {
+   "rc": 0,
+   "stdout": "[*] Iniciando orquestación en: /home/user/fase1b/FASE_1B_RESULTADOS/work/d/orig_nombres_reales\n\n[✓] Manifiesto guardado: /home/user/fase1b/FASE_1B_RESULTADOS/work/d/orig_nombres_reales/manifest_maestro.json (0 pares).\n",
+   "stderr": "",
+   "n_pares": 0,
+   "salidas": [],
+   "demo": "a_nombres_reales_del_manifiesto",
+   "esperado": "0 pares",
+   "observado": "0 pares"
+  },
+  {
+   "rc": 0,
+   "stdout": "[*] Iniciando orquestación en: /home/user/fase1b/FASE_1B_RESULTADOS/work/d/orig_nombres_orquestador\n  [>] Resta simple: roformer\n\n[✓] Manifiesto guardado: /home/user/fase1b/FASE_1B_RESULTADOS/work/d/orig_nombres_orquestador/manifest_maestro.json (1 pares).\n",
+   "stderr": "",
+   "n_pares": 1,
+   "salidas": [
+    "roformer_RESIDUAL_SDI.wav",
+    "roformer_RESIDUAL_SDV.wav"
+   ],
+   "demo": "b_nombres_que_el_original_espera",
+   "esperado": "1 par",
+   "observado": "1 pares"
+  },
+  {
+   "rc": 0,
+   "stdout": "[*] Iniciando orquestación en: /home/user/fase1b/FASE_1B_RESULTADOS/work/d/orig_modelo_no_listado\n\n[✓] Manifiesto guardado: /home/user/fase1b/FASE_1B_RESULTADOS/work/d/orig_modelo_no_listado/manifest_maestro.json (0 pares).\n",
+   "stderr": "",
+   "n_pares": 0,
+   "salidas": [],
+   "demo": "c_modelo_reverb_no_listado",
+   "esperado": "0 pares, sin aviso",
+   "observado": "0 pares"
+  },
+  {
+   "rc": 0,
+   "stdout": "[*] Iniciando orquestación en: /home/user/fase1b/FASE_1B_RESULTADOS/work/d/orig_falta_componente\n\n[✓] Manifiesto guardado: /home/user/fase1b/FASE_1B_RESULTADOS/work/d/orig_falta_componente/manifest_maestro.json (0 pares).\n",
+   "stderr": "",
+   "n_pares": 0,
+   "salidas": [],
+   "demo": "d_falta_D_en_reverb",
+   "esperado": "0 pares, sin aviso",
+   "observado": "0 pares"
+  },
+  {
+   "rc": 0,
+   "stdout": "[*] Iniciando orquestación en: /home/user/fase1b/FASE_1B_RESULTADOS/work/d/orig_duplicado_C\n  [>] Fórmula Will: sucial\n\n[✓] Manifiesto guardado: /home/user/fase1b/FASE_1B_RESULTADOS/work/d/orig_duplicado_C/manifest_maestro.json (1 pares).\n",
+   "stderr": "",
+   "n_pares": 1,
+   "salidas": [
+    "sucial_custom_RESIDUAL_SDI.wav",
+    "sucial_custom_RESIDUAL_SDV.wav"
+   ],
+   "demo": "e_dos_candidatos_C",
+   "esperado": "1 par, gana el ultimo, sin aviso",
+   "observado": "1 pares"
+  },
+  {
+   "rc": 0,
+   "stdout": "[*] Iniciando orquestación en: /home/user/fase1b/FASE_1B_RESULTADOS/work/d/orig_sr_distinta\n  [>] Fórmula Will: sucial\n\n[✓] Manifiesto guardado: /home/user/fase1b/FASE_1B_RESULTADOS/work/d/orig_sr_distinta/manifest_maestro.json (1 pares).\n",
+   "stderr": "",
+   "n_pares": 1,
+   "salidas": [
+    "sucial_custom_RESIDUAL_SDI.wav",
+    "sucial_custom_RESIDUAL_SDV.wav"
+   ],
+   "demo": "f_sr_distinta_48000_vs_44100",
+   "esperado": "rc=0 sin aviso",
+   "observado": "{\"sucial_custom_RESIDUAL_SDI.wav\": {\"sr\": 44100, \"frames\": 88200, \"dur_s\": 2.0}, \"sucial_custom_RESIDUAL_SDV.wav\": {\"sr\": 44100, \"frames\": 88200, \"dur_s\": 2.0}}",
+   "meta_salidas": {
+    "sucial_custom_RESIDUAL_SDI.wav": {
+     "sr": 44100,
+     "frames": 88200,
+     "dur_s": 2.0
+    },
+    "sucial_custom_RESIDUAL_SDV.wav": {
+     "sr": 44100,
+     "frames": 88200,
+     "dur_s": 2.0
+    }
+   }
+  },
+  {
+   "rc": 0,
+   "stdout": "[*] Iniciando orquestación en: /home/user/fase1b/FASE_1B_RESULTADOS/work/d/orig_longitud_distinta\n  [>] Fórmula Will: sucial\n\n[✓] Manifiesto guardado: /home/user/fase1b/FASE_1B_RESULTADOS/work/d/orig_longitud_distinta/manifest_maestro.json (1 pares).\n",
+   "stderr": "",
+   "n_pares": 1,
+   "salidas": [
+    "sucial_custom_RESIDUAL_SDI.wav",
+    "sucial_custom_RESIDUAL_SDV.wav"
+   ],
+   "demo": "g_longitud_distinta_1.5s_vs_2.0s",
+   "esperado": "recorte silencioso a 1.5 s",
+   "observado": "{\"sucial_custom_RESIDUAL_SDI.wav\": {\"sr\": 44100, \"frames\": 66150, \"dur_s\": 1.5}, \"sucial_custom_RESIDUAL_SDV.wav\": {\"sr\": 44100, \"frames\": 66150, \"dur_s\": 1.5}}",
+   "meta_salidas": {
+    "sucial_custom_RESIDUAL_SDI.wav": {
+     "sr": 44100,
+     "frames": 66150,
+     "dur_s": 1.5
+    },
+    "sucial_custom_RESIDUAL_SDV.wav": {
+     "sr": 44100,
+     "frames": 66150,
+     "dur_s": 1.5
+    }
+   }
+  },
+  {
+   "rc": 0,
+   "stdout": "[*] Iniciando orquestación en: /home/user/fase1b/FASE_1B_RESULTADOS/work/d/orig_mono_vs_estereo\n  [>] Fórmula Will: sucial\n\n[✓] Manifiesto guardado: /home/user/fase1b/FASE_1B_RESULTADOS/work/d/orig_mono_vs_estereo/manifest_maestro.json (1 pares).\n",
+   "stderr": "",
+   "n_pares": 1,
+   "salidas": [
+    "sucial_custom_RESIDUAL_SDI.wav",
+    "sucial_custom_RESIDUAL_SDV.wav"
+   ],
+   "demo": "h_mono_vs_estereo",
+   "esperado": "rc=0, sin aviso",
+   "observado": "{\"sucial_custom_RESIDUAL_SDI.wav\": {\"canales\": 2, \"sr\": 44100}, \"sucial_custom_RESIDUAL_SDV.wav\": {\"canales\": 2, \"sr\": 44100}}",
+   "meta_salidas": {
+    "sucial_custom_RESIDUAL_SDI.wav": {
+     "canales": 2,
+     "sr": 44100
+    },
+    "sucial_custom_RESIDUAL_SDV.wav": {
+     "canales": 2,
+     "sr": 44100
+    }
+   }
+  }
+ ],
+ "fixtures": [
+  {
+   "caso": "01_simple_par_valido",
+   "estado": "ACCEPT",
+   "esperado": "ACCEPT",
+   "formulas": [
+    "SDI_SIMPLE",
+    "SDV_SIMPLE"
+   ],
+   "esperado_formulas": [
+    "SDI_SIMPLE",
+    "SDV_SIMPLE"
+   ],
+   "n_grupos": 1,
+   "checks": {
+    "estado": true,
+    "formulas": true,
+    "n_grupos": true
+   },
+   "pasa": true,
+   "nota": "",
+   "motivo": "",
+   "dir": "/home/user/fase1b/FASE_1B_RESULTADOS/work/d/fx/01_simple_par_valido",
+   "out": "/home/user/fase1b/FASE_1B_RESULTADOS/work/d/out/01_simple_par_valido"
+  },
+  {
+   "caso": "02_simple_vocals_ausente",
+   "estado": "INCOMPLETE",
+   "esperado": "INCOMPLETE",
+   "formulas": [
+    "SDV_SIMPLE"
+   ],
+   "esperado_formulas": [
+    "SDV_SIMPLE"
+   ],
+   "n_grupos": 1,
+   "checks": {
+    "estado": true,
+    "formulas": true,
+    "n_grupos": true
+   },
+   "pasa": true,
+   "nota": "",
+   "motivo": "",
+   "dir": "/home/user/fase1b/FASE_1B_RESULTADOS/work/d/fx/02_simple_vocals_ausente",
+   "out": "/home/user/fase1b/FASE_1B_RESULTADOS/work/d/out/02_simple_vocals_ausente"
+  },
+  {
+   "caso": "03_simple_duplicado",
+   "estado": "AMBIGUOUS",
+   "esperado": "AMBIGUOUS",
+   "formulas": [],
+   "esperado_formulas": [],
+   "n_grupos": 1,
+   "checks": {
+    "estado": true,
+    "formulas": true,
+    "n_grupos": true
+   },
+   "pasa": true,
+   "nota": "dos ficheros reclaman INSTRUMENTAL en la misma corrida: no se elige ninguno",
+   "motivo": "duplicados o ficheros con rol ambiguo: no se elige ninguno",
+   "dir": "/home/user/fase1b/FASE_1B_RESULTADOS/work/d/fx/03_simple_duplicado",
+   "out": "/home/user/fase1b/FASE_1B_RESULTADOS/work/d/out/03_simple_duplicado"
+  },
+  {
+   "caso": "03b_simple_corridas_vecinas",
+   "estado": "INCOMPLETE",
+   "esperado": "INCOMPLETE",
+   "formulas": [
+    "SDI_SIMPLE",
+    "SDV_SIMPLE"
+   ],
+   "esperado_formulas": [
+    "SDI_SIMPLE",
+    "SDV_SIMPLE"
+   ],
+   "n_grupos": 2,
+   "checks": {
+    "estado": true,
+    "formulas": true,
+    "n_grupos": true
+   },
+   "pasa": true,
+   "nota": "se separan por corrida; no se mezclan",
+   "motivo": "",
+   "dir": "/home/user/fase1b/FASE_1B_RESULTADOS/work/d/fx/03b_simple_corridas_vecinas",
+   "out": "/home/user/fase1b/FASE_1B_RESULTADOS/work/d/out/03b_simple_corridas_vecinas"
+  },
+  {
+   "caso": "04_simple_dos_corridas",
+   "estado": "ACCEPT",
+   "esperado": "ACCEPT",
+   "formulas": [
+    "SDI_SIMPLE",
+    "SDV_SIMPLE"
+   ],
+   "esperado_formulas": [
+    "SDI_SIMPLE",
+    "SDV_SIMPLE"
+   ],
+   "n_grupos": 2,
+   "checks": {
+    "estado": true,
+    "formulas": true,
+    "n_grupos": true
+   },
+   "pasa": true,
+   "nota": "",
+   "motivo": "",
+   "dir": "/home/user/fase1b/FASE_1B_RESULTADOS/work/d/fx/04_simple_dos_corridas",
+   "out": "/home/user/fase1b/FASE_1B_RESULTADOS/work/d/out/04_simple_dos_corridas"
+  },
+  {
+   "caso": "05_reverb_c_agregado",
+   "estado": "INCOMPLETE",
+   "esperado": "INCOMPLETE",
+   "formulas": [
+    "SDI2",
+    "SDV2"
+   ],
+   "esperado_formulas": [
+    "SDI2",
+    "SDV2"
+   ],
+   "n_grupos": 1,
+   "checks": {
+    "estado": true,
+    "formulas": true,
+    "n_grupos": true
+   },
+   "pasa": true,
+   "nota": "B y E ausentes: SDV1/SDI1 quedan INCOMPLETE",
+   "motivo": "",
+   "dir": "/home/user/fase1b/FASE_1B_RESULTADOS/work/d/fx/05_reverb_c_agregado",
+   "out": "/home/user/fase1b/FASE_1B_RESULTADOS/work/d/out/05_reverb_c_agregado"
+  },
+  {
+   "caso": "06_reverb_c_dividido",
+   "estado": "INCOMPLETE",
+   "esperado": "INCOMPLETE",
+   "formulas": [
+    "SDI2",
+    "SDV2"
+   ],
+   "esperado_formulas": [
+    "SDI2",
+    "SDV2"
+   ],
+   "n_grupos": 1,
+   "checks": {
+    "estado": true,
+    "formulas": true,
+    "n_grupos": true
+   },
+   "pasa": true,
+   "nota": "C_total = Reverb + Others",
+   "motivo": "",
+   "dir": "/home/user/fase1b/FASE_1B_RESULTADOS/work/d/fx/06_reverb_c_dividido",
+   "out": "/home/user/fase1b/FASE_1B_RESULTADOS/work/d/out/06_reverb_c_dividido"
+  },
+  {
+   "caso": "07_reverb_solo_reverb",
+   "estado": "INCOMPLETE",
+   "esperado": "INCOMPLETE",
+   "formulas": [
+    "SDV2"
+   ],
+   "esperado_formulas": [
+    "SDV2"
+   ],
+   "n_grupos": 1,
+   "checks": {
+    "estado": true,
+    "formulas": true,
+    "n_grupos": true
+   },
+   "pasa": true,
+   "nota": "no se infiere C_total",
+   "motivo": "",
+   "dir": "/home/user/fase1b/FASE_1B_RESULTADOS/work/d/fx/07_reverb_solo_reverb",
+   "out": "/home/user/fase1b/FASE_1B_RESULTADOS/work/d/out/07_reverb_solo_reverb"
+  },
+  {
+   "caso": "08_reverb_conflicto",
+   "estado": "AMBIGUOUS",
+   "esperado": "AMBIGUOUS",
+   "formulas": [],
+   "esperado_formulas": [],
+   "n_grupos": 1,
+   "checks": {
+    "estado": true,
+    "formulas": true,
+    "n_grupos": true
+   },
+   "pasa": true,
+   "nota": "nunca se suman agregado+subs",
+   "motivo": "C agregado Y subcomponentes presentes sin declaracion de alternativas: no se elige ni se suma",
+   "dir": "/home/user/fase1b/FASE_1B_RESULTADOS/work/d/fx/08_reverb_conflicto",
+   "out": "/home/user/fase1b/FASE_1B_RESULTADOS/work/d/out/08_reverb_conflicto"
+  },
+  {
+   "caso": "09_reverb_abcde",
+   "estado": "ACCEPT",
+   "esperado": "ACCEPT",
+   "formulas": [
+    "SDI1",
+    "SDI2",
+    "SDV1",
+    "SDV2"
+   ],
+   "esperado_formulas": [
+    "SDI1",
+    "SDI2",
+    "SDV1",
+    "SDV2"
+   ],
+   "n_grupos": 1,
+   "checks": {
+    "estado": true,
+    "formulas": true,
+    "n_grupos": true
+   },
+   "pasa": true,
+   "nota": "",
+   "motivo": "",
+   "dir": "/home/user/fase1b/FASE_1B_RESULTADOS/work/d/fx/09_reverb_abcde",
+   "out": "/home/user/fase1b/FASE_1B_RESULTADOS/work/d/out/09_reverb_abcde"
+  },
+  {
+   "caso": "10_reverb_solo_b",
+   "estado": "INCOMPLETE",
+   "esperado": "INCOMPLETE",
+   "formulas": [
+    "SDV1"
+   ],
+   "esperado_formulas": [
+    "SDV1"
+   ],
+   "n_grupos": 1,
+   "checks": {
+    "estado": true,
+    "formulas": true,
+    "n_grupos": true
+   },
+   "pasa": true,
+   "nota": "",
+   "motivo": "",
+   "dir": "/home/user/fase1b/FASE_1B_RESULTADOS/work/d/fx/10_reverb_solo_b",
+   "out": "/home/user/fase1b/FASE_1B_RESULTADOS/work/d/out/10_reverb_solo_b"
+  },
+  {
+   "caso": "11a_e_vs_cd_exacto",
+   "estado": "INCOMPLETE",
+   "esperado": "INCOMPLETE",
+   "formulas": [
+    "SDI1",
+    "SDI2",
+    "SDV2"
+   ],
+   "esperado_formulas": [
+    "SDI1",
+    "SDI2",
+    "SDV2"
+   ],
+   "n_grupos": 1,
+   "checks": {
+    "estado": true,
+    "formulas": true,
+    "n_grupos": true
+   },
+   "pasa": true,
+   "nota": "relacion E~C+D: exacto",
+   "motivo": "",
+   "dir": "/home/user/fase1b/FASE_1B_RESULTADOS/work/d/fx/11a_e_vs_cd_exacto",
+   "out": "/home/user/fase1b/FASE_1B_RESULTADOS/work/d/out/11a_e_vs_cd_exacto"
+  },
+  {
+   "caso": "11b_e_vs_cd_leve",
+   "estado": "INCOMPLETE",
+   "esperado": "INCOMPLETE",
+   "formulas": [
+    "SDI1",
+    "SDI2",
+    "SDV2"
+   ],
+   "esperado_formulas": [
+    "SDI1",
+    "SDI2",
+    "SDV2"
+   ],
+   "n_grupos": 1,
+   "checks": {
+    "estado": true,
+    "formulas": true,
+    "n_grupos": true
+   },
+   "pasa": true,
+   "nota": "relacion E~C+D: leve",
+   "motivo": "",
+   "dir": "/home/user/fase1b/FASE_1B_RESULTADOS/work/d/fx/11b_e_vs_cd_leve",
+   "out": "/home/user/fase1b/FASE_1B_RESULTADOS/work/d/out/11b_e_vs_cd_leve"
+  },
+  {
+   "caso": "11c_e_vs_cd_severo",
+   "estado": "INCOMPLETE",
+   "esperado": "INCOMPLETE",
+   "formulas": [
+    "SDI1",
+    "SDI2",
+    "SDV2"
+   ],
+   "esperado_formulas": [
+    "SDI1",
+    "SDI2",
+    "SDV2"
+   ],
+   "n_grupos": 1,
+   "checks": {
+    "estado": true,
+    "formulas": true,
+    "n_grupos": true
+   },
+   "pasa": true,
+   "nota": "relacion E~C+D: severo",
+   "motivo": "",
+   "dir": "/home/user/fase1b/FASE_1B_RESULTADOS/work/d/fx/11c_e_vs_cd_severo",
+   "out": "/home/user/fase1b/FASE_1B_RESULTADOS/work/d/out/11c_e_vs_cd_severo"
+  },
+  {
+   "caso": "12_modelo_nuevo_nombres_alt",
+   "estado": "ACCEPT",
+   "esperado": "ACCEPT",
+   "formulas": [
+    "SDI1",
+    "SDI2",
+    "SDV1",
+    "SDV2"
+   ],
+   "esperado_formulas": [
+    "SDI1",
+    "SDI2",
+    "SDV1",
+    "SDV2"
+   ],
+   "n_grupos": 1,
+   "checks": {
+    "estado": true,
+    "formulas": true,
+    "n_grupos": true
+   },
+   "pasa": true,
+   "nota": "",
+   "motivo": "",
+   "dir": "/home/user/fase1b/FASE_1B_RESULTADOS/work/d/fx/12_modelo_nuevo_nombres_alt",
+   "out": "/home/user/fase1b/FASE_1B_RESULTADOS/work/d/out/12_modelo_nuevo_nombres_alt"
+  },
+  {
+   "caso": "13_corridas_mezcladas",
+   "estado": "INCOMPLETE",
+   "esperado": "INCOMPLETE",
+   "formulas": [
+    "SDI2",
+    "SDV2"
+   ],
+   "esperado_formulas": [
+    "SDI2",
+    "SDV2"
+   ],
+   "n_grupos": 2,
+   "checks": {
+    "estado": true,
+    "formulas": true,
+    "n_grupos": true
+   },
+   "pasa": true,
+   "nota": "",
+   "motivo": "",
+   "dir": "/home/user/fase1b/FASE_1B_RESULTADOS/work/d/fx/13_corridas_mezcladas",
+   "out": "/home/user/fase1b/FASE_1B_RESULTADOS/work/d/out/13_corridas_mezcladas"
+  },
+  {
+   "caso": "14a_sr_distinta",
+   "estado": "INCOMPATIBLE",
+   "esperado": "INCOMPATIBLE",
+   "formulas": [
+    "SDI2"
+   ],
+   "esperado_formulas": [
+    "SDI2"
+   ],
+   "n_grupos": 1,
+   "checks": {
+    "estado": true,
+    "formulas": true,
+    "n_grupos": true
+   },
+   "pasa": true,
+   "nota": "",
+   "motivo": "",
+   "dir": "/home/user/fase1b/FASE_1B_RESULTADOS/work/d/fx/14a_sr_distinta",
+   "out": "/home/user/fase1b/FASE_1B_RESULTADOS/work/d/out/14a_sr_distinta"
+  },
+  {
+   "caso": "14b_canales_distintos",
+   "estado": "INCOMPATIBLE",
+   "esperado": "INCOMPATIBLE",
+   "formulas": [
+    "SDI2"
+   ],
+   "esperado_formulas": [
+    "SDI2"
+   ],
+   "n_grupos": 1,
+   "checks": {
+    "estado": true,
+    "formulas": true,
+    "n_grupos": true
+   },
+   "pasa": true,
+   "nota": "",
+   "motivo": "",
+   "dir": "/home/user/fase1b/FASE_1B_RESULTADOS/work/d/fx/14b_canales_distintos",
+   "out": "/home/user/fase1b/FASE_1B_RESULTADOS/work/d/out/14b_canales_distintos"
+  },
+  {
+   "caso": "14c_longitud_distinta",
+   "estado": "INCOMPATIBLE",
+   "esperado": "INCOMPATIBLE",
+   "formulas": [
+    "SDI2"
+   ],
+   "esperado_formulas": [
+    "SDI2"
+   ],
+   "n_grupos": 1,
+   "checks": {
+    "estado": true,
+    "formulas": true,
+    "n_grupos": true
+   },
+   "pasa": true,
+   "nota": "",
+   "motivo": "",
+   "dir": "/home/user/fase1b/FASE_1B_RESULTADOS/work/d/fx/14c_longitud_distinta",
+   "out": "/home/user/fase1b/FASE_1B_RESULTADOS/work/d/out/14c_longitud_distinta"
+  },
+  {
+   "caso": "14d_subtype_distinto",
+   "estado": "INCOMPATIBLE",
+   "esperado": "INCOMPATIBLE",
+   "formulas": [
+    "SDI2"
+   ],
+   "esperado_formulas": [
+    "SDI2"
+   ],
+   "n_grupos": 1,
+   "checks": {
+    "estado": true,
+    "formulas": true,
+    "n_grupos": true
+   },
+   "pasa": true,
+   "nota": "",
+   "motivo": "",
+   "dir": "/home/user/fase1b/FASE_1B_RESULTADOS/work/d/fx/14d_subtype_distinto",
+   "out": "/home/user/fase1b/FASE_1B_RESULTADOS/work/d/out/14d_subtype_distinto"
+  },
+  {
+   "caso": "14e_nan_inf",
+   "estado": "REJECTED",
+   "esperado": "REJECTED",
+   "formulas": [
+    "SDI2"
+   ],
+   "esperado_formulas": [
+    "SDI2"
+   ],
+   "n_grupos": 1,
+   "checks": {
+    "estado": true,
+    "formulas": true
+   },
+   "pasa": true,
+   "nota": "",
+   "motivo": "",
+   "dir": "/home/user/fase1b/FASE_1B_RESULTADOS/work/d/fx/14e_nan_inf",
+   "out": "/home/user/fase1b/FASE_1B_RESULTADOS/work/d/out/14e_nan_inf"
+  },
+  {
+   "caso": "15_lr_asimetrico_gt",
+   "estado": "ACCEPT",
+   "esperado": "ACCEPT",
+   "formulas": [
+    "SDI1",
+    "SDI2",
+    "SDV1",
+    "SDV2"
+   ],
+   "esperado_formulas": [
+    "SDI1",
+    "SDI2",
+    "SDV1",
+    "SDV2"
+   ],
+   "n_grupos": 1,
+   "checks": {
+    "estado": true,
+    "formulas": true,
+    "n_grupos": true
+   },
+   "pasa": true,
+   "nota": "SDV1 y SDI1 deben coincidir EXACTO con V_true e I_true",
+   "motivo": "",
+   "dir": "/home/user/fase1b/FASE_1B_RESULTADOS/work/d/fx/15_lr_asimetrico_gt",
+   "out": "/home/user/fase1b/FASE_1B_RESULTADOS/work/d/out/15_lr_asimetrico_gt"
+  },
+  {
+   "caso": "16a_corrupto",
+   "estado": "REJECTED",
+   "esperado": "REJECTED",
+   "formulas": [
+    "SDI2"
+   ],
+   "esperado_formulas": [
+    "SDI2"
+   ],
+   "n_grupos": 1,
+   "checks": {
+    "estado": true,
+    "formulas": true
+   },
+   "pasa": true,
+   "nota": "",
+   "motivo": "",
+   "dir": "/home/user/fase1b/FASE_1B_RESULTADOS/work/d/fx/16a_corrupto",
+   "out": "/home/user/fase1b/FASE_1B_RESULTADOS/work/d/out/16a_corrupto"
+  },
+  {
+   "caso": "16b_no_wav",
+   "estado": "INCOMPLETE",
+   "esperado": "INCOMPLETE",
+   "formulas": [
+    "SDI2",
+    "SDV2"
+   ],
+   "esperado_formulas": [
+    "SDI2",
+    "SDV2"
+   ],
+   "n_grupos": 1,
+   "checks": {
+    "estado": true,
+    "formulas": true,
+    "n_grupos": true
+   },
+   "pasa": true,
+   "nota": "el .txt se ignora y se registra en el inventario",
+   "motivo": "",
+   "dir": "/home/user/fase1b/FASE_1B_RESULTADOS/work/d/fx/16b_no_wav",
+   "out": "/home/user/fase1b/FASE_1B_RESULTADOS/work/d/out/16b_no_wav"
+  },
+  {
+   "caso": "17a_mix_ausente",
+   "estado": "REJECTED",
+   "esperado": "REJECTED",
+   "formulas": [],
+   "esperado_formulas": [],
+   "n_grupos": 0,
+   "checks": {
+    "estado": true,
+    "formulas": true
+   },
+   "pasa": true,
+   "nota": "",
+   "motivo": "Mix declarado 'Mix.wav' no existe",
+   "dir": "/home/user/fase1b/FASE_1B_RESULTADOS/work/d/fx/17a_mix_ausente",
+   "out": "/home/user/fase1b/FASE_1B_RESULTADOS/work/d/out/17a_mix_ausente"
+  },
+  {
+   "caso": "17b_dos_mix",
+   "estado": "REJECTED",
+   "esperado": "REJECTED",
+   "formulas": [],
+   "esperado_formulas": [],
+   "n_grupos": 0,
+   "checks": {
+    "estado": true,
+    "formulas": true
+   },
+   "pasa": true,
+   "nota": "",
+   "motivo": "2 mixes candidatos: no se elige el primero",
+   "dir": "/home/user/fase1b/FASE_1B_RESULTADOS/work/d/fx/17b_dos_mix",
+   "out": "/home/user/fase1b/FASE_1B_RESULTADOS/work/d/out/17b_dos_mix"
+  },
+  {
+   "caso": "17c_hash_cambiado",
+   "estado": "REJECTED",
+   "esperado": "REJECTED",
+   "formulas": [],
+   "esperado_formulas": [],
+   "n_grupos": 0,
+   "checks": {
+    "estado": true,
+    "formulas": true
+   },
+   "pasa": true,
+   "nota": "",
+   "motivo": "hash del Mix no coincide: declarado 0000000000000000... real 8911dd7ecdbb4e82...",
+   "dir": "/home/user/fase1b/FASE_1B_RESULTADOS/work/d/fx/17c_hash_cambiado",
+   "out": "/home/user/fase1b/FASE_1B_RESULTADOS/work/d/out/17c_hash_cambiado"
+  }
+ ],
+ "resultado_completo": {
+  "01_simple_par_valido": {
+   "estado": "ACCEPT",
+   "motivo": "",
+   "inventario": {
+    "n_ficheros": 3,
+    "n_ignorados": 0,
+    "ignorados": []
+   },
+   "mix": {
+    "ruta": "Mix.wav",
+    "sha256": "8911dd7ecdbb4e82a417dfd49239c5ec4c0d594be4be94b5aaa08b496ef66e2f",
+    "sr": 44100,
+    "ch": 2,
+    "frames": 88200,
+    "subtype": "FLOAT",
+    "format": "WAV",
+    "duracion_s": 2.0
+   },
+   "grupos": [
+    {
+     "grupo_id": "mvsep_simple::par1_roformer::Stems Masks Simples",
+     "perfil": "mvsep_simple",
+     "run": "par1_roformer",
+     "carpeta": "Stems Masks Simples",
+     "roles_presentes": [
+      "INSTRUMENTAL",
+      "VOCALS"
+     ],
+     "duplicados": {},
+     "ambiguos": [],
+     "sin_rol": [],
+     "residuales": [
+      {
+       "formula": "SDV_SIMPLE",
+       "expr": "SDV_simple = M - Instrumental",
+       "ruta": "/home/user/fase1b/FASE_1B_RESULTADOS/work/d/out/01_simple_par_valido/mvsep_simple__par1_roformer/mvsep_simple__par1_roformer__SDV_SIMPLE.wav",
+       "frames": 88200,
+       "canales": 2,
+       "rms_L": 0.14755673296042887,
+       "rms_R": 0.13106451199413016,
+       "estado": "OK"
+      },
+      {
+       "formula": "SDI_SIMPLE",
+       "expr": "SDI_simple = M - Vocals",
+       "ruta": "/home/user/fase1b/FASE_1B_RESULTADOS/work/d/out/01_simple_par_valido/mvsep_simple__par1_roformer/mvsep_simple__par1_roformer__SDI_SIMPLE.wav",
+       "frames": 88200,
+       "canales": 2,
+       "rms_L": 0.10116155870951851,
+       "rms_R": 0.10116155869346265,
+       "estado": "OK"
+      }
+     ],
+     "no_generados": {},
+     "motivos": [],
+     "c_total": {
+      "estado": "INCOMPLETE",
+      "estrategia": "ausente",
+      "formula": null,
+      "sumandos": [],
+      "motivos": [
+       "no hay ningun componente C"
+      ]
+     },
+     "no_aplica": {
+      "SDV1": "el perfil mvsep_simple no declara ['B_INSTRUMENT']",
+      "SDV2": "el perfil mvsep_simple no declara ['A_RESTORED', 'D_DRY_VOCAL']",
+      "SDI1": "el perfil mvsep_simple no declara ['E_VOCALS']",
+      "SDI2": "el perfil mvsep_simple no declara ['C_TOTAL', 'D_DRY_VOCAL']"
+     },
+     "estado": "ACCEPT"
+    }
+   ],
+   "manifiesto": "/home/user/fase1b/FASE_1B_RESULTADOS/work/d/out/01_simple_par_valido/manifest_orquestador.json"
+  },
+  "02_simple_vocals_ausente": {
+   "estado": "INCOMPLETE",
+   "motivo": "",
+   "inventario": {
+    "n_ficheros": 2,
+    "n_ignorados": 0,
+    "ignorados": []
+   },
+   "mix": {
+    "ruta": "Mix.wav",
+    "sha256": "8911dd7ecdbb4e82a417dfd49239c5ec4c0d594be4be94b5aaa08b496ef66e2f",
+    "sr": 44100,
+    "ch": 2,
+    "frames": 88200,
+    "subtype": "FLOAT",
+    "format": "WAV",
+    "duracion_s": 2.0
+   },
+   "grupos": [
+    {
+     "grupo_id": "mvsep_simple::par1_roformer::Stems Masks Simples",
+     "perfil": "mvsep_simple",
+     "run": "par1_roformer",
+     "carpeta": "Stems Masks Simples",
+     "roles_presentes": [
+      "INSTRUMENTAL"
+     ],
+     "duplicados": {},
+     "ambiguos": [],
+     "sin_rol": [],
+     "residuales": [
+      {
+       "formula": "SDV_SIMPLE",
+       "expr": "SDV_simple = M - Instrumental",
+       "ruta": "/home/user/fase1b/FASE_1B_RESULTADOS/work/d/out/02_simple_vocals_ausente/mvsep_simple__par1_roformer/mvsep_simple__par1_roformer__SDV_SIMPLE.wav",
+       "frames": 88200,
+       "canales": 2,
+       "rms_L": 0.14755673296042887,
+       "rms_R": 0.13106451199413016,
+       "estado": "OK"
+      }
+     ],
+     "no_generados": {
+      "SDI_SIMPLE": {
+       "estado": "INCOMPLETE",
+       "motivo": "faltan insumos: ['VOCALS']"
+      }
+     },
+     "motivos": [],
+     "c_total": {
+      "estado": "INCOMPLETE",
+      "estrategia": "ausente",
+      "formula": null,
+      "sumandos": [],
+      "motivos": [
+       "no hay ningun componente C"
+      ]
+     },
+     "no_aplica": {
+      "SDV1": "el perfil mvsep_simple no declara ['B_INSTRUMENT']",
+      "SDV2": "el perfil mvsep_simple no declara ['A_RESTORED', 'D_DRY_VOCAL']",
+      "SDI1": "el perfil mvsep_simple no declara ['E_VOCALS']",
+      "SDI2": "el perfil mvsep_simple no declara ['C_TOTAL', 'D_DRY_VOCAL']"
+     },
+     "estado": "INCOMPLETE"
+    }
+   ],
+   "manifiesto": "/home/user/fase1b/FASE_1B_RESULTADOS/work/d/out/02_simple_vocals_ausente/manifest_orquestador.json"
+  },
+  "03_simple_duplicado": {
+   "estado": "AMBIGUOUS",
+   "motivo": "",
+   "inventario": {
+    "n_ficheros": 4,
+    "n_ignorados": 0,
+    "ignorados": []
+   },
+   "mix": {
+    "ruta": "Mix.wav",
+    "sha256": "8911dd7ecdbb4e82a417dfd49239c5ec4c0d594be4be94b5aaa08b496ef66e2f",
+    "sr": 44100,
+    "ch": 2,
+    "frames": 88200,
+    "subtype": "FLOAT",
+    "format": "WAV",
+    "duracion_s": 2.0
+   },
+   "grupos": [
+    {
+     "grupo_id": "mvsep_simple::par1_roformer::Stems Masks Simples",
+     "perfil": "mvsep_simple",
+     "run": "par1_roformer",
+     "carpeta": "Stems Masks Simples",
+     "roles_presentes": [
+      "INSTRUMENTAL",
+      "VOCALS"
+     ],
+     "duplicados": {
+      "INSTRUMENTAL": [
+       "Stems Masks Simples/par1_roformer_instrum_only.wav",
+       "Stems Masks Simples/par1_roformer_instrumental.wav"
+      ]
+     },
+     "ambiguos": [],
+     "sin_rol": [],
+     "residuales": [],
+     "no_generados": {},
+     "motivos": [
+      "duplicados o ficheros con rol ambiguo: no se elige ninguno"
+     ],
+     "c_total": {
+      "estado": "INCOMPLETE",
+      "estrategia": "ausente",
+      "formula": null,
+      "sumandos": [],
+      "motivos": [
+       "no hay ningun componente C"
+      ]
+     },
+     "estado": "AMBIGUOUS"
+    }
+   ],
+   "manifiesto": "/home/user/fase1b/FASE_1B_RESULTADOS/work/d/out/03_simple_duplicado/manifest_orquestador.json"
+  },
+  "03b_simple_corridas_vecinas": {
+   "estado": "INCOMPLETE",
+   "motivo": "",
+   "inventario": {
+    "n_ficheros": 4,
+    "n_ignorados": 0,
+    "ignorados": []
+   },
+   "mix": {
+    "ruta": "Mix.wav",
+    "sha256": "8911dd7ecdbb4e82a417dfd49239c5ec4c0d594be4be94b5aaa08b496ef66e2f",
+    "sr": 44100,
+    "ch": 2,
+    "frames": 88200,
+    "subtype": "FLOAT",
+    "format": "WAV",
+    "duracion_s": 2.0
+   },
+   "grupos": [
+    {
+     "grupo_id": "mvsep_simple::par1_otro::Stems Masks Simples",
+     "perfil": "mvsep_simple",
+     "run": "par1_otro",
+     "carpeta": "Stems Masks Simples",
+     "roles_presentes": [
+      "INSTRUMENTAL"
+     ],
+     "duplicados": {},
+     "ambiguos": [],
+     "sin_rol": [],
+     "residuales": [
+      {
+       "formula": "SDV_SIMPLE",
+       "expr": "SDV_simple = M - Instrumental",
+       "ruta": "/home/user/fase1b/FASE_1B_RESULTADOS/work/d/out/03b_simple_corridas_vecinas/mvsep_simple__par1_otro/mvsep_simple__par1_otro__SDV_SIMPLE.wav",
+       "frames": 88200,
+       "canales": 2,
+       "rms_L": 0.15621529970043957,
+       "rms_R": 0.14075065629622097,
+       "estado": "OK"
+      }
+     ],
+     "no_generados": {
+      "SDI_SIMPLE": {
+       "estado": "INCOMPLETE",
+       "motivo": "faltan insumos: ['VOCALS']"
+      }
+     },
+     "motivos": [],
+     "c_total": {
+      "estado": "INCOMPLETE",
+      "estrategia": "ausente",
+      "formula": null,
+      "sumandos": [],
+      "motivos": [
+       "no hay ningun componente C"
+      ]
+     },
+     "no_aplica": {
+      "SDV1": "el perfil mvsep_simple no declara ['B_INSTRUMENT']",
+      "SDV2": "el perfil mvsep_simple no declara ['A_RESTORED', 'D_DRY_VOCAL']",
+      "SDI1": "el perfil mvsep_simple no declara ['E_VOCALS']",
+      "SDI2": "el perfil mvsep_simple no declara ['C_TOTAL', 'D_DRY_VOCAL']"
+     },
+     "estado": "INCOMPLETE"
+    },
+    {
+     "grupo_id": "mvsep_simple::par1_roformer::Stems Masks Simples",
+     "perfil": "mvsep_simple",
+     "run": "par1_roformer",
+     "carpeta": "Stems Masks Simples",
+     "roles_presentes": [
+      "INSTRUMENTAL",
+      "VOCALS"
+     ],
+     "duplicados": {},
+     "ambiguos": [],
+     "sin_rol": [],
+     "residuales": [
+      {
+       "formula": "SDV_SIMPLE",
+       "expr": "SDV_simple = M - Instrumental",
+       "ruta": "/home/user/fase1b/FASE_1B_RESULTADOS/work/d/out/03b_simple_corridas_vecinas/mvsep_simple__par1_roformer/mvsep_simple__par1_roformer__SDV_SIMPLE.wav",
+       "frames": 88200,
+       "canales": 2,
+       "rms_L": 0.14755673296042887,
+       "rms_R": 0.13106451199413016,
+       "estado": "OK"
+      },
+      {
+       "formula": "SDI_SIMPLE",
+       "expr": "SDI_simple = M - Vocals",
+       "ruta": "/home/user/fase1b/FASE_1B_RESULTADOS/work/d/out/03b_simple_corridas_vecinas/mvsep_simple__par1_roformer/mvsep_simple__par1_roformer__SDI_SIMPLE.wav",
+       "frames": 88200,
+       "canales": 2,
+       "rms_L": 0.10116155870951851,
+       "rms_R": 0.10116155869346265,
+       "estado": "OK"
+      }
+     ],
+     "no_generados": {},
+     "motivos": [],
+     "c_total": {
+      "estado": "INCOMPLETE",
+      "estrategia": "ausente",
+      "formula": null,
+      "sumandos": [],
+      "motivos": [
+       "no hay ningun componente C"
+      ]
+     },
+     "no_aplica": {
+      "SDV1": "el perfil mvsep_simple no declara ['B_INSTRUMENT']",
+      "SDV2": "el perfil mvsep_simple no declara ['A_RESTORED', 'D_DRY_VOCAL']",
+      "SDI1": "el perfil mvsep_simple no declara ['E_VOCALS']",
+      "SDI2": "el perfil mvsep_simple no declara ['C_TOTAL', 'D_DRY_VOCAL']"
+     },
+     "estado": "ACCEPT"
+    }
+   ],
+   "manifiesto": "/home/user/fase1b/FASE_1B_RESULTADOS/work/d/out/03b_simple_corridas_vecinas/manifest_orquestador.json"
+  },
+  "04_simple_dos_corridas": {
+   "estado": "ACCEPT",
+   "motivo": "",
+   "inventario": {
+    "n_ficheros": 5,
+    "n_ignorados": 0,
+    "ignorados": []
+   },
+   "mix": {
+    "ruta": "Mix.wav",
+    "sha256": "8911dd7ecdbb4e82a417dfd49239c5ec4c0d594be4be94b5aaa08b496ef66e2f",
+    "sr": 44100,
+    "ch": 2,
+    "frames": 88200,
+    "subtype": "FLOAT",
+    "format": "WAV",
+    "duracion_s": 2.0
+   },
+   "grupos": [
+    {
+     "grupo_id": "mvsep_simple::par1_roformer::Stems Masks Simples",
+     "perfil": "mvsep_simple",
+     "run": "par1_roformer",
+     "carpeta": "Stems Masks Simples",
+     "roles_presentes": [
+      "INSTRUMENTAL",
+      "VOCALS"
+     ],
+     "duplicados": {},
+     "ambiguos": [],
+     "sin_rol": [],
+     "residuales": [
+      {
+       "formula": "SDV_SIMPLE",
+       "expr": "SDV_simple = M - Instrumental",
+       "ruta": "/home/user/fase1b/FASE_1B_RESULTADOS/work/d/out/04_simple_dos_corridas/mvsep_simple__par1_roformer/mvsep_simple__par1_roformer__SDV_SIMPLE.wav",
+       "frames": 88200,
+       "canales": 2,
+       "rms_L": 0.14755673296042887,
+       "rms_R": 0.13106451199413016,
+       "estado": "OK"
+      },
+      {
+       "formula": "SDI_SIMPLE",
+       "expr": "SDI_simple = M - Vocals",
+       "ruta": "/home/user/fase1b/FASE_1B_RESULTADOS/work/d/out/04_simple_dos_corridas/mvsep_simple__par1_roformer/mvsep_simple__par1_roformer__SDI_SIMPLE.wav",
+       "frames": 88200,
+       "canales": 2,
+       "rms_L": 0.10116155870951851,
+       "rms_R": 0.10116155869346265,
+       "estado": "OK"
+      }
+     ],
+     "no_generados": {},
+     "motivos": [],
+     "c_total": {
+      "estado": "INCOMPLETE",
+      "estrategia": "ausente",
+      "formula": null,
+      "sumandos": [],
+      "motivos": [
+       "no hay ningun componente C"
+      ]
+     },
+     "no_aplica": {
+      "SDV1": "el perfil mvsep_simple no declara ['B_INSTRUMENT']",
+      "SDV2": "el perfil mvsep_simple no declara ['A_RESTORED', 'D_DRY_VOCAL']",
+      "SDI1": "el perfil mvsep_simple no declara ['E_VOCALS']",
+      "SDI2": "el perfil mvsep_simple no declara ['C_TOTAL', 'D_DRY_VOCAL']"
+     },
+     "estado": "ACCEPT"
+    },
+    {
+     "grupo_id": "mvsep_simple::par2_roformer::Stems Masks Simples",
+     "perfil": "mvsep_simple",
+     "run": "par2_roformer",
+     "carpeta": "Stems Masks Simples",
+     "roles_presentes": [
+      "INSTRUMENTAL",
+      "VOCALS"
+     ],
+     "duplicados": {},
+     "ambiguos": [],
+     "sin_rol": [],
+     "residuales": [
+      {
+       "formula": "SDV_SIMPLE",
+       "expr": "SDV_simple = M - Instrumental",
+       "ruta": "/home/user/fase1b/FASE_1B_RESULTADOS/work/d/out/04_simple_dos_corridas/mvsep_simple__par2_roformer/mvsep_simple__par2_roformer__SDV_SIMPLE.wav",
+       "frames": 88200,
+       "canales": 2,
+       "rms_L": 0.15078828879316591,
+       "rms_R": 0.1346981485184945,
+       "estado": "OK"
+      },
+      {
+       "formula": "SDI_SIMPLE",
+       "expr": "SDI_simple = M - Vocals",
+       "ruta": "/home/user/fase1b/FASE_1B_RESULTADOS/work/d/out/04_simple_dos_corridas/mvsep_simple__par2_roformer/mvsep_simple__par2_roformer__SDI_SIMPLE.wav",
+       "frames": 88200,
+       "canales": 2,
+       "rms_L": 0.10551448530497651,
+       "rms_R": 0.10464486366207706,
+       "estado": "OK"
+      }
+     ],
+     "no_generados": {},
+     "motivos": [],
+     "c_total": {
+      "estado": "INCOMPLETE",
+      "estrategia": "ausente",
+      "formula": null,
+      "sumandos": [],
+      "motivos": [
+       "no hay ningun componente C"
+      ]
+     },
+     "no_aplica": {
+      "SDV1": "el perfil mvsep_simple no declara ['B_INSTRUMENT']",
+      "SDV2": "el perfil mvsep_simple no declara ['A_RESTORED', 'D_DRY_VOCAL']",
+      "SDI1": "el perfil mvsep_simple no declara ['E_VOCALS']",
+      "SDI2": "el perfil mvsep_simple no declara ['C_TOTAL', 'D_DRY_VOCAL']"
+     },
+     "estado": "ACCEPT"
+    }
+   ],
+   "manifiesto": "/home/user/fase1b/FASE_1B_RESULTADOS/work/d/out/04_simple_dos_corridas/manifest_orquestador.json"
+  },
+  "05_reverb_c_agregado": {
+   "estado": "INCOMPLETE",
+   "motivo": "",
+   "inventario": {
+    "n_ficheros": 4,
+    "n_ignorados": 0,
+    "ignorados": []
+   },
+   "mix": {
+    "ruta": "Mix.wav",
+    "sha256": "8911dd7ecdbb4e82a417dfd49239c5ec4c0d594be4be94b5aaa08b496ef66e2f",
+    "sr": 44100,
+    "ch": 2,
+    "frames": 88200,
+    "subtype": "FLOAT",
+    "format": "WAV",
+    "duracion_s": 2.0
+   },
+   "grupos": [
+    {
+     "grupo_id": "reverb_tagged::sucial::Stems Masks Reverb Removal",
+     "perfil": "reverb_tagged",
+     "run": "sucial",
+     "carpeta": "Stems Masks Reverb Removal",
+     "roles_presentes": [
+      "A_RESTORED",
+      "C_AGGREGATE",
+      "D_DRY_VOCAL"
+     ],
+     "duplicados": {},
+     "ambiguos": [],
+     "sin_rol": [],
+     "residuales": [
+      {
+       "formula": "SDV2",
+       "expr": "SDV2 = M - A + D",
+       "ruta": "/home/user/fase1b/FASE_1B_RESULTADOS/work/d/out/05_reverb_c_agregado/reverb_tagged__sucial/reverb_tagged__sucial__SDV2.wav",
+       "frames": 88200,
+       "canales": 2,
+       "rms_L": 0.2879620407018359,
+       "rms_R": 0.25583266279863126,
+       "estado": "OK"
+      },
+      {
+       "formula": "SDI2",
+       "expr": "SDI2 = M - C_total - D",
+       "ruta": "/home/user/fase1b/FASE_1B_RESULTADOS/work/d/out/05_reverb_c_agregado/reverb_tagged__sucial/reverb_tagged__sucial__SDI2.wav",
+       "frames": 88200,
+       "canales": 2,
+       "rms_L": 0.021568848276772593,
+       "rms_R": 0.021302105951364596,
+       "estado": "OK"
+      }
+     ],
+     "no_generados": {
+      "SDV1": {
+       "estado": "INCOMPLETE",
+       "motivo": "faltan insumos: ['B_INSTRUMENT']"
+      },
+      "SDI1": {
+       "estado": "INCOMPLETE",
+       "motivo": "faltan insumos: ['E_VOCALS']"
+      }
+     },
+     "motivos": [],
+     "c_total": {
+      "estado": "OK",
+      "estrategia": "single_aggregate",
+      "formula": "C_total = C_aggregate",
+      "sumandos": [
+       {
+        "rol": "C_AGGREGATE",
+        "rel": "Stems Masks Reverb Removal/sucial_[C].wav"
+       }
+      ],
+      "motivos": []
+     },
+     "no_aplica": {
+      "SDV_SIMPLE": "el perfil reverb_tagged no declara ['INSTRUMENTAL']",
+      "SDI_SIMPLE": "el perfil reverb_tagged no declara ['VOCALS']"
+     },
+     "estado": "INCOMPLETE"
+    }
+   ],
+   "manifiesto": "/home/user/fase1b/FASE_1B_RESULTADOS/work/d/out/05_reverb_c_agregado/manifest_orquestador.json"
+  },
+  "06_reverb_c_dividido": {
+   "estado": "INCOMPLETE",
+   "motivo": "",
+   "inventario": {
+    "n_ficheros": 5,
+    "n_ignorados": 0,
+    "ignorados": []
+   },
+   "mix": {
+    "ruta": "Mix.wav",
+    "sha256": "8911dd7ecdbb4e82a417dfd49239c5ec4c0d594be4be94b5aaa08b496ef66e2f",
+    "sr": 44100,
+    "ch": 2,
+    "frames": 88200,
+    "subtype": "FLOAT",
+    "format": "WAV",
+    "duracion_s": 2.0
+   },
+   "grupos": [
+    {
+     "grupo_id": "reverb_tagged::sucial::Stems Masks Reverb Removal",
+     "perfil": "reverb_tagged",
+     "run": "sucial",
+     "carpeta": "Stems Masks Reverb Removal",
+     "roles_presentes": [
+      "A_RESTORED",
+      "C_OTHERS",
+      "C_REVERB",
+      "D_DRY_VOCAL"
+     ],
+     "duplicados": {},
+     "ambiguos": [],
+     "sin_rol": [],
+     "residuales": [
+      {
+       "formula": "SDV2",
+       "expr": "SDV2 = M - A + D",
+       "ruta": "/home/user/fase1b/FASE_1B_RESULTADOS/work/d/out/06_reverb_c_dividido/reverb_tagged__sucial/reverb_tagged__sucial__SDV2.wav",
+       "frames": 88200,
+       "canales": 2,
+       "rms_L": 0.2879620407018359,
+       "rms_R": 0.25583266279863126,
+       "estado": "OK"
+      },
+      {
+       "formula": "SDI2",
+       "expr": "SDI2 = M - C_total - D",
+       "ruta": "/home/user/fase1b/FASE_1B_RESULTADOS/work/d/out/06_reverb_c_dividido/reverb_tagged__sucial/reverb_tagged__sucial__SDI2.wav",
+       "frames": 88200,
+       "canales": 2,
+       "rms_L": 0.021568848273543623,
+       "rms_R": 0.021302105948001162,
+       "estado": "OK"
+      }
+     ],
+     "no_generados": {
+      "SDV1": {
+       "estado": "INCOMPLETE",
+       "motivo": "faltan insumos: ['B_INSTRUMENT']"
+      },
+      "SDI1": {
+       "estado": "INCOMPLETE",
+       "motivo": "faltan insumos: ['E_VOCALS']"
+      }
+     },
+     "motivos": [],
+     "c_total": {
+      "estado": "OK",
+      "estrategia": "split_reverb_others",
+      "formula": "C_total = C_reverb + C_others",
+      "sumandos": [
+       {
+        "rol": "C_REVERB",
+        "rel": "Stems Masks Reverb Removal/sucial_Reverb [C].wav"
+       },
+       {
+        "rol": "C_OTHERS",
+        "rel": "Stems Masks Reverb Removal/sucial_Others [C].wav"
+       }
+      ],
+      "motivos": []
+     },
+     "no_aplica": {
+      "SDV_SIMPLE": "el perfil reverb_tagged no declara ['INSTRUMENTAL']",
+      "SDI_SIMPLE": "el perfil reverb_tagged no declara ['VOCALS']"
+     },
+     "estado": "INCOMPLETE"
+    }
+   ],
+   "manifiesto": "/home/user/fase1b/FASE_1B_RESULTADOS/work/d/out/06_reverb_c_dividido/manifest_orquestador.json"
+  },
+  "07_reverb_solo_reverb": {
+   "estado": "INCOMPLETE",
+   "motivo": "",
+   "inventario": {
+    "n_ficheros": 4,
+    "n_ignorados": 0,
+    "ignorados": []
+   },
+   "mix": {
+    "ruta": "Mix.wav",
+    "sha256": "8911dd7ecdbb4e82a417dfd49239c5ec4c0d594be4be94b5aaa08b496ef66e2f",
+    "sr": 44100,
+    "ch": 2,
+    "frames": 88200,
+    "subtype": "FLOAT",
+    "format": "WAV",
+    "duracion_s": 2.0
+   },
+   "grupos": [
+    {
+     "grupo_id": "reverb_tagged::sucial::Stems Masks Reverb Removal",
+     "perfil": "reverb_tagged",
+     "run": "sucial",
+     "carpeta": "Stems Masks Reverb Removal",
+     "roles_presentes": [
+      "A_RESTORED",
+      "C_REVERB",
+      "D_DRY_VOCAL"
+     ],
+     "duplicados": {},
+     "ambiguos": [],
+     "sin_rol": [],
+     "residuales": [
+      {
+       "formula": "SDV2",
+       "expr": "SDV2 = M - A + D",
+       "ruta": "/home/user/fase1b/FASE_1B_RESULTADOS/work/d/out/07_reverb_solo_reverb/reverb_tagged__sucial/reverb_tagged__sucial__SDV2.wav",
+       "frames": 88200,
+       "canales": 2,
+       "rms_L": 0.2879620407018359,
+       "rms_R": 0.25583266279863126,
+       "estado": "OK"
+      }
+     ],
+     "no_generados": {
+      "SDV1": {
+       "estado": "INCOMPLETE",
+       "motivo": "faltan insumos: ['B_INSTRUMENT']"
+      },
+      "SDI1": {
+       "estado": "INCOMPLETE",
+       "motivo": "faltan insumos: ['E_VOCALS']"
+      },
+      "SDI2": {
+       "estado": "INCOMPLETE",
+       "motivo": "faltan insumos: ['C_TOTAL']"
+      }
+     },
+     "motivos": [],
+     "c_total": {
+      "estado": "INCOMPLETE",
+      "estrategia": "parcial",
+      "formula": null,
+      "sumandos": [],
+      "motivos": [
+       "solo existe C_REVERB sin el otro subcomponente: no se infiere C_total"
+      ]
+     },
+     "no_aplica": {
+      "SDV_SIMPLE": "el perfil reverb_tagged no declara ['INSTRUMENTAL']",
+      "SDI_SIMPLE": "el perfil reverb_tagged no declara ['VOCALS']"
+     },
+     "estado": "INCOMPLETE"
+    }
+   ],
+   "manifiesto": "/home/user/fase1b/FASE_1B_RESULTADOS/work/d/out/07_reverb_solo_reverb/manifest_orquestador.json"
+  },
+  "08_reverb_conflicto": {
+   "estado": "AMBIGUOUS",
+   "motivo": "",
+   "inventario": {
+    "n_ficheros": 6,
+    "n_ignorados": 0,
+    "ignorados": []
+   },
+   "mix": {
+    "ruta": "Mix.wav",
+    "sha256": "8911dd7ecdbb4e82a417dfd49239c5ec4c0d594be4be94b5aaa08b496ef66e2f",
+    "sr": 44100,
+    "ch": 2,
+    "frames": 88200,
+    "subtype": "FLOAT",
+    "format": "WAV",
+    "duracion_s": 2.0
+   },
+   "grupos": [
+    {
+     "grupo_id": "reverb_tagged::sucial::Stems Masks Reverb Removal",
+     "perfil": "reverb_tagged",
+     "run": "sucial",
+     "carpeta": "Stems Masks Reverb Removal",
+     "roles_presentes": [
+      "A_RESTORED",
+      "C_AGGREGATE",
+      "C_OTHERS",
+      "C_REVERB",
+      "D_DRY_VOCAL"
+     ],
+     "duplicados": {},
+     "ambiguos": [],
+     "sin_rol": [],
+     "residuales": [],
+     "no_generados": {},
+     "motivos": [
+      "C agregado Y subcomponentes presentes sin declaracion de alternativas: no se elige ni se suma"
+     ],
+     "c_total": {
+      "estado": "AMBIGUOUS",
+      "estrategia": "conflicto",
+      "formula": null,
+      "sumandos": [],
+      "motivos": [
+       "C agregado Y subcomponentes presentes sin declaracion de alternativas: no se elige ni se suma"
+      ]
+     },
+     "estado": "AMBIGUOUS"
+    }
+   ],
+   "manifiesto": "/home/user/fase1b/FASE_1B_RESULTADOS/work/d/out/08_reverb_conflicto/manifest_orquestador.json"
+  },
+  "09_reverb_abcde": {
+   "estado": "ACCEPT",
+   "motivo": "",
+   "inventario": {
+    "n_ficheros": 6,
+    "n_ignorados": 0,
+    "ignorados": []
+   },
+   "mix": {
+    "ruta": "Mix.wav",
+    "sha256": "8911dd7ecdbb4e82a417dfd49239c5ec4c0d594be4be94b5aaa08b496ef66e2f",
+    "sr": 44100,
+    "ch": 2,
+    "frames": 88200,
+    "subtype": "FLOAT",
+    "format": "WAV",
+    "duracion_s": 2.0
+   },
+   "grupos": [
+    {
+     "grupo_id": "reverb_tagged::anvuew::Stems Masks Reverb Removal",
+     "perfil": "reverb_tagged",
+     "run": "anvuew",
+     "carpeta": "Stems Masks Reverb Removal",
+     "roles_presentes": [
+      "A_RESTORED",
+      "B_INSTRUMENT",
+      "C_AGGREGATE",
+      "D_DRY_VOCAL",
+      "E_VOCALS"
+     ],
+     "duplicados": {},
+     "ambiguos": [],
+     "sin_rol": [],
+     "residuales": [
+      {
+       "formula": "SDV1",
+       "expr": "SDV1 = M - B",
+       "ruta": "/home/user/fase1b/FASE_1B_RESULTADOS/work/d/out/09_reverb_abcde/reverb_tagged__anvuew/reverb_tagged__anvuew__SDV1.wav",
+       "frames": 88200,
+       "canales": 2,
+       "rms_L": 0.14760253605142426,
+       "rms_R": 0.1311166737737914,
+       "estado": "OK"
+      },
+      {
+       "formula": "SDV2",
+       "expr": "SDV2 = M - A + D",
+       "ruta": "/home/user/fase1b/FASE_1B_RESULTADOS/work/d/out/09_reverb_abcde/reverb_tagged__anvuew/reverb_tagged__anvuew__SDV2.wav",
+       "frames": 88200,
+       "canales": 2,
+       "rms_L": 0.2879620407018359,
+       "rms_R": 0.25583266279863126,
+       "estado": "OK"
+      },
+      {
+       "formula": "SDI1",
+       "expr": "SDI1 = M - E",
+       "ruta": "/home/user/fase1b/FASE_1B_RESULTADOS/work/d/out/09_reverb_abcde/reverb_tagged__anvuew/reverb_tagged__anvuew__SDI1.wav",
+       "frames": 88200,
+       "canales": 2,
+       "rms_L": 0.10117941768450113,
+       "rms_R": 0.10117740490590663,
+       "estado": "OK"
+      },
+      {
+       "formula": "SDI2",
+       "expr": "SDI2 = M - C_total - D",
+       "ruta": "/home/user/fase1b/FASE_1B_RESULTADOS/work/d/out/09_reverb_abcde/reverb_tagged__anvuew/reverb_tagged__anvuew__SDI2.wav",
+       "frames": 88200,
+       "canales": 2,
+       "rms_L": 0.021568848276772593,
+       "rms_R": 0.021302105951364596,
+       "estado": "OK"
+      }
+     ],
+     "no_generados": {},
+     "motivos": [],
+     "c_total": {
+      "estado": "OK",
+      "estrategia": "single_aggregate",
+      "formula": "C_total = C_aggregate",
+      "sumandos": [
+       {
+        "rol": "C_AGGREGATE",
+        "rel": "Stems Masks Reverb Removal/anvuew_[C].wav"
+       }
+      ],
+      "motivos": []
+     },
+     "no_aplica": {
+      "SDV_SIMPLE": "el perfil reverb_tagged no declara ['INSTRUMENTAL']",
+      "SDI_SIMPLE": "el perfil reverb_tagged no declara ['VOCALS']"
+     },
+     "e_vs_c_total_d": {
+      "canales": {
+       "L": {
+        "rms_residuo": 0.08111586543694627,
+        "pico_residuo": 0.4007970094680786,
+        "rms_E": 0.1460811656012975,
+        "snr_db": 5.1097683880492015
+       },
+       "R": {
+        "rms_residuo": 0.08106950364239376,
+        "pico_residuo": 0.4007970094680786,
+        "rms_E": 0.12975386684417875,
+        "snr_db": 4.085255905633533
+       }
+      },
+      "max_abs_global": 0.4007970094680786,
+      "exacta": false
+     },
+     "estado": "ACCEPT"
+    }
+   ],
+   "manifiesto": "/home/user/fase1b/FASE_1B_RESULTADOS/work/d/out/09_reverb_abcde/manifest_orquestador.json"
+  },
+  "10_reverb_solo_b": {
+   "estado": "INCOMPLETE",
+   "motivo": "",
+   "inventario": {
+    "n_ficheros": 2,
+    "n_ignorados": 0,
+    "ignorados": []
+   },
+   "mix": {
+    "ruta": "Mix.wav",
+    "sha256": "8911dd7ecdbb4e82a417dfd49239c5ec4c0d594be4be94b5aaa08b496ef66e2f",
+    "sr": 44100,
+    "ch": 2,
+    "frames": 88200,
+    "subtype": "FLOAT",
+    "format": "WAV",
+    "duracion_s": 2.0
+   },
+   "grupos": [
+    {
+     "grupo_id": "reverb_tagged::anvuew::Stems Masks Reverb Removal",
+     "perfil": "reverb_tagged",
+     "run": "anvuew",
+     "carpeta": "Stems Masks Reverb Removal",
+     "roles_presentes": [
+      "B_INSTRUMENT"
+     ],
+     "duplicados": {},
+     "ambiguos": [],
+     "sin_rol": [],
+     "residuales": [
+      {
+       "formula": "SDV1",
+       "expr": "SDV1 = M - B",
+       "ruta": "/home/user/fase1b/FASE_1B_RESULTADOS/work/d/out/10_reverb_solo_b/reverb_tagged__anvuew/reverb_tagged__anvuew__SDV1.wav",
+       "frames": 88200,
+       "canales": 2,
+       "rms_L": 0.14760253605142426,
+       "rms_R": 0.1311166737737914,
+       "estado": "OK"
+      }
+     ],
+     "no_generados": {
+      "SDV2": {
+       "estado": "INCOMPLETE",
+       "motivo": "faltan insumos: ['A_RESTORED', 'D_DRY_VOCAL']"
+      },
+      "SDI1": {
+       "estado": "INCOMPLETE",
+       "motivo": "faltan insumos: ['E_VOCALS']"
+      },
+      "SDI2": {
+       "estado": "INCOMPLETE",
+       "motivo": "faltan insumos: ['C_TOTAL', 'D_DRY_VOCAL']"
+      }
+     },
+     "motivos": [],
+     "c_total": {
+      "estado": "INCOMPLETE",
+      "estrategia": "ausente",
+      "formula": null,
+      "sumandos": [],
+      "motivos": [
+       "no hay ningun componente C"
+      ]
+     },
+     "no_aplica": {
+      "SDV_SIMPLE": "el perfil reverb_tagged no declara ['INSTRUMENTAL']",
+      "SDI_SIMPLE": "el perfil reverb_tagged no declara ['VOCALS']"
+     },
+     "estado": "INCOMPLETE"
+    }
+   ],
+   "manifiesto": "/home/user/fase1b/FASE_1B_RESULTADOS/work/d/out/10_reverb_solo_b/manifest_orquestador.json"
+  },
+  "11a_e_vs_cd_exacto": {
+   "estado": "INCOMPLETE",
+   "motivo": "",
+   "inventario": {
+    "n_ficheros": 5,
+    "n_ignorados": 0,
+    "ignorados": []
+   },
+   "mix": {
+    "ruta": "Mix.wav",
+    "sha256": "8911dd7ecdbb4e82a417dfd49239c5ec4c0d594be4be94b5aaa08b496ef66e2f",
+    "sr": 44100,
+    "ch": 2,
+    "frames": 88200,
+    "subtype": "FLOAT",
+    "format": "WAV",
+    "duracion_s": 2.0
+   },
+   "grupos": [
+    {
+     "grupo_id": "reverb_tagged::mdxb::Stems Masks Reverb Removal",
+     "perfil": "reverb_tagged",
+     "run": "mdxb",
+     "carpeta": "Stems Masks Reverb Removal",
+     "roles_presentes": [
+      "A_RESTORED",
+      "C_AGGREGATE",
+      "D_DRY_VOCAL",
+      "E_VOCALS"
+     ],
+     "duplicados": {},
+     "ambiguos": [],
+     "sin_rol": [],
+     "residuales": [
+      {
+       "formula": "SDV2",
+       "expr": "SDV2 = M - A + D",
+       "ruta": "/home/user/fase1b/FASE_1B_RESULTADOS/work/d/out/11a_e_vs_cd_exacto/reverb_tagged__mdxb/reverb_tagged__mdxb__SDV2.wav",
+       "frames": 88200,
+       "canales": 2,
+       "rms_L": 0.2879620407018359,
+       "rms_R": 0.25583266279863126,
+       "estado": "OK"
+      },
+      {
+       "formula": "SDI1",
+       "expr": "SDI1 = M - E",
+       "ruta": "/home/user/fase1b/FASE_1B_RESULTADOS/work/d/out/11a_e_vs_cd_exacto/reverb_tagged__mdxb/reverb_tagged__mdxb__SDI1.wav",
+       "frames": 88200,
+       "canales": 2,
+       "rms_L": 0.021568848292669432,
+       "rms_R": 0.021302105959638218,
+       "estado": "OK"
+      },
+      {
+       "formula": "SDI2",
+       "expr": "SDI2 = M - C_total - D",
+       "ruta": "/home/user/fase1b/FASE_1B_RESULTADOS/work/d/out/11a_e_vs_cd_exacto/reverb_tagged__mdxb/reverb_tagged__mdxb__SDI2.wav",
+       "frames": 88200,
+       "canales": 2,
+       "rms_L": 0.021568848276772593,
+       "rms_R": 0.021302105951364596,
+       "estado": "OK"
+      }
+     ],
+     "no_generados": {
+      "SDV1": {
+       "estado": "INCOMPLETE",
+       "motivo": "faltan insumos: ['B_INSTRUMENT']"
+      }
+     },
+     "motivos": [],
+     "c_total": {
+      "estado": "OK",
+      "estrategia": "single_aggregate",
+      "formula": "C_total = C_aggregate",
+      "sumandos": [
+       {
+        "rol": "C_AGGREGATE",
+        "rel": "Stems Masks Reverb Removal/mdxb_[C].wav"
+       }
+      ],
+      "motivos": []
+     },
+     "no_aplica": {
+      "SDV_SIMPLE": "el perfil reverb_tagged no declara ['INSTRUMENTAL']",
+      "SDI_SIMPLE": "el perfil reverb_tagged no declara ['VOCALS']"
+     },
+     "e_vs_c_total_d": {
+      "canales": {
+       "L": {
+        "rms_residuo": 5.720835781470231e-09,
+        "pico_residuo": 5.494803190231323e-08,
+        "rms_E": 0.1621999539160879,
+        "snr_db": 149.05182490219994
+       },
+       "R": {
+        "rms_residuo": 5.233307997837774e-09,
+        "pico_residuo": 4.470348358154297e-08,
+        "rms_E": 0.14888159900884881,
+        "snr_db": 149.08129458684826
+       }
+      },
+      "max_abs_global": 5.494803190231323e-08,
+      "exacta": false
+     },
+     "estado": "INCOMPLETE"
+    }
+   ],
+   "manifiesto": "/home/user/fase1b/FASE_1B_RESULTADOS/work/d/out/11a_e_vs_cd_exacto/manifest_orquestador.json"
+  },
+  "11b_e_vs_cd_leve": {
+   "estado": "INCOMPLETE",
+   "motivo": "",
+   "inventario": {
+    "n_ficheros": 5,
+    "n_ignorados": 0,
+    "ignorados": []
+   },
+   "mix": {
+    "ruta": "Mix.wav",
+    "sha256": "8911dd7ecdbb4e82a417dfd49239c5ec4c0d594be4be94b5aaa08b496ef66e2f",
+    "sr": 44100,
+    "ch": 2,
+    "frames": 88200,
+    "subtype": "FLOAT",
+    "format": "WAV",
+    "duracion_s": 2.0
+   },
+   "grupos": [
+    {
+     "grupo_id": "reverb_tagged::mdxb::Stems Masks Reverb Removal",
+     "perfil": "reverb_tagged",
+     "run": "mdxb",
+     "carpeta": "Stems Masks Reverb Removal",
+     "roles_presentes": [
+      "A_RESTORED",
+      "C_AGGREGATE",
+      "D_DRY_VOCAL",
+      "E_VOCALS"
+     ],
+     "duplicados": {},
+     "ambiguos": [],
+     "sin_rol": [],
+     "residuales": [
+      {
+       "formula": "SDV2",
+       "expr": "SDV2 = M - A + D",
+       "ruta": "/home/user/fase1b/FASE_1B_RESULTADOS/work/d/out/11b_e_vs_cd_leve/reverb_tagged__mdxb/reverb_tagged__mdxb__SDV2.wav",
+       "frames": 88200,
+       "canales": 2,
+       "rms_L": 0.2879620407018359,
+       "rms_R": 0.25583266279863126,
+       "estado": "OK"
+      },
+      {
+       "formula": "SDI1",
+       "expr": "SDI1 = M - E",
+       "ruta": "/home/user/fase1b/FASE_1B_RESULTADOS/work/d/out/11b_e_vs_cd_leve/reverb_tagged__mdxb/reverb_tagged__mdxb__SDI1.wav",
+       "frames": 88200,
+       "canales": 2,
+       "rms_L": 0.020349046491073046,
+       "rms_R": 0.020164007686080326,
+       "estado": "OK"
+      },
+      {
+       "formula": "SDI2",
+       "expr": "SDI2 = M - C_total - D",
+       "ruta": "/home/user/fase1b/FASE_1B_RESULTADOS/work/d/out/11b_e_vs_cd_leve/reverb_tagged__mdxb/reverb_tagged__mdxb__SDI2.wav",
+       "frames": 88200,
+       "canales": 2,
+       "rms_L": 0.021568848276772593,
+       "rms_R": 0.021302105951364596,
+       "estado": "OK"
+      }
+     ],
+     "no_generados": {
+      "SDV1": {
+       "estado": "INCOMPLETE",
+       "motivo": "faltan insumos: ['B_INSTRUMENT']"
+      }
+     },
+     "motivos": [],
+     "c_total": {
+      "estado": "OK",
+      "estrategia": "single_aggregate",
+      "formula": "C_total = C_aggregate",
+      "sumandos": [
+       {
+        "rol": "C_AGGREGATE",
+        "rel": "Stems Masks Reverb Removal/mdxb_[C].wav"
+       }
+      ],
+      "motivos": []
+     },
+     "no_aplica": {
+      "SDV_SIMPLE": "el perfil reverb_tagged no declara ['INSTRUMENTAL']",
+      "SDI_SIMPLE": "el perfil reverb_tagged no declara ['VOCALS']"
+     },
+     "e_vs_c_total_d": {
+      "canales": {
+       "L": {
+        "rms_residuo": 0.0016219995344055832,
+        "pico_residuo": 0.008092597126960754,
+        "rms_E": 0.16382195345698994,
+        "snr_db": 40.08642750121002
+       },
+       "R": {
+        "rms_residuo": 0.0014888160093895486,
+        "pico_residuo": 0.0073972344398498535,
+        "rms_E": 0.1503704150070279,
+        "snr_db": 40.08642736351603
+       }
+      },
+      "max_abs_global": 0.008092597126960754,
+      "exacta": false
+     },
+     "estado": "INCOMPLETE"
+    }
+   ],
+   "manifiesto": "/home/user/fase1b/FASE_1B_RESULTADOS/work/d/out/11b_e_vs_cd_leve/manifest_orquestador.json"
+  },
+  "11c_e_vs_cd_severo": {
+   "estado": "INCOMPLETE",
+   "motivo": "",
+   "inventario": {
+    "n_ficheros": 5,
+    "n_ignorados": 0,
+    "ignorados": []
+   },
+   "mix": {
+    "ruta": "Mix.wav",
+    "sha256": "8911dd7ecdbb4e82a417dfd49239c5ec4c0d594be4be94b5aaa08b496ef66e2f",
+    "sr": 44100,
+    "ch": 2,
+    "frames": 88200,
+    "subtype": "FLOAT",
+    "format": "WAV",
+    "duracion_s": 2.0
+   },
+   "grupos": [
+    {
+     "grupo_id": "reverb_tagged::mdxb::Stems Masks Reverb Removal",
+     "perfil": "reverb_tagged",
+     "run": "mdxb",
+     "carpeta": "Stems Masks Reverb Removal",
+     "roles_presentes": [
+      "A_RESTORED",
+      "C_AGGREGATE",
+      "D_DRY_VOCAL",
+      "E_VOCALS"
+     ],
+     "duplicados": {},
+     "ambiguos": [],
+     "sin_rol": [],
+     "residuales": [
+      {
+       "formula": "SDV2",
+       "expr": "SDV2 = M - A + D",
+       "ruta": "/home/user/fase1b/FASE_1B_RESULTADOS/work/d/out/11c_e_vs_cd_severo/reverb_tagged__mdxb/reverb_tagged__mdxb__SDV2.wav",
+       "frames": 88200,
+       "canales": 2,
+       "rms_L": 0.2879620407018359,
+       "rms_R": 0.25583266279863126,
+       "estado": "OK"
+      },
+      {
+       "formula": "SDI1",
+       "expr": "SDI1 = M - E",
+       "ruta": "/home/user/fase1b/FASE_1B_RESULTADOS/work/d/out/11c_e_vs_cd_severo/reverb_tagged__mdxb/reverb_tagged__mdxb__SDI1.wav",
+       "frames": 88200,
+       "canales": 2,
+       "rms_L": 0.06894153854471867,
+       "rms_R": 0.0627155482131721,
+       "estado": "OK"
+      },
+      {
+       "formula": "SDI2",
+       "expr": "SDI2 = M - C_total - D",
+       "ruta": "/home/user/fase1b/FASE_1B_RESULTADOS/work/d/out/11c_e_vs_cd_severo/reverb_tagged__mdxb/reverb_tagged__mdxb__SDI2.wav",
+       "frames": 88200,
+       "canales": 2,
+       "rms_L": 0.021568848276772593,
+       "rms_R": 0.021302105951364596,
+       "estado": "OK"
+      }
+     ],
+     "no_generados": {
+      "SDV1": {
+       "estado": "INCOMPLETE",
+       "motivo": "faltan insumos: ['B_INSTRUMENT']"
+      }
+     },
+     "motivos": [],
+     "c_total": {
+      "estado": "OK",
+      "estrategia": "single_aggregate",
+      "formula": "C_total = C_aggregate",
+      "sumandos": [
+       {
+        "rol": "C_AGGREGATE",
+        "rel": "Stems Masks Reverb Removal/mdxb_[C].wav"
+       }
+      ],
+      "motivos": []
+     },
+     "no_aplica": {
+      "SDV_SIMPLE": "el perfil reverb_tagged no declara ['INSTRUMENTAL']",
+      "SDI_SIMPLE": "el perfil reverb_tagged no declara ['VOCALS']"
+     },
+     "e_vs_c_total_d": {
+      "canales": {
+       "L": {
+        "rms_residuo": 0.08351842159037007,
+        "pico_residuo": 0.3994937688112259,
+        "rms_E": 0.2441062944638144,
+        "snr_db": 9.315934002799114
+       },
+       "R": {
+        "rms_residuo": 0.07714783278549828,
+        "pico_residuo": 0.3971336781978607,
+        "rms_E": 0.22429565724467532,
+        "snr_db": 9.269942689384322
+       }
+      },
+      "max_abs_global": 0.3994937688112259,
+      "exacta": false
+     },
+     "estado": "INCOMPLETE"
+    }
+   ],
+   "manifiesto": "/home/user/fase1b/FASE_1B_RESULTADOS/work/d/out/11c_e_vs_cd_severo/manifest_orquestador.json"
+  },
+  "12_modelo_nuevo_nombres_alt": {
+   "estado": "ACCEPT",
+   "motivo": "",
+   "inventario": {
+    "n_ficheros": 6,
+    "n_ignorados": 0,
+    "ignorados": []
+   },
+   "mix": {
+    "ruta": "Mix.wav",
+    "sha256": "8911dd7ecdbb4e82a417dfd49239c5ec4c0d594be4be94b5aaa08b496ef66e2f",
+    "sr": 44100,
+    "ch": 2,
+    "frames": 88200,
+    "subtype": "FLOAT",
+    "format": "WAV",
+    "duracion_s": 2.0
+   },
+   "grupos": [
+    {
+     "grupo_id": "modelo_nuevo_x::SA3v2::Stems Masks Reverb Removal",
+     "perfil": "modelo_nuevo_x",
+     "run": "SA3v2",
+     "carpeta": "Stems Masks Reverb Removal",
+     "roles_presentes": [
+      "A_RESTORED",
+      "B_INSTRUMENT",
+      "C_AGGREGATE",
+      "D_DRY_VOCAL",
+      "E_VOCALS"
+     ],
+     "duplicados": {},
+     "ambiguos": [],
+     "sin_rol": [],
+     "residuales": [
+      {
+       "formula": "SDV1",
+       "expr": "SDV1 = M - B",
+       "ruta": "/home/user/fase1b/FASE_1B_RESULTADOS/work/d/out/12_modelo_nuevo_nombres_alt/modelo_nuevo_x__SA3v2/modelo_nuevo_x__SA3v2__SDV1.wav",
+       "frames": 88200,
+       "canales": 2,
+       "rms_L": 0.14760253605142426,
+       "rms_R": 0.1311166737737914,
+       "estado": "OK"
+      },
+      {
+       "formula": "SDV2",
+       "expr": "SDV2 = M - A + D",
+       "ruta": "/home/user/fase1b/FASE_1B_RESULTADOS/work/d/out/12_modelo_nuevo_nombres_alt/modelo_nuevo_x__SA3v2/modelo_nuevo_x__SA3v2__SDV2.wav",
+       "frames": 88200,
+       "canales": 2,
+       "rms_L": 0.2879620407018359,
+       "rms_R": 0.25583266279863126,
+       "estado": "OK"
+      },
+      {
+       "formula": "SDI1",
+       "expr": "SDI1 = M - E",
+       "ruta": "/home/user/fase1b/FASE_1B_RESULTADOS/work/d/out/12_modelo_nuevo_nombres_alt/modelo_nuevo_x__SA3v2/modelo_nuevo_x__SA3v2__SDI1.wav",
+       "frames": 88200,
+       "canales": 2,
+       "rms_L": 0.10117941768450113,
+       "rms_R": 0.10117740490590663,
+       "estado": "OK"
+      },
+      {
+       "formula": "SDI2",
+       "expr": "SDI2 = M - C_total - D",
+       "ruta": "/home/user/fase1b/FASE_1B_RESULTADOS/work/d/out/12_modelo_nuevo_nombres_alt/modelo_nuevo_x__SA3v2/modelo_nuevo_x__SA3v2__SDI2.wav",
+       "frames": 88200,
+       "canales": 2,
+       "rms_L": 0.021568848276772593,
+       "rms_R": 0.021302105951364596,
+       "estado": "OK"
+      }
+     ],
+     "no_generados": {},
+     "motivos": [],
+     "c_total": {
+      "estado": "OK",
+      "estrategia": "single_aggregate",
+      "formula": "C_total = C_aggregate",
+      "sumandos": [
+       {
+        "rol": "C_AGGREGATE",
+        "rel": "Stems Masks Reverb Removal/SA3v2__wet.wav"
+       }
+      ],
+      "motivos": []
+     },
+     "no_aplica": {
+      "SDV_SIMPLE": "el perfil modelo_nuevo_x no declara ['INSTRUMENTAL']",
+      "SDI_SIMPLE": "el perfil modelo_nuevo_x no declara ['VOCALS']"
+     },
+     "e_vs_c_total_d": {
+      "canales": {
+       "L": {
+        "rms_residuo": 0.08111586543694627,
+        "pico_residuo": 0.4007970094680786,
+        "rms_E": 0.1460811656012975,
+        "snr_db": 5.1097683880492015
+       },
+       "R": {
+        "rms_residuo": 0.08106950364239376,
+        "pico_residuo": 0.4007970094680786,
+        "rms_E": 0.12975386684417875,
+        "snr_db": 4.085255905633533
+       }
+      },
+      "max_abs_global": 0.4007970094680786,
+      "exacta": false
+     },
+     "estado": "ACCEPT"
+    }
+   ],
+   "manifiesto": "/home/user/fase1b/FASE_1B_RESULTADOS/work/d/out/12_modelo_nuevo_nombres_alt/manifest_orquestador.json"
+  },
+  "13_corridas_mezcladas": {
+   "estado": "INCOMPLETE",
+   "motivo": "",
+   "inventario": {
+    "n_ficheros": 7,
+    "n_ignorados": 0,
+    "ignorados": []
+   },
+   "mix": {
+    "ruta": "Mix.wav",
+    "sha256": "8911dd7ecdbb4e82a417dfd49239c5ec4c0d594be4be94b5aaa08b496ef66e2f",
+    "sr": 44100,
+    "ch": 2,
+    "frames": 88200,
+    "subtype": "FLOAT",
+    "format": "WAV",
+    "duracion_s": 2.0
+   },
+   "grupos": [
+    {
+     "grupo_id": "reverb_tagged::runA::Stems Masks Reverb Removal",
+     "perfil": "reverb_tagged",
+     "run": "runA",
+     "carpeta": "Stems Masks Reverb Removal",
+     "roles_presentes": [
+      "A_RESTORED",
+      "C_AGGREGATE",
+      "D_DRY_VOCAL"
+     ],
+     "duplicados": {},
+     "ambiguos": [],
+     "sin_rol": [],
+     "residuales": [
+      {
+       "formula": "SDV2",
+       "expr": "SDV2 = M - A + D",
+       "ruta": "/home/user/fase1b/FASE_1B_RESULTADOS/work/d/out/13_corridas_mezcladas/reverb_tagged__runA/reverb_tagged__runA__SDV2.wav",
+       "frames": 88200,
+       "canales": 2,
+       "rms_L": 0.2879620407018359,
+       "rms_R": 0.25583266279863126,
+       "estado": "OK"
+      },
+      {
+       "formula": "SDI2",
+       "expr": "SDI2 = M - C_total - D",
+       "ruta": "/home/user/fase1b/FASE_1B_RESULTADOS/work/d/out/13_corridas_mezcladas/reverb_tagged__runA/reverb_tagged__runA__SDI2.wav",
+       "frames": 88200,
+       "canales": 2,
+       "rms_L": 0.02930464668667013,
+       "rms_R": 0.029109237421439033,
+       "estado": "OK"
+      }
+     ],
+     "no_generados": {
+      "SDV1": {
+       "estado": "INCOMPLETE",
+       "motivo": "faltan insumos: ['B_INSTRUMENT']"
+      },
+      "SDI1": {
+       "estado": "INCOMPLETE",
+       "motivo": "faltan insumos: ['E_VOCALS']"
+      }
+     },
+     "motivos": [],
+     "c_total": {
+      "estado": "OK",
+      "estrategia": "single_aggregate",
+      "formula": "C_total = C_aggregate",
+      "sumandos": [
+       {
+        "rol": "C_AGGREGATE",
+        "rel": "Stems Masks Reverb Removal/runA_[C].wav"
+       }
+      ],
+      "motivos": []
+     },
+     "no_aplica": {
+      "SDV_SIMPLE": "el perfil reverb_tagged no declara ['INSTRUMENTAL']",
+      "SDI_SIMPLE": "el perfil reverb_tagged no declara ['VOCALS']"
+     },
+     "estado": "INCOMPLETE"
+    },
+    {
+     "grupo_id": "reverb_tagged::runB::Stems Masks Reverb Removal",
+     "perfil": "reverb_tagged",
+     "run": "runB",
+     "carpeta": "Stems Masks Reverb Removal",
+     "roles_presentes": [
+      "A_RESTORED",
+      "C_AGGREGATE",
+      "D_DRY_VOCAL"
+     ],
+     "duplicados": {},
+     "ambiguos": [],
+     "sin_rol": [],
+     "residuales": [
+      {
+       "formula": "SDV2",
+       "expr": "SDV2 = M - A + D",
+       "ruta": "/home/user/fase1b/FASE_1B_RESULTADOS/work/d/out/13_corridas_mezcladas/reverb_tagged__runB/reverb_tagged__runB__SDV2.wav",
+       "frames": 88200,
+       "canales": 2,
+       "rms_L": 0.2894768481146951,
+       "rms_R": 0.2575404750223695,
+       "estado": "OK"
+      },
+      {
+       "formula": "SDI2",
+       "expr": "SDI2 = M - C_total - D",
+       "ruta": "/home/user/fase1b/FASE_1B_RESULTADOS/work/d/out/13_corridas_mezcladas/reverb_tagged__runB/reverb_tagged__runB__SDI2.wav",
+       "frames": 88200,
+       "canales": 2,
+       "rms_L": 0.04515339527111846,
+       "rms_R": 0.04502728348563978,
+       "estado": "OK"
+      }
+     ],
+     "no_generados": {
+      "SDV1": {
+       "estado": "INCOMPLETE",
+       "motivo": "faltan insumos: ['B_INSTRUMENT']"
+      },
+      "SDI1": {
+       "estado": "INCOMPLETE",
+       "motivo": "faltan insumos: ['E_VOCALS']"
+      }
+     },
+     "motivos": [],
+     "c_total": {
+      "estado": "OK",
+      "estrategia": "single_aggregate",
+      "formula": "C_total = C_aggregate",
+      "sumandos": [
+       {
+        "rol": "C_AGGREGATE",
+        "rel": "Stems Masks Reverb Removal/runB_[C].wav"
+       }
+      ],
+      "motivos": []
+     },
+     "no_aplica": {
+      "SDV_SIMPLE": "el perfil reverb_tagged no declara ['INSTRUMENTAL']",
+      "SDI_SIMPLE": "el perfil reverb_tagged no declara ['VOCALS']"
+     },
+     "estado": "INCOMPLETE"
+    }
+   ],
+   "manifiesto": "/home/user/fase1b/FASE_1B_RESULTADOS/work/d/out/13_corridas_mezcladas/manifest_orquestador.json"
+  },
+  "14a_sr_distinta": {
+   "estado": "INCOMPATIBLE",
+   "motivo": "",
+   "inventario": {
+    "n_ficheros": 4,
+    "n_ignorados": 0,
+    "ignorados": []
+   },
+   "mix": {
+    "ruta": "Mix.wav",
+    "sha256": "8911dd7ecdbb4e82a417dfd49239c5ec4c0d594be4be94b5aaa08b496ef66e2f",
+    "sr": 44100,
+    "ch": 2,
+    "frames": 88200,
+    "subtype": "FLOAT",
+    "format": "WAV",
+    "duracion_s": 2.0
+   },
+   "grupos": [
+    {
+     "grupo_id": "reverb_tagged::sucial::Stems Masks Reverb Removal",
+     "perfil": "reverb_tagged",
+     "run": "sucial",
+     "carpeta": "Stems Masks Reverb Removal",
+     "roles_presentes": [
+      "A_RESTORED",
+      "C_AGGREGATE",
+      "D_DRY_VOCAL"
+     ],
+     "duplicados": {},
+     "ambiguos": [],
+     "sin_rol": [],
+     "residuales": [
+      {
+       "formula": "SDI2",
+       "expr": "SDI2 = M - C_total - D",
+       "ruta": "/home/user/fase1b/FASE_1B_RESULTADOS/work/d/out/14a_sr_distinta/reverb_tagged__sucial/reverb_tagged__sucial__SDI2.wav",
+       "frames": 88200,
+       "canales": 2,
+       "rms_L": 0.021568848276772593,
+       "rms_R": 0.021302105951364596,
+       "estado": "OK"
+      }
+     ],
+     "no_generados": {
+      "SDV1": {
+       "estado": "INCOMPLETE",
+       "motivo": "faltan insumos: ['B_INSTRUMENT']"
+      },
+      "SDI1": {
+       "estado": "INCOMPLETE",
+       "motivo": "faltan insumos: ['E_VOCALS']"
+      },
+      "SDV2": {
+       "estado": "INCOMPATIBLE",
+       "motivos": [
+        "sample_rate distinto: A_RESTORED=48000 vs MIX=44100"
+       ]
+      }
+     },
+     "motivos": [],
+     "c_total": {
+      "estado": "OK",
+      "estrategia": "single_aggregate",
+      "formula": "C_total = C_aggregate",
+      "sumandos": [
+       {
+        "rol": "C_AGGREGATE",
+        "rel": "Stems Masks Reverb Removal/sucial_[C].wav"
+       }
+      ],
+      "motivos": []
+     },
+     "no_aplica": {
+      "SDV_SIMPLE": "el perfil reverb_tagged no declara ['INSTRUMENTAL']",
+      "SDI_SIMPLE": "el perfil reverb_tagged no declara ['VOCALS']"
+     },
+     "estado": "INCOMPATIBLE"
+    }
+   ],
+   "manifiesto": "/home/user/fase1b/FASE_1B_RESULTADOS/work/d/out/14a_sr_distinta/manifest_orquestador.json"
+  },
+  "14b_canales_distintos": {
+   "estado": "INCOMPATIBLE",
+   "motivo": "",
+   "inventario": {
+    "n_ficheros": 4,
+    "n_ignorados": 0,
+    "ignorados": []
+   },
+   "mix": {
+    "ruta": "Mix.wav",
+    "sha256": "8911dd7ecdbb4e82a417dfd49239c5ec4c0d594be4be94b5aaa08b496ef66e2f",
+    "sr": 44100,
+    "ch": 2,
+    "frames": 88200,
+    "subtype": "FLOAT",
+    "format": "WAV",
+    "duracion_s": 2.0
+   },
+   "grupos": [
+    {
+     "grupo_id": "reverb_tagged::sucial::Stems Masks Reverb Removal",
+     "perfil": "reverb_tagged",
+     "run": "sucial",
+     "carpeta": "Stems Masks Reverb Removal",
+     "roles_presentes": [
+      "A_RESTORED",
+      "C_AGGREGATE",
+      "D_DRY_VOCAL"
+     ],
+     "duplicados": {},
+     "ambiguos": [],
+     "sin_rol": [],
+     "residuales": [
+      {
+       "formula": "SDI2",
+       "expr": "SDI2 = M - C_total - D",
+       "ruta": "/home/user/fase1b/FASE_1B_RESULTADOS/work/d/out/14b_canales_distintos/reverb_tagged__sucial/reverb_tagged__sucial__SDI2.wav",
+       "frames": 88200,
+       "canales": 2,
+       "rms_L": 0.021568848276772593,
+       "rms_R": 0.021302105951364596,
+       "estado": "OK"
+      }
+     ],
+     "no_generados": {
+      "SDV1": {
+       "estado": "INCOMPLETE",
+       "motivo": "faltan insumos: ['B_INSTRUMENT']"
+      },
+      "SDI1": {
+       "estado": "INCOMPLETE",
+       "motivo": "faltan insumos: ['E_VOCALS']"
+      },
+      "SDV2": {
+       "estado": "INCOMPATIBLE",
+       "motivos": [
+        "canales distintos: A_RESTORED=1 vs MIX=2"
+       ]
+      }
+     },
+     "motivos": [],
+     "c_total": {
+      "estado": "OK",
+      "estrategia": "single_aggregate",
+      "formula": "C_total = C_aggregate",
+      "sumandos": [
+       {
+        "rol": "C_AGGREGATE",
+        "rel": "Stems Masks Reverb Removal/sucial_[C].wav"
+       }
+      ],
+      "motivos": []
+     },
+     "no_aplica": {
+      "SDV_SIMPLE": "el perfil reverb_tagged no declara ['INSTRUMENTAL']",
+      "SDI_SIMPLE": "el perfil reverb_tagged no declara ['VOCALS']"
+     },
+     "estado": "INCOMPATIBLE"
+    }
+   ],
+   "manifiesto": "/home/user/fase1b/FASE_1B_RESULTADOS/work/d/out/14b_canales_distintos/manifest_orquestador.json"
+  },
+  "14c_longitud_distinta": {
+   "estado": "INCOMPATIBLE",
+   "motivo": "",
+   "inventario": {
+    "n_ficheros": 4,
+    "n_ignorados": 0,
+    "ignorados": []
+   },
+   "mix": {
+    "ruta": "Mix.wav",
+    "sha256": "8911dd7ecdbb4e82a417dfd49239c5ec4c0d594be4be94b5aaa08b496ef66e2f",
+    "sr": 44100,
+    "ch": 2,
+    "frames": 88200,
+    "subtype": "FLOAT",
+    "format": "WAV",
+    "duracion_s": 2.0
+   },
+   "grupos": [
+    {
+     "grupo_id": "reverb_tagged::sucial::Stems Masks Reverb Removal",
+     "perfil": "reverb_tagged",
+     "run": "sucial",
+     "carpeta": "Stems Masks Reverb Removal",
+     "roles_presentes": [
+      "A_RESTORED",
+      "C_AGGREGATE",
+      "D_DRY_VOCAL"
+     ],
+     "duplicados": {},
+     "ambiguos": [],
+     "sin_rol": [],
+     "residuales": [
+      {
+       "formula": "SDI2",
+       "expr": "SDI2 = M - C_total - D",
+       "ruta": "/home/user/fase1b/FASE_1B_RESULTADOS/work/d/out/14c_longitud_distinta/reverb_tagged__sucial/reverb_tagged__sucial__SDI2.wav",
+       "frames": 88200,
+       "canales": 2,
+       "rms_L": 0.021568848276772593,
+       "rms_R": 0.021302105951364596,
+       "estado": "OK"
+      }
+     ],
+     "no_generados": {
+      "SDV1": {
+       "estado": "INCOMPLETE",
+       "motivo": "faltan insumos: ['B_INSTRUMENT']"
+      },
+      "SDI1": {
+       "estado": "INCOMPLETE",
+       "motivo": "faltan insumos: ['E_VOCALS']"
+      },
+      "SDV2": {
+       "estado": "INCOMPATIBLE",
+       "motivos": [
+        "frames distintos: A_RESTORED=66150 vs MIX=88200 (no se trunca)"
+       ]
+      }
+     },
+     "motivos": [],
+     "c_total": {
+      "estado": "OK",
+      "estrategia": "single_aggregate",
+      "formula": "C_total = C_aggregate",
+      "sumandos": [
+       {
+        "rol": "C_AGGREGATE",
+        "rel": "Stems Masks Reverb Removal/sucial_[C].wav"
+       }
+      ],
+      "motivos": []
+     },
+     "no_aplica": {
+      "SDV_SIMPLE": "el perfil reverb_tagged no declara ['INSTRUMENTAL']",
+      "SDI_SIMPLE": "el perfil reverb_tagged no declara ['VOCALS']"
+     },
+     "estado": "INCOMPATIBLE"
+    }
+   ],
+   "manifiesto": "/home/user/fase1b/FASE_1B_RESULTADOS/work/d/out/14c_longitud_distinta/manifest_orquestador.json"
+  },
+  "14d_subtype_distinto": {
+   "estado": "INCOMPATIBLE",
+   "motivo": "",
+   "inventario": {
+    "n_ficheros": 4,
+    "n_ignorados": 0,
+    "ignorados": []
+   },
+   "mix": {
+    "ruta": "Mix.wav",
+    "sha256": "8911dd7ecdbb4e82a417dfd49239c5ec4c0d594be4be94b5aaa08b496ef66e2f",
+    "sr": 44100,
+    "ch": 2,
+    "frames": 88200,
+    "subtype": "FLOAT",
+    "format": "WAV",
+    "duracion_s": 2.0
+   },
+   "grupos": [
+    {
+     "grupo_id": "reverb_tagged::sucial::Stems Masks Reverb Removal",
+     "perfil": "reverb_tagged",
+     "run": "sucial",
+     "carpeta": "Stems Masks Reverb Removal",
+     "roles_presentes": [
+      "A_RESTORED",
+      "C_AGGREGATE",
+      "D_DRY_VOCAL"
+     ],
+     "duplicados": {},
+     "ambiguos": [],
+     "sin_rol": [],
+     "residuales": [
+      {
+       "formula": "SDI2",
+       "expr": "SDI2 = M - C_total - D",
+       "ruta": "/home/user/fase1b/FASE_1B_RESULTADOS/work/d/out/14d_subtype_distinto/reverb_tagged__sucial/reverb_tagged__sucial__SDI2.wav",
+       "frames": 88200,
+       "canales": 2,
+       "rms_L": 0.021568848276772593,
+       "rms_R": 0.021302105951364596,
+       "estado": "OK"
+      }
+     ],
+     "no_generados": {
+      "SDV1": {
+       "estado": "INCOMPLETE",
+       "motivo": "faltan insumos: ['B_INSTRUMENT']"
+      },
+      "SDI1": {
+       "estado": "INCOMPLETE",
+       "motivo": "faltan insumos: ['E_VOCALS']"
+      },
+      "SDV2": {
+       "estado": "INCOMPATIBLE",
+       "motivos": [
+        "subtype distinto: A_RESTORED=PCM_16 vs MIX=FLOAT"
+       ]
+      }
+     },
+     "motivos": [],
+     "c_total": {
+      "estado": "OK",
+      "estrategia": "single_aggregate",
+      "formula": "C_total = C_aggregate",
+      "sumandos": [
+       {
+        "rol": "C_AGGREGATE",
+        "rel": "Stems Masks Reverb Removal/sucial_[C].wav"
+       }
+      ],
+      "motivos": []
+     },
+     "no_aplica": {
+      "SDV_SIMPLE": "el perfil reverb_tagged no declara ['INSTRUMENTAL']",
+      "SDI_SIMPLE": "el perfil reverb_tagged no declara ['VOCALS']"
+     },
+     "estado": "INCOMPATIBLE"
+    }
+   ],
+   "manifiesto": "/home/user/fase1b/FASE_1B_RESULTADOS/work/d/out/14d_subtype_distinto/manifest_orquestador.json"
+  },
+  "14e_nan_inf": {
+   "estado": "REJECTED",
+   "motivo": "",
+   "inventario": {
+    "n_ficheros": 4,
+    "n_ignorados": 0,
+    "ignorados": []
+   },
+   "mix": {
+    "ruta": "Mix.wav",
+    "sha256": "8911dd7ecdbb4e82a417dfd49239c5ec4c0d594be4be94b5aaa08b496ef66e2f",
+    "sr": 44100,
+    "ch": 2,
+    "frames": 88200,
+    "subtype": "FLOAT",
+    "format": "WAV",
+    "duracion_s": 2.0
+   },
+   "grupos": [
+    {
+     "grupo_id": "reverb_tagged::sucial::Stems Masks Reverb Removal",
+     "perfil": "reverb_tagged",
+     "run": "sucial",
+     "carpeta": "Stems Masks Reverb Removal",
+     "roles_presentes": [
+      "A_RESTORED",
+      "C_AGGREGATE",
+      "D_DRY_VOCAL"
+     ],
+     "duplicados": {},
+     "ambiguos": [],
+     "sin_rol": [],
+     "residuales": [
+      {
+       "formula": "SDI2",
+       "expr": "SDI2 = M - C_total - D",
+       "ruta": "/home/user/fase1b/FASE_1B_RESULTADOS/work/d/out/14e_nan_inf/reverb_tagged__sucial/reverb_tagged__sucial__SDI2.wav",
+       "frames": 88200,
+       "canales": 2,
+       "rms_L": 0.021568848276772593,
+       "rms_R": 0.021302105951364596,
+       "estado": "OK"
+      }
+     ],
+     "no_generados": {
+      "SDV1": {
+       "estado": "INCOMPLETE",
+       "motivo": "faltan insumos: ['B_INSTRUMENT']"
+      },
+      "SDI1": {
+       "estado": "INCOMPLETE",
+       "motivo": "faltan insumos: ['E_VOCALS']"
+      },
+      "SDV2": {
+       "estado": "REJECTED",
+       "motivos": [
+        "A_RESTORED: contiene NaN/Inf"
+       ]
+      }
+     },
+     "motivos": [],
+     "c_total": {
+      "estado": "OK",
+      "estrategia": "single_aggregate",
+      "formula": "C_total = C_aggregate",
+      "sumandos": [
+       {
+        "rol": "C_AGGREGATE",
+        "rel": "Stems Masks Reverb Removal/sucial_[C].wav"
+       }
+      ],
+      "motivos": []
+     },
+     "no_aplica": {
+      "SDV_SIMPLE": "el perfil reverb_tagged no declara ['INSTRUMENTAL']",
+      "SDI_SIMPLE": "el perfil reverb_tagged no declara ['VOCALS']"
+     },
+     "estado": "REJECTED"
+    }
+   ],
+   "manifiesto": "/home/user/fase1b/FASE_1B_RESULTADOS/work/d/out/14e_nan_inf/manifest_orquestador.json"
+  },
+  "15_lr_asimetrico_gt": {
+   "estado": "ACCEPT",
+   "motivo": "",
+   "inventario": {
+    "n_ficheros": 6,
+    "n_ignorados": 0,
+    "ignorados": []
+   },
+   "mix": {
+    "ruta": "Mix.wav",
+    "sha256": "8911dd7ecdbb4e82a417dfd49239c5ec4c0d594be4be94b5aaa08b496ef66e2f",
+    "sr": 44100,
+    "ch": 2,
+    "frames": 88200,
+    "subtype": "FLOAT",
+    "format": "WAV",
+    "duracion_s": 2.0
+   },
+   "grupos": [
+    {
+     "grupo_id": "reverb_tagged::sucial::Stems Masks Reverb Removal",
+     "perfil": "reverb_tagged",
+     "run": "sucial",
+     "carpeta": "Stems Masks Reverb Removal",
+     "roles_presentes": [
+      "A_RESTORED",
+      "B_INSTRUMENT",
+      "C_AGGREGATE",
+      "D_DRY_VOCAL",
+      "E_VOCALS"
+     ],
+     "duplicados": {},
+     "ambiguos": [],
+     "sin_rol": [],
+     "residuales": [
+      {
+       "formula": "SDV1",
+       "expr": "SDV1 = M - B",
+       "ruta": "/home/user/fase1b/FASE_1B_RESULTADOS/work/d/out/15_lr_asimetrico_gt/reverb_tagged__sucial/reverb_tagged__sucial__SDV1.wav",
+       "frames": 88200,
+       "canales": 2,
+       "rms_L": 0.14755673296042887,
+       "rms_R": 0.13106451199413016,
+       "estado": "OK"
+      },
+      {
+       "formula": "SDV2",
+       "expr": "SDV2 = M - A + D",
+       "ruta": "/home/user/fase1b/FASE_1B_RESULTADOS/work/d/out/15_lr_asimetrico_gt/reverb_tagged__sucial/reverb_tagged__sucial__SDV2.wav",
+       "frames": 88200,
+       "canales": 2,
+       "rms_L": 0.2879620407018359,
+       "rms_R": 0.25583266279863126,
+       "estado": "OK"
+      },
+      {
+       "formula": "SDI1",
+       "expr": "SDI1 = M - E",
+       "ruta": "/home/user/fase1b/FASE_1B_RESULTADOS/work/d/out/15_lr_asimetrico_gt/reverb_tagged__sucial/reverb_tagged__sucial__SDI1.wav",
+       "frames": 88200,
+       "canales": 2,
+       "rms_L": 0.10116155870951851,
+       "rms_R": 0.10116155869346265,
+       "estado": "OK"
+      },
+      {
+       "formula": "SDI2",
+       "expr": "SDI2 = M - C_total - D",
+       "ruta": "/home/user/fase1b/FASE_1B_RESULTADOS/work/d/out/15_lr_asimetrico_gt/reverb_tagged__sucial/reverb_tagged__sucial__SDI2.wav",
+       "frames": 88200,
+       "canales": 2,
+       "rms_L": 0.021568848276772593,
+       "rms_R": 0.021302105951364596,
+       "estado": "OK"
+      }
+     ],
+     "no_generados": {},
+     "motivos": [],
+     "c_total": {
+      "estado": "OK",
+      "estrategia": "single_aggregate",
+      "formula": "C_total = C_aggregate",
+      "sumandos": [
+       {
+        "rol": "C_AGGREGATE",
+        "rel": "Stems Masks Reverb Removal/sucial_[C].wav"
+       }
+      ],
+      "motivos": []
+     },
+     "no_aplica": {
+      "SDV_SIMPLE": "el perfil reverb_tagged no declara ['INSTRUMENTAL']",
+      "SDI_SIMPLE": "el perfil reverb_tagged no declara ['VOCALS']"
+     },
+     "e_vs_c_total_d": {
+      "canales": {
+       "L": {
+        "rms_residuo": 0.0812294914010242,
+        "pico_residuo": 0.4034305214881897,
+        "rms_E": 0.14755673292731056,
+        "snr_db": 5.184905937576875
+       },
+       "R": {
+        "rms_residuo": 0.0811574625284144,
+        "pico_residuo": 0.4034305214881897,
+        "rms_E": 0.13106451196096716,
+        "snr_db": 4.1631330954239845
+       }
+      },
+      "max_abs_global": 0.4034305214881897,
+      "exacta": false
+     },
+     "estado": "ACCEPT"
+    }
+   ],
+   "manifiesto": "/home/user/fase1b/FASE_1B_RESULTADOS/work/d/out/15_lr_asimetrico_gt/manifest_orquestador.json"
+  },
+  "16a_corrupto": {
+   "estado": "REJECTED",
+   "motivo": "",
+   "inventario": {
+    "n_ficheros": 4,
+    "n_ignorados": 0,
+    "ignorados": []
+   },
+   "mix": {
+    "ruta": "Mix.wav",
+    "sha256": "8911dd7ecdbb4e82a417dfd49239c5ec4c0d594be4be94b5aaa08b496ef66e2f",
+    "sr": 44100,
+    "ch": 2,
+    "frames": 88200,
+    "subtype": "FLOAT",
+    "format": "WAV",
+    "duracion_s": 2.0
+   },
+   "grupos": [
+    {
+     "grupo_id": "reverb_tagged::sucial::Stems Masks Reverb Removal",
+     "perfil": "reverb_tagged",
+     "run": "sucial",
+     "carpeta": "Stems Masks Reverb Removal",
+     "roles_presentes": [
+      "A_RESTORED",
+      "C_AGGREGATE",
+      "D_DRY_VOCAL"
+     ],
+     "duplicados": {},
+     "ambiguos": [],
+     "sin_rol": [],
+     "residuales": [
+      {
+       "formula": "SDI2",
+       "expr": "SDI2 = M - C_total - D",
+       "ruta": "/home/user/fase1b/FASE_1B_RESULTADOS/work/d/out/16a_corrupto/reverb_tagged__sucial/reverb_tagged__sucial__SDI2.wav",
+       "frames": 88200,
+       "canales": 2,
+       "rms_L": 0.021568848276772593,
+       "rms_R": 0.021302105951364596,
+       "estado": "OK"
+      }
+     ],
+     "no_generados": {
+      "SDV1": {
+       "estado": "INCOMPLETE",
+       "motivo": "faltan insumos: ['B_INSTRUMENT']"
+      },
+      "SDI1": {
+       "estado": "INCOMPLETE",
+       "motivo": "faltan insumos: ['E_VOCALS']"
+      },
+      "SDV2": {
+       "estado": "REJECTED",
+       "motivos": [
+        "A_RESTORED: no legible como WAV (Error opening '/home/user/fase1b/FASE_1B_RESULTADOS/work/d/fx/16a_corrupto/Stems Masks Reverb Removal/sucial_[A].wav': Format not recognised.)"
+       ]
+      }
+     },
+     "motivos": [],
+     "c_total": {
+      "estado": "OK",
+      "estrategia": "single_aggregate",
+      "formula": "C_total = C_aggregate",
+      "sumandos": [
+       {
+        "rol": "C_AGGREGATE",
+        "rel": "Stems Masks Reverb Removal/sucial_[C].wav"
+       }
+      ],
+      "motivos": []
+     },
+     "no_aplica": {
+      "SDV_SIMPLE": "el perfil reverb_tagged no declara ['INSTRUMENTAL']",
+      "SDI_SIMPLE": "el perfil reverb_tagged no declara ['VOCALS']"
+     },
+     "estado": "REJECTED"
+    }
+   ],
+   "manifiesto": "/home/user/fase1b/FASE_1B_RESULTADOS/work/d/out/16a_corrupto/manifest_orquestador.json"
+  },
+  "16b_no_wav": {
+   "estado": "INCOMPLETE",
+   "motivo": "",
+   "inventario": {
+    "n_ficheros": 4,
+    "n_ignorados": 1,
+    "ignorados": [
+     {
+      "rel": "Stems Masks Reverb Removal/notas.txt",
+      "motivo": "extension no declarada"
+     }
+    ]
+   },
+   "mix": {
+    "ruta": "Mix.wav",
+    "sha256": "8911dd7ecdbb4e82a417dfd49239c5ec4c0d594be4be94b5aaa08b496ef66e2f",
+    "sr": 44100,
+    "ch": 2,
+    "frames": 88200,
+    "subtype": "FLOAT",
+    "format": "WAV",
+    "duracion_s": 2.0
+   },
+   "grupos": [
+    {
+     "grupo_id": "reverb_tagged::sucial::Stems Masks Reverb Removal",
+     "perfil": "reverb_tagged",
+     "run": "sucial",
+     "carpeta": "Stems Masks Reverb Removal",
+     "roles_presentes": [
+      "A_RESTORED",
+      "C_AGGREGATE",
+      "D_DRY_VOCAL"
+     ],
+     "duplicados": {},
+     "ambiguos": [],
+     "sin_rol": [],
+     "residuales": [
+      {
+       "formula": "SDV2",
+       "expr": "SDV2 = M - A + D",
+       "ruta": "/home/user/fase1b/FASE_1B_RESULTADOS/work/d/out/16b_no_wav/reverb_tagged__sucial/reverb_tagged__sucial__SDV2.wav",
+       "frames": 88200,
+       "canales": 2,
+       "rms_L": 0.2879620407018359,
+       "rms_R": 0.25583266279863126,
+       "estado": "OK"
+      },
+      {
+       "formula": "SDI2",
+       "expr": "SDI2 = M - C_total - D",
+       "ruta": "/home/user/fase1b/FASE_1B_RESULTADOS/work/d/out/16b_no_wav/reverb_tagged__sucial/reverb_tagged__sucial__SDI2.wav",
+       "frames": 88200,
+       "canales": 2,
+       "rms_L": 0.021568848276772593,
+       "rms_R": 0.021302105951364596,
+       "estado": "OK"
+      }
+     ],
+     "no_generados": {
+      "SDV1": {
+       "estado": "INCOMPLETE",
+       "motivo": "faltan insumos: ['B_INSTRUMENT']"
+      },
+      "SDI1": {
+       "estado": "INCOMPLETE",
+       "motivo": "faltan insumos: ['E_VOCALS']"
+      }
+     },
+     "motivos": [],
+     "c_total": {
+      "estado": "OK",
+      "estrategia": "single_aggregate",
+      "formula": "C_total = C_aggregate",
+      "sumandos": [
+       {
+        "rol": "C_AGGREGATE",
+        "rel": "Stems Masks Reverb Removal/sucial_[C].wav"
+       }
+      ],
+      "motivos": []
+     },
+     "no_aplica": {
+      "SDV_SIMPLE": "el perfil reverb_tagged no declara ['INSTRUMENTAL']",
+      "SDI_SIMPLE": "el perfil reverb_tagged no declara ['VOCALS']"
+     },
+     "estado": "INCOMPLETE"
+    }
+   ],
+   "manifiesto": "/home/user/fase1b/FASE_1B_RESULTADOS/work/d/out/16b_no_wav/manifest_orquestador.json"
+  },
+  "17a_mix_ausente": {
+   "estado": "REJECTED",
+   "motivo": "Mix declarado 'Mix.wav' no existe",
+   "mix": {
+    "ok": false,
+    "estado": "REJECTED",
+    "motivo": "Mix declarado 'Mix.wav' no existe",
+    "candidatos": []
+   },
+   "inventario": {
+    "n_ficheros": 1,
+    "n_ignorados": 0,
+    "ignorados": []
+   },
+   "grupos": [],
+   "manifiesto": null
+  },
+  "17b_dos_mix": {
+   "estado": "REJECTED",
+   "motivo": "2 mixes candidatos: no se elige el primero",
+   "mix": {
+    "ok": false,
+    "estado": "REJECTED",
+    "motivo": "2 mixes candidatos: no se elige el primero",
+    "candidatos": [
+     "Mix.wav",
+     "Mix_alt.wav"
+    ]
+   },
+   "inventario": {
+    "n_ficheros": 3,
+    "n_ignorados": 0,
+    "ignorados": []
+   },
+   "grupos": [],
+   "manifiesto": null
+  },
+  "17c_hash_cambiado": {
+   "estado": "REJECTED",
+   "motivo": "hash del Mix no coincide: declarado 0000000000000000... real 8911dd7ecdbb4e82...",
+   "mix": {
+    "ok": false,
+    "estado": "REJECTED",
+    "motivo": "hash del Mix no coincide: declarado 0000000000000000... real 8911dd7ecdbb4e82...",
+    "sha256_real": "8911dd7ecdbb4e82a417dfd49239c5ec4c0d594be4be94b5aaa08b496ef66e2f",
+    "candidatos": [
+     "Mix.wav"
+    ]
+   },
+   "inventario": {
+    "n_ficheros": 2,
+    "n_ignorados": 0,
+    "ignorados": []
+   },
+   "grupos": [],
+   "manifiesto": null
+  }
+ },
+ "verificaciones_extra": {
+  "lr": {
+   "max_abs_SDV1_menos_Vtrue": 6.059139501246591e-08,
+   "max_abs_SDI1_menos_Itrue": 5.622836352081606e-08,
+   "max_abs_si_se_intercambiaran_LR": 0.3499999911585702,
+   "evento_solo_L_detectado_EN_L": 6.059139501246591e-08,
+   "sr_salida": 44100,
+   "frames_salida": 88200,
+   "frames_mix": 88200,
+   "sr_mix": 44100,
+   "subtype_salida": "FLOAT",
+   "duracion_igual": true,
+   "canales": 2
+  },
+  "c_dividido": {
+   "estrategia": "split_reverb_others",
+   "formula": "C_total = C_reverb + C_others",
+   "n_sumandos": 2,
+   "roles_sumandos": [
+    "C_REVERB",
+    "C_OTHERS"
+   ]
+  },
+  "c_agregado": {
+   "estrategia": "single_aggregate",
+   "n_sumandos": 1
+  },
+  "c_parcial": {
+   "estrategia": "parcial",
+   "estado": "INCOMPLETE",
+   "motivos": [
+    "solo existe C_REVERB sin el otro subcomponente: no se infiere C_total"
+   ]
+  },
+  "c_conflicto": {
+   "estado": "AMBIGUOUS",
+   "motivos": [
+    "C agregado Y subcomponentes presentes sin declaracion de alternativas: no se elige ni se suma"
+   ]
+  },
+  "e_vs_cd": {
+   "11a_e_vs_cd_exacto": {
+    "canales": {
+     "L": {
+      "rms_residuo": 5.720835781470231e-09,
+      "pico_residuo": 5.494803190231323e-08,
+      "rms_E": 0.1621999539160879,
+      "snr_db": 149.05182490219994
+     },
+     "R": {
+      "rms_residuo": 5.233307997837774e-09,
+      "pico_residuo": 4.470348358154297e-08,
+      "rms_E": 0.14888159900884881,
+      "snr_db": 149.08129458684826
+     }
+    },
+    "max_abs_global": 5.494803190231323e-08,
+    "exacta": false
+   },
+   "11b_e_vs_cd_leve": {
+    "canales": {
+     "L": {
+      "rms_residuo": 0.0016219995344055832,
+      "pico_residuo": 0.008092597126960754,
+      "rms_E": 0.16382195345698994,
+      "snr_db": 40.08642750121002
+     },
+     "R": {
+      "rms_residuo": 0.0014888160093895486,
+      "pico_residuo": 0.0073972344398498535,
+      "rms_E": 0.1503704150070279,
+      "snr_db": 40.08642736351603
+     }
+    },
+    "max_abs_global": 0.008092597126960754,
+    "exacta": false
+   },
+   "11c_e_vs_cd_severo": {
+    "canales": {
+     "L": {
+      "rms_residuo": 0.08351842159037007,
+      "pico_residuo": 0.3994937688112259,
+      "rms_E": 0.2441062944638144,
+      "snr_db": 9.315934002799114
+     },
+     "R": {
+      "rms_residuo": 0.07714783278549828,
+      "pico_residuo": 0.3971336781978607,
+      "rms_E": 0.22429565724467532,
+      "snr_db": 9.269942689384322
+     }
+    },
+    "max_abs_global": 0.3994937688112259,
+    "exacta": false
+   }
+  },
+  "motivos": {
+   "14a_sr_distinta": "",
+   "14b_canales_distintos": "",
+   "14c_longitud_distinta": "",
+   "14d_subtype_distinto": "",
+   "14e_nan_inf": "",
+   "16a_corrupto": "",
+   "17a_mix_ausente": "Mix declarado 'Mix.wav' no existe",
+   "17b_dos_mix": "2 mixes candidatos: no se elige el primero",
+   "17c_hash_cambiado": "hash del Mix no coincide: declarado 0000000000000000... real 8911dd7ecdbb4e82..."
+  }
+ },
+ "tests_unitarios": [
+  {
+   "test": "perfiles: 3 perfiles y esquema valido",
+   "pasa": true,
+   "detalle": ""
+  },
+  {
+   "test": "clasificador: [C] agregado != Reverb [C]",
+   "pasa": true,
+   "detalle": ""
+  },
+  {
+   "test": "clasificador: Others [C] separado",
+   "pasa": true,
+   "detalle": ""
+  },
+  {
+   "test": "clasificador: empate => AMBIGUO",
+   "pasa": true,
+   "detalle": ""
+  },
+  {
+   "test": "agrupador: 2 corridas => 2 grupos",
+   "pasa": true,
+   "detalle": ""
+  },
+  {
+   "test": "c_total: agregado+subs => AMBIGUOUS sin leer audio",
+   "pasa": true,
+   "detalle": ""
+  },
+  {
+   "test": "c_total: un solo subcomponente => INCOMPLETE",
+   "pasa": true,
+   "detalle": ""
+  },
+  {
+   "test": "validador: NaN => rechazado",
+   "pasa": true,
+   "detalle": ""
+  },
+  {
+   "test": "validador: frames distintos => INCOMPATIBLE",
+   "pasa": true,
+   "detalle": ""
+  },
+  {
+   "test": "validador: entradas identicas => ok",
+   "pasa": true,
+   "detalle": ""
+  }
+ ]
+}

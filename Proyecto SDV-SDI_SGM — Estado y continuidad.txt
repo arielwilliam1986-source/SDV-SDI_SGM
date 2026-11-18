@@ -1,0 +1,271 @@
+DOCUMENTO DE TRANSFERENCIA TÉCNICA
+
+Proyecto SDV-SDI / SGM — Estado y continuidad
+
+Fecha de referencia: 18 de noviembre de 2026
+Objetivo: permitir que otro asistente, desarrollador o equipo técnico pueda continuar el proyecto sin depender de conversaciones anteriores.
+
+---
+
+1. PROPÓSITO GENERAL
+
+El proyecto forma parte de una iniciativa denominada SGM (Santo Grial Musical).
+
+El objetivo general es desarrollar un sistema de procesamiento y análisis de audio que permita obtener resultados de separación musical con la mayor fidelidad posible respecto al material original.
+
+La prioridad no es conseguir stems que simplemente parezcan más limpios. Se busca preservar:
+
+- Naturalidad tímbrica.
+- Dinámica original.
+- Integridad estéreo.
+- Información espacial.
+- Intimidad vocal.
+- Ausencia de degradación innecesaria.
+- Fidelidad perceptual al máster artístico.
+
+La limpieza de una separación no debe conseguirse sacrificando información musical.
+
+2. ARQUITECTURA DEL PROYECTO
+
+El proyecto contempla varias etapas.
+
+Fase 3: extracción de stems mediante MVSEP.
+
+Se utilizan modelos de separación como:
+
+- BS-Roformer.
+- Mel-Band Roformer.
+- PolarFormer (candidato experimental).
+- SCNet XL IHF (candidato experimental).
+- Reverb Removal de Sucial y anvuew v2.
+
+Se procura trabajar con WAV o FLAC, normalmente a 44.1 kHz, evitando conversiones innecesarias y archivos con pérdida.
+
+El límite de carga de MVSEP gratuito es de 100 MB.
+
+Fase 4: procesamiento psicoacústico y quirúrgico.
+
+Se pretende estudiar y tratar individualmente los stems para obtener resultados musicales naturales y coherentes.
+
+Motor 1: generación SDV/SDI.
+
+Su objetivo es construir candidatos de separación a partir del Mix original y las guías obtenidas de MVSEP.
+
+Motor 2: procesamiento posterior.
+
+Recibirá SDI como entrada inmutable para posteriores operaciones sobre instrumentos y componentes musicales.
+
+3. DEFINICIONES MATEMÁTICAS
+
+Para separación convencional:
+
+- SDV = M − instrumental.
+- SDI = M − vocal.
+
+Para Reverb Removal, las definiciones acordadas son:
+
+- SDV1 = M − B
+- SDV2 = M − A + D
+- SDI1 = M − E
+- SDI2 = M − C − D
+
+Donde:
+
+- M: Mix original.
+- A: señal restaurada.
+- B: componente instrumental.
+- C: reverberación/otros.
+- D: voz seca, sin instrumental y sin reverberación.
+- E: voces.
+
+Importante: D no debe confundirse con A ni suponerse que M = A − D. Se observó una relación aproximada D ≈ A − B en pruebas particulares, pero no debe generalizarse.
+
+4. RESTRICCIONES TÉCNICAS Y FILOSOFÍA
+
+Estas condiciones deben mantenerse durante las auditorías:
+
+1. No convertir silenciosamente audio estéreo a mono.
+2. No mezclar canales L/R durante el procesamiento.
+3. No imponer ganancia, normalización o limitación.
+4. No forzar polaridad ni fase.
+5. No cambiar frecuencia de muestreo sin justificación y autorización.
+6. No truncar silenciosamente archivos para igualar duraciones.
+7. No seleccionar automáticamente el primer archivo cuando existen coincidencias ambiguas.
+8. No sumar el agregado C a sus propios subcomponentes.
+9. No elegir un motor ganador sin pruebas reales y evaluación auditiva.
+10. No modificar los originales durante una auditoría.
+11. No asumir que SDV + SDI = Mix demuestra una separación correcta.
+12. No utilizar Golden Zone como procedimiento de preparación.
+
+La evaluación debe distinguir entre:
+
+- DOCUMENTED_FACT
+- EXPERIMENTAL_RESULT
+- THEORETICAL_DEDUCTION
+- HYPOTHESIS
+- UNKNOWN
+
+Una inspección de código no equivale a una prueba dinámica.
+
+5. HISTORIAL DEL MOTOR Y AUDITORÍAS
+
+Se han desarrollado y revisado diferentes implementaciones:
+
+- sdv_sdi_mqr_engine.py
+- MOTOR_SEP_SDV-SDI.py
+- MOTOR_SEP_SDV-SDI_v3.py
+- MOTOR_SEP_SDV-SDI_v3.1.1_Hardened_Final.py
+- MOTOR_SEP_SDV-SDI_EVO.py
+- orquestador_maestro.py
+- mix_delta.py
+- preflight_audit.py
+
+También existe una arquitectura experimental en "orchestrator_spec".
+
+Se ha avanzado en pruebas sintéticas de coherencia, alineación, residuos, consenso y preservación estéreo.
+
+No existe todavía una validación definitiva que permita declarar un motor ganador.
+
+6. ESTADO DE LA FASE 1B
+
+Existe un paquete denominado:
+
+"SDV-SDI_FASE_1B_ENTREGA.zip"
+
+Contiene scripts, documentación, resultados, registros, matrices y hashes.
+
+También existe:
+
+"Proyecto SDV-SDI_SGM.zip"
+
+Contiene los motores y fuentes originales.
+
+Se dispone de auditorías previas realizadas por Gemini, Kimi y ChatGPT.
+
+Resultados anteriores documentados
+
+- Comprobación de hashes internos.
+- Pruebas sintéticas de coherencia.
+- Evaluación de consenso.
+- Pruebas de integridad estéreo en componentes del orquestador.
+- Identificación de problemas de alineación.
+- Identificación de problemas en residuos.
+- Detección de incompatibilidad entre formatos de manifiesto.
+- Identificación de defectos en manejo de errores y estados globales.
+
+Resultados importantes:
+
+- El consenso predeterminado no produce cambios de audio en determinadas condiciones de prueba.
+- Con K=2, tres métodos de máscara resultaron algebraicamente equivalentes en las pruebas documentadas.
+- El motor v3 presenta métodos de consenso diferentes.
+- La alineación basada en un único retardo no representa correctamente diferencias independientes entre L/R.
+- SDI_F2 permanece como UNKNOWN.
+- La complementariedad algebraica no demuestra separación musical.
+- La inversión de polaridad no queda detectada por algunos procedimientos de verificación.
+
+Defectos pendientes o identificados
+
+1. "estricto_subtype" no se propaga correctamente en determinadas rutas.
+2. Los archivos C corruptos pueden provocar excepciones no controladas.
+3. El procesamiento de residuos puede fallar con audio mono.
+4. "out_dir=None" puede provocar errores cuando se generan resultados.
+5. No se ha verificado que se impida guardar resultados dentro del árbol de entrada.
+6. El estado global puede devolver ACCEPT aunque existan grupos SIN_PERFIL.
+7. La alineación v3 utiliza downmix mono y no estima retardos independientes L/R.
+8. El manifiesto del orquestador no coincide directamente con el esquema esperado por v3.
+9. La discrepancia documental entre 71 archivos y 74 líneas de hashes debe aclararse.
+10. La prueba S5 de comportamiento "per_channel" en motores reales no ha sido completada.
+
+Estado de pruebas críticas
+
+Prueba| Estado
+Integridad de fuentes| Verificada en auditoría anterior
+Pruebas básicas| Ejecutadas en auditoría anterior
+S5: per_channel real| Pendiente
+Alineación v3| Pendiente
+Compatibilidad de manifiestos| Inspección realizada; transformación no probada
+Inspección completa de registros| Pendiente
+Validación con música real| No realizada
+Selección de motor ganador| No realizada
+
+Conclusión: la Fase 1B todavía no debe declararse cerrada.
+
+7. ARCHIVOS Y PROCEDENCIA
+
+Hay dos ZIP principales.
+
+"Proyecto SDV-SDI_SGM.zip"
+
+SHA-256:
+
+"47b7dc8ef1d24847000b60f426c9b7965301e2836c97ad865bff856a875af95f"
+
+"SDV-SDI_FASE_1B_ENTREGA.zip"
+
+La copia de 89 entradas identificada en el entorno actual tiene SHA-256:
+
+"11f6efc7711090570b40538d5f19f74ee13cf9f93e0e253f67cfcab080b0b3b7"
+
+Advertencia de procedencia: Kimi también identificó un ZIP externo de 78 entradas con SHA-256:
+
+"a3fbf307edaeaa5155874af513c46244cc1535fc41800f9253195fa96b49bac5"
+
+No debe confundirse con la copia de 89 entradas.
+
+La copia anidada de Fase 1B contiene diez fuentes cuyos hashes coinciden con "FUENTES_SHA256.txt", según el informe de Kimi.
+
+8. QUÉ NECESITA EL PROYECTO AHORA
+
+No se necesita comenzar desde cero.
+
+Se necesita una auditoría independiente que cierre las preguntas pendientes y determine si los motores y la arquitectura actual pueden continuar o necesitan una revisión estructural.
+
+Prioridades:
+
+Prioridad 1: completar la inspección de los módulos y registros pendientes.
+
+Prioridad 2: ejecutar S5 con motores reales y canales L/R diferenciados.
+
+Prioridad 3: ejecutar una batería de alineación del motor v3.
+
+Prioridad 4: probar la compatibilidad de manifiestos.
+
+Prioridad 5: reproducir dinámicamente los defectos identificados.
+
+Prioridad 6: elaborar un informe de cierre con resultados, hashes, scripts, fixtures y registros.
+
+Prioridad 7: entregar una matriz de defectos clasificados por gravedad, evidencia y posibilidad de corrección.
+
+9. CONDICIONES PARA EL EQUIPO QUE CONTINÚE
+
+No modificar los motores originales antes de completar la auditoría.
+
+No corregir varios defectos simultáneamente sin pruebas aisladas.
+
+No inventar resultados cuando una dependencia o herramienta no esté disponible.
+
+No considerar una prueba aprobada si únicamente se inspeccionó el código.
+
+No declarar compatibilidad sin probarla.
+
+No seleccionar un motor ganador sin pruebas con material musical real.
+
+Toda corrección futura deberá tener:
+
+- Identificador del defecto.
+- Evidencia de origen.
+- Cambio aislado.
+- Prueba de regresión.
+- Hash antes y después.
+- Justificación técnica.
+- Evaluación de efectos secundarios.
+
+10. OBJETIVO FINAL
+
+El objetivo no es simplemente conseguir que los scripts funcionen.
+
+El objetivo es disponer de un sistema SDV-SDI técnicamente verificable, reproducible, estable y capaz de conservar la integridad musical del material original.
+
+La prioridad es resolver las preguntas pendientes, no generar más versiones de código sin una justificación demostrable.
+
+El proyecto debe continuar desde la evidencia existente, no desde suposiciones ni desde cero.

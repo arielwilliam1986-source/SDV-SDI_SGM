@@ -1,0 +1,50 @@
+{
+ "hardened_3.1.1": {
+  "caso": "L/R asimetrico (+10 ms L, -10 ms R)",
+  "dur_s": 20.0,
+  "veredicto_sobre_downmix_mono": {
+   "lag_env": -55,
+   "lag_ms": -9.977324263038549,
+   "ncc": 0.9852605322788548
+  },
+  "por_canal_sin_downmix": {
+   "L": {
+    "lag_env": -55,
+    "lag_ms": -9.977324263038549,
+    "ncc": 0.9995712831386041,
+    "retardo_real_ms": 10.0
+   },
+   "R": {
+    "lag_env": 83,
+    "lag_ms": 15.056689342403628,
+    "ncc": 0.9572623541600664,
+    "retardo_real_ms": -10.0
+   }
+  },
+  "nota": "el motor decide sobre downmix mono; los desfases opuestos de igual magnitud se restan en el downmix"
+ },
+ "evo_3.1.1": {
+  "caso": "L/R asimetrico (+10 ms L, -10 ms R)",
+  "dur_s": 20.0,
+  "veredicto_sobre_downmix_mono": {
+   "lag_env": -55,
+   "lag_ms": -9.977324263038549,
+   "ncc": 0.9852605322788548
+  },
+  "por_canal_sin_downmix": {
+   "L": {
+    "lag_env": -55,
+    "lag_ms": -9.977324263038549,
+    "ncc": 0.9995712831386041,
+    "retardo_real_ms": 10.0
+   },
+   "R": {
+    "lag_env": 83,
+    "lag_ms": 15.056689342403628,
+    "ncc": 0.9572623541600664,
+    "retardo_real_ms": -10.0
+   }
+  },
+  "nota": "el motor decide sobre downmix mono; los desfases opuestos de igual magnitud se restan en el downmix"
+ }
+}

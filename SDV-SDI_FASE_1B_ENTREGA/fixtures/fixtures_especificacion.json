@@ -1,0 +1,293 @@
+{
+ "nota": "Los fixtures NO se incluyen como WAV: son deterministas y se regeneran con `python3 src/bloque_d.py` (semilla 20261117, WAV FLOAT estereo, M = V + I exacto, evento inyectado solo en el canal L). El audio regenerado es identico muestra a muestra; los BYTES del fichero pueden diferir por el chunk PEAK con timestamp de libsndfile (ver CONSENSUS_VALIDATION.md, nota de metodo).",
+ "semilla": 20261117,
+ "sample_rate": 44100,
+ "subtype": "FLOAT",
+ "canales": 2,
+ "perfiles": "configs/perfiles_orquestador.json",
+ "n_casos": 27,
+ "casos": [
+  {
+   "caso": "01_simple_par_valido",
+   "esperado": "ACCEPT",
+   "observado": "ACCEPT",
+   "pasa": true,
+   "formulas": [
+    "SDI_SIMPLE",
+    "SDV_SIMPLE"
+   ],
+   "nota": ""
+  },
+  {
+   "caso": "02_simple_vocals_ausente",
+   "esperado": "INCOMPLETE",
+   "observado": "INCOMPLETE",
+   "pasa": true,
+   "formulas": [
+    "SDV_SIMPLE"
+   ],
+   "nota": ""
+  },
+  {
+   "caso": "03_simple_duplicado",
+   "esperado": "AMBIGUOUS",
+   "observado": "AMBIGUOUS",
+   "pasa": true,
+   "formulas": [],
+   "nota": "dos ficheros reclaman INSTRUMENTAL en la misma corrida: no se elige ninguno"
+  },
+  {
+   "caso": "03b_simple_corridas_vecinas",
+   "esperado": "INCOMPLETE",
+   "observado": "INCOMPLETE",
+   "pasa": true,
+   "formulas": [
+    "SDI_SIMPLE",
+    "SDV_SIMPLE"
+   ],
+   "nota": "se separan por corrida; no se mezclan"
+  },
+  {
+   "caso": "04_simple_dos_corridas",
+   "esperado": "ACCEPT",
+   "observado": "ACCEPT",
+   "pasa": true,
+   "formulas": [
+    "SDI_SIMPLE",
+    "SDV_SIMPLE"
+   ],
+   "nota": ""
+  },
+  {
+   "caso": "05_reverb_c_agregado",
+   "esperado": "INCOMPLETE",
+   "observado": "INCOMPLETE",
+   "pasa": true,
+   "formulas": [
+    "SDI2",
+    "SDV2"
+   ],
+   "nota": "B y E ausentes: SDV1/SDI1 quedan INCOMPLETE"
+  },
+  {
+   "caso": "06_reverb_c_dividido",
+   "esperado": "INCOMPLETE",
+   "observado": "INCOMPLETE",
+   "pasa": true,
+   "formulas": [
+    "SDI2",
+    "SDV2"
+   ],
+   "nota": "C_total = Reverb + Others"
+  },
+  {
+   "caso": "07_reverb_solo_reverb",
+   "esperado": "INCOMPLETE",
+   "observado": "INCOMPLETE",
+   "pasa": true,
+   "formulas": [
+    "SDV2"
+   ],
+   "nota": "no se infiere C_total"
+  },
+  {
+   "caso": "08_reverb_conflicto",
+   "esperado": "AMBIGUOUS",
+   "observado": "AMBIGUOUS",
+   "pasa": true,
+   "formulas": [],
+   "nota": "nunca se suman agregado+subs"
+  },
+  {
+   "caso": "09_reverb_abcde",
+   "esperado": "ACCEPT",
+   "observado": "ACCEPT",
+   "pasa": true,
+   "formulas": [
+    "SDI1",
+    "SDI2",
+    "SDV1",
+    "SDV2"
+   ],
+   "nota": ""
+  },
+  {
+   "caso": "10_reverb_solo_b",
+   "esperado": "INCOMPLETE",
+   "observado": "INCOMPLETE",
+   "pasa": true,
+   "formulas": [
+    "SDV1"
+   ],
+   "nota": ""
+  },
+  {
+   "caso": "11a_e_vs_cd_exacto",
+   "esperado": "INCOMPLETE",
+   "observado": "INCOMPLETE",
+   "pasa": true,
+   "formulas": [
+    "SDI1",
+    "SDI2",
+    "SDV2"
+   ],
+   "nota": "relacion E~C+D: exacto"
+  },
+  {
+   "caso": "11b_e_vs_cd_leve",
+   "esperado": "INCOMPLETE",
+   "observado": "INCOMPLETE",
+   "pasa": true,
+   "formulas": [
+    "SDI1",
+    "SDI2",
+    "SDV2"
+   ],
+   "nota": "relacion E~C+D: leve"
+  },
+  {
+   "caso": "11c_e_vs_cd_severo",
+   "esperado": "INCOMPLETE",
+   "observado": "INCOMPLETE",
+   "pasa": true,
+   "formulas": [
+    "SDI1",
+    "SDI2",
+    "SDV2"
+   ],
+   "nota": "relacion E~C+D: severo"
+  },
+  {
+   "caso": "12_modelo_nuevo_nombres_alt",
+   "esperado": "ACCEPT",
+   "observado": "ACCEPT",
+   "pasa": true,
+   "formulas": [
+    "SDI1",
+    "SDI2",
+    "SDV1",
+    "SDV2"
+   ],
+   "nota": ""
+  },
+  {
+   "caso": "13_corridas_mezcladas",
+   "esperado": "INCOMPLETE",
+   "observado": "INCOMPLETE",
+   "pasa": true,
+   "formulas": [
+    "SDI2",
+    "SDV2"
+   ],
+   "nota": ""
+  },
+  {
+   "caso": "14a_sr_distinta",
+   "esperado": "INCOMPATIBLE",
+   "observado": "INCOMPATIBLE",
+   "pasa": true,
+   "formulas": [
+    "SDI2"
+   ],
+   "nota": ""
+  },
+  {
+   "caso": "14b_canales_distintos",
+   "esperado": "INCOMPATIBLE",
+   "observado": "INCOMPATIBLE",
+   "pasa": true,
+   "formulas": [
+    "SDI2"
+   ],
+   "nota": ""
+  },
+  {
+   "caso": "14c_longitud_distinta",
+   "esperado": "INCOMPATIBLE",
+   "observado": "INCOMPATIBLE",
+   "pasa": true,
+   "formulas": [
+    "SDI2"
+   ],
+   "nota": ""
+  },
+  {
+   "caso": "14d_subtype_distinto",
+   "esperado": "INCOMPATIBLE",
+   "observado": "INCOMPATIBLE",
+   "pasa": true,
+   "formulas": [
+    "SDI2"
+   ],
+   "nota": ""
+  },
+  {
+   "caso": "14e_nan_inf",
+   "esperado": "REJECTED",
+   "observado": "REJECTED",
+   "pasa": true,
+   "formulas": [
+    "SDI2"
+   ],
+   "nota": ""
+  },
+  {
+   "caso": "15_lr_asimetrico_gt",
+   "esperado": "ACCEPT",
+   "observado": "ACCEPT",
+   "pasa": true,
+   "formulas": [
+    "SDI1",
+    "SDI2",
+    "SDV1",
+    "SDV2"
+   ],
+   "nota": "SDV1 y SDI1 deben coincidir EXACTO con V_true e I_true"
+  },
+  {
+   "caso": "16a_corrupto",
+   "esperado": "REJECTED",
+   "observado": "REJECTED",
+   "pasa": true,
+   "formulas": [
+    "SDI2"
+   ],
+   "nota": ""
+  },
+  {
+   "caso": "16b_no_wav",
+   "esperado": "INCOMPLETE",
+   "observado": "INCOMPLETE",
+   "pasa": true,
+   "formulas": [
+    "SDI2",
+    "SDV2"
+   ],
+   "nota": "el .txt se ignora y se registra en el inventario"
+  },
+  {
+   "caso": "17a_mix_ausente",
+   "esperado": "REJECTED",
+   "observado": "REJECTED",
+   "pasa": true,
+   "formulas": [],
+   "nota": ""
+  },
+  {
+   "caso": "17b_dos_mix",
+   "esperado": "REJECTED",
+   "observado": "REJECTED",
+   "pasa": true,
+   "formulas": [],
+   "nota": ""
+  },
+  {
+   "caso": "17c_hash_cambiado",
+   "esperado": "REJECTED",
+   "observado": "REJECTED",
+   "pasa": true,
+   "formulas": [],
+   "nota": ""
+  }
+ ]
+}

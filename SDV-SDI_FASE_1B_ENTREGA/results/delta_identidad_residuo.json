@@ -1,0 +1,23 @@
+[
+ {
+  "caso": "base_compatible",
+  "max_abs_residuo": 0.0,
+  "max_abs_residuo_menos_e_id": 0.0,
+  "rms_e_id": 0.0,
+  "identidad_exacta": true
+ },
+ {
+  "caso": "desfase_5ms",
+  "max_abs_residuo": 0.4449946880340576,
+  "max_abs_residuo_menos_e_id": 0.0,
+  "rms_e_id": 0.09096655815461535,
+  "identidad_exacta": true
+ },
+ {
+  "caso": "polaridad_invertida",
+  "max_abs_residuo": 0.8392806053161621,
+  "max_abs_residuo_menos_e_id": 0.0,
+  "rms_e_id": 0.1660133087203641,
+  "identidad_exacta": true
+ }
+]

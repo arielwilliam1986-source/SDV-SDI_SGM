@@ -1,0 +1,26 @@
+[
+ {
+  "caso": "guias_exactas",
+  "rc": 0,
+  "snr_e_db": 149.02191757190553,
+  "rms_e": 5.572263996043725e-09,
+  "max_abs_e": 4.470348358154297e-08,
+  "complementaria_100dB": true
+ },
+ {
+  "caso": "guias_atenuadas_0.8",
+  "rc": 0,
+  "snr_e_db": 13.979400076097445,
+  "rms_e": 0.03148890498816157,
+  "max_abs_e": 0.14942361414432526,
+  "complementaria_100dB": false
+ },
+ {
+  "caso": "guias_0.8_mas_ruido",
+  "rc": 0,
+  "snr_e_db": 11.409920134488187,
+  "rms_e": 0.04232837105317474,
+  "max_abs_e": 0.23116277903318405,
+  "complementaria_100dB": false
+ }
+]

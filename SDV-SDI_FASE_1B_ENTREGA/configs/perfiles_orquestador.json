@@ -1,0 +1,140 @@
+{
+ "schema": "orchestrator_profile/1",
+ "extensiones": [
+  ".wav"
+ ],
+ "mix_patrones": [
+  "^Mix(_|\\.)",
+  "^Mix$"
+ ],
+ "resolucion": {
+  "empate_prioridad": "AMBIGUOUS",
+  "primer_match": false,
+  "no_truncar": true,
+  "no_resamplear": true
+ },
+ "perfiles": [
+  {
+   "model_id": "mvsep_simple",
+   "version": "1.0",
+   "arbol": "Stems Masks Simples",
+   "procedencia": "EVIDENCIA: MANIFEST_SEP_SDV-SDI.json -> guide_pairs usa 'parN_<modelo>_vocals_full.wav' y 'parN_<modelo>_instrum_only.wav'. Se aceptan ademas los sufijos que espera orquestador_maestro.py ('_vocals.wav'/'_instrum.wav', l.27-29) con prioridad menor. Se añade una segunda convencion de IGUAL prioridad (_instrumental/_acapella) para poder probar el caso de dos ficheros que reclaman el mismo rol en la misma corrida: patrones anclados y con run hacen imposible el duplicado exacto de nombre.",
+   "roles": {
+    "INSTRUMENTAL": [
+     {
+      "regex": "^(?P<run>.+?)_instrum_only\\.wav$",
+      "prioridad": 20
+     },
+     {
+      "regex": "^(?P<run>.+?)_instrum\\.wav$",
+      "prioridad": 10
+     },
+     {
+      "regex": "^(?P<run>.+?)_instrumental\\.wav$",
+      "prioridad": 20
+     }
+    ],
+    "VOCALS": [
+     {
+      "regex": "^(?P<run>.+?)_vocals_full\\.wav$",
+      "prioridad": 20
+     },
+     {
+      "regex": "^(?P<run>.+?)_vocals\\.wav$",
+      "prioridad": 10
+     },
+     {
+      "regex": "^(?P<run>.+?)_acapella\\.wav$",
+      "prioridad": 20
+     }
+    ]
+   }
+  },
+  {
+   "model_id": "reverb_tagged",
+   "version": "1.0",
+   "arbol": "Stems Masks Reverb Removal",
+   "procedencia": "SINTETICO, NO OBSERVADO. Ninguna etiqueta [A]/[C]/[D] aparece en los manifiestos entregados (0 coincidencias en MANIFEST_SEP_SDV-SDI.json y manifest_genio.json). Los patrones se derivan de la convencion que el propio orquestador_maestro.py espera en l.51-53 y de la semantica A/B/C/D/E del encargo (4.3). Son fixtures etiquetados, no nombres reales.",
+   "roles": {
+    "A_RESTORED": [
+     {
+      "regex": "^(?P<run>.+?)_\\[A\\]\\.wav$",
+      "prioridad": 20
+     }
+    ],
+    "B_INSTRUMENT": [
+     {
+      "regex": "^(?P<run>.+?)_\\[B\\]\\.wav$",
+      "prioridad": 20
+     }
+    ],
+    "C_REVERB": [
+     {
+      "regex": "^(?P<run>.+?)(?:[_ ]Reverb)\\s*\\[C\\]\\.wav$",
+      "prioridad": 30
+     }
+    ],
+    "C_OTHERS": [
+     {
+      "regex": "^(?P<run>.+?)(?:[_ ]Others)\\s*\\[C\\]\\.wav$",
+      "prioridad": 30
+     }
+    ],
+    "C_AGGREGATE": [
+     {
+      "regex": "^(?P<run>.+?)_\\[C\\]\\.wav$",
+      "prioridad": 10,
+      "excluye": [
+       "Reverb\\s*\\[C\\]",
+       "Others\\s*\\[C\\]"
+      ]
+     }
+    ],
+    "D_DRY_VOCAL": [
+     {
+      "regex": "^(?P<run>.+?)_\\[D\\]\\.wav$",
+      "prioridad": 20
+     }
+    ],
+    "E_VOCALS": [
+     {
+      "regex": "^(?P<run>.+?)_\\[E\\]\\.wav$",
+      "prioridad": 20
+     }
+    ]
+   }
+  },
+  {
+   "model_id": "modelo_nuevo_x",
+   "version": "0.1",
+   "procedencia": "SINTETICO: demuestra que un perfil puede declarar nombres completamente distintos, sin corchetes y sin relacion con sucial/anvuew, sin tocar el codigo de calculo.",
+   "roles": {
+    "A_RESTORED": [
+     {
+      "regex": "^(?P<run>.+?)__restored\\.wav$"
+     }
+    ],
+    "B_INSTRUMENT": [
+     {
+      "regex": "^(?P<run>.+?)__backing\\.wav$"
+     }
+    ],
+    "C_AGGREGATE": [
+     {
+      "regex": "^(?P<run>.+?)__wet\\.wav$"
+     }
+    ],
+    "D_DRY_VOCAL": [
+     {
+      "regex": "^(?P<run>.+?)__dryvox\\.wav$"
+     }
+    ],
+    "E_VOCALS": [
+     {
+      "regex": "^(?P<run>.+?)__vox\\.wav$"
+     }
+    ]
+   }
+  }
+ ]
+}

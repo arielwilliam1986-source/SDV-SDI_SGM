@@ -1,0 +1,22 @@
+{
+ "rc": 0,
+ "c": {
+  "sr": 48000,
+  "frames": 96000,
+  "dur_s": 2.0
+ },
+ "mix": {
+  "sr": 44100,
+  "frames": 88200,
+  "dur_s": 2.0
+ },
+ "sdi": {
+  "sr": 44100,
+  "frames": 88200,
+  "dur_s": 2.0
+ },
+ "muestras_descartadas": 7800,
+ "factor_duracion": 1.0,
+ "factor_pitch": 0.91875,
+ "aviso": "NINGUNO"
+}

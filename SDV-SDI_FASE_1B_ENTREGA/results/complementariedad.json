@@ -1,0 +1,44 @@
+[
+ {
+  "rama": "normal",
+  "n_muestras": 176400,
+  "rms_e": 5.572263996043725e-09,
+  "rms_mix": 0.1574445247482516,
+  "pct_del_mix": 3.539191982035313e-06,
+  "snr_db": 149.02191757190553,
+  "max_abs_e": 4.470348358154297e-08,
+  "complementaria_umbral_100dB": true,
+  "sdv_mas_sdi_igual_mix_exacto": false,
+  "mix_path": "/home/user/fase1b/FASE_1B_RESULTADOS/work/c/v3_normal/mix.wav",
+  "sdv_path": "/home/user/fase1b/FASE_1B_RESULTADOS/work/c/v3_normal/out/motorV3_run_20261117_123934/mix SDV [Normal].wav",
+  "sdi_path": "/home/user/fase1b/FASE_1B_RESULTADOS/work/c/v3_normal/out/motorV3_run_20261117_123934/mix SDI [Normal].wav"
+ },
+ {
+  "rama": "ratio",
+  "n_muestras": 176400,
+  "rms_e": 3.829783114582358e-09,
+  "rms_mix": 0.1574445247482516,
+  "pct_del_mix": 2.4324650988696176e-06,
+  "snr_db": 152.27906764587527,
+  "max_abs_e": 2.2351741790771484e-08,
+  "complementaria_umbral_100dB": true,
+  "sdv_mas_sdi_igual_mix_exacto": false,
+  "mix_path": "/home/user/fase1b/FASE_1B_RESULTADOS/work/c/v3_ratio/mix.wav",
+  "sdv_path": "/home/user/fase1b/FASE_1B_RESULTADOS/work/c/v3_ratio/out/motorV3_run_20261117_123935/mix SDV [Ratio].wav",
+  "sdi_path": "/home/user/fase1b/FASE_1B_RESULTADOS/work/c/v3_ratio/out/motorV3_run_20261117_123935/mix SDI [Ratio].wav"
+ },
+ {
+  "rama": "identity",
+  "n_muestras": 176400,
+  "rms_e": 3.818971289391808e-09,
+  "rms_mix": 0.1574445247482516,
+  "pct_del_mix": 2.425598029209471e-06,
+  "snr_db": 152.3036233782151,
+  "max_abs_e": 2.9802322387695312e-08,
+  "complementaria_umbral_100dB": true,
+  "sdv_mas_sdi_igual_mix_exacto": false,
+  "mix_path": "/home/user/fase1b/FASE_1B_RESULTADOS/work/c/v3_identity/mix.wav",
+  "sdv_path": "/home/user/fase1b/FASE_1B_RESULTADOS/work/c/v3_identity/out/motorV3_run_20261117_123937/mix SDV [Identity].wav",
+  "sdi_path": "/home/user/fase1b/FASE_1B_RESULTADOS/work/c/v3_identity/out/motorV3_run_20261117_123937/mix SDI [Identity].wav"
+ }
+]

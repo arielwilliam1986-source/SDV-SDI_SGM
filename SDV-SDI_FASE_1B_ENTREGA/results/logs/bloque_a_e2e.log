@@ -1,0 +1,38 @@
+### 1. inventario estatico
+  v3              cli_consensus=1851 cli_order=None cfm=None bloque_iguales=None
+  hardened_3.1.1  cli_consensus=1869 cli_order=1865 cfm=837 bloque_iguales=1541
+  evo_3.1.1       cli_consensus=2015 cli_order=2011 cfm=872 bloque_iguales=1651
+  mqr             cli_consensus=3371 cli_order=None cfm=1382 bloque_iguales=None
+
+### 2. extremo a extremo (--consensus cambia la salida?)
+  hardened_3.1.1 order=magnitudes_first   weighted_mean            rc=0 audio_sdv=e6beac25a8fb
+  hardened_3.1.1 order=magnitudes_first   median                   rc=0 audio_sdv=e6beac25a8fb
+  hardened_3.1.1 order=magnitudes_first   confidence_weighted_mean rc=0 audio_sdv=e6beac25a8fb
+  hardened_3.1.1 order=masks_first        weighted_mean            rc=0 audio_sdv=1cfced96b587
+  hardened_3.1.1 order=masks_first        median                   rc=0 audio_sdv=26d82eafa64b
+  hardened_3.1.1 order=masks_first        confidence_weighted_mean rc=0 audio_sdv=0d32fc24ba3e
+  evo_3.1.1      order=magnitudes_first   weighted_mean            rc=0 audio_sdv=e6beac25a8fb
+  evo_3.1.1      order=magnitudes_first   median                   rc=0 audio_sdv=e6beac25a8fb
+  evo_3.1.1      order=magnitudes_first   confidence_weighted_mean rc=0 audio_sdv=e6beac25a8fb
+  evo_3.1.1      order=masks_first        weighted_mean            rc=0 audio_sdv=1cfced96b587
+  evo_3.1.1      order=masks_first        median                   rc=0 audio_sdv=26d82eafa64b
+  evo_3.1.1      order=masks_first        confidence_weighted_mean rc=0 audio_sdv=0d32fc24ba3e
+  evo_3.1.1      order=hybrid_asymmetric  weighted_mean            rc=0 audio_sdv=9ab899047eb0
+  evo_3.1.1      order=hybrid_asymmetric  median                   rc=0 audio_sdv=d5a01fd86b68
+  evo_3.1.1      order=hybrid_asymmetric  confidence_weighted_mean rc=0 audio_sdv=5b0b90986638
+  v3             order=None               magnitudes_first         rc=0 audio_sdv=3a9e2b4ad7e0
+  v3             order=None               mean                     rc=0 audio_sdv=8d61818ee84f
+  v3             order=None               median                   rc=0 audio_sdv=facb101cc777
+  v3             order=None               median_ri                rc=0 audio_sdv=3bab9dfdcc02
+  mqr            order=None               weighted_mean            rc=130 audio_sdv=None
+  mqr            order=None               median                   rc=130 audio_sdv=None
+  mqr            order=None               confidence_weighted_mean rc=130 audio_sdv=None
+
+  VEREDICTO por (motor, orden):
+    hardened_3.1.1 order=magnitudes_first   salidas distintas=1/3 -> llega_a_operacion=False
+    hardened_3.1.1 order=masks_first        salidas distintas=3/3 -> llega_a_operacion=True
+    evo_3.1.1      order=magnitudes_first   salidas distintas=1/3 -> llega_a_operacion=False
+    evo_3.1.1      order=masks_first        salidas distintas=3/3 -> llega_a_operacion=True
+    evo_3.1.1      order=hybrid_asymmetric  salidas distintas=3/3 -> llega_a_operacion=True
+    v3             order=None               salidas distintas=4/4 -> llega_a_operacion=True
+    mqr            order=None               salidas distintas=0/0 -> llega_a_operacion=False

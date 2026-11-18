@@ -1,0 +1,40 @@
+{
+ "fichero": "mix_delta.py",
+ "n_lineas": 402,
+ "sha256": null,
+ "formulas": {
+  "SDI_x": "SDI_x = mix - V_hat_x",
+  "complementariedad_e": "e_norm := mix - SDV_norm - SDI_norm",
+  "Delta_indirecta": "Delta = SDI_identity - SDI_normal",
+  "identidad": "Delta_indirecta = (SDV_norm - SDV_id) + e_norm = Delta_directa + e_norm",
+  "hibrido": "SDV_hibrido = SDV_norm + gain*Delta",
+  "hibrido_desarrollado": "SDV_hibrido = SDV_norm + gain*(SDV_norm - SDV_id) + gain*e_norm"
+ },
+ "lineas": {
+  "docstring_formulas": [
+   3,
+   40
+  ],
+  "umbral_complementariedad": 85,
+  "check_compatibility": 154,
+  "estimate_lag_ms": 183,
+  "calculo_e_norm": 315,
+  "calculo_delta": 297,
+  "calculo_hibrido": 301,
+  "aviso_desfase": 285,
+  "fatal_largos": 170,
+  "fatal_ambiguo": 116
+ },
+ "texto_delta": "delta_vocal = sdi_id - sdi_norm",
+ "texto_hibrido": "sdv_hybrid = sdv_norm + (args.gain * delta_vocal)",
+ "busqueda_sdi_f2": {
+  "patrones": [
+   "SDI_F2",
+   "SDI_F",
+   "F2"
+  ],
+  "hallazgos": {},
+  "SDI_F2_presente": false,
+  "conclusion": "SDI_F2 NO aparece en ninguna fuente ni manifiesto del paquete"
+ }
+}

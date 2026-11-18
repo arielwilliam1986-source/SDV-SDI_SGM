@@ -1,0 +1,78 @@
+{
+ "fase": "1B",
+ "generado_desde": "resultados crudos de los bloques A-D",
+ "n_registros": 7724,
+ "por_bloque": {
+  "A": {
+   "registros": 439,
+   "claves": [
+    "consenso_complejo.csv",
+    "consenso_e2e.csv",
+    "consenso_e2e_metodo.json",
+    "consenso_inventario.json",
+    "consenso_mallas.csv"
+   ],
+   "estados": {
+    "DOCUMENTED_FACT": 17,
+    "EXPERIMENTAL_RESULT": 422
+   }
+  },
+  "B": {
+   "registros": 7030,
+   "claves": [
+    "alineacion_casos.csv",
+    "alineacion_resumen.json"
+   ],
+   "estados": {
+    "EXPERIMENTAL_RESULT": 7030
+   }
+  },
+  "C": {
+   "registros": 49,
+   "claves": [
+    "complementariedad.json",
+    "complementariedad_guias_degradadas.json",
+    "complementariedad_trivial.json",
+    "delta_identidad_residuo.json",
+    "mix_delta_auditoria.json",
+    "mix_delta_guardas.json"
+   ],
+   "estados": {
+    "UNKNOWN": 2,
+    "EXPERIMENTAL_RESULT": 47
+   }
+  },
+  "D": {
+   "registros": 206,
+   "claves": [
+    "bloque_d_demo_sr48_real.json",
+    "bloque_d_orquestador.json"
+   ],
+   "estados": {
+    "DOCUMENTED_FACT": 48,
+    "EXPERIMENTAL_RESULT": 158
+   }
+  }
+ },
+ "veredictos": {
+  "A": {
+   "estado": "cerrado",
+   "hecho": "solo masks_first/hybrid_asymmetric/v3 cambian la operacion"
+  },
+  "B": {
+   "estado": "diagnostico experimental cerrado",
+   "cifra": "554/780 aciertos; 2 propuestas NO aplicadas"
+  },
+  "C": {
+   "SDI_F2": "UNKNOWN",
+   "hecho": "residuo de la identidad = e_id exacto"
+  },
+  "D": {
+   "fixtures_ok": 27,
+   "fixtures_total": 27,
+   "auditoria_confirmados": 16,
+   "auditoria_total": 16
+  }
+ },
+ "faltantes_declarados": []
+}

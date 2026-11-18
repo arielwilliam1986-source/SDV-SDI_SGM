@@ -1,0 +1,43 @@
+### 1. auditoria estatica
+  SDI_F2 presente: False
+  -> SDI_F2 NO aparece en ninguna fuente ni manifiesto del paquete
+  formulas: SDV_hibrido = SDV_norm + gain*Delta
+  lineas: {'docstring_formulas': (3, 40), 'umbral_complementariedad': 85, 'check_compatibility': 154, 'estimate_lag_ms': 183, 'calculo_e_norm': 315, 'calculo_delta': 297, 'calculo_hibrido': 301, 'aviso_desfase': 285, 'fatal_largos': 170, 'fatal_ambiguo': 116}
+
+### 2. complementariedad e = M - SDV - SDI por rama
+  rama normal    SNR(e)=   149.02 dB  rms(e)=5.572e-09  max|e|=4.470e-08  complementaria=True
+  rama ratio     SNR(e)=   152.28 dB  rms(e)=3.830e-09  max|e|=2.235e-08  complementaria=True
+  rama identity  SNR(e)=   152.30 dB  rms(e)=3.819e-09  max|e|=2.980e-08  complementaria=True
+
+### 3. mix_delta + identidad Delta_indirecta
+  identidad Delta_indirecta = (SDV_norm-SDV_id) + e_norm: max|d|=2.980e-08 -> False
+
+### 3b. control: complementariedad NO es separacion
+  trivial_SDV=mix_SDI=0    SNR(e)=   336.87 dB  complementaria=True  separacion=nula
+  trivial_SDV=0_SDI=mix    SNR(e)=   336.87 dB  complementaria=True  separacion=nula
+  correcto_SDV=V_SDI=I     SNR(e)=   325.83 dB  complementaria=True  separacion=ground truth exacta
+
+### 3c. guias degradadas -> e_norm deja de ser cero
+  guias_exactas          SNR(e)=   149.02 dB  max|e|=4.470e-08  complementaria=True
+  guias_atenuadas_0.8    SNR(e)=    13.98 dB  max|e|=1.494e-01  complementaria=False
+  guias_0.8_mas_ruido    SNR(e)=    11.41 dB  max|e|=2.312e-01  complementaria=False
+
+### 4. guardas
+  base_compatible            rc=0   out=True  | [*] Buscando archivos (identificacion unica; sin primer-match)...
+  sr_distinto                rc=1   out=False | [FATAL] sample_rate incompatible entre entradas: {'sdv_norm': 44100, 'sdi_norm': 44100, 'sdi_id'
+  canales_distintos          rc=1   out=False | [FATAL] numero de canales incompatible entre entradas: {'sdv_norm': 2, 'sdi_norm': 2, 'sdi_id': 
+  longitudes_distintas       rc=1   out=False | [FATAL] duraciones distintas (NO se trunca en silencio): {'sdv_norm': 88200, 'sdi_norm': 88200, 
+  longitudes_allow_crop      rc=1   out=False | [FATAL] sdv_id: frames/sr/ch (87200/44100/2) != SDV normal (88200/44100/2). Posible mezcla de ej
+  desfase_5ms                rc=0   out=True  | [*] Buscando archivos (identificacion unica; sin primer-match)...
+  polaridad_invertida        rc=0   out=True  | [*] Buscando archivos (identificacion unica; sin primer-match)...
+  ambiguedad_2_candidatos    rc=2   out=False | [FATAL] sdi_id: 2 candidatos ambiguos para *SDI*.wav en /home/user/fase1b/FASE_1B_RESULTADOS/wor
+  sin_candidatos             rc=1   out=False | [FATAL] No se encontro ningun archivo *SDI*.wav en: /home/user/fase1b/FASE_1B_RESULTADOS/work/c/
+  mix_longitud_distinta      rc=1   out=False | [FATAL] mix: frames/sr/ch (87700/44100/2) != SDV normal (88200/44100/2). Posible mezcla de ejecu
+
+### 4b. el residuo de la identidad es exactamente e_id
+  base_compatible        max|residuo|=0.000e+00  max|residuo - e_id|=0.000e+00  -> identidad con e_id: True
+  desfase_5ms            max|residuo|=4.450e-01  max|residuo - e_id|=0.000e+00  -> identidad con e_id: True
+  polaridad_invertida    max|residuo|=8.393e-01  max|residuo - e_id|=0.000e+00  -> identidad con e_id: True
+
+### 4c. aislando el aborto de --allow-crop
+  allow_crop_sin_sdv_id      rc=0  out=True

@@ -1,0 +1,72 @@
+[
+ {
+  "caso": "base_compatible",
+  "rc": 0,
+  "stdout": "[*] Buscando archivos (identificacion unica; sin primer-match)...\n    [Base]   SDV Normal: /home/user/fase1b/FASE_1B_RESULTADOS/work/c/guardas/norm/SDV.wav\n    [Base]   SDI Normal: /home/user/fase1b/FASE_1B_RESULTADOS/work/c/guardas/norm/SDI.wav\n    [Delta]  SDI Identity: /home/user/fase1b/FASE_1B_RESULTADOS/work/c/guardas/id/SDI.wav\n    [Diag]   SDV Identity: /home/user/fase1b/FASE_1B_RESULTADOS/work/c/guardas/id/SDV.wav\n[*] Desfase estimado SDI_norm vs SDI_id: +0.000 ms\n[*] Delta_indirecta = SDI_identity - SDI_normal  (= (SDV_norm - SDV_id) + e_norm; ver docstring AUDIT_014 v2)\n[*] SDV_hib = SDV_norm + 0.5 * Delta_indirecta  (extrapolacion lineal; NO es afirmacion de recuperacion vocal)\n[*] Complementariedad de la rama Normal (--mix):\n    e_norm rms = 5.182095e-09  (0.0000% del mix)  SNR = 150.11 dB  -> COMPLEMENTARIA\n    [OK] Normal complementaria dentro del umbral (100 dB): la equivalencia Delta_indirecta ~= Delta_directa se sostiene.\n[*] Diagnostico Delta_directa = SDV_norm - SDV_id: rms=1.936641e-02 max=1.017053e-01\n    Consistencia Delta_ind = Delta_dir + e_norm: max|residuo| = 0.000e+00\n[OK] SDV Hibrido guardado en: /home/user/fase1b/FASE_1B_RESULTADOS/work/c/guardas/out_base_compatible/hib.wav\n[*] Procedencia: /home/user/fase1b/FASE_1B_RESULTADOS/work/c/guardas/out_base_compatible/hib.wav.provenance.json\n    sdv_norm: /home/user/fase1b/FASE_1B_RESULTADOS/work/c/guardas/norm/SDV.wav  sha256=e279eb19d2d29d68...\n    sdi_norm: /home/user/fase1b/FASE_1B_RESULTADOS/work/c/guardas/norm/SDI.wav  sha256=2708d11add17a471...\n    sdi_id: /home/user/fase1b/FASE_1B_RESULTADOS/work/c/guardas/id/SDI.wav  sha256=dc7d0f73b9f7d5be...\n    mix: /home/user/fase1b/FASE_1B_RESULTADOS/work/c/guardas/mix.wav  sha256=a3bc0da25b7b4316...\n    sdv_id: /home/user/fase1b/FASE_1B_RESULTADOS/work/c/guardas/id/SDV.wav  sha256=dc7d0f73b9f7d5be...\n",
+  "stderr": "",
+  "out_existe": true
+ },
+ {
+  "caso": "sr_distinto",
+  "rc": 1,
+  "stdout": "[*] Buscando archivos (identificacion unica; sin primer-match)...\n    [Base]   SDV Normal: /home/user/fase1b/FASE_1B_RESULTADOS/work/c/guardas/norm/SDV.wav\n    [Base]   SDI Normal: /home/user/fase1b/FASE_1B_RESULTADOS/work/c/guardas/norm/SDI.wav\n    [Delta]  SDI Identity: /home/user/fase1b/FASE_1B_RESULTADOS/work/c/guardas/id48/SDI.wav\n    [Diag]   SDV Identity: /home/user/fase1b/FASE_1B_RESULTADOS/work/c/guardas/id48/SDV.wav\n",
+  "stderr": "[FATAL] sample_rate incompatible entre entradas: {'sdv_norm': 44100, 'sdi_norm': 44100, 'sdi_id': 48000}\n",
+  "out_existe": false
+ },
+ {
+  "caso": "canales_distintos",
+  "rc": 1,
+  "stdout": "[*] Buscando archivos (identificacion unica; sin primer-match)...\n    [Base]   SDV Normal: /home/user/fase1b/FASE_1B_RESULTADOS/work/c/guardas/norm/SDV.wav\n    [Base]   SDI Normal: /home/user/fase1b/FASE_1B_RESULTADOS/work/c/guardas/norm/SDI.wav\n    [Delta]  SDI Identity: /home/user/fase1b/FASE_1B_RESULTADOS/work/c/guardas/idmono/SDI.wav\n    [Diag]   SDV Identity: /home/user/fase1b/FASE_1B_RESULTADOS/work/c/guardas/idmono/SDV.wav\n",
+  "stderr": "[FATAL] numero de canales incompatible entre entradas: {'sdv_norm': 2, 'sdi_norm': 2, 'sdi_id': 1}\n",
+  "out_existe": false
+ },
+ {
+  "caso": "longitudes_distintas",
+  "rc": 1,
+  "stdout": "[*] Buscando archivos (identificacion unica; sin primer-match)...\n    [Base]   SDV Normal: /home/user/fase1b/FASE_1B_RESULTADOS/work/c/guardas/norm/SDV.wav\n    [Base]   SDI Normal: /home/user/fase1b/FASE_1B_RESULTADOS/work/c/guardas/norm/SDI.wav\n    [Delta]  SDI Identity: /home/user/fase1b/FASE_1B_RESULTADOS/work/c/guardas/idcorto/SDI.wav\n    [Diag]   SDV Identity: /home/user/fase1b/FASE_1B_RESULTADOS/work/c/guardas/idcorto/SDV.wav\n",
+  "stderr": "[FATAL] duraciones distintas (NO se trunca en silencio): {'sdv_norm': 88200, 'sdi_norm': 88200, 'sdi_id': 87200} muestras. Re-aligna las corridas o repite con --allow-crop para recortar explicitamente a 87200.\n",
+  "out_existe": false
+ },
+ {
+  "caso": "longitudes_allow_crop",
+  "rc": 1,
+  "stdout": "[*] Buscando archivos (identificacion unica; sin primer-match)...\n    [Base]   SDV Normal: /home/user/fase1b/FASE_1B_RESULTADOS/work/c/guardas/norm/SDV.wav\n    [Base]   SDI Normal: /home/user/fase1b/FASE_1B_RESULTADOS/work/c/guardas/norm/SDI.wav\n    [Delta]  SDI Identity: /home/user/fase1b/FASE_1B_RESULTADOS/work/c/guardas/idcorto/SDI.wav\n    [Diag]   SDV Identity: /home/user/fase1b/FASE_1B_RESULTADOS/work/c/guardas/idcorto/SDV.wav\n[!] --allow-crop: recorte EXPLICITO a 87200 muestras (originales: {'sdv_norm': 88200, 'sdi_norm': 88200, 'sdi_id': 87200}).\n    sdv_norm: 88200 -> 87200 (1000 muestras fuera)\n    sdi_norm: 88200 -> 87200 (1000 muestras fuera)\n    sdi_id: 87200 -> 87200 (0 muestras fuera)\n",
+  "stderr": "[FATAL] sdv_id: frames/sr/ch (87200/44100/2) != SDV normal (88200/44100/2). Posible mezcla de ejecuciones distintas: se aborta.\n",
+  "out_existe": false
+ },
+ {
+  "caso": "desfase_5ms",
+  "rc": 0,
+  "stdout": "[*] Buscando archivos (identificacion unica; sin primer-match)...\n    [Base]   SDV Normal: /home/user/fase1b/FASE_1B_RESULTADOS/work/c/guardas/norm/SDV.wav\n    [Base]   SDI Normal: /home/user/fase1b/FASE_1B_RESULTADOS/work/c/guardas/norm/SDI.wav\n    [Delta]  SDI Identity: /home/user/fase1b/FASE_1B_RESULTADOS/work/c/guardas/iddesfase/SDI.wav\n    [Diag]   SDV Identity: /home/user/fase1b/FASE_1B_RESULTADOS/work/c/guardas/iddesfase/SDV.wav\n[*] Desfase estimado SDI_norm vs SDI_id: -4.989 ms\n[!] AVISO: las corridas parecen desalineadas (>2 ms). El Delta puede dominar por DESFASE, no por informacion vocal.\n[*] Delta_indirecta = SDI_identity - SDI_normal  (= (SDV_norm - SDV_id) + e_norm; ver docstring AUDIT_014 v2)\n[*] SDV_hib = SDV_norm + 0.5 * Delta_indirecta  (extrapolacion lineal; NO es afirmacion de recuperacion vocal)\n[*] Complementariedad de la rama Normal (--mix):\n    e_norm rms = 5.182095e-09  (0.0000% del mix)  SNR = 150.11 dB  -> COMPLEMENTARIA\n    [OK] Normal complementaria dentro del umbral (100 dB): la equivalencia Delta_indirecta ~= Delta_directa se sostiene.\n[*] Diagnostico Delta_directa = SDV_norm - SDV_id: rms=1.936641e-02 max=1.017053e-01\n    Consistencia Delta_ind = Delta_dir + e_norm: max|residuo| = 4.450e-01\n[OK] SDV Hibrido guardado en: /home/user/fase1b/FASE_1B_RESULTADOS/work/c/guardas/out_desfase_5ms/hib.wav\n[*] Procedencia: /home/user/fase1b/FASE_1B_RESULTADOS/work/c/guardas/out_desfase_5ms/hib.wav.provenance.json\n    sdv_norm: /home/user/fase1b/FASE_1B_RESULTADOS/work/c/guardas/norm/SDV.wav  sha256=e279eb19d2d29d68...\n    sdi_norm: /home/user/fase1b/FASE_1B_RESULTADOS/work/c/guardas/norm/SDI.wav  sha256=2708d11add17a471...\n    sdi_id: /home/user/fase1b/FASE_1B_RESULTADOS/work/c/guardas/iddesfase/SDI.wav  sha256=f85cc9c64440f10d...\n    mix: /home/user/fase1b/FASE_1B_RESULTADOS/work/c/guardas/mix.wav  sha256=a3bc0da25b7b4316...\n    sdv_id: /home/user/fase1b/FASE_1B_RESULTADOS/work/c/guardas/iddesfase/SDV.wav  sha256=3fa9c931164f0425...\n",
+  "stderr": "",
+  "out_existe": true
+ },
+ {
+  "caso": "polaridad_invertida",
+  "rc": 0,
+  "stdout": "[*] Buscando archivos (identificacion unica; sin primer-match)...\n    [Base]   SDV Normal: /home/user/fase1b/FASE_1B_RESULTADOS/work/c/guardas/norm/SDV.wav\n    [Base]   SDI Normal: /home/user/fase1b/FASE_1B_RESULTADOS/work/c/guardas/norm/SDI.wav\n    [Delta]  SDI Identity: /home/user/fase1b/FASE_1B_RESULTADOS/work/c/guardas/idpolaridad/SDI.wav\n    [Diag]   SDV Identity: /home/user/fase1b/FASE_1B_RESULTADOS/work/c/guardas/idpolaridad/SDV.wav\n[*] Desfase estimado SDI_norm vs SDI_id: +0.000 ms\n[*] Delta_indirecta = SDI_identity - SDI_normal  (= (SDV_norm - SDV_id) + e_norm; ver docstring AUDIT_014 v2)\n[*] SDV_hib = SDV_norm + 0.5 * Delta_indirecta  (extrapolacion lineal; NO es afirmacion de recuperacion vocal)\n[*] Complementariedad de la rama Normal (--mix):\n    e_norm rms = 5.182095e-09  (0.0000% del mix)  SNR = 150.11 dB  -> COMPLEMENTARIA\n    [OK] Normal complementaria dentro del umbral (100 dB): la equivalencia Delta_indirecta ~= Delta_directa se sostiene.\n[*] Diagnostico Delta_directa = SDV_norm - SDV_id: rms=1.936641e-02 max=1.017053e-01\n    Consistencia Delta_ind = Delta_dir + e_norm: max|residuo| = 8.393e-01\n[OK] SDV Hibrido guardado en: /home/user/fase1b/FASE_1B_RESULTADOS/work/c/guardas/out_polaridad_invertida/hib.wav\n[*] Procedencia: /home/user/fase1b/FASE_1B_RESULTADOS/work/c/guardas/out_polaridad_invertida/hib.wav.provenance.json\n    sdv_norm: /home/user/fase1b/FASE_1B_RESULTADOS/work/c/guardas/norm/SDV.wav  sha256=e279eb19d2d29d68...\n    sdi_norm: /home/user/fase1b/FASE_1B_RESULTADOS/work/c/guardas/norm/SDI.wav  sha256=2708d11add17a471...\n    sdi_id: /home/user/fase1b/FASE_1B_RESULTADOS/work/c/guardas/idpolaridad/SDI.wav  sha256=2a832e275f324151...\n    mix: /home/user/fase1b/FASE_1B_RESULTADOS/work/c/guardas/mix.wav  sha256=a3bc0da25b7b4316...\n    sdv_id: /home/user/fase1b/FASE_1B_RESULTADOS/work/c/guardas/idpolaridad/SDV.wav  sha256=3fa9c931164f0425...\n",
+  "stderr": "",
+  "out_existe": true
+ },
+ {
+  "caso": "ambiguedad_2_candidatos",
+  "rc": 2,
+  "stdout": "[*] Buscando archivos (identificacion unica; sin primer-match)...\n",
+  "stderr": "[FATAL] sdi_id: 2 candidatos ambiguos para *SDI*.wav en /home/user/fase1b/FASE_1B_RESULTADOS/work/c/guardas/ambiguo. Nadie elige el primero:\n    - /home/user/fase1b/FASE_1B_RESULTADOS/work/c/guardas/ambiguo/SDI.wav\n    - /home/user/fase1b/FASE_1B_RESULTADOS/work/c/guardas/ambiguo/SDI_copia.wav\n        Resuelve con el argumento explicito del paso (p.ej. --sdi-id RUTA).\n",
+  "out_existe": false
+ },
+ {
+  "caso": "sin_candidatos",
+  "rc": 1,
+  "stdout": "[*] Buscando archivos (identificacion unica; sin primer-match)...\n",
+  "stderr": "[FATAL] No se encontro ningun archivo *SDI*.wav en: /home/user/fase1b/FASE_1B_RESULTADOS/work/c/guardas/vacio\n",
+  "out_existe": false
+ },
+ {
+  "caso": "mix_longitud_distinta",
+  "rc": 1,
+  "stdout": "[*] Buscando archivos (identificacion unica; sin primer-match)...\n    [Base]   SDV Normal: /home/user/fase1b/FASE_1B_RESULTADOS/work/c/guardas/norm/SDV.wav\n    [Base]   SDI Normal: /home/user/fase1b/FASE_1B_RESULTADOS/work/c/guardas/norm/SDI.wav\n    [Delta]  SDI Identity: /home/user/fase1b/FASE_1B_RESULTADOS/work/c/guardas/id/SDI.wav\n    [Diag]   SDV Identity: /home/user/fase1b/FASE_1B_RESULTADOS/work/c/guardas/id/SDV.wav\n",
+  "stderr": "[FATAL] mix: frames/sr/ch (87700/44100/2) != SDV normal (88200/44100/2). Posible mezcla de ejecuciones distintas: se aborta.\n",
+  "out_existe": false
+ }
+]

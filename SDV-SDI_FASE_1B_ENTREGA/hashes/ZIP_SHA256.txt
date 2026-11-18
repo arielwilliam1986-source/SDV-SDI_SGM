@@ -1,0 +1,12 @@
+# El SHA-256 del ZIP no puede figurar dentro del propio ZIP:
+# al incluirlo cambiaria el fichero y por tanto su propio hash.
+#
+# El digest real se entrega en el sidecar externo:
+#     SDV-SDI_FASE_1B_ENTREGA.zip.sha256
+# y se calcula DESPUES de comprimir.
+#
+# Verificacion (desde la carpeta donde este el ZIP):
+#     sha256sum -c SDV-SDI_FASE_1B_ENTREGA.zip.sha256
+#
+# Para verificar el CONTENIDO, use hashes/SHA256SUMS.txt (71 ficheros, sin
+# autorreferencias): todas sus sumas cuadran con los ficheros del ZIP.

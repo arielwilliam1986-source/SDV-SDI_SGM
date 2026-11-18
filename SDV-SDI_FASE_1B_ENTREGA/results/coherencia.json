@@ -1,0 +1,540 @@
+{
+ "estructura": {
+  "exigidos": 17,
+  "faltan": []
+ },
+ "cifras": [
+  {
+   "bloque": "A",
+   "afirmacion": "hardened_3.1.1/magnitudes_first: metodos distintos en operacion",
+   "declarado": 1,
+   "recalculado": 1,
+   "fuente": "consenso_e2e_veredicto.json",
+   "cuadra": true
+  },
+  {
+   "bloque": "A",
+   "afirmacion": "hardened_3.1.1/magnitudes_first: max|delta| EXACTAMENTE 0",
+   "declarado": 0.0,
+   "recalculado": 0.0,
+   "fuente": "consenso_e2e_veredicto.json",
+   "cuadra": true
+  },
+  {
+   "bloque": "A",
+   "afirmacion": "hardened_3.1.1/masks_first: metodos distintos en operacion",
+   "declarado": 3,
+   "recalculado": 3,
+   "fuente": "consenso_e2e_veredicto.json",
+   "cuadra": true
+  },
+  {
+   "bloque": "A",
+   "afirmacion": "hardened_3.1.1/masks_first: max|delta| de audio",
+   "declarado": 0.002283,
+   "recalculado": 0.002283,
+   "fuente": "consenso_e2e_veredicto.json",
+   "cuadra": true
+  },
+  {
+   "bloque": "A",
+   "afirmacion": "evo_3.1.1/magnitudes_first: metodos distintos en operacion",
+   "declarado": 1,
+   "recalculado": 1,
+   "fuente": "consenso_e2e_veredicto.json",
+   "cuadra": true
+  },
+  {
+   "bloque": "A",
+   "afirmacion": "evo_3.1.1/magnitudes_first: max|delta| EXACTAMENTE 0",
+   "declarado": 0.0,
+   "recalculado": 0.0,
+   "fuente": "consenso_e2e_veredicto.json",
+   "cuadra": true
+  },
+  {
+   "bloque": "A",
+   "afirmacion": "evo_3.1.1/masks_first: metodos distintos en operacion",
+   "declarado": 3,
+   "recalculado": 3,
+   "fuente": "consenso_e2e_veredicto.json",
+   "cuadra": true
+  },
+  {
+   "bloque": "A",
+   "afirmacion": "evo_3.1.1/masks_first: max|delta| de audio",
+   "declarado": 0.002283,
+   "recalculado": 0.002283,
+   "fuente": "consenso_e2e_veredicto.json",
+   "cuadra": true
+  },
+  {
+   "bloque": "A",
+   "afirmacion": "evo_3.1.1/hybrid_asymmetric: metodos distintos en operacion",
+   "declarado": 3,
+   "recalculado": 3,
+   "fuente": "consenso_e2e_veredicto.json",
+   "cuadra": true
+  },
+  {
+   "bloque": "A",
+   "afirmacion": "evo_3.1.1/hybrid_asymmetric: max|delta| de audio",
+   "declarado": 0.002072,
+   "recalculado": 0.002072,
+   "fuente": "consenso_e2e_veredicto.json",
+   "cuadra": true
+  },
+  {
+   "bloque": "B",
+   "afirmacion": "casos totales",
+   "declarado": 780,
+   "recalculado": 780,
+   "fuente": "alineacion_resumen.json",
+   "cuadra": true
+  },
+  {
+   "bloque": "B",
+   "afirmacion": "aciertos",
+   "declarado": 554,
+   "recalculado": 554,
+   "fuente": "alineacion_resumen.json",
+   "cuadra": true
+  },
+  {
+   "bloque": "B",
+   "afirmacion": "falsos positivos",
+   "declarado": 10,
+   "recalculado": 10,
+   "fuente": "alineacion_resumen.json",
+   "cuadra": true
+  },
+  {
+   "bloque": "B",
+   "afirmacion": "falsos negativos",
+   "declarado": 0,
+   "recalculado": 0,
+   "fuente": "alineacion_resumen.json",
+   "cuadra": true
+  },
+  {
+   "bloque": "B",
+   "afirmacion": "casos con ratio_real_vs_max > 0.999",
+   "declarado": 752,
+   "recalculado": 752,
+   "fuente": "alineacion_casos.csv",
+   "cuadra": true
+  },
+  {
+   "bloque": "B",
+   "afirmacion": "alcance etapa gruesa libre",
+   "declarado": 554,
+   "recalculado": 554,
+   "fuente": "alineacion_casos.csv",
+   "cuadra": true
+  },
+  {
+   "bloque": "B",
+   "afirmacion": "alcance con solape >= 90 %",
+   "declarado": 602,
+   "recalculado": 602,
+   "fuente": "alineacion_casos.csv",
+   "cuadra": true
+  },
+  {
+   "bloque": "B",
+   "afirmacion": "casos que mejoran",
+   "declarado": 48,
+   "recalculado": 48,
+   "fuente": "alineacion_casos.csv",
+   "cuadra": true
+  },
+  {
+   "bloque": "B",
+   "afirmacion": "casos que empeoran",
+   "declarado": 0,
+   "recalculado": 0,
+   "fuente": "alineacion_casos.csv",
+   "cuadra": true
+  },
+  {
+   "bloque": "B",
+   "afirmacion": "L/R: valor cercano a -9.98 ms",
+   "declarado": -9.98,
+   "recalculado": -9.977324263038549,
+   "fuente": "alineacion_lr_asimetrico.json",
+   "cuadra": true
+  },
+  {
+   "bloque": "B",
+   "afirmacion": "L/R: valor cercano a +15.06 ms",
+   "declarado": 15.06,
+   "recalculado": 15.056689342403628,
+   "fuente": "alineacion_lr_asimetrico.json",
+   "cuadra": true
+  },
+  {
+   "bloque": "C",
+   "afirmacion": "SDI_F2 presente en el codigo",
+   "declarado": false,
+   "recalculado": false,
+   "fuente": "mix_delta_auditoria.json",
+   "cuadra": true
+  },
+  {
+   "bloque": "C",
+   "afirmacion": "patrones buscados para SDI_F2",
+   "declarado": 3,
+   "recalculado": 3,
+   "fuente": "mix_delta_auditoria.json",
+   "cuadra": true
+  },
+  {
+   "bloque": "C",
+   "afirmacion": "control trivial SDV=mix,SDI=0: SNR de e",
+   "declarado": 336.87,
+   "recalculado": 336.87,
+   "fuente": "complementariedad_trivial.json",
+   "cuadra": true
+  },
+  {
+   "bloque": "C",
+   "afirmacion": "control trivial: e exactamente 0",
+   "declarado": 0.0,
+   "recalculado": 0.0,
+   "fuente": "complementariedad_trivial.json",
+   "cuadra": true
+  },
+  {
+   "bloque": "C",
+   "afirmacion": "separacion perfecta (SDV=V, SDI=I): SNR de e",
+   "declarado": 325.83,
+   "recalculado": 325.83,
+   "fuente": "complementariedad_trivial.json",
+   "cuadra": true
+  },
+  {
+   "bloque": "C",
+   "afirmacion": "guias atenuadas 0,8",
+   "declarado": 13.98,
+   "recalculado": 13.98,
+   "fuente": "complementariedad_guias_degradadas.json",
+   "cuadra": true
+  },
+  {
+   "bloque": "C",
+   "afirmacion": "guias atenuadas + ruido",
+   "declarado": 11.41,
+   "recalculado": 11.41,
+   "fuente": "complementariedad_guias_degradadas.json",
+   "cuadra": true
+  },
+  {
+   "bloque": "C",
+   "afirmacion": "residuo de la identidad == e_id (max en 3 casos)",
+   "declarado": 0.0,
+   "recalculado": 0.0,
+   "fuente": "delta_identidad_residuo.json",
+   "cuadra": true
+  },
+  {
+   "bloque": "C",
+   "afirmacion": "identidad en caso real: max|d|",
+   "declarado": 2.98e-08,
+   "recalculado": 2.9802322387695312e-08,
+   "fuente": "delta_identidad.json",
+   "cuadra": true
+  },
+  {
+   "bloque": "D",
+   "afirmacion": "fixtures que pasan",
+   "declarado": 27,
+   "recalculado": 27,
+   "fuente": "bloque_d_orquestador.json",
+   "cuadra": true
+  },
+  {
+   "bloque": "D",
+   "afirmacion": "fixtures totales",
+   "declarado": 27,
+   "recalculado": 27,
+   "fuente": "bloque_d_orquestador.json",
+   "cuadra": true
+  },
+  {
+   "bloque": "D",
+   "afirmacion": "afirmaciones de auditoria confirmadas",
+   "declarado": 16,
+   "recalculado": 16,
+   "fuente": "bloque_d_orquestador.json",
+   "cuadra": true
+  },
+  {
+   "bloque": "D",
+   "afirmacion": "afirmaciones de auditoria totales",
+   "declarado": 16,
+   "recalculado": 16,
+   "fuente": "bloque_d_orquestador.json",
+   "cuadra": true
+  },
+  {
+   "bloque": "D",
+   "afirmacion": "max|SDV1 - V_true|",
+   "declarado": 6.06e-08,
+   "recalculado": 6.059139501246591e-08,
+   "fuente": "bloque_d_orquestador.json",
+   "cuadra": true
+  },
+  {
+   "bloque": "D",
+   "afirmacion": "max|SDI1 - I_true|",
+   "declarado": 5.62e-08,
+   "recalculado": 5.622836352081606e-08,
+   "fuente": "bloque_d_orquestador.json",
+   "cuadra": true
+  },
+  {
+   "bloque": "D",
+   "afirmacion": "error si se intercambiaran L/R",
+   "declarado": 0.35,
+   "recalculado": 0.35,
+   "fuente": "bloque_d_orquestador.json",
+   "cuadra": true
+  },
+  {
+   "bloque": "D",
+   "afirmacion": "frames de salida == frames del mix",
+   "declarado": true,
+   "recalculado": true,
+   "fuente": "bloque_d_orquestador.json",
+   "cuadra": true
+  },
+  {
+   "bloque": "D",
+   "afirmacion": "sr de salida == sr del mix",
+   "declarado": true,
+   "recalculado": true,
+   "fuente": "bloque_d_orquestador.json",
+   "cuadra": true
+  },
+  {
+   "bloque": "D",
+   "afirmacion": "subtype de salida",
+   "declarado": "FLOAT",
+   "recalculado": "FLOAT",
+   "fuente": "bloque_d_orquestador.json",
+   "cuadra": true
+  }
+ ],
+ "referencias": {
+  "referencias_comprobadas": 175,
+  "faltantes": [],
+  "referencias_externas": [
+   "INTEGRIDAD_FUENTES.json",
+   "MANIFEST_SEP_SDV-SDI.json",
+   "MOTOR_SEP_SDV-SDI.py",
+   "MOTOR_SEP_SDV-SDI_EVO.py",
+   "MOTOR_SEP_SDV-SDI_v3.1.1_Hardened_Final.py",
+   "MOTOR_SEP_SDV-SDI_v3.py",
+   "manifest_genio.json",
+   "mix_delta.py",
+   "orquestador_maestro.py",
+   "preflight_audit.py",
+   "sdv_sdi_mqr_engine.py"
+  ],
+  "referencias_generadas_al_ejecutar": [
+   "manifest_orquestador.json"
+  ]
+ },
+ "literales": [
+  {
+   "documento": "FORMULA_AUDIT.md",
+   "literal": "336,87",
+   "candidatos": [
+    "336,87"
+   ],
+   "aparece": true,
+   "valor": 336.86784391472963,
+   "fuente": "complementariedad_trivial.json"
+  },
+  {
+   "documento": "REPORT.md",
+   "literal": "336,87",
+   "candidatos": [
+    "336,87"
+   ],
+   "aparece": true,
+   "valor": 336.86784391472963,
+   "fuente": "complementariedad_trivial.json"
+  },
+  {
+   "documento": "FORMULA_AUDIT.md",
+   "literal": "325,83",
+   "candidatos": [
+    "325,83"
+   ],
+   "aparece": true,
+   "valor": 325.82549849301876,
+   "fuente": "complementariedad_trivial.json"
+  },
+  {
+   "documento": "FORMULA_AUDIT.md",
+   "literal": "13,98",
+   "candidatos": [
+    "13,98"
+   ],
+   "aparece": true,
+   "valor": 13.979400076097445,
+   "fuente": "complementariedad_guias_degradadas.json"
+  },
+  {
+   "documento": "REPORT.md",
+   "literal": "13,98",
+   "candidatos": [
+    "13,98"
+   ],
+   "aparece": true,
+   "valor": 13.979400076097445,
+   "fuente": "complementariedad_guias_degradadas.json"
+  },
+  {
+   "documento": "FORMULA_AUDIT.md",
+   "literal": "11,41",
+   "candidatos": [
+    "11,41"
+   ],
+   "aparece": true,
+   "valor": 11.409920134488187,
+   "fuente": "complementariedad_guias_degradadas.json"
+  },
+  {
+   "documento": "ALIGNMENT_DIAGNOSTICS.md",
+   "literal": "780",
+   "candidatos": [
+    "780"
+   ],
+   "aparece": true,
+   "valor": 780,
+   "fuente": "alineacion_casos.csv"
+  },
+  {
+   "documento": "REPORT.md",
+   "literal": "780",
+   "candidatos": [
+    "780"
+   ],
+   "aparece": true,
+   "valor": 780,
+   "fuente": "alineacion_casos.csv"
+  },
+  {
+   "documento": "README.md",
+   "literal": "780",
+   "candidatos": [
+    "780"
+   ],
+   "aparece": true,
+   "valor": 780,
+   "fuente": "alineacion_casos.csv"
+  },
+  {
+   "documento": "ALIGNMENT_DIAGNOSTICS.md",
+   "literal": "554",
+   "candidatos": [
+    "554"
+   ],
+   "aparece": true,
+   "valor": 554,
+   "fuente": "alineacion_casos.csv"
+  },
+  {
+   "documento": "ALIGNMENT_DIAGNOSTICS.md",
+   "literal": "602",
+   "candidatos": [
+    "602"
+   ],
+   "aparece": true,
+   "valor": 602,
+   "fuente": "alineacion_casos.csv"
+  },
+  {
+   "documento": "REPORT.md",
+   "literal": "554",
+   "candidatos": [
+    "554"
+   ],
+   "aparece": true,
+   "valor": 554,
+   "fuente": "alineacion_casos.csv"
+  },
+  {
+   "documento": "REPORT.md",
+   "literal": "602",
+   "candidatos": [
+    "602"
+   ],
+   "aparece": true,
+   "valor": 602,
+   "fuente": "alineacion_casos.csv"
+  },
+  {
+   "documento": "ORCHESTRATOR_SPEC.md",
+   "literal": "0,350",
+   "candidatos": [
+    "0,350"
+   ],
+   "aparece": true,
+   "valor": 0.3499999911585702,
+   "fuente": "bloque_d_orquestador.json"
+  },
+  {
+   "documento": "REPORT.md",
+   "literal": "0,350",
+   "candidatos": [
+    "0,350"
+   ],
+   "aparece": true,
+   "valor": 0.3499999911585702,
+   "fuente": "bloque_d_orquestador.json"
+  },
+  {
+   "documento": "ORCHESTRATOR_SPEC.md",
+   "literal": "8,13",
+   "candidatos": [
+    "8,13"
+   ],
+   "aparece": true,
+   "valor": 8.125000000000004,
+   "fuente": "bloque_d_demo_sr48_real.json"
+  },
+  {
+   "documento": "ORCHESTRATOR_SPEC.md",
+   "literal": "27/27",
+   "candidatos": [
+    "27/27"
+   ],
+   "aparece": true,
+   "valor": 27,
+   "fuente": "bloque_d_orquestador.json"
+  },
+  {
+   "documento": "REPORT.md",
+   "literal": "27/27",
+   "candidatos": [
+    "27/27"
+   ],
+   "aparece": true,
+   "valor": 27,
+   "fuente": "bloque_d_orquestador.json"
+  },
+  {
+   "documento": "README.md",
+   "literal": "27/27",
+   "candidatos": [
+    "27/27"
+   ],
+   "aparece": true,
+   "valor": 27,
+   "fuente": "bloque_d_orquestador.json"
+  }
+ ]
+}

@@ -1,0 +1,165 @@
+{
+ "v3": {
+  "fichero": "MOTOR_SEP_SDV-SDI_v3.py",
+  "sha256": "a0550a01cefb1095a0086824e1accfe1d7909b717ff1804920ae6c24d8d8487e",
+  "n_lineas": 2278,
+  "opciones": {},
+  "cli_consensus_linea": 1851,
+  "cli_consensus_order_linea": null,
+  "CONSENSUS_METHODS": {
+   "linea": 175,
+   "texto": "CONSENSUS_METHODS = (\"magnitudes_first\", \"mean\", \"median\", \"median_ri\")"
+  },
+  "consensus_from_masks": null,
+  "def_consensus_complejo": 643,
+  "magnitudes_first_lineas": [
+   20,
+   40,
+   48,
+   175,
+   646,
+   664,
+   913,
+   919,
+   920,
+   931,
+   1851
+  ],
+  "bloque_metodos_iguales": null,
+  "llamada_consensus_from_masks": null,
+  "salto_escritura_no_default": []
+ },
+ "hardened_3.1.1": {
+  "fichero": "MOTOR_SEP_SDV-SDI_v3.1.1_Hardened_Final.py",
+  "sha256": "5141fb5005656db1f6b2ede6165dbc77e6f74375a77e9db2570e69d8c6409dbd",
+  "n_lineas": 1951,
+  "opciones": {},
+  "cli_consensus_linea": 1869,
+  "cli_consensus_order_linea": 1865,
+  "CONSENSUS_METHODS": {
+   "linea": 124,
+   "texto": "CONSENSUS_METHODS = (\"weighted_mean\", \"median\", \"confidence_weighted_mean\")"
+  },
+  "CONSENSUS_ORDERS": {
+   "linea": 127,
+   "texto": "CONSENSUS_ORDERS = (\"magnitudes_first\", \"masks_first\")"
+  },
+  "CONSENSUS_DEFAULT": {
+   "linea": 125,
+   "texto": "CONSENSUS_DEFAULT = \"confidence_weighted_mean\""
+  },
+  "CONSENSUS_ORDER_DEFAULT": {
+   "linea": 123,
+   "texto": "CONSENSUS_ORDER_DEFAULT = \"magnitudes_first\""
+  },
+  "consensus_from_masks": 837,
+  "def_consensus_complejo": null,
+  "magnitudes_first_lineas": [
+   108,
+   123,
+   127,
+   1385,
+   1386,
+   1418,
+   1419,
+   1520,
+   1545,
+   1557,
+   1558,
+   1865
+  ],
+  "bloque_metodos_iguales": 1541,
+  "bloque_metodos_iguales_texto": [
+   "\"weighted_mean\": Mv_consensus,",
+   "\"median\": Mv_consensus,",
+   "\"confidence_weighted_mean\": Mv_consensus",
+   "}",
+   "weights_summary = {\"order\": \"magnitudes_first\", \"power\": opt.power}"
+  ],
+  "bloque_metodos_iguales_verificado": true,
+  "llamada_consensus_from_masks": 1549,
+  "salto_escritura_no_default": [
+   1386,
+   1419,
+   1558
+  ]
+ },
+ "evo_3.1.1": {
+  "fichero": "MOTOR_SEP_SDV-SDI_EVO.py",
+  "sha256": "003e698e187b6d6286c39a4f461e924420544ee4bf59c0b66a72258efc35774f",
+  "n_lineas": 2114,
+  "opciones": {},
+  "cli_consensus_linea": 2015,
+  "cli_consensus_order_linea": 2011,
+  "CONSENSUS_METHODS": {
+   "linea": 124,
+   "texto": "CONSENSUS_METHODS = (\"weighted_mean\", \"median\", \"confidence_weighted_mean\")"
+  },
+  "CONSENSUS_ORDERS": {
+   "linea": 127,
+   "texto": "CONSENSUS_ORDERS = (\"magnitudes_first\", \"masks_first\", \"hybrid_asymmetric\")"
+  },
+  "CONSENSUS_DEFAULT": {
+   "linea": 125,
+   "texto": "CONSENSUS_DEFAULT = \"confidence_weighted_mean\""
+  },
+  "CONSENSUS_ORDER_DEFAULT": {
+   "linea": 123,
+   "texto": "CONSENSUS_ORDER_DEFAULT = \"magnitudes_first\""
+  },
+  "consensus_from_masks": 872,
+  "def_consensus_complejo": null,
+  "magnitudes_first_lineas": [
+   108,
+   123,
+   127,
+   1490,
+   1491,
+   1523,
+   1524,
+   1630,
+   1655,
+   1664,
+   1703,
+   1704,
+   2011
+  ],
+  "bloque_metodos_iguales": 1651,
+  "bloque_metodos_iguales_texto": [
+   "\"weighted_mean\": Mv_consensus,",
+   "\"median\": Mv_consensus,",
+   "\"confidence_weighted_mean\": Mv_consensus",
+   "}",
+   "weights_summary = {\"order\": \"magnitudes_first\", \"power\": opt.power}"
+  ],
+  "bloque_metodos_iguales_verificado": true,
+  "llamada_consensus_from_masks": 1695,
+  "salto_escritura_no_default": [
+   1491,
+   1524,
+   1704
+  ]
+ },
+ "mqr": {
+  "fichero": "sdv_sdi_mqr_engine.py",
+  "sha256": "5990ebe41177b62c57290a7b95a4a0408774878a7217341c40ab87d53737a479",
+  "n_lineas": 3505,
+  "opciones": {},
+  "cli_consensus_linea": 3371,
+  "cli_consensus_order_linea": null,
+  "CONSENSUS_METHODS": {
+   "linea": 244,
+   "texto": "CONSENSUS_METHODS = (\"weighted_mean\", \"median\", \"confidence_weighted_mean\")"
+  },
+  "CONSENSUS_DEFAULT": {
+   "linea": 245,
+   "texto": "CONSENSUS_DEFAULT = \"confidence_weighted_mean\""
+  },
+  "consensus_from_masks": 1382,
+  "def_consensus_complejo": null,
+  "magnitudes_first_lineas": [],
+  "bloque_metodos_iguales": null,
+  "llamada_consensus_from_masks": 2373,
+  "salto_escritura_no_default": []
+ }
+}

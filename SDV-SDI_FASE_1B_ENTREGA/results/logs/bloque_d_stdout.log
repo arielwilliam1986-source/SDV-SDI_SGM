@@ -1,0 +1,65 @@
+### 1. auditoria estatica de orquestador_maestro.py
+  16/16 afirmaciones confirmadas sobre 75 lineas (sha256 ea16344ae64eea4e...)
+
+### 2. demos: ejecutando el ORIGINAL en scratch
+  a_nombres_reales_del_manifiesto        rc=0 pares=0  (esperado: 0 pares)
+  b_nombres_que_el_original_espera       rc=0 pares=1  (esperado: 1 par)
+  c_modelo_reverb_no_listado             rc=0 pares=0  (esperado: 0 pares, sin aviso)
+  d_falta_D_en_reverb                    rc=0 pares=0  (esperado: 0 pares, sin aviso)
+  e_dos_candidatos_C                     rc=0 pares=1  (esperado: 1 par, gana el ultimo, sin aviso)
+  f_sr_distinta_48000_vs_44100           rc=0 pares=1  (esperado: rc=0 sin aviso)
+  g_longitud_distinta_1.5s_vs_2.0s       rc=0 pares=1  (esperado: recorte silencioso a 1.5 s)
+  h_mono_vs_estereo                      rc=0 pares=1  (esperado: rc=0, sin aviso)
+
+### 3. matriz de fixtures (26 casos)
+  [ok ] 01_simple_par_valido           ACCEPT       esperado=ACCEPT       ['SDI_SIMPLE', 'SDV_SIMPLE']
+  [ok ] 02_simple_vocals_ausente       INCOMPLETE   esperado=INCOMPLETE   ['SDV_SIMPLE']
+  [ok ] 03_simple_duplicado            AMBIGUOUS    esperado=AMBIGUOUS    []
+  [ok ] 03b_simple_corridas_vecinas    INCOMPLETE   esperado=INCOMPLETE   ['SDI_SIMPLE', 'SDV_SIMPLE']
+  [ok ] 04_simple_dos_corridas         ACCEPT       esperado=ACCEPT       ['SDI_SIMPLE', 'SDV_SIMPLE']
+  [ok ] 05_reverb_c_agregado           INCOMPLETE   esperado=INCOMPLETE   ['SDI2', 'SDV2']
+  [ok ] 06_reverb_c_dividido           INCOMPLETE   esperado=INCOMPLETE   ['SDI2', 'SDV2']
+  [ok ] 07_reverb_solo_reverb          INCOMPLETE   esperado=INCOMPLETE   ['SDV2']
+  [ok ] 08_reverb_conflicto            AMBIGUOUS    esperado=AMBIGUOUS    []
+  [ok ] 09_reverb_abcde                ACCEPT       esperado=ACCEPT       ['SDI1', 'SDI2', 'SDV1', 'SDV2']
+  [ok ] 10_reverb_solo_b               INCOMPLETE   esperado=INCOMPLETE   ['SDV1']
+  [ok ] 11a_e_vs_cd_exacto             INCOMPLETE   esperado=INCOMPLETE   ['SDI1', 'SDI2', 'SDV2']
+  [ok ] 11b_e_vs_cd_leve               INCOMPLETE   esperado=INCOMPLETE   ['SDI1', 'SDI2', 'SDV2']
+  [ok ] 11c_e_vs_cd_severo             INCOMPLETE   esperado=INCOMPLETE   ['SDI1', 'SDI2', 'SDV2']
+  [ok ] 12_modelo_nuevo_nombres_alt    ACCEPT       esperado=ACCEPT       ['SDI1', 'SDI2', 'SDV1', 'SDV2']
+  [ok ] 13_corridas_mezcladas          INCOMPLETE   esperado=INCOMPLETE   ['SDI2', 'SDV2']
+  [ok ] 14a_sr_distinta                INCOMPATIBLE esperado=INCOMPATIBLE ['SDI2']
+  [ok ] 14b_canales_distintos          INCOMPATIBLE esperado=INCOMPATIBLE ['SDI2']
+  [ok ] 14c_longitud_distinta          INCOMPATIBLE esperado=INCOMPATIBLE ['SDI2']
+  [ok ] 14d_subtype_distinto           INCOMPATIBLE esperado=INCOMPATIBLE ['SDI2']
+  [ok ] 14e_nan_inf                    REJECTED     esperado=REJECTED     ['SDI2']
+  [ok ] 15_lr_asimetrico_gt            ACCEPT       esperado=ACCEPT       ['SDI1', 'SDI2', 'SDV1', 'SDV2']
+  [ok ] 16a_corrupto                   REJECTED     esperado=REJECTED     ['SDI2']
+  [ok ] 16b_no_wav                     INCOMPLETE   esperado=INCOMPLETE   ['SDI2', 'SDV2']
+  [ok ] 17a_mix_ausente                REJECTED     esperado=REJECTED     []
+  [ok ] 17b_dos_mix                    REJECTED     esperado=REJECTED     []
+  [ok ] 17c_hash_cambiado              REJECTED     esperado=REJECTED     []
+
+### 4. verificaciones extra
+  L/R: max|SDV1-V_true|=6.059e-08  max|SDI1-I_true|=5.623e-08  si se intercambiaran=0.350
+  c_agregado     {"estrategia": "single_aggregate", "n_sumandos": 1}
+  c_dividido     {"estrategia": "split_reverb_others", "formula": "C_total = C_reverb + C_others", "n_sumandos": 2, "roles_sumandos": ["C_REVERB", "C_OTHERS"]}
+  c_parcial      {"estrategia": "parcial", "estado": "INCOMPLETE", "motivos": ["solo existe C_REVERB sin el otro subcomponente: no se infiere C_total"]}
+  c_conflicto    {"estado": "AMBIGUOUS", "motivos": ["C agregado Y subcomponentes presentes sin declaracion de alternativas: no se elige ni se suma"]}
+  11a_e_vs_cd_exacto     max|E-C-D|=5.495e-08  SNR_L=149.05 dB  exacta=False
+  11b_e_vs_cd_leve       max|E-C-D|=8.093e-03  SNR_L=40.09 dB  exacta=False
+  11c_e_vs_cd_severo     max|E-C-D|=3.995e-01  SNR_L=9.32 dB  exacta=False
+
+### 5. tests unitarios
+  [ok ] perfiles: 3 perfiles y esquema valido
+  [ok ] clasificador: [C] agregado != Reverb [C]
+  [ok ] clasificador: Others [C] separado
+  [ok ] clasificador: empate => AMBIGUO
+  [ok ] agrupador: 2 corridas => 2 grupos
+  [ok ] c_total: agregado+subs => AMBIGUOUS sin leer audio
+  [ok ] c_total: un solo subcomponente => INCOMPLETE
+  [ok ] validador: NaN => rechazado
+  [ok ] validador: frames distintos => INCOMPATIBLE
+  [ok ] validador: entradas identicas => ok
+
+=== fixtures 27/27 · tests 10/10 · auditoria 16/16 ===

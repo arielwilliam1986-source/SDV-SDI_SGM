@@ -1,0 +1,425 @@
+{
+ "n_casos": 780,
+ "replica_fiel_al_motor": 780,
+ "aciertos_1_muestra": 554,
+ "falsos_positivos": 10,
+ "falsos_negativos": 0,
+ "casos_retardo_cero": 60,
+ "retardo_cero_declarados_misaligned": 10,
+ "retardo_cero_declarados_aligned": 38,
+ "retardo_cero_declarados_warning": 12,
+ "pearson_fp_rango": [
+  0.009739986800954796,
+  0.0670455927559066
+ ],
+ "pearson_aciertos_rango": [
+  0.6603143737307058,
+  0.8453735779876568
+ ],
+ "ratio_ncc_fp_rango": [
+  0.997916210652986,
+  0.9996179938707032
+ ],
+ "ratio_ncc_aciertos_rango": [
+  0.999992124263912,
+  1.0
+ ],
+ "casos_con_ratio_superior_0_999": 752,
+ "contrafactual_puerta_confianza": [
+  {
+   "umbral": 0.1,
+   "fp_retirados": 10,
+   "fp_total": 10,
+   "aciertos_perdidos": 0,
+   "aciertos_total": 554
+  },
+  {
+   "umbral": 0.2,
+   "fp_retirados": 10,
+   "fp_total": 10,
+   "aciertos_perdidos": 0,
+   "aciertos_total": 554
+  },
+  {
+   "umbral": 0.3,
+   "fp_retirados": 10,
+   "fp_total": 10,
+   "aciertos_perdidos": 0,
+   "aciertos_total": 554
+  },
+  {
+   "umbral": 0.35,
+   "fp_retirados": 10,
+   "fp_total": 10,
+   "aciertos_perdidos": 0,
+   "aciertos_total": 554
+  },
+  {
+   "umbral": 0.4,
+   "fp_retirados": 10,
+   "fp_total": 10,
+   "aciertos_perdidos": 0,
+   "aciertos_total": 554
+  },
+  {
+   "umbral": 0.5,
+   "fp_retirados": 10,
+   "fp_total": 10,
+   "aciertos_perdidos": 0,
+   "aciertos_total": 554
+  },
+  {
+   "umbral": 0.6,
+   "fp_retirados": 10,
+   "fp_total": 10,
+   "aciertos_perdidos": 0,
+   "aciertos_total": 554
+  },
+  {
+   "umbral": 0.7,
+   "fp_retirados": 10,
+   "fp_total": 10,
+   "aciertos_perdidos": 84,
+   "aciertos_total": 554
+  },
+  {
+   "umbral": 0.8,
+   "fp_retirados": 10,
+   "fp_total": 10,
+   "aciertos_perdidos": 248,
+   "aciertos_total": 554
+  }
+ ],
+ "umbral_seguro": {
+  "rango": [
+   0.0670455927559066,
+   0.6603143737307058
+  ],
+  "lectura": "cualquier umbral dentro de este intervalo retira los 10 falsos positivos y no descarta ningun acierto"
+ },
+ "contrafactual_solape_alto": {
+  "fp_que_quedarian_misaligned": 0,
+  "detalle_ms": [
+   {
+    "contenido": "voz_armonica",
+    "dur_s": 4.0,
+    "ganador_libre_ms": 1439.8185941043084,
+    "ganador_solape_alto_ms": 4.8979591836734695
+   },
+   {
+    "contenido": "voz_armonica",
+    "dur_s": 4.0,
+    "ganador_libre_ms": 1439.8185941043084,
+    "ganador_solape_alto_ms": 4.8979591836734695
+   },
+   {
+    "contenido": "percusivo",
+    "dur_s": 10.0,
+    "ganador_libre_ms": -4291.700680272109,
+    "ganador_solape_alto_ms": 0.0
+   },
+   {
+    "contenido": "percusivo",
+    "dur_s": 10.0,
+    "ganador_libre_ms": -4291.700680272109,
+    "ganador_solape_alto_ms": 0.0
+   },
+   {
+    "contenido": "percusivo_aperiodico",
+    "dur_s": 4.0,
+    "ganador_libre_ms": 1449.795918367347,
+    "ganador_solape_alto_ms": 5.079365079365079
+   },
+   {
+    "contenido": "percusivo_aperiodico",
+    "dur_s": 4.0,
+    "ganador_libre_ms": 1449.795918367347,
+    "ganador_solape_alto_ms": 5.079365079365079
+   },
+   {
+    "contenido": "percusivo_aperiodico",
+    "dur_s": 15.0,
+    "ganador_libre_ms": 7147.392290249433,
+    "ganador_solape_alto_ms": 0.0
+   },
+   {
+    "contenido": "percusivo_aperiodico",
+    "dur_s": 15.0,
+    "ganador_libre_ms": 7147.392290249433,
+    "ganador_solape_alto_ms": 0.0
+   },
+   {
+    "contenido": "aire_reverb",
+    "dur_s": 4.0,
+    "ganador_libre_ms": 1394.2857142857144,
+    "ganador_solape_alto_ms": 0.18140589569160998
+   },
+   {
+    "contenido": "aire_reverb",
+    "dur_s": 4.0,
+    "ganador_libre_ms": 1394.2857142857144,
+    "ganador_solape_alto_ms": 0.18140589569160998
+   }
+  ]
+ },
+ "por_contenido": {
+  "voz_armonica": {
+   "n": 130,
+   "aciertos": 62,
+   "fp": 2,
+   "fn": 0
+  },
+  "percusivo": {
+   "n": 130,
+   "aciertos": 62,
+   "fp": 2,
+   "fn": 0
+  },
+  "percusivo_aperiodico": {
+   "n": 130,
+   "aciertos": 58,
+   "fp": 4,
+   "fn": 0
+  },
+  "aire_reverb": {
+   "n": 130,
+   "aciertos": 112,
+   "fp": 2,
+   "fn": 0
+  },
+  "estereo": {
+   "n": 130,
+   "aciertos": 130,
+   "fp": 0,
+   "fn": 0
+  },
+  "silencio_inicial_final": {
+   "n": 130,
+   "aciertos": 130,
+   "fp": 0,
+   "fn": 0
+  }
+ },
+ "por_magnitud_retardo": {
+  "0": {
+   "n": 60,
+   "aciertos": 38,
+   "err_max_ms": 7147.266740083427,
+   "clases": {
+    "WARNING": 12,
+    "ALIGNED": 38,
+    "MISALIGNED": 10
+   }
+  },
+  "1": {
+   "n": 120,
+   "aciertos": 76,
+   "err_max_ms": 7147.266741210586,
+   "clases": {
+    "WARNING": 100,
+    "MISALIGNED": 20
+   }
+  },
+  "5": {
+   "n": 120,
+   "aciertos": 82,
+   "err_max_ms": 7147.392290249433,
+   "clases": {
+    "WARNING": 90,
+    "ALIGNED": 2,
+    "MISALIGNED": 28
+   }
+  },
+  "10": {
+   "n": 120,
+   "aciertos": 88,
+   "err_max_ms": 7147.278911564626,
+   "clases": {
+    "WARNING": 94,
+    "MISALIGNED": 26
+   }
+  },
+  "25": {
+   "n": 120,
+   "aciertos": 88,
+   "err_max_ms": 7147.267048172902,
+   "clases": {
+    "MISALIGNED": 120
+   }
+  },
+  "50": {
+   "n": 120,
+   "aciertos": 90,
+   "err_max_ms": 7147.18820861678,
+   "clases": {
+    "MISALIGNED": 120
+   }
+  },
+  "100": {
+   "n": 120,
+   "aciertos": 92,
+   "err_max_ms": 7147.267045276776,
+   "clases": {
+    "MISALIGNED": 120
+   }
+  }
+ },
+ "control_identidad": {
+  "por_motor": {
+   "hardened_3.1.1": {
+    "n_casos": 30,
+    "n_exactos": 30,
+    "pearson_min": 1.0,
+    "pearson_max": 1.0,
+    "clases": {
+     "ALIGNED": 30
+    }
+   },
+   "evo_3.1.1": {
+    "n_casos": 30,
+    "n_exactos": 30,
+    "pearson_min": 1.0,
+    "pearson_max": 1.0,
+    "clases": {
+     "ALIGNED": 30
+    }
+   }
+  },
+  "n_global": 60,
+  "n_exactos_global": 60
+ },
+ "clasificacion_con_umbral": {
+  "theta": 0.35,
+  "aviso": "umbral EXPLORATORIO obtenido de esta bateria sintetica; NO validado para musica real, NO incorporado al motor, NO definitivo",
+  "todos": {
+   "n": 780,
+   "antes": {
+    "ALIGNED": 40,
+    "WARNING": 296,
+    "MISALIGNED": 444
+   },
+   "despues": {
+    "ALIGNED": 40,
+    "WARNING": 296,
+    "MISALIGNED": 344,
+    "AMBIGUOUS": 100
+   },
+   "fp_antes": 10,
+   "fp_despues": 0,
+   "fn_antes": 0,
+   "fn_despues": 0
+  },
+  "hardened_3.1.1": {
+   "n": 390,
+   "antes": {
+    "ALIGNED": 20,
+    "WARNING": 148,
+    "MISALIGNED": 222
+   },
+   "despues": {
+    "ALIGNED": 20,
+    "WARNING": 148,
+    "MISALIGNED": 172,
+    "AMBIGUOUS": 50
+   },
+   "fp_antes": 5,
+   "fp_despues": 0,
+   "fn_antes": 0,
+   "fn_despues": 0
+  },
+  "evo_3.1.1": {
+   "n": 390,
+   "antes": {
+    "ALIGNED": 20,
+    "WARNING": 148,
+    "MISALIGNED": 222
+   },
+   "despues": {
+    "ALIGNED": 20,
+    "WARNING": 148,
+    "MISALIGNED": 172,
+    "AMBIGUOUS": 50
+   },
+   "fp_antes": 5,
+   "fp_despues": 0,
+   "fn_antes": 0,
+   "fn_despues": 0
+  },
+  "aciertos": {
+   "n": 554,
+   "pasan_a_ambiguous": 0
+  },
+  "no_aciertos": {
+   "n": 226,
+   "pasan_a_ambiguous": 100,
+   "transiciones": {
+    "MISALIGNED -> AMBIGUOUS": 100,
+    "WARNING -> WARNING": 50,
+    "MISALIGNED -> MISALIGNED": 74,
+    "ALIGNED -> ALIGNED": 2
+   }
+  }
+ },
+ "alcance_solape_alto": {
+  "fraccion_solape": 0.9,
+  "tabla_por_duracion": [
+   {
+    "dur_s": 4.0,
+    "n_muestras": 176400,
+    "n_env": 22050,
+    "k_max_env": 2205,
+    "k_max_muestras": 17640,
+    "desplazamiento_max_ms": 400.0
+   },
+   {
+    "dur_s": 10.0,
+    "n_muestras": 441000,
+    "n_env": 55125,
+    "k_max_env": 5512,
+    "k_max_muestras": 44096,
+    "desplazamiento_max_ms": 999.9092970521542
+   },
+   {
+    "dur_s": 15.0,
+    "n_muestras": 661500,
+    "n_env": 82687,
+    "k_max_env": 8269,
+    "k_max_muestras": 66152,
+    "desplazamiento_max_ms": 1500.045351473923
+   },
+   {
+    "dur_s": 20.0,
+    "n_muestras": 882000,
+    "n_env": 110250,
+    "k_max_env": 11025,
+    "k_max_muestras": 88200,
+    "desplazamiento_max_ms": 2000.0
+   },
+   {
+    "dur_s": 30.0,
+    "n_muestras": 1323000,
+    "n_env": 165375,
+    "k_max_env": 16537,
+    "k_max_muestras": 132296,
+    "desplazamiento_max_ms": 2999.909297052154
+   }
+  ],
+  "casos_fuera_de_alcance": 0,
+  "n_casos": 780,
+  "uso_maximo_del_alcance": 0.25,
+  "holgura_minima": 0.75,
+  "alcanzables_por_el_refinamiento": {
+   "libre": 554,
+   "restringido": 602
+  },
+  "empeoran": 0,
+  "mejoran": 48,
+  "retardo_cero_que_seguirian_misaligned": 0,
+  "retardo_cero_total": 60
+ },
+ "hardened_vs_evo": {
+  "pares": 390,
+  "diferencias_en_error": 0,
+  "diferencias_en_clase": 0
+ }
+}

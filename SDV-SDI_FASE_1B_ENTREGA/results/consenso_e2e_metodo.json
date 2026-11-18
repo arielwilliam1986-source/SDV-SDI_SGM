@@ -1,0 +1,18 @@
+{
+ "disponible": true,
+ "ficheros_comparados": [
+  "/home/user/fase1b/FASE_1B_RESULTADOS/work/a_e2e/hardened_3.1.1__magnitudes_first__confidence_weighted_mean__K3__independiente/out/motorA_run_20261117_123700/mix SDV.wav",
+  "/home/user/fase1b/FASE_1B_RESULTADOS/work/a_e2e/hardened_3.1.1__magnitudes_first__median__K3__independiente/out/motorA_run_20261117_123658/mix SDV.wav",
+  "/home/user/fase1b/FASE_1B_RESULTADOS/work/a_e2e/hardened_3.1.1__magnitudes_first__weighted_mean__K3__independiente/out/motorA_run_20261117_123655/mix SDV.wav"
+ ],
+ "bytes_de_fichero_distintos": 1,
+ "offsets_distintos": [
+  60
+ ],
+ "offset_chunk_data": 80,
+ "todas_las_diferencias_antes_de_los_datos": true,
+ "chunk_responsable": "PEAK (campo de fecha escrito por libsndfile)",
+ "max_abs_diferencia_de_audio": 0.0,
+ "audio_identico": true,
+ "conclusion": "comparar SHA-256 de fichero entre corridas produce falsos positivos de 'diferencia'; la comparacion valida es sobre el audio decodificado"
+}

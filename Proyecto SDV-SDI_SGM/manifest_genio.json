@@ -1,0 +1,48 @@
+{
+  "manifest_version": "3.1.1-Hardened",
+  "project_name": "Genio_Atrapado_Hardened_Test",
+  "source_mix_file": "/storage/emulated/0/Download/SGM Music/Proyecto MVSEP/Project Mask MVSEP/Christina Aguilera - Genio Atrapado/Proyecto Gémini/Gémini_Kimi/Genio_Atrapado_(Retail CD 1999).wav",
+  "output_directory": "/storage/emulated/0/Download/SGM Music/Proyecto MVSEP/Project Mask MVSEP/Christina Aguilera - Genio Atrapado/Proyecto Gémini/Gémini_Kimi/Test_Output_Hardened",
+  "calibration_parameters": {
+    "power_p": 1.8,
+    "smoothing": "none",
+    "use_physical_residuals": false
+  },
+  "guide_pairs": [
+    {
+      "pair_id": "pair_A1_MVSEP_Karaoke",
+      "family": "MVSEP_Karaoke",
+      "variant": "mt_6",
+      "vocal_guide": "/storage/emulated/0/Download/SGM Music/Proyecto MVSEP/Project Mask MVSEP/Christina Aguilera - Genio Atrapado/Proyecto Gémini/Gémini_Kimi/Genio_Atrapado_MVSEP_Karaoke_mt_6_SDV_A1.wav",
+      "instrumental_guide": "/storage/emulated/0/Download/SGM Music/Proyecto MVSEP/Project Mask MVSEP/Christina Aguilera - Genio Atrapado/Proyecto Gémini/Gémini_Kimi/Genio_Atrapado_MVSEP_Karaoke_mt_6_SDI_A1.wav"
+    },
+    {
+      "pair_id": "pair_A2_MDXB_Karaoke",
+      "family": "MDX_B_Karaoke",
+      "variant": "mt_1",
+      "vocal_guide": "/storage/emulated/0/Download/SGM Music/Proyecto MVSEP/Project Mask MVSEP/Christina Aguilera - Genio Atrapado/Proyecto Gémini/Gémini_Kimi/Genio_Atrapado_MDX-B_Karaoke_mt_1_SDV_A2.wav",
+      "instrumental_guide": "/storage/emulated/0/Download/SGM Music/Proyecto MVSEP/Project Mask MVSEP/Christina Aguilera - Genio Atrapado/Proyecto Gémini/Gémini_Kimi/Genio_Atrapado_MDX-B_Karaoke_mt_1_SDI_A2.wav"
+    },
+    {
+      "pair_id": "pair_A3_Karaoke_mt0",
+      "family": "Karaoke",
+      "variant": "mt_0",
+      "vocal_guide": "/storage/emulated/0/Download/SGM Music/Proyecto MVSEP/Project Mask MVSEP/Christina Aguilera - Genio Atrapado/Proyecto Gémini/Gémini_Kimi/Genio_Atrapado_Karaoke_mt_0_SDV_A3.wav",
+      "instrumental_guide": "/storage/emulated/0/Download/SGM Music/Proyecto MVSEP/Project Mask MVSEP/Christina Aguilera - Genio Atrapado/Proyecto Gémini/Gémini_Kimi/Genio_Atrapado_Karaoke_mt_0_SDI_A3.wav"
+    },
+    {
+      "pair_id": "pair_B1_DeReverb_mt6",
+      "family": "DeReverb",
+      "variant": "mt_6",
+      "vocal_guide": "/storage/emulated/0/Download/SGM Music/Proyecto MVSEP/Project Mask MVSEP/Christina Aguilera - Genio Atrapado/Proyecto Gémini/Gémini_Kimi/Genio_Atrapado_DeReverb_mt_6_SDV_B1.wav",
+      "instrumental_guide": "/storage/emulated/0/Download/SGM Music/Proyecto MVSEP/Project Mask MVSEP/Christina Aguilera - Genio Atrapado/Proyecto Gémini/Gémini_Kimi/Genio_Atrapado_DeReverb_mt_6_SDI_B1.wav"
+    },
+    {
+      "pair_id": "pair_B2_DeReverb_mt7",
+      "family": "DeReverb",
+      "variant": "mt_7",
+      "vocal_guide": "/storage/emulated/0/Download/SGM Music/Proyecto MVSEP/Project Mask MVSEP/Christina Aguilera - Genio Atrapado/Proyecto Gémini/Gémini_Kimi/Genio_Atrapado_DeReverb_mt_7_SDV_B2.wav",
+      "instrumental_guide": "/storage/emulated/0/Download/SGM Music/Proyecto MVSEP/Project Mask MVSEP/Christina Aguilera - Genio Atrapado/Proyecto Gémini/Gémini_Kimi/Genio_Atrapado_DeReverb_mt_7_SDI_B2.wav"
+    }
+  ]
+}

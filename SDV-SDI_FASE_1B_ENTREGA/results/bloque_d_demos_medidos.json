@@ -1,0 +1,17 @@
+{
+ "ganador_duplicado": [],
+ "residuos_candidatos": {
+  "sucial_uno_[C].wav": 5.622836352081606e-08,
+  "sucial_dos_[C].wav": 0.19513141347573093
+ },
+ "sr_demora": {
+  "entrada_sr": 48000,
+  "entrada_frames": 96000,
+  "entrada_dur_s": 2.0,
+  "salida_sr": 44100,
+  "salida_frames": 88200,
+  "salida_dur_s": 2.0,
+  "factor_velocidad": 0.91875,
+  "muestras_descartadas": 7800
+ }
+}

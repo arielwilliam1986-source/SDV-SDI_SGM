@@ -1,0 +1,67 @@
+{
+ "cmd": [
+  "/usr/local/bin/python3",
+  "/home/user/fase1b/fuentes/Proyecto SDV-SDI_SGM/mix_delta.py",
+  "--dir_norm",
+  "/home/user/fase1b/FASE_1B_RESULTADOS/work/c/v3_normal/out/motorV3_run_20261117_123934",
+  "--dir_id",
+  "/home/user/fase1b/FASE_1B_RESULTADOS/work/c/v3_identity/out/motorV3_run_20261117_123937",
+  "--mix",
+  "/home/user/fase1b/FASE_1B_RESULTADOS/work/c/v3_normal/mix.wav",
+  "--gain",
+  "0.5",
+  "--out",
+  "/home/user/fase1b/FASE_1B_RESULTADOS/work/c/hibrido/SDV_hibrido.wav",
+  "--sdv-norm",
+  "/home/user/fase1b/FASE_1B_RESULTADOS/work/c/v3_normal/out/motorV3_run_20261117_123934/mix SDV [Normal].wav",
+  "--sdi-norm",
+  "/home/user/fase1b/FASE_1B_RESULTADOS/work/c/v3_normal/out/motorV3_run_20261117_123934/mix SDI [Normal].wav",
+  "--sdi-id",
+  "/home/user/fase1b/FASE_1B_RESULTADOS/work/c/v3_identity/out/motorV3_run_20261117_123937/mix SDI [Identity].wav"
+ ],
+ "rc": 0,
+ "stdout": "[*] Buscando archivos (identificacion unica; sin primer-match)...\n    [Base]   SDV Normal: /home/user/fase1b/FASE_1B_RESULTADOS/work/c/v3_normal/out/motorV3_run_20261117_123934/mix SDV [Normal].wav\n    [Base]   SDI Normal: /home/user/fase1b/FASE_1B_RESULTADOS/work/c/v3_normal/out/motorV3_run_20261117_123934/mix SDI [Normal].wav\n    [Delta]  SDI Identity: /home/user/fase1b/FASE_1B_RESULTADOS/work/c/v3_identity/out/motorV3_run_20261117_123937/mix SDI [Identity].wav\n    [Diag]   SDV Identity: /home/user/fase1b/FASE_1B_RESULTADOS/work/c/v3_identity/out/motorV3_run_20261117_123937/mix SDV [Identity].wav\n[*] Desfase estimado SDI_norm vs SDI_id: +0.000 ms\n[*] Delta_indirecta = SDI_identity - SDI_normal  (= (SDV_norm - SDV_id) + e_norm; ver docstring AUDIT_014 v2)\n[*] SDV_hib = SDV_norm + 0.5 * Delta_indirecta  (extrapolacion lineal; NO es afirmacion de recuperacion vocal)\n[*] Complementariedad de la rama Normal (--mix):\n    e_norm rms = 5.572264e-09  (0.0000% del mix)  SNR = 149.02 dB  -> COMPLEMENTARIA\n    [OK] Normal complementaria dentro del umbral (100 dB): la equivalencia Delta_indirecta ~= Delta_directa se sostiene.\n[*] Diagnostico Delta_directa = SDV_norm - SDV_id: rms=1.290999e-02 max=8.476752e-02\n    Consistencia Delta_ind = Delta_dir + e_norm: max|residuo| = 2.980e-08\n[OK] SDV Hibrido guardado en: /home/user/fase1b/FASE_1B_RESULTADOS/work/c/hibrido/SDV_hibrido.wav\n[*] Procedencia: /home/user/fase1b/FASE_1B_RESULTADOS/work/c/hibrido/SDV_hibrido.wav.provenance.json\n    sdv_norm: /home/user/fase1b/FASE_1B_RESULTADOS/work/c/v3_normal/out/motorV3_run_20261117_123934/mix SDV [Normal].wav  sha256=196c36953785c27d...\n    sdi_norm: /home/user/fase1b/FASE_1B_RESULTADOS/work/c/v3_normal/out/motorV3_run_20261117_123934/mix SDI [Normal].wav  sha256=91f916286d5b4df9...\n    sdi_id: /home/user/fase1b/FASE_1B_RESULTADOS/work/c/v3_identity/out/motorV3_run_20261117_123937/mix SDI [Identity].wav  sha256=f58a94726a2fe55c...\n    mix: /home/user/fase1b/FASE_1B_RESULTADOS/work/c/v3_normal/mix.wav  sha256=b3363f54dda694f8...\n    sdv_id: /home/user/fase1b/FASE_1B_RESULTADOS/work/c/v3_identity/out/motorV3_run_20261117_123937/mix SDV [Identity].wav  sha256=8dc3d05477102ab6...\n",
+ "stderr": "",
+ "identidad": {
+  "n_muestras": 176400,
+  "max_abs_diferencia": 2.9802322387695312e-08,
+  "rms_diferencia": 3.818971289391808e-09,
+  "rms_delta_indirecta": 0.012909992229994416,
+  "se_cumple": false,
+  "error_relativo": 2.9581515023420995e-07
+ },
+ "hibrido": {
+  "max_abs_vs_formula": 2.9802322387695312e-08,
+  "se_cumple": true,
+  "rms_hibrido": 0.12577818786797165
+ },
+ "provenance": {
+  "existe": true,
+  "claves": [
+   "allow_crop",
+   "argv",
+   "complementarity",
+   "delta_direct",
+   "delta_math",
+   "gain",
+   "generated_utc",
+   "inputs",
+   "lag_sdi_norm_vs_id_ms",
+   "min_len_used",
+   "output",
+   "tool",
+   "version"
+  ],
+  "complementarity": {
+   "verified": true,
+   "method": "mix_direct",
+   "recon_snr_db": 149.02191757190553,
+   "recon_rms": 5.572263996043725e-09,
+   "relative_pct": 3.539191982035313e-06,
+   "threshold_db": 100.0,
+   "verdict": "COMPLEMENTARIA",
+   "note": "e_norm = mix - SDV_norm - SDI_norm; si CONTAMINADA, Delta_indirecta incluye e_norm: no presentar la equivalencia como universal"
+  },
+  "delta_directa": null
+ }
+}

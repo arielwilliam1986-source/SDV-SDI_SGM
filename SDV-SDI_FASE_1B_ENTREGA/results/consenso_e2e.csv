@@ -1,0 +1,359 @@
+motor,order,metodo,K,modelo,rc,elapsed_s,sha_audio_sdv,sha_audio_sdi,sha_fichero_sdv,sdv,sdi,stderr,stdout_tail
+hardened_3.1.1,magnitudes_first,weighted_mean,3,independiente,0,2.185,e6beac25a8fb6340668c1c8c5411f4b8ea120d4694783314c225ffde34b5cf1c,48349417558ccbcb3debb2301f7e2559510ba1c1c9eb290999ba77fc3c6ecd76,34e96d42c1697a31f6aa4b35c776c19690f71ed4970063cafbcefb972fbf6422,/home/user/fase1b/FASE_1B_RESULTADOS/work/a_e2e/hardened_3.1.1__magnitudes_first__weighted_mean__K3__independiente/out/motorA_run_20261117_123655/mix SDV.wav,/home/user/fase1b/FASE_1B_RESULTADOS/work/a_e2e/hardened_3.1.1__magnitudes_first__weighted_mean__K3__independiente/out/motorA_run_20261117_123655/mix SDI.wav,,"B_RESULTADOS/work/a_e2e/hardened_3.1.1__magnitudes_first__weighted_mean__K3__independiente/out/motorA_run_20261117_123655_partial
+[     0.43s] Configuración: consensus_order=magnitudes_first | smoothing=none | mask_mode=mono | residuals=True
+[     0.43s] Procesando 175 tramas en 1 chunks de 256 tramas...
+[     1.17s]   Chunk 01/1 [100.0%] completado (Tramas 0-174)
+[     1.18s] Post-WAV Identity SNR: 152.37 dB (Estado: PASS_EXACT_IDENTITY)
+[     1.20s] Directorio 'masks/' eliminado para liberar espacio.
+[     1.20s] Corrida finalizada exitosamente en: /home/user/fase1b/FASE_1B_RESULTADOS/work/a_e2e/hardened_3.1.1__magnitudes_first__weighted_mean__K3__independiente/out/motorA_run_20261117_123655
+
+============================================================================
+[92m[✓] SEPARACIÓN MOTOR A v3.1.0 COMPLETADA CON ÉXITO (SNR > 140 dB)[0m
+Directorio de Resultados : [96m/home/user/fase1b/FASE_1B_RESULTADOS/work/a_e2e/hardened_3.1.1__magnitudes_first__weighted_mean__K3__independiente/out/motorA_run_20261117_123655[0m
+Artefactos Generados     : mix SDV.wav | mix SDI.wav | analysis.json | analysis.txt
+============================================================================
+
+"
+hardened_3.1.1,magnitudes_first,median,3,independiente,0,2.304,e6beac25a8fb6340668c1c8c5411f4b8ea120d4694783314c225ffde34b5cf1c,48349417558ccbcb3debb2301f7e2559510ba1c1c9eb290999ba77fc3c6ecd76,f83b44c107288d99500c74ba0a2ebca607adb54815857a12ff4538f9c9efec10,/home/user/fase1b/FASE_1B_RESULTADOS/work/a_e2e/hardened_3.1.1__magnitudes_first__median__K3__independiente/out/motorA_run_20261117_123658/mix SDV.wav,/home/user/fase1b/FASE_1B_RESULTADOS/work/a_e2e/hardened_3.1.1__magnitudes_first__median__K3__independiente/out/motorA_run_20261117_123658/mix SDI.wav,,"me/user/fase1b/FASE_1B_RESULTADOS/work/a_e2e/hardened_3.1.1__magnitudes_first__median__K3__independiente/out/motorA_run_20261117_123658_partial
+[     0.40s] Configuración: consensus_order=magnitudes_first | smoothing=none | mask_mode=mono | residuals=True
+[     0.40s] Procesando 175 tramas en 1 chunks de 256 tramas...
+[     1.24s]   Chunk 01/1 [100.0%] completado (Tramas 0-174)
+[     1.25s] Post-WAV Identity SNR: 152.37 dB (Estado: PASS_EXACT_IDENTITY)
+[     1.27s] Directorio 'masks/' eliminado para liberar espacio.
+[     1.27s] Corrida finalizada exitosamente en: /home/user/fase1b/FASE_1B_RESULTADOS/work/a_e2e/hardened_3.1.1__magnitudes_first__median__K3__independiente/out/motorA_run_20261117_123658
+
+============================================================================
+[92m[✓] SEPARACIÓN MOTOR A v3.1.0 COMPLETADA CON ÉXITO (SNR > 140 dB)[0m
+Directorio de Resultados : [96m/home/user/fase1b/FASE_1B_RESULTADOS/work/a_e2e/hardened_3.1.1__magnitudes_first__median__K3__independiente/out/motorA_run_20261117_123658[0m
+Artefactos Generados     : mix SDV.wav | mix SDI.wav | analysis.json | analysis.txt
+============================================================================
+
+"
+hardened_3.1.1,magnitudes_first,confidence_weighted_mean,3,independiente,0,2.275,e6beac25a8fb6340668c1c8c5411f4b8ea120d4694783314c225ffde34b5cf1c,48349417558ccbcb3debb2301f7e2559510ba1c1c9eb290999ba77fc3c6ecd76,139925a8802fbc4c5c7441aad746f11184e0c7de37ee4ad13041a1b62948d169,/home/user/fase1b/FASE_1B_RESULTADOS/work/a_e2e/hardened_3.1.1__magnitudes_first__confidence_weighted_mean__K3__independiente/out/motorA_run_20261117_123700/mix SDV.wav,/home/user/fase1b/FASE_1B_RESULTADOS/work/a_e2e/hardened_3.1.1__magnitudes_first__confidence_weighted_mean__K3__independiente/out/motorA_run_20261117_123700/mix SDI.wav,,"3.1.1__magnitudes_first__confidence_weighted_mean__K3__independiente/out/motorA_run_20261117_123700_partial
+[     0.43s] Configuración: consensus_order=magnitudes_first | smoothing=none | mask_mode=mono | residuals=True
+[     0.43s] Procesando 175 tramas en 1 chunks de 256 tramas...
+[     1.25s]   Chunk 01/1 [100.0%] completado (Tramas 0-174)
+[     1.26s] Post-WAV Identity SNR: 152.37 dB (Estado: PASS_EXACT_IDENTITY)
+[     1.27s] Directorio 'masks/' eliminado para liberar espacio.
+[     1.28s] Corrida finalizada exitosamente en: /home/user/fase1b/FASE_1B_RESULTADOS/work/a_e2e/hardened_3.1.1__magnitudes_first__confidence_weighted_mean__K3__independiente/out/motorA_run_20261117_123700
+
+============================================================================
+[92m[✓] SEPARACIÓN MOTOR A v3.1.0 COMPLETADA CON ÉXITO (SNR > 140 dB)[0m
+Directorio de Resultados : [96m/home/user/fase1b/FASE_1B_RESULTADOS/work/a_e2e/hardened_3.1.1__magnitudes_first__confidence_weighted_mean__K3__independiente/out/motorA_run_20261117_123700[0m
+Artefactos Generados     : mix SDV.wav | mix SDI.wav | analysis.json | analysis.txt
+============================================================================
+
+"
+hardened_3.1.1,masks_first,weighted_mean,3,independiente,0,2.558,1cfced96b587ca29d95f5474de6e29a51f3b275a366650b28d5e52b95df08da5,fa24e7653ec69c336d29bb79646363bc1818189911e3e73c60ffa54b21881096,0bfbef420b77010dce8c30224d78309cb257776a398c9e1c0ed64f630a27b890,/home/user/fase1b/FASE_1B_RESULTADOS/work/a_e2e/hardened_3.1.1__masks_first__weighted_mean__K3__independiente/out/motorA_run_20261117_123703/mix SDV.wav,/home/user/fase1b/FASE_1B_RESULTADOS/work/a_e2e/hardened_3.1.1__masks_first__weighted_mean__K3__independiente/out/motorA_run_20261117_123703/mix SDI.wav,,"e/user/fase1b/FASE_1B_RESULTADOS/work/a_e2e/hardened_3.1.1__masks_first__weighted_mean__K3__independiente/out/motorA_run_20261117_123703_partial
+[     0.40s] Configuración: consensus_order=masks_first | smoothing=none | mask_mode=mono | residuals=True
+[     0.40s] Procesando 175 tramas en 1 chunks de 256 tramas...
+[     1.51s]   Chunk 01/1 [100.0%] completado (Tramas 0-174)
+[     1.52s] Post-WAV Identity SNR: 152.34 dB (Estado: PASS_EXACT_IDENTITY)
+[     1.54s] Directorio 'masks/' eliminado para liberar espacio.
+[     1.54s] Corrida finalizada exitosamente en: /home/user/fase1b/FASE_1B_RESULTADOS/work/a_e2e/hardened_3.1.1__masks_first__weighted_mean__K3__independiente/out/motorA_run_20261117_123703
+
+============================================================================
+[92m[✓] SEPARACIÓN MOTOR A v3.1.0 COMPLETADA CON ÉXITO (SNR > 140 dB)[0m
+Directorio de Resultados : [96m/home/user/fase1b/FASE_1B_RESULTADOS/work/a_e2e/hardened_3.1.1__masks_first__weighted_mean__K3__independiente/out/motorA_run_20261117_123703[0m
+Artefactos Generados     : mix SDV.wav | mix SDI.wav | analysis.json | analysis.txt
+============================================================================
+
+"
+hardened_3.1.1,masks_first,median,3,independiente,0,2.653,26d82eafa64b9a6b5e0e27348616ef926fdf16ac534db73513faf33c2d7947cd,471f9407122b17d721d28980cc77747ef89bec35ec1c3c1c203324fd843fb12f,dc8c6650a7333fd210bfec2ed86ea767db1bf3515c5b9842991d697bedb728bc,/home/user/fase1b/FASE_1B_RESULTADOS/work/a_e2e/hardened_3.1.1__masks_first__median__K3__independiente/out/motorA_run_20261117_123706/mix SDV.wav,/home/user/fase1b/FASE_1B_RESULTADOS/work/a_e2e/hardened_3.1.1__masks_first__median__K3__independiente/out/motorA_run_20261117_123706/mix SDI.wav,,"eline v3.1.0 en: /home/user/fase1b/FASE_1B_RESULTADOS/work/a_e2e/hardened_3.1.1__masks_first__median__K3__independiente/out/motorA_run_20261117_123706_partial
+[     0.44s] Configuración: consensus_order=masks_first | smoothing=none | mask_mode=mono | residuals=True
+[     0.44s] Procesando 175 tramas en 1 chunks de 256 tramas...
+[     1.52s]   Chunk 01/1 [100.0%] completado (Tramas 0-174)
+[     1.54s] Post-WAV Identity SNR: 152.36 dB (Estado: PASS_EXACT_IDENTITY)
+[     1.56s] Directorio 'masks/' eliminado para liberar espacio.
+[     1.56s] Corrida finalizada exitosamente en: /home/user/fase1b/FASE_1B_RESULTADOS/work/a_e2e/hardened_3.1.1__masks_first__median__K3__independiente/out/motorA_run_20261117_123706
+
+============================================================================
+[92m[✓] SEPARACIÓN MOTOR A v3.1.0 COMPLETADA CON ÉXITO (SNR > 140 dB)[0m
+Directorio de Resultados : [96m/home/user/fase1b/FASE_1B_RESULTADOS/work/a_e2e/hardened_3.1.1__masks_first__median__K3__independiente/out/motorA_run_20261117_123706[0m
+Artefactos Generados     : mix SDV.wav | mix SDI.wav | analysis.json | analysis.txt
+============================================================================
+
+"
+hardened_3.1.1,masks_first,confidence_weighted_mean,3,independiente,0,2.619,0d32fc24ba3e0313033a1b5c85f88a83427f1cf73b65ffe5e1539779369b779a,beab59bea40b90594750f4093728870247a4ffa9d1baf35d6c87f55508c5263f,35dce2401084431244ed1c815e3c76eca364b2d1d1940a48c9bd0bbfc38c0ed6,/home/user/fase1b/FASE_1B_RESULTADOS/work/a_e2e/hardened_3.1.1__masks_first__confidence_weighted_mean__K3__independiente/out/motorA_run_20261117_123709/mix SDV.wav,/home/user/fase1b/FASE_1B_RESULTADOS/work/a_e2e/hardened_3.1.1__masks_first__confidence_weighted_mean__K3__independiente/out/motorA_run_20261117_123709/mix SDI.wav,,"work/a_e2e/hardened_3.1.1__masks_first__confidence_weighted_mean__K3__independiente/out/motorA_run_20261117_123709_partial
+[     0.39s] Configuración: consensus_order=masks_first | smoothing=none | mask_mode=mono | residuals=True
+[     0.39s] Procesando 175 tramas en 1 chunks de 256 tramas...
+[     1.48s]   Chunk 01/1 [100.0%] completado (Tramas 0-174)
+[     1.50s] Post-WAV Identity SNR: 152.35 dB (Estado: PASS_EXACT_IDENTITY)
+[     1.52s] Directorio 'masks/' eliminado para liberar espacio.
+[     1.52s] Corrida finalizada exitosamente en: /home/user/fase1b/FASE_1B_RESULTADOS/work/a_e2e/hardened_3.1.1__masks_first__confidence_weighted_mean__K3__independiente/out/motorA_run_20261117_123709
+
+============================================================================
+[92m[✓] SEPARACIÓN MOTOR A v3.1.0 COMPLETADA CON ÉXITO (SNR > 140 dB)[0m
+Directorio de Resultados : [96m/home/user/fase1b/FASE_1B_RESULTADOS/work/a_e2e/hardened_3.1.1__masks_first__confidence_weighted_mean__K3__independiente/out/motorA_run_20261117_123709[0m
+Artefactos Generados     : mix SDV.wav | mix SDI.wav | analysis.json | analysis.txt
+============================================================================
+
+"
+evo_3.1.1,magnitudes_first,weighted_mean,3,independiente,0,2.135,e6beac25a8fb6340668c1c8c5411f4b8ea120d4694783314c225ffde34b5cf1c,48349417558ccbcb3debb2301f7e2559510ba1c1c9eb290999ba77fc3c6ecd76,7be8e397ce8ef51dee30adbb71fcbfe675b2d120634fde6b68cd42051a69c484,/home/user/fase1b/FASE_1B_RESULTADOS/work/a_e2e/evo_3.1.1__magnitudes_first__weighted_mean__K3__independiente/out/motorA_run_20261117_123712/mix SDV.wav,/home/user/fase1b/FASE_1B_RESULTADOS/work/a_e2e/evo_3.1.1__magnitudes_first__weighted_mean__K3__independiente/out/motorA_run_20261117_123712/mix SDI.wav,,"_run_20261117_123712_partial
+[     0.39s] Configuración Consenso: order=magnitudes_first | consensus=weighted_mean | smoothing=none | mask_mode=mono
+[     0.39s] Parámetros DSP: p=1.80 | beta=1.00 | eps=1.0e-12 | n_fft=4096 | hop=1024 | residuals=True
+[     0.39s] Procesando 175 tramas en 1 chunks de 256 tramas...
+[     1.14s]   Chunk 01/1 [100.0%] completado (Tramas 0-174)
+[     1.16s] Post-WAV Identity SNR: 152.37 dB (Estado: PASS_EXACT_IDENTITY)
+[     1.17s] Directorio 'masks/' eliminado para liberar espacio.
+[     1.17s] Corrida finalizada exitosamente en: /home/user/fase1b/FASE_1B_RESULTADOS/work/a_e2e/evo_3.1.1__magnitudes_first__weighted_mean__K3__independiente/out/motorA_run_20261117_123712
+
+============================================================================
+[92m[✓] SEPARACIÓN MOTOR A v3.1.0 COMPLETADA CON ÉXITO (SNR > 140 dB)[0m
+Directorio de Resultados : [96m/home/user/fase1b/FASE_1B_RESULTADOS/work/a_e2e/evo_3.1.1__magnitudes_first__weighted_mean__K3__independiente/out/motorA_run_20261117_123712[0m
+Artefactos Generados     : mix SDV.wav | mix SDI.wav | analysis.json | analysis.txt
+============================================================================
+
+"
+evo_3.1.1,magnitudes_first,median,3,independiente,0,2.245,e6beac25a8fb6340668c1c8c5411f4b8ea120d4694783314c225ffde34b5cf1c,48349417558ccbcb3debb2301f7e2559510ba1c1c9eb290999ba77fc3c6ecd76,4e815ca01ca4d6b3b19a8fd27283750dfa3feb691b293052a4c97a86eee5c15e,/home/user/fase1b/FASE_1B_RESULTADOS/work/a_e2e/evo_3.1.1__magnitudes_first__median__K3__independiente/out/motorA_run_20261117_123714/mix SDV.wav,/home/user/fase1b/FASE_1B_RESULTADOS/work/a_e2e/evo_3.1.1__magnitudes_first__median__K3__independiente/out/motorA_run_20261117_123714/mix SDI.wav,,"ependiente/out/motorA_run_20261117_123714_partial
+[     0.35s] Configuración Consenso: order=magnitudes_first | consensus=median | smoothing=none | mask_mode=mono
+[     0.35s] Parámetros DSP: p=1.80 | beta=1.00 | eps=1.0e-12 | n_fft=4096 | hop=1024 | residuals=True
+[     0.35s] Procesando 175 tramas en 1 chunks de 256 tramas...
+[     1.17s]   Chunk 01/1 [100.0%] completado (Tramas 0-174)
+[     1.21s] Post-WAV Identity SNR: 152.37 dB (Estado: PASS_EXACT_IDENTITY)
+[     1.24s] Directorio 'masks/' eliminado para liberar espacio.
+[     1.24s] Corrida finalizada exitosamente en: /home/user/fase1b/FASE_1B_RESULTADOS/work/a_e2e/evo_3.1.1__magnitudes_first__median__K3__independiente/out/motorA_run_20261117_123714
+
+============================================================================
+[92m[✓] SEPARACIÓN MOTOR A v3.1.0 COMPLETADA CON ÉXITO (SNR > 140 dB)[0m
+Directorio de Resultados : [96m/home/user/fase1b/FASE_1B_RESULTADOS/work/a_e2e/evo_3.1.1__magnitudes_first__median__K3__independiente/out/motorA_run_20261117_123714[0m
+Artefactos Generados     : mix SDV.wav | mix SDI.wav | analysis.json | analysis.txt
+============================================================================
+
+"
+evo_3.1.1,magnitudes_first,confidence_weighted_mean,3,independiente,0,2.25,e6beac25a8fb6340668c1c8c5411f4b8ea120d4694783314c225ffde34b5cf1c,48349417558ccbcb3debb2301f7e2559510ba1c1c9eb290999ba77fc3c6ecd76,f24464b5d16e71673b45680d32ad446f28d75b18360adab5b4e320287e215ec8,/home/user/fase1b/FASE_1B_RESULTADOS/work/a_e2e/evo_3.1.1__magnitudes_first__confidence_weighted_mean__K3__independiente/out/motorA_run_20261117_123717/mix SDV.wav,/home/user/fase1b/FASE_1B_RESULTADOS/work/a_e2e/evo_3.1.1__magnitudes_first__confidence_weighted_mean__K3__independiente/out/motorA_run_20261117_123717/mix SDI.wav,,"  0.35s] Configuración Consenso: order=magnitudes_first | consensus=confidence_weighted_mean | smoothing=none | mask_mode=mono
+[     0.35s] Parámetros DSP: p=1.80 | beta=1.00 | eps=1.0e-12 | n_fft=4096 | hop=1024 | residuals=True
+[     0.35s] Procesando 175 tramas en 1 chunks de 256 tramas...
+[     1.14s]   Chunk 01/1 [100.0%] completado (Tramas 0-174)
+[     1.16s] Post-WAV Identity SNR: 152.37 dB (Estado: PASS_EXACT_IDENTITY)
+[     1.18s] Directorio 'masks/' eliminado para liberar espacio.
+[     1.18s] Corrida finalizada exitosamente en: /home/user/fase1b/FASE_1B_RESULTADOS/work/a_e2e/evo_3.1.1__magnitudes_first__confidence_weighted_mean__K3__independiente/out/motorA_run_20261117_123717
+
+============================================================================
+[92m[✓] SEPARACIÓN MOTOR A v3.1.0 COMPLETADA CON ÉXITO (SNR > 140 dB)[0m
+Directorio de Resultados : [96m/home/user/fase1b/FASE_1B_RESULTADOS/work/a_e2e/evo_3.1.1__magnitudes_first__confidence_weighted_mean__K3__independiente/out/motorA_run_20261117_123717[0m
+Artefactos Generados     : mix SDV.wav | mix SDI.wav | analysis.json | analysis.txt
+============================================================================
+
+"
+evo_3.1.1,masks_first,weighted_mean,3,independiente,0,2.691,1cfced96b587ca29d95f5474de6e29a51f3b275a366650b28d5e52b95df08da5,fa24e7653ec69c336d29bb79646363bc1818189911e3e73c60ffa54b21881096,824ad57eb852b956c023f5f355faa170a40009365a38c3442dcc14ceaac85814,/home/user/fase1b/FASE_1B_RESULTADOS/work/a_e2e/evo_3.1.1__masks_first__weighted_mean__K3__independiente/out/motorA_run_20261117_123720/mix SDV.wav,/home/user/fase1b/FASE_1B_RESULTADOS/work/a_e2e/evo_3.1.1__masks_first__weighted_mean__K3__independiente/out/motorA_run_20261117_123720/mix SDI.wav,,"ente/out/motorA_run_20261117_123720_partial
+[     0.37s] Configuración Consenso: order=masks_first | consensus=weighted_mean | smoothing=none | mask_mode=mono
+[     0.37s] Parámetros DSP: p=1.80 | beta=1.00 | eps=1.0e-12 | n_fft=4096 | hop=1024 | residuals=True
+[     0.37s] Procesando 175 tramas en 1 chunks de 256 tramas...
+[     1.64s]   Chunk 01/1 [100.0%] completado (Tramas 0-174)
+[     1.66s] Post-WAV Identity SNR: 152.34 dB (Estado: PASS_EXACT_IDENTITY)
+[     1.68s] Directorio 'masks/' eliminado para liberar espacio.
+[     1.68s] Corrida finalizada exitosamente en: /home/user/fase1b/FASE_1B_RESULTADOS/work/a_e2e/evo_3.1.1__masks_first__weighted_mean__K3__independiente/out/motorA_run_20261117_123720
+
+============================================================================
+[92m[✓] SEPARACIÓN MOTOR A v3.1.0 COMPLETADA CON ÉXITO (SNR > 140 dB)[0m
+Directorio de Resultados : [96m/home/user/fase1b/FASE_1B_RESULTADOS/work/a_e2e/evo_3.1.1__masks_first__weighted_mean__K3__independiente/out/motorA_run_20261117_123720[0m
+Artefactos Generados     : mix SDV.wav | mix SDI.wav | analysis.json | analysis.txt
+============================================================================
+
+"
+evo_3.1.1,masks_first,median,3,independiente,0,2.5,26d82eafa64b9a6b5e0e27348616ef926fdf16ac534db73513faf33c2d7947cd,471f9407122b17d721d28980cc77747ef89bec35ec1c3c1c203324fd843fb12f,71164b62e4fcec414fb5f42ee3faff40f4524ec6db0c3926ade9a96f44b5f239,/home/user/fase1b/FASE_1B_RESULTADOS/work/a_e2e/evo_3.1.1__masks_first__median__K3__independiente/out/motorA_run_20261117_123723/mix SDV.wav,/home/user/fase1b/FASE_1B_RESULTADOS/work/a_e2e/evo_3.1.1__masks_first__median__K3__independiente/out/motorA_run_20261117_123723/mix SDI.wav,,"median__K3__independiente/out/motorA_run_20261117_123723_partial
+[     0.36s] Configuración Consenso: order=masks_first | consensus=median | smoothing=none | mask_mode=mono
+[     0.36s] Parámetros DSP: p=1.80 | beta=1.00 | eps=1.0e-12 | n_fft=4096 | hop=1024 | residuals=True
+[     0.36s] Procesando 175 tramas en 1 chunks de 256 tramas...
+[     1.45s]   Chunk 01/1 [100.0%] completado (Tramas 0-174)
+[     1.47s] Post-WAV Identity SNR: 152.36 dB (Estado: PASS_EXACT_IDENTITY)
+[     1.48s] Directorio 'masks/' eliminado para liberar espacio.
+[     1.48s] Corrida finalizada exitosamente en: /home/user/fase1b/FASE_1B_RESULTADOS/work/a_e2e/evo_3.1.1__masks_first__median__K3__independiente/out/motorA_run_20261117_123723
+
+============================================================================
+[92m[✓] SEPARACIÓN MOTOR A v3.1.0 COMPLETADA CON ÉXITO (SNR > 140 dB)[0m
+Directorio de Resultados : [96m/home/user/fase1b/FASE_1B_RESULTADOS/work/a_e2e/evo_3.1.1__masks_first__median__K3__independiente/out/motorA_run_20261117_123723[0m
+Artefactos Generados     : mix SDV.wav | mix SDI.wav | analysis.json | analysis.txt
+============================================================================
+
+"
+evo_3.1.1,masks_first,confidence_weighted_mean,3,independiente,0,2.605,0d32fc24ba3e0313033a1b5c85f88a83427f1cf73b65ffe5e1539779369b779a,beab59bea40b90594750f4093728870247a4ffa9d1baf35d6c87f55508c5263f,a4b0d86d3ae75d72647c3ff45183c66cfb8eee175dd0ddbdde600b7c3fd29207,/home/user/fase1b/FASE_1B_RESULTADOS/work/a_e2e/evo_3.1.1__masks_first__confidence_weighted_mean__K3__independiente/out/motorA_run_20261117_123726/mix SDV.wav,/home/user/fase1b/FASE_1B_RESULTADOS/work/a_e2e/evo_3.1.1__masks_first__confidence_weighted_mean__K3__independiente/out/motorA_run_20261117_123726/mix SDI.wav,,"26_partial
+[     0.40s] Configuración Consenso: order=masks_first | consensus=confidence_weighted_mean | smoothing=none | mask_mode=mono
+[     0.40s] Parámetros DSP: p=1.80 | beta=1.00 | eps=1.0e-12 | n_fft=4096 | hop=1024 | residuals=True
+[     0.40s] Procesando 175 tramas en 1 chunks de 256 tramas...
+[     1.56s]   Chunk 01/1 [100.0%] completado (Tramas 0-174)
+[     1.58s] Post-WAV Identity SNR: 152.35 dB (Estado: PASS_EXACT_IDENTITY)
+[     1.60s] Directorio 'masks/' eliminado para liberar espacio.
+[     1.60s] Corrida finalizada exitosamente en: /home/user/fase1b/FASE_1B_RESULTADOS/work/a_e2e/evo_3.1.1__masks_first__confidence_weighted_mean__K3__independiente/out/motorA_run_20261117_123726
+
+============================================================================
+[92m[✓] SEPARACIÓN MOTOR A v3.1.0 COMPLETADA CON ÉXITO (SNR > 140 dB)[0m
+Directorio de Resultados : [96m/home/user/fase1b/FASE_1B_RESULTADOS/work/a_e2e/evo_3.1.1__masks_first__confidence_weighted_mean__K3__independiente/out/motorA_run_20261117_123726[0m
+Artefactos Generados     : mix SDV.wav | mix SDI.wav | analysis.json | analysis.txt
+============================================================================
+
+"
+evo_3.1.1,hybrid_asymmetric,weighted_mean,3,independiente,0,2.639,9ab899047eb017149d2407fc024703eeee837b76458040fa8e9ca0236ba20271,3d2d09bf44e92344ac860d98a686c2c29a4b2ce6b5a4bfb0e9f32302afa86a77,3c62bb986fb78cd1d2ccafd3eb7e2982ab339cf6ab55a7347a8c26e90deea271,/home/user/fase1b/FASE_1B_RESULTADOS/work/a_e2e/evo_3.1.1__hybrid_asymmetric__weighted_mean__K3__independiente/out/motorA_run_20261117_123729/mix SDV.wav,/home/user/fase1b/FASE_1B_RESULTADOS/work/a_e2e/evo_3.1.1__hybrid_asymmetric__weighted_mean__K3__independiente/out/motorA_run_20261117_123729/mix SDI.wav,,"n_20261117_123729_partial
+[     0.36s] Configuración Consenso: order=hybrid_asymmetric | consensus=weighted_mean | smoothing=none | mask_mode=mono
+[     0.36s] Parámetros DSP: p=1.80 | beta=1.00 | eps=1.0e-12 | n_fft=4096 | hop=1024 | residuals=True
+[     0.36s] Procesando 175 tramas en 1 chunks de 256 tramas...
+[     1.50s]   Chunk 01/1 [100.0%] completado (Tramas 0-174)
+[     1.52s] Post-WAV Identity SNR: 152.35 dB (Estado: PASS_EXACT_IDENTITY)
+[     1.54s] Directorio 'masks/' eliminado para liberar espacio.
+[     1.54s] Corrida finalizada exitosamente en: /home/user/fase1b/FASE_1B_RESULTADOS/work/a_e2e/evo_3.1.1__hybrid_asymmetric__weighted_mean__K3__independiente/out/motorA_run_20261117_123729
+
+============================================================================
+[92m[✓] SEPARACIÓN MOTOR A v3.1.0 COMPLETADA CON ÉXITO (SNR > 140 dB)[0m
+Directorio de Resultados : [96m/home/user/fase1b/FASE_1B_RESULTADOS/work/a_e2e/evo_3.1.1__hybrid_asymmetric__weighted_mean__K3__independiente/out/motorA_run_20261117_123729[0m
+Artefactos Generados     : mix SDV.wav | mix SDI.wav | analysis.json | analysis.txt
+============================================================================
+
+"
+evo_3.1.1,hybrid_asymmetric,median,3,independiente,0,2.701,d5a01fd86b688620641deeb7d4c6191e9218c807bbab051cbd1ac5d1416dab5d,8c08fd6a54f3c33aa454d9b6b80cc1d774922e33f5e562a370fb5850cccf3506,e0fe7f6ab586390bcd1c099c171e8eac4d965a354382c48d32f013984cc6dbc1,/home/user/fase1b/FASE_1B_RESULTADOS/work/a_e2e/evo_3.1.1__hybrid_asymmetric__median__K3__independiente/out/motorA_run_20261117_123732/mix SDV.wav,/home/user/fase1b/FASE_1B_RESULTADOS/work/a_e2e/evo_3.1.1__hybrid_asymmetric__median__K3__independiente/out/motorA_run_20261117_123732/mix SDI.wav,,"ndiente/out/motorA_run_20261117_123732_partial
+[     0.42s] Configuración Consenso: order=hybrid_asymmetric | consensus=median | smoothing=none | mask_mode=mono
+[     0.42s] Parámetros DSP: p=1.80 | beta=1.00 | eps=1.0e-12 | n_fft=4096 | hop=1024 | residuals=True
+[     0.42s] Procesando 175 tramas en 1 chunks de 256 tramas...
+[     1.63s]   Chunk 01/1 [100.0%] completado (Tramas 0-174)
+[     1.65s] Post-WAV Identity SNR: 152.32 dB (Estado: PASS_EXACT_IDENTITY)
+[     1.68s] Directorio 'masks/' eliminado para liberar espacio.
+[     1.68s] Corrida finalizada exitosamente en: /home/user/fase1b/FASE_1B_RESULTADOS/work/a_e2e/evo_3.1.1__hybrid_asymmetric__median__K3__independiente/out/motorA_run_20261117_123732
+
+============================================================================
+[92m[✓] SEPARACIÓN MOTOR A v3.1.0 COMPLETADA CON ÉXITO (SNR > 140 dB)[0m
+Directorio de Resultados : [96m/home/user/fase1b/FASE_1B_RESULTADOS/work/a_e2e/evo_3.1.1__hybrid_asymmetric__median__K3__independiente/out/motorA_run_20261117_123732[0m
+Artefactos Generados     : mix SDV.wav | mix SDI.wav | analysis.json | analysis.txt
+============================================================================
+
+"
+evo_3.1.1,hybrid_asymmetric,confidence_weighted_mean,3,independiente,0,2.58,5b0b9098663853b8f9d3e818560daf5e4f0654259984f09282598655ef54dcb5,28a6c0d548c415c30be77ef80e3b9b60722a5bd3273324bcfd5e02cebde67eef,cf2657781015919ff0d49cb21d4e6f68cdf978c9e5c518a3f29988d325e81e5f,/home/user/fase1b/FASE_1B_RESULTADOS/work/a_e2e/evo_3.1.1__hybrid_asymmetric__confidence_weighted_mean__K3__independiente/out/motorA_run_20261117_123735/mix SDV.wav,/home/user/fase1b/FASE_1B_RESULTADOS/work/a_e2e/evo_3.1.1__hybrid_asymmetric__confidence_weighted_mean__K3__independiente/out/motorA_run_20261117_123735/mix SDI.wav,,".38s] Configuración Consenso: order=hybrid_asymmetric | consensus=confidence_weighted_mean | smoothing=none | mask_mode=mono
+[     0.38s] Parámetros DSP: p=1.80 | beta=1.00 | eps=1.0e-12 | n_fft=4096 | hop=1024 | residuals=True
+[     0.38s] Procesando 175 tramas en 1 chunks de 256 tramas...
+[     1.58s]   Chunk 01/1 [100.0%] completado (Tramas 0-174)
+[     1.59s] Post-WAV Identity SNR: 152.36 dB (Estado: PASS_EXACT_IDENTITY)
+[     1.62s] Directorio 'masks/' eliminado para liberar espacio.
+[     1.62s] Corrida finalizada exitosamente en: /home/user/fase1b/FASE_1B_RESULTADOS/work/a_e2e/evo_3.1.1__hybrid_asymmetric__confidence_weighted_mean__K3__independiente/out/motorA_run_20261117_123735
+
+============================================================================
+[92m[✓] SEPARACIÓN MOTOR A v3.1.0 COMPLETADA CON ÉXITO (SNR > 140 dB)[0m
+Directorio de Resultados : [96m/home/user/fase1b/FASE_1B_RESULTADOS/work/a_e2e/evo_3.1.1__hybrid_asymmetric__confidence_weighted_mean__K3__independiente/out/motorA_run_20261117_123735[0m
+Artefactos Generados     : mix SDV.wav | mix SDI.wav | analysis.json | analysis.txt
+============================================================================
+
+"
+v3,,magnitudes_first,3,independiente,0,1.426,3a9e2b4ad7e0f8aa99b21efdfcb97edcfad0bcff2d83d38cf2cf96c51f92d511,2003091ee874165e81ab5939e5d94b7555639d33f789f0a3b0dd00fe3d84f248,b146863d73875804ce1f68daaafd70f93b4a70c4f4e79dba32bba7eb7caea005,/home/user/fase1b/FASE_1B_RESULTADOS/work/a_e2e/v3__None__magnitudes_first__K3__independiente/out/motorV3_run_20261117_123737/mix SDV [Normal].wav,/home/user/fase1b/FASE_1B_RESULTADOS/work/a_e2e/v3__None__magnitudes_first__K3__independiente/out/motorV3_run_20261117_123737/mix SDI [Normal].wav,,"erancia 0.001) -> NO EXACTA
+• Las guias NO suman el mix. Es normal si vienen de modelos distintos, pero conviene saberlo: la complementariedad SDV+SDI=mix no esta garantizada por construccion.
+• divergencia de guias (vocal):
+    p1               div=+0.2678 corr=+0.964 nivel=+0.1 dB
+    p2               div=+0.2672 corr=+0.964 nivel=+0.1 dB
+    p3               div=+0.2675 corr=+0.964 nivel=+0.1 dB
+• divergencia de guias (instrumental):
+    p1               div=+0.3417 corr=+0.941 nivel=+0.2 dB
+    p2               div=+0.3420 corr=+0.941 nivel=+0.2 dB
+    p3               div=+0.3413 corr=+0.941 nivel=+0.2 dB
+• guia vocal mas atipica    : p1
+• guia instrumental mas atipica: p2
+
+--- 8. VEREDICTO -------------------------------------------------------------
+· Hay marcas de polaridad PARCIAL o de banda. El motor no las corrige automaticamente; revisa o re-deriva la guia afectada.
+· Las guias no suman el mix: SDV+SDI no reproducira el mix exacto.
+==============================================================================
+[     1.27s] [92mListo.[0m Salida: /home/user/fase1b/FASE_1B_RESULTADOS/work/a_e2e/v3__None__magnitudes_first__K3__independiente/out/motorV3_run_20261117_123737
+"
+v3,,mean,3,independiente,0,1.347,8d61818ee84fb26f6f4244017c2e49e3f9dc746c34ad6218bd9bfc46dabd9a25,46fa183e635cf1527bac331dbbc24014be494e5632918abaf59872e3a47c2aa1,0680553fef904c9c37c59885d9a90c558948bfc2e832d1ea41ed35ca26edaa7e,/home/user/fase1b/FASE_1B_RESULTADOS/work/a_e2e/v3__None__mean__K3__independiente/out/motorV3_run_20261117_123739/mix SDV [Normal].wav,/home/user/fase1b/FASE_1B_RESULTADOS/work/a_e2e/v3__None__mean__K3__independiente/out/motorV3_run_20261117_123739/mix SDI [Normal].wav,,"716e-01 (tolerancia 0.001) -> NO EXACTA
+• Las guias NO suman el mix. Es normal si vienen de modelos distintos, pero conviene saberlo: la complementariedad SDV+SDI=mix no esta garantizada por construccion.
+• divergencia de guias (vocal):
+    p1               div=+0.2678 corr=+0.964 nivel=+0.1 dB
+    p2               div=+0.2672 corr=+0.964 nivel=+0.1 dB
+    p3               div=+0.2675 corr=+0.964 nivel=+0.1 dB
+• divergencia de guias (instrumental):
+    p1               div=+0.3417 corr=+0.941 nivel=+0.2 dB
+    p2               div=+0.3420 corr=+0.941 nivel=+0.2 dB
+    p3               div=+0.3413 corr=+0.941 nivel=+0.2 dB
+• guia vocal mas atipica    : p1
+• guia instrumental mas atipica: p2
+
+--- 8. VEREDICTO -------------------------------------------------------------
+· Hay marcas de polaridad PARCIAL o de banda. El motor no las corrige automaticamente; revisa o re-deriva la guia afectada.
+· Las guias no suman el mix: SDV+SDI no reproducira el mix exacto.
+==============================================================================
+[     1.18s] [92mListo.[0m Salida: /home/user/fase1b/FASE_1B_RESULTADOS/work/a_e2e/v3__None__mean__K3__independiente/out/motorV3_run_20261117_123739
+"
+v3,,median,3,independiente,0,1.432,facb101cc7777a7c1fa888198be86282fc0c42a530c0ab1f4328d723bf4e47b4,f84920e289248b949efe6562c6007c004a41ef1a0fc69bb55c3335adcd24f7ea,0d09765ce9f73cc0eb194357790a048598fef26b1cd1f326088f5eebbf1a1acf,/home/user/fase1b/FASE_1B_RESULTADOS/work/a_e2e/v3__None__median__K3__independiente/out/motorV3_run_20261117_123741/mix SDV [Normal].wav,/home/user/fase1b/FASE_1B_RESULTADOS/work/a_e2e/v3__None__median__K3__independiente/out/motorV3_run_20261117_123741/mix SDI [Normal].wav,,"6e-01 (tolerancia 0.001) -> NO EXACTA
+• Las guias NO suman el mix. Es normal si vienen de modelos distintos, pero conviene saberlo: la complementariedad SDV+SDI=mix no esta garantizada por construccion.
+• divergencia de guias (vocal):
+    p1               div=+0.2678 corr=+0.964 nivel=+0.1 dB
+    p2               div=+0.2672 corr=+0.964 nivel=+0.1 dB
+    p3               div=+0.2675 corr=+0.964 nivel=+0.1 dB
+• divergencia de guias (instrumental):
+    p1               div=+0.3417 corr=+0.941 nivel=+0.2 dB
+    p2               div=+0.3420 corr=+0.941 nivel=+0.2 dB
+    p3               div=+0.3413 corr=+0.941 nivel=+0.2 dB
+• guia vocal mas atipica    : p1
+• guia instrumental mas atipica: p2
+
+--- 8. VEREDICTO -------------------------------------------------------------
+· Hay marcas de polaridad PARCIAL o de banda. El motor no las corrige automaticamente; revisa o re-deriva la guia afectada.
+· Las guias no suman el mix: SDV+SDI no reproducira el mix exacto.
+==============================================================================
+[     1.27s] [92mListo.[0m Salida: /home/user/fase1b/FASE_1B_RESULTADOS/work/a_e2e/v3__None__median__K3__independiente/out/motorV3_run_20261117_123741
+"
+v3,,median_ri,3,independiente,0,1.459,3bab9dfdcc02fe1de0ab3d8c7b589c6e805552389883336961181cdb764b433d,22b876eacfe5f463e8251eea52198a1e0b551c71daa96d7c8c98dd91f3a6be9b,2baca11edb9ca1ff9f32fba631283500440862abe68296b5ab34baf131441cc0,/home/user/fase1b/FASE_1B_RESULTADOS/work/a_e2e/v3__None__median_ri__K3__independiente/out/motorV3_run_20261117_123742/mix SDV [Normal].wav,/home/user/fase1b/FASE_1B_RESULTADOS/work/a_e2e/v3__None__median_ri__K3__independiente/out/motorV3_run_20261117_123742/mix SDI [Normal].wav,,"01 (tolerancia 0.001) -> NO EXACTA
+• Las guias NO suman el mix. Es normal si vienen de modelos distintos, pero conviene saberlo: la complementariedad SDV+SDI=mix no esta garantizada por construccion.
+• divergencia de guias (vocal):
+    p1               div=+0.2678 corr=+0.964 nivel=+0.1 dB
+    p2               div=+0.2672 corr=+0.964 nivel=+0.1 dB
+    p3               div=+0.2675 corr=+0.964 nivel=+0.1 dB
+• divergencia de guias (instrumental):
+    p1               div=+0.3417 corr=+0.941 nivel=+0.2 dB
+    p2               div=+0.3420 corr=+0.941 nivel=+0.2 dB
+    p3               div=+0.3413 corr=+0.941 nivel=+0.2 dB
+• guia vocal mas atipica    : p1
+• guia instrumental mas atipica: p2
+
+--- 8. VEREDICTO -------------------------------------------------------------
+· Hay marcas de polaridad PARCIAL o de banda. El motor no las corrige automaticamente; revisa o re-deriva la guia afectada.
+· Las guias no suman el mix: SDV+SDI no reproducira el mix exacto.
+==============================================================================
+[     1.29s] [92mListo.[0m Salida: /home/user/fase1b/FASE_1B_RESULTADOS/work/a_e2e/v3__None__median_ri__K3__independiente/out/motorV3_run_20261117_123742
+"
+mqr,,weighted_mean,3,independiente,0,3.197,d51bf4cb7661293194f2cd57884324d3868f35c7b586ccf47dd32632bee0687c,82b8ad37de76af2633d81d40c70fbe64e2ff742335b4bc6f35635874af9f7193,a33a1ab0a3e49c63bd27ba55e1854e8199746ddd2607c51989da20d94db82d26,/home/user/fase1b/FASE_1B_RESULTADOS/work/a_e2e/mqr__None__weighted_mean__K3__independiente/out/mqr_run_20261117_123745/SDV.wav,/home/user/fase1b/FASE_1B_RESULTADOS/work/a_e2e/mqr__None__weighted_mean__K3__independiente/out/mqr_run_20261117_123745/SDI.wav,,"de guides (metricas + factores)...
+[     0.44s]   p1: g_vocal=1.0000 g_instr=1.0000 (politica=none)
+[     0.45s]   p2: g_vocal=1.0000 g_instr=1.0000 (politica=none)
+[     0.47s]   p3: g_vocal=1.0000 g_instr=1.0000 (politica=none)
+[     0.47s] Directorio de corrida (parcial): /home/user/fase1b/FASE_1B_RESULTADOS/work/a_e2e/mqr__None__weighted_mean__K3__independiente/out/mqr_run_20261117_123745_partial
+[     0.47s] Pipeline: mode=full_processing, 3 pares, K=175 frames en chunks de 256
+[     1.78s]   chunk 1/1 (frames 0-174) listo
+[     1.92s] Post-WAV identity: SNR=152.29 dB (esperado > 100 dB)
+[     1.93s] Escribiendo analysis.json / analysis.txt ...
+[     1.95s] Directorio final: /home/user/fase1b/FASE_1B_RESULTADOS/work/a_e2e/mqr__None__weighted_mean__K3__independiente/out/mqr_run_20261117_123745
+[     1.95s] Duracion total: 1.9 s
+[     1.95s] Corrida COMPLETA: /home/user/fase1b/FASE_1B_RESULTADOS/work/a_e2e/mqr__None__weighted_mean__K3__independiente/out/mqr_run_20261117_123745
+
+RESULTADO: OK
+  salida: /home/user/fase1b/FASE_1B_RESULTADOS/work/a_e2e/mqr__None__weighted_mean__K3__independiente/out/mqr_run_20261117_123745
+  SDV.wav / SDI.wav / analysis.json / analysis.txt / masks/
+"
+mqr,,median,3,independiente,0,2.943,5ffceae2afb96c33c937c3b5be666c90636fc4fb6635a1b09fc73cfa00b45f6c,7b9ee99f49e0e8162bfb118da827a160c5fc408670664bf24f02517200f3b625,80a362be75074b2a16d382f4575424da11db79ce614e75cb70c2b0b92ffb68bd,/home/user/fase1b/FASE_1B_RESULTADOS/work/a_e2e/mqr__None__median__K3__independiente/out/mqr_run_20261117_123749/SDV.wav,/home/user/fase1b/FASE_1B_RESULTADOS/work/a_e2e/mqr__None__median__K3__independiente/out/mqr_run_20261117_123749/SDI.wav,,"  0.42s] Analisis de escala de guides (metricas + factores)...
+[     0.43s]   p1: g_vocal=1.0000 g_instr=1.0000 (politica=none)
+[     0.45s]   p2: g_vocal=1.0000 g_instr=1.0000 (politica=none)
+[     0.47s]   p3: g_vocal=1.0000 g_instr=1.0000 (politica=none)
+[     0.47s] Directorio de corrida (parcial): /home/user/fase1b/FASE_1B_RESULTADOS/work/a_e2e/mqr__None__median__K3__independiente/out/mqr_run_20261117_123749_partial
+[     0.47s] Pipeline: mode=full_processing, 3 pares, K=175 frames en chunks de 256
+[     1.72s]   chunk 1/1 (frames 0-174) listo
+[     1.82s] Post-WAV identity: SNR=152.26 dB (esperado > 100 dB)
+[     1.83s] Escribiendo analysis.json / analysis.txt ...
+[     1.84s] Directorio final: /home/user/fase1b/FASE_1B_RESULTADOS/work/a_e2e/mqr__None__median__K3__independiente/out/mqr_run_20261117_123749
+[     1.84s] Duracion total: 1.8 s
+[     1.84s] Corrida COMPLETA: /home/user/fase1b/FASE_1B_RESULTADOS/work/a_e2e/mqr__None__median__K3__independiente/out/mqr_run_20261117_123749
+
+RESULTADO: OK
+  salida: /home/user/fase1b/FASE_1B_RESULTADOS/work/a_e2e/mqr__None__median__K3__independiente/out/mqr_run_20261117_123749
+  SDV.wav / SDI.wav / analysis.json / analysis.txt / masks/
+"
+mqr,,confidence_weighted_mean,3,independiente,0,2.914,c4e046d62ec9b64e3f6ff06245312ea18db4f8a3ffc1af79f5a79daf9bdc6602,79038a0686260c70207b733977639dd118c4a89cedb33e75bc143e72baa3108b,b7e076e7953f1b4c79aebe82fb61c5f5b8cf26fd05d05b2eef9103644632d82e,/home/user/fase1b/FASE_1B_RESULTADOS/work/a_e2e/mqr__None__confidence_weighted_mean__K3__independiente/out/mqr_run_20261117_123752/SDV.wav,/home/user/fase1b/FASE_1B_RESULTADOS/work/a_e2e/mqr__None__confidence_weighted_mean__K3__independiente/out/mqr_run_20261117_123752/SDI.wav,,"0s]   p1: g_vocal=1.0000 g_instr=1.0000 (politica=none)
+[     0.42s]   p2: g_vocal=1.0000 g_instr=1.0000 (politica=none)
+[     0.44s]   p3: g_vocal=1.0000 g_instr=1.0000 (politica=none)
+[     0.44s] Directorio de corrida (parcial): /home/user/fase1b/FASE_1B_RESULTADOS/work/a_e2e/mqr__None__confidence_weighted_mean__K3__independiente/out/mqr_run_20261117_123752_partial
+[     0.44s] Pipeline: mode=full_processing, 3 pares, K=175 frames en chunks de 256
+[     1.70s]   chunk 1/1 (frames 0-174) listo
+[     1.76s] Post-WAV identity: SNR=152.29 dB (esperado > 100 dB)
+[     1.77s] Escribiendo analysis.json / analysis.txt ...
+[     1.78s] Directorio final: /home/user/fase1b/FASE_1B_RESULTADOS/work/a_e2e/mqr__None__confidence_weighted_mean__K3__independiente/out/mqr_run_20261117_123752
+[     1.78s] Duracion total: 1.8 s
+[     1.78s] Corrida COMPLETA: /home/user/fase1b/FASE_1B_RESULTADOS/work/a_e2e/mqr__None__confidence_weighted_mean__K3__independiente/out/mqr_run_20261117_123752
+
+RESULTADO: OK
+  salida: /home/user/fase1b/FASE_1B_RESULTADOS/work/a_e2e/mqr__None__confidence_weighted_mean__K3__independiente/out/mqr_run_20261117_123752
+  SDV.wav / SDI.wav / analysis.json / analysis.txt / masks/
+"
