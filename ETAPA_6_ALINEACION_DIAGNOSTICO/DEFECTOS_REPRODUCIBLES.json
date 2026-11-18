@@ -1,0 +1,850 @@
+{
+  "etapa": 6,
+  "estado": "Sólo diagnóstico y diseño, ningún parche ni batería nueva",
+  "base_fuentes": "b64f15ae8b28e46eef3c024dc62c85fe27c69494",
+  "commit_S5": "c1ce9e29e15a9c5eb2789187097f94fc13cefaa0",
+  "commit_auditoria": "9fc5fc958942845b63e151c02671bbca08362e2b",
+  "fuentes": [
+    {
+      "motor": "A",
+      "original": "Proyecto SDV-SDI_SGM/MOTOR_SEP_SDV-SDI_v3.py",
+      "sha256": "a0550a01cefb1095a0086824e1accfe1d7909b717ff1804920ae6c24d8d8487e",
+      "git_blob": "72a75f33fc391ae4d9093e2a21b9debfcebdde13"
+    },
+    {
+      "motor": "B",
+      "original": "Proyecto SDV-SDI_SGM/MOTOR_SEP_SDV-SDI_v3.1.1_Hardened_Final.py",
+      "sha256": "5141fb5005656db1f6b2ede6165dbc77e6f74375a77e9db2570e69d8c6409dbd",
+      "git_blob": "57587b7f22f7515c92af6ac2ca108f4cf24b5763"
+    },
+    {
+      "motor": "C",
+      "original": "Proyecto SDV-SDI_SGM/MOTOR_SEP_SDV-SDI_EVO.py",
+      "sha256": "003e698e187b6d6286c39a4f461e924420544ee4bf59c0b66a72258efc35774f",
+      "git_blob": "2323f91e8925bd9a7f1bce8ef8036af5034fbb23"
+    },
+    {
+      "motor": "D",
+      "original": "Proyecto SDV-SDI_SGM/sdv_sdi_mqr_engine.py",
+      "sha256": "5990ebe41177b62c57290a7b95a4a0408774878a7217341c40ab87d53737a479",
+      "git_blob": "a223b51e380756dc7e41751ed9b3bf01810bdb7c"
+    }
+  ],
+  "convencion": "d>0 guía atrasada frente a su rol en Mix; nativos B/C/D k=−d; v3 lag=d para coincidencia identificable.",
+  "conteo_S5": {
+    "categoria": "EXPERIMENTAL_RESULT",
+    "dictamen": "CONFIRMADO",
+    "por_motor": {
+      "B": {
+        "informes_nativos_completos": 16,
+        "filas_por_rol": {
+          "MISALIGNED": 22,
+          "ALIGNED": 10
+        },
+        "corridas_con_MISALIGNED": 16
+      },
+      "C": {
+        "informes_nativos_completos": 19,
+        "filas_por_rol": {
+          "ALIGNED": 18,
+          "MISALIGNED": 19,
+          "ALIGNED_BY_IDENTITY": 7
+        },
+        "corridas_con_MISALIGNED": 17
+      },
+      "D": {
+        "informes_nativos_completos": 7,
+        "filas_por_rol": {
+          "MISALIGNED": 9,
+          "ALIGNED": 5
+        },
+        "corridas_con_MISALIGNED": 7
+      }
+    },
+    "extra": "D/S7: 2 líneas MISALIGNED en consola; excluidas de los 42 informes completos."
+  },
+  "testigos_pcm": {
+    "categoria": "EXPERIMENTAL_RESULT",
+    "dictamen": "CONFIRMADO",
+    "origen": "Sólo entradas y registros S5 ya publicados. Cálculo diagnóstico en memoria, sin invocar los motores.",
+    "metodo": "RMS mid centrada en ventana de 2205 muestras (bordes recortados), media por bloques de 8 con cast float32; FFT y energías del solape en float64. Recalcular la curva gruesa con el rango de cada motor, Pearson centrado en cero y en los 25 lags finos. Los k gruesos de D concuerdan con coarse_lag_samples. Los de B/C se deducen por recálculo, no constan como campo nativo. La cifra del pico concuerda con los 18 coeficientes nativos con diferencia absoluta <1e−12, tolerancia de cotejo, no umbral de decisión.",
+    "lecturas": [
+      {
+        "caso": "S1",
+        "rol": "I",
+        "retardo_impuesto_guia_muestras": 0,
+        "entradas": [
+          "S5_STEREO_VALIDATION/evidence/inputs.tar.xz!inputs/S1/Mix.wav",
+          "S5_STEREO_VALIDATION/evidence/inputs.tar.xz!inputs/S1/I.wav"
+        ],
+        "pearson_onda_en_cero": 0.8086999957983019,
+        "por_motor": {
+          "B": {
+            "primaria": "S5_STEREO_VALIDATION/evidence/S5-B.tar.xz!runs/B/S1_per_channel/native/motorA_run_20261118_210909/analysis.json",
+            "ncc_envolvente_cero": 0.9999995673365796,
+            "ncc_envolvente_ganadora": 0.9999995897563942,
+            "k_grueso_recalculado_muestras": -1200,
+            "intervalo_fino": [
+              -1212,
+              -1188
+            ],
+            "k_entero_max_pearson_recalculado": -1200,
+            "pearson_fino": 0.8086999957983018,
+            "k_publicado": -1200,
+            "confianza_publicada": 0.8086999957982887,
+            "clase_publicada": "MISALIGNED"
+          },
+          "C": {
+            "primaria": "S5_STEREO_VALIDATION/evidence/S5-C.tar.xz!runs/C/S1_per_channel/native/motorA_run_20261118_210932/analysis.json",
+            "ncc_envolvente_cero": 0.9999995673365796,
+            "ncc_envolvente_ganadora": 0.9999995897563942,
+            "k_grueso_recalculado_muestras": -1200,
+            "intervalo_fino": [
+              -1212,
+              -1188
+            ],
+            "k_entero_max_pearson_recalculado": -1200,
+            "pearson_fino": 0.8086999957983018,
+            "k_publicado": -1200,
+            "confianza_publicada": 0.8086999957982887,
+            "clase_publicada": "MISALIGNED"
+          },
+          "D": {
+            "primaria": "S5_STEREO_VALIDATION/evidence/S5-D.tar.xz!runs/D/S1_shared/native/mqr_run_20261118_210932/analysis.json",
+            "ncc_envolvente_cero": 0.9999995673365796,
+            "ncc_envolvente_ganadora": 0.9999995897563942,
+            "k_grueso_recalculado_muestras": -1200,
+            "intervalo_fino": [
+              -1212,
+              -1188
+            ],
+            "k_entero_max_pearson_recalculado": -1200,
+            "pearson_fino": 0.8086999957983018,
+            "k_publicado": -1200,
+            "confianza_publicada": 0.8086999957982887,
+            "clase_publicada": "MISALIGNED"
+          }
+        }
+      },
+      {
+        "caso": "S2",
+        "rol": "I",
+        "retardo_impuesto_guia_muestras": 0,
+        "entradas": [
+          "S5_STEREO_VALIDATION/evidence/inputs.tar.xz!inputs/S2/Mix.wav",
+          "S5_STEREO_VALIDATION/evidence/inputs.tar.xz!inputs/S2/I.wav"
+        ],
+        "pearson_onda_en_cero": 0.8484075789208616,
+        "por_motor": {
+          "B": {
+            "primaria": "S5_STEREO_VALIDATION/evidence/S5-B.tar.xz!runs/B/S2_per_channel/native/motorA_run_20261118_210911/analysis.json",
+            "ncc_envolvente_cero": 0.9999993477229313,
+            "ncc_envolvente_ganadora": 0.9999994266348613,
+            "k_grueso_recalculado_muestras": -1224,
+            "intervalo_fino": [
+              -1236,
+              -1212
+            ],
+            "k_entero_max_pearson_recalculado": -1212,
+            "pearson_fino": 0.30103468790287735,
+            "k_publicado": -1212,
+            "confianza_publicada": 0.30103468790288124,
+            "clase_publicada": "MISALIGNED"
+          },
+          "C": {
+            "primaria": "S5_STEREO_VALIDATION/evidence/S5-C.tar.xz!runs/C/S2_per_channel/native/motorA_run_20261118_210934/analysis.json",
+            "ncc_envolvente_cero": 0.9999993477229313,
+            "ncc_envolvente_ganadora": 0.9999994266348613,
+            "k_grueso_recalculado_muestras": -1224,
+            "intervalo_fino": [
+              -1236,
+              -1212
+            ],
+            "k_entero_max_pearson_recalculado": -1212,
+            "pearson_fino": 0.30103468790287735,
+            "k_publicado": -1212,
+            "confianza_publicada": 0.30103468790288124,
+            "clase_publicada": "MISALIGNED"
+          },
+          "D": {
+            "primaria": "S5_STEREO_VALIDATION/evidence/S5-D.tar.xz!runs/D/S2_shared/native/mqr_run_20261118_210934/analysis.json",
+            "ncc_envolvente_cero": 0.9999993477229313,
+            "ncc_envolvente_ganadora": 0.9999994266348613,
+            "k_grueso_recalculado_muestras": -1224,
+            "intervalo_fino": [
+              -1236,
+              -1212
+            ],
+            "k_entero_max_pearson_recalculado": -1212,
+            "pearson_fino": 0.30103468790287735,
+            "k_publicado": -1212,
+            "confianza_publicada": 0.30103468790288124,
+            "clase_publicada": "MISALIGNED"
+          }
+        }
+      },
+      {
+        "caso": "S4",
+        "rol": "V",
+        "retardo_impuesto_guia_muestras": 0,
+        "entradas": [
+          "S5_STEREO_VALIDATION/evidence/inputs.tar.xz!inputs/S4/Mix.wav",
+          "S5_STEREO_VALIDATION/evidence/inputs.tar.xz!inputs/S4/V.wav"
+        ],
+        "pearson_onda_en_cero": 0.785858041725385,
+        "por_motor": {
+          "B": {
+            "primaria": "S5_STEREO_VALIDATION/evidence/S5-B.tar.xz!runs/B/S4_per_channel/native/motorA_run_20261118_210916/analysis.json",
+            "ncc_envolvente_cero": 0.9781723066779457,
+            "ncc_envolvente_ganadora": 0.9990696689301879,
+            "k_grueso_recalculado_muestras": 66152,
+            "intervalo_fino": [
+              66140,
+              66164
+            ],
+            "k_entero_max_pearson_recalculado": 66150,
+            "pearson_fino": 0.5051639836925383,
+            "k_publicado": 66150,
+            "confianza_publicada": 0.5051639836925371,
+            "clase_publicada": "MISALIGNED"
+          },
+          "C": {
+            "primaria": "S5_STEREO_VALIDATION/evidence/S5-C.tar.xz!runs/C/S4_per_channel/native/motorA_run_20261118_210938/analysis.json",
+            "ncc_envolvente_cero": 0.9781723066779457,
+            "ncc_envolvente_ganadora": 0.9990696227600793,
+            "k_grueso_recalculado_muestras": 66144,
+            "intervalo_fino": [
+              66132,
+              66156
+            ],
+            "k_entero_max_pearson_recalculado": 66150,
+            "pearson_fino": 0.5051639836925383,
+            "k_publicado": 66150,
+            "confianza_publicada": 0.5051639836925371,
+            "clase_publicada": "MISALIGNED"
+          },
+          "D": {
+            "primaria": "S5_STEREO_VALIDATION/evidence/S5-D.tar.xz!runs/D/S4_shared/native/mqr_run_20261118_210937/analysis.json",
+            "ncc_envolvente_cero": 0.9781723066779457,
+            "ncc_envolvente_ganadora": 0.9990696689301879,
+            "k_grueso_recalculado_muestras": 66152,
+            "intervalo_fino": [
+              66140,
+              66164
+            ],
+            "k_entero_max_pearson_recalculado": 66150,
+            "pearson_fino": 0.5051639836925383,
+            "k_publicado": 66150,
+            "confianza_publicada": 0.5051639836925371,
+            "clase_publicada": "MISALIGNED"
+          }
+        }
+      },
+      {
+        "caso": "S4",
+        "rol": "I",
+        "retardo_impuesto_guia_muestras": 0,
+        "entradas": [
+          "S5_STEREO_VALIDATION/evidence/inputs.tar.xz!inputs/S4/Mix.wav",
+          "S5_STEREO_VALIDATION/evidence/inputs.tar.xz!inputs/S4/I.wav"
+        ],
+        "pearson_onda_en_cero": 0.775585951298244,
+        "por_motor": {
+          "B": {
+            "primaria": "S5_STEREO_VALIDATION/evidence/S5-B.tar.xz!runs/B/S4_per_channel/native/motorA_run_20261118_210916/analysis.json",
+            "ncc_envolvente_cero": 0.9720801248544826,
+            "ncc_envolvente_ganadora": 0.9733234594529518,
+            "k_grueso_recalculado_muestras": -66104,
+            "intervalo_fino": [
+              -66116,
+              -66092
+            ],
+            "k_entero_max_pearson_recalculado": -66100,
+            "pearson_fino": 0.6652451567599885,
+            "k_publicado": -66100,
+            "confianza_publicada": 0.6652451567599861,
+            "clase_publicada": "MISALIGNED"
+          },
+          "C": {
+            "primaria": "S5_STEREO_VALIDATION/evidence/S5-C.tar.xz!runs/C/S4_per_channel/native/motorA_run_20261118_210938/analysis.json",
+            "ncc_envolvente_cero": 0.9720801248544826,
+            "ncc_envolvente_ganadora": 0.9733234594529518,
+            "k_grueso_recalculado_muestras": -66104,
+            "intervalo_fino": [
+              -66116,
+              -66092
+            ],
+            "k_entero_max_pearson_recalculado": -66100,
+            "pearson_fino": 0.6652451567599885,
+            "k_publicado": -66100,
+            "confianza_publicada": 0.6652451567599861,
+            "clase_publicada": "MISALIGNED"
+          },
+          "D": {
+            "primaria": "S5_STEREO_VALIDATION/evidence/S5-D.tar.xz!runs/D/S4_shared/native/mqr_run_20261118_210937/analysis.json",
+            "ncc_envolvente_cero": 0.9720801248544826,
+            "ncc_envolvente_ganadora": 0.9733234594529518,
+            "k_grueso_recalculado_muestras": -66104,
+            "intervalo_fino": [
+              -66116,
+              -66092
+            ],
+            "k_entero_max_pearson_recalculado": -66100,
+            "pearson_fino": 0.6652451567599885,
+            "k_publicado": -66100,
+            "confianza_publicada": 0.6652451567599861,
+            "clase_publicada": "MISALIGNED"
+          }
+        }
+      },
+      {
+        "caso": "S5",
+        "rol": "V",
+        "retardo_impuesto_guia_muestras": 0,
+        "entradas": [
+          "S5_STEREO_VALIDATION/evidence/inputs.tar.xz!inputs/S5/Mix.wav",
+          "S5_STEREO_VALIDATION/evidence/inputs.tar.xz!inputs/S5/V.wav"
+        ],
+        "pearson_onda_en_cero": 0.7294945045421709,
+        "por_motor": {
+          "B": {
+            "primaria": "S5_STEREO_VALIDATION/evidence/S5-B.tar.xz!runs/B/S5_per_channel/native/motorA_run_20261118_210918/analysis.json",
+            "ncc_envolvente_cero": 0.7477664362267311,
+            "ncc_envolvente_ganadora": 0.7891132279019638,
+            "k_grueso_recalculado_muestras": 3312,
+            "intervalo_fino": [
+              3300,
+              3324
+            ],
+            "k_entero_max_pearson_recalculado": 3300,
+            "pearson_fino": 0.7763305559549182,
+            "k_publicado": 3300,
+            "confianza_publicada": 0.7763305559549181,
+            "clase_publicada": "MISALIGNED"
+          },
+          "C": {
+            "primaria": "S5_STEREO_VALIDATION/evidence/S5-C.tar.xz!runs/C/S5_per_channel/native/motorA_run_20261118_210940/analysis.json",
+            "ncc_envolvente_cero": 0.7477664362267311,
+            "ncc_envolvente_ganadora": 0.7891132279019638,
+            "k_grueso_recalculado_muestras": 3312,
+            "intervalo_fino": [
+              3300,
+              3324
+            ],
+            "k_entero_max_pearson_recalculado": 3300,
+            "pearson_fino": 0.7763305559549182,
+            "k_publicado": 3300,
+            "confianza_publicada": 0.7763305559549181,
+            "clase_publicada": "MISALIGNED"
+          },
+          "D": {
+            "primaria": "S5_STEREO_VALIDATION/evidence/S5-D.tar.xz!runs/D/S5_shared/native/mqr_run_20261118_210939/analysis.json",
+            "ncc_envolvente_cero": 0.7477664362267311,
+            "ncc_envolvente_ganadora": 0.7891132279019638,
+            "k_grueso_recalculado_muestras": 3312,
+            "intervalo_fino": [
+              3300,
+              3324
+            ],
+            "k_entero_max_pearson_recalculado": 3300,
+            "pearson_fino": 0.7763305559549182,
+            "k_publicado": 3300,
+            "confianza_publicada": 0.7763305559549181,
+            "clase_publicada": "MISALIGNED"
+          }
+        }
+      },
+      {
+        "caso": "S5",
+        "rol": "I",
+        "retardo_impuesto_guia_muestras": 0,
+        "entradas": [
+          "S5_STEREO_VALIDATION/evidence/inputs.tar.xz!inputs/S5/Mix.wav",
+          "S5_STEREO_VALIDATION/evidence/inputs.tar.xz!inputs/S5/I.wav"
+        ],
+        "pearson_onda_en_cero": 0.783135244110866,
+        "por_motor": {
+          "B": {
+            "primaria": "S5_STEREO_VALIDATION/evidence/S5-B.tar.xz!runs/B/S5_per_channel/native/motorA_run_20261118_210918/analysis.json",
+            "ncc_envolvente_cero": 0.819174328663561,
+            "ncc_envolvente_ganadora": 0.88702847534301,
+            "k_grueso_recalculado_muestras": -6448,
+            "intervalo_fino": [
+              -6460,
+              -6436
+            ],
+            "k_entero_max_pearson_recalculado": -6436,
+            "pearson_fino": -0.4597738197444651,
+            "k_publicado": -6436,
+            "confianza_publicada": 0.0,
+            "clase_publicada": "MISALIGNED"
+          },
+          "C": {
+            "primaria": "S5_STEREO_VALIDATION/evidence/S5-C.tar.xz!runs/C/S5_per_channel/native/motorA_run_20261118_210940/analysis.json",
+            "ncc_envolvente_cero": 0.819174328663561,
+            "ncc_envolvente_ganadora": 0.88702847534301,
+            "k_grueso_recalculado_muestras": -6448,
+            "intervalo_fino": [
+              -6460,
+              -6436
+            ],
+            "k_entero_max_pearson_recalculado": -6436,
+            "pearson_fino": -0.4597738197444651,
+            "k_publicado": 0,
+            "confianza_publicada": -0.45977381974446513,
+            "clase_publicada": "ALIGNED_BY_IDENTITY"
+          },
+          "D": {
+            "primaria": "S5_STEREO_VALIDATION/evidence/S5-D.tar.xz!runs/D/S5_shared/native/mqr_run_20261118_210939/analysis.json",
+            "ncc_envolvente_cero": 0.819174328663561,
+            "ncc_envolvente_ganadora": 0.88702847534301,
+            "k_grueso_recalculado_muestras": -6448,
+            "intervalo_fino": [
+              -6460,
+              -6436
+            ],
+            "k_entero_max_pearson_recalculado": -6436,
+            "pearson_fino": -0.4597738197444651,
+            "k_publicado": -6436,
+            "confianza_publicada": 0.0,
+            "clase_publicada": "MISALIGNED"
+          }
+        }
+      }
+    ]
+  },
+  "defectos": [
+    {
+      "id": "X1",
+      "motores": [
+        "B",
+        "C",
+        "D"
+      ],
+      "categoria": "EXPERIMENTAL_RESULT",
+      "dictamen": "CONFIRMADO",
+      "tipo_de_comprobacion": "S5 + recálculo sobre PCM",
+      "hallazgo": "El máximo de una sola envolvente puede dejar el retardo verdadero fuera del refinamiento.",
+      "ubicaciones": [
+        "Proyecto SDV-SDI_SGM/MOTOR_SEP_SDV-SDI_v3.1.1_Hardened_Final.py#L459-L489",
+        "Proyecto SDV-SDI_SGM/MOTOR_SEP_SDV-SDI_v3.1.1_Hardened_Final.py#L548-L568",
+        "Proyecto SDV-SDI_SGM/MOTOR_SEP_SDV-SDI_EVO.py#L464-L494",
+        "Proyecto SDV-SDI_SGM/MOTOR_SEP_SDV-SDI_EVO.py#L577-L618",
+        "Proyecto SDV-SDI_SGM/sdv_sdi_mqr_engine.py#L757-L796",
+        "Proyecto SDV-SDI_SGM/sdv_sdi_mqr_engine.py#L893-L923"
+      ],
+      "evidencia": [
+        "S5_STEREO_VALIDATION/evidence/S5-B.tar.xz!runs/B/S2_per_channel/native/motorA_run_20261118_210911/analysis.json",
+        "S5_STEREO_VALIDATION/evidence/S5-C.tar.xz!runs/C/S2_per_channel/native/motorA_run_20261118_210934/analysis.json",
+        "S5_STEREO_VALIDATION/evidence/S5-D.tar.xz!runs/D/S2_shared/native/mqr_run_20261118_210934/analysis.json",
+        "S5_STEREO_VALIDATION/evidence/inputs.tar.xz!inputs/S2/I.wav",
+        "S5_STEREO_VALIDATION/evidence/inputs.tar.xz!inputs/S2/Mix.wav",
+        "S5_STEREO_VALIDATION/signals/manifest.json"
+      ],
+      "como_verificar_sin_modificar": "S2/P1 instrumental: comparar Pearson en cero y en las 25 posiciones alrededor de −1224; véanse testigos_pcm. S1 muestra un casi empate y S4 una coincidencia entre eventos de distinto rol.",
+      "causa": "La NCC gruesa es un coseno local de envolventes RMS positivas, sin quitar el nivel medio. Se retiene un único argmax sin contrastar máximos competidores ni cero. El objetivo fino es Pearson de la onda, no la misma función.",
+      "consecuencia": "S2/I: cero tiene Pearson 0.848408; se informa −1212 y 0.301035. En S1/I −1200 son doce períodos de 100 muestras; la onda solapada es indistinguible a 0 y −1200.",
+      "limite": "La fórmula local no está mal normalizada en solapes válidos. No todos los errores son empates numéricos ni se resolverían sólo cambiando la normalización.",
+      "casos_propuestos": [
+        "V00",
+        "V03",
+        "V04"
+      ],
+      "corregido_en_esta_etapa": false
+    },
+    {
+      "id": "X2",
+      "motores": [
+        "B",
+        "C",
+        "D"
+      ],
+      "categoria": "EXPERIMENTAL_RESULT",
+      "dictamen": "CONFIRMADO",
+      "tipo_de_comprobacion": "S5, señal y código",
+      "hallazgo": "El mid descarta la señal útil en antifase; el veredicto de un rol no es un vector L/R.",
+      "ubicaciones": [
+        "Proyecto SDV-SDI_SGM/MOTOR_SEP_SDV-SDI_v3.1.1_Hardened_Final.py#L260-L264",
+        "Proyecto SDV-SDI_SGM/MOTOR_SEP_SDV-SDI_v3.1.1_Hardened_Final.py#L538-L549",
+        "Proyecto SDV-SDI_SGM/MOTOR_SEP_SDV-SDI_EVO.py#L557-L575",
+        "Proyecto SDV-SDI_SGM/sdv_sdi_mqr_engine.py#L445-L453",
+        "Proyecto SDV-SDI_SGM/sdv_sdi_mqr_engine.py#L879-L896"
+      ],
+      "evidencia": [
+        "S5_STEREO_VALIDATION/evidence/inputs.tar.xz!inputs/S7/Mix.wav",
+        "S5_STEREO_VALIDATION/evidence/inputs.tar.xz!inputs/S7/V.wav",
+        "S5_STEREO_VALIDATION/evidence/inputs.tar.xz!inputs/S7/I.wav",
+        "S5_STEREO_VALIDATION/evidence/S5-B.tar.xz!runs/B/S7_per_channel/native/motorA_run_20261118_210923/analysis.json",
+        "S5_STEREO_VALIDATION/evidence/S5-C.tar.xz!runs/C/S7_per_channel/native/motorA_run_20261118_210945/analysis.json",
+        "S5_STEREO_VALIDATION/evidence/S5-D.tar.xz!runs/D/S7_shared/console.log"
+      ],
+      "como_verificar_sin_modificar": "R=−L en cada fuente S7; confirmar que el mid es exactamente cero y que la energía por canal es positiva. Leer la clasificación de ambos roles.",
+      "causa": "Proyección (L+R)/2 antes de medir tiempo; pierde la componente lateral y combina relojes si los retardos difieren.",
+      "consecuencia": "B/D anuncian gran desfase y C identidad sin señal temporal. Cambiar mask_mode no cambia la entrada al detector.",
+      "limite": "No se deduce que toda mezcla parcial en antifase cancele por completo. Las salidas de A/S5 no miden audit_alignment.",
+      "casos_propuestos": [
+        "V02",
+        "V05",
+        "V07",
+        "V08"
+      ],
+      "corregido_en_esta_etapa": false
+    },
+    {
+      "id": "X3",
+      "motores": [
+        "B",
+        "C",
+        "D"
+      ],
+      "categoria": "DOCUMENTED_FACT",
+      "dictamen": "CONFIRMADO",
+      "tipo_de_comprobacion": "criterio de selección; control Pneg únicamente en EVO",
+      "hallazgo": "El refinamiento premia Pearson firmado, no la coincidencia temporal independiente de polaridad.",
+      "ubicaciones": [
+        "Proyecto SDV-SDI_SGM/MOTOR_SEP_SDV-SDI_v3.1.1_Hardened_Final.py#L491-L522",
+        "Proyecto SDV-SDI_SGM/MOTOR_SEP_SDV-SDI_EVO.py#L496-L527",
+        "Proyecto SDV-SDI_SGM/MOTOR_SEP_SDV-SDI_EVO.py#L593-L608",
+        "Proyecto SDV-SDI_SGM/sdv_sdi_mqr_engine.py#L799-L806",
+        "Proyecto SDV-SDI_SGM/sdv_sdi_mqr_engine.py#L824-L850"
+      ],
+      "evidencia": [
+        "S5_STEREO_VALIDATION/evidence/S5-C.tar.xz!runs/C/Ppos_per_channel_polaridad/native/motorA_run_20261118_210947/analysis.json",
+        "S5_STEREO_VALIDATION/evidence/S5-C.tar.xz!runs/C/Pneg_per_channel_polaridad/native/motorA_run_20261118_210949/analysis.json",
+        "S5_STEREO_VALIDATION/evidence/inputs.tar.xz!inputs/extra/Pneg.json"
+      ],
+      "como_verificar_sin_modificar": "Comparar P2/V en Ppos y Pneg: cambia sólo el signo de esa guía; cotejar ambos coeficientes y el orden temporal antes del LS.",
+      "causa": "La envolvente no cambia con −G; dentro del vecindario se maximiza ρ, por lo que un pico negativo de gran módulo puede perder.",
+      "consecuencia": "C/Pneg cambia de ALIGNED (0.976754) a ALIGNED_BY_IDENTITY (−0.474913); LS y signo de procesamiento son posteriores.",
+      "limite": "No hay aquí un desfase real en Pneg; no es un FN medido, ni prueba de esa tasa en B o D.",
+      "casos_propuestos": [
+        "V03",
+        "V08"
+      ],
+      "corregido_en_esta_etapa": false
+    },
+    {
+      "id": "H1",
+      "motores": [
+        "B"
+      ],
+      "categoria": "EXPERIMENTAL_RESULT",
+      "dictamen": "CONFIRMADO",
+      "tipo_de_comprobacion": "S7 y trazado determinista",
+      "hallazgo": "La ausencia de candidatos válidos se convierte en −176404 muestras.",
+      "ubicaciones": [
+        "Proyecto SDV-SDI_SGM/MOTOR_SEP_SDV-SDI_v3.1.1_Hardened_Final.py#L463-L489",
+        "Proyecto SDV-SDI_SGM/MOTOR_SEP_SDV-SDI_v3.1.1_Hardened_Final.py#L503-L522",
+        "Proyecto SDV-SDI_SGM/MOTOR_SEP_SDV-SDI_v3.1.1_Hardened_Final.py#L548-L568"
+      ],
+      "evidencia": [
+        "S5_STEREO_VALIDATION/evidence/S5-B.tar.xz!runs/B/S7_per_channel/native/motorA_run_20261118_210923/analysis.json",
+        "S5_STEREO_VALIDATION/evidence/inputs.tar.xz!inputs/S7/Mix.wav",
+        "S5_STEREO_VALIDATION/evidence/inputs.tar.xz!inputs/S7/V.wav"
+      ],
+      "como_verificar_sin_modificar": "Con 176400 muestras hay 22050 bloques. Al quedar en cero todas las puntuaciones, el primer índice representa −22049 bloques × 8. Revisar el primer lag del refinamiento.",
+      "causa": "Invalidar mediante 0 permite que argmax elija el extremo −176392. Los 25 solapes tienen <4096 muestras; el primer 0 supera el inicial −2 y queda −176404.",
+      "consecuencia": "MISALIGNED con pico y confianza 0, incluso más allá de la longitud del archivo.",
+      "limite": "B sí escribe ERROR en su except; este caso no lanzó excepción.",
+      "casos_propuestos": [
+        "V05",
+        "V06",
+        "V11"
+      ],
+      "corregido_en_esta_etapa": false
+    },
+    {
+      "id": "H2",
+      "motores": [
+        "B"
+      ],
+      "categoria": "DOCUMENTED_FACT",
+      "dictamen": "CONFIRMADO",
+      "tipo_de_comprobacion": "clasificador y consumidor; ejemplo de confianza cero",
+      "hallazgo": "Ni la calidad de la estimación ni ERROR son condiciones suficientes de parada.",
+      "ubicaciones": [
+        "Proyecto SDV-SDI_SGM/MOTOR_SEP_SDV-SDI_v3.1.1_Hardened_Final.py#L555-L573",
+        "Proyecto SDV-SDI_SGM/MOTOR_SEP_SDV-SDI_v3.1.1_Hardened_Final.py#L1331-L1349",
+        "Proyecto SDV-SDI_SGM/MOTOR_SEP_SDV-SDI_v3.1.1_Hardened_Final.py#L660-L676"
+      ],
+      "evidencia": [
+        "S5_STEREO_VALIDATION/evidence/S5-B.tar.xz!runs/B/S5_per_channel/native/motorA_run_20261118_210918/analysis.json",
+        "S5_STEREO_VALIDATION/evidence/S5-B.tar.xz!runs/B/S7_per_channel/native/motorA_run_20261118_210923/analysis.json"
+      ],
+      "como_verificar_sin_modificar": "Leer S5/I: Pearson negativo se recorta a confianza 0, sin impedir MISALIGNED. Seguir el filtro de misaligned y el get con default 0 al consumidor.",
+      "causa": "Sólo se usa abs(round(sub)) para clasificar y sólo la cadena MISALIGNED entra al veto. Con correct_alignment se calcula −k para cualquier registro con k, no sólo MISALIGNED; con ERROR se puede registrar/mostrar un cero por defecto.",
+      "consecuencia": "Un WARNING o una estimación sin confianza pueden alimentar una lectura desplazada si se solicita; ERROR no bloquea por sí solo.",
+      "limite": "En S5 nunca se activó correct_alignment. Riesgo de consumo demostrado por código, no audio desplazado observado.",
+      "casos_propuestos": [
+        "V01",
+        "V11",
+        "V12"
+      ],
+      "corregido_en_esta_etapa": false
+    },
+    {
+      "id": "C1",
+      "motores": [
+        "C"
+      ],
+      "categoria": "EXPERIMENTAL_RESULT",
+      "dictamen": "CONFIRMADO",
+      "tipo_de_comprobacion": "clasificación y registros S5",
+      "hallazgo": "Baja NCC fuerza offset cero y lo llama identidad, incluso con confianza negativa.",
+      "ubicaciones": [
+        "Proyecto SDV-SDI_SGM/MOTOR_SEP_SDV-SDI_EVO.py#L588-L603",
+        "Proyecto SDV-SDI_SGM/MOTOR_SEP_SDV-SDI_EVO.py#L1433-L1449"
+      ],
+      "evidencia": [
+        "S5_STEREO_VALIDATION/evidence/S5-C.tar.xz!runs/C/S5_per_channel/native/motorA_run_20261118_210940/analysis.json",
+        "S5_STEREO_VALIDATION/evidence/S5-C.tar.xz!runs/C/S7_per_channel/native/motorA_run_20261118_210945/analysis.json",
+        "S5_STEREO_VALIDATION/evidence/S5-C.tar.xz!runs/C/Pneg_per_channel_polaridad/native/motorA_run_20261118_210949/analysis.json"
+      ],
+      "como_verificar_sin_modificar": "En S5/I comparar el valle fino y el offset publicado con testigos_pcm. Comprobar las siete filas ALIGNED_BY_IDENTITY: dos S5/I, cuatro S7, una Pneg/P2/V.",
+      "causa": "Para peak_val < 0.15 (no su módulo) se sobrescribe el candidato con 0, se conserva peak_val como confianza sin recortar. No se compara con una hipótesis de lag cero.",
+      "consecuencia": "Pasa el veto de MISALIGNED; en S5/I confianza = −0.459774. No es una probabilidad ni una medición de identidad.",
+      "limite": "S5 no contiene ningún retardo guía/Mix no nulo que permita medir FN.",
+      "casos_propuestos": [
+        "V01",
+        "V05",
+        "V06",
+        "V08"
+      ],
+      "corregido_en_esta_etapa": false
+    },
+    {
+      "id": "C2",
+      "motores": [
+        "C"
+      ],
+      "categoria": "DOCUMENTED_FACT",
+      "dictamen": "CONFIRMADO",
+      "tipo_de_comprobacion": "rama de excepción, no invocada",
+      "hallazgo": "Una excepción recibe la misma clase aprobatoria que el silencio.",
+      "ubicaciones": [
+        "Proyecto SDV-SDI_SGM/MOTOR_SEP_SDV-SDI_EVO.py#L620-L625",
+        "Proyecto SDV-SDI_SGM/MOTOR_SEP_SDV-SDI_EVO.py#L1433-L1449",
+        "Proyecto SDV-SDI_SGM/MOTOR_SEP_SDV-SDI_EVO.py#L1956-L1957"
+      ],
+      "evidencia": [
+        "Proyecto SDV-SDI_SGM/MOTOR_SEP_SDV-SDI_EVO.py#L620-L625",
+        "S5_STEREO_VALIDATION/AUDIT_INDEPENDIENTE/VERIFICACION_INTEGRIDAD.json"
+      ],
+      "como_verificar_sin_modificar": "Leer las asignaciones del except y el filtro del caller. Prueba futura con error de lectura entre sondeo y cálculo.",
+      "causa": "Aunque conserva error=str(exc), escribe ALIGNED_BY_IDENTITY y dos offsets 0. No se añade a misaligned.",
+      "consecuencia": "La excepción puede pasar como decisión temporal favorable en los consumidores.",
+      "limite": "Cero excepciones de alineación en los informes S5; no se inyectó ninguna.",
+      "casos_propuestos": [
+        "V11",
+        "V12"
+      ],
+      "corregido_en_esta_etapa": false
+    },
+    {
+      "id": "C3",
+      "motores": [
+        "C"
+      ],
+      "categoria": "THEORETICAL_DEDUCTION",
+      "dictamen": "CONFIRMADO",
+      "tipo_de_comprobacion": "deducción de índices, no ejecución larga",
+      "hallazgo": "En ventana interior el rango en coordenadas de archivo no es simétrico ±1.5 s.",
+      "ubicaciones": [
+        "Proyecto SDV-SDI_SGM/MOTOR_SEP_SDV-SDI_EVO.py#L543-L547",
+        "Proyecto SDV-SDI_SGM/MOTOR_SEP_SDV-SDI_EVO.py#L566-L591"
+      ],
+      "evidencia": [
+        "Proyecto SDV-SDI_SGM/MOTOR_SEP_SDV-SDI_EVO.py#L566-L591"
+      ],
+      "como_verificar_sin_modificar": "Para best_pos≥1.5 s: h=best_pos−mix_start=66150. En coarse |q|≤floor(66150/8)×8=66144; k_global=q−h. Incluso con ±12, el mayor k global posible es +6 muestras.",
+      "causa": "El correlograma se recorta simétricamente alrededor del cero LOCAL, antes de restar la diferencia entre orígenes. Debería cubrir candidatos locales alrededor de h, no de 0.",
+      "consecuencia": "Por ejemplo, una guía adelantada 500 ms requiere k_global=+22050 y queda fuera; un candidato de signo opuesto puede entrar.",
+      "limite": "S5 dura 4 s y h=0. El sesgo geométrico está demostrado; su frecuencia e impacto empírico en archivos largos son UNKNOWN.",
+      "casos_propuestos": [
+        "V09",
+        "V10"
+      ],
+      "corregido_en_esta_etapa": false
+    },
+    {
+      "id": "C4",
+      "motores": [
+        "C"
+      ],
+      "categoria": "DOCUMENTED_FACT",
+      "dictamen": "CONFIRMADO",
+      "tipo_de_comprobacion": "límites del bucle",
+      "hallazgo": "Una única ventana de máxima energía en mid no asegura evidencia temporal ni cobertura de la cola.",
+      "ubicaciones": [
+        "Proyecto SDV-SDI_SGM/MOTOR_SEP_SDV-SDI_EVO.py#L549-L575"
+      ],
+      "evidencia": [
+        "Proyecto SDV-SDI_SGM/MOTOR_SEP_SDV-SDI_EVO.py#L549-L575",
+        "S5_STEREO_VALIDATION/evidence/S5-C.tar.xz!runs/C/S7_per_channel/native/motorA_run_20261118_210945/analysis.json"
+      ],
+      "como_verificar_sin_modificar": "Enumerar inicios 0,7.5,… con inicio+15≤duración mínima. Para 70 s, último inicio=52.5, fin=67.5. Para 4 s el bucle no entra.",
+      "causa": "Sólo ventanas completas de guía, primer máximo estricto; no se exige energía, varianza, transitorios o actividad simultánea con el Mix.",
+      "consecuencia": "Puede perder el único evento después de 67.5 s; con un empate de silencio conserva inicio cero.",
+      "limite": "Un evento tras 60 s sí puede entrar en [52.5,67.5); EVO no tiene el límite de prefijo de v3.",
+      "casos_propuestos": [
+        "V05",
+        "V09",
+        "V10"
+      ],
+      "corregido_en_esta_etapa": false
+    },
+    {
+      "id": "D1",
+      "motores": [
+        "D"
+      ],
+      "categoria": "EXPERIMENTAL_RESULT",
+      "dictamen": "CONFIRMADO",
+      "tipo_de_comprobacion": "S7, consola del aborto y código",
+      "hallazgo": "−2 sale como si fuera una correlación física.",
+      "ubicaciones": [
+        "Proyecto SDV-SDI_SGM/sdv_sdi_mqr_engine.py#L767-L796",
+        "Proyecto SDV-SDI_SGM/sdv_sdi_mqr_engine.py#L824-L850",
+        "Proyecto SDV-SDI_SGM/sdv_sdi_mqr_engine.py#L898-L927"
+      ],
+      "evidencia": [
+        "S5_STEREO_VALIDATION/evidence/S5-D.tar.xz!runs/D/S7_shared/console.log",
+        "S5_STEREO_VALIDATION/evidence/inputs.tar.xz!inputs/S7/I.wav",
+        "S5_STEREO_VALIDATION/logs/aborto_D_S7_shared.log"
+      ],
+      "como_verificar_sin_modificar": "En la misma proyección nula de H1, identificar el continue cuando el solape fino no llega a 4096. Leer los dos NCC en consola.",
+      "causa": "Si ningún lag es evaluable, no se actualiza (best_lag=coarse, best_val=−2). La parábola de ceros no cambia el candidato.",
+      "consecuencia": "Offset −176392 muestras por deducción; consola −3999.8 ms, NCC −2, MISALIGNED por rol. La confianza se recorta, no el campo correlation_peak.",
+      "limite": "El proceso abortó más tarde en crest_factor_sdv; no hay analysis.json final de ese caso. No atribuir el aborto a la alineación.",
+      "casos_propuestos": [
+        "V05",
+        "V06",
+        "V11",
+        "V12"
+      ],
+      "corregido_en_esta_etapa": false
+    },
+    {
+      "id": "D2",
+      "motores": [
+        "D"
+      ],
+      "categoria": "DOCUMENTED_FACT",
+      "dictamen": "CONFIRMADO",
+      "tipo_de_comprobacion": "fórmula y contraejemplo",
+      "hallazgo": "La prominencia anunciada en un comentario no interviene en la clasificación.",
+      "ubicaciones": [
+        "Proyecto SDV-SDI_SGM/sdv_sdi_mqr_engine.py#L900-L930"
+      ],
+      "evidencia": [
+        "S5_STEREO_VALIDATION/evidence/S5-D.tar.xz!runs/D/S1_shared/native/mqr_run_20261118_210932/analysis.json",
+        "S5_STEREO_VALIDATION/evidence/S5-D.tar.xz!runs/D/S5_shared/native/mqr_run_20261118_210939/analysis.json"
+      ],
+      "como_verificar_sin_modificar": "Buscar el supuesto segundo pico tras el comentario de 907: _aligned_pair sólo devuelve dos fragmentos; no se evalúa otro máximo.",
+      "causa": "confidence=clip(peak_val,0,1); clase sólo por magnitud de offset. La correlación de otro rol o la periodicidad no se comprueban.",
+      "consecuencia": "D/S1/I tiene ρ=0.808700 en un alias; D/S5/I emite MISALIGNED con confianza 0.",
+      "limite": "No demuestra que baste elevar un umbral o usar sólo prominencia.",
+      "casos_propuestos": [
+        "V03",
+        "V04",
+        "V08"
+      ],
+      "corregido_en_esta_etapa": false
+    },
+    {
+      "id": "D3",
+      "motores": [
+        "D"
+      ],
+      "categoria": "DOCUMENTED_FACT",
+      "dictamen": "CONFIRMADO",
+      "tipo_de_comprobacion": "registros y agregación",
+      "hallazgo": "overall=pass puede coexistir con MISALIGNED; ERROR no es un bloqueo del bucle de alineación.",
+      "ubicaciones": [
+        "Proyecto SDV-SDI_SGM/sdv_sdi_mqr_engine.py#L928-L931",
+        "Proyecto SDV-SDI_SGM/sdv_sdi_mqr_engine.py#L2105-L2133",
+        "Proyecto SDV-SDI_SGM/sdv_sdi_mqr_engine.py#L2897-L2912"
+      ],
+      "evidencia": [
+        "S5_STEREO_VALIDATION/evidence/S5-D.tar.xz!runs/D/S5_shared/native/mqr_run_20261118_210939/analysis.json"
+      ],
+      "como_verificar_sin_modificar": "Comparar validation_status.items con overall en D/S5 y distinguir el permiso de CLI de la confirmación interactiva.",
+      "causa": "El veto sólo recoge MISALIGNED; overall busca status==\"warning\" en minúsculas. La confirmación interactiva añade un ítem; la bandera CLI queda en config_snapshot, no recorre esa rama.",
+      "consecuencia": "El resumen no certifica sincronía y no debe gobernar por sí solo un lote.",
+      "limite": "No hubo excepción del detector D en S5; no implica que otros controles del motor nunca aborten.",
+      "casos_propuestos": [
+        "V11",
+        "V12"
+      ],
+      "corregido_en_esta_etapa": false
+    },
+    {
+      "id": "A1",
+      "motores": [
+        "A"
+      ],
+      "categoria": "THEORETICAL_DEDUCTION",
+      "dictamen": "CONFIRMADO",
+      "tipo_de_comprobacion": "referencia por inspección exclusivamente",
+      "hallazgo": "Un mid del prefijo sin varianza hace indeterminado el argmax también en v3.",
+      "ubicaciones": [
+        "Proyecto SDV-SDI_SGM/MOTOR_SEP_SDV-SDI_v3.py#L350-L369",
+        "Proyecto SDV-SDI_SGM/MOTOR_SEP_SDV-SDI_v3.py#L1124-L1135",
+        "Proyecto SDV-SDI_SGM/MOTOR_SEP_SDV-SDI_v3.py#L1142-L1171"
+      ],
+      "evidencia": [
+        "S5_STEREO_VALIDATION/evidence/inputs.tar.xz!inputs/S7/Mix.wav",
+        "S5_STEREO_VALIDATION/evidence/inputs.tar.xz!inputs/S7/V.wav",
+        "S5_STEREO_VALIDATION/scripts/pruebas_s5.py#L58-L76"
+      ],
+      "como_verificar_sin_modificar": "Aplicar sólo la álgebra a los mids nulos de S7 (n=176400): cc=0 en 2n−1 lags, primer índice=−(n−1), ac=0. Idéntico problema si toda la actividad está después del prefijo.",
+      "causa": "El floor en el denominador evita división por cero pero no valida energía. La prueba previa se hace sobre muestras de todos los canales del archivo, no sobre la varianza del mid observado.",
+      "consecuencia": "La ruta de alineación daría un gran MISALIGNED, no INSUFFICIENT_SIGNAL.",
+      "limite": "Predicción de la función, no de toda la CLI; no se ejecutó v3 en etapa 6 ni su detector en S5. No se pide un cambio a A.",
+      "casos_propuestos": [
+        "V05",
+        "V06",
+        "V09"
+      ],
+      "corregido_en_esta_etapa": false
+    },
+    {
+      "id": "A2",
+      "motores": [
+        "A"
+      ],
+      "categoria": "THEORETICAL_DEDUCTION",
+      "dictamen": "CONFIRMADO CON LIMITACIONES",
+      "tipo_de_comprobacion": "límite de transferencia",
+      "hallazgo": "El guardia de autocorrelación frena una corrección; no demuestra que el retardo sea cero.",
+      "ubicaciones": [
+        "Proyecto SDV-SDI_SGM/MOTOR_SEP_SDV-SDI_v3.py#L1151-L1171",
+        "Proyecto SDV-SDI_SGM/MOTOR_SEP_SDV-SDI_v3.py#L2113-L2149"
+      ],
+      "evidencia": [
+        "Proyecto SDV-SDI_SGM/MOTOR_SEP_SDV-SDI_v3.py#L1113-L1123",
+        "Proyecto SDV-SDI_SGM/MOTOR_SEP_SDV-SDI_v3.py#L1151-L1171"
+      ],
+      "como_verificar_sin_modificar": "Considerar dos hipótesis que difieren en un período; un pico común puede ser compatible con ambas. AC usada con signo, no abs(AC).",
+      "causa": "Guarda sólo para abs(ms)>10 y AC_mix(abs(lag))>0.50. “Ignored” conserva el candidato y pone offset_ms=0. No se exige fuerza mínima de la correlación, soporte o unicidad.",
+      "consecuencia": "Puede vetar un retardo real periódico o dejar pasar una ambigüedad de medio período con AC negativa. No hay WARNING de 2…441 muestras en A.",
+      "limite": "No se ha medido la tasa de aciertos/omisiones de esa guarda frente a los otros motores.",
+      "casos_propuestos": [
+        "V01",
+        "V03",
+        "V04",
+        "V08"
+      ],
+      "corregido_en_esta_etapa": false
+    }
+  ],
+  "pendiente": {
+    "categoria": "UNKNOWN",
+    "dictamen": "UNKNOWN",
+    "puntos": [
+      "Umbrales de evidencia, cobertura y calibración fuera de S5",
+      "Sensibilidad a retardos reales de cada detector completo y efecto del rango de EVO",
+      "Costo y desempeño del diseño propuesto; ningún defecto se declara resuelto"
+    ]
+  }
+}
