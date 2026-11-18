@@ -1,0 +1,27 @@
+{
+  "utc": "2026-11-18T22:40:02.605042+00:00",
+  "branch": "arena/20d905c7-sdv-sdi-sgm",
+  "head_antes_de_ejecutar": "1f5d7e8f39c54f197b2bbf0a2fa520af4a39ddae",
+  "python": "3.11.2 (main, Apr  8 2026, 01:58:00) [GCC 12.2.0]",
+  "platform": "Linux-6.1.158+-x86_64-with-glibc2.36",
+  "architecture": "x86_64",
+  "numpy": "1.26.4",
+  "scipy": "1.13.1",
+  "soundfile": "0.13.1",
+  "libsndfile": "1.2.2",
+  "cpu_disponibles": 2,
+  "threads": {
+    "OPENBLAS_NUM_THREADS": "1",
+    "MKL_NUM_THREADS": "1",
+    "OMP_NUM_THREADS": "1"
+  },
+  "sample_rate": 44100,
+  "canales": 2,
+  "wav": "IEEE_FLOAT little-endian, float32",
+  "dependencias": "venv aislado, sin cambios en el sistema",
+  "semillas": [
+    6001,
+    6011
+  ],
+  "observacion": "CPython; sólo lectura de retornos escalares y ventanas, no se reemplaza ninguna función"
+}

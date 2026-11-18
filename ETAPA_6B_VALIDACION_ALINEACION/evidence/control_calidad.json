@@ -1,0 +1,59 @@
+{
+  "fuentes_y_S5": "SHA y bytes verificados",
+  "matriz_filas": 3216,
+  "errores_con_marca_recalculados": 2766,
+  "llamadas_detector": 1407,
+  "oraculo_archivos": {
+    "unique_wavs": 338,
+    "total_uncompressed_bytes": 4033934804,
+    "independent_decoder": "scipy.io.wavfile.read; FORMAT/subtipo también con SoundFile",
+    "channels": 2,
+    "sr": 44100,
+    "non_finite": 0
+  },
+  "motores": {
+    "A": {
+      "ejecuciones": 201,
+      "llamadas_detector": 201,
+      "registros_con_clase": 400,
+      "fallos_fisicos": [],
+      "controles_tecnicos_con_fallo": [
+        "X_lectura_ausente_4s"
+      ],
+      "roles_sin_clase": [
+        "X_lectura_ausente_4s/vocal",
+        "X_lectura_ausente_4s/instrumental"
+      ]
+    },
+    "B": {
+      "ejecuciones": 201,
+      "llamadas_detector": 402,
+      "registros_con_clase": 402,
+      "fallos_fisicos": [],
+      "controles_tecnicos_con_fallo": [
+        "X_lectura_ausente_4s"
+      ],
+      "roles_sin_clase": []
+    },
+    "C": {
+      "ejecuciones": 201,
+      "llamadas_detector": 402,
+      "registros_con_clase": 402,
+      "fallos_fisicos": [],
+      "controles_tecnicos_con_fallo": [
+        "X_lectura_ausente_4s"
+      ],
+      "roles_sin_clase": []
+    },
+    "D": {
+      "ejecuciones": 201,
+      "llamadas_detector": 402,
+      "registros_con_clase": 402,
+      "fallos_fisicos": [],
+      "controles_tecnicos_con_fallo": [
+        "X_lectura_ausente_4s"
+      ],
+      "roles_sin_clase": []
+    }
+  }
+}

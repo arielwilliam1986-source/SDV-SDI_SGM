@@ -1,0 +1,239 @@
+{
+  "nota": "Nuevos contrastes Pearson sobre WAV existentes; no son retornos adicionales del detector. S5 se consulta para el consumidor real sin volver a separar.",
+  "ondas": [
+    {
+      "caso": "C_archivo_S2_4s",
+      "rol": "instrumental",
+      "sha256_Mix": "ed9297315c5946f1405fe67f1ca454b399e22f1a3399afc033e2f66997ddf33a",
+      "sha256_guia": "fa4bec6b085159d542b6d34062722c883d4400ddd503da1fb6f9a9530b0ffd86",
+      "k_nativo_B": -1212,
+      "mid_solo_explicacion": {
+        "en_cero": 0.8484075789208616,
+        "en_candidato_fino_B": 0.30103468790287735,
+        "en_lag_construccion": null
+      },
+      "L": {
+        "en_cero": 0.5854905584004869,
+        "en_candidato_fino_B": -0.373174833489876,
+        "en_lag_construccion": 0.5854905584004869
+      },
+      "R": {
+        "en_cero": 0.6585046078158047,
+        "en_candidato_fino_B": 0.4800815374295521,
+        "en_lag_construccion": 0.6585046078158047
+      }
+    },
+    {
+      "caso": "C_archivo_S5_4s",
+      "rol": "instrumental",
+      "sha256_Mix": "ea512195057e55e5e511ced39d65f2e88c003ec0c22d296515ec8ebbf45c7261",
+      "sha256_guia": "0776c45cec139cae0900efa2e0be53b4d4809509c2c2b93e42e504ba9d7dbf9a",
+      "k_nativo_B": -6436,
+      "mid_solo_explicacion": {
+        "en_cero": 0.783135244110866,
+        "en_candidato_fino_B": -0.4597738197444651,
+        "en_lag_construccion": null
+      },
+      "L": {
+        "en_cero": 0.7799191420485685,
+        "en_candidato_fino_B": -0.4353976502002103,
+        "en_lag_construccion": 0.7799191420485685
+      },
+      "R": {
+        "en_cero": 0.7799191420485685,
+        "en_candidato_fino_B": -0.4353976502002103,
+        "en_lag_construccion": 0.7799191420485685
+      }
+    },
+    {
+      "caso": "E_invertida_1103_4s",
+      "rol": "vocal",
+      "sha256_Mix": "a051d63bedff1c874be899b5f487f0c2846582666549be86a5137dd4875724b3",
+      "sha256_guia": "a13afc47187f16bfd38b57e70f2f9256c633866c162eeb183689cc7e4719875c",
+      "k_nativo_B": -1116,
+      "mid_solo_explicacion": {
+        "en_cero": 0.12423524147024162,
+        "en_candidato_fino_B": -0.7748928168575501,
+        "en_lag_construccion": null
+      },
+      "L": {
+        "en_cero": 0.12423524147024162,
+        "en_candidato_fino_B": -0.7748928168575501,
+        "en_lag_construccion": -0.7878835748732355
+      },
+      "R": {
+        "en_cero": 0.12423524147024162,
+        "en_candidato_fino_B": -0.7748928168575501,
+        "en_lag_construccion": -0.7878835748732355
+      }
+    },
+    {
+      "caso": "B_solo_R_4s",
+      "rol": "vocal",
+      "sha256_Mix": "3929d9f7807ef61496211c31c6b454d1d66d389b4d286f7557b959e2a7b8735f",
+      "sha256_guia": "0608d2bf69c1060c103ae992dc18bd504d084b108d131b9fec102627726c5cfc",
+      "k_nativo_B": -564,
+      "mid_solo_explicacion": {
+        "en_cero": 0.5571048386631393,
+        "en_candidato_fino_B": -0.004082725916005948,
+        "en_lag_construccion": null
+      },
+      "L": {
+        "en_cero": 0.7878771764538276,
+        "en_candidato_fino_B": -0.0058741490170644145,
+        "en_lag_construccion": 0.7878771764538276
+      },
+      "R": {
+        "en_cero": -2.3915719519335714e-05,
+        "en_candidato_fino_B": 0.00010039028733000139,
+        "en_lag_construccion": 0.7878771764535395
+      }
+    }
+  ],
+  "flujo_historico": {
+    "B/S7_per_channel": {
+      "commit": "c1ce9e29e15a9c5eb2789187097f94fc13cefaa0",
+      "paquete": "S5_STEREO_VALIDATION/evidence/S5-B.tar.xz",
+      "miembros": {
+        "runs/B/S7_per_channel/applied_mask.npy": "72e402494a2373931628506a27f42a641f72f786fff8d6b5aa27c563515df358",
+        "runs/B/S7_per_channel/native/motorA_run_20261118_210923/Mix SDI.wav": "855b59a95432d355353e907cf3f7bc64ade2535eb86edf5eb986da454000425a",
+        "runs/B/S7_per_channel/native/motorA_run_20261118_210923/Mix SDV.wav": "41ea0145eed363fe42d765c88c0012df634a6d9b858180af3a443bf2bb416170",
+        "runs/B/S7_per_channel/native/motorA_run_20261118_210923/analysis.json": "5d6d44bb9eb7472127d2411b3a15c8d45a49e23a2441370c8ebe806c3bea7cfe"
+      },
+      "indice": "S5_STEREO_VALIDATION/results/s5_b_hardened.json",
+      "exit": 0,
+      "estado": "OK",
+      "allow_misaligned": true,
+      "correct_alignment": false,
+      "forma_mascara_real": [
+        2,
+        2049,
+        175
+      ],
+      "roles": [
+        {
+          "guide": "V.wav",
+          "duration_difference_samples": 0,
+          "duration_difference_ms": 0.0,
+          "policy": "detect_only",
+          "cross_correlation": 0.0,
+          "estimated_offset_samples": -176404,
+          "estimated_offset_ms": -4000.090702947846,
+          "correlation_peak": 0.0,
+          "alignment_confidence": 0.0,
+          "classification": "MISALIGNED",
+          "pair_id": "P1",
+          "role": "vocal"
+        },
+        {
+          "guide": "I.wav",
+          "duration_difference_samples": 0,
+          "duration_difference_ms": 0.0,
+          "policy": "detect_only",
+          "cross_correlation": 0.0,
+          "estimated_offset_samples": -176404,
+          "estimated_offset_ms": -4000.090702947846,
+          "correlation_peak": 0.0,
+          "alignment_confidence": 0.0,
+          "classification": "MISALIGNED",
+          "pair_id": "P1",
+          "role": "instrumental"
+        }
+      ],
+      "resumen_MQR": null
+    },
+    "D/S5_shared": {
+      "commit": "c1ce9e29e15a9c5eb2789187097f94fc13cefaa0",
+      "paquete": "S5_STEREO_VALIDATION/evidence/S5-D.tar.xz",
+      "miembros": {
+        "runs/D/S5_shared/applied_mask.npy": "026753a4558175c3602c5fb0e776f5fecb750e9b1a17575d7609be4f4385e58f",
+        "runs/D/S5_shared/native/mqr_run_20261118_210939/SDI.wav": "a75abdc0c9e08ce8a2bb0be684f2c7f3e34656ca4a75c65b97873365b45f63a3",
+        "runs/D/S5_shared/native/mqr_run_20261118_210939/SDV.wav": "559da5adfd7fb6d8efe61ecc7d10ef5d3e9b313d7b034321e7728374d9312ab6",
+        "runs/D/S5_shared/native/mqr_run_20261118_210939/analysis.json": "c31eee436399c776cd3c9e57bc8c869211872cd345da6ec0d20c14719b1caca5"
+      },
+      "indice": "S5_STEREO_VALIDATION/results/s5_d_mqr.json",
+      "exit": 0,
+      "estado": "OK",
+      "allow_misaligned": true,
+      "correct_alignment": null,
+      "forma_mascara_real": [
+        2049,
+        175
+      ],
+      "roles": [
+        {
+          "guide": "V.wav",
+          "duration_difference_samples": 0,
+          "duration_difference_ms": 0.0,
+          "policy": "detect_only_no_correction",
+          "cross_correlation": 0.7763305559549181,
+          "estimated_offset_samples": 3300,
+          "estimated_offset_ms": 74.82993197278911,
+          "correlation_peak": 0.7763305559549181,
+          "alignment_confidence": 0.7763305559549181,
+          "search_window_seconds": 30.0,
+          "coarse_lag_samples": 3312,
+          "classification": "MISALIGNED",
+          "tolerances": {
+            "aligned_max_samples": 1,
+            "warning_max_ms": 10.0
+          },
+          "pair_id": "P1",
+          "role": "vocal"
+        },
+        {
+          "guide": "I.wav",
+          "duration_difference_samples": 0,
+          "duration_difference_ms": 0.0,
+          "policy": "detect_only_no_correction",
+          "cross_correlation": -0.45977381974446513,
+          "estimated_offset_samples": -6436,
+          "estimated_offset_ms": -145.94104308390024,
+          "correlation_peak": -0.45977381974446513,
+          "alignment_confidence": 0.0,
+          "search_window_seconds": 30.0,
+          "coarse_lag_samples": -6448,
+          "classification": "MISALIGNED",
+          "tolerances": {
+            "aligned_max_samples": 1,
+            "warning_max_ms": 10.0
+          },
+          "pair_id": "P1",
+          "role": "instrumental"
+        }
+      ],
+      "resumen_MQR": {
+        "overall": "pass",
+        "items": [
+          {
+            "check": "mix_valid",
+            "status": "pass"
+          },
+          {
+            "check": "mix_sample_rate_44100",
+            "status": "pass"
+          },
+          {
+            "check": "P1/vocal_sample_rate_44100",
+            "status": "pass"
+          },
+          {
+            "check": "P1/instrumental_sample_rate_44100",
+            "status": "pass"
+          },
+          {
+            "check": "alignment_P1/vocal",
+            "status": "MISALIGNED",
+            "offset_samples": 3300
+          },
+          {
+            "check": "alignment_P1/instrumental",
+            "status": "MISALIGNED",
+            "offset_samples": -6436
+          }
+        ],
+        "engine_exit_mode": "full_processing"
+      }
+    }
+  }
+}

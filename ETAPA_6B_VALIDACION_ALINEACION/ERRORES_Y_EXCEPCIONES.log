@@ -1,0 +1,257 @@
+6B | Registro de incidencias. Las clases MISALIGNED, WARNING, ID y guarda (incluso sin excepción) están íntegras en la matriz y nativos.
+
+A/A_copia_exacta_4s | preflight separado instrumental
+Traceback (most recent call last):
+  File "/home/user/SDV-SDI_SGM/ETAPA_6B_VALIDACION_ALINEACION/scripts/ejecutar.py", line 86, in run_case
+    try:mod.check_degeneration(infos[role]);r['preflight'][role]={'valid':True}
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/user/SDV-SDI_SGM/Proyecto SDV-SDI_SGM/MOTOR_SEP_SDV-SDI_v3.py", line 365, in check_degeneration
+    raise ValueError(f"{info.role}: senal en silencio digital (pico=0): {info.path}")
+ValueError: instrumental: senal en silencio digital (pico=0): 6d0a8fa8d4c35bd2606925aeac13cc1822f03f5f32c5596a709a4cd7e5f450e4.wav
+
+
+A/D_silencio_4s | preflight separado instrumental
+Traceback (most recent call last):
+  File "/home/user/SDV-SDI_SGM/ETAPA_6B_VALIDACION_ALINEACION/scripts/ejecutar.py", line 86, in run_case
+    try:mod.check_degeneration(infos[role]);r['preflight'][role]={'valid':True}
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/user/SDV-SDI_SGM/Proyecto SDV-SDI_SGM/MOTOR_SEP_SDV-SDI_v3.py", line 365, in check_degeneration
+    raise ValueError(f"{info.role}: senal en silencio digital (pico=0): {info.path}")
+ValueError: instrumental: senal en silencio digital (pico=0): 6d0a8fa8d4c35bd2606925aeac13cc1822f03f5f32c5596a709a4cd7e5f450e4.wav
+
+
+A/D_silencio_4s | preflight separado vocal
+Traceback (most recent call last):
+  File "/home/user/SDV-SDI_SGM/ETAPA_6B_VALIDACION_ALINEACION/scripts/ejecutar.py", line 86, in run_case
+    try:mod.check_degeneration(infos[role]);r['preflight'][role]={'valid':True}
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/user/SDV-SDI_SGM/Proyecto SDV-SDI_SGM/MOTOR_SEP_SDV-SDI_v3.py", line 365, in check_degeneration
+    raise ValueError(f"{info.role}: senal en silencio digital (pico=0): {info.path}")
+ValueError: vocal: senal en silencio digital (pico=0): 6d0a8fa8d4c35bd2606925aeac13cc1822f03f5f32c5596a709a4cd7e5f450e4.wav
+
+
+A/D_guia_debil_4s | preflight separado vocal
+Traceback (most recent call last):
+  File "/home/user/SDV-SDI_SGM/ETAPA_6B_VALIDACION_ALINEACION/scripts/ejecutar.py", line 86, in run_case
+    try:mod.check_degeneration(infos[role]);r['preflight'][role]={'valid':True}
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/user/SDV-SDI_SGM/Proyecto SDV-SDI_SGM/MOTOR_SEP_SDV-SDI_v3.py", line 367, in check_degeneration
+    raise ValueError(
+ValueError: vocal: guia degenerada (RMS=1.266e-09 < 1.0e-07): cd52ad9b40a80d66f0ed0cf40e740c8fa8956c973aa702cacaefe7ebb92f4825.wav
+
+
+A/D_guia_muda_4s | preflight separado vocal
+Traceback (most recent call last):
+  File "/home/user/SDV-SDI_SGM/ETAPA_6B_VALIDACION_ALINEACION/scripts/ejecutar.py", line 86, in run_case
+    try:mod.check_degeneration(infos[role]);r['preflight'][role]={'valid':True}
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/user/SDV-SDI_SGM/Proyecto SDV-SDI_SGM/MOTOR_SEP_SDV-SDI_v3.py", line 365, in check_degeneration
+    raise ValueError(f"{info.role}: senal en silencio digital (pico=0): {info.path}")
+ValueError: vocal: senal en silencio digital (pico=0): b9ba2f559982301c856e62f50800e99c40c5bf245a7c88400efd2d60651fde59.wav
+
+
+A/A_copia_exacta_30s | preflight separado instrumental
+Traceback (most recent call last):
+  File "/home/user/SDV-SDI_SGM/ETAPA_6B_VALIDACION_ALINEACION/scripts/ejecutar.py", line 86, in run_case
+    try:mod.check_degeneration(infos[role]);r['preflight'][role]={'valid':True}
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/user/SDV-SDI_SGM/Proyecto SDV-SDI_SGM/MOTOR_SEP_SDV-SDI_v3.py", line 365, in check_degeneration
+    raise ValueError(f"{info.role}: senal en silencio digital (pico=0): {info.path}")
+ValueError: instrumental: senal en silencio digital (pico=0): 5af36109a9db373c2c4a42f3257c894149f09a5d8d500466f929e9c527cb0e62.wav
+
+
+A/D_silencio_30s | preflight separado instrumental
+Traceback (most recent call last):
+  File "/home/user/SDV-SDI_SGM/ETAPA_6B_VALIDACION_ALINEACION/scripts/ejecutar.py", line 86, in run_case
+    try:mod.check_degeneration(infos[role]);r['preflight'][role]={'valid':True}
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/user/SDV-SDI_SGM/Proyecto SDV-SDI_SGM/MOTOR_SEP_SDV-SDI_v3.py", line 365, in check_degeneration
+    raise ValueError(f"{info.role}: senal en silencio digital (pico=0): {info.path}")
+ValueError: instrumental: senal en silencio digital (pico=0): 5af36109a9db373c2c4a42f3257c894149f09a5d8d500466f929e9c527cb0e62.wav
+
+
+A/D_silencio_30s | preflight separado vocal
+Traceback (most recent call last):
+  File "/home/user/SDV-SDI_SGM/ETAPA_6B_VALIDACION_ALINEACION/scripts/ejecutar.py", line 86, in run_case
+    try:mod.check_degeneration(infos[role]);r['preflight'][role]={'valid':True}
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/user/SDV-SDI_SGM/Proyecto SDV-SDI_SGM/MOTOR_SEP_SDV-SDI_v3.py", line 365, in check_degeneration
+    raise ValueError(f"{info.role}: senal en silencio digital (pico=0): {info.path}")
+ValueError: vocal: senal en silencio digital (pico=0): 5af36109a9db373c2c4a42f3257c894149f09a5d8d500466f929e9c527cb0e62.wav
+
+
+A/D_guia_debil_30s | preflight separado vocal
+Traceback (most recent call last):
+  File "/home/user/SDV-SDI_SGM/ETAPA_6B_VALIDACION_ALINEACION/scripts/ejecutar.py", line 86, in run_case
+    try:mod.check_degeneration(infos[role]);r['preflight'][role]={'valid':True}
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/user/SDV-SDI_SGM/Proyecto SDV-SDI_SGM/MOTOR_SEP_SDV-SDI_v3.py", line 367, in check_degeneration
+    raise ValueError(
+ValueError: vocal: guia degenerada (RMS=4.622e-10 < 1.0e-07): 50472d33516b0f9d9a8f613fb6d0b0472fdb276efe08cef82136925f4b1f51f1.wav
+
+
+A/D_guia_muda_30s | preflight separado vocal
+Traceback (most recent call last):
+  File "/home/user/SDV-SDI_SGM/ETAPA_6B_VALIDACION_ALINEACION/scripts/ejecutar.py", line 86, in run_case
+    try:mod.check_degeneration(infos[role]);r['preflight'][role]={'valid':True}
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/user/SDV-SDI_SGM/Proyecto SDV-SDI_SGM/MOTOR_SEP_SDV-SDI_v3.py", line 365, in check_degeneration
+    raise ValueError(f"{info.role}: senal en silencio digital (pico=0): {info.path}")
+ValueError: vocal: senal en silencio digital (pico=0): 4c5d1300321e098334107401fa1cfe8294cc91c7c333538d2c045666204b9dd2.wav
+
+
+A/A_copia_exacta_70s | preflight separado instrumental
+Traceback (most recent call last):
+  File "/home/user/SDV-SDI_SGM/ETAPA_6B_VALIDACION_ALINEACION/scripts/ejecutar.py", line 86, in run_case
+    try:mod.check_degeneration(infos[role]);r['preflight'][role]={'valid':True}
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/user/SDV-SDI_SGM/Proyecto SDV-SDI_SGM/MOTOR_SEP_SDV-SDI_v3.py", line 365, in check_degeneration
+    raise ValueError(f"{info.role}: senal en silencio digital (pico=0): {info.path}")
+ValueError: instrumental: senal en silencio digital (pico=0): dfcfc7567c690479bcef4f26be918b0ce701b473179f21493c7c3b4fecca4450.wav
+
+
+A/D_silencio_70s | preflight separado instrumental
+Traceback (most recent call last):
+  File "/home/user/SDV-SDI_SGM/ETAPA_6B_VALIDACION_ALINEACION/scripts/ejecutar.py", line 86, in run_case
+    try:mod.check_degeneration(infos[role]);r['preflight'][role]={'valid':True}
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/user/SDV-SDI_SGM/Proyecto SDV-SDI_SGM/MOTOR_SEP_SDV-SDI_v3.py", line 365, in check_degeneration
+    raise ValueError(f"{info.role}: senal en silencio digital (pico=0): {info.path}")
+ValueError: instrumental: senal en silencio digital (pico=0): dfcfc7567c690479bcef4f26be918b0ce701b473179f21493c7c3b4fecca4450.wav
+
+
+A/D_silencio_70s | preflight separado vocal
+Traceback (most recent call last):
+  File "/home/user/SDV-SDI_SGM/ETAPA_6B_VALIDACION_ALINEACION/scripts/ejecutar.py", line 86, in run_case
+    try:mod.check_degeneration(infos[role]);r['preflight'][role]={'valid':True}
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/user/SDV-SDI_SGM/Proyecto SDV-SDI_SGM/MOTOR_SEP_SDV-SDI_v3.py", line 365, in check_degeneration
+    raise ValueError(f"{info.role}: senal en silencio digital (pico=0): {info.path}")
+ValueError: vocal: senal en silencio digital (pico=0): dfcfc7567c690479bcef4f26be918b0ce701b473179f21493c7c3b4fecca4450.wav
+
+
+A/D_guia_debil_70s | preflight separado vocal
+Traceback (most recent call last):
+  File "/home/user/SDV-SDI_SGM/ETAPA_6B_VALIDACION_ALINEACION/scripts/ejecutar.py", line 86, in run_case
+    try:mod.check_degeneration(infos[role]);r['preflight'][role]={'valid':True}
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/user/SDV-SDI_SGM/Proyecto SDV-SDI_SGM/MOTOR_SEP_SDV-SDI_v3.py", line 367, in check_degeneration
+    raise ValueError(
+ValueError: vocal: guia degenerada (RMS=3.025e-10 < 1.0e-07): e62d64eb27745b0454db2817a7f8fc760a7052c79cc3ff8061277746da182984.wav
+
+
+A/D_guia_muda_70s | preflight separado vocal
+Traceback (most recent call last):
+  File "/home/user/SDV-SDI_SGM/ETAPA_6B_VALIDACION_ALINEACION/scripts/ejecutar.py", line 86, in run_case
+    try:mod.check_degeneration(infos[role]);r['preflight'][role]={'valid':True}
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/user/SDV-SDI_SGM/Proyecto SDV-SDI_SGM/MOTOR_SEP_SDV-SDI_v3.py", line 365, in check_degeneration
+    raise ValueError(f"{info.role}: senal en silencio digital (pico=0): {info.path}")
+ValueError: vocal: senal en silencio digital (pico=0): 190473558ef379e0feb27e0fa6885af09d601e43a117134968b4bd524c9bb705.wav
+
+
+A/X_lectura_ausente_4s | preflight separado vocal
+control posterior al sondeo; ruta deliberadamente ausente
+
+A/X_lectura_ausente_4s | excepción propagada ['vocal', 'instrumental']
+Traceback (most recent call last):
+  File "/home/user/SDV-SDI_SGM/ETAPA_6B_VALIDACION_ALINEACION/scripts/ejecutar.py", line 95, in run_case
+    try:call['raw']=observed(o,mod.audit_alignment,[pair],mx)
+                    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/user/SDV-SDI_SGM/ETAPA_6B_VALIDACION_ALINEACION/scripts/ejecutar.py", line 66, in observed
+    try:return fn(*args)
+               ^^^^^^^^^
+  File "/home/user/SDV-SDI_SGM/Proyecto SDV-SDI_SGM/MOTOR_SEP_SDV-SDI_v3.py", line 1143, in audit_alignment
+    with sf.SoundFile(getattr(p, attr)) as fh:
+         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/tmp/sdv-s5-venv/lib/python3.11/site-packages/soundfile.py", line 690, in __init__
+    self._file = self._open(file, mode_int, closefd)
+                 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/tmp/sdv-s5-venv/lib/python3.11/site-packages/soundfile.py", line 1265, in _open
+    raise LibsndfileError(err, prefix="Error opening {0!r}: ".format(self.name))
+soundfile.LibsndfileError: Error opening 'AUSENTE_6B.wav': System error.
+
+
+B/X_lectura_ausente_4s | preflight separado vocal
+control posterior al sondeo; ruta deliberadamente ausente
+
+B/X_lectura_ausente_4s | error devuelto por detector ['vocal']
+Error opening 'AUSENTE_6B.wav': System error. | ERROR
+
+C/X_lectura_ausente_4s | preflight separado vocal
+control posterior al sondeo; ruta deliberadamente ausente
+
+C/X_lectura_ausente_4s | error devuelto por detector ['vocal']
+Error opening 'AUSENTE_6B.wav': System error. | ALIGNED_BY_IDENTITY
+
+D/A_copia_exacta_4s | anomalía (no excepción)
+['instrumental'] pico fino = -2.0; no es correlación válida
+
+D/D_silencio_4s | anomalía (no excepción)
+['vocal'] pico fino = -2.0; no es correlación válida
+
+D/D_silencio_4s | anomalía (no excepción)
+['instrumental'] pico fino = -2.0; no es correlación válida
+
+D/D_guia_muda_4s | anomalía (no excepción)
+['vocal'] pico fino = -2.0; no es correlación válida
+
+D/D_lateral_exacto_4s | anomalía (no excepción)
+['vocal'] pico fino = -2.0; no es correlación válida
+
+D/D_lateral_exacto_4s | anomalía (no excepción)
+['instrumental'] pico fino = -2.0; no es correlación válida
+
+D/E_invL_0_4s | anomalía (no excepción)
+['vocal'] pico fino = -2.0; no es correlación válida
+
+D/E_invL_1103_4s | anomalía (no excepción)
+['vocal'] pico fino = -2.0; no es correlación válida
+
+D/E_invR_0_4s | anomalía (no excepción)
+['vocal'] pico fino = -2.0; no es correlación válida
+
+D/E_invR_1103_4s | anomalía (no excepción)
+['vocal'] pico fino = -2.0; no es correlación válida
+
+D/D_archivo_S7_4s | anomalía (no excepción)
+['vocal'] pico fino = -2.0; no es correlación válida
+
+D/D_archivo_S7_4s | anomalía (no excepción)
+['instrumental'] pico fino = -2.0; no es correlación válida
+
+D/A_copia_exacta_30s | anomalía (no excepción)
+['instrumental'] pico fino = -2.0; no es correlación válida
+
+D/D_silencio_30s | anomalía (no excepción)
+['vocal'] pico fino = -2.0; no es correlación válida
+
+D/D_silencio_30s | anomalía (no excepción)
+['instrumental'] pico fino = -2.0; no es correlación válida
+
+D/D_guia_muda_30s | anomalía (no excepción)
+['vocal'] pico fino = -2.0; no es correlación válida
+
+D/D_lateral_exacto_30s | anomalía (no excepción)
+['vocal'] pico fino = -2.0; no es correlación válida
+
+D/D_lateral_exacto_30s | anomalía (no excepción)
+['instrumental'] pico fino = -2.0; no es correlación válida
+
+D/E_invL_0_30s | anomalía (no excepción)
+['vocal'] pico fino = -2.0; no es correlación válida
+
+D/E_invL_1103_30s | anomalía (no excepción)
+['vocal'] pico fino = -2.0; no es correlación válida
+
+D/E_invR_0_30s | anomalía (no excepción)
+['vocal'] pico fino = -2.0; no es correlación válida
+
+D/E_invR_1103_30s | anomalía (no excepción)
+['vocal'] pico fino = -2.0; no es correlación válida
+
+D/X_lectura_ausente_4s | preflight separado vocal
+control posterior al sondeo; ruta deliberadamente ausente
+
+D/X_lectura_ausente_4s | error devuelto por detector ['vocal']
+Error opening 'AUSENTE_6B.wav': System error. | ERROR
