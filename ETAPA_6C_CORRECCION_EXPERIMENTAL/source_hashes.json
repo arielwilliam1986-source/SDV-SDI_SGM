@@ -1,0 +1,98 @@
+{
+  "commit": "7092c6cee764861d4bd8230eccb700f1d4d0556c",
+  "base": "b64f15ae8b28e46eef3c024dc62c85fe27c69494",
+  "fuentes": {
+    "A": {
+      "path": "Proyecto SDV-SDI_SGM/MOTOR_SEP_SDV-SDI_v3.py",
+      "bytes": 100554,
+      "sha256": "a0550a01cefb1095a0086824e1accfe1d7909b717ff1804920ae6c24d8d8487e",
+      "git_blob": "72a75f33fc391ae4d9093e2a21b9debfcebdde13",
+      "engine_name": "MOTOR_SEP_SDV-SDI_v3",
+      "version": "3.0.0",
+      "entry": "audit_alignment",
+      "arguments": "pairs: List[PairMeta], mix_info: FileInfo",
+      "lines": [
+        1113,
+        1172
+      ],
+      "caller": "main",
+      "caller_lines": [
+        2103
+      ],
+      "original_ref": "7092c6cee764861d4bd8230eccb700f1d4d0556c",
+      "solo_referencia_sin_copia_experimental": true,
+      "original_solo_lectura": true
+    },
+    "B": {
+      "path": "Proyecto SDV-SDI_SGM/MOTOR_SEP_SDV-SDI_v3.1.1_Hardened_Final.py",
+      "bytes": 87659,
+      "sha256": "5141fb5005656db1f6b2ede6165dbc77e6f74375a77e9db2570e69d8c6409dbd",
+      "git_blob": "57587b7f22f7515c92af6ac2ca108f4cf24b5763",
+      "engine_name": "SGM MOTOR A (SDV-SDI Master Engine)",
+      "version": "3.1.1-Sfumato-Calibrated",
+      "entry": "analyze_alignment",
+      "arguments": "mix_info: FileInfo, guide_info: FileInfo",
+      "lines": [
+        524,
+        573
+      ],
+      "caller": "run_experiment",
+      "caller_lines": [
+        1334
+      ],
+      "original_ref": "7092c6cee764861d4bd8230eccb700f1d4d0556c",
+      "solo_referencia_sin_copia_experimental": false,
+      "original_solo_lectura": true
+    },
+    "C": {
+      "path": "Proyecto SDV-SDI_SGM/MOTOR_SEP_SDV-SDI_EVO.py",
+      "bytes": 95656,
+      "sha256": "003e698e187b6d6286c39a4f461e924420544ee4bf59c0b66a72258efc35774f",
+      "git_blob": "2323f91e8925bd9a7f1bce8ef8036af5034fbb23",
+      "engine_name": "SGM MOTOR A (SDV-SDI Master Engine)",
+      "version": "3.1.1-Sfumato-Calibrated",
+      "entry": "analyze_alignment",
+      "arguments": "mix_info: FileInfo, guide_info: FileInfo",
+      "lines": [
+        529,
+        625
+      ],
+      "caller": "run_experiment",
+      "caller_lines": [
+        1434
+      ],
+      "original_ref": "7092c6cee764861d4bd8230eccb700f1d4d0556c",
+      "solo_referencia_sin_copia_experimental": false,
+      "original_solo_lectura": true
+    },
+    "D": {
+      "path": "Proyecto SDV-SDI_SGM/sdv_sdi_mqr_engine.py",
+      "bytes": 150903,
+      "sha256": "5990ebe41177b62c57290a7b95a4a0408774878a7217341c40ab87d53737a479",
+      "git_blob": "a223b51e380756dc7e41751ed9b3bf01810bdb7c",
+      "engine_name": "SDV-SDI MQR Engine",
+      "version": "1.0.0",
+      "entry": "analyze_alignment",
+      "arguments": "mix_info, guide_info, mix_mono_cache=None",
+      "lines": [
+        853,
+        931
+      ],
+      "caller": "run_experiment",
+      "caller_lines": [
+        2109
+      ],
+      "original_ref": "7092c6cee764861d4bd8230eccb700f1d4d0556c",
+      "solo_referencia_sin_copia_experimental": false,
+      "original_solo_lectura": true
+    }
+  },
+  "referencias": {
+    "fase1b": "SDV-SDI_FASE_1B_ENTREGA/hashes/FUENTES_SHA256.txt",
+    "s5": "S5_STEREO_VALIDATION/source_hashes.json",
+    "auditoria": "S5_STEREO_VALIDATION/AUDIT_INDEPENDIENTE/VERIFICACION_INTEGRIDAD.json",
+    "e6": "ETAPA_6_ALINEACION_DIAGNOSTICO/DEFECTOS_REPRODUCIBLES.json",
+    "6b": "ETAPA_6B_VALIDACION_ALINEACION/source_hashes.json"
+  },
+  "metodo": "git show commit:ruta, igualdad binaria con checkout, fuentes S5 y referencias SHA 1B/S5/auditoría/E6/6B. Cualquier discrepancia impide ejecutar."
+}

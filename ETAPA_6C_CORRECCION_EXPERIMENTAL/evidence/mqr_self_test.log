@@ -1,0 +1,32 @@
+[     1.08s] Validacion de entradas: OK (mix 44100 Hz / 2 ch / 88200 frames; 2 pares)
+[     1.08s] Analisis de alineacion (detect_only_no_correction)...
+[     1.20s]   guide_pair_01/vocal: k=null ms; NCC=null; AMBIGUOUS (INCOMPLETE_EVIDENCE); L: d=null AMBIGUOUS, R: d=null AMBIGUOUS; shift=0
+[     1.31s]   guide_pair_01/instrumental: k=0.00 ms; NCC=0.7545; ALIGNED (MEASURED_AGREEMENT); L: d=0 ALIGNED, R: d=0 ALIGNED; shift=0
+[     1.42s]   guide_pair_02/vocal: k=null ms; NCC=null; AMBIGUOUS (INCOMPLETE_EVIDENCE); L: d=null AMBIGUOUS, R: d=null AMBIGUOUS; shift=0
+[     1.53s]   guide_pair_02/instrumental: k=0.00 ms; NCC=0.7118; ALIGNED (MEASURED_AGREEMENT); L: d=0 ALIGNED, R: d=0 ALIGNED; shift=0
+[     1.53s] Continuación explícita sin corrección: cli_allow_misaligned
+[     1.53s] Analisis de escala de guides (metricas + factores)...
+[     1.54s]   guide_pair_01: g_vocal=1.0000 g_instr=1.0000 (politica=none)
+[     1.56s]   guide_pair_02: g_vocal=1.0000 g_instr=1.0000 (politica=none)
+[     1.56s] Directorio de corrida (parcial): /tmp/tmp47osctu9/mqr_run_20261118_232832_partial
+[     1.56s] Pipeline: mode=full_processing, 2 pares, K=175 frames en chunks de 32
+[     2.64s]   chunk 6/6 (frames 160-174) listo
+[     2.70s] Post-WAV identity: SNR=152.66 dB (esperado > 100 dB)
+[     2.72s] Escribiendo analysis.json / analysis.txt ...
+[     2.74s] Directorio final: /tmp/tmp47osctu9/mqr_run_20261118_232832
+[     2.74s] Duracion total: 1.7 s
+[     2.74s] Corrida COMPLETA: /tmp/tmp47osctu9/mqr_run_20261118_232832
+
+========================================================================
+SELF-TEST SDV-SDI MQR Engine v1.0.0
+========================================================================
+  [PASS] T1 roundtrip STFT->ISTFT < 1e-12  (max_err=4.44e-16)
+  [PASS] T2 mascara invariante a escala comun (< 1e-6)  (max_err=7.95e-09)
+  [PASS] T3 Mi=1-Mv e identidad Mix*(Mv+Mi)=Mix (< 1e-14)  (err_a=0.00e+00 err_b=0.00e+00)
+  [PASS] T4 consenso N=1 trivial e identico (< 1e-15)  (max_err=0.00e+00)
+  [PASS] T5 confidence_weighted_mean dentro de [min,max]  (ok=True)
+  [PASS] T6 convencion de offset (delay->-1500, advance->+800)  (r1=-1500 r2=800)
+  [PASS] T7 pipeline e2e (exit=0, archivos, 24 secciones, SNR post-wav > 80 dB)  (exit=0 files=True sections=True snr_ok=True)
+========================================================================
+  RESULTADO GLOBAL: PASS
+========================================================================

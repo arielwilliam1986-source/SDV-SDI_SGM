@@ -1,0 +1,139 @@
+{
+  "prior": {
+    "ETAPA_6B_VALIDACION_ALINEACION/SHA256SUMS.txt": {
+      "entries": 31,
+      "list_sha256": "dd77c8fe4e2b6e3eea3493d1b2b76735d473b4bb1d446cd75f6da34b5d2550ce"
+    },
+    "S5_STEREO_VALIDATION/hashes/SHA256SUMS.txt": {
+      "entries": 46,
+      "list_sha256": "ca686d344174af6a6a157bfa0f6e373b9206b9aa16adaebb7b23dedddf750213"
+    },
+    "S5_STEREO_VALIDATION/AUDIT_INDEPENDIENTE/SHA256SUMS.txt": {
+      "entries": 6,
+      "list_sha256": "f75191a40f582ea8a4d5d994cca125bd8810bf116e684940e0070d5e6b413e89"
+    },
+    "ETAPA_6_ALINEACION_DIAGNOSTICO/SHA256SUMS.txt": {
+      "entries": 7,
+      "list_sha256": "bc6755d58066a5dd59edf142c5ddb3b584a2bd6bc9f55c4281985d7e57556bfd"
+    }
+  },
+  "patches": {
+    "B": {
+      "patch": "DIFF_HARDENED.patch",
+      "sha256": "b773a0d9b8bdb5d572f71a746fc750fcce6ec5cbc9f9b6993028ed549e261470",
+      "compiled": true,
+      "exact_reapplication": true,
+      "changed_existing_functions": [
+        "analyze_alignment",
+        "build_arg_parser",
+        "run_experiment",
+        "write_analysis_txt"
+      ],
+      "added_functions": [
+        "_alignment_line",
+        "_alignment_spans",
+        "_combine",
+        "_decision",
+        "_lag_curve",
+        "_measure_window",
+        "_peaks",
+        "_severity"
+      ],
+      "identical_existing_definitions": 52,
+      "entry_lines": [
+        655,
+        714
+      ]
+    },
+    "C": {
+      "patch": "DIFF_EVO.patch",
+      "sha256": "555701894a58f8713030c05dc299fd1e78d3e03b7ad3ace6f3a9d0c225bd881a",
+      "compiled": true,
+      "exact_reapplication": true,
+      "changed_existing_functions": [
+        "analyze_alignment",
+        "build_arg_parser",
+        "run_experiment",
+        "write_analysis_txt"
+      ],
+      "added_functions": [
+        "_alignment_line",
+        "_alignment_spans",
+        "_combine",
+        "_decision",
+        "_lag_curve",
+        "_measure_window",
+        "_peaks",
+        "_severity"
+      ],
+      "identical_existing_definitions": 55,
+      "entry_lines": [
+        672,
+        731
+      ]
+    },
+    "D": {
+      "patch": "DIFF_MQR.patch",
+      "sha256": "1173a56641ca8d502de19cb184af248084ac1f00e814b1a5f8c66eb31e2057bf",
+      "compiled": true,
+      "exact_reapplication": true,
+      "changed_existing_functions": [
+        "analyze_alignment",
+        "build_arg_parser",
+        "build_document_meta",
+        "build_validation_status",
+        "run_experiment",
+        "run_self_test",
+        "write_analysis_txt"
+      ],
+      "added_functions": [
+        "_alignment_line",
+        "_alignment_spans",
+        "_combine",
+        "_decision",
+        "_lag_curve",
+        "_measure_window",
+        "_peaks",
+        "_severity"
+      ],
+      "identical_existing_definitions": 72,
+      "entry_lines": [
+        953,
+        1012
+      ]
+    }
+  },
+  "wav": {
+    "wav_6b": "373d6250864312a5786e6fac848a408cf771abf261e0d32edc976f0f0d9ac741",
+    "unique_6B": 338,
+    "unique_reserve": 51,
+    "wav_hash_intersection": 0,
+    "all_reserve_pcm_finite": true
+  },
+  "label": "EXPERIMENTAL_RESULT",
+  "verdict": "CONFIRMADO CON LIMITACIONES",
+  "regression": {
+    "contexts": 642,
+    "python_warnings": 0,
+    "calls": 1284,
+    "channel_rows": 2568,
+    "expected_read_errors": 3
+  },
+  "mqr_summary_counts": {
+    "6B/pass": 34,
+    "6B/pass_with_warnings": 18,
+    "6B/fail": 149,
+    "reserva/pass": 1,
+    "reserva/fail": 12
+  },
+  "uncontrolled_exceptions": 0,
+  "forbidden_calls": 0,
+  "no_regression": {
+    "complete_pairs": 14,
+    "incomplete_pairs": 1,
+    "tensor_comparisons": 840,
+    "elementwise": 564
+  },
+  "tests": "evidence/tests.log",
+  "native_self_test": "evidence/mqr_self_test.log"
+}

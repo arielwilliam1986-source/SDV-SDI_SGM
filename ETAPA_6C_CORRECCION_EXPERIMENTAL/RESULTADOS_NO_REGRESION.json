@@ -1,0 +1,2359 @@
+{
+  "scope": "mismos WAV verificados, cada original vs su copia, CLI full_processing sin --correct-alignment",
+  "evidencia": "EXPERIMENTAL_RESULT",
+  "dictamen": "CONFIRMADO CON LIMITACIONES",
+  "runs": [
+    {
+      "id": "B/S3/per_channel/magnitudes_first/direct",
+      "engine": "B",
+      "case": "S3",
+      "mask_mode": "per_channel",
+      "order": "magnitudes_first",
+      "use_physical_residuals": false,
+      "manifest_sha256": "21c27ebad55d56c53107e881edec5410516a7604e40b59e0585f72e1e7631919",
+      "input_sha256": {
+        "Mix.wav": "c660ecd1a6f72f130b6d827c986cdef30320231da93a9f6ad871cb4211b3e558",
+        "V.wav": "abc91e312c29733b60690d9d95ed20daddd70990b5b4b577723be94eef47d748",
+        "I.wav": "cdbe837e34cd9ab3c0c4602d0cd142d56d3fb8dd7bea4828b463fd6c8c4f4950"
+      },
+      "evidence": "evidence/no_regresion.jsonl.gz#B/S3/per_channel/magnitudes_first/direct",
+      "complete_both": true,
+      "exits": {
+        "original": 0,
+        "experimental": 0
+      },
+      "tensors": 42,
+      "direct_array_comparisons": 30,
+      "max_abs_arrays": 0.0,
+      "tensor_differences": [],
+      "max_abs_formula": 0.0,
+      "shift_values": [
+        0
+      ],
+      "other_observation_differences": [],
+      "polarity_signs": [
+        1.0
+      ],
+      "max_signed_span_error": 0.0,
+      "physical_residual_calls": 0,
+      "pcm_comparison": {
+        "SDV": {
+          "max_abs_LR": [
+            0.0,
+            0.0
+          ],
+          "samples_different_LR": [
+            0,
+            0
+          ],
+          "decoded_sha256": [
+            "ead7e403c2d5c7cb286343789f0aeabce05cde0d60a260f2f2161ba35365172a",
+            "ead7e403c2d5c7cb286343789f0aeabce05cde0d60a260f2f2161ba35365172a"
+          ],
+          "sr_channels_frames_duration_subtype": [
+            44100,
+            2,
+            176400,
+            4.0,
+            "FLOAT"
+          ],
+          "rms_R_over_L": 0.2500000001212658,
+          "pearson_LR": 0.9999999999999998,
+          "changed_output_fields": [
+            "/file_sha256",
+            "/riff/PEAK/sha256",
+            "/riff/PEAK/timestamp"
+          ]
+        },
+        "SDI": {
+          "max_abs_LR": [
+            0.0,
+            0.0
+          ],
+          "samples_different_LR": [
+            0,
+            0
+          ],
+          "decoded_sha256": [
+            "87e5f2727589c5199271c857dd488c169bfd3465fc2ecd2deebf3d1fffac2287",
+            "87e5f2727589c5199271c857dd488c169bfd3465fc2ecd2deebf3d1fffac2287"
+          ],
+          "sr_channels_frames_duration_subtype": [
+            44100,
+            2,
+            176400,
+            4.0,
+            "FLOAT"
+          ],
+          "rms_R_over_L": 0.24999999984730711,
+          "pearson_LR": 0.9999999999999986,
+          "changed_output_fields": [
+            "/file_sha256",
+            "/riff/PEAK/sha256",
+            "/riff/PEAK/timestamp"
+          ]
+        }
+      },
+      "report_changed_paths": [
+        "/alignment_analysis/0/action",
+        "/alignment_analysis/0/active_window_sec",
+        "/alignment_analysis/0/alignment_confidence",
+        "/alignment_analysis/0/channels",
+        "/alignment_analysis/0/classification",
+        "/alignment_analysis/0/coarse_lag_samples",
+        "/alignment_analysis/0/continuation_permission",
+        "/alignment_analysis/0/convention",
+        "/alignment_analysis/0/correlation_peak",
+        "/alignment_analysis/0/cross_correlation",
+        "/alignment_analysis/0/estimated_offset_ms",
+        "/alignment_analysis/0/estimated_offset_samples",
+        "/alignment_analysis/0/guide_delay_R_minus_L",
+        "/alignment_analysis/0/guide_delay_samples",
+        "/alignment_analysis/0/k_R_minus_L",
+        "/alignment_analysis/0/reason",
+        "/alignment_analysis/0/schema",
+        "/alignment_analysis/0/search_window_seconds",
+        "/alignment_analysis/0/tolerances",
+        "/alignment_analysis/1/action",
+        "/alignment_analysis/1/active_window_sec",
+        "/alignment_analysis/1/alignment_confidence",
+        "/alignment_analysis/1/channels",
+        "/alignment_analysis/1/classification",
+        "/alignment_analysis/1/coarse_lag_samples",
+        "/alignment_analysis/1/continuation_permission",
+        "/alignment_analysis/1/convention",
+        "/alignment_analysis/1/correlation_peak",
+        "/alignment_analysis/1/cross_correlation",
+        "/alignment_analysis/1/estimated_offset_ms",
+        "/alignment_analysis/1/estimated_offset_samples",
+        "/alignment_analysis/1/guide_delay_R_minus_L",
+        "/alignment_analysis/1/guide_delay_samples",
+        "/alignment_analysis/1/k_R_minus_L",
+        "/alignment_analysis/1/reason",
+        "/alignment_analysis/1/schema",
+        "/alignment_analysis/1/search_window_seconds",
+        "/alignment_analysis/1/tolerances",
+        "/document_meta/engine_sha256",
+        "/document_meta/generated_utc",
+        "/document_meta/total_duration_s"
+      ],
+      "reconstruction": {
+        "max_abs_LR": [
+          [
+            7.450580596923828e-09,
+            1.862645149230957e-09
+          ],
+          [
+            7.450580596923828e-09,
+            1.862645149230957e-09
+          ]
+        ],
+        "difference_LR": [
+          0.0,
+          0.0
+        ]
+      },
+      "status": "IDENTICO_PCM_Y_DSP"
+    },
+    {
+      "id": "B/S4/per_channel/magnitudes_first/direct",
+      "engine": "B",
+      "case": "S4",
+      "mask_mode": "per_channel",
+      "order": "magnitudes_first",
+      "use_physical_residuals": false,
+      "manifest_sha256": "21c27ebad55d56c53107e881edec5410516a7604e40b59e0585f72e1e7631919",
+      "input_sha256": {
+        "Mix.wav": "ac5a51cd9feca06463d8d83091705527720bd4e1794a8904e89c246516ba3534",
+        "V.wav": "f49d5bb448dd6f73af513493095479dcc3a3a67997f33af55162973f23a31c40",
+        "I.wav": "f091f59a21dcccb62219c3b3ced042024d0edb063955cf1a51e670e9ae7348a4"
+      },
+      "evidence": "evidence/no_regresion.jsonl.gz#B/S4/per_channel/magnitudes_first/direct",
+      "complete_both": true,
+      "exits": {
+        "original": 0,
+        "experimental": 0
+      },
+      "tensors": 42,
+      "direct_array_comparisons": 30,
+      "max_abs_arrays": 0.0,
+      "tensor_differences": [],
+      "max_abs_formula": 0.0,
+      "shift_values": [
+        0
+      ],
+      "other_observation_differences": [],
+      "polarity_signs": [
+        1.0
+      ],
+      "max_signed_span_error": 0.0,
+      "physical_residual_calls": 0,
+      "pcm_comparison": {
+        "SDV": {
+          "max_abs_LR": [
+            0.0,
+            0.0
+          ],
+          "samples_different_LR": [
+            0,
+            0
+          ],
+          "decoded_sha256": [
+            "f49340f9e7ff0bb75285fa86f03b492b764d0bb121963f1f33ef65ee80bdc6c3",
+            "f49340f9e7ff0bb75285fa86f03b492b764d0bb121963f1f33ef65ee80bdc6c3"
+          ],
+          "sr_channels_frames_duration_subtype": [
+            44100,
+            2,
+            176400,
+            4.0,
+            "FLOAT"
+          ],
+          "rms_R_over_L": 0.0,
+          "pearson_LR": null,
+          "changed_output_fields": [
+            "/file_sha256",
+            "/riff/PEAK/sha256",
+            "/riff/PEAK/timestamp"
+          ]
+        },
+        "SDI": {
+          "max_abs_LR": [
+            0.0,
+            0.0
+          ],
+          "samples_different_LR": [
+            0,
+            0
+          ],
+          "decoded_sha256": [
+            "0e9e5fadddfcbbdc9bf21c01d673375bb5f427dbf017fc7eb644eb7cdf91ceb4",
+            "0e9e5fadddfcbbdc9bf21c01d673375bb5f427dbf017fc7eb644eb7cdf91ceb4"
+          ],
+          "sr_channels_frames_duration_subtype": [
+            44100,
+            2,
+            176400,
+            4.0,
+            "FLOAT"
+          ],
+          "rms_R_over_L": 111887105.25401387,
+          "pearson_LR": 3.0830171291647233e-07,
+          "changed_output_fields": [
+            "/file_sha256",
+            "/riff/PEAK/sha256",
+            "/riff/PEAK/timestamp"
+          ]
+        }
+      },
+      "report_changed_paths": [
+        "/alignment_analysis/0/action",
+        "/alignment_analysis/0/active_window_sec",
+        "/alignment_analysis/0/alignment_confidence",
+        "/alignment_analysis/0/channels",
+        "/alignment_analysis/0/classification",
+        "/alignment_analysis/0/coarse_lag_samples",
+        "/alignment_analysis/0/continuation_permission",
+        "/alignment_analysis/0/convention",
+        "/alignment_analysis/0/correlation_peak",
+        "/alignment_analysis/0/cross_correlation",
+        "/alignment_analysis/0/estimated_offset_ms",
+        "/alignment_analysis/0/estimated_offset_samples",
+        "/alignment_analysis/0/guide_delay_R_minus_L",
+        "/alignment_analysis/0/guide_delay_samples",
+        "/alignment_analysis/0/k_R_minus_L",
+        "/alignment_analysis/0/reason",
+        "/alignment_analysis/0/schema",
+        "/alignment_analysis/0/search_window_seconds",
+        "/alignment_analysis/0/tolerances",
+        "/alignment_analysis/1/action",
+        "/alignment_analysis/1/active_window_sec",
+        "/alignment_analysis/1/alignment_confidence",
+        "/alignment_analysis/1/channels",
+        "/alignment_analysis/1/classification",
+        "/alignment_analysis/1/coarse_lag_samples",
+        "/alignment_analysis/1/continuation_permission",
+        "/alignment_analysis/1/convention",
+        "/alignment_analysis/1/correlation_peak",
+        "/alignment_analysis/1/cross_correlation",
+        "/alignment_analysis/1/estimated_offset_ms",
+        "/alignment_analysis/1/estimated_offset_samples",
+        "/alignment_analysis/1/guide_delay_R_minus_L",
+        "/alignment_analysis/1/guide_delay_samples",
+        "/alignment_analysis/1/k_R_minus_L",
+        "/alignment_analysis/1/reason",
+        "/alignment_analysis/1/schema",
+        "/alignment_analysis/1/search_window_seconds",
+        "/alignment_analysis/1/tolerances",
+        "/document_meta/engine_sha256",
+        "/document_meta/generated_utc",
+        "/document_meta/total_duration_s"
+      ],
+      "reconstruction": {
+        "max_abs_LR": [
+          [
+            7.348801567275132e-09,
+            3.9401034560734263e-17
+          ],
+          [
+            7.348801567275132e-09,
+            3.9401034560734263e-17
+          ]
+        ],
+        "difference_LR": [
+          0.0,
+          0.0
+        ]
+      },
+      "status": "IDENTICO_PCM_Y_DSP"
+    },
+    {
+      "id": "B/Ppos/mono/masks_first/direct",
+      "engine": "B",
+      "case": "Ppos",
+      "mask_mode": "mono",
+      "order": "masks_first",
+      "use_physical_residuals": false,
+      "manifest_sha256": "9309bd5180a72163a133122cadc30c9b028834950f12273edb6e97cc92d9ad6e",
+      "input_sha256": {
+        "../S2/Mix.wav": "ed9297315c5946f1405fe67f1ca454b399e22f1a3399afc033e2f66997ddf33a",
+        "../S2/V.wav": "6b23fc9c0a232cdd001b485652cec0b9cd97da81c5d063fefef1b94e26773c7a",
+        "../S2/I.wav": "fa4bec6b085159d542b6d34062722c883d4400ddd503da1fb6f9a9530b0ffd86",
+        "V2.wav": "1aa3f8846bde1ed7d553cbb7325b181b9613bd0a6abad456bbcbf39a7feb25c0",
+        "I2.wav": "fce600ab91ad1c8167e16fe546544f6130d15e5bb180ad2a80002ab93a0a69f3"
+      },
+      "evidence": "evidence/no_regresion.jsonl.gz#B/Ppos/mono/masks_first/direct",
+      "complete_both": true,
+      "exits": {
+        "original": 0,
+        "experimental": 0
+      },
+      "tensors": 84,
+      "direct_array_comparisons": 54,
+      "max_abs_arrays": 0.0,
+      "tensor_differences": [],
+      "max_abs_formula": 0.0,
+      "shift_values": [
+        0
+      ],
+      "other_observation_differences": [],
+      "polarity_signs": [
+        1.0
+      ],
+      "max_signed_span_error": 0.0,
+      "physical_residual_calls": 0,
+      "pcm_comparison": {
+        "SDV": {
+          "max_abs_LR": [
+            0.0,
+            0.0
+          ],
+          "samples_different_LR": [
+            0,
+            0
+          ],
+          "decoded_sha256": [
+            "e9dc4821a54e363f542b9cf41ce8e5b99b814520e42eb43f6bff822510d11678",
+            "e9dc4821a54e363f542b9cf41ce8e5b99b814520e42eb43f6bff822510d11678"
+          ],
+          "sr_channels_frames_duration_subtype": [
+            44100,
+            2,
+            176400,
+            4.0,
+            "FLOAT"
+          ],
+          "rms_R_over_L": 1.605846527350578,
+          "pearson_LR": 0.47986888683653733,
+          "changed_output_fields": [
+            "/file_sha256",
+            "/riff/PEAK/sha256",
+            "/riff/PEAK/timestamp"
+          ]
+        },
+        "SDI": {
+          "max_abs_LR": [
+            0.0,
+            0.0
+          ],
+          "samples_different_LR": [
+            0,
+            0
+          ],
+          "decoded_sha256": [
+            "37b22552621e3f964ab69a49a5c4e44e649aac38cabf3738d0cdae6cdeae0d8e",
+            "37b22552621e3f964ab69a49a5c4e44e649aac38cabf3738d0cdae6cdeae0d8e"
+          ],
+          "sr_channels_frames_duration_subtype": [
+            44100,
+            2,
+            176400,
+            4.0,
+            "FLOAT"
+          ],
+          "rms_R_over_L": 0.42360447783326527,
+          "pearson_LR": 0.5214825650033929,
+          "changed_output_fields": [
+            "/file_sha256",
+            "/riff/PEAK/sha256",
+            "/riff/PEAK/timestamp"
+          ]
+        }
+      },
+      "report_changed_paths": [
+        "/alignment_analysis/0/action",
+        "/alignment_analysis/0/active_window_sec",
+        "/alignment_analysis/0/alignment_confidence",
+        "/alignment_analysis/0/channels",
+        "/alignment_analysis/0/classification",
+        "/alignment_analysis/0/coarse_lag_samples",
+        "/alignment_analysis/0/continuation_permission",
+        "/alignment_analysis/0/convention",
+        "/alignment_analysis/0/correlation_peak",
+        "/alignment_analysis/0/cross_correlation",
+        "/alignment_analysis/0/estimated_offset_ms",
+        "/alignment_analysis/0/estimated_offset_samples",
+        "/alignment_analysis/0/guide_delay_R_minus_L",
+        "/alignment_analysis/0/guide_delay_samples",
+        "/alignment_analysis/0/k_R_minus_L",
+        "/alignment_analysis/0/reason",
+        "/alignment_analysis/0/schema",
+        "/alignment_analysis/0/search_window_seconds",
+        "/alignment_analysis/0/tolerances",
+        "/alignment_analysis/1/action",
+        "/alignment_analysis/1/active_window_sec",
+        "/alignment_analysis/1/alignment_confidence",
+        "/alignment_analysis/1/channels",
+        "/alignment_analysis/1/classification",
+        "/alignment_analysis/1/coarse_lag_samples",
+        "/alignment_analysis/1/continuation_permission",
+        "/alignment_analysis/1/convention",
+        "/alignment_analysis/1/correlation_peak",
+        "/alignment_analysis/1/cross_correlation",
+        "/alignment_analysis/1/estimated_offset_ms",
+        "/alignment_analysis/1/estimated_offset_samples",
+        "/alignment_analysis/1/guide_delay_R_minus_L",
+        "/alignment_analysis/1/guide_delay_samples",
+        "/alignment_analysis/1/k_R_minus_L",
+        "/alignment_analysis/1/reason",
+        "/alignment_analysis/1/schema",
+        "/alignment_analysis/1/search_window_seconds",
+        "/alignment_analysis/1/tolerances",
+        "/alignment_analysis/2/action",
+        "/alignment_analysis/2/active_window_sec",
+        "/alignment_analysis/2/alignment_confidence",
+        "/alignment_analysis/2/channels",
+        "/alignment_analysis/2/classification",
+        "/alignment_analysis/2/coarse_lag_samples",
+        "/alignment_analysis/2/continuation_permission",
+        "/alignment_analysis/2/convention",
+        "/alignment_analysis/2/correlation_peak",
+        "/alignment_analysis/2/cross_correlation",
+        "/alignment_analysis/2/estimated_offset_ms",
+        "/alignment_analysis/2/estimated_offset_samples",
+        "/alignment_analysis/2/guide_delay_R_minus_L",
+        "/alignment_analysis/2/guide_delay_samples",
+        "/alignment_analysis/2/k_R_minus_L",
+        "/alignment_analysis/2/reason",
+        "/alignment_analysis/2/schema",
+        "/alignment_analysis/2/search_window_seconds",
+        "/alignment_analysis/2/tolerances",
+        "/alignment_analysis/3/action",
+        "/alignment_analysis/3/active_window_sec",
+        "/alignment_analysis/3/alignment_confidence",
+        "/alignment_analysis/3/channels",
+        "/alignment_analysis/3/classification",
+        "/alignment_analysis/3/coarse_lag_samples",
+        "/alignment_analysis/3/continuation_permission",
+        "/alignment_analysis/3/convention",
+        "/alignment_analysis/3/correlation_peak",
+        "/alignment_analysis/3/cross_correlation",
+        "/alignment_analysis/3/estimated_offset_ms",
+        "/alignment_analysis/3/estimated_offset_samples",
+        "/alignment_analysis/3/guide_delay_R_minus_L",
+        "/alignment_analysis/3/guide_delay_samples",
+        "/alignment_analysis/3/k_R_minus_L",
+        "/alignment_analysis/3/reason",
+        "/alignment_analysis/3/schema",
+        "/alignment_analysis/3/search_window_seconds",
+        "/alignment_analysis/3/tolerances",
+        "/document_meta/engine_sha256",
+        "/document_meta/generated_utc",
+        "/document_meta/total_duration_s"
+      ],
+      "reconstruction": {
+        "max_abs_LR": [
+          [
+            7.450580596923828e-09,
+            7.450580596923828e-09
+          ],
+          [
+            7.450580596923828e-09,
+            7.450580596923828e-09
+          ]
+        ],
+        "difference_LR": [
+          0.0,
+          0.0
+        ]
+      },
+      "status": "IDENTICO_PCM_Y_DSP"
+    },
+    {
+      "id": "B/Ppos/mono/magnitudes_first/res",
+      "engine": "B",
+      "case": "Ppos",
+      "mask_mode": "mono",
+      "order": "magnitudes_first",
+      "use_physical_residuals": true,
+      "manifest_sha256": "9309bd5180a72163a133122cadc30c9b028834950f12273edb6e97cc92d9ad6e",
+      "input_sha256": {
+        "../S2/Mix.wav": "ed9297315c5946f1405fe67f1ca454b399e22f1a3399afc033e2f66997ddf33a",
+        "../S2/V.wav": "6b23fc9c0a232cdd001b485652cec0b9cd97da81c5d063fefef1b94e26773c7a",
+        "../S2/I.wav": "fa4bec6b085159d542b6d34062722c883d4400ddd503da1fb6f9a9530b0ffd86",
+        "V2.wav": "1aa3f8846bde1ed7d553cbb7325b181b9613bd0a6abad456bbcbf39a7feb25c0",
+        "I2.wav": "fce600ab91ad1c8167e16fe546544f6130d15e5bb180ad2a80002ab93a0a69f3"
+      },
+      "evidence": "evidence/no_regresion.jsonl.gz#B/Ppos/mono/magnitudes_first/res",
+      "complete_both": true,
+      "exits": {
+        "original": 0,
+        "experimental": 0
+      },
+      "tensors": 60,
+      "direct_array_comparisons": 42,
+      "max_abs_arrays": 0.0,
+      "tensor_differences": [],
+      "max_abs_formula": 0.0,
+      "shift_values": [
+        0
+      ],
+      "other_observation_differences": [],
+      "polarity_signs": [
+        1.0
+      ],
+      "max_signed_span_error": 0.0,
+      "physical_residual_calls": 12,
+      "pcm_comparison": {
+        "SDV": {
+          "max_abs_LR": [
+            0.0,
+            0.0
+          ],
+          "samples_different_LR": [
+            0,
+            0
+          ],
+          "decoded_sha256": [
+            "843ecac4a18f1bdf05bd6f12b2a1000a99c39c005a8b7cfe55e2f453d520fbc4",
+            "843ecac4a18f1bdf05bd6f12b2a1000a99c39c005a8b7cfe55e2f453d520fbc4"
+          ],
+          "sr_channels_frames_duration_subtype": [
+            44100,
+            2,
+            176400,
+            4.0,
+            "FLOAT"
+          ],
+          "rms_R_over_L": 1.2636157963250962,
+          "pearson_LR": 0.5084449910179154,
+          "changed_output_fields": [
+            "/file_sha256",
+            "/riff/PEAK/sha256",
+            "/riff/PEAK/timestamp"
+          ]
+        },
+        "SDI": {
+          "max_abs_LR": [
+            0.0,
+            0.0
+          ],
+          "samples_different_LR": [
+            0,
+            0
+          ],
+          "decoded_sha256": [
+            "9e3735663dc92cc8c2e66e5154c7fcafb73a9d6c69db1af1ea161c0e5025a968",
+            "9e3735663dc92cc8c2e66e5154c7fcafb73a9d6c69db1af1ea161c0e5025a968"
+          ],
+          "sr_channels_frames_duration_subtype": [
+            44100,
+            2,
+            176400,
+            4.0,
+            "FLOAT"
+          ],
+          "rms_R_over_L": 0.6174405391111506,
+          "pearson_LR": 0.5629470892671959,
+          "changed_output_fields": [
+            "/file_sha256",
+            "/riff/PEAK/sha256",
+            "/riff/PEAK/timestamp"
+          ]
+        }
+      },
+      "report_changed_paths": [
+        "/alignment_analysis/0/action",
+        "/alignment_analysis/0/active_window_sec",
+        "/alignment_analysis/0/alignment_confidence",
+        "/alignment_analysis/0/channels",
+        "/alignment_analysis/0/classification",
+        "/alignment_analysis/0/coarse_lag_samples",
+        "/alignment_analysis/0/continuation_permission",
+        "/alignment_analysis/0/convention",
+        "/alignment_analysis/0/correlation_peak",
+        "/alignment_analysis/0/cross_correlation",
+        "/alignment_analysis/0/estimated_offset_ms",
+        "/alignment_analysis/0/estimated_offset_samples",
+        "/alignment_analysis/0/guide_delay_R_minus_L",
+        "/alignment_analysis/0/guide_delay_samples",
+        "/alignment_analysis/0/k_R_minus_L",
+        "/alignment_analysis/0/reason",
+        "/alignment_analysis/0/schema",
+        "/alignment_analysis/0/search_window_seconds",
+        "/alignment_analysis/0/tolerances",
+        "/alignment_analysis/1/action",
+        "/alignment_analysis/1/active_window_sec",
+        "/alignment_analysis/1/alignment_confidence",
+        "/alignment_analysis/1/channels",
+        "/alignment_analysis/1/classification",
+        "/alignment_analysis/1/coarse_lag_samples",
+        "/alignment_analysis/1/continuation_permission",
+        "/alignment_analysis/1/convention",
+        "/alignment_analysis/1/correlation_peak",
+        "/alignment_analysis/1/cross_correlation",
+        "/alignment_analysis/1/estimated_offset_ms",
+        "/alignment_analysis/1/estimated_offset_samples",
+        "/alignment_analysis/1/guide_delay_R_minus_L",
+        "/alignment_analysis/1/guide_delay_samples",
+        "/alignment_analysis/1/k_R_minus_L",
+        "/alignment_analysis/1/reason",
+        "/alignment_analysis/1/schema",
+        "/alignment_analysis/1/search_window_seconds",
+        "/alignment_analysis/1/tolerances",
+        "/alignment_analysis/2/action",
+        "/alignment_analysis/2/active_window_sec",
+        "/alignment_analysis/2/alignment_confidence",
+        "/alignment_analysis/2/channels",
+        "/alignment_analysis/2/classification",
+        "/alignment_analysis/2/coarse_lag_samples",
+        "/alignment_analysis/2/continuation_permission",
+        "/alignment_analysis/2/convention",
+        "/alignment_analysis/2/correlation_peak",
+        "/alignment_analysis/2/cross_correlation",
+        "/alignment_analysis/2/estimated_offset_ms",
+        "/alignment_analysis/2/estimated_offset_samples",
+        "/alignment_analysis/2/guide_delay_R_minus_L",
+        "/alignment_analysis/2/guide_delay_samples",
+        "/alignment_analysis/2/k_R_minus_L",
+        "/alignment_analysis/2/reason",
+        "/alignment_analysis/2/schema",
+        "/alignment_analysis/2/search_window_seconds",
+        "/alignment_analysis/2/tolerances",
+        "/alignment_analysis/3/action",
+        "/alignment_analysis/3/active_window_sec",
+        "/alignment_analysis/3/alignment_confidence",
+        "/alignment_analysis/3/channels",
+        "/alignment_analysis/3/classification",
+        "/alignment_analysis/3/coarse_lag_samples",
+        "/alignment_analysis/3/continuation_permission",
+        "/alignment_analysis/3/convention",
+        "/alignment_analysis/3/correlation_peak",
+        "/alignment_analysis/3/cross_correlation",
+        "/alignment_analysis/3/estimated_offset_ms",
+        "/alignment_analysis/3/estimated_offset_samples",
+        "/alignment_analysis/3/guide_delay_R_minus_L",
+        "/alignment_analysis/3/guide_delay_samples",
+        "/alignment_analysis/3/k_R_minus_L",
+        "/alignment_analysis/3/reason",
+        "/alignment_analysis/3/schema",
+        "/alignment_analysis/3/search_window_seconds",
+        "/alignment_analysis/3/tolerances",
+        "/document_meta/engine_sha256",
+        "/document_meta/generated_utc",
+        "/document_meta/total_duration_s"
+      ],
+      "reconstruction": {
+        "max_abs_LR": [
+          [
+            7.450580596923828e-09,
+            7.450580596923828e-09
+          ],
+          [
+            7.450580596923828e-09,
+            7.450580596923828e-09
+          ]
+        ],
+        "difference_LR": [
+          0.0,
+          0.0
+        ]
+      },
+      "status": "IDENTICO_PCM_Y_DSP"
+    },
+    {
+      "id": "B/S7/per_channel/magnitudes_first/direct",
+      "engine": "B",
+      "case": "S7",
+      "mask_mode": "per_channel",
+      "order": "magnitudes_first",
+      "use_physical_residuals": false,
+      "manifest_sha256": "21c27ebad55d56c53107e881edec5410516a7604e40b59e0585f72e1e7631919",
+      "input_sha256": {
+        "Mix.wav": "fc17323544418ec14cf4b7c051624f6bafe016ad58eff509a2c052b03d2af1f3",
+        "V.wav": "bb274bc1201b7b4f3fdae96af56da238239b66438f466f2a33f864ec484b3e04",
+        "I.wav": "c23cefd19206f0c9d9f31b316140ed290094248e8311c712019b7557575d8497"
+      },
+      "evidence": "evidence/no_regresion.jsonl.gz#B/S7/per_channel/magnitudes_first/direct",
+      "complete_both": true,
+      "exits": {
+        "original": 0,
+        "experimental": 0
+      },
+      "tensors": 42,
+      "direct_array_comparisons": 30,
+      "max_abs_arrays": 0.0,
+      "tensor_differences": [],
+      "max_abs_formula": 0.0,
+      "shift_values": [
+        0
+      ],
+      "other_observation_differences": [],
+      "polarity_signs": [
+        1.0
+      ],
+      "max_signed_span_error": 0.0,
+      "physical_residual_calls": 0,
+      "pcm_comparison": {
+        "SDV": {
+          "max_abs_LR": [
+            0.0,
+            0.0
+          ],
+          "samples_different_LR": [
+            0,
+            0
+          ],
+          "decoded_sha256": [
+            "02fed958f5f0efdc09e66d63939b0998f7fea4bd8d0821a739daaffad29cb540",
+            "02fed958f5f0efdc09e66d63939b0998f7fea4bd8d0821a739daaffad29cb540"
+          ],
+          "sr_channels_frames_duration_subtype": [
+            44100,
+            2,
+            176400,
+            4.0,
+            "FLOAT"
+          ],
+          "rms_R_over_L": 1.0,
+          "pearson_LR": -0.9999999999999998,
+          "changed_output_fields": [
+            "/file_sha256",
+            "/riff/PEAK/sha256",
+            "/riff/PEAK/timestamp"
+          ]
+        },
+        "SDI": {
+          "max_abs_LR": [
+            0.0,
+            0.0
+          ],
+          "samples_different_LR": [
+            0,
+            0
+          ],
+          "decoded_sha256": [
+            "2f0685a21072dd9b2609c243b74f610db1116fd9a4dbd183bd39470ab0d1ef0d",
+            "2f0685a21072dd9b2609c243b74f610db1116fd9a4dbd183bd39470ab0d1ef0d"
+          ],
+          "sr_channels_frames_duration_subtype": [
+            44100,
+            2,
+            176400,
+            4.0,
+            "FLOAT"
+          ],
+          "rms_R_over_L": 1.0,
+          "pearson_LR": -1.0,
+          "changed_output_fields": [
+            "/file_sha256",
+            "/riff/PEAK/sha256",
+            "/riff/PEAK/timestamp"
+          ]
+        }
+      },
+      "report_changed_paths": [
+        "/alignment_analysis/0/action",
+        "/alignment_analysis/0/active_window_sec",
+        "/alignment_analysis/0/alignment_confidence",
+        "/alignment_analysis/0/channels",
+        "/alignment_analysis/0/classification",
+        "/alignment_analysis/0/coarse_lag_samples",
+        "/alignment_analysis/0/continuation_permission",
+        "/alignment_analysis/0/convention",
+        "/alignment_analysis/0/correlation_peak",
+        "/alignment_analysis/0/cross_correlation",
+        "/alignment_analysis/0/estimated_offset_ms",
+        "/alignment_analysis/0/estimated_offset_samples",
+        "/alignment_analysis/0/guide_delay_R_minus_L",
+        "/alignment_analysis/0/guide_delay_samples",
+        "/alignment_analysis/0/k_R_minus_L",
+        "/alignment_analysis/0/reason",
+        "/alignment_analysis/0/schema",
+        "/alignment_analysis/0/search_window_seconds",
+        "/alignment_analysis/0/tolerances",
+        "/alignment_analysis/1/action",
+        "/alignment_analysis/1/active_window_sec",
+        "/alignment_analysis/1/alignment_confidence",
+        "/alignment_analysis/1/channels",
+        "/alignment_analysis/1/classification",
+        "/alignment_analysis/1/coarse_lag_samples",
+        "/alignment_analysis/1/continuation_permission",
+        "/alignment_analysis/1/convention",
+        "/alignment_analysis/1/correlation_peak",
+        "/alignment_analysis/1/cross_correlation",
+        "/alignment_analysis/1/estimated_offset_ms",
+        "/alignment_analysis/1/estimated_offset_samples",
+        "/alignment_analysis/1/guide_delay_R_minus_L",
+        "/alignment_analysis/1/guide_delay_samples",
+        "/alignment_analysis/1/k_R_minus_L",
+        "/alignment_analysis/1/reason",
+        "/alignment_analysis/1/schema",
+        "/alignment_analysis/1/search_window_seconds",
+        "/alignment_analysis/1/tolerances",
+        "/document_meta/engine_sha256",
+        "/document_meta/generated_utc",
+        "/document_meta/total_duration_s"
+      ],
+      "reconstruction": {
+        "max_abs_LR": [
+          [
+            7.450580596923828e-09,
+            7.450580596923828e-09
+          ],
+          [
+            7.450580596923828e-09,
+            7.450580596923828e-09
+          ]
+        ],
+        "difference_LR": [
+          0.0,
+          0.0
+        ]
+      },
+      "status": "IDENTICO_PCM_Y_DSP"
+    },
+    {
+      "id": "C/S3/per_channel/magnitudes_first/direct",
+      "engine": "C",
+      "case": "S3",
+      "mask_mode": "per_channel",
+      "order": "magnitudes_first",
+      "use_physical_residuals": false,
+      "manifest_sha256": "21c27ebad55d56c53107e881edec5410516a7604e40b59e0585f72e1e7631919",
+      "input_sha256": {
+        "Mix.wav": "c660ecd1a6f72f130b6d827c986cdef30320231da93a9f6ad871cb4211b3e558",
+        "V.wav": "abc91e312c29733b60690d9d95ed20daddd70990b5b4b577723be94eef47d748",
+        "I.wav": "cdbe837e34cd9ab3c0c4602d0cd142d56d3fb8dd7bea4828b463fd6c8c4f4950"
+      },
+      "evidence": "evidence/no_regresion.jsonl.gz#C/S3/per_channel/magnitudes_first/direct",
+      "complete_both": true,
+      "exits": {
+        "original": 0,
+        "experimental": 0
+      },
+      "tensors": 42,
+      "direct_array_comparisons": 30,
+      "max_abs_arrays": 0.0,
+      "tensor_differences": [],
+      "max_abs_formula": 0.0,
+      "shift_values": [
+        0
+      ],
+      "other_observation_differences": [],
+      "polarity_signs": [
+        1.0
+      ],
+      "max_signed_span_error": 0.0,
+      "physical_residual_calls": 0,
+      "pcm_comparison": {
+        "SDV": {
+          "max_abs_LR": [
+            0.0,
+            0.0
+          ],
+          "samples_different_LR": [
+            0,
+            0
+          ],
+          "decoded_sha256": [
+            "ead7e403c2d5c7cb286343789f0aeabce05cde0d60a260f2f2161ba35365172a",
+            "ead7e403c2d5c7cb286343789f0aeabce05cde0d60a260f2f2161ba35365172a"
+          ],
+          "sr_channels_frames_duration_subtype": [
+            44100,
+            2,
+            176400,
+            4.0,
+            "FLOAT"
+          ],
+          "rms_R_over_L": 0.2500000001212658,
+          "pearson_LR": 0.9999999999999998,
+          "changed_output_fields": [
+            "/file_sha256",
+            "/riff/PEAK/sha256",
+            "/riff/PEAK/timestamp"
+          ]
+        },
+        "SDI": {
+          "max_abs_LR": [
+            0.0,
+            0.0
+          ],
+          "samples_different_LR": [
+            0,
+            0
+          ],
+          "decoded_sha256": [
+            "87e5f2727589c5199271c857dd488c169bfd3465fc2ecd2deebf3d1fffac2287",
+            "87e5f2727589c5199271c857dd488c169bfd3465fc2ecd2deebf3d1fffac2287"
+          ],
+          "sr_channels_frames_duration_subtype": [
+            44100,
+            2,
+            176400,
+            4.0,
+            "FLOAT"
+          ],
+          "rms_R_over_L": 0.24999999984730711,
+          "pearson_LR": 0.9999999999999986,
+          "changed_output_fields": [
+            "/file_sha256",
+            "/riff/PEAK/sha256",
+            "/riff/PEAK/timestamp"
+          ]
+        }
+      },
+      "report_changed_paths": [
+        "/alignment_analysis/0/action",
+        "/alignment_analysis/0/alignment_confidence",
+        "/alignment_analysis/0/channels",
+        "/alignment_analysis/0/classification",
+        "/alignment_analysis/0/coarse_lag_samples",
+        "/alignment_analysis/0/continuation_permission",
+        "/alignment_analysis/0/convention",
+        "/alignment_analysis/0/correlation_peak",
+        "/alignment_analysis/0/cross_correlation",
+        "/alignment_analysis/0/estimated_offset_ms",
+        "/alignment_analysis/0/estimated_offset_samples",
+        "/alignment_analysis/0/guide_delay_R_minus_L",
+        "/alignment_analysis/0/guide_delay_samples",
+        "/alignment_analysis/0/k_R_minus_L",
+        "/alignment_analysis/0/reason",
+        "/alignment_analysis/0/schema",
+        "/alignment_analysis/0/search_window_seconds",
+        "/alignment_analysis/0/tolerances",
+        "/alignment_analysis/1/action",
+        "/alignment_analysis/1/alignment_confidence",
+        "/alignment_analysis/1/channels",
+        "/alignment_analysis/1/classification",
+        "/alignment_analysis/1/coarse_lag_samples",
+        "/alignment_analysis/1/continuation_permission",
+        "/alignment_analysis/1/convention",
+        "/alignment_analysis/1/correlation_peak",
+        "/alignment_analysis/1/cross_correlation",
+        "/alignment_analysis/1/estimated_offset_ms",
+        "/alignment_analysis/1/estimated_offset_samples",
+        "/alignment_analysis/1/guide_delay_R_minus_L",
+        "/alignment_analysis/1/guide_delay_samples",
+        "/alignment_analysis/1/k_R_minus_L",
+        "/alignment_analysis/1/reason",
+        "/alignment_analysis/1/schema",
+        "/alignment_analysis/1/search_window_seconds",
+        "/alignment_analysis/1/tolerances",
+        "/document_meta/engine_sha256",
+        "/document_meta/generated_utc",
+        "/document_meta/total_duration_s"
+      ],
+      "reconstruction": {
+        "max_abs_LR": [
+          [
+            7.450580596923828e-09,
+            1.862645149230957e-09
+          ],
+          [
+            7.450580596923828e-09,
+            1.862645149230957e-09
+          ]
+        ],
+        "difference_LR": [
+          0.0,
+          0.0
+        ]
+      },
+      "status": "IDENTICO_PCM_Y_DSP"
+    },
+    {
+      "id": "C/S4/per_channel/magnitudes_first/direct",
+      "engine": "C",
+      "case": "S4",
+      "mask_mode": "per_channel",
+      "order": "magnitudes_first",
+      "use_physical_residuals": false,
+      "manifest_sha256": "21c27ebad55d56c53107e881edec5410516a7604e40b59e0585f72e1e7631919",
+      "input_sha256": {
+        "Mix.wav": "ac5a51cd9feca06463d8d83091705527720bd4e1794a8904e89c246516ba3534",
+        "V.wav": "f49d5bb448dd6f73af513493095479dcc3a3a67997f33af55162973f23a31c40",
+        "I.wav": "f091f59a21dcccb62219c3b3ced042024d0edb063955cf1a51e670e9ae7348a4"
+      },
+      "evidence": "evidence/no_regresion.jsonl.gz#C/S4/per_channel/magnitudes_first/direct",
+      "complete_both": true,
+      "exits": {
+        "original": 0,
+        "experimental": 0
+      },
+      "tensors": 42,
+      "direct_array_comparisons": 30,
+      "max_abs_arrays": 0.0,
+      "tensor_differences": [],
+      "max_abs_formula": 0.0,
+      "shift_values": [
+        0
+      ],
+      "other_observation_differences": [],
+      "polarity_signs": [
+        1.0
+      ],
+      "max_signed_span_error": 0.0,
+      "physical_residual_calls": 0,
+      "pcm_comparison": {
+        "SDV": {
+          "max_abs_LR": [
+            0.0,
+            0.0
+          ],
+          "samples_different_LR": [
+            0,
+            0
+          ],
+          "decoded_sha256": [
+            "f49340f9e7ff0bb75285fa86f03b492b764d0bb121963f1f33ef65ee80bdc6c3",
+            "f49340f9e7ff0bb75285fa86f03b492b764d0bb121963f1f33ef65ee80bdc6c3"
+          ],
+          "sr_channels_frames_duration_subtype": [
+            44100,
+            2,
+            176400,
+            4.0,
+            "FLOAT"
+          ],
+          "rms_R_over_L": 0.0,
+          "pearson_LR": null,
+          "changed_output_fields": [
+            "/file_sha256",
+            "/riff/PEAK/sha256",
+            "/riff/PEAK/timestamp"
+          ]
+        },
+        "SDI": {
+          "max_abs_LR": [
+            0.0,
+            0.0
+          ],
+          "samples_different_LR": [
+            0,
+            0
+          ],
+          "decoded_sha256": [
+            "0e9e5fadddfcbbdc9bf21c01d673375bb5f427dbf017fc7eb644eb7cdf91ceb4",
+            "0e9e5fadddfcbbdc9bf21c01d673375bb5f427dbf017fc7eb644eb7cdf91ceb4"
+          ],
+          "sr_channels_frames_duration_subtype": [
+            44100,
+            2,
+            176400,
+            4.0,
+            "FLOAT"
+          ],
+          "rms_R_over_L": 111887105.25401387,
+          "pearson_LR": 3.0830171291647233e-07,
+          "changed_output_fields": [
+            "/file_sha256",
+            "/riff/PEAK/sha256",
+            "/riff/PEAK/timestamp"
+          ]
+        }
+      },
+      "report_changed_paths": [
+        "/alignment_analysis/0/action",
+        "/alignment_analysis/0/alignment_confidence",
+        "/alignment_analysis/0/channels",
+        "/alignment_analysis/0/classification",
+        "/alignment_analysis/0/coarse_lag_samples",
+        "/alignment_analysis/0/continuation_permission",
+        "/alignment_analysis/0/convention",
+        "/alignment_analysis/0/correlation_peak",
+        "/alignment_analysis/0/cross_correlation",
+        "/alignment_analysis/0/estimated_offset_ms",
+        "/alignment_analysis/0/estimated_offset_samples",
+        "/alignment_analysis/0/guide_delay_R_minus_L",
+        "/alignment_analysis/0/guide_delay_samples",
+        "/alignment_analysis/0/k_R_minus_L",
+        "/alignment_analysis/0/reason",
+        "/alignment_analysis/0/schema",
+        "/alignment_analysis/0/search_window_seconds",
+        "/alignment_analysis/0/tolerances",
+        "/alignment_analysis/1/action",
+        "/alignment_analysis/1/alignment_confidence",
+        "/alignment_analysis/1/channels",
+        "/alignment_analysis/1/classification",
+        "/alignment_analysis/1/coarse_lag_samples",
+        "/alignment_analysis/1/continuation_permission",
+        "/alignment_analysis/1/convention",
+        "/alignment_analysis/1/correlation_peak",
+        "/alignment_analysis/1/cross_correlation",
+        "/alignment_analysis/1/estimated_offset_ms",
+        "/alignment_analysis/1/estimated_offset_samples",
+        "/alignment_analysis/1/guide_delay_R_minus_L",
+        "/alignment_analysis/1/guide_delay_samples",
+        "/alignment_analysis/1/k_R_minus_L",
+        "/alignment_analysis/1/reason",
+        "/alignment_analysis/1/schema",
+        "/alignment_analysis/1/search_window_seconds",
+        "/alignment_analysis/1/tolerances",
+        "/document_meta/engine_sha256",
+        "/document_meta/generated_utc",
+        "/document_meta/total_duration_s"
+      ],
+      "reconstruction": {
+        "max_abs_LR": [
+          [
+            7.348801567275132e-09,
+            3.9401034560734263e-17
+          ],
+          [
+            7.348801567275132e-09,
+            3.9401034560734263e-17
+          ]
+        ],
+        "difference_LR": [
+          0.0,
+          0.0
+        ]
+      },
+      "status": "IDENTICO_PCM_Y_DSP"
+    },
+    {
+      "id": "C/Ppos/mono/masks_first/direct",
+      "engine": "C",
+      "case": "Ppos",
+      "mask_mode": "mono",
+      "order": "masks_first",
+      "use_physical_residuals": false,
+      "manifest_sha256": "9309bd5180a72163a133122cadc30c9b028834950f12273edb6e97cc92d9ad6e",
+      "input_sha256": {
+        "../S2/Mix.wav": "ed9297315c5946f1405fe67f1ca454b399e22f1a3399afc033e2f66997ddf33a",
+        "../S2/V.wav": "6b23fc9c0a232cdd001b485652cec0b9cd97da81c5d063fefef1b94e26773c7a",
+        "../S2/I.wav": "fa4bec6b085159d542b6d34062722c883d4400ddd503da1fb6f9a9530b0ffd86",
+        "V2.wav": "1aa3f8846bde1ed7d553cbb7325b181b9613bd0a6abad456bbcbf39a7feb25c0",
+        "I2.wav": "fce600ab91ad1c8167e16fe546544f6130d15e5bb180ad2a80002ab93a0a69f3"
+      },
+      "evidence": "evidence/no_regresion.jsonl.gz#C/Ppos/mono/masks_first/direct",
+      "complete_both": true,
+      "exits": {
+        "original": 0,
+        "experimental": 0
+      },
+      "tensors": 84,
+      "direct_array_comparisons": 54,
+      "max_abs_arrays": 0.0,
+      "tensor_differences": [],
+      "max_abs_formula": 0.0,
+      "shift_values": [
+        0
+      ],
+      "other_observation_differences": [],
+      "polarity_signs": [
+        1.0
+      ],
+      "max_signed_span_error": 0.0,
+      "physical_residual_calls": 0,
+      "pcm_comparison": {
+        "SDV": {
+          "max_abs_LR": [
+            0.0,
+            0.0
+          ],
+          "samples_different_LR": [
+            0,
+            0
+          ],
+          "decoded_sha256": [
+            "e9dc4821a54e363f542b9cf41ce8e5b99b814520e42eb43f6bff822510d11678",
+            "e9dc4821a54e363f542b9cf41ce8e5b99b814520e42eb43f6bff822510d11678"
+          ],
+          "sr_channels_frames_duration_subtype": [
+            44100,
+            2,
+            176400,
+            4.0,
+            "FLOAT"
+          ],
+          "rms_R_over_L": 1.605846527350578,
+          "pearson_LR": 0.47986888683653733,
+          "changed_output_fields": [
+            "/file_sha256",
+            "/riff/PEAK/sha256",
+            "/riff/PEAK/timestamp"
+          ]
+        },
+        "SDI": {
+          "max_abs_LR": [
+            0.0,
+            0.0
+          ],
+          "samples_different_LR": [
+            0,
+            0
+          ],
+          "decoded_sha256": [
+            "37b22552621e3f964ab69a49a5c4e44e649aac38cabf3738d0cdae6cdeae0d8e",
+            "37b22552621e3f964ab69a49a5c4e44e649aac38cabf3738d0cdae6cdeae0d8e"
+          ],
+          "sr_channels_frames_duration_subtype": [
+            44100,
+            2,
+            176400,
+            4.0,
+            "FLOAT"
+          ],
+          "rms_R_over_L": 0.42360447783326527,
+          "pearson_LR": 0.5214825650033929,
+          "changed_output_fields": [
+            "/file_sha256",
+            "/riff/PEAK/sha256",
+            "/riff/PEAK/timestamp"
+          ]
+        }
+      },
+      "report_changed_paths": [
+        "/alignment_analysis/0/action",
+        "/alignment_analysis/0/alignment_confidence",
+        "/alignment_analysis/0/channels",
+        "/alignment_analysis/0/classification",
+        "/alignment_analysis/0/coarse_lag_samples",
+        "/alignment_analysis/0/continuation_permission",
+        "/alignment_analysis/0/convention",
+        "/alignment_analysis/0/correlation_peak",
+        "/alignment_analysis/0/cross_correlation",
+        "/alignment_analysis/0/estimated_offset_ms",
+        "/alignment_analysis/0/estimated_offset_samples",
+        "/alignment_analysis/0/guide_delay_R_minus_L",
+        "/alignment_analysis/0/guide_delay_samples",
+        "/alignment_analysis/0/k_R_minus_L",
+        "/alignment_analysis/0/reason",
+        "/alignment_analysis/0/schema",
+        "/alignment_analysis/0/search_window_seconds",
+        "/alignment_analysis/0/tolerances",
+        "/alignment_analysis/1/action",
+        "/alignment_analysis/1/alignment_confidence",
+        "/alignment_analysis/1/channels",
+        "/alignment_analysis/1/classification",
+        "/alignment_analysis/1/coarse_lag_samples",
+        "/alignment_analysis/1/continuation_permission",
+        "/alignment_analysis/1/convention",
+        "/alignment_analysis/1/correlation_peak",
+        "/alignment_analysis/1/cross_correlation",
+        "/alignment_analysis/1/estimated_offset_ms",
+        "/alignment_analysis/1/estimated_offset_samples",
+        "/alignment_analysis/1/guide_delay_R_minus_L",
+        "/alignment_analysis/1/guide_delay_samples",
+        "/alignment_analysis/1/k_R_minus_L",
+        "/alignment_analysis/1/reason",
+        "/alignment_analysis/1/schema",
+        "/alignment_analysis/1/search_window_seconds",
+        "/alignment_analysis/1/tolerances",
+        "/alignment_analysis/2/action",
+        "/alignment_analysis/2/alignment_confidence",
+        "/alignment_analysis/2/channels",
+        "/alignment_analysis/2/classification",
+        "/alignment_analysis/2/coarse_lag_samples",
+        "/alignment_analysis/2/continuation_permission",
+        "/alignment_analysis/2/convention",
+        "/alignment_analysis/2/correlation_peak",
+        "/alignment_analysis/2/cross_correlation",
+        "/alignment_analysis/2/estimated_offset_ms",
+        "/alignment_analysis/2/estimated_offset_samples",
+        "/alignment_analysis/2/guide_delay_R_minus_L",
+        "/alignment_analysis/2/guide_delay_samples",
+        "/alignment_analysis/2/k_R_minus_L",
+        "/alignment_analysis/2/reason",
+        "/alignment_analysis/2/schema",
+        "/alignment_analysis/2/search_window_seconds",
+        "/alignment_analysis/2/tolerances",
+        "/alignment_analysis/3/action",
+        "/alignment_analysis/3/alignment_confidence",
+        "/alignment_analysis/3/channels",
+        "/alignment_analysis/3/classification",
+        "/alignment_analysis/3/coarse_lag_samples",
+        "/alignment_analysis/3/continuation_permission",
+        "/alignment_analysis/3/convention",
+        "/alignment_analysis/3/correlation_peak",
+        "/alignment_analysis/3/cross_correlation",
+        "/alignment_analysis/3/estimated_offset_ms",
+        "/alignment_analysis/3/estimated_offset_samples",
+        "/alignment_analysis/3/guide_delay_R_minus_L",
+        "/alignment_analysis/3/guide_delay_samples",
+        "/alignment_analysis/3/k_R_minus_L",
+        "/alignment_analysis/3/reason",
+        "/alignment_analysis/3/schema",
+        "/alignment_analysis/3/search_window_seconds",
+        "/alignment_analysis/3/tolerances",
+        "/document_meta/engine_sha256",
+        "/document_meta/generated_utc",
+        "/document_meta/total_duration_s"
+      ],
+      "reconstruction": {
+        "max_abs_LR": [
+          [
+            7.450580596923828e-09,
+            7.450580596923828e-09
+          ],
+          [
+            7.450580596923828e-09,
+            7.450580596923828e-09
+          ]
+        ],
+        "difference_LR": [
+          0.0,
+          0.0
+        ]
+      },
+      "status": "IDENTICO_PCM_Y_DSP"
+    },
+    {
+      "id": "C/Ppos/mono/magnitudes_first/res",
+      "engine": "C",
+      "case": "Ppos",
+      "mask_mode": "mono",
+      "order": "magnitudes_first",
+      "use_physical_residuals": true,
+      "manifest_sha256": "9309bd5180a72163a133122cadc30c9b028834950f12273edb6e97cc92d9ad6e",
+      "input_sha256": {
+        "../S2/Mix.wav": "ed9297315c5946f1405fe67f1ca454b399e22f1a3399afc033e2f66997ddf33a",
+        "../S2/V.wav": "6b23fc9c0a232cdd001b485652cec0b9cd97da81c5d063fefef1b94e26773c7a",
+        "../S2/I.wav": "fa4bec6b085159d542b6d34062722c883d4400ddd503da1fb6f9a9530b0ffd86",
+        "V2.wav": "1aa3f8846bde1ed7d553cbb7325b181b9613bd0a6abad456bbcbf39a7feb25c0",
+        "I2.wav": "fce600ab91ad1c8167e16fe546544f6130d15e5bb180ad2a80002ab93a0a69f3"
+      },
+      "evidence": "evidence/no_regresion.jsonl.gz#C/Ppos/mono/magnitudes_first/res",
+      "complete_both": true,
+      "exits": {
+        "original": 0,
+        "experimental": 0
+      },
+      "tensors": 60,
+      "direct_array_comparisons": 42,
+      "max_abs_arrays": 0.0,
+      "tensor_differences": [],
+      "max_abs_formula": 0.0,
+      "shift_values": [
+        0
+      ],
+      "other_observation_differences": [],
+      "polarity_signs": [
+        1.0
+      ],
+      "max_signed_span_error": 0.0,
+      "physical_residual_calls": 12,
+      "pcm_comparison": {
+        "SDV": {
+          "max_abs_LR": [
+            0.0,
+            0.0
+          ],
+          "samples_different_LR": [
+            0,
+            0
+          ],
+          "decoded_sha256": [
+            "843ecac4a18f1bdf05bd6f12b2a1000a99c39c005a8b7cfe55e2f453d520fbc4",
+            "843ecac4a18f1bdf05bd6f12b2a1000a99c39c005a8b7cfe55e2f453d520fbc4"
+          ],
+          "sr_channels_frames_duration_subtype": [
+            44100,
+            2,
+            176400,
+            4.0,
+            "FLOAT"
+          ],
+          "rms_R_over_L": 1.2636157963250962,
+          "pearson_LR": 0.5084449910179154,
+          "changed_output_fields": [
+            "/file_sha256",
+            "/riff/PEAK/sha256",
+            "/riff/PEAK/timestamp"
+          ]
+        },
+        "SDI": {
+          "max_abs_LR": [
+            0.0,
+            0.0
+          ],
+          "samples_different_LR": [
+            0,
+            0
+          ],
+          "decoded_sha256": [
+            "9e3735663dc92cc8c2e66e5154c7fcafb73a9d6c69db1af1ea161c0e5025a968",
+            "9e3735663dc92cc8c2e66e5154c7fcafb73a9d6c69db1af1ea161c0e5025a968"
+          ],
+          "sr_channels_frames_duration_subtype": [
+            44100,
+            2,
+            176400,
+            4.0,
+            "FLOAT"
+          ],
+          "rms_R_over_L": 0.6174405391111506,
+          "pearson_LR": 0.5629470892671959,
+          "changed_output_fields": [
+            "/file_sha256",
+            "/riff/PEAK/sha256",
+            "/riff/PEAK/timestamp"
+          ]
+        }
+      },
+      "report_changed_paths": [
+        "/alignment_analysis/0/action",
+        "/alignment_analysis/0/alignment_confidence",
+        "/alignment_analysis/0/channels",
+        "/alignment_analysis/0/classification",
+        "/alignment_analysis/0/coarse_lag_samples",
+        "/alignment_analysis/0/continuation_permission",
+        "/alignment_analysis/0/convention",
+        "/alignment_analysis/0/correlation_peak",
+        "/alignment_analysis/0/cross_correlation",
+        "/alignment_analysis/0/estimated_offset_ms",
+        "/alignment_analysis/0/estimated_offset_samples",
+        "/alignment_analysis/0/guide_delay_R_minus_L",
+        "/alignment_analysis/0/guide_delay_samples",
+        "/alignment_analysis/0/k_R_minus_L",
+        "/alignment_analysis/0/reason",
+        "/alignment_analysis/0/schema",
+        "/alignment_analysis/0/search_window_seconds",
+        "/alignment_analysis/0/tolerances",
+        "/alignment_analysis/1/action",
+        "/alignment_analysis/1/alignment_confidence",
+        "/alignment_analysis/1/channels",
+        "/alignment_analysis/1/classification",
+        "/alignment_analysis/1/coarse_lag_samples",
+        "/alignment_analysis/1/continuation_permission",
+        "/alignment_analysis/1/convention",
+        "/alignment_analysis/1/correlation_peak",
+        "/alignment_analysis/1/cross_correlation",
+        "/alignment_analysis/1/estimated_offset_ms",
+        "/alignment_analysis/1/estimated_offset_samples",
+        "/alignment_analysis/1/guide_delay_R_minus_L",
+        "/alignment_analysis/1/guide_delay_samples",
+        "/alignment_analysis/1/k_R_minus_L",
+        "/alignment_analysis/1/reason",
+        "/alignment_analysis/1/schema",
+        "/alignment_analysis/1/search_window_seconds",
+        "/alignment_analysis/1/tolerances",
+        "/alignment_analysis/2/action",
+        "/alignment_analysis/2/alignment_confidence",
+        "/alignment_analysis/2/channels",
+        "/alignment_analysis/2/classification",
+        "/alignment_analysis/2/coarse_lag_samples",
+        "/alignment_analysis/2/continuation_permission",
+        "/alignment_analysis/2/convention",
+        "/alignment_analysis/2/correlation_peak",
+        "/alignment_analysis/2/cross_correlation",
+        "/alignment_analysis/2/estimated_offset_ms",
+        "/alignment_analysis/2/estimated_offset_samples",
+        "/alignment_analysis/2/guide_delay_R_minus_L",
+        "/alignment_analysis/2/guide_delay_samples",
+        "/alignment_analysis/2/k_R_minus_L",
+        "/alignment_analysis/2/reason",
+        "/alignment_analysis/2/schema",
+        "/alignment_analysis/2/search_window_seconds",
+        "/alignment_analysis/2/tolerances",
+        "/alignment_analysis/3/action",
+        "/alignment_analysis/3/alignment_confidence",
+        "/alignment_analysis/3/channels",
+        "/alignment_analysis/3/classification",
+        "/alignment_analysis/3/coarse_lag_samples",
+        "/alignment_analysis/3/continuation_permission",
+        "/alignment_analysis/3/convention",
+        "/alignment_analysis/3/correlation_peak",
+        "/alignment_analysis/3/cross_correlation",
+        "/alignment_analysis/3/estimated_offset_ms",
+        "/alignment_analysis/3/estimated_offset_samples",
+        "/alignment_analysis/3/guide_delay_R_minus_L",
+        "/alignment_analysis/3/guide_delay_samples",
+        "/alignment_analysis/3/k_R_minus_L",
+        "/alignment_analysis/3/reason",
+        "/alignment_analysis/3/schema",
+        "/alignment_analysis/3/search_window_seconds",
+        "/alignment_analysis/3/tolerances",
+        "/document_meta/engine_sha256",
+        "/document_meta/generated_utc",
+        "/document_meta/total_duration_s"
+      ],
+      "reconstruction": {
+        "max_abs_LR": [
+          [
+            7.450580596923828e-09,
+            7.450580596923828e-09
+          ],
+          [
+            7.450580596923828e-09,
+            7.450580596923828e-09
+          ]
+        ],
+        "difference_LR": [
+          0.0,
+          0.0
+        ]
+      },
+      "status": "IDENTICO_PCM_Y_DSP"
+    },
+    {
+      "id": "C/S7/per_channel/magnitudes_first/direct",
+      "engine": "C",
+      "case": "S7",
+      "mask_mode": "per_channel",
+      "order": "magnitudes_first",
+      "use_physical_residuals": false,
+      "manifest_sha256": "21c27ebad55d56c53107e881edec5410516a7604e40b59e0585f72e1e7631919",
+      "input_sha256": {
+        "Mix.wav": "fc17323544418ec14cf4b7c051624f6bafe016ad58eff509a2c052b03d2af1f3",
+        "V.wav": "bb274bc1201b7b4f3fdae96af56da238239b66438f466f2a33f864ec484b3e04",
+        "I.wav": "c23cefd19206f0c9d9f31b316140ed290094248e8311c712019b7557575d8497"
+      },
+      "evidence": "evidence/no_regresion.jsonl.gz#C/S7/per_channel/magnitudes_first/direct",
+      "complete_both": true,
+      "exits": {
+        "original": 0,
+        "experimental": 0
+      },
+      "tensors": 42,
+      "direct_array_comparisons": 30,
+      "max_abs_arrays": 0.0,
+      "tensor_differences": [],
+      "max_abs_formula": 0.0,
+      "shift_values": [
+        0
+      ],
+      "other_observation_differences": [],
+      "polarity_signs": [
+        1.0
+      ],
+      "max_signed_span_error": 0.0,
+      "physical_residual_calls": 0,
+      "pcm_comparison": {
+        "SDV": {
+          "max_abs_LR": [
+            0.0,
+            0.0
+          ],
+          "samples_different_LR": [
+            0,
+            0
+          ],
+          "decoded_sha256": [
+            "02fed958f5f0efdc09e66d63939b0998f7fea4bd8d0821a739daaffad29cb540",
+            "02fed958f5f0efdc09e66d63939b0998f7fea4bd8d0821a739daaffad29cb540"
+          ],
+          "sr_channels_frames_duration_subtype": [
+            44100,
+            2,
+            176400,
+            4.0,
+            "FLOAT"
+          ],
+          "rms_R_over_L": 1.0,
+          "pearson_LR": -0.9999999999999998,
+          "changed_output_fields": [
+            "/file_sha256",
+            "/riff/PEAK/sha256",
+            "/riff/PEAK/timestamp"
+          ]
+        },
+        "SDI": {
+          "max_abs_LR": [
+            0.0,
+            0.0
+          ],
+          "samples_different_LR": [
+            0,
+            0
+          ],
+          "decoded_sha256": [
+            "2f0685a21072dd9b2609c243b74f610db1116fd9a4dbd183bd39470ab0d1ef0d",
+            "2f0685a21072dd9b2609c243b74f610db1116fd9a4dbd183bd39470ab0d1ef0d"
+          ],
+          "sr_channels_frames_duration_subtype": [
+            44100,
+            2,
+            176400,
+            4.0,
+            "FLOAT"
+          ],
+          "rms_R_over_L": 1.0,
+          "pearson_LR": -1.0,
+          "changed_output_fields": [
+            "/file_sha256",
+            "/riff/PEAK/sha256",
+            "/riff/PEAK/timestamp"
+          ]
+        }
+      },
+      "report_changed_paths": [
+        "/alignment_analysis/0/action",
+        "/alignment_analysis/0/alignment_confidence",
+        "/alignment_analysis/0/channels",
+        "/alignment_analysis/0/classification",
+        "/alignment_analysis/0/coarse_lag_samples",
+        "/alignment_analysis/0/continuation_permission",
+        "/alignment_analysis/0/convention",
+        "/alignment_analysis/0/correlation_peak",
+        "/alignment_analysis/0/cross_correlation",
+        "/alignment_analysis/0/estimated_offset_ms",
+        "/alignment_analysis/0/estimated_offset_samples",
+        "/alignment_analysis/0/guide_delay_R_minus_L",
+        "/alignment_analysis/0/guide_delay_samples",
+        "/alignment_analysis/0/k_R_minus_L",
+        "/alignment_analysis/0/reason",
+        "/alignment_analysis/0/schema",
+        "/alignment_analysis/0/search_window_seconds",
+        "/alignment_analysis/0/tolerances",
+        "/alignment_analysis/1/action",
+        "/alignment_analysis/1/alignment_confidence",
+        "/alignment_analysis/1/channels",
+        "/alignment_analysis/1/classification",
+        "/alignment_analysis/1/coarse_lag_samples",
+        "/alignment_analysis/1/continuation_permission",
+        "/alignment_analysis/1/convention",
+        "/alignment_analysis/1/correlation_peak",
+        "/alignment_analysis/1/cross_correlation",
+        "/alignment_analysis/1/estimated_offset_ms",
+        "/alignment_analysis/1/estimated_offset_samples",
+        "/alignment_analysis/1/guide_delay_R_minus_L",
+        "/alignment_analysis/1/guide_delay_samples",
+        "/alignment_analysis/1/k_R_minus_L",
+        "/alignment_analysis/1/reason",
+        "/alignment_analysis/1/schema",
+        "/alignment_analysis/1/search_window_seconds",
+        "/alignment_analysis/1/tolerances",
+        "/document_meta/engine_sha256",
+        "/document_meta/generated_utc",
+        "/document_meta/total_duration_s"
+      ],
+      "reconstruction": {
+        "max_abs_LR": [
+          [
+            7.450580596923828e-09,
+            7.450580596923828e-09
+          ],
+          [
+            7.450580596923828e-09,
+            7.450580596923828e-09
+          ]
+        ],
+        "difference_LR": [
+          0.0,
+          0.0
+        ]
+      },
+      "status": "IDENTICO_PCM_Y_DSP"
+    },
+    {
+      "id": "C/Pneg/per_channel/hybrid_asymmetric/direct",
+      "engine": "C",
+      "case": "Pneg",
+      "mask_mode": "per_channel",
+      "order": "hybrid_asymmetric",
+      "use_physical_residuals": false,
+      "manifest_sha256": "9b7505d4a28e5db8109d34884422a8c465997199cd3a70291e22b270f18cfbca",
+      "input_sha256": {
+        "../S2/Mix.wav": "ed9297315c5946f1405fe67f1ca454b399e22f1a3399afc033e2f66997ddf33a",
+        "../S2/V.wav": "6b23fc9c0a232cdd001b485652cec0b9cd97da81c5d063fefef1b94e26773c7a",
+        "../S2/I.wav": "fa4bec6b085159d542b6d34062722c883d4400ddd503da1fb6f9a9530b0ffd86",
+        "menosV2.wav": "0499d73c327cbfe5b8df47768268a288eb989f5f4a17cdbd533af2e8b5e2cf87",
+        "I2.wav": "fce600ab91ad1c8167e16fe546544f6130d15e5bb180ad2a80002ab93a0a69f3"
+      },
+      "evidence": "evidence/no_regresion.jsonl.gz#C/Pneg/per_channel/hybrid_asymmetric/direct",
+      "complete_both": true,
+      "exits": {
+        "original": 0,
+        "experimental": 0
+      },
+      "tensors": 84,
+      "direct_array_comparisons": 54,
+      "max_abs_arrays": 0.0,
+      "tensor_differences": [],
+      "max_abs_formula": 0.0,
+      "shift_values": [
+        0
+      ],
+      "other_observation_differences": [],
+      "polarity_signs": [
+        -1.0,
+        1.0
+      ],
+      "max_signed_span_error": 0.0,
+      "physical_residual_calls": 0,
+      "pcm_comparison": {
+        "SDV": {
+          "max_abs_LR": [
+            0.0,
+            0.0
+          ],
+          "samples_different_LR": [
+            0,
+            0
+          ],
+          "decoded_sha256": [
+            "f830a945e22ebf5fa62bff3df516b64c9299a3e78fc25cbd5c5f341300419695",
+            "f830a945e22ebf5fa62bff3df516b64c9299a3e78fc25cbd5c5f341300419695"
+          ],
+          "sr_channels_frames_duration_subtype": [
+            44100,
+            2,
+            176400,
+            4.0,
+            "FLOAT"
+          ],
+          "rms_R_over_L": 0.8894843203912361,
+          "pearson_LR": 0.06735777984012403,
+          "changed_output_fields": [
+            "/file_sha256",
+            "/riff/PEAK/sha256",
+            "/riff/PEAK/timestamp"
+          ]
+        },
+        "SDI": {
+          "max_abs_LR": [
+            0.0,
+            0.0
+          ],
+          "samples_different_LR": [
+            0,
+            0
+          ],
+          "decoded_sha256": [
+            "b9a56181022fca36522fe38554860f82b8c5a3edf36d69986a29c65dd7f31141",
+            "b9a56181022fca36522fe38554860f82b8c5a3edf36d69986a29c65dd7f31141"
+          ],
+          "sr_channels_frames_duration_subtype": [
+            44100,
+            2,
+            176400,
+            4.0,
+            "FLOAT"
+          ],
+          "rms_R_over_L": 1.076350710257261,
+          "pearson_LR": 0.05715472974724033,
+          "changed_output_fields": [
+            "/file_sha256",
+            "/riff/PEAK/sha256",
+            "/riff/PEAK/timestamp"
+          ]
+        }
+      },
+      "report_changed_paths": [
+        "/alignment_analysis/0/action",
+        "/alignment_analysis/0/alignment_confidence",
+        "/alignment_analysis/0/channels",
+        "/alignment_analysis/0/classification",
+        "/alignment_analysis/0/coarse_lag_samples",
+        "/alignment_analysis/0/continuation_permission",
+        "/alignment_analysis/0/convention",
+        "/alignment_analysis/0/correlation_peak",
+        "/alignment_analysis/0/cross_correlation",
+        "/alignment_analysis/0/estimated_offset_ms",
+        "/alignment_analysis/0/estimated_offset_samples",
+        "/alignment_analysis/0/guide_delay_R_minus_L",
+        "/alignment_analysis/0/guide_delay_samples",
+        "/alignment_analysis/0/k_R_minus_L",
+        "/alignment_analysis/0/reason",
+        "/alignment_analysis/0/schema",
+        "/alignment_analysis/0/search_window_seconds",
+        "/alignment_analysis/0/tolerances",
+        "/alignment_analysis/1/action",
+        "/alignment_analysis/1/alignment_confidence",
+        "/alignment_analysis/1/channels",
+        "/alignment_analysis/1/classification",
+        "/alignment_analysis/1/coarse_lag_samples",
+        "/alignment_analysis/1/continuation_permission",
+        "/alignment_analysis/1/convention",
+        "/alignment_analysis/1/correlation_peak",
+        "/alignment_analysis/1/cross_correlation",
+        "/alignment_analysis/1/estimated_offset_ms",
+        "/alignment_analysis/1/estimated_offset_samples",
+        "/alignment_analysis/1/guide_delay_R_minus_L",
+        "/alignment_analysis/1/guide_delay_samples",
+        "/alignment_analysis/1/k_R_minus_L",
+        "/alignment_analysis/1/reason",
+        "/alignment_analysis/1/schema",
+        "/alignment_analysis/1/search_window_seconds",
+        "/alignment_analysis/1/tolerances",
+        "/alignment_analysis/2/action",
+        "/alignment_analysis/2/alignment_confidence",
+        "/alignment_analysis/2/channels",
+        "/alignment_analysis/2/classification",
+        "/alignment_analysis/2/coarse_lag_samples",
+        "/alignment_analysis/2/continuation_permission",
+        "/alignment_analysis/2/convention",
+        "/alignment_analysis/2/correlation_peak",
+        "/alignment_analysis/2/cross_correlation",
+        "/alignment_analysis/2/estimated_offset_ms",
+        "/alignment_analysis/2/estimated_offset_samples",
+        "/alignment_analysis/2/guide_delay_R_minus_L",
+        "/alignment_analysis/2/guide_delay_samples",
+        "/alignment_analysis/2/k_R_minus_L",
+        "/alignment_analysis/2/reason",
+        "/alignment_analysis/2/schema",
+        "/alignment_analysis/2/search_window_seconds",
+        "/alignment_analysis/2/tolerances",
+        "/alignment_analysis/3/action",
+        "/alignment_analysis/3/alignment_confidence",
+        "/alignment_analysis/3/channels",
+        "/alignment_analysis/3/classification",
+        "/alignment_analysis/3/coarse_lag_samples",
+        "/alignment_analysis/3/continuation_permission",
+        "/alignment_analysis/3/convention",
+        "/alignment_analysis/3/correlation_peak",
+        "/alignment_analysis/3/cross_correlation",
+        "/alignment_analysis/3/estimated_offset_ms",
+        "/alignment_analysis/3/estimated_offset_samples",
+        "/alignment_analysis/3/guide_delay_R_minus_L",
+        "/alignment_analysis/3/guide_delay_samples",
+        "/alignment_analysis/3/k_R_minus_L",
+        "/alignment_analysis/3/reason",
+        "/alignment_analysis/3/schema",
+        "/alignment_analysis/3/search_window_seconds",
+        "/alignment_analysis/3/tolerances",
+        "/document_meta/engine_sha256",
+        "/document_meta/generated_utc",
+        "/document_meta/total_duration_s"
+      ],
+      "reconstruction": {
+        "max_abs_LR": [
+          [
+            7.450580596923828e-09,
+            7.450580596923828e-09
+          ],
+          [
+            7.450580596923828e-09,
+            7.450580596923828e-09
+          ]
+        ],
+        "difference_LR": [
+          0.0,
+          0.0
+        ]
+      },
+      "status": "IDENTICO_PCM_Y_DSP"
+    },
+    {
+      "id": "D/S3/shared/masks_first/direct",
+      "engine": "D",
+      "case": "S3",
+      "mask_mode": "shared",
+      "order": "masks_first",
+      "use_physical_residuals": null,
+      "manifest_sha256": "21c27ebad55d56c53107e881edec5410516a7604e40b59e0585f72e1e7631919",
+      "input_sha256": {
+        "Mix.wav": "c660ecd1a6f72f130b6d827c986cdef30320231da93a9f6ad871cb4211b3e558",
+        "V.wav": "abc91e312c29733b60690d9d95ed20daddd70990b5b4b577723be94eef47d748",
+        "I.wav": "cdbe837e34cd9ab3c0c4602d0cd142d56d3fb8dd7bea4828b463fd6c8c4f4950"
+      },
+      "evidence": "evidence/no_regresion.jsonl.gz#D/S3/shared/masks_first/direct",
+      "complete_both": true,
+      "exits": {
+        "original": 0,
+        "experimental": 0
+      },
+      "tensors": 66,
+      "direct_array_comparisons": 42,
+      "max_abs_arrays": 0.0,
+      "tensor_differences": [],
+      "max_abs_formula": 0.0,
+      "shift_values": [
+        0
+      ],
+      "other_observation_differences": [],
+      "polarity_signs": [
+        1.0
+      ],
+      "max_signed_span_error": 0.0,
+      "physical_residual_calls": 0,
+      "pcm_comparison": {
+        "SDV": {
+          "max_abs_LR": [
+            0.0,
+            0.0
+          ],
+          "samples_different_LR": [
+            0,
+            0
+          ],
+          "decoded_sha256": [
+            "36dd1633b93bd9683571bcc8a3ee640f776f5220c7d15d423e87d643f6c5336a",
+            "36dd1633b93bd9683571bcc8a3ee640f776f5220c7d15d423e87d643f6c5336a"
+          ],
+          "sr_channels_frames_duration_subtype": [
+            44100,
+            2,
+            176400,
+            4.0,
+            "FLOAT"
+          ],
+          "rms_R_over_L": 0.25,
+          "pearson_LR": 0.9999999999999998,
+          "changed_output_fields": [
+            "/file_sha256",
+            "/riff/PEAK/sha256",
+            "/riff/PEAK/timestamp"
+          ]
+        },
+        "SDI": {
+          "max_abs_LR": [
+            0.0,
+            0.0
+          ],
+          "samples_different_LR": [
+            0,
+            0
+          ],
+          "decoded_sha256": [
+            "854553c047e6796ab266edae55535acfdf7734a0a53b8a74b6dda45877ce7804",
+            "854553c047e6796ab266edae55535acfdf7734a0a53b8a74b6dda45877ce7804"
+          ],
+          "sr_channels_frames_duration_subtype": [
+            44100,
+            2,
+            176400,
+            4.0,
+            "FLOAT"
+          ],
+          "rms_R_over_L": 0.25,
+          "pearson_LR": 1.0,
+          "changed_output_fields": [
+            "/file_sha256",
+            "/riff/PEAK/sha256",
+            "/riff/PEAK/timestamp"
+          ]
+        }
+      },
+      "report_changed_paths": [
+        "/alignment/0/action",
+        "/alignment/0/active_window_sec",
+        "/alignment/0/alignment_confidence",
+        "/alignment/0/channels",
+        "/alignment/0/classification",
+        "/alignment/0/coarse_lag_samples",
+        "/alignment/0/convention",
+        "/alignment/0/correlation_peak",
+        "/alignment/0/cross_correlation",
+        "/alignment/0/estimated_offset_ms",
+        "/alignment/0/estimated_offset_samples",
+        "/alignment/0/guide_delay_R_minus_L",
+        "/alignment/0/guide_delay_samples",
+        "/alignment/0/k_R_minus_L",
+        "/alignment/0/reason",
+        "/alignment/0/schema",
+        "/alignment/1/action",
+        "/alignment/1/active_window_sec",
+        "/alignment/1/alignment_confidence",
+        "/alignment/1/channels",
+        "/alignment/1/classification",
+        "/alignment/1/coarse_lag_samples",
+        "/alignment/1/convention",
+        "/alignment/1/correlation_peak",
+        "/alignment/1/cross_correlation",
+        "/alignment/1/estimated_offset_ms",
+        "/alignment/1/estimated_offset_samples",
+        "/alignment/1/guide_delay_R_minus_L",
+        "/alignment/1/guide_delay_samples",
+        "/alignment/1/k_R_minus_L",
+        "/alignment/1/reason",
+        "/alignment/1/schema",
+        "/document_meta/active_design_decisions/D5",
+        "/document_meta/generated_utc",
+        "/validation_status/items",
+        "/validation_status/overall"
+      ],
+      "reconstruction": {
+        "max_abs_LR": [
+          [
+            7.450580596923828e-09,
+            1.862645149230957e-09
+          ],
+          [
+            7.450580596923828e-09,
+            1.862645149230957e-09
+          ]
+        ],
+        "difference_LR": [
+          0.0,
+          0.0
+        ]
+      },
+      "status": "IDENTICO_PCM_Y_DSP"
+    },
+    {
+      "id": "D/S4/shared/masks_first/direct",
+      "engine": "D",
+      "case": "S4",
+      "mask_mode": "shared",
+      "order": "masks_first",
+      "use_physical_residuals": null,
+      "manifest_sha256": "21c27ebad55d56c53107e881edec5410516a7604e40b59e0585f72e1e7631919",
+      "input_sha256": {
+        "Mix.wav": "ac5a51cd9feca06463d8d83091705527720bd4e1794a8904e89c246516ba3534",
+        "V.wav": "f49d5bb448dd6f73af513493095479dcc3a3a67997f33af55162973f23a31c40",
+        "I.wav": "f091f59a21dcccb62219c3b3ced042024d0edb063955cf1a51e670e9ae7348a4"
+      },
+      "evidence": "evidence/no_regresion.jsonl.gz#D/S4/shared/masks_first/direct",
+      "complete_both": true,
+      "exits": {
+        "original": 0,
+        "experimental": 0
+      },
+      "tensors": 66,
+      "direct_array_comparisons": 42,
+      "max_abs_arrays": 0.0,
+      "tensor_differences": [],
+      "max_abs_formula": 0.0,
+      "shift_values": [
+        0
+      ],
+      "other_observation_differences": [],
+      "polarity_signs": [
+        1.0
+      ],
+      "max_signed_span_error": 0.0,
+      "physical_residual_calls": 0,
+      "pcm_comparison": {
+        "SDV": {
+          "max_abs_LR": [
+            0.0,
+            0.0
+          ],
+          "samples_different_LR": [
+            0,
+            0
+          ],
+          "decoded_sha256": [
+            "f19d8ef7468a6e19bca6a0f56f25c76267a1db2f505d85ac98876262aaf0a8ba",
+            "f19d8ef7468a6e19bca6a0f56f25c76267a1db2f505d85ac98876262aaf0a8ba"
+          ],
+          "sr_channels_frames_duration_subtype": [
+            44100,
+            2,
+            176400,
+            4.0,
+            "FLOAT"
+          ],
+          "rms_R_over_L": 0.2352856923055635,
+          "pearson_LR": 0.3681579968648895,
+          "changed_output_fields": [
+            "/file_sha256",
+            "/riff/PEAK/sha256",
+            "/riff/PEAK/timestamp"
+          ]
+        },
+        "SDI": {
+          "max_abs_LR": [
+            0.0,
+            0.0
+          ],
+          "samples_different_LR": [
+            0,
+            0
+          ],
+          "decoded_sha256": [
+            "d4dde42ac65f0a1669063ff8e8b06f6dd820531c0f49168ba9ce100d6cb8b12b",
+            "d4dde42ac65f0a1669063ff8e8b06f6dd820531c0f49168ba9ce100d6cb8b12b"
+          ],
+          "sr_channels_frames_duration_subtype": [
+            44100,
+            2,
+            176400,
+            4.0,
+            "FLOAT"
+          ],
+          "rms_R_over_L": 4.376493816221282,
+          "pearson_LR": 0.32397167071909827,
+          "changed_output_fields": [
+            "/file_sha256",
+            "/riff/PEAK/sha256",
+            "/riff/PEAK/timestamp"
+          ]
+        }
+      },
+      "report_changed_paths": [
+        "/alignment/0/action",
+        "/alignment/0/active_window_sec",
+        "/alignment/0/alignment_confidence",
+        "/alignment/0/channels",
+        "/alignment/0/classification",
+        "/alignment/0/coarse_lag_samples",
+        "/alignment/0/convention",
+        "/alignment/0/correlation_peak",
+        "/alignment/0/cross_correlation",
+        "/alignment/0/estimated_offset_ms",
+        "/alignment/0/estimated_offset_samples",
+        "/alignment/0/guide_delay_R_minus_L",
+        "/alignment/0/guide_delay_samples",
+        "/alignment/0/k_R_minus_L",
+        "/alignment/0/reason",
+        "/alignment/0/schema",
+        "/alignment/1/action",
+        "/alignment/1/active_window_sec",
+        "/alignment/1/alignment_confidence",
+        "/alignment/1/channels",
+        "/alignment/1/classification",
+        "/alignment/1/coarse_lag_samples",
+        "/alignment/1/convention",
+        "/alignment/1/correlation_peak",
+        "/alignment/1/cross_correlation",
+        "/alignment/1/estimated_offset_ms",
+        "/alignment/1/estimated_offset_samples",
+        "/alignment/1/guide_delay_R_minus_L",
+        "/alignment/1/guide_delay_samples",
+        "/alignment/1/k_R_minus_L",
+        "/alignment/1/reason",
+        "/alignment/1/schema",
+        "/document_meta/active_design_decisions/D5",
+        "/document_meta/generated_utc",
+        "/validation_status/items",
+        "/validation_status/overall"
+      ],
+      "reconstruction": {
+        "max_abs_LR": [
+          [
+            7.450580596923828e-09,
+            7.450580596923828e-09
+          ],
+          [
+            7.450580596923828e-09,
+            7.450580596923828e-09
+          ]
+        ],
+        "difference_LR": [
+          0.0,
+          0.0
+        ]
+      },
+      "status": "IDENTICO_PCM_Y_DSP"
+    },
+    {
+      "id": "D/Ppos/shared/masks_first/direct",
+      "engine": "D",
+      "case": "Ppos",
+      "mask_mode": "shared",
+      "order": "masks_first",
+      "use_physical_residuals": null,
+      "manifest_sha256": "9309bd5180a72163a133122cadc30c9b028834950f12273edb6e97cc92d9ad6e",
+      "input_sha256": {
+        "../S2/Mix.wav": "ed9297315c5946f1405fe67f1ca454b399e22f1a3399afc033e2f66997ddf33a",
+        "../S2/V.wav": "6b23fc9c0a232cdd001b485652cec0b9cd97da81c5d063fefef1b94e26773c7a",
+        "../S2/I.wav": "fa4bec6b085159d542b6d34062722c883d4400ddd503da1fb6f9a9530b0ffd86",
+        "V2.wav": "1aa3f8846bde1ed7d553cbb7325b181b9613bd0a6abad456bbcbf39a7feb25c0",
+        "I2.wav": "fce600ab91ad1c8167e16fe546544f6130d15e5bb180ad2a80002ab93a0a69f3"
+      },
+      "evidence": "evidence/no_regresion.jsonl.gz#D/Ppos/shared/masks_first/direct",
+      "complete_both": true,
+      "exits": {
+        "original": 0,
+        "experimental": 0
+      },
+      "tensors": 84,
+      "direct_array_comparisons": 54,
+      "max_abs_arrays": 0.0,
+      "tensor_differences": [],
+      "max_abs_formula": 0.0,
+      "shift_values": [
+        0
+      ],
+      "other_observation_differences": [],
+      "polarity_signs": [
+        1.0
+      ],
+      "max_signed_span_error": 0.0,
+      "physical_residual_calls": 0,
+      "pcm_comparison": {
+        "SDV": {
+          "max_abs_LR": [
+            0.0,
+            0.0
+          ],
+          "samples_different_LR": [
+            0,
+            0
+          ],
+          "decoded_sha256": [
+            "396af74e7413626a08c6d3f8d516ee016994a6658dad089849cc29504475c236",
+            "396af74e7413626a08c6d3f8d516ee016994a6658dad089849cc29504475c236"
+          ],
+          "sr_channels_frames_duration_subtype": [
+            44100,
+            2,
+            176400,
+            4.0,
+            "FLOAT"
+          ],
+          "rms_R_over_L": 1.6051139162290404,
+          "pearson_LR": 0.4814031729136833,
+          "changed_output_fields": [
+            "/file_sha256",
+            "/riff/PEAK/sha256",
+            "/riff/PEAK/timestamp"
+          ]
+        },
+        "SDI": {
+          "max_abs_LR": [
+            0.0,
+            0.0
+          ],
+          "samples_different_LR": [
+            0,
+            0
+          ],
+          "decoded_sha256": [
+            "7c6c1ad81be56d2354c3102af55a40ec75dc97dfe79a213e7764c071df7d47a9",
+            "7c6c1ad81be56d2354c3102af55a40ec75dc97dfe79a213e7764c071df7d47a9"
+          ],
+          "sr_channels_frames_duration_subtype": [
+            44100,
+            2,
+            176400,
+            4.0,
+            "FLOAT"
+          ],
+          "rms_R_over_L": 0.4113762807735658,
+          "pearson_LR": 0.5117559710162676,
+          "changed_output_fields": [
+            "/file_sha256",
+            "/riff/PEAK/sha256",
+            "/riff/PEAK/timestamp"
+          ]
+        }
+      },
+      "report_changed_paths": [
+        "/alignment/0/action",
+        "/alignment/0/active_window_sec",
+        "/alignment/0/alignment_confidence",
+        "/alignment/0/channels",
+        "/alignment/0/classification",
+        "/alignment/0/coarse_lag_samples",
+        "/alignment/0/convention",
+        "/alignment/0/correlation_peak",
+        "/alignment/0/cross_correlation",
+        "/alignment/0/estimated_offset_ms",
+        "/alignment/0/estimated_offset_samples",
+        "/alignment/0/guide_delay_R_minus_L",
+        "/alignment/0/guide_delay_samples",
+        "/alignment/0/k_R_minus_L",
+        "/alignment/0/reason",
+        "/alignment/0/schema",
+        "/alignment/1/action",
+        "/alignment/1/active_window_sec",
+        "/alignment/1/alignment_confidence",
+        "/alignment/1/channels",
+        "/alignment/1/classification",
+        "/alignment/1/coarse_lag_samples",
+        "/alignment/1/convention",
+        "/alignment/1/correlation_peak",
+        "/alignment/1/cross_correlation",
+        "/alignment/1/estimated_offset_ms",
+        "/alignment/1/estimated_offset_samples",
+        "/alignment/1/guide_delay_R_minus_L",
+        "/alignment/1/guide_delay_samples",
+        "/alignment/1/k_R_minus_L",
+        "/alignment/1/reason",
+        "/alignment/1/schema",
+        "/alignment/2/action",
+        "/alignment/2/active_window_sec",
+        "/alignment/2/alignment_confidence",
+        "/alignment/2/channels",
+        "/alignment/2/classification",
+        "/alignment/2/coarse_lag_samples",
+        "/alignment/2/convention",
+        "/alignment/2/correlation_peak",
+        "/alignment/2/cross_correlation",
+        "/alignment/2/estimated_offset_ms",
+        "/alignment/2/estimated_offset_samples",
+        "/alignment/2/guide_delay_R_minus_L",
+        "/alignment/2/guide_delay_samples",
+        "/alignment/2/k_R_minus_L",
+        "/alignment/2/reason",
+        "/alignment/2/schema",
+        "/alignment/3/action",
+        "/alignment/3/active_window_sec",
+        "/alignment/3/alignment_confidence",
+        "/alignment/3/channels",
+        "/alignment/3/classification",
+        "/alignment/3/coarse_lag_samples",
+        "/alignment/3/convention",
+        "/alignment/3/correlation_peak",
+        "/alignment/3/cross_correlation",
+        "/alignment/3/estimated_offset_ms",
+        "/alignment/3/estimated_offset_samples",
+        "/alignment/3/guide_delay_R_minus_L",
+        "/alignment/3/guide_delay_samples",
+        "/alignment/3/k_R_minus_L",
+        "/alignment/3/reason",
+        "/alignment/3/schema",
+        "/document_meta/active_design_decisions/D5",
+        "/document_meta/generated_utc",
+        "/validation_status/items",
+        "/validation_status/overall"
+      ],
+      "reconstruction": {
+        "max_abs_LR": [
+          [
+            7.450580596923828e-09,
+            7.450580596923828e-09
+          ],
+          [
+            7.450580596923828e-09,
+            7.450580596923828e-09
+          ]
+        ],
+        "difference_LR": [
+          0.0,
+          0.0
+        ]
+      },
+      "status": "IDENTICO_PCM_Y_DSP"
+    },
+    {
+      "id": "D/S7/shared/masks_first/direct",
+      "engine": "D",
+      "case": "S7",
+      "mask_mode": "shared",
+      "order": "masks_first",
+      "use_physical_residuals": null,
+      "manifest_sha256": "21c27ebad55d56c53107e881edec5410516a7604e40b59e0585f72e1e7631919",
+      "input_sha256": {
+        "Mix.wav": "fc17323544418ec14cf4b7c051624f6bafe016ad58eff509a2c052b03d2af1f3",
+        "V.wav": "bb274bc1201b7b4f3fdae96af56da238239b66438f466f2a33f864ec484b3e04",
+        "I.wav": "c23cefd19206f0c9d9f31b316140ed290094248e8311c712019b7557575d8497"
+      },
+      "evidence": "evidence/no_regresion.jsonl.gz#D/S7/shared/masks_first/direct",
+      "complete_both": false,
+      "exits": {
+        "original": 2,
+        "experimental": 2
+      },
+      "status": "ABORTO_CREST_NO_COMPARABLE",
+      "pcm_comparison": null
+    }
+  ]
+}

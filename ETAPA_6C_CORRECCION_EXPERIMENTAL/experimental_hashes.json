@@ -1,0 +1,24 @@
+{
+  "schema": "6c-freeze/1",
+  "antes_de_abrir_reserva": true,
+  "motores": {
+    "B": {
+      "path": "motores/MOTOR_SEP_SDV-SDI_v3.1.1_Hardened_Final.py",
+      "bytes": 95968,
+      "sha256": "48b423c4a97672b61ae437cc3fca441fc4a50fde667865f5627caf08e0bd3137",
+      "input_sha256": "5141fb5005656db1f6b2ede6165dbc77e6f74375a77e9db2570e69d8c6409dbd"
+    },
+    "C": {
+      "path": "motores/MOTOR_SEP_SDV-SDI_EVO.py",
+      "bytes": 102295,
+      "sha256": "27e478751920f502744100432141bfb02f57dd42b43b962d27805e0893166610",
+      "input_sha256": "003e698e187b6d6286c39a4f461e924420544ee4bf59c0b66a72258efc35774f"
+    },
+    "D": {
+      "path": "motores/sdv_sdi_mqr_engine.py",
+      "bytes": 158254,
+      "sha256": "9962d4993723b9ec1b6470d200536198447c1cd1b259f1f1a7c32a7ceefbcf8f",
+      "input_sha256": "5990ebe41177b62c57290a7b95a4a0408774878a7217341c40ab87d53737a479"
+    }
+  }
+}

@@ -1,0 +1,497 @@
+--- a/MOTOR_SEP_SDV-SDI_EVO.py
++++ b/MOTOR_SEP_SDV-SDI_EVO.py
+@@ -461,169 +461,282 @@
+     if usable <= 0: return np.zeros(1, dtype=np.float32)
+     return x[:usable].reshape(-1, factor).mean(axis=1).astype(np.float32)
+ 
+-def _ncc_fft_coarse(env_mix: np.ndarray, env_guide: np.ndarray, max_lag: int) -> tuple:
+-    a = np.asarray(env_mix, dtype=np.float64)
+-    b = np.asarray(env_guide, dtype=np.float64)
+-    A, B = len(a), len(b)
+-    max_lag = int(min(max_lag, min(A, B) - 1))
+-    if max_lag < 1 or A < 8 or B < 8: return 0, 0.0
+-
+-    n = next_pow2(A + B)
+-    fa = np.fft.rfft(a, n)
+-    fb = np.fft.rfft(b, n)
+-    corr = np.fft.irfft(fa * np.conj(fb), n)
+-
+-    sa2 = np.concatenate(([0.0], np.cumsum(np.square(a))))
+-    sb2 = np.concatenate(([0.0], np.cumsum(np.square(b))))
+-    lags = np.arange(-max_lag, max_lag + 1)
+-    vals = np.zeros(len(lags), dtype=np.float64)
+-    min_overlap = max(64, int(0.5 * min(A, B)))
+-
+-    for j, k in enumerate(lags):
+-        lo_t = max(0, k); hi_t = min(A, B + k)
+-        if hi_t - lo_t < min_overlap: continue
+-        lo_b = max(0, -k); hi_b = min(B, A - k)
+-        ea = sa2[hi_t] - sa2[lo_t]
+-        eb = sb2[hi_b] - sb2[lo_b]
+-        denom = math.sqrt(max(ea, 0.0) * max(eb, 0.0))
+-        if denom <= 0: continue
+-        idx = k if k >= 0 else n + k
+-        vals[j] = corr[idx] / denom
+-
+-    j_best = int(np.argmax(vals))
+-    return int(lags[j_best]), float(vals[j_best])
+-
+-def _pearson(a: np.ndarray, b: np.ndarray) -> float:
+-    if len(a) < 8: return 0.0
+-    am = a - a.mean(); bm = b - b.mean()
+-    denom = np.sqrt((am * am).sum() * (bm * bm).sum())
+-    return float((am * bm).sum() / denom) if denom > 0 else 0.0
+-
+-def _aligned_pair(mix_mono: np.ndarray, guide_mono: np.ndarray, lag: int) -> tuple:
+-    N, M = len(mix_mono), len(guide_mono)
+-    t0 = max(0, lag); t1 = min(N, M + lag)
+-    if t1 <= t0: return np.zeros(0), np.zeros(0)
+-    return mix_mono[t0:t1], guide_mono[t0 - lag: t1 - lag]
+-
+-def _refine_alignment(mix_mono: np.ndarray, guide_mono: np.ndarray, coarse_samples: int, halfspan: int) -> tuple:
+-    lo = coarse_samples - halfspan; hi = coarse_samples + halfspan
+-    best_lag, best_val = coarse_samples, -2.0
+-    vals, lags = [], list(range(lo, hi + 1))
+-
+-    for lag in lags:
+-        a, b = _aligned_pair(mix_mono, guide_mono, lag)
+-        val = _pearson(a, b) if len(a) >= 4096 else 0.0
+-        vals.append(val)
+-        if val > best_val: best_val, best_lag = val, lag
+-
+-    frac = 0.0
+-    j = lags.index(best_lag)
+-    if 0 < j < len(lags) - 1:
+-        y0, y1, y2 = vals[j - 1], vals[j], vals[j + 1]
+-        denom = (y0 - 2.0 * y1 + y2)
+-        if abs(denom) > 1e-12:
+-            frac = max(-1.0, min(1.0, 0.5 * (y0 - y2) / denom))
+-
+-    return best_lag, best_val, best_lag + frac
++# 6C: primitives of the native detector, not of the separation pipeline.
++_ALIGNMENT_RMS_FLOOR = 1e-10
++_ALIGNMENT_MIN_RHO = 0.20
++_ALIGNMENT_MIN_GAP = 0.002
++_MEASURED = ("ALIGNED", "WARNING", "MISALIGNED")
++
++
++def _lag_curve(x, y, qlo, qhi, min_n):
++    """Physical local lags q of x[t] versus y[t-q]. Invalid slots never compete.
++
++    For the same overlap: Pxy=sum(xy)-sum(x)sum(y)/n, Vx, Vy similarly.
++    rho=Pxy/sqrt(Vx*Vy); strength=abs(rho)*sqrt(Vx/Vx_all * Vy/Vy_all).
++    Prefix-sum blocks bound scratch space. Trimming literal zeros ONLY in the
++    FFT numerator preserves every original index, overlap and denominator.
++    """
++    from scipy.signal import correlate
++    na, nb = len(x), len(y)
++    lo, hi = max(qlo, min_n-nb), min(qhi, na-min_n)
++    count = max(hi-lo+1, 0) if min(na, nb) >= min_n else 0
++    ok = np.zeros(count, dtype=bool)
++    rho, strength = np.zeros(count), np.zeros(count)
++    curve = (lo, ok, rho, strength)
++    if not count:
++        return curve
++    # Translation preserves local Pearson and limits cancellation for DC offsets.
++    a, b = x.astype('float64')-x[0], y.astype('float64')-y[0]
++    ea, eb = a.var()*na, b.var()*nb
++    floor2 = _ALIGNMENT_RMS_FLOOR**2
++    if ea <= na*floor2 or eb <= nb*floor2:
++        return curve
++    def prefix(v):
++        return np.concatenate(([0.0], v.cumsum(dtype='float64')))
++    sa, sb, aa, bb = prefix(a), prefix(b), prefix(a*a), prefix(b*b)
++    ia, ib = np.flatnonzero(a), np.flatnonzero(b)
++    a0, a1, b0, b1 = int(ia[0]), int(ia[-1])+1, int(ib[0]), int(ib[-1])+1
++    del ia, ib
++    cross = correlate(a[a0:a1], b[b0:b1], mode='full', method='fft')
++    first_q = a0-b1+1
++    for start in range(0, count, 65536):
++        sl = slice(start, min(start+65536, count))
++        q = np.arange(lo+sl.start, lo+sl.stop)
++        l, r = np.maximum(q, 0), np.minimum(na, nb+q)
++        n = r-l
++        sx, sy = sa[r]-sa[l], sb[r-q]-sb[l-q]
++        vx = aa[r]-aa[l]-sx*sx/n
++        vy = bb[r-q]-bb[l-q]-sy*sy/n
++        valid = (vx > np.maximum(n*floor2, ea*1e-12)) & (vy > np.maximum(n*floor2, eb*1e-12))
++        idx = q-first_q
++        inside = (idx >= 0) & (idx < len(cross))
++        num = -sx*sy/n
++        num[inside] += cross[idx[inside]]
++        rho[sl][valid] = num[valid]/np.sqrt(vx[valid]*vy[valid])
++        raw = rho[sl]
++        valid &= np.isfinite(raw) & (np.abs(raw) <= 1.+1e-7)
++        raw[valid] = np.clip(raw[valid], -1., 1.)  # roundoff only
++        strength[sl][valid] = np.abs(num[valid])/math.sqrt(ea*eb)
++        ok[sl] = valid
++    return curve
++
++
++def _peaks(curve, limit, positive=False):
++    lo, ok, rho, score = curve
++    if not len(ok):
++        return []
++    eligible = ok & (rho > 0 if positive else score > 0)
++    left = np.r_[True, ~eligible[:-1] | (score[1:] >= score[:-1])]
++    right = np.r_[~eligible[1:] | (score[:-1] >= score[1:]), True]
++    ids = np.flatnonzero(eligible & left & right)
++    ids = ids[np.argsort(-score[ids], kind='stable')[:limit]]
++    return [lo+int(i) for i in ids]
++
++
++def _decision(state, reason, lag=None, rho=None, confidence=None):
++    return dict(classification=state, reason=reason, estimated_offset_samples=lag,
++                guide_delay_samples=None if lag is None else -lag,
++                correlation_peak=rho, alignment_confidence=confidence)
++
++
++def _severity(k):
++    if abs(k) <= ALIGNED_TOL_SAMPLES:
++        return 'ALIGNED'
++    if abs(k) <= int(MISALIGNED_TOL_MS*REQUIRED_SAMPLE_RATE/1000):
++        return 'WARNING'
++    return 'MISALIGNED'
++
++
++def _measure_window(a, b, tM, tG, radius):
++    h = tG-tM
++    qlo, qhi = h-radius, h+radius  # translate BEFORE clipping / decimation
++    nmin = max(4096, (min(len(a), len(b))+1)//2)
++    w = dict(tM=tM, tG=tG, frames_M=len(a), frames_G=len(b), min_overlap=nmin,
++             local_requested=[qlo, qhi], global_requested=[-radius, radius],
++             variance_M=float(a.var()) if len(a) else None,
++             variance_G=float(b.var()) if len(b) else None, candidates=[], envelope=[], valid_lags=0)
++    def finish(*args):
++        w.update(_decision(*args))
++        return w
++    if min(len(a),len(b)) < nmin or min(w['variance_M'],w['variance_G']) <= _ALIGNMENT_RMS_FLOOR**2:
++        return finish('INSUFFICIENT_SIGNAL', 'SHORT_OR_CONSTANT')
++    decim = ALIGN_COARSE_DECIMATION
++    width = int(ALIGN_ENVELOPE_MS*REQUIRED_SAMPLE_RATE/1000)
++    envs = [_decimate_block_mean(_moving_rms(v, width), decim) for v in (a,b)]
++    coarse = _lag_curve(*envs, -((-qlo)//decim), qhi//decim, (nmin+decim-1)//decim)
++    seeds = _peaks(coarse, 3, positive=True)
++    curve = _lag_curve(a, b, qlo, qhi, nmin)
++    lo, ok, rho, score = curve
++    w['valid_lags'] = int(ok.sum())
++    w['physical_local_range'] = [lo, lo+len(ok)-1] if len(ok) else None
++    def valid(q):
++        return lo <= q < lo+len(ok) and bool(ok[q-lo])
++    def point(q):
++        l, r = max(q,0), min(len(a),len(b)+q)
++        return dict(q=q, k=q-h, d=h-q, rho=float(rho[q-lo]), strength=float(score[q-lo]),
++                    overlap=r-l, M=[tM+l,tM+r], G=[tG+l-q,tG+r-q])
++    peaks = _peaks(curve, 5)
++    w['zero'] = point(h) if valid(h) else None
++    proposals = {q:['wave_peak'] for q in peaks}
++    for u in seeds:
++        q = u*decim
++        entry = dict(q=q, k=q-h, rho=float(coarse[2][u-coarse[0]]), valid_before_refine=valid(q))
++        w['envelope'].append(entry)
++        if not valid(q):
++            continue
++        half = max(ALIGN_REFINE_HALFSPAN, decim+2)
++        rivals = [z for z in range(q-half,q+half+1) if valid(z)]
++        z = max(rivals, key=lambda k: score[k-lo])
++        entry['refined_k'] = z-h
++        proposals.setdefault(z, []).append('envelope')
++    if w['zero'] is not None:
++        proposals.setdefault(h, []).append('zero')
++    w['candidates'] = [dict(point(q), origin=origin) for q,origin in proposals.items()]
++    if not peaks:
++        return finish('INSUFFICIENT_SIGNAL', 'NO_SUPPORTED_WAVE_PEAK')
++    q = peaks[0]
++    best = point(q)
++    w['best'] = best
++    # Direct confirmation in the *same* physical, unpadded overlap.
++    l, r = max(q,0), min(len(a),len(b)+q)
++    x, y = a[l:r], b[l-q:r-q]
++    xc, yc = x-x.mean(), y-y.mean()
++    sigx, sigy = np.sqrt(np.mean(xc*xc)), np.sqrt(np.mean(yc*yc))
++    best['std_M'], best['std_G'] = float(sigx), float(sigy)
++    if min(sigx,sigy) <= _ALIGNMENT_RMS_FLOOR:
++        return finish('INSUFFICIENT_SIGNAL', 'UNSUPPORTED_OVERLAP')
++    direct = float(np.dot(xc,yc)/(len(x)*sigx*sigy))
++    if not math.isfinite(direct) or abs(direct-best['rho']) > 1e-6:
++        raise ArithmeticError('FFT versus direct Pearson at q=%d' % q)
++    signed = max(-1., min(1., direct))
++    if abs(signed) < _ALIGNMENT_MIN_RHO:
++        return finish('INSUFFICIENT_SIGNAL', 'LOW_WAVE_SUPPORT')
++    gap = 1.-score[peaks[1]-lo]/score[q-lo] if len(peaks)>1 else 1.
++    w['relative_peak_gap'] = float(gap)
++    if gap <= _ALIGNMENT_MIN_GAP:
++        return finish('AMBIGUOUS', 'COMPETING_WAVE_PEAKS')
++    if not valid(q-1) or not valid(q+1):
++        return finish('AMBIGUOUS', 'TRUNCATED_PEAK')
++    # A shorter overlap can penalize an otherwise identical periodic translation.
++    for alt in peaks[1:]:
++        spacing = abs(alt-q)
++        if len(b)-spacing < nmin or abs(rho[alt-lo])+0.002 < abs(signed):
++            continue
++        u, v = b[spacing:], b[:-spacing]
++        u, v = u-u.mean(), v-v.mean()
++        den = np.linalg.norm(u)*np.linalg.norm(v)
++        if den > 0 and abs(float(np.dot(u,v))/den) >= 1.-1e-9:
++            w['periodic_spacing'] = spacing
++            return finish('AMBIGUOUS', 'REPEATED_GUIDE_AT_RIVAL')
++    return finish(_severity(q-h), 'SUPPORTED_DISTINCT_PEAK', q-h, signed, float(abs(signed)*gap))
++
++
++def _combine(records, clocks=False):
++    """A strong alarm is not erased by another channel's abstention."""
++    states = {r['classification'] for r in records}
++    if 'ERROR' in states:
++        return _decision('ERROR','MEMBER_ERROR')
++    lags = {r['estimated_offset_samples'] for r in records}
++    if records and None not in lags and len(lags) == 1:
++        weakest = min(records, key=lambda r: r['alignment_confidence'])
++        signs = {np.sign(r['correlation_peak']) for r in records if r['correlation_peak'] is not None}
++        return _decision(_severity(weakest['estimated_offset_samples']), 'MEASURED_AGREEMENT',
++                         weakest['estimated_offset_samples'], weakest['correlation_peak'] if len(signs)==1 else None,
++                         weakest['alignment_confidence'])
++    conflict = len(lags-{None}) > 1
++    if clocks and 'MISALIGNED' in states:
++        state = 'MISALIGNED'
++    elif conflict or 'AMBIGUOUS' in states:
++        state = 'AMBIGUOUS'
++    else:
++        state = 'INSUFFICIENT_SIGNAL'
++    return _decision(state, ('L_R_DISAGREE' if clocks else 'WINDOW_DISAGREEMENT') if conflict else 'INCOMPLETE_EVIDENCE')
++
++
++def _alignment_spans(a, b, radius):
++    width = min(15*REQUIRED_SAMPLE_RATE,len(b))
++    end = len(b)-width
++    starts = sorted({*range(0,end+1,15*REQUIRED_SAMPLE_RATE//2), end})
++    scan = [(t,float(b[t:t+width].var()) if width else 0.) for t in starts]
++    chosen = []
++    for t, var in sorted(scan,key=lambda item:-item[1]):
++        if var <= _ALIGNMENT_RMS_FLOOR**2 or any(abs(t-u)<width for u in chosen):
++            continue
++        chosen.append(t)
++        if len(chosen)==2:
++            break
++    spans = [(min(len(a),max(0,t-radius)), min(len(a),t+width+radius),t,t+width) for t in sorted(chosen or [0])]
++    return spans, dict(guide_width=width, starts_and_variances=scan)
++
+ 
+ def analyze_alignment(mix_info: FileInfo, guide_info: FileInfo) -> dict:
+-    """
+-    [AUDITED v3.2.0] Alineación con Escaneo Adaptativo por Energía (VAD).
+-    Localiza la ventana de mayor actividad en la guía para evitar falsos positivos
+-    en intros o pasajes instrumentales silenciosos.
+-    """
+-    rec = {
+-        "guide": os.path.basename(guide_info.path),
+-        "duration_difference_samples": guide_info.frames - mix_info.frames,
+-        "duration_difference_ms": 1000.0 * (guide_info.frames - mix_info.frames) / float(REQUIRED_SAMPLE_RATE),
+-        "policy": "detect_only"
+-    }
++    """6C: measurement only. Clock k=-guide_delay. Never downmix to infer L/R."""
++    delta = guide_info.frames-mix_info.frames
++    radius = int(1.5*REQUIRED_SAMPLE_RATE)
++    rec = dict(schema='alignment-6c/1', policy='detect_only', guide=os.path.basename(guide_info.path),
++               duration_difference_samples=delta, duration_difference_ms=1000.*delta/REQUIRED_SAMPLE_RATE,
++               convention='M[t] ~ G[t-k]; d=-k', search_window_seconds=1.5,
++               tolerances=dict(aligned_max_samples=ALIGNED_TOL_SAMPLES, warning_max_ms=MISALIGNED_TOL_MS),
++               channels={}, estimated_offset_ms=None, cross_correlation=None, coarse_lag_samples=None,
++               active_window_sec=None, guide_delay_R_minus_L=None, k_R_minus_L=None,
++               action=dict(shift_authorized=False, applied_shift_samples=0, polarity_changed=False))
++    names = ('L','R') if mix_info.channels == guide_info.channels == 2 else ('M',) if mix_info.channels == guide_info.channels == 1 else ()
+     try:
+-        sr = float(REQUIRED_SAMPLE_RATE)
+-        # Rango seguro de búsqueda: +/- 1.5 segundos (acústicamente realista para stems)
+-        max_search_sec = 1.5
+-        win_scan_sec = 15.0
+-        win_scan_samples = int(win_scan_sec * sr)
+-        step_samples = win_scan_samples // 2
+-
+-        with sf.SoundFile(mix_info.path) as hmix, sf.SoundFile(guide_info.path) as hg:
+-            total_frames = min(hmix.frames, hg.frames)
+-            
+-            # --- FASE 1: BARRIDO DE ENERGÍA (Búsqueda de la ventana vocal activa) ---
+-            best_pos = 0
+-            max_rms = -1.0
+-            cur = 0
+-            
+-            while cur + win_scan_samples <= total_frames:
+-                hg.seek(cur)
+-                g_block = mono_downmix(hg.read(win_scan_samples, dtype="float64", always_2d=True))
+-                rms_cur = float(np.sqrt(np.mean(np.square(g_block)))) if len(g_block) > 0 else 0.0
+-                if rms_cur > max_rms:
+-                    max_rms = rms_cur
+-                    best_pos = cur
+-                cur += step_samples
+-
+-            # Margen de seguridad para búsqueda de lag (+/- 1.5s)
+-            margin_samples = int(max_search_sec * sr)
+-            mix_start = max(0, best_pos - margin_samples)
+-            mix_len = win_scan_samples + 2 * margin_samples
+-
+-            # --- FASE 2: LECTURA FOCALIZADA EN LA ZONA ACTIVA ---
+-            hmix.seek(mix_start)
+-            mix_seg = mono_downmix(hmix.read(mix_len, dtype="float64", always_2d=True))
+-            hg.seek(best_pos)
+-            guide_seg = mono_downmix(hg.read(win_scan_samples, dtype="float64", always_2d=True))
+-
+-            # --- FASE 3: ENVOLVENTE Y CORRELACIÓN COARSE ---
+-            win_env = int(ALIGN_ENVELOPE_MS * 1e-3 * sr)
+-            decim = ALIGN_COARSE_DECIMATION
+-
+-            env_mix = _decimate_block_mean(_moving_rms(mix_seg, win_env), decim)
+-            env_g = _decimate_block_mean(_moving_rms(guide_seg, win_env), decim)
+-
+-            max_lag_env = int(max_search_sec * sr / decim)
+-            lag_env, _ = _ncc_fft_coarse(env_mix, env_g, max_lag_env)
+-            coarse_samples = lag_env * decim - (best_pos - mix_start)
+-
+-            # --- FASE 4: REFINAMIENTO FINO SUB-SAMPLE ---
+-            half = max(ALIGN_REFINE_HALFSPAN, decim + 2)
+-            best_lag, peak_val, sub = _refine_alignment(mix_seg, guide_seg, coarse_samples + (best_pos - mix_start), half)
+-            final_offset = sub - (best_pos - mix_start)
+-
+-            # --- FASE 5: EVALUACIÓN FORENSE DE SIGNIFICANCIA ---
+-            # Si NCC < 0.15, la correlación carece de significancia estadística (intro muda o residuo difuso)
+-            if peak_val < 0.15:
+-                rec["cross_correlation"] = float(peak_val)
+-                rec["estimated_offset_samples"] = 0
+-                rec["estimated_offset_ms"] = 0.0
+-                rec["correlation_peak"] = float(peak_val)
+-                rec["alignment_confidence"] = float(peak_val)
+-                rec["classification"] = "ALIGNED_BY_IDENTITY"
+-                rec["active_window_sec"] = float(best_pos / sr)
+-            else:
+-                rec["cross_correlation"] = float(peak_val)
+-                rec["estimated_offset_samples"] = int(round(final_offset))
+-                rec["estimated_offset_ms"] = 1000.0 * final_offset / sr
+-                rec["correlation_peak"] = float(peak_val)
+-                rec["alignment_confidence"] = max(0.0, min(1.0, float(peak_val)))
+-                rec["active_window_sec"] = float(best_pos / sr)
+-
+-                abs_off = abs(rec["estimated_offset_samples"])
+-                tol_warn = int(MISALIGNED_TOL_MS * 1e-3 * sr)
+-                if abs_off <= ALIGNED_TOL_SAMPLES:
+-                    rec["classification"] = "ALIGNED"
+-                elif abs_off <= tol_warn:
+-                    rec["classification"] = "WARNING"
+-                else:
+-                    rec["classification"] = "MISALIGNED"
+-                    
++        with sf.SoundFile(mix_info.path) as hm, sf.SoundFile(guide_info.path) as hg:
++            for h, meta in ((hm,mix_info), (hg,guide_info)):
++                if (h.samplerate,h.channels,h.frames) != (REQUIRED_SAMPLE_RATE,meta.channels,meta.frames):
++                    raise ValueError('Rate/layout/length changed or unsupported: '+h.name)
++            if not names:
++                rec.update(_decision('INSUFFICIENT_SIGNAL','NO_MATCHING_CHANNEL_LAYOUT'))
++                return rec
++            mx, gu = [h.read(dtype='float64',always_2d=True) for h in (hm,hg)]
++            if len(mx)!=hm.frames or len(gu)!=hg.frames:
++                raise OSError('Incomplete audio read')
++        for i, name in enumerate(names):
++            try:
++                a, b = mx[:,i], gu[:,i]
++                if not (np.isfinite(a).all() and np.isfinite(b).all()):
++                    raise ValueError('Non-finite samples in '+name)
++                spans, scan = _alignment_spans(a,b,radius)
++                windows = [_measure_window(a[tm:em],b[tg:eg],tm,tg,radius) for tm,em,tg,eg in spans]
++                result = _combine(windows) if len(windows)!=1 else {key:windows[0][key] for key in _decision('','')}
++                rec['channels'][name] = dict(result, windows=windows, scan=scan)
++            except Exception as exc:
++                rec['channels'][name] = dict(_decision('ERROR','CHANNEL_ERROR'), windows=[],
++                                             error=type(exc).__name__+': '+str(exc), traceback=traceback.format_exc())
++        channels = list(rec['channels'].values())
++        rec.update(_combine(channels, clocks=True))
++        primary = [ch['windows'][0] for ch in channels if ch.get('windows')]
++        if len(primary)==len(channels) and len({w['tG'] for w in primary})==1:
++            rec['active_window_sec'] = primary[0]['tG']/REQUIRED_SAMPLE_RATE
++        proposals = [w['envelope'][0]['k'] for ch in channels for w in ch.get('windows',[]) if w['envelope']]
++        if (len({p for p in proposals})==1 and all(ch.get('windows') for ch in channels)
++                and len(proposals)==sum(len(ch['windows']) for ch in channels)
++                and rec['estimated_offset_samples'] is not None):
++            rec['coarse_lag_samples'] = proposals[0]
++        errors = [s['error'] for s in channels if 'error' in s]
++        if errors:
++            rec['error'] = '; '.join(errors)
++        k = rec['estimated_offset_samples']
++        if k is not None:
++            rec['estimated_offset_ms'] = 1000.*k/REQUIRED_SAMPLE_RATE
++            rec['cross_correlation'] = rec['correlation_peak']
++        if names==('L','R') and all(s['guide_delay_samples'] is not None for s in channels):
++            diff = channels[1]['guide_delay_samples']-channels[0]['guide_delay_samples']
++            rec.update(guide_delay_R_minus_L=diff, k_R_minus_L=-diff)
+     except Exception as exc:
+-        rec["error"] = str(exc)
+-        rec["estimated_offset_samples"] = 0
+-        rec["estimated_offset_ms"] = 0.0
+-        rec["classification"] = "ALIGNED_BY_IDENTITY"
++        rec.update(_decision('ERROR','READ_OR_FORMAT_ERROR'), error=type(exc).__name__+': '+str(exc),
++                   traceback=traceback.format_exc())
++        rec['channels'] = {ch:_decision('ERROR','READ_OR_FORMAT_ERROR') for ch in names}
+     return rec
+ 
++
++def _alignment_line(r):
++    ch = ', '.join('%s: d=%s %s' % (key,_fmt(v['guide_delay_samples']),v['classification'])
++                   for key,v in r['channels'].items())
++    return 'k=%s ms; NCC=%s; %s (%s); %s; shift=0%s' % (
++        _fmt(r['estimated_offset_ms'],2), _fmt(r['correlation_peak'],4), r['classification'],r['reason'],ch,
++        '; '+r['error'] if r.get('error') else '')
+ def analyze_guide_scale(mix_info: FileInfo, pair: PairMeta) -> tuple:
+     # Estima factor de proyección LS por mínimos cuadrados: g_LS = <G, M> / <G, G>
+     rec = {"pair_id": pair.pair_id, "family": pair.family, "variant": pair.variant}
+@@ -1428,24 +1541,24 @@
+     misaligned = []
+     guide_shifts = {}
+     
++    if opt.correct_alignment:
++        log('[ABORT] 6C es sólo diagnóstico; --correct-alignment no está autorizado.')
++        return EXIT_VALIDATION, None
++
+     for p in pairs:
+         for role in ("vocal", "instrumental"):
+             info = getattr(p, role)
+             rec = analyze_alignment(mix_info, info)
+             rec["pair_id"] = p.pair_id; rec["role"] = role
+             alignment_records.append(rec)
+-            log(f"  {p.pair_id}/{role:<12}: Offset={rec.get('estimated_offset_ms', 0.0):+6.2f} ms | NCC={rec.get('correlation_peak', 0.0):.4f} -> {rec.get('classification')}")
+-            
+-            # Corrección de alineación opcional (Hallazgo 05)
+-            # [PATCH 5] Corregido signo de alineación (Venice F-020)
+-            shift_s = -rec.get("estimated_offset_samples", 0) if opt.correct_alignment else 0
+-            guide_shifts[(p.pair_id, role)] = shift_s
+-            
+-            if rec.get("classification") == "MISALIGNED": misaligned.append(rec)
++            log(f"  {p.pair_id}/{role}: {_alignment_line(rec)}")
++            rec['continuation_permission'] = 'cli_allow_misaligned' if opt.allow_misaligned else None
++            if rec['classification'] not in ('ALIGNED','WARNING'):
++                misaligned.append(rec)
+ 
+     ctx["alignment"] = alignment_records
+-    if misaligned and not opt.allow_misaligned:
+-        log("[ABORT] Guías desalineadas (> 10ms). Usa --allow-misaligned para forzar la ejecución.")
++    if any(r['classification']=='ERROR' for r in misaligned) or (misaligned and not opt.allow_misaligned):
++        log('[ABORT] Alineación no validada. ERROR es incondicional; los demás vetos requieren --allow-misaligned.')
+         return EXIT_VALIDATION, None
+ 
+     # 4. Análisis de Escala
+@@ -1954,7 +2067,7 @@
+     A("")
+     A("--- 3. ALINEACION DE GUIAS -------------------------------------------------")
+     for r in analysis.get("alignment_analysis", []):
+-        A(f"• {r.get('pair_id')}/{r.get('role'):<12} : Offset = {r.get('estimated_offset_ms', 0.0):+6.2f} ms | NCC = {_fmt(r.get('correlation_peak'), 4)} -> {r.get('classification')}")
++        A(f"• {r.get('pair_id')}/{r.get('role')}: {_alignment_line(r)}")
+ 
+     A("")
+     A("--- 4. INTERPRETACION FACTUAL ----------------------------------------------")
+@@ -2015,8 +2128,8 @@
+     p.add_argument("--consensus", default=CONSENSUS_DEFAULT, choices=list(CONSENSUS_METHODS), help="Consenso predeterminado")
+     p.add_argument("--use-residuals", dest="use_physical_residuals", action="store_true", help="Activa guías por residuo con ajuste LS-Gain")
+     p.set_defaults(use_physical_residuals=False)
+-    p.add_argument("--correct-alignment", action="store_true", help="Corrige retardos temporales de las guías previo al STFT")
+-    p.add_argument("--allow-misaligned", action="store_true", help="Permite ejecutar aunque haya guías desalineadas")
++    p.add_argument("--correct-alignment", action="store_true", help="6C: reconocido pero rechazado; no se desplaza audio")
++    p.add_argument("--allow-misaligned", action="store_true", help="6C: permite continuar sin shift con alineación no validada (no ante ERROR)")
+     p.add_argument("--write-all-candidates", action="store_true", help="Escribe SDV/SDI de todos los candidatos individuales")
+     p.add_argument("--png", action="store_true", help="Genera mapas de calor espectrales PNG")
+     p.add_argument("--keep-masks", action="store_true", help="Conserva las máscaras en disco")

@@ -1,0 +1,11 @@
+test_ambiguity_default_gate (__main__.Contracts.test_ambiguity_default_gate) ... ok
+test_curve_vs_literal_overlap_both_signs (__main__.Contracts.test_curve_vs_literal_overlap_both_signs) ... ok
+test_mqr_summary_fails_closed (__main__.Contracts.test_mqr_summary_fails_closed) ... ok
+test_no_fabricated_channels_or_identity (__main__.Contracts.test_no_fabricated_channels_or_identity) ... ok
+test_shift_request_and_read_failure_block_actual_cli (__main__.Contracts.test_shift_request_and_read_failure_block_actual_cli) ... ok
+test_stereo_sign_swap_and_no_common (__main__.Contracts.test_stereo_sign_swap_and_no_common) ... ok
+
+----------------------------------------------------------------------
+Ran 6 tests in 1.878s
+
+OK
