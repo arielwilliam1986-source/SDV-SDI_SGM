@@ -1,0 +1,42 @@
+usage: sdv_sdi_mqr_engine.py [-h] [--manifest MANIFEST] [--mix MIX]
+                             [--mode {dry_run,analysis_only,single_file,full_processing}]
+                             [--out OUT] [--n-fft N_FFT] [--hop HOP]
+                             [--power POWER] [--epsilon EPSILON]
+                             [--chunk-frames CHUNK_FRAMES]
+                             [--consensus {weighted_mean,median,confidence_weighted_mean}]
+                             [--smoothing] [--allow-misaligned]
+                             [--write-all-candidates] [--png]
+                             [--spec-json SPEC_JSON] [--self-test]
+
+SDV-SDI MQR Engine v1.0.0 - consenso de mascaras TF aplicado exclusivamente al
+Mix Original (spec Prompt Mask MVSEP.json v1.3.0)
+
+options:
+  -h, --help            show this help message and exit
+  --manifest MANIFEST   JSON con mix_original + pairs (D13); rutas relativas
+                        al propio manifest
+  --mix MIX             ruta del Mix Original (los pares se piden
+                        interactivamente)
+  --mode {dry_run,analysis_only,single_file,full_processing}
+                        dry_run | analysis_only | single_file |
+                        full_processing (default: menu interactivo)
+  --out OUT             directorio base de salida
+  --n-fft N_FFT         permitidos por el spec: (2048, 4096, 8192)
+  --hop HOP
+  --power POWER
+  --epsilon EPSILON
+  --chunk-frames CHUNK_FRAMES
+                        frames STFT por chunk (memoria Android)
+  --consensus {weighted_mean,median,confidence_weighted_mean}
+                        candidato escrito como SDV.wav/SDI.wav (los 3 metodos
+                        se calculan siempre)
+  --smoothing           suavizado mediana 3x3 (D9, default OFF)
+  --allow-misaligned    continuar aunque haya guides MISALIGNED (D5)
+  --write-all-candidates
+                        escribir SDV/SDI de TODOS los candidatos en
+                        candidates/
+  --png                 visualizaciones PNG opcionales (D7)
+  --spec-json SPEC_JSON
+                        ruta del spec para registrar su sha256 en
+                        document_meta (trazabilidad)
+  --self-test           autodiagnostico sintetico del motor

@@ -1,0 +1,40 @@
+{
+  "format": "tar.xz (LZMA2) sin pérdidas; rutas relativas a build/",
+  "archives": [
+    {
+      "path": "evidence/inputs.tar.xz",
+      "files": 36,
+      "raw_bytes": 36696702,
+      "packed_bytes": 783892,
+      "sha256": "5fe5efa3f4f0c5af849553e261e363f047a067e725cd2b941c1466fbdbd7727b"
+    },
+    {
+      "path": "evidence/S5-A.tar.xz",
+      "files": 80,
+      "raw_bytes": 114093316,
+      "packed_bytes": 14287056,
+      "sha256": "31b11c9328f9171c6985254a9e6a22383a513e743b7b0d183eda0aba84d816ce"
+    },
+    {
+      "path": "evidence/S5-B.tar.xz",
+      "files": 112,
+      "raw_bytes": 114261336,
+      "packed_bytes": 14484956,
+      "sha256": "c04f2ed67ac4e09f3778582f58bc11eca7e6c1e2f5be922db13e2451116c0cc1"
+    },
+    {
+      "path": "evidence/S5-C.tar.xz",
+      "files": 133,
+      "raw_bytes": 140210582,
+      "packed_bytes": 17159160,
+      "sha256": "be9b06e30644f780a836a24d25e2eaca7ff319bfb2ed42bb658a474ebfa1e185"
+    },
+    {
+      "path": "evidence/S5-D.tar.xz",
+      "files": 134,
+      "raw_bytes": 160716422,
+      "packed_bytes": 9196388,
+      "sha256": "96713c05b8b634051a7ff181d3b9ddfe2dfe7dde79bcdc36bee4c8ae892b5c0a"
+    }
+  ]
+}

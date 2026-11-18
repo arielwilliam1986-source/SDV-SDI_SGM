@@ -1,0 +1,985 @@
+Agrupado por corrida, en orden de inicio UTC. Consola original, sin reinterpretar las etiquetas nativas.
+
+===== A/S1_per_channel | 2026-11-18T21:09:08.905952+00:00 | OK | exit=0 =====
+API: run_processing ; argv: ['--manifest', 'build/inputs/S1/manifest.json', '--out', 'build/runs/A/S1_per_channel/native', '--n-fft', '4096', '--hop', '1024', '--chunk-frames', '64', '--branch', 'identity', '--consensus', 'magnitudes_first', '--mask-mode', 'per_channel', '--power', '1.95', '--epsilon', '1e-12', '--smoothing', 'none', '--no-loo']
+
+===== B/S1_per_channel | 2026-11-18T21:09:09.225070+00:00 | OK | exit=0 =====
+API: main ; argv: ['--manifest', 'build/inputs/S1/manifest.json', '--out', 'build/runs/B/S1_per_channel/native', '--n-fft', '4096', '--hop', '1024', '--chunk-frames', '64', '--mode', 'full_processing', '--allow-misaligned', '--consensus', 'confidence_weighted_mean', '--mask-mode', 'per_channel', '--consensus-order', 'magnitudes_first', '--smoothing', 'none', '--power', '1.8', '--epsilon', '1e-12', '--beta', '1']
+[     0.02s] Validación de entradas OK: Mix 44100Hz/2ch (1.35 MiB) | 1 Pares
+[     0.02s] Verificando alineación temporal NCC de las guías...
+[     0.19s]   P1/vocal       : Offset= -0.00 ms | NCC=0.8896 -> ALIGNED
+[     0.37s]   P1/instrumental: Offset=-27.21 ms | NCC=0.8087 -> MISALIGNED
+[     0.39s] Iniciando pipeline v3.1.0 en: build/runs/B/S1_per_channel/native/motorA_run_20261118_210909_partial
+[     0.39s] Configuración: consensus_order=magnitudes_first | smoothing=none | mask_mode=per_channel | residuals=False
+[     0.39s] Procesando 175 tramas en 3 chunks de 64 tramas...
+[     1.00s]   Chunk 03/3 [100.0%] completado (Tramas 128-174)
+[     1.03s] Post-WAV Identity SNR: 154.88 dB (Estado: PASS_EXACT_IDENTITY)
+[     1.04s] Directorio 'masks/' eliminado para liberar espacio.
+[     1.04s] Corrida finalizada exitosamente en: build/runs/B/S1_per_channel/native/motorA_run_20261118_210909
+
+============================================================================
+[92m[✓] SEPARACIÓN MOTOR A v3.1.0 COMPLETADA CON ÉXITO (SNR > 140 dB)[0m
+Directorio de Resultados : [96mbuild/runs/B/S1_per_channel/native/motorA_run_20261118_210909[0m
+Artefactos Generados     : Mix SDV.wav | Mix SDI.wav | analysis.json | analysis.txt
+============================================================================
+
+
+===== A/S1_mono | 2026-11-18T21:09:09.403526+00:00 | OK | exit=0 =====
+API: run_processing ; argv: ['--manifest', 'build/inputs/S1/manifest.json', '--out', 'build/runs/A/S1_mono/native', '--n-fft', '4096', '--hop', '1024', '--chunk-frames', '64', '--branch', 'identity', '--consensus', 'magnitudes_first', '--mask-mode', 'mono', '--power', '1.95', '--epsilon', '1e-12', '--smoothing', 'none', '--no-loo']
+
+===== A/S2_per_channel | 2026-11-18T21:09:09.851726+00:00 | OK | exit=0 =====
+API: run_processing ; argv: ['--manifest', 'build/inputs/S2/manifest.json', '--out', 'build/runs/A/S2_per_channel/native', '--n-fft', '4096', '--hop', '1024', '--chunk-frames', '64', '--branch', 'identity', '--consensus', 'magnitudes_first', '--mask-mode', 'per_channel', '--power', '1.95', '--epsilon', '1e-12', '--smoothing', 'none', '--no-loo']
+
+===== A/S2_mono | 2026-11-18T21:09:10.339492+00:00 | OK | exit=0 =====
+API: run_processing ; argv: ['--manifest', 'build/inputs/S2/manifest.json', '--out', 'build/runs/A/S2_mono/native', '--n-fft', '4096', '--hop', '1024', '--chunk-frames', '64', '--branch', 'identity', '--consensus', 'magnitudes_first', '--mask-mode', 'mono', '--power', '1.95', '--epsilon', '1e-12', '--smoothing', 'none', '--no-loo']
+
+===== B/S1_mono | 2026-11-18T21:09:10.430779+00:00 | OK | exit=0 =====
+API: main ; argv: ['--manifest', 'build/inputs/S1/manifest.json', '--out', 'build/runs/B/S1_mono/native', '--n-fft', '4096', '--hop', '1024', '--chunk-frames', '64', '--mode', 'full_processing', '--allow-misaligned', '--consensus', 'confidence_weighted_mean', '--mask-mode', 'mono', '--consensus-order', 'magnitudes_first', '--smoothing', 'none', '--power', '1.8', '--epsilon', '1e-12', '--beta', '1']
+[     1.22s] Validación de entradas OK: Mix 44100Hz/2ch (1.35 MiB) | 1 Pares
+[     1.22s] Verificando alineación temporal NCC de las guías...
+[     1.39s]   P1/vocal       : Offset= -0.00 ms | NCC=0.8896 -> ALIGNED
+[     1.56s]   P1/instrumental: Offset=-27.21 ms | NCC=0.8087 -> MISALIGNED
+[     1.57s] Iniciando pipeline v3.1.0 en: build/runs/B/S1_mono/native/motorA_run_20261118_210910_partial
+[     1.57s] Configuración: consensus_order=magnitudes_first | smoothing=none | mask_mode=mono | residuals=False
+[     1.57s] Procesando 175 tramas en 3 chunks de 64 tramas...
+[     2.11s]   Chunk 03/3 [100.0%] completado (Tramas 128-174)
+[     2.13s] Post-WAV Identity SNR: 154.88 dB (Estado: PASS_EXACT_IDENTITY)
+[     2.14s] Directorio 'masks/' eliminado para liberar espacio.
+[     2.14s] Corrida finalizada exitosamente en: build/runs/B/S1_mono/native/motorA_run_20261118_210910
+
+============================================================================
+[92m[✓] SEPARACIÓN MOTOR A v3.1.0 COMPLETADA CON ÉXITO (SNR > 140 dB)[0m
+Directorio de Resultados : [96mbuild/runs/B/S1_mono/native/motorA_run_20261118_210910[0m
+Artefactos Generados     : Mix SDV.wav | Mix SDI.wav | analysis.json | analysis.txt
+============================================================================
+
+
+===== A/S3_per_channel | 2026-11-18T21:09:10.800489+00:00 | OK | exit=0 =====
+API: run_processing ; argv: ['--manifest', 'build/inputs/S3/manifest.json', '--out', 'build/runs/A/S3_per_channel/native', '--n-fft', '4096', '--hop', '1024', '--chunk-frames', '64', '--branch', 'identity', '--consensus', 'magnitudes_first', '--mask-mode', 'per_channel', '--power', '1.95', '--epsilon', '1e-12', '--smoothing', 'none', '--no-loo']
+
+===== A/S3_mono | 2026-11-18T21:09:11.263612+00:00 | OK | exit=0 =====
+API: run_processing ; argv: ['--manifest', 'build/inputs/S3/manifest.json', '--out', 'build/runs/A/S3_mono/native', '--n-fft', '4096', '--hop', '1024', '--chunk-frames', '64', '--branch', 'identity', '--consensus', 'magnitudes_first', '--mask-mode', 'mono', '--power', '1.95', '--epsilon', '1e-12', '--smoothing', 'none', '--no-loo']
+
+===== B/S2_per_channel | 2026-11-18T21:09:11.529188+00:00 | OK | exit=0 =====
+API: main ; argv: ['--manifest', 'build/inputs/S2/manifest.json', '--out', 'build/runs/B/S2_per_channel/native', '--n-fft', '4096', '--hop', '1024', '--chunk-frames', '64', '--mode', 'full_processing', '--allow-misaligned', '--consensus', 'confidence_weighted_mean', '--mask-mode', 'per_channel', '--consensus-order', 'magnitudes_first', '--smoothing', 'none', '--power', '1.8', '--epsilon', '1e-12', '--beta', '1']
+[     2.32s] Validación de entradas OK: Mix 44100Hz/2ch (1.35 MiB) | 1 Pares
+[     2.32s] Verificando alineación temporal NCC de las guías...
+[     2.49s]   P1/vocal       : Offset= -0.00 ms | NCC=0.9076 -> ALIGNED
+[     2.66s]   P1/instrumental: Offset=-27.48 ms | NCC=0.3010 -> MISALIGNED
+[     2.67s] Iniciando pipeline v3.1.0 en: build/runs/B/S2_per_channel/native/motorA_run_20261118_210911_partial
+[     2.67s] Configuración: consensus_order=magnitudes_first | smoothing=none | mask_mode=per_channel | residuals=False
+[     2.67s] Procesando 175 tramas en 3 chunks de 64 tramas...
+[     3.27s]   Chunk 03/3 [100.0%] completado (Tramas 128-174)
+[     3.29s] Post-WAV Identity SNR: 151.49 dB (Estado: PASS_EXACT_IDENTITY)
+[     3.30s] Directorio 'masks/' eliminado para liberar espacio.
+[     3.30s] Corrida finalizada exitosamente en: build/runs/B/S2_per_channel/native/motorA_run_20261118_210911
+
+============================================================================
+[92m[✓] SEPARACIÓN MOTOR A v3.1.0 COMPLETADA CON ÉXITO (SNR > 140 dB)[0m
+Directorio de Resultados : [96mbuild/runs/B/S2_per_channel/native/motorA_run_20261118_210911[0m
+Artefactos Generados     : Mix SDV.wav | Mix SDI.wav | analysis.json | analysis.txt
+============================================================================
+
+
+===== A/S4_per_channel | 2026-11-18T21:09:11.735427+00:00 | OK | exit=0 =====
+API: run_processing ; argv: ['--manifest', 'build/inputs/S4/manifest.json', '--out', 'build/runs/A/S4_per_channel/native', '--n-fft', '4096', '--hop', '1024', '--chunk-frames', '64', '--branch', 'identity', '--consensus', 'magnitudes_first', '--mask-mode', 'per_channel', '--power', '1.95', '--epsilon', '1e-12', '--smoothing', 'none', '--no-loo']
+
+===== A/S4_mono | 2026-11-18T21:09:12.198779+00:00 | OK | exit=0 =====
+API: run_processing ; argv: ['--manifest', 'build/inputs/S4/manifest.json', '--out', 'build/runs/A/S4_mono/native', '--n-fft', '4096', '--hop', '1024', '--chunk-frames', '64', '--branch', 'identity', '--consensus', 'magnitudes_first', '--mask-mode', 'mono', '--power', '1.95', '--epsilon', '1e-12', '--smoothing', 'none', '--no-loo']
+
+===== A/S5_per_channel | 2026-11-18T21:09:12.661608+00:00 | OK | exit=0 =====
+API: run_processing ; argv: ['--manifest', 'build/inputs/S5/manifest.json', '--out', 'build/runs/A/S5_per_channel/native', '--n-fft', '4096', '--hop', '1024', '--chunk-frames', '64', '--branch', 'identity', '--consensus', 'magnitudes_first', '--mask-mode', 'per_channel', '--power', '1.95', '--epsilon', '1e-12', '--smoothing', 'none', '--no-loo']
+
+===== B/S2_mono | 2026-11-18T21:09:12.696715+00:00 | OK | exit=0 =====
+API: main ; argv: ['--manifest', 'build/inputs/S2/manifest.json', '--out', 'build/runs/B/S2_mono/native', '--n-fft', '4096', '--hop', '1024', '--chunk-frames', '64', '--mode', 'full_processing', '--allow-misaligned', '--consensus', 'confidence_weighted_mean', '--mask-mode', 'mono', '--consensus-order', 'magnitudes_first', '--smoothing', 'none', '--power', '1.8', '--epsilon', '1e-12', '--beta', '1']
+[     3.49s] Validación de entradas OK: Mix 44100Hz/2ch (1.35 MiB) | 1 Pares
+[     3.49s] Verificando alineación temporal NCC de las guías...
+[     3.65s]   P1/vocal       : Offset= -0.00 ms | NCC=0.9076 -> ALIGNED
+[     3.82s]   P1/instrumental: Offset=-27.48 ms | NCC=0.3010 -> MISALIGNED
+[     3.84s] Iniciando pipeline v3.1.0 en: build/runs/B/S2_mono/native/motorA_run_20261118_210913_partial
+[     3.84s] Configuración: consensus_order=magnitudes_first | smoothing=none | mask_mode=mono | residuals=False
+[     3.84s] Procesando 175 tramas en 3 chunks de 64 tramas...
+[     4.39s]   Chunk 03/3 [100.0%] completado (Tramas 128-174)
+[     4.41s] Post-WAV Identity SNR: 153.53 dB (Estado: PASS_EXACT_IDENTITY)
+[     4.42s] Directorio 'masks/' eliminado para liberar espacio.
+[     4.42s] Corrida finalizada exitosamente en: build/runs/B/S2_mono/native/motorA_run_20261118_210913
+
+============================================================================
+[92m[✓] SEPARACIÓN MOTOR A v3.1.0 COMPLETADA CON ÉXITO (SNR > 140 dB)[0m
+Directorio de Resultados : [96mbuild/runs/B/S2_mono/native/motorA_run_20261118_210913[0m
+Artefactos Generados     : Mix SDV.wav | Mix SDI.wav | analysis.json | analysis.txt
+============================================================================
+
+
+===== A/S5_mono | 2026-11-18T21:09:13.135590+00:00 | OK | exit=0 =====
+API: run_processing ; argv: ['--manifest', 'build/inputs/S5/manifest.json', '--out', 'build/runs/A/S5_mono/native', '--n-fft', '4096', '--hop', '1024', '--chunk-frames', '64', '--branch', 'identity', '--consensus', 'magnitudes_first', '--mask-mode', 'mono', '--power', '1.95', '--epsilon', '1e-12', '--smoothing', 'none', '--no-loo']
+
+===== A/S6_per_channel | 2026-11-18T21:09:13.600334+00:00 | OK | exit=0 =====
+API: run_processing ; argv: ['--manifest', 'build/inputs/S6/manifest.json', '--out', 'build/runs/A/S6_per_channel/native', '--n-fft', '4096', '--hop', '1024', '--chunk-frames', '64', '--branch', 'identity', '--consensus', 'magnitudes_first', '--mask-mode', 'per_channel', '--power', '1.95', '--epsilon', '1e-12', '--smoothing', 'none', '--no-loo']
+
+===== B/S3_per_channel | 2026-11-18T21:09:13.799543+00:00 | OK | exit=0 =====
+API: main ; argv: ['--manifest', 'build/inputs/S3/manifest.json', '--out', 'build/runs/B/S3_per_channel/native', '--n-fft', '4096', '--hop', '1024', '--chunk-frames', '64', '--mode', 'full_processing', '--allow-misaligned', '--consensus', 'confidence_weighted_mean', '--mask-mode', 'per_channel', '--consensus-order', 'magnitudes_first', '--smoothing', 'none', '--power', '1.8', '--epsilon', '1e-12', '--beta', '1']
+[     4.59s] Validación de entradas OK: Mix 44100Hz/2ch (1.35 MiB) | 1 Pares
+[     4.59s] Verificando alineación temporal NCC de las guías...
+[     4.76s]   P1/vocal       : Offset= -0.00 ms | NCC=0.8896 -> ALIGNED
+[     4.93s]   P1/instrumental: Offset=-27.21 ms | NCC=0.8087 -> MISALIGNED
+[     4.95s] Iniciando pipeline v3.1.0 en: build/runs/B/S3_per_channel/native/motorA_run_20261118_210914_partial
+[     4.95s] Configuración: consensus_order=magnitudes_first | smoothing=none | mask_mode=per_channel | residuals=False
+[     4.95s] Procesando 175 tramas en 3 chunks de 64 tramas...
+[     5.51s]   Chunk 03/3 [100.0%] completado (Tramas 128-174)
+[     5.53s] Post-WAV Identity SNR: 154.88 dB (Estado: PASS_EXACT_IDENTITY)
+[     5.55s] Directorio 'masks/' eliminado para liberar espacio.
+[     5.55s] Corrida finalizada exitosamente en: build/runs/B/S3_per_channel/native/motorA_run_20261118_210914
+
+============================================================================
+[92m[✓] SEPARACIÓN MOTOR A v3.1.0 COMPLETADA CON ÉXITO (SNR > 140 dB)[0m
+Directorio de Resultados : [96mbuild/runs/B/S3_per_channel/native/motorA_run_20261118_210914[0m
+Artefactos Generados     : Mix SDV.wav | Mix SDI.wav | analysis.json | analysis.txt
+============================================================================
+
+
+===== A/S6_mono | 2026-11-18T21:09:14.057079+00:00 | OK | exit=0 =====
+API: run_processing ; argv: ['--manifest', 'build/inputs/S6/manifest.json', '--out', 'build/runs/A/S6_mono/native', '--n-fft', '4096', '--hop', '1024', '--chunk-frames', '64', '--branch', 'identity', '--consensus', 'magnitudes_first', '--mask-mode', 'mono', '--power', '1.95', '--epsilon', '1e-12', '--smoothing', 'none', '--no-loo']
+
+===== A/S7_per_channel | 2026-11-18T21:09:14.504675+00:00 | OK | exit=0 =====
+API: run_processing ; argv: ['--manifest', 'build/inputs/S7/manifest.json', '--out', 'build/runs/A/S7_per_channel/native', '--n-fft', '4096', '--hop', '1024', '--chunk-frames', '64', '--branch', 'identity', '--consensus', 'magnitudes_first', '--mask-mode', 'per_channel', '--power', '1.95', '--epsilon', '1e-12', '--smoothing', 'none', '--no-loo']
+
+===== B/S3_mono | 2026-11-18T21:09:14.940696+00:00 | OK | exit=0 =====
+API: main ; argv: ['--manifest', 'build/inputs/S3/manifest.json', '--out', 'build/runs/B/S3_mono/native', '--n-fft', '4096', '--hop', '1024', '--chunk-frames', '64', '--mode', 'full_processing', '--allow-misaligned', '--consensus', 'confidence_weighted_mean', '--mask-mode', 'mono', '--consensus-order', 'magnitudes_first', '--smoothing', 'none', '--power', '1.8', '--epsilon', '1e-12', '--beta', '1']
+[     5.73s] Validación de entradas OK: Mix 44100Hz/2ch (1.35 MiB) | 1 Pares
+[     5.73s] Verificando alineación temporal NCC de las guías...
+[     5.90s]   P1/vocal       : Offset= -0.00 ms | NCC=0.8896 -> ALIGNED
+[     6.07s]   P1/instrumental: Offset=-27.21 ms | NCC=0.8087 -> MISALIGNED
+[     6.09s] Iniciando pipeline v3.1.0 en: build/runs/B/S3_mono/native/motorA_run_20261118_210915_partial
+[     6.09s] Configuración: consensus_order=magnitudes_first | smoothing=none | mask_mode=mono | residuals=False
+[     6.09s] Procesando 175 tramas en 3 chunks de 64 tramas...
+[     6.62s]   Chunk 03/3 [100.0%] completado (Tramas 128-174)
+[     6.64s] Post-WAV Identity SNR: 154.87 dB (Estado: PASS_EXACT_IDENTITY)
+[     6.65s] Directorio 'masks/' eliminado para liberar espacio.
+[     6.65s] Corrida finalizada exitosamente en: build/runs/B/S3_mono/native/motorA_run_20261118_210915
+
+============================================================================
+[92m[✓] SEPARACIÓN MOTOR A v3.1.0 COMPLETADA CON ÉXITO (SNR > 140 dB)[0m
+Directorio de Resultados : [96mbuild/runs/B/S3_mono/native/motorA_run_20261118_210915[0m
+Artefactos Generados     : Mix SDV.wav | Mix SDI.wav | analysis.json | analysis.txt
+============================================================================
+
+
+===== A/S7_mono | 2026-11-18T21:09:14.973397+00:00 | OK | exit=0 =====
+API: run_processing ; argv: ['--manifest', 'build/inputs/S7/manifest.json', '--out', 'build/runs/A/S7_mono/native', '--n-fft', '4096', '--hop', '1024', '--chunk-frames', '64', '--branch', 'identity', '--consensus', 'magnitudes_first', '--mask-mode', 'mono', '--power', '1.95', '--epsilon', '1e-12', '--smoothing', 'none', '--no-loo']
+
+===== B/S4_per_channel | 2026-11-18T21:09:16.036818+00:00 | OK | exit=0 =====
+API: main ; argv: ['--manifest', 'build/inputs/S4/manifest.json', '--out', 'build/runs/B/S4_per_channel/native', '--n-fft', '4096', '--hop', '1024', '--chunk-frames', '64', '--mode', 'full_processing', '--allow-misaligned', '--consensus', 'confidence_weighted_mean', '--mask-mode', 'per_channel', '--consensus-order', 'magnitudes_first', '--smoothing', 'none', '--power', '1.8', '--epsilon', '1e-12', '--beta', '1']
+[     6.83s] Validación de entradas OK: Mix 44100Hz/2ch (1.35 MiB) | 1 Pares
+[     6.83s] Verificando alineación temporal NCC de las guías...
+[     6.98s]   P1/vocal       : Offset=+1500.00 ms | NCC=0.5052 -> MISALIGNED
+[     7.14s]   P1/instrumental: Offset=-1498.87 ms | NCC=0.6652 -> MISALIGNED
+[     7.16s] Iniciando pipeline v3.1.0 en: build/runs/B/S4_per_channel/native/motorA_run_20261118_210916_partial
+[     7.16s] Configuración: consensus_order=magnitudes_first | smoothing=none | mask_mode=per_channel | residuals=False
+[     7.16s] Procesando 175 tramas en 3 chunks de 64 tramas...
+[     7.75s]   Chunk 03/3 [100.0%] completado (Tramas 128-174)
+[     7.78s] Post-WAV Identity SNR: 164.10 dB (Estado: PASS_EXACT_IDENTITY)
+[     7.79s] Directorio 'masks/' eliminado para liberar espacio.
+[     7.79s] Corrida finalizada exitosamente en: build/runs/B/S4_per_channel/native/motorA_run_20261118_210916
+
+============================================================================
+[92m[✓] SEPARACIÓN MOTOR A v3.1.0 COMPLETADA CON ÉXITO (SNR > 140 dB)[0m
+Directorio de Resultados : [96mbuild/runs/B/S4_per_channel/native/motorA_run_20261118_210916[0m
+Artefactos Generados     : Mix SDV.wav | Mix SDI.wav | analysis.json | analysis.txt
+============================================================================
+
+
+===== B/S4_mono | 2026-11-18T21:09:17.188174+00:00 | OK | exit=0 =====
+API: main ; argv: ['--manifest', 'build/inputs/S4/manifest.json', '--out', 'build/runs/B/S4_mono/native', '--n-fft', '4096', '--hop', '1024', '--chunk-frames', '64', '--mode', 'full_processing', '--allow-misaligned', '--consensus', 'confidence_weighted_mean', '--mask-mode', 'mono', '--consensus-order', 'magnitudes_first', '--smoothing', 'none', '--power', '1.8', '--epsilon', '1e-12', '--beta', '1']
+[     7.98s] Validación de entradas OK: Mix 44100Hz/2ch (1.35 MiB) | 1 Pares
+[     7.98s] Verificando alineación temporal NCC de las guías...
+[     8.14s]   P1/vocal       : Offset=+1500.00 ms | NCC=0.5052 -> MISALIGNED
+[     8.30s]   P1/instrumental: Offset=-1498.87 ms | NCC=0.6652 -> MISALIGNED
+[     8.31s] Iniciando pipeline v3.1.0 en: build/runs/B/S4_mono/native/motorA_run_20261118_210917_partial
+[     8.31s] Configuración: consensus_order=magnitudes_first | smoothing=none | mask_mode=mono | residuals=False
+[     8.32s] Procesando 175 tramas en 3 chunks de 64 tramas...
+[     8.83s]   Chunk 03/3 [100.0%] completado (Tramas 128-174)
+[     8.85s] Post-WAV Identity SNR: 151.95 dB (Estado: PASS_EXACT_IDENTITY)
+[     8.86s] Directorio 'masks/' eliminado para liberar espacio.
+[     8.86s] Corrida finalizada exitosamente en: build/runs/B/S4_mono/native/motorA_run_20261118_210917
+
+============================================================================
+[92m[✓] SEPARACIÓN MOTOR A v3.1.0 COMPLETADA CON ÉXITO (SNR > 140 dB)[0m
+Directorio de Resultados : [96mbuild/runs/B/S4_mono/native/motorA_run_20261118_210917[0m
+Artefactos Generados     : Mix SDV.wav | Mix SDI.wav | analysis.json | analysis.txt
+============================================================================
+
+
+===== B/S5_per_channel | 2026-11-18T21:09:18.243843+00:00 | OK | exit=0 =====
+API: main ; argv: ['--manifest', 'build/inputs/S5/manifest.json', '--out', 'build/runs/B/S5_per_channel/native', '--n-fft', '4096', '--hop', '1024', '--chunk-frames', '64', '--mode', 'full_processing', '--allow-misaligned', '--consensus', 'confidence_weighted_mean', '--mask-mode', 'per_channel', '--consensus-order', 'magnitudes_first', '--smoothing', 'none', '--power', '1.8', '--epsilon', '1e-12', '--beta', '1']
+[     9.03s] Validación de entradas OK: Mix 44100Hz/2ch (1.35 MiB) | 1 Pares
+[     9.03s] Verificando alineación temporal NCC de las guías...
+[     9.20s]   P1/vocal       : Offset=+74.83 ms | NCC=0.7763 -> MISALIGNED
+[     9.36s]   P1/instrumental: Offset=-145.94 ms | NCC=-0.4598 -> MISALIGNED
+[     9.38s] Iniciando pipeline v3.1.0 en: build/runs/B/S5_per_channel/native/motorA_run_20261118_210918_partial
+[     9.38s] Configuración: consensus_order=magnitudes_first | smoothing=none | mask_mode=per_channel | residuals=False
+[     9.38s] Procesando 175 tramas en 3 chunks de 64 tramas...
+[     9.93s]   Chunk 03/3 [100.0%] completado (Tramas 128-174)
+[     9.96s] Post-WAV Identity SNR: 153.68 dB (Estado: PASS_EXACT_IDENTITY)
+[     9.97s] Directorio 'masks/' eliminado para liberar espacio.
+[     9.97s] Corrida finalizada exitosamente en: build/runs/B/S5_per_channel/native/motorA_run_20261118_210918
+
+============================================================================
+[92m[✓] SEPARACIÓN MOTOR A v3.1.0 COMPLETADA CON ÉXITO (SNR > 140 dB)[0m
+Directorio de Resultados : [96mbuild/runs/B/S5_per_channel/native/motorA_run_20261118_210918[0m
+Artefactos Generados     : Mix SDV.wav | Mix SDI.wav | analysis.json | analysis.txt
+============================================================================
+
+
+===== B/S5_mono | 2026-11-18T21:09:19.359619+00:00 | OK | exit=0 =====
+API: main ; argv: ['--manifest', 'build/inputs/S5/manifest.json', '--out', 'build/runs/B/S5_mono/native', '--n-fft', '4096', '--hop', '1024', '--chunk-frames', '64', '--mode', 'full_processing', '--allow-misaligned', '--consensus', 'confidence_weighted_mean', '--mask-mode', 'mono', '--consensus-order', 'magnitudes_first', '--smoothing', 'none', '--power', '1.8', '--epsilon', '1e-12', '--beta', '1']
+[    10.15s] Validación de entradas OK: Mix 44100Hz/2ch (1.35 MiB) | 1 Pares
+[    10.15s] Verificando alineación temporal NCC de las guías...
+[    10.31s]   P1/vocal       : Offset=+74.83 ms | NCC=0.7763 -> MISALIGNED
+[    10.48s]   P1/instrumental: Offset=-145.94 ms | NCC=-0.4598 -> MISALIGNED
+[    10.50s] Iniciando pipeline v3.1.0 en: build/runs/B/S5_mono/native/motorA_run_20261118_210919_partial
+[    10.50s] Configuración: consensus_order=magnitudes_first | smoothing=none | mask_mode=mono | residuals=False
+[    10.50s] Procesando 175 tramas en 3 chunks de 64 tramas...
+[    11.01s]   Chunk 03/3 [100.0%] completado (Tramas 128-174)
+[    11.03s] Post-WAV Identity SNR: 153.43 dB (Estado: PASS_EXACT_IDENTITY)
+[    11.04s] Directorio 'masks/' eliminado para liberar espacio.
+[    11.04s] Corrida finalizada exitosamente en: build/runs/B/S5_mono/native/motorA_run_20261118_210919
+
+============================================================================
+[92m[✓] SEPARACIÓN MOTOR A v3.1.0 COMPLETADA CON ÉXITO (SNR > 140 dB)[0m
+Directorio de Resultados : [96mbuild/runs/B/S5_mono/native/motorA_run_20261118_210919[0m
+Artefactos Generados     : Mix SDV.wav | Mix SDI.wav | analysis.json | analysis.txt
+============================================================================
+
+
+===== B/S6_per_channel | 2026-11-18T21:09:20.426514+00:00 | OK | exit=0 =====
+API: main ; argv: ['--manifest', 'build/inputs/S6/manifest.json', '--out', 'build/runs/B/S6_per_channel/native', '--n-fft', '4096', '--hop', '1024', '--chunk-frames', '64', '--mode', 'full_processing', '--allow-misaligned', '--consensus', 'confidence_weighted_mean', '--mask-mode', 'per_channel', '--consensus-order', 'magnitudes_first', '--smoothing', 'none', '--power', '1.8', '--epsilon', '1e-12', '--beta', '1']
+[    11.22s] Validación de entradas OK: Mix 44100Hz/2ch (1.35 MiB) | 1 Pares
+[    11.22s] Verificando alineación temporal NCC de las guías...
+[    11.39s]   P1/vocal       : Offset= -0.00 ms | NCC=0.9076 -> ALIGNED
+[    11.56s]   P1/instrumental: Offset=-27.48 ms | NCC=0.3010 -> MISALIGNED
+[    11.57s] Iniciando pipeline v3.1.0 en: build/runs/B/S6_per_channel/native/motorA_run_20261118_210920_partial
+[    11.57s] Configuración: consensus_order=magnitudes_first | smoothing=none | mask_mode=per_channel | residuals=False
+[    11.57s] Procesando 175 tramas en 3 chunks de 64 tramas...
+[    12.13s]   Chunk 03/3 [100.0%] completado (Tramas 128-174)
+[    12.15s] Post-WAV Identity SNR: 151.49 dB (Estado: PASS_EXACT_IDENTITY)
+[    12.17s] Directorio 'masks/' eliminado para liberar espacio.
+[    12.17s] Corrida finalizada exitosamente en: build/runs/B/S6_per_channel/native/motorA_run_20261118_210920
+
+============================================================================
+[92m[✓] SEPARACIÓN MOTOR A v3.1.0 COMPLETADA CON ÉXITO (SNR > 140 dB)[0m
+Directorio de Resultados : [96mbuild/runs/B/S6_per_channel/native/motorA_run_20261118_210920[0m
+Artefactos Generados     : Mix SDV.wav | Mix SDI.wav | analysis.json | analysis.txt
+============================================================================
+
+
+===== B/S6_mono | 2026-11-18T21:09:21.606292+00:00 | OK | exit=0 =====
+API: main ; argv: ['--manifest', 'build/inputs/S6/manifest.json', '--out', 'build/runs/B/S6_mono/native', '--n-fft', '4096', '--hop', '1024', '--chunk-frames', '64', '--mode', 'full_processing', '--allow-misaligned', '--consensus', 'confidence_weighted_mean', '--mask-mode', 'mono', '--consensus-order', 'magnitudes_first', '--smoothing', 'none', '--power', '1.8', '--epsilon', '1e-12', '--beta', '1']
+[    12.40s] Validación de entradas OK: Mix 44100Hz/2ch (1.35 MiB) | 1 Pares
+[    12.40s] Verificando alineación temporal NCC de las guías...
+[    12.57s]   P1/vocal       : Offset= -0.00 ms | NCC=0.9076 -> ALIGNED
+[    12.75s]   P1/instrumental: Offset=-27.48 ms | NCC=0.3010 -> MISALIGNED
+[    12.76s] Iniciando pipeline v3.1.0 en: build/runs/B/S6_mono/native/motorA_run_20261118_210921_partial
+[    12.76s] Configuración: consensus_order=magnitudes_first | smoothing=none | mask_mode=mono | residuals=False
+[    12.76s] Procesando 175 tramas en 3 chunks de 64 tramas...
+[    13.31s]   Chunk 03/3 [100.0%] completado (Tramas 128-174)
+[    13.33s] Post-WAV Identity SNR: 153.53 dB (Estado: PASS_EXACT_IDENTITY)
+[    13.34s] Directorio 'masks/' eliminado para liberar espacio.
+[    13.34s] Corrida finalizada exitosamente en: build/runs/B/S6_mono/native/motorA_run_20261118_210921
+
+============================================================================
+[92m[✓] SEPARACIÓN MOTOR A v3.1.0 COMPLETADA CON ÉXITO (SNR > 140 dB)[0m
+Directorio de Resultados : [96mbuild/runs/B/S6_mono/native/motorA_run_20261118_210921[0m
+Artefactos Generados     : Mix SDV.wav | Mix SDI.wav | analysis.json | analysis.txt
+============================================================================
+
+
+===== B/S7_per_channel | 2026-11-18T21:09:22.752747+00:00 | OK | exit=0 =====
+API: main ; argv: ['--manifest', 'build/inputs/S7/manifest.json', '--out', 'build/runs/B/S7_per_channel/native', '--n-fft', '4096', '--hop', '1024', '--chunk-frames', '64', '--mode', 'full_processing', '--allow-misaligned', '--consensus', 'confidence_weighted_mean', '--mask-mode', 'per_channel', '--consensus-order', 'magnitudes_first', '--smoothing', 'none', '--power', '1.8', '--epsilon', '1e-12', '--beta', '1']
+[    13.54s] Validación de entradas OK: Mix 44100Hz/2ch (1.35 MiB) | 1 Pares
+[    13.54s] Verificando alineación temporal NCC de las guías...
+[    13.71s]   P1/vocal       : Offset=-4000.09 ms | NCC=0.0000 -> MISALIGNED
+[    13.85s]   P1/instrumental: Offset=-4000.09 ms | NCC=0.0000 -> MISALIGNED
+[    13.86s] Iniciando pipeline v3.1.0 en: build/runs/B/S7_per_channel/native/motorA_run_20261118_210923_partial
+[    13.86s] Configuración: consensus_order=magnitudes_first | smoothing=none | mask_mode=per_channel | residuals=False
+[    13.86s] Procesando 175 tramas en 3 chunks de 64 tramas...
+[    14.42s]   Chunk 03/3 [100.0%] completado (Tramas 128-174)
+[    14.44s] Post-WAV Identity SNR: 154.88 dB (Estado: PASS_EXACT_IDENTITY)
+[    14.45s] Directorio 'masks/' eliminado para liberar espacio.
+[    14.45s] Corrida finalizada exitosamente en: build/runs/B/S7_per_channel/native/motorA_run_20261118_210923
+
+============================================================================
+[92m[✓] SEPARACIÓN MOTOR A v3.1.0 COMPLETADA CON ÉXITO (SNR > 140 dB)[0m
+Directorio de Resultados : [96mbuild/runs/B/S7_per_channel/native/motorA_run_20261118_210923[0m
+Artefactos Generados     : Mix SDV.wav | Mix SDI.wav | analysis.json | analysis.txt
+============================================================================
+
+
+===== B/S7_mono | 2026-11-18T21:09:23.846546+00:00 | OK | exit=0 =====
+API: main ; argv: ['--manifest', 'build/inputs/S7/manifest.json', '--out', 'build/runs/B/S7_mono/native', '--n-fft', '4096', '--hop', '1024', '--chunk-frames', '64', '--mode', 'full_processing', '--allow-misaligned', '--consensus', 'confidence_weighted_mean', '--mask-mode', 'mono', '--consensus-order', 'magnitudes_first', '--smoothing', 'none', '--power', '1.8', '--epsilon', '1e-12', '--beta', '1']
+[    14.64s] Validación de entradas OK: Mix 44100Hz/2ch (1.35 MiB) | 1 Pares
+[    14.64s] Verificando alineación temporal NCC de las guías...
+[    14.78s]   P1/vocal       : Offset=-4000.09 ms | NCC=0.0000 -> MISALIGNED
+[    14.93s]   P1/instrumental: Offset=-4000.09 ms | NCC=0.0000 -> MISALIGNED
+[    14.95s] Iniciando pipeline v3.1.0 en: build/runs/B/S7_mono/native/motorA_run_20261118_210924_partial
+[    14.95s] Configuración: consensus_order=magnitudes_first | smoothing=none | mask_mode=mono | residuals=False
+[    14.95s] Procesando 175 tramas en 3 chunks de 64 tramas...
+[    15.52s]   Chunk 03/3 [100.0%] completado (Tramas 128-174)
+[    15.54s] Post-WAV Identity SNR: 335.64 dB (Estado: PASS_EXACT_IDENTITY)
+[    15.55s] Directorio 'masks/' eliminado para liberar espacio.
+[    15.55s] Corrida finalizada exitosamente en: build/runs/B/S7_mono/native/motorA_run_20261118_210924
+
+============================================================================
+[92m[✓] SEPARACIÓN MOTOR A v3.1.0 COMPLETADA CON ÉXITO (SNR > 140 dB)[0m
+Directorio de Resultados : [96mbuild/runs/B/S7_mono/native/motorA_run_20261118_210924[0m
+Artefactos Generados     : Mix SDV.wav | Mix SDI.wav | analysis.json | analysis.txt
+============================================================================
+
+
+===== C/S1_per_channel | 2026-11-18T21:09:32.052297+00:00 | OK | exit=0 =====
+API: main ; argv: ['--manifest', 'build/inputs/S1/manifest.json', '--out', 'build/runs/C/S1_per_channel/native', '--n-fft', '4096', '--hop', '1024', '--chunk-frames', '64', '--mode', 'full_processing', '--allow-misaligned', '--consensus', 'confidence_weighted_mean', '--mask-mode', 'per_channel', '--consensus-order', 'magnitudes_first', '--smoothing', 'none', '--power', '1.8', '--epsilon', '1e-12', '--beta', '1']
+[     0.02s] Validación de entradas OK: Mix 44100Hz/2ch (1.35 MiB) | 1 Pares
+[     0.02s] Verificando alineación temporal NCC de las guías...
+[     0.15s]   P1/vocal       : Offset= -0.00 ms | NCC=0.8896 -> ALIGNED
+[     0.28s]   P1/instrumental: Offset=-27.21 ms | NCC=0.8087 -> MISALIGNED
+[     0.30s] Iniciando pipeline v3.1.0 en: build/runs/C/S1_per_channel/native/motorA_run_20261118_210932_partial
+[     0.30s] Configuración Consenso: order=magnitudes_first | consensus=confidence_weighted_mean | smoothing=none | mask_mode=per_channel
+[     0.30s] Parámetros DSP: p=1.80 | beta=1.00 | eps=1.0e-12 | n_fft=4096 | hop=1024 | residuals=False
+[     0.30s] Procesando 175 tramas en 3 chunks de 64 tramas...
+[     0.93s]   Chunk 03/3 [100.0%] completado (Tramas 128-174)
+[     0.95s] Post-WAV Identity SNR: 154.88 dB (Estado: PASS_EXACT_IDENTITY)
+[     0.97s] Directorio 'masks/' eliminado para liberar espacio.
+[     0.97s] Corrida finalizada exitosamente en: build/runs/C/S1_per_channel/native/motorA_run_20261118_210932
+
+============================================================================
+[92m[✓] SEPARACIÓN MOTOR A v3.1.0 COMPLETADA CON ÉXITO (SNR > 140 dB)[0m
+Directorio de Resultados : [96mbuild/runs/C/S1_per_channel/native/motorA_run_20261118_210932[0m
+Artefactos Generados     : Mix SDV.wav | Mix SDI.wav | analysis.json | analysis.txt
+============================================================================
+
+
+===== D/S1_shared | 2026-11-18T21:09:32.072084+00:00 | OK | exit=0 =====
+API: main ; argv: ['--manifest', 'build/inputs/S1/manifest.json', '--out', 'build/runs/D/S1_shared/native', '--n-fft', '4096', '--hop', '1024', '--chunk-frames', '64', '--mode', 'full_processing', '--allow-misaligned', '--consensus', 'confidence_weighted_mean', '--power', '2', '--epsilon', '1e-9']
+[     0.01s] Validacion de entradas: OK (mix 44100 Hz / 2 ch / 176400 frames; 1 pares)
+[     0.01s] Analisis de alineacion (detect_only_no_correction)...
+[     0.19s]   P1/vocal: offset=-0.0 ms, NCC=0.8896 -> ALIGNED
+[     0.36s]   P1/instrumental: offset=-27.2 ms, NCC=0.8087 -> MISALIGNED
+[     0.36s] Analisis de escala de guides (metricas + factores)...
+[     0.38s]   P1: g_vocal=1.0000 g_instr=1.0000 (politica=none)
+[     0.38s] Directorio de corrida (parcial): build/runs/D/S1_shared/native/mqr_run_20261118_210932_partial
+[     0.38s] Pipeline: mode=full_processing, 1 pares, K=175 frames en chunks de 64
+[     1.47s]   chunk 3/3 (frames 128-174) listo
+[     1.51s] Post-WAV identity: SNR=154.58 dB (esperado > 100 dB)
+[     1.51s] Escribiendo analysis.json / analysis.txt ...
+[     1.53s] Directorio final: build/runs/D/S1_shared/native/mqr_run_20261118_210932
+[     1.53s] Duracion total: 1.5 s
+[     1.53s] Corrida COMPLETA: build/runs/D/S1_shared/native/mqr_run_20261118_210932
+
+RESULTADO: OK
+  salida: build/runs/D/S1_shared/native/mqr_run_20261118_210932
+  SDV.wav / SDI.wav / analysis.json / analysis.txt / masks/
+
+===== C/S1_mono | 2026-11-18T21:09:33.190596+00:00 | OK | exit=0 =====
+API: main ; argv: ['--manifest', 'build/inputs/S1/manifest.json', '--out', 'build/runs/C/S1_mono/native', '--n-fft', '4096', '--hop', '1024', '--chunk-frames', '64', '--mode', 'full_processing', '--allow-misaligned', '--consensus', 'confidence_weighted_mean', '--mask-mode', 'mono', '--consensus-order', 'magnitudes_first', '--smoothing', 'none', '--power', '1.8', '--epsilon', '1e-12', '--beta', '1']
+[     1.15s] Validación de entradas OK: Mix 44100Hz/2ch (1.35 MiB) | 1 Pares
+[     1.15s] Verificando alineación temporal NCC de las guías...
+[     1.27s]   P1/vocal       : Offset= -0.00 ms | NCC=0.8896 -> ALIGNED
+[     1.39s]   P1/instrumental: Offset=-27.21 ms | NCC=0.8087 -> MISALIGNED
+[     1.40s] Iniciando pipeline v3.1.0 en: build/runs/C/S1_mono/native/motorA_run_20261118_210933_partial
+[     1.40s] Configuración Consenso: order=magnitudes_first | consensus=confidence_weighted_mean | smoothing=none | mask_mode=mono
+[     1.40s] Parámetros DSP: p=1.80 | beta=1.00 | eps=1.0e-12 | n_fft=4096 | hop=1024 | residuals=False
+[     1.41s] Procesando 175 tramas en 3 chunks de 64 tramas...
+[     1.96s]   Chunk 03/3 [100.0%] completado (Tramas 128-174)
+[     1.98s] Post-WAV Identity SNR: 154.88 dB (Estado: PASS_EXACT_IDENTITY)
+[     1.99s] Directorio 'masks/' eliminado para liberar espacio.
+[     1.99s] Corrida finalizada exitosamente en: build/runs/C/S1_mono/native/motorA_run_20261118_210933
+
+============================================================================
+[92m[✓] SEPARACIÓN MOTOR A v3.1.0 COMPLETADA CON ÉXITO (SNR > 140 dB)[0m
+Directorio de Resultados : [96mbuild/runs/C/S1_mono/native/motorA_run_20261118_210933[0m
+Artefactos Generados     : Mix SDV.wav | Mix SDI.wav | analysis.json | analysis.txt
+============================================================================
+
+
+===== D/S2_shared | 2026-11-18T21:09:33.769344+00:00 | OK | exit=0 =====
+API: main ; argv: ['--manifest', 'build/inputs/S2/manifest.json', '--out', 'build/runs/D/S2_shared/native', '--n-fft', '4096', '--hop', '1024', '--chunk-frames', '64', '--mode', 'full_processing', '--allow-misaligned', '--consensus', 'confidence_weighted_mean', '--power', '2', '--epsilon', '1e-9']
+[     1.71s] Validacion de entradas: OK (mix 44100 Hz / 2 ch / 176400 frames; 1 pares)
+[     1.71s] Analisis de alineacion (detect_only_no_correction)...
+[     1.88s]   P1/vocal: offset=-0.0 ms, NCC=0.9076 -> ALIGNED
+[     2.04s]   P1/instrumental: offset=-27.5 ms, NCC=0.3010 -> MISALIGNED
+[     2.04s] Analisis de escala de guides (metricas + factores)...
+[     2.06s]   P1: g_vocal=1.0000 g_instr=1.0000 (politica=none)
+[     2.06s] Directorio de corrida (parcial): build/runs/D/S2_shared/native/mqr_run_20261118_210934_partial
+[     2.06s] Pipeline: mode=full_processing, 1 pares, K=175 frames en chunks de 64
+[     3.10s]   chunk 3/3 (frames 128-174) listo
+[     3.14s] Post-WAV identity: SNR=155.32 dB (esperado > 100 dB)
+[     3.14s] Escribiendo analysis.json / analysis.txt ...
+[     3.16s] Directorio final: build/runs/D/S2_shared/native/mqr_run_20261118_210934
+[     3.16s] Duracion total: 1.5 s
+[     3.16s] Corrida COMPLETA: build/runs/D/S2_shared/native/mqr_run_20261118_210934
+
+RESULTADO: OK
+  salida: build/runs/D/S2_shared/native/mqr_run_20261118_210934
+  SDV.wav / SDI.wav / analysis.json / analysis.txt / masks/
+
+===== C/S2_per_channel | 2026-11-18T21:09:34.211184+00:00 | OK | exit=0 =====
+API: main ; argv: ['--manifest', 'build/inputs/S2/manifest.json', '--out', 'build/runs/C/S2_per_channel/native', '--n-fft', '4096', '--hop', '1024', '--chunk-frames', '64', '--mode', 'full_processing', '--allow-misaligned', '--consensus', 'confidence_weighted_mean', '--mask-mode', 'per_channel', '--consensus-order', 'magnitudes_first', '--smoothing', 'none', '--power', '1.8', '--epsilon', '1e-12', '--beta', '1']
+[     2.17s] Validación de entradas OK: Mix 44100Hz/2ch (1.35 MiB) | 1 Pares
+[     2.18s] Verificando alineación temporal NCC de las guías...
+[     2.30s]   P1/vocal       : Offset= -0.00 ms | NCC=0.9076 -> ALIGNED
+[     2.42s]   P1/instrumental: Offset=-27.48 ms | NCC=0.3010 -> MISALIGNED
+[     2.44s] Iniciando pipeline v3.1.0 en: build/runs/C/S2_per_channel/native/motorA_run_20261118_210934_partial
+[     2.44s] Configuración Consenso: order=magnitudes_first | consensus=confidence_weighted_mean | smoothing=none | mask_mode=per_channel
+[     2.44s] Parámetros DSP: p=1.80 | beta=1.00 | eps=1.0e-12 | n_fft=4096 | hop=1024 | residuals=False
+[     2.44s] Procesando 175 tramas en 3 chunks de 64 tramas...
+[     3.05s]   Chunk 03/3 [100.0%] completado (Tramas 128-174)
+[     3.07s] Post-WAV Identity SNR: 151.49 dB (Estado: PASS_EXACT_IDENTITY)
+[     3.09s] Directorio 'masks/' eliminado para liberar espacio.
+[     3.09s] Corrida finalizada exitosamente en: build/runs/C/S2_per_channel/native/motorA_run_20261118_210934
+
+============================================================================
+[92m[✓] SEPARACIÓN MOTOR A v3.1.0 COMPLETADA CON ÉXITO (SNR > 140 dB)[0m
+Directorio de Resultados : [96mbuild/runs/C/S2_per_channel/native/motorA_run_20261118_210934[0m
+Artefactos Generados     : Mix SDV.wav | Mix SDI.wav | analysis.json | analysis.txt
+============================================================================
+
+
+===== C/S2_mono | 2026-11-18T21:09:35.309574+00:00 | OK | exit=0 =====
+API: main ; argv: ['--manifest', 'build/inputs/S2/manifest.json', '--out', 'build/runs/C/S2_mono/native', '--n-fft', '4096', '--hop', '1024', '--chunk-frames', '64', '--mode', 'full_processing', '--allow-misaligned', '--consensus', 'confidence_weighted_mean', '--mask-mode', 'mono', '--consensus-order', 'magnitudes_first', '--smoothing', 'none', '--power', '1.8', '--epsilon', '1e-12', '--beta', '1']
+[     3.27s] Validación de entradas OK: Mix 44100Hz/2ch (1.35 MiB) | 1 Pares
+[     3.27s] Verificando alineación temporal NCC de las guías...
+[     3.39s]   P1/vocal       : Offset= -0.00 ms | NCC=0.9076 -> ALIGNED
+[     3.51s]   P1/instrumental: Offset=-27.48 ms | NCC=0.3010 -> MISALIGNED
+[     3.52s] Iniciando pipeline v3.1.0 en: build/runs/C/S2_mono/native/motorA_run_20261118_210935_partial
+[     3.52s] Configuración Consenso: order=magnitudes_first | consensus=confidence_weighted_mean | smoothing=none | mask_mode=mono
+[     3.52s] Parámetros DSP: p=1.80 | beta=1.00 | eps=1.0e-12 | n_fft=4096 | hop=1024 | residuals=False
+[     3.52s] Procesando 175 tramas en 3 chunks de 64 tramas...
+[     4.10s]   Chunk 03/3 [100.0%] completado (Tramas 128-174)
+[     4.12s] Post-WAV Identity SNR: 153.53 dB (Estado: PASS_EXACT_IDENTITY)
+[     4.13s] Directorio 'masks/' eliminado para liberar espacio.
+[     4.13s] Corrida finalizada exitosamente en: build/runs/C/S2_mono/native/motorA_run_20261118_210935
+
+============================================================================
+[92m[✓] SEPARACIÓN MOTOR A v3.1.0 COMPLETADA CON ÉXITO (SNR > 140 dB)[0m
+Directorio de Resultados : [96mbuild/runs/C/S2_mono/native/motorA_run_20261118_210935[0m
+Artefactos Generados     : Mix SDV.wav | Mix SDI.wav | analysis.json | analysis.txt
+============================================================================
+
+
+===== D/S3_shared | 2026-11-18T21:09:35.389516+00:00 | OK | exit=0 =====
+API: main ; argv: ['--manifest', 'build/inputs/S3/manifest.json', '--out', 'build/runs/D/S3_shared/native', '--n-fft', '4096', '--hop', '1024', '--chunk-frames', '64', '--mode', 'full_processing', '--allow-misaligned', '--consensus', 'confidence_weighted_mean', '--power', '2', '--epsilon', '1e-9']
+[     3.33s] Validacion de entradas: OK (mix 44100 Hz / 2 ch / 176400 frames; 1 pares)
+[     3.33s] Analisis de alineacion (detect_only_no_correction)...
+[     3.50s]   P1/vocal: offset=-0.0 ms, NCC=0.8896 -> ALIGNED
+[     3.66s]   P1/instrumental: offset=-27.2 ms, NCC=0.8087 -> MISALIGNED
+[     3.66s] Analisis de escala de guides (metricas + factores)...
+[     3.68s]   P1: g_vocal=1.0000 g_instr=1.0000 (politica=none)
+[     3.68s] Directorio de corrida (parcial): build/runs/D/S3_shared/native/mqr_run_20261118_210935_partial
+[     3.68s] Pipeline: mode=full_processing, 1 pares, K=175 frames en chunks de 64
+[     4.74s]   chunk 3/3 (frames 128-174) listo
+[     4.78s] Post-WAV identity: SNR=154.57 dB (esperado > 100 dB)
+[     4.78s] Escribiendo analysis.json / analysis.txt ...
+[     4.80s] Directorio final: build/runs/D/S3_shared/native/mqr_run_20261118_210935
+[     4.80s] Duracion total: 1.5 s
+[     4.81s] Corrida COMPLETA: build/runs/D/S3_shared/native/mqr_run_20261118_210935
+
+RESULTADO: OK
+  salida: build/runs/D/S3_shared/native/mqr_run_20261118_210935
+  SDV.wav / SDI.wav / analysis.json / analysis.txt / masks/
+
+===== C/S3_per_channel | 2026-11-18T21:09:36.350224+00:00 | OK | exit=0 =====
+API: main ; argv: ['--manifest', 'build/inputs/S3/manifest.json', '--out', 'build/runs/C/S3_per_channel/native', '--n-fft', '4096', '--hop', '1024', '--chunk-frames', '64', '--mode', 'full_processing', '--allow-misaligned', '--consensus', 'confidence_weighted_mean', '--mask-mode', 'per_channel', '--consensus-order', 'magnitudes_first', '--smoothing', 'none', '--power', '1.8', '--epsilon', '1e-12', '--beta', '1']
+[     4.31s] Validación de entradas OK: Mix 44100Hz/2ch (1.35 MiB) | 1 Pares
+[     4.31s] Verificando alineación temporal NCC de las guías...
+[     4.43s]   P1/vocal       : Offset= -0.00 ms | NCC=0.8896 -> ALIGNED
+[     4.55s]   P1/instrumental: Offset=-27.21 ms | NCC=0.8087 -> MISALIGNED
+[     4.57s] Iniciando pipeline v3.1.0 en: build/runs/C/S3_per_channel/native/motorA_run_20261118_210936_partial
+[     4.57s] Configuración Consenso: order=magnitudes_first | consensus=confidence_weighted_mean | smoothing=none | mask_mode=per_channel
+[     4.57s] Parámetros DSP: p=1.80 | beta=1.00 | eps=1.0e-12 | n_fft=4096 | hop=1024 | residuals=False
+[     4.57s] Procesando 175 tramas en 3 chunks de 64 tramas...
+[     5.18s]   Chunk 03/3 [100.0%] completado (Tramas 128-174)
+[     5.21s] Post-WAV Identity SNR: 154.88 dB (Estado: PASS_EXACT_IDENTITY)
+[     5.22s] Directorio 'masks/' eliminado para liberar espacio.
+[     5.22s] Corrida finalizada exitosamente en: build/runs/C/S3_per_channel/native/motorA_run_20261118_210936
+
+============================================================================
+[92m[✓] SEPARACIÓN MOTOR A v3.1.0 COMPLETADA CON ÉXITO (SNR > 140 dB)[0m
+Directorio de Resultados : [96mbuild/runs/C/S3_per_channel/native/motorA_run_20261118_210936[0m
+Artefactos Generados     : Mix SDV.wav | Mix SDI.wav | analysis.json | analysis.txt
+============================================================================
+
+
+===== D/S4_shared | 2026-11-18T21:09:37.043888+00:00 | OK | exit=0 =====
+API: main ; argv: ['--manifest', 'build/inputs/S4/manifest.json', '--out', 'build/runs/D/S4_shared/native', '--n-fft', '4096', '--hop', '1024', '--chunk-frames', '64', '--mode', 'full_processing', '--allow-misaligned', '--consensus', 'confidence_weighted_mean', '--power', '2', '--epsilon', '1e-9']
+[     4.99s] Validacion de entradas: OK (mix 44100 Hz / 2 ch / 176400 frames; 1 pares)
+[     4.99s] Analisis de alineacion (detect_only_no_correction)...
+[     5.14s]   P1/vocal: offset=+1500.0 ms, NCC=0.5052 -> MISALIGNED
+[     5.30s]   P1/instrumental: offset=-1498.9 ms, NCC=0.6652 -> MISALIGNED
+[     5.30s] Analisis de escala de guides (metricas + factores)...
+[     5.32s]   P1: g_vocal=1.0000 g_instr=1.0000 (politica=none)
+[     5.32s] Directorio de corrida (parcial): build/runs/D/S4_shared/native/mqr_run_20261118_210937_partial
+[     5.32s] Pipeline: mode=full_processing, 1 pares, K=175 frames en chunks de 64
+[     6.39s]   chunk 3/3 (frames 128-174) listo
+[     6.43s] Post-WAV identity: SNR=152.75 dB (esperado > 100 dB)
+[     6.43s] Escribiendo analysis.json / analysis.txt ...
+[     6.45s] Directorio final: build/runs/D/S4_shared/native/mqr_run_20261118_210937
+[     6.45s] Duracion total: 1.5 s
+[     6.46s] Corrida COMPLETA: build/runs/D/S4_shared/native/mqr_run_20261118_210937
+
+RESULTADO: OK
+  salida: build/runs/D/S4_shared/native/mqr_run_20261118_210937
+  SDV.wav / SDI.wav / analysis.json / analysis.txt / masks/
+
+===== C/S3_mono | 2026-11-18T21:09:37.447113+00:00 | OK | exit=0 =====
+API: main ; argv: ['--manifest', 'build/inputs/S3/manifest.json', '--out', 'build/runs/C/S3_mono/native', '--n-fft', '4096', '--hop', '1024', '--chunk-frames', '64', '--mode', 'full_processing', '--allow-misaligned', '--consensus', 'confidence_weighted_mean', '--mask-mode', 'mono', '--consensus-order', 'magnitudes_first', '--smoothing', 'none', '--power', '1.8', '--epsilon', '1e-12', '--beta', '1']
+[     5.41s] Validación de entradas OK: Mix 44100Hz/2ch (1.35 MiB) | 1 Pares
+[     5.41s] Verificando alineación temporal NCC de las guías...
+[     5.53s]   P1/vocal       : Offset= -0.00 ms | NCC=0.8896 -> ALIGNED
+[     5.64s]   P1/instrumental: Offset=-27.21 ms | NCC=0.8087 -> MISALIGNED
+[     5.66s] Iniciando pipeline v3.1.0 en: build/runs/C/S3_mono/native/motorA_run_20261118_210937_partial
+[     5.66s] Configuración Consenso: order=magnitudes_first | consensus=confidence_weighted_mean | smoothing=none | mask_mode=mono
+[     5.66s] Parámetros DSP: p=1.80 | beta=1.00 | eps=1.0e-12 | n_fft=4096 | hop=1024 | residuals=False
+[     5.66s] Procesando 175 tramas en 3 chunks de 64 tramas...
+[     6.26s]   Chunk 03/3 [100.0%] completado (Tramas 128-174)
+[     6.29s] Post-WAV Identity SNR: 154.87 dB (Estado: PASS_EXACT_IDENTITY)
+[     6.30s] Directorio 'masks/' eliminado para liberar espacio.
+[     6.30s] Corrida finalizada exitosamente en: build/runs/C/S3_mono/native/motorA_run_20261118_210937
+
+============================================================================
+[92m[✓] SEPARACIÓN MOTOR A v3.1.0 COMPLETADA CON ÉXITO (SNR > 140 dB)[0m
+Directorio de Resultados : [96mbuild/runs/C/S3_mono/native/motorA_run_20261118_210937[0m
+Artefactos Generados     : Mix SDV.wav | Mix SDI.wav | analysis.json | analysis.txt
+============================================================================
+
+
+===== C/S4_per_channel | 2026-11-18T21:09:38.523117+00:00 | OK | exit=0 =====
+API: main ; argv: ['--manifest', 'build/inputs/S4/manifest.json', '--out', 'build/runs/C/S4_per_channel/native', '--n-fft', '4096', '--hop', '1024', '--chunk-frames', '64', '--mode', 'full_processing', '--allow-misaligned', '--consensus', 'confidence_weighted_mean', '--mask-mode', 'per_channel', '--consensus-order', 'magnitudes_first', '--smoothing', 'none', '--power', '1.8', '--epsilon', '1e-12', '--beta', '1']
+[     6.49s] Validación de entradas OK: Mix 44100Hz/2ch (1.35 MiB) | 1 Pares
+[     6.49s] Verificando alineación temporal NCC de las guías...
+[     6.60s]   P1/vocal       : Offset=+1500.00 ms | NCC=0.5052 -> MISALIGNED
+[     6.71s]   P1/instrumental: Offset=-1498.87 ms | NCC=0.6652 -> MISALIGNED
+[     6.73s] Iniciando pipeline v3.1.0 en: build/runs/C/S4_per_channel/native/motorA_run_20261118_210938_partial
+[     6.73s] Configuración Consenso: order=magnitudes_first | consensus=confidence_weighted_mean | smoothing=none | mask_mode=per_channel
+[     6.73s] Parámetros DSP: p=1.80 | beta=1.00 | eps=1.0e-12 | n_fft=4096 | hop=1024 | residuals=False
+[     6.73s] Procesando 175 tramas en 3 chunks de 64 tramas...
+[     7.35s]   Chunk 03/3 [100.0%] completado (Tramas 128-174)
+[     7.37s] Post-WAV Identity SNR: 164.10 dB (Estado: PASS_EXACT_IDENTITY)
+[     7.39s] Directorio 'masks/' eliminado para liberar espacio.
+[     7.39s] Corrida finalizada exitosamente en: build/runs/C/S4_per_channel/native/motorA_run_20261118_210938
+
+============================================================================
+[92m[✓] SEPARACIÓN MOTOR A v3.1.0 COMPLETADA CON ÉXITO (SNR > 140 dB)[0m
+Directorio de Resultados : [96mbuild/runs/C/S4_per_channel/native/motorA_run_20261118_210938[0m
+Artefactos Generados     : Mix SDV.wav | Mix SDI.wav | analysis.json | analysis.txt
+============================================================================
+
+
+===== D/S5_shared | 2026-11-18T21:09:38.693126+00:00 | OK | exit=0 =====
+API: main ; argv: ['--manifest', 'build/inputs/S5/manifest.json', '--out', 'build/runs/D/S5_shared/native', '--n-fft', '4096', '--hop', '1024', '--chunk-frames', '64', '--mode', 'full_processing', '--allow-misaligned', '--consensus', 'confidence_weighted_mean', '--power', '2', '--epsilon', '1e-9']
+[     6.64s] Validacion de entradas: OK (mix 44100 Hz / 2 ch / 176400 frames; 1 pares)
+[     6.64s] Analisis de alineacion (detect_only_no_correction)...
+[     6.80s]   P1/vocal: offset=+74.8 ms, NCC=0.7763 -> MISALIGNED
+[     6.97s]   P1/instrumental: offset=-145.9 ms, NCC=-0.4598 -> MISALIGNED
+[     6.97s] Analisis de escala de guides (metricas + factores)...
+[     6.98s]   P1: g_vocal=1.0000 g_instr=1.0000 (politica=none)
+[     6.98s] Directorio de corrida (parcial): build/runs/D/S5_shared/native/mqr_run_20261118_210939_partial
+[     6.98s] Pipeline: mode=full_processing, 1 pares, K=175 frames en chunks de 64
+[     8.06s]   chunk 3/3 (frames 128-174) listo
+[     8.10s] Post-WAV identity: SNR=156.14 dB (esperado > 100 dB)
+[     8.10s] Escribiendo analysis.json / analysis.txt ...
+[     8.12s] Directorio final: build/runs/D/S5_shared/native/mqr_run_20261118_210939
+[     8.12s] Duracion total: 1.5 s
+[     8.13s] Corrida COMPLETA: build/runs/D/S5_shared/native/mqr_run_20261118_210939
+
+RESULTADO: OK
+  salida: build/runs/D/S5_shared/native/mqr_run_20261118_210939
+  SDV.wav / SDI.wav / analysis.json / analysis.txt / masks/
+
+===== C/S4_mono | 2026-11-18T21:09:39.614056+00:00 | OK | exit=0 =====
+API: main ; argv: ['--manifest', 'build/inputs/S4/manifest.json', '--out', 'build/runs/C/S4_mono/native', '--n-fft', '4096', '--hop', '1024', '--chunk-frames', '64', '--mode', 'full_processing', '--allow-misaligned', '--consensus', 'confidence_weighted_mean', '--mask-mode', 'mono', '--consensus-order', 'magnitudes_first', '--smoothing', 'none', '--power', '1.8', '--epsilon', '1e-12', '--beta', '1']
+[     7.58s] Validación de entradas OK: Mix 44100Hz/2ch (1.35 MiB) | 1 Pares
+[     7.58s] Verificando alineación temporal NCC de las guías...
+[     7.68s]   P1/vocal       : Offset=+1500.00 ms | NCC=0.5052 -> MISALIGNED
+[     7.79s]   P1/instrumental: Offset=-1498.87 ms | NCC=0.6652 -> MISALIGNED
+[     7.81s] Iniciando pipeline v3.1.0 en: build/runs/C/S4_mono/native/motorA_run_20261118_210939_partial
+[     7.81s] Configuración Consenso: order=magnitudes_first | consensus=confidence_weighted_mean | smoothing=none | mask_mode=mono
+[     7.81s] Parámetros DSP: p=1.80 | beta=1.00 | eps=1.0e-12 | n_fft=4096 | hop=1024 | residuals=False
+[     7.81s] Procesando 175 tramas en 3 chunks de 64 tramas...
+[     8.36s]   Chunk 03/3 [100.0%] completado (Tramas 128-174)
+[     8.38s] Post-WAV Identity SNR: 151.95 dB (Estado: PASS_EXACT_IDENTITY)
+[     8.39s] Directorio 'masks/' eliminado para liberar espacio.
+[     8.39s] Corrida finalizada exitosamente en: build/runs/C/S4_mono/native/motorA_run_20261118_210939
+
+============================================================================
+[92m[✓] SEPARACIÓN MOTOR A v3.1.0 COMPLETADA CON ÉXITO (SNR > 140 dB)[0m
+Directorio de Resultados : [96mbuild/runs/C/S4_mono/native/motorA_run_20261118_210939[0m
+Artefactos Generados     : Mix SDV.wav | Mix SDI.wav | analysis.json | analysis.txt
+============================================================================
+
+
+===== D/S6_shared | 2026-11-18T21:09:40.359119+00:00 | OK | exit=0 =====
+API: main ; argv: ['--manifest', 'build/inputs/S6/manifest.json', '--out', 'build/runs/D/S6_shared/native', '--n-fft', '4096', '--hop', '1024', '--chunk-frames', '64', '--mode', 'full_processing', '--allow-misaligned', '--consensus', 'confidence_weighted_mean', '--power', '2', '--epsilon', '1e-9']
+[     8.30s] Validacion de entradas: OK (mix 44100 Hz / 2 ch / 176400 frames; 1 pares)
+[     8.30s] Analisis de alineacion (detect_only_no_correction)...
+[     8.47s]   P1/vocal: offset=-0.0 ms, NCC=0.9076 -> ALIGNED
+[     8.63s]   P1/instrumental: offset=-27.5 ms, NCC=0.3010 -> MISALIGNED
+[     8.63s] Analisis de escala de guides (metricas + factores)...
+[     8.65s]   P1: g_vocal=1.0000 g_instr=1.0000 (politica=none)
+[     8.65s] Directorio de corrida (parcial): build/runs/D/S6_shared/native/mqr_run_20261118_210940_partial
+[     8.65s] Pipeline: mode=full_processing, 1 pares, K=175 frames en chunks de 64
+[     9.71s]   chunk 3/3 (frames 128-174) listo
+[     9.76s] Post-WAV identity: SNR=155.32 dB (esperado > 100 dB)
+[     9.76s] Escribiendo analysis.json / analysis.txt ...
+[     9.78s] Directorio final: build/runs/D/S6_shared/native/mqr_run_20261118_210940
+[     9.78s] Duracion total: 1.5 s
+[     9.78s] Corrida COMPLETA: build/runs/D/S6_shared/native/mqr_run_20261118_210940
+
+RESULTADO: OK
+  salida: build/runs/D/S6_shared/native/mqr_run_20261118_210940
+  SDV.wav / SDI.wav / analysis.json / analysis.txt / masks/
+
+===== C/S5_per_channel | 2026-11-18T21:09:40.609435+00:00 | OK | exit=0 =====
+API: main ; argv: ['--manifest', 'build/inputs/S5/manifest.json', '--out', 'build/runs/C/S5_per_channel/native', '--n-fft', '4096', '--hop', '1024', '--chunk-frames', '64', '--mode', 'full_processing', '--allow-misaligned', '--consensus', 'confidence_weighted_mean', '--mask-mode', 'per_channel', '--consensus-order', 'magnitudes_first', '--smoothing', 'none', '--power', '1.8', '--epsilon', '1e-12', '--beta', '1']
+[     8.57s] Validación de entradas OK: Mix 44100Hz/2ch (1.35 MiB) | 1 Pares
+[     8.57s] Verificando alineación temporal NCC de las guías...
+[     8.69s]   P1/vocal       : Offset=+74.83 ms | NCC=0.7763 -> MISALIGNED
+[     8.80s]   P1/instrumental: Offset= +0.00 ms | NCC=-0.4598 -> ALIGNED_BY_IDENTITY
+[     8.82s] Iniciando pipeline v3.1.0 en: build/runs/C/S5_per_channel/native/motorA_run_20261118_210940_partial
+[     8.82s] Configuración Consenso: order=magnitudes_first | consensus=confidence_weighted_mean | smoothing=none | mask_mode=per_channel
+[     8.82s] Parámetros DSP: p=1.80 | beta=1.00 | eps=1.0e-12 | n_fft=4096 | hop=1024 | residuals=False
+[     8.82s] Procesando 175 tramas en 3 chunks de 64 tramas...
+[     9.43s]   Chunk 03/3 [100.0%] completado (Tramas 128-174)
+[     9.45s] Post-WAV Identity SNR: 153.68 dB (Estado: PASS_EXACT_IDENTITY)
+[     9.47s] Directorio 'masks/' eliminado para liberar espacio.
+[     9.47s] Corrida finalizada exitosamente en: build/runs/C/S5_per_channel/native/motorA_run_20261118_210940
+
+============================================================================
+[92m[✓] SEPARACIÓN MOTOR A v3.1.0 COMPLETADA CON ÉXITO (SNR > 140 dB)[0m
+Directorio de Resultados : [96mbuild/runs/C/S5_per_channel/native/motorA_run_20261118_210940[0m
+Artefactos Generados     : Mix SDV.wav | Mix SDI.wav | analysis.json | analysis.txt
+============================================================================
+
+
+===== C/S5_mono | 2026-11-18T21:09:41.701002+00:00 | OK | exit=0 =====
+API: main ; argv: ['--manifest', 'build/inputs/S5/manifest.json', '--out', 'build/runs/C/S5_mono/native', '--n-fft', '4096', '--hop', '1024', '--chunk-frames', '64', '--mode', 'full_processing', '--allow-misaligned', '--consensus', 'confidence_weighted_mean', '--mask-mode', 'mono', '--consensus-order', 'magnitudes_first', '--smoothing', 'none', '--power', '1.8', '--epsilon', '1e-12', '--beta', '1']
+[     9.66s] Validación de entradas OK: Mix 44100Hz/2ch (1.35 MiB) | 1 Pares
+[     9.66s] Verificando alineación temporal NCC de las guías...
+[     9.78s]   P1/vocal       : Offset=+74.83 ms | NCC=0.7763 -> MISALIGNED
+[     9.90s]   P1/instrumental: Offset= +0.00 ms | NCC=-0.4598 -> ALIGNED_BY_IDENTITY
+[     9.92s] Iniciando pipeline v3.1.0 en: build/runs/C/S5_mono/native/motorA_run_20261118_210941_partial
+[     9.92s] Configuración Consenso: order=magnitudes_first | consensus=confidence_weighted_mean | smoothing=none | mask_mode=mono
+[     9.92s] Parámetros DSP: p=1.80 | beta=1.00 | eps=1.0e-12 | n_fft=4096 | hop=1024 | residuals=False
+[     9.92s] Procesando 175 tramas en 3 chunks de 64 tramas...
+[    10.48s]   Chunk 03/3 [100.0%] completado (Tramas 128-174)
+[    10.51s] Post-WAV Identity SNR: 153.43 dB (Estado: PASS_EXACT_IDENTITY)
+[    10.52s] Directorio 'masks/' eliminado para liberar espacio.
+[    10.52s] Corrida finalizada exitosamente en: build/runs/C/S5_mono/native/motorA_run_20261118_210941
+
+============================================================================
+[92m[✓] SEPARACIÓN MOTOR A v3.1.0 COMPLETADA CON ÉXITO (SNR > 140 dB)[0m
+Directorio de Resultados : [96mbuild/runs/C/S5_mono/native/motorA_run_20261118_210941[0m
+Artefactos Generados     : Mix SDV.wav | Mix SDI.wav | analysis.json | analysis.txt
+============================================================================
+
+
+===== D/S7_shared | 2026-11-18T21:09:42.012991+00:00 | FAILED | exit=2 =====
+API: main ; argv: ['--manifest', 'build/inputs/S7/manifest.json', '--out', 'build/runs/D/S7_shared/native', '--n-fft', '4096', '--hop', '1024', '--chunk-frames', '64', '--mode', 'full_processing', '--allow-misaligned', '--consensus', 'confidence_weighted_mean', '--power', '2', '--epsilon', '1e-9']
+[     9.95s] Validacion de entradas: OK (mix 44100 Hz / 2 ch / 176400 frames; 1 pares)
+[     9.95s] Analisis de alineacion (detect_only_no_correction)...
+[    10.09s]   P1/vocal: offset=-3999.8 ms, NCC=-2.0000 -> MISALIGNED
+[    10.22s]   P1/instrumental: offset=-3999.8 ms, NCC=-2.0000 -> MISALIGNED
+[    10.22s] Analisis de escala de guides (metricas + factores)...
+[    10.24s]   P1: g_vocal=1.0000 g_instr=1.0000 (politica=none)
+[    10.24s] Directorio de corrida (parcial): build/runs/D/S7_shared/native/mqr_run_20261118_210942_partial
+[    10.24s] Pipeline: mode=full_processing, 1 pares, K=175 frames en chunks de 64
+[    11.33s]   chunk 3/3 (frames 128-174) listo
+[    11.34s] [FATAL] excepcion en el pipeline; corrida preservada en build/runs/D/S7_shared/native/mqr_run_20261118_210942_aborted
+Traceback (most recent call last):
+  File "/home/user/SDV-SDI_SGM/S5_STEREO_VALIDATION/sources/sdv_sdi_mqr_engine.py", line 2186, in run_experiment
+    run_dir_final = _run_core(mix_info, pairs, mode, opt, plan, freqs,
+                    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/user/SDV-SDI_SGM/S5_STEREO_VALIDATION/sources/sdv_sdi_mqr_engine.py", line 2469, in _run_core
+    per_candidate[runner.cand_id] = runner.metrics.finalize()
+                                    ^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/user/SDV-SDI_SGM/S5_STEREO_VALIDATION/sources/sdv_sdi_mqr_engine.py", line 1949, in finalize
+    "crest_factor_sdv": (self.peak_sdv / math.sqrt(
+                         ^^^^^^^^^^^^^^^^^^^^^^^^^^
+ZeroDivisionError: float division by zero
+Traceback (most recent call last):
+  File "/home/user/SDV-SDI_SGM/S5_STEREO_VALIDATION/scripts/pruebas_s5.py", line 129, in run_one
+    raise RuntimeError(f'El motor devolvió {code}; ver console.log (no se reintenta ni parchea).')
+RuntimeError: El motor devolvió 2; ver console.log (no se reintenta ni parchea).
+
+===== C/S6_per_channel | 2026-11-18T21:09:42.740442+00:00 | OK | exit=0 =====
+API: main ; argv: ['--manifest', 'build/inputs/S6/manifest.json', '--out', 'build/runs/C/S6_per_channel/native', '--n-fft', '4096', '--hop', '1024', '--chunk-frames', '64', '--mode', 'full_processing', '--allow-misaligned', '--consensus', 'confidence_weighted_mean', '--mask-mode', 'per_channel', '--consensus-order', 'magnitudes_first', '--smoothing', 'none', '--power', '1.8', '--epsilon', '1e-12', '--beta', '1']
+[    10.70s] Validación de entradas OK: Mix 44100Hz/2ch (1.35 MiB) | 1 Pares
+[    10.70s] Verificando alineación temporal NCC de las guías...
+[    10.82s]   P1/vocal       : Offset= -0.00 ms | NCC=0.9076 -> ALIGNED
+[    10.93s]   P1/instrumental: Offset=-27.48 ms | NCC=0.3010 -> MISALIGNED
+[    10.95s] Iniciando pipeline v3.1.0 en: build/runs/C/S6_per_channel/native/motorA_run_20261118_210942_partial
+[    10.95s] Configuración Consenso: order=magnitudes_first | consensus=confidence_weighted_mean | smoothing=none | mask_mode=per_channel
+[    10.95s] Parámetros DSP: p=1.80 | beta=1.00 | eps=1.0e-12 | n_fft=4096 | hop=1024 | residuals=False
+[    10.95s] Procesando 175 tramas en 3 chunks de 64 tramas...
+[    11.56s]   Chunk 03/3 [100.0%] completado (Tramas 128-174)
+[    11.58s] Post-WAV Identity SNR: 151.49 dB (Estado: PASS_EXACT_IDENTITY)
+[    11.59s] Directorio 'masks/' eliminado para liberar espacio.
+[    11.59s] Corrida finalizada exitosamente en: build/runs/C/S6_per_channel/native/motorA_run_20261118_210942
+
+============================================================================
+[92m[✓] SEPARACIÓN MOTOR A v3.1.0 COMPLETADA CON ÉXITO (SNR > 140 dB)[0m
+Directorio de Resultados : [96mbuild/runs/C/S6_per_channel/native/motorA_run_20261118_210942[0m
+Artefactos Generados     : Mix SDV.wav | Mix SDI.wav | analysis.json | analysis.txt
+============================================================================
+
+
+===== C/S6_mono | 2026-11-18T21:09:43.816671+00:00 | OK | exit=0 =====
+API: main ; argv: ['--manifest', 'build/inputs/S6/manifest.json', '--out', 'build/runs/C/S6_mono/native', '--n-fft', '4096', '--hop', '1024', '--chunk-frames', '64', '--mode', 'full_processing', '--allow-misaligned', '--consensus', 'confidence_weighted_mean', '--mask-mode', 'mono', '--consensus-order', 'magnitudes_first', '--smoothing', 'none', '--power', '1.8', '--epsilon', '1e-12', '--beta', '1']
+[    11.78s] Validación de entradas OK: Mix 44100Hz/2ch (1.35 MiB) | 1 Pares
+[    11.78s] Verificando alineación temporal NCC de las guías...
+[    11.90s]   P1/vocal       : Offset= -0.00 ms | NCC=0.9076 -> ALIGNED
+[    12.02s]   P1/instrumental: Offset=-27.48 ms | NCC=0.3010 -> MISALIGNED
+[    12.03s] Iniciando pipeline v3.1.0 en: build/runs/C/S6_mono/native/motorA_run_20261118_210944_partial
+[    12.03s] Configuración Consenso: order=magnitudes_first | consensus=confidence_weighted_mean | smoothing=none | mask_mode=mono
+[    12.03s] Parámetros DSP: p=1.80 | beta=1.00 | eps=1.0e-12 | n_fft=4096 | hop=1024 | residuals=False
+[    12.03s] Procesando 175 tramas en 3 chunks de 64 tramas...
+[    12.57s]   Chunk 03/3 [100.0%] completado (Tramas 128-174)
+[    12.60s] Post-WAV Identity SNR: 153.53 dB (Estado: PASS_EXACT_IDENTITY)
+[    12.61s] Directorio 'masks/' eliminado para liberar espacio.
+[    12.61s] Corrida finalizada exitosamente en: build/runs/C/S6_mono/native/motorA_run_20261118_210944
+
+============================================================================
+[92m[✓] SEPARACIÓN MOTOR A v3.1.0 COMPLETADA CON ÉXITO (SNR > 140 dB)[0m
+Directorio de Resultados : [96mbuild/runs/C/S6_mono/native/motorA_run_20261118_210944[0m
+Artefactos Generados     : Mix SDV.wav | Mix SDI.wav | analysis.json | analysis.txt
+============================================================================
+
+
+===== C/S7_per_channel | 2026-11-18T21:09:44.821734+00:00 | OK | exit=0 =====
+API: main ; argv: ['--manifest', 'build/inputs/S7/manifest.json', '--out', 'build/runs/C/S7_per_channel/native', '--n-fft', '4096', '--hop', '1024', '--chunk-frames', '64', '--mode', 'full_processing', '--allow-misaligned', '--consensus', 'confidence_weighted_mean', '--mask-mode', 'per_channel', '--consensus-order', 'magnitudes_first', '--smoothing', 'none', '--power', '1.8', '--epsilon', '1e-12', '--beta', '1']
+[    12.78s] Validación de entradas OK: Mix 44100Hz/2ch (1.35 MiB) | 1 Pares
+[    12.78s] Verificando alineación temporal NCC de las guías...
+[    12.88s]   P1/vocal       : Offset= +0.00 ms | NCC=0.0000 -> ALIGNED_BY_IDENTITY
+[    12.98s]   P1/instrumental: Offset= +0.00 ms | NCC=0.0000 -> ALIGNED_BY_IDENTITY
+[    13.00s] Iniciando pipeline v3.1.0 en: build/runs/C/S7_per_channel/native/motorA_run_20261118_210945_partial
+[    13.00s] Configuración Consenso: order=magnitudes_first | consensus=confidence_weighted_mean | smoothing=none | mask_mode=per_channel
+[    13.00s] Parámetros DSP: p=1.80 | beta=1.00 | eps=1.0e-12 | n_fft=4096 | hop=1024 | residuals=False
+[    13.00s] Procesando 175 tramas en 3 chunks de 64 tramas...
+[    13.58s]   Chunk 03/3 [100.0%] completado (Tramas 128-174)
+[    13.60s] Post-WAV Identity SNR: 154.88 dB (Estado: PASS_EXACT_IDENTITY)
+[    13.61s] Directorio 'masks/' eliminado para liberar espacio.
+[    13.61s] Corrida finalizada exitosamente en: build/runs/C/S7_per_channel/native/motorA_run_20261118_210945
+
+============================================================================
+[92m[✓] SEPARACIÓN MOTOR A v3.1.0 COMPLETADA CON ÉXITO (SNR > 140 dB)[0m
+Directorio de Resultados : [96mbuild/runs/C/S7_per_channel/native/motorA_run_20261118_210945[0m
+Artefactos Generados     : Mix SDV.wav | Mix SDI.wav | analysis.json | analysis.txt
+============================================================================
+
+
+===== C/S7_mono | 2026-11-18T21:09:45.840932+00:00 | OK | exit=0 =====
+API: main ; argv: ['--manifest', 'build/inputs/S7/manifest.json', '--out', 'build/runs/C/S7_mono/native', '--n-fft', '4096', '--hop', '1024', '--chunk-frames', '64', '--mode', 'full_processing', '--allow-misaligned', '--consensus', 'confidence_weighted_mean', '--mask-mode', 'mono', '--consensus-order', 'magnitudes_first', '--smoothing', 'none', '--power', '1.8', '--epsilon', '1e-12', '--beta', '1']
+[    13.80s] Validación de entradas OK: Mix 44100Hz/2ch (1.35 MiB) | 1 Pares
+[    13.80s] Verificando alineación temporal NCC de las guías...
+[    13.90s]   P1/vocal       : Offset= +0.00 ms | NCC=0.0000 -> ALIGNED_BY_IDENTITY
+[    14.00s]   P1/instrumental: Offset= +0.00 ms | NCC=0.0000 -> ALIGNED_BY_IDENTITY
+[    14.01s] Iniciando pipeline v3.1.0 en: build/runs/C/S7_mono/native/motorA_run_20261118_210946_partial
+[    14.01s] Configuración Consenso: order=magnitudes_first | consensus=confidence_weighted_mean | smoothing=none | mask_mode=mono
+[    14.02s] Parámetros DSP: p=1.80 | beta=1.00 | eps=1.0e-12 | n_fft=4096 | hop=1024 | residuals=False
+[    14.02s] Procesando 175 tramas en 3 chunks de 64 tramas...
+[    14.56s]   Chunk 03/3 [100.0%] completado (Tramas 128-174)
+[    14.59s] Post-WAV Identity SNR: 335.64 dB (Estado: PASS_EXACT_IDENTITY)
+[    14.60s] Directorio 'masks/' eliminado para liberar espacio.
+[    14.60s] Corrida finalizada exitosamente en: build/runs/C/S7_mono/native/motorA_run_20261118_210946
+
+============================================================================
+[92m[✓] SEPARACIÓN MOTOR A v3.1.0 COMPLETADA CON ÉXITO (SNR > 140 dB)[0m
+Directorio de Resultados : [96mbuild/runs/C/S7_mono/native/motorA_run_20261118_210946[0m
+Artefactos Generados     : Mix SDV.wav | Mix SDI.wav | analysis.json | analysis.txt
+============================================================================
+
+
+===== C/Ppos_per_channel_polaridad | 2026-11-18T21:09:46.814710+00:00 | OK | exit=0 =====
+API: main ; argv: ['--manifest', 'build/inputs/extra/Ppos.json', '--out', 'build/runs/C/Ppos_per_channel_polaridad/native', '--n-fft', '4096', '--hop', '1024', '--chunk-frames', '64', '--mode', 'full_processing', '--allow-misaligned', '--consensus', 'confidence_weighted_mean', '--mask-mode', 'per_channel', '--consensus-order', 'magnitudes_first', '--smoothing', 'none', '--power', '1.8', '--epsilon', '1e-12', '--beta', '1']
+[    14.79s] Validación de entradas OK: Mix 44100Hz/2ch (1.35 MiB) | 2 Pares
+[    14.79s] Verificando alineación temporal NCC de las guías...
+[    14.90s]   P1/vocal       : Offset= -0.00 ms | NCC=0.9076 -> ALIGNED
+[    15.02s]   P1/instrumental: Offset=-27.48 ms | NCC=0.3010 -> MISALIGNED
+[    15.14s]   P2/vocal       : Offset= -0.00 ms | NCC=0.9768 -> ALIGNED
+[    15.25s]   P2/instrumental: Offset= +0.00 ms | NCC=0.9701 -> ALIGNED
+[    15.28s] Iniciando pipeline v3.1.0 en: build/runs/C/Ppos_per_channel_polaridad/native/motorA_run_20261118_210947_partial
+[    15.28s] Configuración Consenso: order=magnitudes_first | consensus=confidence_weighted_mean | smoothing=none | mask_mode=per_channel
+[    15.28s] Parámetros DSP: p=1.80 | beta=1.00 | eps=1.0e-12 | n_fft=4096 | hop=1024 | residuals=False
+[    15.28s] Procesando 175 tramas en 3 chunks de 64 tramas...
+[    16.22s]   Chunk 03/3 [100.0%] completado (Tramas 128-174)
+[    16.25s] Post-WAV Identity SNR: 151.39 dB (Estado: PASS_EXACT_IDENTITY)
+[    16.28s] Directorio 'masks/' eliminado para liberar espacio.
+[    16.28s] Corrida finalizada exitosamente en: build/runs/C/Ppos_per_channel_polaridad/native/motorA_run_20261118_210947
+
+============================================================================
+[92m[✓] SEPARACIÓN MOTOR A v3.1.0 COMPLETADA CON ÉXITO (SNR > 140 dB)[0m
+Directorio de Resultados : [96mbuild/runs/C/Ppos_per_channel_polaridad/native/motorA_run_20261118_210947[0m
+Artefactos Generados     : Mix SDV.wav | Mix SDI.wav | analysis.json | analysis.txt
+============================================================================
+
+
+===== C/Pneg_per_channel_polaridad | 2026-11-18T21:09:48.508498+00:00 | OK | exit=0 =====
+API: main ; argv: ['--manifest', 'build/inputs/extra/Pneg.json', '--out', 'build/runs/C/Pneg_per_channel_polaridad/native', '--n-fft', '4096', '--hop', '1024', '--chunk-frames', '64', '--mode', 'full_processing', '--allow-misaligned', '--consensus', 'confidence_weighted_mean', '--mask-mode', 'per_channel', '--consensus-order', 'magnitudes_first', '--smoothing', 'none', '--power', '1.8', '--epsilon', '1e-12', '--beta', '1']
+[    16.48s] Validación de entradas OK: Mix 44100Hz/2ch (1.35 MiB) | 2 Pares
+[    16.48s] Verificando alineación temporal NCC de las guías...
+[    16.60s]   P1/vocal       : Offset= -0.00 ms | NCC=0.9076 -> ALIGNED
+[    16.72s]   P1/instrumental: Offset=-27.48 ms | NCC=0.3010 -> MISALIGNED
+[    16.83s]   P2/vocal       : Offset= +0.00 ms | NCC=-0.4749 -> ALIGNED_BY_IDENTITY
+[    16.95s]   P2/instrumental: Offset= +0.00 ms | NCC=0.9701 -> ALIGNED
+[    16.98s] [AUTO-PHASE] P2/vocal: Inversión de fase detectada (g_LS=-1.7912). Auto-rectificando a fase constructiva (0°) -> g_LS=1.7912
+[    16.98s] Iniciando pipeline v3.1.0 en: build/runs/C/Pneg_per_channel_polaridad/native/motorA_run_20261118_210949_partial
+[    16.98s] Configuración Consenso: order=magnitudes_first | consensus=confidence_weighted_mean | smoothing=none | mask_mode=per_channel
+[    16.98s] Parámetros DSP: p=1.80 | beta=1.00 | eps=1.0e-12 | n_fft=4096 | hop=1024 | residuals=False
+[    16.99s] Procesando 175 tramas en 3 chunks de 64 tramas...
+[    17.95s]   Chunk 03/3 [100.0%] completado (Tramas 128-174)
+[    17.97s] Post-WAV Identity SNR: 151.39 dB (Estado: PASS_EXACT_IDENTITY)
+[    18.01s] Directorio 'masks/' eliminado para liberar espacio.
+[    18.01s] Corrida finalizada exitosamente en: build/runs/C/Pneg_per_channel_polaridad/native/motorA_run_20261118_210949
+
+============================================================================
+[92m[✓] SEPARACIÓN MOTOR A v3.1.0 COMPLETADA CON ÉXITO (SNR > 140 dB)[0m
+Directorio de Resultados : [96mbuild/runs/C/Pneg_per_channel_polaridad/native/motorA_run_20261118_210949[0m
+Artefactos Generados     : Mix SDV.wav | Mix SDI.wav | analysis.json | analysis.txt
+============================================================================
+
+
+===== C/Ppos_per_channel_hybrid | 2026-11-18T21:09:50.235370+00:00 | OK | exit=0 =====
+API: main ; argv: ['--manifest', 'build/inputs/extra/Ppos.json', '--out', 'build/runs/C/Ppos_per_channel_hybrid/native', '--n-fft', '4096', '--hop', '1024', '--chunk-frames', '64', '--mode', 'full_processing', '--allow-misaligned', '--consensus', 'confidence_weighted_mean', '--mask-mode', 'per_channel', '--consensus-order', 'hybrid_asymmetric', '--smoothing', 'none', '--power', '1.8', '--epsilon', '1e-12', '--beta', '1']
+[    18.20s] Validación de entradas OK: Mix 44100Hz/2ch (1.35 MiB) | 2 Pares
+[    18.20s] Verificando alineación temporal NCC de las guías...
+[    18.32s]   P1/vocal       : Offset= -0.00 ms | NCC=0.9076 -> ALIGNED
+[    18.44s]   P1/instrumental: Offset=-27.48 ms | NCC=0.3010 -> MISALIGNED
+[    18.55s]   P2/vocal       : Offset= -0.00 ms | NCC=0.9768 -> ALIGNED
+[    18.67s]   P2/instrumental: Offset= +0.00 ms | NCC=0.9701 -> ALIGNED
+[    18.70s] Iniciando pipeline v3.1.0 en: build/runs/C/Ppos_per_channel_hybrid/native/motorA_run_20261118_210950_partial
+[    18.70s] Configuración Consenso: order=hybrid_asymmetric | consensus=confidence_weighted_mean | smoothing=none | mask_mode=per_channel
+[    18.70s] Parámetros DSP: p=1.80 | beta=1.00 | eps=1.0e-12 | n_fft=4096 | hop=1024 | residuals=False
+[    18.70s] Procesando 175 tramas en 3 chunks de 64 tramas...
+[    20.13s]   Chunk 03/3 [100.0%] completado (Tramas 128-174)
+[    20.16s] Post-WAV Identity SNR: 152.74 dB (Estado: PASS_EXACT_IDENTITY)
+[    20.19s] Directorio 'masks/' eliminado para liberar espacio.
+[    20.19s] Corrida finalizada exitosamente en: build/runs/C/Ppos_per_channel_hybrid/native/motorA_run_20261118_210950
+
+============================================================================
+[92m[✓] SEPARACIÓN MOTOR A v3.1.0 COMPLETADA CON ÉXITO (SNR > 140 dB)[0m
+Directorio de Resultados : [96mbuild/runs/C/Ppos_per_channel_hybrid/native/motorA_run_20261118_210950[0m
+Artefactos Generados     : Mix SDV.wav | Mix SDI.wav | analysis.json | analysis.txt
+============================================================================
+
+
+===== A/Ronly_per_channel_unilateral | 2026-11-18T21:10:51.819305+00:00 | OK | exit=0 =====
+API: run_processing ; argv: ['--manifest', 'build/inputs/Ronly/manifest.json', '--out', 'build/runs/A/Ronly_per_channel_unilateral/native', '--n-fft', '4096', '--hop', '1024', '--chunk-frames', '64', '--branch', 'identity', '--consensus', 'magnitudes_first', '--mask-mode', 'per_channel', '--power', '1.95', '--epsilon', '1e-12', '--smoothing', 'none', '--no-loo']
+
+===== A/Ronly_mono_unilateral | 2026-11-18T21:10:52.311107+00:00 | OK | exit=0 =====
+API: run_processing ; argv: ['--manifest', 'build/inputs/Ronly/manifest.json', '--out', 'build/runs/A/Ronly_mono_unilateral/native', '--n-fft', '4096', '--hop', '1024', '--chunk-frames', '64', '--branch', 'identity', '--consensus', 'magnitudes_first', '--mask-mode', 'mono', '--power', '1.95', '--epsilon', '1e-12', '--smoothing', 'none', '--no-loo']
+
+===== B/Ronly_per_channel_unilateral | 2026-11-18T21:10:53.230722+00:00 | OK | exit=0 =====
+API: main ; argv: ['--manifest', 'build/inputs/Ronly/manifest.json', '--out', 'build/runs/B/Ronly_per_channel_unilateral/native', '--n-fft', '4096', '--hop', '1024', '--chunk-frames', '64', '--mode', 'full_processing', '--allow-misaligned', '--consensus', 'confidence_weighted_mean', '--mask-mode', 'per_channel', '--consensus-order', 'magnitudes_first', '--smoothing', 'none', '--power', '1.8', '--epsilon', '1e-12', '--beta', '1']
+[     0.02s] Validación de entradas OK: Mix 44100Hz/2ch (1.35 MiB) | 1 Pares
+[     0.02s] Verificando alineación temporal NCC de las guías...
+[     0.20s]   P1/vocal       : Offset=-27.21 ms | NCC=0.8407 -> MISALIGNED
+[     0.39s]   P1/instrumental: Offset= +0.00 ms | NCC=0.5416 -> ALIGNED
+[     0.41s] Iniciando pipeline v3.1.0 en: build/runs/B/Ronly_per_channel_unilateral/native/motorA_run_20261118_211053_partial
+[     0.41s] Configuración: consensus_order=magnitudes_first | smoothing=none | mask_mode=per_channel | residuals=False
+[     0.41s] Procesando 175 tramas en 3 chunks de 64 tramas...
+[     1.02s]   Chunk 03/3 [100.0%] completado (Tramas 128-174)
+[     1.05s] Post-WAV Identity SNR: 151.48 dB (Estado: PASS_EXACT_IDENTITY)
+[     1.06s] Directorio 'masks/' eliminado para liberar espacio.
+[     1.06s] Corrida finalizada exitosamente en: build/runs/B/Ronly_per_channel_unilateral/native/motorA_run_20261118_211053
+
+============================================================================
+[92m[✓] SEPARACIÓN MOTOR A v3.1.0 COMPLETADA CON ÉXITO (SNR > 140 dB)[0m
+Directorio de Resultados : [96mbuild/runs/B/Ronly_per_channel_unilateral/native/motorA_run_20261118_211053[0m
+Artefactos Generados     : Mix SDV.wav | Mix SDI.wav | analysis.json | analysis.txt
+============================================================================
+
+
+===== B/Ronly_mono_unilateral | 2026-11-18T21:10:54.470063+00:00 | OK | exit=0 =====
+API: main ; argv: ['--manifest', 'build/inputs/Ronly/manifest.json', '--out', 'build/runs/B/Ronly_mono_unilateral/native', '--n-fft', '4096', '--hop', '1024', '--chunk-frames', '64', '--mode', 'full_processing', '--allow-misaligned', '--consensus', 'confidence_weighted_mean', '--mask-mode', 'mono', '--consensus-order', 'magnitudes_first', '--smoothing', 'none', '--power', '1.8', '--epsilon', '1e-12', '--beta', '1']
+[     1.26s] Validación de entradas OK: Mix 44100Hz/2ch (1.35 MiB) | 1 Pares
+[     1.26s] Verificando alineación temporal NCC de las guías...
+[     1.44s]   P1/vocal       : Offset=-27.21 ms | NCC=0.8407 -> MISALIGNED
+[     1.62s]   P1/instrumental: Offset= +0.00 ms | NCC=0.5416 -> ALIGNED
+[     1.64s] Iniciando pipeline v3.1.0 en: build/runs/B/Ronly_mono_unilateral/native/motorA_run_20261118_211054_partial
+[     1.64s] Configuración: consensus_order=magnitudes_first | smoothing=none | mask_mode=mono | residuals=False
+[     1.64s] Procesando 175 tramas en 3 chunks de 64 tramas...
+[     2.21s]   Chunk 03/3 [100.0%] completado (Tramas 128-174)
+[     2.24s] Post-WAV Identity SNR: 151.05 dB (Estado: PASS_EXACT_IDENTITY)
+[     2.25s] Directorio 'masks/' eliminado para liberar espacio.
+[     2.25s] Corrida finalizada exitosamente en: build/runs/B/Ronly_mono_unilateral/native/motorA_run_20261118_211054
+
+============================================================================
+[92m[✓] SEPARACIÓN MOTOR A v3.1.0 COMPLETADA CON ÉXITO (SNR > 140 dB)[0m
+Directorio de Resultados : [96mbuild/runs/B/Ronly_mono_unilateral/native/motorA_run_20261118_211054[0m
+Artefactos Generados     : Mix SDV.wav | Mix SDI.wav | analysis.json | analysis.txt
+============================================================================
+
+
+===== C/Ronly_per_channel_unilateral | 2026-11-18T21:10:56.141288+00:00 | OK | exit=0 =====
+API: main ; argv: ['--manifest', 'build/inputs/Ronly/manifest.json', '--out', 'build/runs/C/Ronly_per_channel_unilateral/native', '--n-fft', '4096', '--hop', '1024', '--chunk-frames', '64', '--mode', 'full_processing', '--allow-misaligned', '--consensus', 'confidence_weighted_mean', '--mask-mode', 'per_channel', '--consensus-order', 'magnitudes_first', '--smoothing', 'none', '--power', '1.8', '--epsilon', '1e-12', '--beta', '1']
+[     0.02s] Validación de entradas OK: Mix 44100Hz/2ch (1.35 MiB) | 1 Pares
+[     0.02s] Verificando alineación temporal NCC de las guías...
+[     0.14s]   P1/vocal       : Offset=-27.21 ms | NCC=0.8407 -> MISALIGNED
+[     0.27s]   P1/instrumental: Offset= +0.00 ms | NCC=0.5416 -> ALIGNED
+[     0.28s] Iniciando pipeline v3.1.0 en: build/runs/C/Ronly_per_channel_unilateral/native/motorA_run_20261118_211056_partial
+[     0.28s] Configuración Consenso: order=magnitudes_first | consensus=confidence_weighted_mean | smoothing=none | mask_mode=per_channel
+[     0.28s] Parámetros DSP: p=1.80 | beta=1.00 | eps=1.0e-12 | n_fft=4096 | hop=1024 | residuals=False
+[     0.28s] Procesando 175 tramas en 3 chunks de 64 tramas...
+[     0.91s]   Chunk 03/3 [100.0%] completado (Tramas 128-174)
+[     0.93s] Post-WAV Identity SNR: 151.48 dB (Estado: PASS_EXACT_IDENTITY)
+[     0.94s] Directorio 'masks/' eliminado para liberar espacio.
+[     0.94s] Corrida finalizada exitosamente en: build/runs/C/Ronly_per_channel_unilateral/native/motorA_run_20261118_211056
+
+============================================================================
+[92m[✓] SEPARACIÓN MOTOR A v3.1.0 COMPLETADA CON ÉXITO (SNR > 140 dB)[0m
+Directorio de Resultados : [96mbuild/runs/C/Ronly_per_channel_unilateral/native/motorA_run_20261118_211056[0m
+Artefactos Generados     : Mix SDV.wav | Mix SDI.wav | analysis.json | analysis.txt
+============================================================================
+
+
+===== C/Ronly_mono_unilateral | 2026-11-18T21:10:57.253273+00:00 | OK | exit=0 =====
+API: main ; argv: ['--manifest', 'build/inputs/Ronly/manifest.json', '--out', 'build/runs/C/Ronly_mono_unilateral/native', '--n-fft', '4096', '--hop', '1024', '--chunk-frames', '64', '--mode', 'full_processing', '--allow-misaligned', '--consensus', 'confidence_weighted_mean', '--mask-mode', 'mono', '--consensus-order', 'magnitudes_first', '--smoothing', 'none', '--power', '1.8', '--epsilon', '1e-12', '--beta', '1']
+[     1.13s] Validación de entradas OK: Mix 44100Hz/2ch (1.35 MiB) | 1 Pares
+[     1.13s] Verificando alineación temporal NCC de las guías...
+[     1.25s]   P1/vocal       : Offset=-27.21 ms | NCC=0.8407 -> MISALIGNED
+[     1.37s]   P1/instrumental: Offset= +0.00 ms | NCC=0.5416 -> ALIGNED
+[     1.39s] Iniciando pipeline v3.1.0 en: build/runs/C/Ronly_mono_unilateral/native/motorA_run_20261118_211057_partial
+[     1.39s] Configuración Consenso: order=magnitudes_first | consensus=confidence_weighted_mean | smoothing=none | mask_mode=mono
+[     1.39s] Parámetros DSP: p=1.80 | beta=1.00 | eps=1.0e-12 | n_fft=4096 | hop=1024 | residuals=False
+[     1.39s] Procesando 175 tramas en 3 chunks de 64 tramas...
+[     1.94s]   Chunk 03/3 [100.0%] completado (Tramas 128-174)
+[     1.97s] Post-WAV Identity SNR: 151.05 dB (Estado: PASS_EXACT_IDENTITY)
+[     1.98s] Directorio 'masks/' eliminado para liberar espacio.
+[     1.98s] Corrida finalizada exitosamente en: build/runs/C/Ronly_mono_unilateral/native/motorA_run_20261118_211057
+
+============================================================================
+[92m[✓] SEPARACIÓN MOTOR A v3.1.0 COMPLETADA CON ÉXITO (SNR > 140 dB)[0m
+Directorio de Resultados : [96mbuild/runs/C/Ronly_mono_unilateral/native/motorA_run_20261118_211057[0m
+Artefactos Generados     : Mix SDV.wav | Mix SDI.wav | analysis.json | analysis.txt
+============================================================================
+
+
+===== D/Ronly_shared_unilateral | 2026-11-18T21:10:58.764930+00:00 | OK | exit=0 =====
+API: main ; argv: ['--manifest', 'build/inputs/Ronly/manifest.json', '--out', 'build/runs/D/Ronly_shared_unilateral/native', '--n-fft', '4096', '--hop', '1024', '--chunk-frames', '64', '--mode', 'full_processing', '--allow-misaligned', '--consensus', 'confidence_weighted_mean', '--power', '2', '--epsilon', '1e-9']
+[     0.02s] Validacion de entradas: OK (mix 44100 Hz / 2 ch / 176400 frames; 1 pares)
+[     0.02s] Analisis de alineacion (detect_only_no_correction)...
+[     0.20s]   P1/vocal: offset=-27.2 ms, NCC=0.8407 -> MISALIGNED
+[     0.37s]   P1/instrumental: offset=+0.0 ms, NCC=0.5416 -> ALIGNED
+[     0.37s] Analisis de escala de guides (metricas + factores)...
+[     0.39s]   P1: g_vocal=1.0000 g_instr=1.0000 (politica=none)
+[     0.39s] Directorio de corrida (parcial): build/runs/D/Ronly_shared_unilateral/native/mqr_run_20261118_211059_partial
+[     0.39s] Pipeline: mode=full_processing, 1 pares, K=175 frames en chunks de 64
+[     1.52s]   chunk 3/3 (frames 128-174) listo
+[     1.57s] Post-WAV identity: SNR=153.06 dB (esperado > 100 dB)
+[     1.57s] Escribiendo analysis.json / analysis.txt ...
+[     1.59s] Directorio final: build/runs/D/Ronly_shared_unilateral/native/mqr_run_20261118_211059
+[     1.59s] Duracion total: 1.6 s
+[     1.59s] Corrida COMPLETA: build/runs/D/Ronly_shared_unilateral/native/mqr_run_20261118_211059
+
+RESULTADO: OK
+  salida: build/runs/D/Ronly_shared_unilateral/native/mqr_run_20261118_211059
+  SDV.wav / SDI.wav / analysis.json / analysis.txt / masks/

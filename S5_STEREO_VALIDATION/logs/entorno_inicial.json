@@ -1,0 +1,27 @@
+{
+  "utc": "2026-11-18T21:02:59.615925+00:00",
+  "python": "3.11.2 (main, Apr  8 2026, 01:58:00) [GCC 12.2.0]",
+  "executable": "/usr/bin/python3",
+  "platform": "Linux-6.1.158+-x86_64-with-glibc2.36",
+  "versions": {
+    "numpy": null,
+    "numpy_error": "ModuleNotFoundError(\"No module named 'numpy'\")",
+    "scipy": null,
+    "scipy_error": "ModuleNotFoundError(\"No module named 'scipy'\")",
+    "soundfile": null,
+    "soundfile_error": "ModuleNotFoundError(\"No module named 'soundfile'\")",
+    "libsndfile": null
+  },
+  "system_sndfile": null,
+  "memory": {
+    "MemTotal_bytes": 4131278848,
+    "MemAvailable_bytes": 3861221376,
+    "SwapTotal_bytes": 0
+  },
+  "disk_free_bytes": 20678864896,
+  "threads": {
+    "OPENBLAS_NUM_THREADS": null,
+    "OMP_NUM_THREADS": null,
+    "MKL_NUM_THREADS": null
+  }
+}

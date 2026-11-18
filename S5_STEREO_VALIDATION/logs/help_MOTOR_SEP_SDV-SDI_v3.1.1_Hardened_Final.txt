@@ -1,0 +1,47 @@
+usage: MOTOR_SEP_SDV-SDI.py [-h] [--manifest MANIFEST] [--mix MIX]
+                            [--mode {full_processing,analysis_only,dry_run,single_pair}]
+                            [--out OUT] [--n-fft N_FFT] [--hop HOP]
+                            [--power POWER] [--epsilon EPSILON] [--beta BETA]
+                            [--consensus-order {magnitudes_first,masks_first}]
+                            [--smoothing {none,median_3x3,gaussian_5x3}]
+                            [--mask-mode {mono,per_channel}]
+                            [--chunk-frames CHUNK_FRAMES]
+                            [--consensus {weighted_mean,median,confidence_weighted_mean}]
+                            [--use-residuals] [--correct-alignment]
+                            [--allow-misaligned] [--write-all-candidates]
+                            [--png] [--keep-masks]
+
+SGM MOTOR A (SDV-SDI Master Engine) v3.1.1-Sfumato-Calibrated - Topology T02
+Calibrated (p=1.8, eps=1e-12, magnitudes_first, SNR > 140 dB)
+
+options:
+  -h, --help            show this help message and exit
+  --manifest MANIFEST   Ruta al manifiesto JSON (MANIFEST_SEP_SDV-SDI.json)
+  --mix MIX             Ruta al Mix Original (modo interactivo rápido)
+  --mode {full_processing,analysis_only,dry_run,single_pair}
+                        Modo de ejecución
+  --out OUT             Directorio base de salida
+  --n-fft N_FFT         Tamaño FFT (2048, 4096, 8192)
+  --hop HOP             Longitud de salto (hop length)
+  --power POWER         Exponente p de la máscara Wiener (1.8 Sfumato)
+  --epsilon EPSILON     Epsilon calibrado (1e-12)
+  --beta BETA           Exponente beta de consenso leave-one-out
+  --consensus-order {magnitudes_first,masks_first}
+                        Orden de consenso (magnitudes_first / masks_first)
+  --smoothing {none,median_3x3,gaussian_5x3}
+                        Kernel de suavizado 2D (none, median_3x3,
+                        gaussian_5x3)
+  --mask-mode {mono,per_channel}
+                        Modo de cálculo de máscara (mono / per_channel)
+  --chunk-frames CHUNK_FRAMES
+                        Tramas por chunk para memoria ARM64
+  --consensus {weighted_mean,median,confidence_weighted_mean}
+                        Consenso predeterminado
+  --use-residuals       Activa guías por residuo con ajuste LS-Gain
+  --correct-alignment   Corrige retardos temporales de las guías previo al
+                        STFT
+  --allow-misaligned    Permite ejecutar aunque haya guías desalineadas
+  --write-all-candidates
+                        Escribe SDV/SDI de todos los candidatos individuales
+  --png                 Genera mapas de calor espectrales PNG
+  --keep-masks          Conserva las máscaras en disco

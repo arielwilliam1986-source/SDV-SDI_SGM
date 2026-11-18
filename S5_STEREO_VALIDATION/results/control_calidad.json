@@ -1,0 +1,20 @@
+{
+  "status": "PASS_INTEGRITY",
+  "runs_completed": 58,
+  "runs_incomplete": [
+    {
+      "block": "D",
+      "id": "S7_shared",
+      "status": "FAILED",
+      "engine_exit": 2
+    }
+  ],
+  "sources_identical": 4,
+  "archives": 5,
+  "archive_members_hashed": 495,
+  "json_inside_archives_parsed": 68,
+  "wav_files_reopened": 144,
+  "csv_channel_rows": 288,
+  "actual_masks_reopened": 59,
+  "reconstruction_and_paired_contrasts_recomputed": true
+}

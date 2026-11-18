@@ -1,0 +1,52 @@
+usage: MOTOR_SEP_SDV-SDI_v3.py [-h] --manifest MANIFEST [--out OUT]
+                               [--branch {normal,ratio,identity}]
+                               [--consensus {magnitudes_first,mean,median,median_ri}]
+                               [--run-mode {full_processing,analysis_only,dry_run,single_pair}]
+                               [--dry-run] [--power POWER] [--epsilon EPSILON]
+                               [--smoothing {none,median_3x3,gaussian_5x3}]
+                               [--mask-mode {mono,per_channel}]
+                               [--n-fft {1024,2048,4096,8192}] [--hop HOP]
+                               [--chunk-frames CHUNK_FRAMES] [--fix-polarity]
+                               [--allow-misaligned] [--correct-alignment]
+                               [--enable-loo] [--no-loo]
+                               [--ref-vocal REF_VOCAL] [--ref-inst REF_INST]
+                               [--png] [--no-wav] [--quiet] [--version]
+
+MOTOR_SEP_SDV-SDI_v3 v3.0.0 (Consensus-Complete) — consenso complejo SDV/SDI a
+partir de guias residuales.
+
+options:
+  -h, --help            show this help message and exit
+  --manifest MANIFEST   Manifiesto JSON (default: None)
+  --out OUT             Carpeta de salida (default: None)
+  --branch {normal,ratio,identity}
+                        Rama de construccion de SDV/SDI (default: normal)
+  --consensus {magnitudes_first,mean,median,median_ri}
+                        Metodo de consenso entre guias (default:
+                        magnitudes_first)
+  --run-mode {full_processing,analysis_only,dry_run,single_pair}
+  --dry-run             Valida y planifica sin procesar (default: False)
+  --power POWER         Exponente de la mascara (rama identity) (default:
+                        1.95)
+  --epsilon EPSILON
+  --smoothing {none,median_3x3,gaussian_5x3}
+  --mask-mode {mono,per_channel}
+  --n-fft {1024,2048,4096,8192}
+  --hop HOP
+  --chunk-frames CHUNK_FRAMES
+  --fix-polarity        Invierte el signo de las guias en contrafase TOTAL
+                        detectada (default: False)
+  --allow-misaligned    No abortar si hay desalineacion > 10 ms (default:
+                        False)
+  --correct-alignment   Compensa el desfase VAD (protegido contra
+                        periodicidad) (default: False)
+  --enable-loo          Activa la validacion leave-one-out (cuesta ~1.5x)
+                        (default: False)
+  --no-loo
+  --ref-vocal REF_VOCAL
+                        Stem vocal real para SI-SDR (default: None)
+  --ref-inst REF_INST   Stem instrumental real para SI-SDR (default: None)
+  --png                 Genera graficos PNG (default: False)
+  --no-wav              No escribir WAVs (default: False)
+  --quiet
+  --version             show program's version number and exit

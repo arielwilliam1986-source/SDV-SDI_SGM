@@ -1,0 +1,26 @@
+API: main ; argv: ['--manifest', 'build/inputs/S7/manifest.json', '--out', 'build/runs/D/S7_shared/native', '--n-fft', '4096', '--hop', '1024', '--chunk-frames', '64', '--mode', 'full_processing', '--allow-misaligned', '--consensus', 'confidence_weighted_mean', '--power', '2', '--epsilon', '1e-9']
+[     9.95s] Validacion de entradas: OK (mix 44100 Hz / 2 ch / 176400 frames; 1 pares)
+[     9.95s] Analisis de alineacion (detect_only_no_correction)...
+[    10.09s]   P1/vocal: offset=-3999.8 ms, NCC=-2.0000 -> MISALIGNED
+[    10.22s]   P1/instrumental: offset=-3999.8 ms, NCC=-2.0000 -> MISALIGNED
+[    10.22s] Analisis de escala de guides (metricas + factores)...
+[    10.24s]   P1: g_vocal=1.0000 g_instr=1.0000 (politica=none)
+[    10.24s] Directorio de corrida (parcial): build/runs/D/S7_shared/native/mqr_run_20261118_210942_partial
+[    10.24s] Pipeline: mode=full_processing, 1 pares, K=175 frames en chunks de 64
+[    11.33s]   chunk 3/3 (frames 128-174) listo
+[    11.34s] [FATAL] excepcion en el pipeline; corrida preservada en build/runs/D/S7_shared/native/mqr_run_20261118_210942_aborted
+Traceback (most recent call last):
+  File "/home/user/SDV-SDI_SGM/S5_STEREO_VALIDATION/sources/sdv_sdi_mqr_engine.py", line 2186, in run_experiment
+    run_dir_final = _run_core(mix_info, pairs, mode, opt, plan, freqs,
+                    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/user/SDV-SDI_SGM/S5_STEREO_VALIDATION/sources/sdv_sdi_mqr_engine.py", line 2469, in _run_core
+    per_candidate[runner.cand_id] = runner.metrics.finalize()
+                                    ^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/user/SDV-SDI_SGM/S5_STEREO_VALIDATION/sources/sdv_sdi_mqr_engine.py", line 1949, in finalize
+    "crest_factor_sdv": (self.peak_sdv / math.sqrt(
+                         ^^^^^^^^^^^^^^^^^^^^^^^^^^
+ZeroDivisionError: float division by zero
+Traceback (most recent call last):
+  File "/home/user/SDV-SDI_SGM/S5_STEREO_VALIDATION/scripts/pruebas_s5.py", line 129, in run_one
+    raise RuntimeError(f'El motor devolvió {code}; ver console.log (no se reintenta ni parchea).')
+RuntimeError: El motor devolvió 2; ver console.log (no se reintenta ni parchea).

@@ -1,0 +1,19 @@
+
+$ python3 -B sources/MOTOR_SEP_SDV-SDI_EVO.py --help
+[FATAL] numpy no disponible. Instalar: pip install numpy
+exit=1
+
+$ python3 -B sources/MOTOR_SEP_SDV-SDI_v3.1.1_Hardened_Final.py --help
+[FATAL] numpy no disponible. Instalar: pip install numpy
+exit=1
+
+$ python3 -B sources/MOTOR_SEP_SDV-SDI_v3.py --help
+Traceback (most recent call last):
+  File "/home/user/SDV-SDI_SGM/S5_STEREO_VALIDATION/sources/MOTOR_SEP_SDV-SDI_v3.py", line 145, in <module>
+    import numpy as np
+ModuleNotFoundError: No module named 'numpy'
+exit=1
+
+$ python3 -B sources/sdv_sdi_mqr_engine.py --help
+[FATAL] numpy no disponible. Instalar: pip install numpy
+exit=1

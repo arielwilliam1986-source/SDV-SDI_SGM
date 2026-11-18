@@ -1,0 +1,24 @@
+{
+  "utc": "2026-11-18T21:04:47.048572+00:00",
+  "python": "3.11.2 (main, Apr  8 2026, 01:58:00) [GCC 12.2.0]",
+  "executable": "/tmp/sdv-s5-venv/bin/python",
+  "platform": "Linux-6.1.158+-x86_64-with-glibc2.36",
+  "versions": {
+    "numpy": "1.26.4",
+    "scipy": "1.13.1",
+    "soundfile": "0.13.1",
+    "libsndfile": "1.2.2"
+  },
+  "system_sndfile": null,
+  "memory": {
+    "MemTotal_bytes": 4131278848,
+    "MemAvailable_bytes": 3849752576,
+    "SwapTotal_bytes": 0
+  },
+  "disk_free_bytes": 20417011712,
+  "threads": {
+    "OPENBLAS_NUM_THREADS": "1",
+    "OMP_NUM_THREADS": "1",
+    "MKL_NUM_THREADS": "1"
+  }
+}

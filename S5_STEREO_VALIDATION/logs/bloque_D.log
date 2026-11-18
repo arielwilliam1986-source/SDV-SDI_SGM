@@ -1,0 +1,7 @@
+D S1_shared OK 
+D S2_shared OK 
+D S3_shared OK 
+D S4_shared OK 
+D S5_shared OK 
+D S6_shared OK 
+D S7_shared FAILED RuntimeError: El motor devolvió 2; ver console.log (no se reintenta ni parchea).

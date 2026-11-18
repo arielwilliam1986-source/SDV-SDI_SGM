@@ -1,0 +1,5501 @@
+{
+  "block": "A",
+  "source": "MOTOR_SEP_SDV-SDI_v3.py",
+  "sha256": "a0550a01cefb1095a0086824e1accfe1d7909b717ff1804920ae6c24d8d8487e",
+  "signature": "(opt, mix_info: 'FileInfo', pairs: 'List[PairMeta]', branch: 'str', method: 'str', run_dir: 'str', write_wavs: 'bool', ref_v: 'Optional[str]', ref_i: 'Optional[str]', shifts: 'dict', gains: 'dict', enable_loo: 'bool') -> 'dict'",
+  "help": "logs/help_MOTOR_SEP_SDV-SDI_v3.txt",
+  "runs": [
+    {
+      "id": "S1_per_channel",
+      "case": "S1",
+      "mode": "per_channel",
+      "series": "principal",
+      "entrypoint": "run_processing",
+      "argv": [
+        "--manifest",
+        "build/inputs/S1/manifest.json",
+        "--out",
+        "build/runs/A/S1_per_channel/native",
+        "--n-fft",
+        "4096",
+        "--hop",
+        "1024",
+        "--chunk-frames",
+        "64",
+        "--branch",
+        "identity",
+        "--consensus",
+        "magnitudes_first",
+        "--mask-mode",
+        "per_channel",
+        "--power",
+        "1.95",
+        "--epsilon",
+        "1e-12",
+        "--smoothing",
+        "none",
+        "--no-loo"
+      ],
+      "cwd": "S5_STEREO_VALIDATION",
+      "utc": "2026-11-18T21:09:08.905952+00:00",
+      "log": "runs/A/S1_per_channel/console.log",
+      "status": "OK",
+      "engine_exit": 0,
+      "parsed_options": {
+        "manifest": "build/inputs/S1/manifest.json",
+        "out": "build/runs/A/S1_per_channel/native",
+        "branch": "identity",
+        "consensus": "magnitudes_first",
+        "run_mode": "full_processing",
+        "dry_run": false,
+        "power": 1.95,
+        "epsilon": 1e-12,
+        "smoothing": "none",
+        "mask_mode": "per_channel",
+        "n_fft": 4096,
+        "hop": 1024,
+        "chunk_frames": 64,
+        "fix_polarity": false,
+        "allow_misaligned": false,
+        "correct_alignment": false,
+        "enable_loo": false,
+        "ref_vocal": null,
+        "ref_inst": null,
+        "png": false,
+        "no_wav": false,
+        "quiet": false
+      },
+      "inputs": {
+        "Mix": {
+          "path": "inputs/S1/Mix.wav",
+          "sha256": "9c26d36ba63c2284885cc3b6e4cf1be7a0d7fbb7216f5977100a7306b91abe5d"
+        },
+        "P1/V": {
+          "path": "inputs/S1/V.wav",
+          "sha256": "d0cbb158c4a71c3b842a61c087ceb1292fed65e659b65479459463722e7f50f8"
+        },
+        "P1/I": {
+          "path": "inputs/S1/I.wav",
+          "sha256": "55993c630add17c42e9c224542f8b7ac5ed4f27d43bf8a3a9bf856d240d389f7"
+        }
+      },
+      "kernel_args": {
+        "branch": "identity",
+        "method": "magnitudes_first",
+        "run_dir": "build/runs/A/S1_per_channel/native",
+        "write_wavs": true,
+        "ref_v": null,
+        "ref_i": null,
+        "shifts": {},
+        "gains": {},
+        "enable_loo": false,
+        "mix_info": "probe_file(mix)",
+        "pairs": "load_manifest(manifest)",
+        "opt": "parsed_options"
+      },
+      "outputs": {
+        "SDV": {
+          "path": "runs/A/S1_per_channel/native/Mix SDV [Identity].wav",
+          "sha256": "45a25fc654339ac645b0d1068491a4748de41cb813c4ea331c983ea37f5aa6c8",
+          "pcm_f32le_sha256": "be8c1a100ae460960e272b854c8b1c5f09364157d817f102bbf07e489902fadf",
+          "sr": 44100,
+          "channels": 2,
+          "frames": 176400,
+          "seconds": 4.0,
+          "subtype": "FLOAT",
+          "nonfinite": [
+            0,
+            0
+          ],
+          "rms": [
+            0.1469105717707318,
+            0.1469105717707318
+          ],
+          "peak": [
+            0.23646415770053864,
+            0.23646415770053864
+          ],
+          "tp4x": [
+            0.23661468252815707,
+            0.23661468252815707
+          ],
+          "rms_R_over_L": 1.0,
+          "corr_LR": 0.9999999999999999,
+          "rms_L_minus_R": 0.0,
+          "max_abs_L_minus_R": 0.0
+        },
+        "SDI": {
+          "path": "runs/A/S1_per_channel/native/Mix SDI [Identity].wav",
+          "sha256": "04129ac362dcb373bd90757b4d63e2ed5d2117881f9bf48ebad884ce1956746e",
+          "pcm_f32le_sha256": "fdb25b238dbe34848194220bde90294aed71dbe8ef85d87316046d7ae74269f1",
+          "sr": 44100,
+          "channels": 2,
+          "frames": 176400,
+          "seconds": 4.0,
+          "subtype": "FLOAT",
+          "nonfinite": [
+            0,
+            0
+          ],
+          "rms": [
+            0.08905405801229156,
+            0.08905405801229156
+          ],
+          "peak": [
+            0.14045657217502594,
+            0.14045657217502594
+          ],
+          "tp4x": [
+            0.14069410874315189,
+            0.14069410874315189
+          ],
+          "rms_R_over_L": 1.0,
+          "corr_LR": 1.0,
+          "rms_L_minus_R": 0.0,
+          "max_abs_L_minus_R": 0.0
+        }
+      },
+      "reconstruction": {
+        "rms": [
+          3.6297000268318456e-09,
+          3.6297000268318456e-09
+        ],
+        "max_abs": [
+          7.450580596923828e-09,
+          7.450580596923828e-09
+        ]
+      },
+      "observation": {
+        "chunks": [
+          {
+            "f0": 0,
+            "config": {
+              "branch": "identity",
+              "mask_mode": "per_channel",
+              "pre_share_formula_max_error": 0.0
+            },
+            "mask_shape": [
+              2,
+              2049,
+              64
+            ],
+            "mix_stft_shape": [
+              2,
+              2049,
+              64
+            ],
+            "V_stft_shape": [
+              2,
+              2049,
+              64
+            ],
+            "I_stft_shape": [
+              2,
+              2049,
+              64
+            ],
+            "SDV_stft_shape": [
+              2,
+              2049,
+              64
+            ],
+            "SDI_stft_shape": [
+              2,
+              2049,
+              64
+            ],
+            "max_abs_SDV_minus_XM": 0.0,
+            "max_abs_SDI_minus_X1mM": 0.0
+          },
+          {
+            "f0": 64,
+            "config": {
+              "branch": "identity",
+              "mask_mode": "per_channel",
+              "pre_share_formula_max_error": 0.0
+            },
+            "mask_shape": [
+              2,
+              2049,
+              64
+            ],
+            "mix_stft_shape": [
+              2,
+              2049,
+              64
+            ],
+            "V_stft_shape": [
+              2,
+              2049,
+              64
+            ],
+            "I_stft_shape": [
+              2,
+              2049,
+              64
+            ],
+            "SDV_stft_shape": [
+              2,
+              2049,
+              64
+            ],
+            "SDI_stft_shape": [
+              2,
+              2049,
+              64
+            ],
+            "max_abs_SDV_minus_XM": 0.0,
+            "max_abs_SDI_minus_X1mM": 0.0
+          },
+          {
+            "f0": 128,
+            "config": {
+              "branch": "identity",
+              "mask_mode": "per_channel",
+              "pre_share_formula_max_error": 0.0
+            },
+            "mask_shape": [
+              2,
+              2049,
+              47
+            ],
+            "mix_stft_shape": [
+              2,
+              2049,
+              47
+            ],
+            "V_stft_shape": [
+              2,
+              2049,
+              47
+            ],
+            "I_stft_shape": [
+              2,
+              2049,
+              47
+            ],
+            "SDV_stft_shape": [
+              2,
+              2049,
+              47
+            ],
+            "SDI_stft_shape": [
+              2,
+              2049,
+              47
+            ],
+            "max_abs_SDV_minus_XM": 0.0,
+            "max_abs_SDI_minus_X1mM": 0.0
+          }
+        ],
+        "guide_inputs": [],
+        "polarity": [],
+        "errors": [],
+        "shape": [
+          2,
+          2049,
+          175
+        ],
+        "dtype": "float64",
+        "shared": false,
+        "nonfinite": 0,
+        "mask_npy_sha256": "a785ae7187e6d6a434de222b8e93ae2df8ae2685701dfb84b42b45dc806e3012",
+        "stats": [
+          {
+            "min": 2.014314947767018e-18,
+            "max": 0.9999999999920011,
+            "mean": 0.07434673911090757,
+            "std": 0.20346968791029904
+          },
+          {
+            "min": 2.014314947767018e-18,
+            "max": 0.9999999999920011,
+            "mean": 0.07434673911090757,
+            "std": 0.20346968791029904
+          }
+        ],
+        "lr_max": 0.0,
+        "lr_rms": 0.0,
+        "lr_mix_energy_weighted_rms": 0.0
+      },
+      "applied_mask": "runs/A/S1_per_channel/applied_mask.npy"
+    },
+    {
+      "id": "S1_mono",
+      "case": "S1",
+      "mode": "mono",
+      "series": "principal",
+      "entrypoint": "run_processing",
+      "argv": [
+        "--manifest",
+        "build/inputs/S1/manifest.json",
+        "--out",
+        "build/runs/A/S1_mono/native",
+        "--n-fft",
+        "4096",
+        "--hop",
+        "1024",
+        "--chunk-frames",
+        "64",
+        "--branch",
+        "identity",
+        "--consensus",
+        "magnitudes_first",
+        "--mask-mode",
+        "mono",
+        "--power",
+        "1.95",
+        "--epsilon",
+        "1e-12",
+        "--smoothing",
+        "none",
+        "--no-loo"
+      ],
+      "cwd": "S5_STEREO_VALIDATION",
+      "utc": "2026-11-18T21:09:09.403526+00:00",
+      "log": "runs/A/S1_mono/console.log",
+      "status": "OK",
+      "engine_exit": 0,
+      "parsed_options": {
+        "manifest": "build/inputs/S1/manifest.json",
+        "out": "build/runs/A/S1_mono/native",
+        "branch": "identity",
+        "consensus": "magnitudes_first",
+        "run_mode": "full_processing",
+        "dry_run": false,
+        "power": 1.95,
+        "epsilon": 1e-12,
+        "smoothing": "none",
+        "mask_mode": "mono",
+        "n_fft": 4096,
+        "hop": 1024,
+        "chunk_frames": 64,
+        "fix_polarity": false,
+        "allow_misaligned": false,
+        "correct_alignment": false,
+        "enable_loo": false,
+        "ref_vocal": null,
+        "ref_inst": null,
+        "png": false,
+        "no_wav": false,
+        "quiet": false
+      },
+      "inputs": {
+        "Mix": {
+          "path": "inputs/S1/Mix.wav",
+          "sha256": "9c26d36ba63c2284885cc3b6e4cf1be7a0d7fbb7216f5977100a7306b91abe5d"
+        },
+        "P1/V": {
+          "path": "inputs/S1/V.wav",
+          "sha256": "d0cbb158c4a71c3b842a61c087ceb1292fed65e659b65479459463722e7f50f8"
+        },
+        "P1/I": {
+          "path": "inputs/S1/I.wav",
+          "sha256": "55993c630add17c42e9c224542f8b7ac5ed4f27d43bf8a3a9bf856d240d389f7"
+        }
+      },
+      "kernel_args": {
+        "branch": "identity",
+        "method": "magnitudes_first",
+        "run_dir": "build/runs/A/S1_mono/native",
+        "write_wavs": true,
+        "ref_v": null,
+        "ref_i": null,
+        "shifts": {},
+        "gains": {},
+        "enable_loo": false,
+        "mix_info": "probe_file(mix)",
+        "pairs": "load_manifest(manifest)",
+        "opt": "parsed_options"
+      },
+      "outputs": {
+        "SDV": {
+          "path": "runs/A/S1_mono/native/Mix SDV [Identity].wav",
+          "sha256": "45a25fc654339ac645b0d1068491a4748de41cb813c4ea331c983ea37f5aa6c8",
+          "pcm_f32le_sha256": "be8c1a100ae460960e272b854c8b1c5f09364157d817f102bbf07e489902fadf",
+          "sr": 44100,
+          "channels": 2,
+          "frames": 176400,
+          "seconds": 4.0,
+          "subtype": "FLOAT",
+          "nonfinite": [
+            0,
+            0
+          ],
+          "rms": [
+            0.1469105717707318,
+            0.1469105717707318
+          ],
+          "peak": [
+            0.23646415770053864,
+            0.23646415770053864
+          ],
+          "tp4x": [
+            0.23661468252815707,
+            0.23661468252815707
+          ],
+          "rms_R_over_L": 1.0,
+          "corr_LR": 0.9999999999999999,
+          "rms_L_minus_R": 0.0,
+          "max_abs_L_minus_R": 0.0
+        },
+        "SDI": {
+          "path": "runs/A/S1_mono/native/Mix SDI [Identity].wav",
+          "sha256": "04129ac362dcb373bd90757b4d63e2ed5d2117881f9bf48ebad884ce1956746e",
+          "pcm_f32le_sha256": "fdb25b238dbe34848194220bde90294aed71dbe8ef85d87316046d7ae74269f1",
+          "sr": 44100,
+          "channels": 2,
+          "frames": 176400,
+          "seconds": 4.0,
+          "subtype": "FLOAT",
+          "nonfinite": [
+            0,
+            0
+          ],
+          "rms": [
+            0.08905405801229156,
+            0.08905405801229156
+          ],
+          "peak": [
+            0.14045657217502594,
+            0.14045657217502594
+          ],
+          "tp4x": [
+            0.14069410874315189,
+            0.14069410874315189
+          ],
+          "rms_R_over_L": 1.0,
+          "corr_LR": 1.0,
+          "rms_L_minus_R": 0.0,
+          "max_abs_L_minus_R": 0.0
+        }
+      },
+      "reconstruction": {
+        "rms": [
+          3.6297000268318456e-09,
+          3.6297000268318456e-09
+        ],
+        "max_abs": [
+          7.450580596923828e-09,
+          7.450580596923828e-09
+        ]
+      },
+      "observation": {
+        "chunks": [
+          {
+            "f0": 0,
+            "config": {
+              "branch": "identity",
+              "mask_mode": "mono",
+              "pre_share_formula_max_error": 0.0
+            },
+            "mask_shape": [
+              1,
+              2049,
+              64
+            ],
+            "mix_stft_shape": [
+              2,
+              2049,
+              64
+            ],
+            "V_stft_shape": [
+              2,
+              2049,
+              64
+            ],
+            "I_stft_shape": [
+              2,
+              2049,
+              64
+            ],
+            "SDV_stft_shape": [
+              2,
+              2049,
+              64
+            ],
+            "SDI_stft_shape": [
+              2,
+              2049,
+              64
+            ],
+            "max_abs_SDV_minus_XM": 0.0,
+            "max_abs_SDI_minus_X1mM": 0.0
+          },
+          {
+            "f0": 64,
+            "config": {
+              "branch": "identity",
+              "mask_mode": "mono",
+              "pre_share_formula_max_error": 0.0
+            },
+            "mask_shape": [
+              1,
+              2049,
+              64
+            ],
+            "mix_stft_shape": [
+              2,
+              2049,
+              64
+            ],
+            "V_stft_shape": [
+              2,
+              2049,
+              64
+            ],
+            "I_stft_shape": [
+              2,
+              2049,
+              64
+            ],
+            "SDV_stft_shape": [
+              2,
+              2049,
+              64
+            ],
+            "SDI_stft_shape": [
+              2,
+              2049,
+              64
+            ],
+            "max_abs_SDV_minus_XM": 0.0,
+            "max_abs_SDI_minus_X1mM": 0.0
+          },
+          {
+            "f0": 128,
+            "config": {
+              "branch": "identity",
+              "mask_mode": "mono",
+              "pre_share_formula_max_error": 0.0
+            },
+            "mask_shape": [
+              1,
+              2049,
+              47
+            ],
+            "mix_stft_shape": [
+              2,
+              2049,
+              47
+            ],
+            "V_stft_shape": [
+              2,
+              2049,
+              47
+            ],
+            "I_stft_shape": [
+              2,
+              2049,
+              47
+            ],
+            "SDV_stft_shape": [
+              2,
+              2049,
+              47
+            ],
+            "SDI_stft_shape": [
+              2,
+              2049,
+              47
+            ],
+            "max_abs_SDV_minus_XM": 0.0,
+            "max_abs_SDI_minus_X1mM": 0.0
+          }
+        ],
+        "guide_inputs": [],
+        "polarity": [],
+        "errors": [],
+        "shape": [
+          1,
+          2049,
+          175
+        ],
+        "dtype": "float64",
+        "shared": true,
+        "nonfinite": 0,
+        "mask_npy_sha256": "22045c265a012749d34623b5ce341e7f6b466fe00956b6dae3c6101155ed3ceb",
+        "stats": [
+          {
+            "min": 2.014314947767018e-18,
+            "max": 0.9999999999920011,
+            "mean": 0.07434673911090757,
+            "std": 0.20346968791029904
+          }
+        ],
+        "lr_max": 0.0,
+        "lr_rms": 0.0,
+        "lr_mix_energy_weighted_rms": 0.0
+      },
+      "applied_mask": "runs/A/S1_mono/applied_mask.npy"
+    },
+    {
+      "id": "S2_per_channel",
+      "case": "S2",
+      "mode": "per_channel",
+      "series": "principal",
+      "entrypoint": "run_processing",
+      "argv": [
+        "--manifest",
+        "build/inputs/S2/manifest.json",
+        "--out",
+        "build/runs/A/S2_per_channel/native",
+        "--n-fft",
+        "4096",
+        "--hop",
+        "1024",
+        "--chunk-frames",
+        "64",
+        "--branch",
+        "identity",
+        "--consensus",
+        "magnitudes_first",
+        "--mask-mode",
+        "per_channel",
+        "--power",
+        "1.95",
+        "--epsilon",
+        "1e-12",
+        "--smoothing",
+        "none",
+        "--no-loo"
+      ],
+      "cwd": "S5_STEREO_VALIDATION",
+      "utc": "2026-11-18T21:09:09.851726+00:00",
+      "log": "runs/A/S2_per_channel/console.log",
+      "status": "OK",
+      "engine_exit": 0,
+      "parsed_options": {
+        "manifest": "build/inputs/S2/manifest.json",
+        "out": "build/runs/A/S2_per_channel/native",
+        "branch": "identity",
+        "consensus": "magnitudes_first",
+        "run_mode": "full_processing",
+        "dry_run": false,
+        "power": 1.95,
+        "epsilon": 1e-12,
+        "smoothing": "none",
+        "mask_mode": "per_channel",
+        "n_fft": 4096,
+        "hop": 1024,
+        "chunk_frames": 64,
+        "fix_polarity": false,
+        "allow_misaligned": false,
+        "correct_alignment": false,
+        "enable_loo": false,
+        "ref_vocal": null,
+        "ref_inst": null,
+        "png": false,
+        "no_wav": false,
+        "quiet": false
+      },
+      "inputs": {
+        "Mix": {
+          "path": "inputs/S2/Mix.wav",
+          "sha256": "ed9297315c5946f1405fe67f1ca454b399e22f1a3399afc033e2f66997ddf33a"
+        },
+        "P1/V": {
+          "path": "inputs/S2/V.wav",
+          "sha256": "6b23fc9c0a232cdd001b485652cec0b9cd97da81c5d063fefef1b94e26773c7a"
+        },
+        "P1/I": {
+          "path": "inputs/S2/I.wav",
+          "sha256": "fa4bec6b085159d542b6d34062722c883d4400ddd503da1fb6f9a9530b0ffd86"
+        }
+      },
+      "kernel_args": {
+        "branch": "identity",
+        "method": "magnitudes_first",
+        "run_dir": "build/runs/A/S2_per_channel/native",
+        "write_wavs": true,
+        "ref_v": null,
+        "ref_i": null,
+        "shifts": {},
+        "gains": {},
+        "enable_loo": false,
+        "mix_info": "probe_file(mix)",
+        "pairs": "load_manifest(manifest)",
+        "opt": "parsed_options"
+      },
+      "outputs": {
+        "SDV": {
+          "path": "runs/A/S2_per_channel/native/Mix SDV [Identity].wav",
+          "sha256": "219d573b9d6391148862cbd4ed4f43d70747e8816e3cb4979b07f275d7f73fd2",
+          "pcm_f32le_sha256": "2213d13b0ea6094b1595d855070edbcb328c81d69006e66b4832ad1cd33e55fa",
+          "sr": 44100,
+          "channels": 2,
+          "frames": 176400,
+          "seconds": 4.0,
+          "subtype": "FLOAT",
+          "nonfinite": [
+            0,
+            0
+          ],
+          "rms": [
+            0.12727849375293274,
+            0.11312814668334932
+          ],
+          "peak": [
+            0.18025743961334229,
+            0.16416090726852417
+          ],
+          "tp4x": [
+            0.18037218520645285,
+            0.16433895885423624
+          ],
+          "rms_R_over_L": 0.8888237387767062,
+          "corr_LR": 7.588561850257958e-05,
+          "rms_L_minus_R": 0.17028096553528516,
+          "max_abs_L_minus_R": 0.297856405377388
+        },
+        "SDI": {
+          "path": "runs/A/S2_per_channel/native/Mix SDI [Identity].wav",
+          "sha256": "e7bfba15852a732e8d9a6012c7d5750e97a13f20cb87362739090de7b14328b8",
+          "pcm_f32le_sha256": "3f678a1eb26b2e771ba05e987543a92e51a77dbd45b98f190da01982cceee3a3",
+          "sr": 44100,
+          "channels": 2,
+          "frames": 176400,
+          "seconds": 4.0,
+          "subtype": "FLOAT",
+          "nonfinite": [
+            0,
+            0
+          ],
+          "rms": [
+            0.09191924330511954,
+            0.0989907520739902
+          ],
+          "peak": [
+            0.13223068416118622,
+            0.14006733894348145
+          ],
+          "tp4x": [
+            0.13255116266586128,
+            0.1401565009215777
+          ],
+          "rms_R_over_L": 1.0769317556868618,
+          "corr_LR": 5.1194133376145026e-05,
+          "rms_L_minus_R": 0.13508288063082344,
+          "max_abs_L_minus_R": 0.27005869150161743
+        }
+      },
+      "reconstruction": {
+        "rms": [
+          4.047429476332228e-09,
+          4.324337867686159e-09
+        ],
+        "max_abs": [
+          1.1175870895385742e-08,
+          1.0943040251731873e-08
+        ]
+      },
+      "observation": {
+        "chunks": [
+          {
+            "f0": 0,
+            "config": {
+              "branch": "identity",
+              "mask_mode": "per_channel",
+              "pre_share_formula_max_error": 0.0
+            },
+            "mask_shape": [
+              2,
+              2049,
+              64
+            ],
+            "mix_stft_shape": [
+              2,
+              2049,
+              64
+            ],
+            "V_stft_shape": [
+              2,
+              2049,
+              64
+            ],
+            "I_stft_shape": [
+              2,
+              2049,
+              64
+            ],
+            "SDV_stft_shape": [
+              2,
+              2049,
+              64
+            ],
+            "SDI_stft_shape": [
+              2,
+              2049,
+              64
+            ],
+            "max_abs_SDV_minus_XM": 0.0,
+            "max_abs_SDI_minus_X1mM": 0.0
+          },
+          {
+            "f0": 64,
+            "config": {
+              "branch": "identity",
+              "mask_mode": "per_channel",
+              "pre_share_formula_max_error": 0.0
+            },
+            "mask_shape": [
+              2,
+              2049,
+              64
+            ],
+            "mix_stft_shape": [
+              2,
+              2049,
+              64
+            ],
+            "V_stft_shape": [
+              2,
+              2049,
+              64
+            ],
+            "I_stft_shape": [
+              2,
+              2049,
+              64
+            ],
+            "SDV_stft_shape": [
+              2,
+              2049,
+              64
+            ],
+            "SDI_stft_shape": [
+              2,
+              2049,
+              64
+            ],
+            "max_abs_SDV_minus_XM": 0.0,
+            "max_abs_SDI_minus_X1mM": 0.0
+          },
+          {
+            "f0": 128,
+            "config": {
+              "branch": "identity",
+              "mask_mode": "per_channel",
+              "pre_share_formula_max_error": 0.0
+            },
+            "mask_shape": [
+              2,
+              2049,
+              47
+            ],
+            "mix_stft_shape": [
+              2,
+              2049,
+              47
+            ],
+            "V_stft_shape": [
+              2,
+              2049,
+              47
+            ],
+            "I_stft_shape": [
+              2,
+              2049,
+              47
+            ],
+            "SDV_stft_shape": [
+              2,
+              2049,
+              47
+            ],
+            "SDI_stft_shape": [
+              2,
+              2049,
+              47
+            ],
+            "max_abs_SDV_minus_XM": 0.0,
+            "max_abs_SDI_minus_X1mM": 0.0
+          }
+        ],
+        "guide_inputs": [],
+        "polarity": [],
+        "errors": [],
+        "shape": [
+          2,
+          2049,
+          175
+        ],
+        "dtype": "float64",
+        "shared": false,
+        "nonfinite": 0,
+        "mask_npy_sha256": "e455c374f4401ec528cd1d305b4380edb592d437eed6beccb4a026d00add1dd4",
+        "stats": [
+          {
+            "min": 3.4245118153682923e-18,
+            "max": 0.9999999999999606,
+            "mean": 0.05300199581330588,
+            "std": 0.1910335997771812
+          },
+          {
+            "min": 2.0027953166050333e-18,
+            "max": 0.9999999999995061,
+            "mean": 0.17224953544849142,
+            "std": 0.33157715766602774
+          }
+        ],
+        "lr_max": 0.9999999999967624,
+        "lr_rms": 0.3842521874818999,
+        "lr_mix_energy_weighted_rms": 0.9509677120810394
+      },
+      "applied_mask": "runs/A/S2_per_channel/applied_mask.npy"
+    },
+    {
+      "id": "S2_mono",
+      "case": "S2",
+      "mode": "mono",
+      "series": "principal",
+      "entrypoint": "run_processing",
+      "argv": [
+        "--manifest",
+        "build/inputs/S2/manifest.json",
+        "--out",
+        "build/runs/A/S2_mono/native",
+        "--n-fft",
+        "4096",
+        "--hop",
+        "1024",
+        "--chunk-frames",
+        "64",
+        "--branch",
+        "identity",
+        "--consensus",
+        "magnitudes_first",
+        "--mask-mode",
+        "mono",
+        "--power",
+        "1.95",
+        "--epsilon",
+        "1e-12",
+        "--smoothing",
+        "none",
+        "--no-loo"
+      ],
+      "cwd": "S5_STEREO_VALIDATION",
+      "utc": "2026-11-18T21:09:10.339492+00:00",
+      "log": "runs/A/S2_mono/console.log",
+      "status": "OK",
+      "engine_exit": 0,
+      "parsed_options": {
+        "manifest": "build/inputs/S2/manifest.json",
+        "out": "build/runs/A/S2_mono/native",
+        "branch": "identity",
+        "consensus": "magnitudes_first",
+        "run_mode": "full_processing",
+        "dry_run": false,
+        "power": 1.95,
+        "epsilon": 1e-12,
+        "smoothing": "none",
+        "mask_mode": "mono",
+        "n_fft": 4096,
+        "hop": 1024,
+        "chunk_frames": 64,
+        "fix_polarity": false,
+        "allow_misaligned": false,
+        "correct_alignment": false,
+        "enable_loo": false,
+        "ref_vocal": null,
+        "ref_inst": null,
+        "png": false,
+        "no_wav": false,
+        "quiet": false
+      },
+      "inputs": {
+        "Mix": {
+          "path": "inputs/S2/Mix.wav",
+          "sha256": "ed9297315c5946f1405fe67f1ca454b399e22f1a3399afc033e2f66997ddf33a"
+        },
+        "P1/V": {
+          "path": "inputs/S2/V.wav",
+          "sha256": "6b23fc9c0a232cdd001b485652cec0b9cd97da81c5d063fefef1b94e26773c7a"
+        },
+        "P1/I": {
+          "path": "inputs/S2/I.wav",
+          "sha256": "fa4bec6b085159d542b6d34062722c883d4400ddd503da1fb6f9a9530b0ffd86"
+        }
+      },
+      "kernel_args": {
+        "branch": "identity",
+        "method": "magnitudes_first",
+        "run_dir": "build/runs/A/S2_mono/native",
+        "write_wavs": true,
+        "ref_v": null,
+        "ref_i": null,
+        "shifts": {},
+        "gains": {},
+        "enable_loo": false,
+        "mix_info": "probe_file(mix)",
+        "pairs": "load_manifest(manifest)",
+        "opt": "parsed_options"
+      },
+      "outputs": {
+        "SDV": {
+          "path": "runs/A/S2_mono/native/Mix SDV [Identity].wav",
+          "sha256": "635992c34dcc31ddef2b53eea5fef079d636587468cfde936a2b41aabf596f10",
+          "pcm_f32le_sha256": "ea638de4db68ab1c5edec3eafd6fcc1045ecd60280e032b3785ff944296a5ef7",
+          "sr": 44100,
+          "channels": 2,
+          "frames": 176400,
+          "seconds": 4.0,
+          "subtype": "FLOAT",
+          "nonfinite": [
+            0,
+            0
+          ],
+          "rms": [
+            0.07837470092916501,
+            0.08367685292730923
+          ],
+          "peak": [
+            0.11760351061820984,
+            0.1649612933397293
+          ],
+          "tp4x": [
+            0.11782668694651637,
+            0.16508054690843568
+          ],
+          "rms_R_over_L": 1.0676513203276692,
+          "corr_LR": 0.4803647229297553,
+          "rms_L_minus_R": 0.08272728242520475,
+          "max_abs_L_minus_R": 0.17633656412363052
+        },
+        "SDI": {
+          "path": "runs/A/S2_mono/native/Mix SDI [Identity].wav",
+          "sha256": "1b39915b00f166784c262aa93df7c7aec420da0e0abc6c5ea53bddef9cbbb41e",
+          "pcm_f32le_sha256": "3b6da9acb2d73fcc65230374e28f879671da386b7e24b380041b9ec9e1c7f359",
+          "sr": 44100,
+          "channels": 2,
+          "frames": 176400,
+          "seconds": 4.0,
+          "subtype": "FLOAT",
+          "nonfinite": [
+            0,
+            0
+          ],
+          "rms": [
+            0.07863118215177527,
+            0.06736906999531207
+          ],
+          "peak": [
+            0.11973453313112259,
+            0.11867868900299072
+          ],
+          "tp4x": [
+            0.11983997101035887,
+            0.11875423571323161
+          ],
+          "rms_R_over_L": 0.8567729512863628,
+          "corr_LR": 0.5945803663923966,
+          "rms_L_minus_R": 0.06649888582536967,
+          "max_abs_L_minus_R": 0.13582096248865128
+        }
+      },
+      "reconstruction": {
+        "rms": [
+          5.4856304952315944e-11,
+          2.5148596728235026e-09
+        ],
+        "max_abs": [
+          3.725290298461914e-09,
+          7.450580596923828e-09
+        ]
+      },
+      "observation": {
+        "chunks": [
+          {
+            "f0": 0,
+            "config": {
+              "branch": "identity",
+              "mask_mode": "mono",
+              "pre_share_formula_max_error": 0.0
+            },
+            "mask_shape": [
+              1,
+              2049,
+              64
+            ],
+            "mix_stft_shape": [
+              2,
+              2049,
+              64
+            ],
+            "V_stft_shape": [
+              2,
+              2049,
+              64
+            ],
+            "I_stft_shape": [
+              2,
+              2049,
+              64
+            ],
+            "SDV_stft_shape": [
+              2,
+              2049,
+              64
+            ],
+            "SDI_stft_shape": [
+              2,
+              2049,
+              64
+            ],
+            "max_abs_SDV_minus_XM": 0.0,
+            "max_abs_SDI_minus_X1mM": 0.0
+          },
+          {
+            "f0": 64,
+            "config": {
+              "branch": "identity",
+              "mask_mode": "mono",
+              "pre_share_formula_max_error": 0.0
+            },
+            "mask_shape": [
+              1,
+              2049,
+              64
+            ],
+            "mix_stft_shape": [
+              2,
+              2049,
+              64
+            ],
+            "V_stft_shape": [
+              2,
+              2049,
+              64
+            ],
+            "I_stft_shape": [
+              2,
+              2049,
+              64
+            ],
+            "SDV_stft_shape": [
+              2,
+              2049,
+              64
+            ],
+            "SDI_stft_shape": [
+              2,
+              2049,
+              64
+            ],
+            "max_abs_SDV_minus_XM": 0.0,
+            "max_abs_SDI_minus_X1mM": 0.0
+          },
+          {
+            "f0": 128,
+            "config": {
+              "branch": "identity",
+              "mask_mode": "mono",
+              "pre_share_formula_max_error": 0.0
+            },
+            "mask_shape": [
+              1,
+              2049,
+              47
+            ],
+            "mix_stft_shape": [
+              2,
+              2049,
+              47
+            ],
+            "V_stft_shape": [
+              2,
+              2049,
+              47
+            ],
+            "I_stft_shape": [
+              2,
+              2049,
+              47
+            ],
+            "SDV_stft_shape": [
+              2,
+              2049,
+              47
+            ],
+            "SDI_stft_shape": [
+              2,
+              2049,
+              47
+            ],
+            "max_abs_SDV_minus_XM": 0.0,
+            "max_abs_SDI_minus_X1mM": 0.0
+          }
+        ],
+        "guide_inputs": [],
+        "polarity": [],
+        "errors": [],
+        "shape": [
+          1,
+          2049,
+          175
+        ],
+        "dtype": "float64",
+        "shared": true,
+        "nonfinite": 0,
+        "mask_npy_sha256": "a040b16502c0f6aef561422a8d2d11425d4ee8d050eadae03ae71ab2c3cb5b7b",
+        "stats": [
+          {
+            "min": 2.713653565986663e-18,
+            "max": 0.9768588963040563,
+            "mean": 0.11262576563089867,
+            "std": 0.19965265311525424
+          }
+        ],
+        "lr_max": 0.0,
+        "lr_rms": 0.0,
+        "lr_mix_energy_weighted_rms": 0.0
+      },
+      "applied_mask": "runs/A/S2_mono/applied_mask.npy"
+    },
+    {
+      "id": "S3_per_channel",
+      "case": "S3",
+      "mode": "per_channel",
+      "series": "principal",
+      "entrypoint": "run_processing",
+      "argv": [
+        "--manifest",
+        "build/inputs/S3/manifest.json",
+        "--out",
+        "build/runs/A/S3_per_channel/native",
+        "--n-fft",
+        "4096",
+        "--hop",
+        "1024",
+        "--chunk-frames",
+        "64",
+        "--branch",
+        "identity",
+        "--consensus",
+        "magnitudes_first",
+        "--mask-mode",
+        "per_channel",
+        "--power",
+        "1.95",
+        "--epsilon",
+        "1e-12",
+        "--smoothing",
+        "none",
+        "--no-loo"
+      ],
+      "cwd": "S5_STEREO_VALIDATION",
+      "utc": "2026-11-18T21:09:10.800489+00:00",
+      "log": "runs/A/S3_per_channel/console.log",
+      "status": "OK",
+      "engine_exit": 0,
+      "parsed_options": {
+        "manifest": "build/inputs/S3/manifest.json",
+        "out": "build/runs/A/S3_per_channel/native",
+        "branch": "identity",
+        "consensus": "magnitudes_first",
+        "run_mode": "full_processing",
+        "dry_run": false,
+        "power": 1.95,
+        "epsilon": 1e-12,
+        "smoothing": "none",
+        "mask_mode": "per_channel",
+        "n_fft": 4096,
+        "hop": 1024,
+        "chunk_frames": 64,
+        "fix_polarity": false,
+        "allow_misaligned": false,
+        "correct_alignment": false,
+        "enable_loo": false,
+        "ref_vocal": null,
+        "ref_inst": null,
+        "png": false,
+        "no_wav": false,
+        "quiet": false
+      },
+      "inputs": {
+        "Mix": {
+          "path": "inputs/S3/Mix.wav",
+          "sha256": "c660ecd1a6f72f130b6d827c986cdef30320231da93a9f6ad871cb4211b3e558"
+        },
+        "P1/V": {
+          "path": "inputs/S3/V.wav",
+          "sha256": "abc91e312c29733b60690d9d95ed20daddd70990b5b4b577723be94eef47d748"
+        },
+        "P1/I": {
+          "path": "inputs/S3/I.wav",
+          "sha256": "cdbe837e34cd9ab3c0c4602d0cd142d56d3fb8dd7bea4828b463fd6c8c4f4950"
+        }
+      },
+      "kernel_args": {
+        "branch": "identity",
+        "method": "magnitudes_first",
+        "run_dir": "build/runs/A/S3_per_channel/native",
+        "write_wavs": true,
+        "ref_v": null,
+        "ref_i": null,
+        "shifts": {},
+        "gains": {},
+        "enable_loo": false,
+        "mix_info": "probe_file(mix)",
+        "pairs": "load_manifest(manifest)",
+        "opt": "parsed_options"
+      },
+      "outputs": {
+        "SDV": {
+          "path": "runs/A/S3_per_channel/native/Mix SDV [Identity].wav",
+          "sha256": "78be902a9002617e32cdc0ba67577ef4d22bc8890b88c37666a928b04bad3b82",
+          "pcm_f32le_sha256": "c1e3b66ee0d118f7b437ca719d5bd62ebdc3305c84fb436ddbb10cbd54e2c778",
+          "sr": 44100,
+          "channels": 2,
+          "frames": 176400,
+          "seconds": 4.0,
+          "subtype": "FLOAT",
+          "nonfinite": [
+            0,
+            0
+          ],
+          "rms": [
+            0.1469105717707318,
+            0.03672764295413586
+          ],
+          "peak": [
+            0.23646415770053864,
+            0.05911603942513466
+          ],
+          "tp4x": [
+            0.23661468252815707,
+            0.05915367063203927
+          ],
+          "rms_R_over_L": 0.25000000007795836,
+          "corr_LR": 1.0,
+          "rms_L_minus_R": 0.11018292881658365,
+          "max_abs_L_minus_R": 0.17734811827540398
+        },
+        "SDI": {
+          "path": "runs/A/S3_per_channel/native/Mix SDI [Identity].wav",
+          "sha256": "fa814af98c153ddc1b32218bf0b397b79e77e3a5d78b660ff61faab74419e9c2",
+          "pcm_f32le_sha256": "a11c02a1c630298784c7e52b5a7e43735cbc5486b57eb9d9ace0d886d6b26b17",
+          "sr": 44100,
+          "channels": 2,
+          "frames": 176400,
+          "seconds": 4.0,
+          "subtype": "FLOAT",
+          "nonfinite": [
+            0,
+            0
+          ],
+          "rms": [
+            0.08905405801229156,
+            0.0222635145047614
+          ],
+          "peak": [
+            0.14045657217502594,
+            0.035114143043756485
+          ],
+          "tp4x": [
+            0.14069410874315189,
+            0.03517352718578797
+          ],
+          "rms_R_over_L": 0.2500000000189605,
+          "corr_LR": 0.9999999999999997,
+          "rms_L_minus_R": 0.06679054350753527,
+          "max_abs_L_minus_R": 0.10534242913126945
+        }
+      },
+      "reconstruction": {
+        "rms": [
+          3.6297000268318456e-09,
+          9.090204939082154e-10
+        ],
+        "max_abs": [
+          7.450580596923828e-09,
+          1.862645149230957e-09
+        ]
+      },
+      "gain_residual_rms_R_minus_quarter_L": {
+        "SDV": 6.755486142928002e-10,
+        "SDI": 6.085339927545382e-10
+      },
+      "observation": {
+        "chunks": [
+          {
+            "f0": 0,
+            "config": {
+              "branch": "identity",
+              "mask_mode": "per_channel",
+              "pre_share_formula_max_error": 0.0
+            },
+            "mask_shape": [
+              2,
+              2049,
+              64
+            ],
+            "mix_stft_shape": [
+              2,
+              2049,
+              64
+            ],
+            "V_stft_shape": [
+              2,
+              2049,
+              64
+            ],
+            "I_stft_shape": [
+              2,
+              2049,
+              64
+            ],
+            "SDV_stft_shape": [
+              2,
+              2049,
+              64
+            ],
+            "SDI_stft_shape": [
+              2,
+              2049,
+              64
+            ],
+            "max_abs_SDV_minus_XM": 0.0,
+            "max_abs_SDI_minus_X1mM": 0.0
+          },
+          {
+            "f0": 64,
+            "config": {
+              "branch": "identity",
+              "mask_mode": "per_channel",
+              "pre_share_formula_max_error": 0.0
+            },
+            "mask_shape": [
+              2,
+              2049,
+              64
+            ],
+            "mix_stft_shape": [
+              2,
+              2049,
+              64
+            ],
+            "V_stft_shape": [
+              2,
+              2049,
+              64
+            ],
+            "I_stft_shape": [
+              2,
+              2049,
+              64
+            ],
+            "SDV_stft_shape": [
+              2,
+              2049,
+              64
+            ],
+            "SDI_stft_shape": [
+              2,
+              2049,
+              64
+            ],
+            "max_abs_SDV_minus_XM": 0.0,
+            "max_abs_SDI_minus_X1mM": 0.0
+          },
+          {
+            "f0": 128,
+            "config": {
+              "branch": "identity",
+              "mask_mode": "per_channel",
+              "pre_share_formula_max_error": 0.0
+            },
+            "mask_shape": [
+              2,
+              2049,
+              47
+            ],
+            "mix_stft_shape": [
+              2,
+              2049,
+              47
+            ],
+            "V_stft_shape": [
+              2,
+              2049,
+              47
+            ],
+            "I_stft_shape": [
+              2,
+              2049,
+              47
+            ],
+            "SDV_stft_shape": [
+              2,
+              2049,
+              47
+            ],
+            "SDI_stft_shape": [
+              2,
+              2049,
+              47
+            ],
+            "max_abs_SDV_minus_XM": 0.0,
+            "max_abs_SDI_minus_X1mM": 0.0
+          }
+        ],
+        "guide_inputs": [],
+        "polarity": [],
+        "errors": [],
+        "shape": [
+          2,
+          2049,
+          175
+        ],
+        "dtype": "float64",
+        "shared": false,
+        "nonfinite": 0,
+        "mask_npy_sha256": "b6d010343950d93bb027051678d064c3c6d87a19015f90ce61612f7aef6a0d5e",
+        "stats": [
+          {
+            "min": 2.014314947767018e-18,
+            "max": 0.9999999999920011,
+            "mean": 0.07434673911090757,
+            "std": 0.20346968791029904
+          },
+          {
+            "min": 1.3493058163792932e-19,
+            "max": 0.9999999999919983,
+            "mean": 0.059316335761376564,
+            "std": 0.19672706144700383
+          }
+        ],
+        "lr_max": 0.5874370091614445,
+        "lr_rms": 0.05760800994592155,
+        "lr_mix_energy_weighted_rms": 6.540741777458935e-09
+      },
+      "applied_mask": "runs/A/S3_per_channel/applied_mask.npy"
+    },
+    {
+      "id": "S3_mono",
+      "case": "S3",
+      "mode": "mono",
+      "series": "principal",
+      "entrypoint": "run_processing",
+      "argv": [
+        "--manifest",
+        "build/inputs/S3/manifest.json",
+        "--out",
+        "build/runs/A/S3_mono/native",
+        "--n-fft",
+        "4096",
+        "--hop",
+        "1024",
+        "--chunk-frames",
+        "64",
+        "--branch",
+        "identity",
+        "--consensus",
+        "magnitudes_first",
+        "--mask-mode",
+        "mono",
+        "--power",
+        "1.95",
+        "--epsilon",
+        "1e-12",
+        "--smoothing",
+        "none",
+        "--no-loo"
+      ],
+      "cwd": "S5_STEREO_VALIDATION",
+      "utc": "2026-11-18T21:09:11.263612+00:00",
+      "log": "runs/A/S3_mono/console.log",
+      "status": "OK",
+      "engine_exit": 0,
+      "parsed_options": {
+        "manifest": "build/inputs/S3/manifest.json",
+        "out": "build/runs/A/S3_mono/native",
+        "branch": "identity",
+        "consensus": "magnitudes_first",
+        "run_mode": "full_processing",
+        "dry_run": false,
+        "power": 1.95,
+        "epsilon": 1e-12,
+        "smoothing": "none",
+        "mask_mode": "mono",
+        "n_fft": 4096,
+        "hop": 1024,
+        "chunk_frames": 64,
+        "fix_polarity": false,
+        "allow_misaligned": false,
+        "correct_alignment": false,
+        "enable_loo": false,
+        "ref_vocal": null,
+        "ref_inst": null,
+        "png": false,
+        "no_wav": false,
+        "quiet": false
+      },
+      "inputs": {
+        "Mix": {
+          "path": "inputs/S3/Mix.wav",
+          "sha256": "c660ecd1a6f72f130b6d827c986cdef30320231da93a9f6ad871cb4211b3e558"
+        },
+        "P1/V": {
+          "path": "inputs/S3/V.wav",
+          "sha256": "abc91e312c29733b60690d9d95ed20daddd70990b5b4b577723be94eef47d748"
+        },
+        "P1/I": {
+          "path": "inputs/S3/I.wav",
+          "sha256": "cdbe837e34cd9ab3c0c4602d0cd142d56d3fb8dd7bea4828b463fd6c8c4f4950"
+        }
+      },
+      "kernel_args": {
+        "branch": "identity",
+        "method": "magnitudes_first",
+        "run_dir": "build/runs/A/S3_mono/native",
+        "write_wavs": true,
+        "ref_v": null,
+        "ref_i": null,
+        "shifts": {},
+        "gains": {},
+        "enable_loo": false,
+        "mix_info": "probe_file(mix)",
+        "pairs": "load_manifest(manifest)",
+        "opt": "parsed_options"
+      },
+      "outputs": {
+        "SDV": {
+          "path": "runs/A/S3_mono/native/Mix SDV [Identity].wav",
+          "sha256": "1f5ef2acfb1fb8760936bd9dda5ac0325f40fb23cf812a5b640bfa181a7c19be",
+          "pcm_f32le_sha256": "87141bd5adefa10d56ab891a61d0772f0036e9cad6f29facd93e123524df8321",
+          "sr": 44100,
+          "channels": 2,
+          "frames": 176400,
+          "seconds": 4.0,
+          "subtype": "FLOAT",
+          "nonfinite": [
+            0,
+            0
+          ],
+          "rms": [
+            0.1469105717948031,
+            0.036727642948700776
+          ],
+          "peak": [
+            0.23646415770053864,
+            0.05911603942513466
+          ],
+          "tp4x": [
+            0.23661468252815707,
+            0.05915367063203927
+          ],
+          "rms_R_over_L": 0.25,
+          "corr_LR": 1.0,
+          "rms_L_minus_R": 0.11018292884608935,
+          "max_abs_L_minus_R": 0.17734811827540398
+        },
+        "SDI": {
+          "path": "runs/A/S3_mono/native/Mix SDI [Identity].wav",
+          "sha256": "5ccb6135f825bec1e75208cae56bf95721b27ab64bfd4746eb9be9ad0ccb0fc4",
+          "pcm_f32le_sha256": "1d78e43e39dc3c0500a77a2940dee8f327ad34c532053b9e3eac6058fd4d4bf7",
+          "sr": 44100,
+          "channels": 2,
+          "frames": 176400,
+          "seconds": 4.0,
+          "subtype": "FLOAT",
+          "nonfinite": [
+            0,
+            0
+          ],
+          "rms": [
+            0.08905405800612845,
+            0.022263514501532113
+          ],
+          "peak": [
+            0.14045657217502594,
+            0.035114143043756485
+          ],
+          "tp4x": [
+            0.14069410874315189,
+            0.03517352718578797
+          ],
+          "rms_R_over_L": 0.25,
+          "corr_LR": 0.9999999999999999,
+          "rms_L_minus_R": 0.06679054350460253,
+          "max_abs_L_minus_R": 0.10534242913126945
+        }
+      },
+      "reconstruction": {
+        "rms": [
+          3.633004628020637e-09,
+          9.082511570051592e-10
+        ],
+        "max_abs": [
+          7.450580596923828e-09,
+          1.862645149230957e-09
+        ]
+      },
+      "gain_residual_rms_R_minus_quarter_L": {
+        "SDV": 0.0,
+        "SDI": 0.0
+      },
+      "observation": {
+        "chunks": [
+          {
+            "f0": 0,
+            "config": {
+              "branch": "identity",
+              "mask_mode": "mono",
+              "pre_share_formula_max_error": 0.0
+            },
+            "mask_shape": [
+              1,
+              2049,
+              64
+            ],
+            "mix_stft_shape": [
+              2,
+              2049,
+              64
+            ],
+            "V_stft_shape": [
+              2,
+              2049,
+              64
+            ],
+            "I_stft_shape": [
+              2,
+              2049,
+              64
+            ],
+            "SDV_stft_shape": [
+              2,
+              2049,
+              64
+            ],
+            "SDI_stft_shape": [
+              2,
+              2049,
+              64
+            ],
+            "max_abs_SDV_minus_XM": 0.0,
+            "max_abs_SDI_minus_X1mM": 0.0
+          },
+          {
+            "f0": 64,
+            "config": {
+              "branch": "identity",
+              "mask_mode": "mono",
+              "pre_share_formula_max_error": 0.0
+            },
+            "mask_shape": [
+              1,
+              2049,
+              64
+            ],
+            "mix_stft_shape": [
+              2,
+              2049,
+              64
+            ],
+            "V_stft_shape": [
+              2,
+              2049,
+              64
+            ],
+            "I_stft_shape": [
+              2,
+              2049,
+              64
+            ],
+            "SDV_stft_shape": [
+              2,
+              2049,
+              64
+            ],
+            "SDI_stft_shape": [
+              2,
+              2049,
+              64
+            ],
+            "max_abs_SDV_minus_XM": 0.0,
+            "max_abs_SDI_minus_X1mM": 0.0
+          },
+          {
+            "f0": 128,
+            "config": {
+              "branch": "identity",
+              "mask_mode": "mono",
+              "pre_share_formula_max_error": 0.0
+            },
+            "mask_shape": [
+              1,
+              2049,
+              47
+            ],
+            "mix_stft_shape": [
+              2,
+              2049,
+              47
+            ],
+            "V_stft_shape": [
+              2,
+              2049,
+              47
+            ],
+            "I_stft_shape": [
+              2,
+              2049,
+              47
+            ],
+            "SDV_stft_shape": [
+              2,
+              2049,
+              47
+            ],
+            "SDI_stft_shape": [
+              2,
+              2049,
+              47
+            ],
+            "max_abs_SDV_minus_XM": 0.0,
+            "max_abs_SDI_minus_X1mM": 0.0
+          }
+        ],
+        "guide_inputs": [],
+        "polarity": [],
+        "errors": [],
+        "shape": [
+          1,
+          2049,
+          175
+        ],
+        "dtype": "float64",
+        "shared": true,
+        "nonfinite": 0,
+        "mask_npy_sha256": "8cfb3acd5f4649ff1aa1c3ad2064e27a0323a787ceb97bad31123afe8a781c08",
+        "stats": [
+          {
+            "min": 1.0746227647024736e-18,
+            "max": 0.9999999999919997,
+            "mean": 0.06683153743614206,
+            "std": 0.19818560203928512
+          }
+        ],
+        "lr_max": 0.0,
+        "lr_rms": 0.0,
+        "lr_mix_energy_weighted_rms": 0.0
+      },
+      "applied_mask": "runs/A/S3_mono/applied_mask.npy"
+    },
+    {
+      "id": "S4_per_channel",
+      "case": "S4",
+      "mode": "per_channel",
+      "series": "principal",
+      "entrypoint": "run_processing",
+      "argv": [
+        "--manifest",
+        "build/inputs/S4/manifest.json",
+        "--out",
+        "build/runs/A/S4_per_channel/native",
+        "--n-fft",
+        "4096",
+        "--hop",
+        "1024",
+        "--chunk-frames",
+        "64",
+        "--branch",
+        "identity",
+        "--consensus",
+        "magnitudes_first",
+        "--mask-mode",
+        "per_channel",
+        "--power",
+        "1.95",
+        "--epsilon",
+        "1e-12",
+        "--smoothing",
+        "none",
+        "--no-loo"
+      ],
+      "cwd": "S5_STEREO_VALIDATION",
+      "utc": "2026-11-18T21:09:11.735427+00:00",
+      "log": "runs/A/S4_per_channel/console.log",
+      "status": "OK",
+      "engine_exit": 0,
+      "parsed_options": {
+        "manifest": "build/inputs/S4/manifest.json",
+        "out": "build/runs/A/S4_per_channel/native",
+        "branch": "identity",
+        "consensus": "magnitudes_first",
+        "run_mode": "full_processing",
+        "dry_run": false,
+        "power": 1.95,
+        "epsilon": 1e-12,
+        "smoothing": "none",
+        "mask_mode": "per_channel",
+        "n_fft": 4096,
+        "hop": 1024,
+        "chunk_frames": 64,
+        "fix_polarity": false,
+        "allow_misaligned": false,
+        "correct_alignment": false,
+        "enable_loo": false,
+        "ref_vocal": null,
+        "ref_inst": null,
+        "png": false,
+        "no_wav": false,
+        "quiet": false
+      },
+      "inputs": {
+        "Mix": {
+          "path": "inputs/S4/Mix.wav",
+          "sha256": "ac5a51cd9feca06463d8d83091705527720bd4e1794a8904e89c246516ba3534"
+        },
+        "P1/V": {
+          "path": "inputs/S4/V.wav",
+          "sha256": "f49d5bb448dd6f73af513493095479dcc3a3a67997f33af55162973f23a31c40"
+        },
+        "P1/I": {
+          "path": "inputs/S4/I.wav",
+          "sha256": "f091f59a21dcccb62219c3b3ced042024d0edb063955cf1a51e670e9ae7348a4"
+        }
+      },
+      "kernel_args": {
+        "branch": "identity",
+        "method": "magnitudes_first",
+        "run_dir": "build/runs/A/S4_per_channel/native",
+        "write_wavs": true,
+        "ref_v": null,
+        "ref_i": null,
+        "shifts": {},
+        "gains": {},
+        "enable_loo": false,
+        "mix_info": "probe_file(mix)",
+        "pairs": "load_manifest(manifest)",
+        "opt": "parsed_options"
+      },
+      "outputs": {
+        "SDV": {
+          "path": "runs/A/S4_per_channel/native/Mix SDV [Identity].wav",
+          "sha256": "66d0a02bf11ec6ee54c8d97404714c8e87463b36f8ee1a83e3628466719c07dc",
+          "pcm_f32le_sha256": "f20dd2f6eb574cd8ca0624048e92973a1f3da5cf79141e6c0e4bd46d2e36c7ee",
+          "sr": 44100,
+          "channels": 2,
+          "frames": 176400,
+          "seconds": 4.0,
+          "subtype": "FLOAT",
+          "nonfinite": [
+            0,
+            0
+          ],
+          "rms": [
+            0.06292356425079314,
+            0.0
+          ],
+          "peak": [
+            0.2252812385559082,
+            0.0
+          ],
+          "tp4x": [
+            0.22542464472760482,
+            0.0
+          ],
+          "rms_R_over_L": 0.0,
+          "corr_LR": null,
+          "rms_L_minus_R": 0.06292356425084947,
+          "max_abs_L_minus_R": 0.2252812385559082
+        },
+        "SDI": {
+          "path": "runs/A/S4_per_channel/native/Mix SDI [Identity].wav",
+          "sha256": "54803d92ccc32fec3df7a7d2597d79824319160f8ec43dd2fbab457ffda5e262",
+          "pcm_f32le_sha256": "eaa43cbc222c467dd3110eaa102f69a02ddfe70cd60a169dfbcd6eff62a1655f",
+          "sr": 44100,
+          "channels": 2,
+          "frames": 176400,
+          "seconds": 4.0,
+          "subtype": "FLOAT",
+          "nonfinite": [
+            0,
+            0
+          ],
+          "rms": [
+            9.868271722012916e-10,
+            0.06164413971737021
+          ],
+          "peak": [
+            9.483327900738914e-09,
+            0.21880663931369781
+          ],
+          "tp4x": [
+            1.184402978731134e-08,
+            0.21894592398155086
+          ],
+          "rms_R_over_L": 62467006.841595285,
+          "corr_LR": 3.9324361202796423e-07,
+          "rms_L_minus_R": 0.06164413971738232,
+          "max_abs_L_minus_R": 0.21880663933516323
+        }
+      },
+      "reconstruction": {
+        "rms": [
+          9.807884716342453e-10,
+          1.0220662912275615e-18
+        ],
+        "max_abs": [
+          7.443854865840649e-09,
+          4.3760531160517386e-17
+        ]
+      },
+      "event_windows": {
+        "V_L": {
+          "Mix": [
+            0.0963068014104887,
+            0.05656854211650424
+          ],
+          "SDV": [
+            0.09630680141144528,
+            0.0
+          ],
+          "SDI": [
+            1.979108677936082e-09,
+            0.05656854211650424
+          ]
+        },
+        "I_R": {
+          "Mix": [
+            0.056568541871337065,
+            0.0894427190533942
+          ],
+          "SDV": [
+            0.056568541871337065,
+            0.0
+          ],
+          "SDI": [
+            7.476437066886371e-10,
+            0.0894427190533942
+          ]
+        }
+      },
+      "observation": {
+        "chunks": [
+          {
+            "f0": 0,
+            "config": {
+              "branch": "identity",
+              "mask_mode": "per_channel",
+              "pre_share_formula_max_error": 0.0
+            },
+            "mask_shape": [
+              2,
+              2049,
+              64
+            ],
+            "mix_stft_shape": [
+              2,
+              2049,
+              64
+            ],
+            "V_stft_shape": [
+              2,
+              2049,
+              64
+            ],
+            "I_stft_shape": [
+              2,
+              2049,
+              64
+            ],
+            "SDV_stft_shape": [
+              2,
+              2049,
+              64
+            ],
+            "SDI_stft_shape": [
+              2,
+              2049,
+              64
+            ],
+            "max_abs_SDV_minus_XM": 0.0,
+            "max_abs_SDI_minus_X1mM": 0.0
+          },
+          {
+            "f0": 64,
+            "config": {
+              "branch": "identity",
+              "mask_mode": "per_channel",
+              "pre_share_formula_max_error": 0.0
+            },
+            "mask_shape": [
+              2,
+              2049,
+              64
+            ],
+            "mix_stft_shape": [
+              2,
+              2049,
+              64
+            ],
+            "V_stft_shape": [
+              2,
+              2049,
+              64
+            ],
+            "I_stft_shape": [
+              2,
+              2049,
+              64
+            ],
+            "SDV_stft_shape": [
+              2,
+              2049,
+              64
+            ],
+            "SDI_stft_shape": [
+              2,
+              2049,
+              64
+            ],
+            "max_abs_SDV_minus_XM": 0.0,
+            "max_abs_SDI_minus_X1mM": 0.0
+          },
+          {
+            "f0": 128,
+            "config": {
+              "branch": "identity",
+              "mask_mode": "per_channel",
+              "pre_share_formula_max_error": 0.0
+            },
+            "mask_shape": [
+              2,
+              2049,
+              47
+            ],
+            "mix_stft_shape": [
+              2,
+              2049,
+              47
+            ],
+            "V_stft_shape": [
+              2,
+              2049,
+              47
+            ],
+            "I_stft_shape": [
+              2,
+              2049,
+              47
+            ],
+            "SDV_stft_shape": [
+              2,
+              2049,
+              47
+            ],
+            "SDI_stft_shape": [
+              2,
+              2049,
+              47
+            ],
+            "max_abs_SDV_minus_XM": 0.0,
+            "max_abs_SDI_minus_X1mM": 0.0
+          }
+        ],
+        "guide_inputs": [],
+        "polarity": [],
+        "errors": [],
+        "shape": [
+          2,
+          2049,
+          175
+        ],
+        "dtype": "float64",
+        "shared": false,
+        "nonfinite": 0,
+        "mask_npy_sha256": "bdff52f83f0e6d1a6f43073520383d79ca182e512dcc96e5853492a69aae512e",
+        "stats": [
+          {
+            "min": 5.183559352287444e-19,
+            "max": 1.0,
+            "mean": 0.18323117042728215,
+            "std": 0.35791809829255083
+          },
+          {
+            "min": 0.0,
+            "max": 0.0,
+            "mean": 0.0,
+            "std": 0.0
+          }
+        ],
+        "lr_max": 1.0,
+        "lr_rms": 0.4020933062132566,
+        "lr_mix_energy_weighted_rms": 0.9999756315961964
+      },
+      "applied_mask": "runs/A/S4_per_channel/applied_mask.npy"
+    },
+    {
+      "id": "S4_mono",
+      "case": "S4",
+      "mode": "mono",
+      "series": "principal",
+      "entrypoint": "run_processing",
+      "argv": [
+        "--manifest",
+        "build/inputs/S4/manifest.json",
+        "--out",
+        "build/runs/A/S4_mono/native",
+        "--n-fft",
+        "4096",
+        "--hop",
+        "1024",
+        "--chunk-frames",
+        "64",
+        "--branch",
+        "identity",
+        "--consensus",
+        "magnitudes_first",
+        "--mask-mode",
+        "mono",
+        "--power",
+        "1.95",
+        "--epsilon",
+        "1e-12",
+        "--smoothing",
+        "none",
+        "--no-loo"
+      ],
+      "cwd": "S5_STEREO_VALIDATION",
+      "utc": "2026-11-18T21:09:12.198779+00:00",
+      "log": "runs/A/S4_mono/console.log",
+      "status": "OK",
+      "engine_exit": 0,
+      "parsed_options": {
+        "manifest": "build/inputs/S4/manifest.json",
+        "out": "build/runs/A/S4_mono/native",
+        "branch": "identity",
+        "consensus": "magnitudes_first",
+        "run_mode": "full_processing",
+        "dry_run": false,
+        "power": 1.95,
+        "epsilon": 1e-12,
+        "smoothing": "none",
+        "mask_mode": "mono",
+        "n_fft": 4096,
+        "hop": 1024,
+        "chunk_frames": 64,
+        "fix_polarity": false,
+        "allow_misaligned": false,
+        "correct_alignment": false,
+        "enable_loo": false,
+        "ref_vocal": null,
+        "ref_inst": null,
+        "png": false,
+        "no_wav": false,
+        "quiet": false
+      },
+      "inputs": {
+        "Mix": {
+          "path": "inputs/S4/Mix.wav",
+          "sha256": "ac5a51cd9feca06463d8d83091705527720bd4e1794a8904e89c246516ba3534"
+        },
+        "P1/V": {
+          "path": "inputs/S4/V.wav",
+          "sha256": "f49d5bb448dd6f73af513493095479dcc3a3a67997f33af55162973f23a31c40"
+        },
+        "P1/I": {
+          "path": "inputs/S4/I.wav",
+          "sha256": "f091f59a21dcccb62219c3b3ced042024d0edb063955cf1a51e670e9ae7348a4"
+        }
+      },
+      "kernel_args": {
+        "branch": "identity",
+        "method": "magnitudes_first",
+        "run_dir": "build/runs/A/S4_mono/native",
+        "write_wavs": true,
+        "ref_v": null,
+        "ref_i": null,
+        "shifts": {},
+        "gains": {},
+        "enable_loo": false,
+        "mix_info": "probe_file(mix)",
+        "pairs": "load_manifest(manifest)",
+        "opt": "parsed_options"
+      },
+      "outputs": {
+        "SDV": {
+          "path": "runs/A/S4_mono/native/Mix SDV [Identity].wav",
+          "sha256": "eec456da2dbbb1274791eccd7f66cd8eda2c92c35fd81b3d14a3d3df7317e36a",
+          "pcm_f32le_sha256": "2f397425f5ed2bf8c62f99632f2aeb7a9f6a24a840df0c50f9ae78789792866f",
+          "sr": 44100,
+          "channels": 2,
+          "frames": 176400,
+          "seconds": 4.0,
+          "subtype": "FLOAT",
+          "nonfinite": [
+            0,
+            0
+          ],
+          "rms": [
+            0.03146178212539657,
+            0.03082053641919574
+          ],
+          "peak": [
+            0.1126406192779541,
+            0.10940102487802505
+          ],
+          "tp4x": [
+            0.11271232236380241,
+            0.10947066575117548
+          ],
+          "rms_R_over_L": 0.9796182649906788,
+          "corr_LR": 0.2191469428395212,
+          "rms_L_minus_R": 0.03891977909815251,
+          "max_abs_L_minus_R": 0.07849296182394028
+        },
+        "SDI": {
+          "path": "runs/A/S4_mono/native/Mix SDI [Identity].wav",
+          "sha256": "8541a68d64ee51671da8d4536cd53967f212e555b619c7482787efcc62393ad0",
+          "pcm_f32le_sha256": "3ddfaba5c6fbf0e54aad601d51e52128c31f2f9af6ee92b920a6f24d22be35bc",
+          "sr": 44100,
+          "channels": 2,
+          "frames": 176400,
+          "seconds": 4.0,
+          "subtype": "FLOAT",
+          "nonfinite": [
+            0,
+            0
+          ],
+          "rms": [
+            0.03146178212521439,
+            0.03082360332965378
+          ],
+          "peak": [
+            0.1126406192779541,
+            0.10940561443567276
+          ],
+          "tp4x": [
+            0.11271232236380241,
+            0.10947525823037536
+          ],
+          "rms_R_over_L": 0.9797157455028858,
+          "corr_LR": 0.21912513962545146,
+          "rms_L_minus_R": 0.0389222077858349,
+          "max_abs_L_minus_R": 0.07849296182394028
+        }
+      },
+      "reconstruction": {
+        "rms": [
+          1.1402255924575435e-18,
+          5.716864852354519e-13
+        ],
+        "max_abs": [
+          3.122502256758253e-17,
+          2.3283064365386963e-10
+        ]
+      },
+      "event_windows": {
+        "V_L": {
+          "Mix": [
+            0.0963068014104887,
+            0.05656854211650424
+          ],
+          "SDV": [
+            0.04815340070572264,
+            0.028284270850722253
+          ],
+          "SDI": [
+            0.04815340070476607,
+            0.028284271265781837
+          ]
+        },
+        "I_R": {
+          "Mix": [
+            0.056568541871337065,
+            0.0894427190533942
+          ],
+          "SDV": [
+            0.028284270935668532,
+            0.0447200819698503
+          ],
+          "SDI": [
+            0.028284270935668532,
+            0.044722637138517755
+          ]
+        }
+      },
+      "observation": {
+        "chunks": [
+          {
+            "f0": 0,
+            "config": {
+              "branch": "identity",
+              "mask_mode": "mono",
+              "pre_share_formula_max_error": 0.0
+            },
+            "mask_shape": [
+              1,
+              2049,
+              64
+            ],
+            "mix_stft_shape": [
+              2,
+              2049,
+              64
+            ],
+            "V_stft_shape": [
+              2,
+              2049,
+              64
+            ],
+            "I_stft_shape": [
+              2,
+              2049,
+              64
+            ],
+            "SDV_stft_shape": [
+              2,
+              2049,
+              64
+            ],
+            "SDI_stft_shape": [
+              2,
+              2049,
+              64
+            ],
+            "max_abs_SDV_minus_XM": 0.0,
+            "max_abs_SDI_minus_X1mM": 0.0
+          },
+          {
+            "f0": 64,
+            "config": {
+              "branch": "identity",
+              "mask_mode": "mono",
+              "pre_share_formula_max_error": 0.0
+            },
+            "mask_shape": [
+              1,
+              2049,
+              64
+            ],
+            "mix_stft_shape": [
+              2,
+              2049,
+              64
+            ],
+            "V_stft_shape": [
+              2,
+              2049,
+              64
+            ],
+            "I_stft_shape": [
+              2,
+              2049,
+              64
+            ],
+            "SDV_stft_shape": [
+              2,
+              2049,
+              64
+            ],
+            "SDI_stft_shape": [
+              2,
+              2049,
+              64
+            ],
+            "max_abs_SDV_minus_XM": 0.0,
+            "max_abs_SDI_minus_X1mM": 0.0
+          },
+          {
+            "f0": 128,
+            "config": {
+              "branch": "identity",
+              "mask_mode": "mono",
+              "pre_share_formula_max_error": 0.0
+            },
+            "mask_shape": [
+              1,
+              2049,
+              47
+            ],
+            "mix_stft_shape": [
+              2,
+              2049,
+              47
+            ],
+            "V_stft_shape": [
+              2,
+              2049,
+              47
+            ],
+            "I_stft_shape": [
+              2,
+              2049,
+              47
+            ],
+            "SDV_stft_shape": [
+              2,
+              2049,
+              47
+            ],
+            "SDI_stft_shape": [
+              2,
+              2049,
+              47
+            ],
+            "max_abs_SDV_minus_XM": 0.0,
+            "max_abs_SDI_minus_X1mM": 0.0
+          }
+        ],
+        "guide_inputs": [],
+        "polarity": [],
+        "errors": [],
+        "shape": [
+          1,
+          2049,
+          175
+        ],
+        "dtype": "float64",
+        "shared": true,
+        "nonfinite": 0,
+        "mask_npy_sha256": "de607c27d4da56e84eabc393a798e97bf5d2f619f17ae016c7dd36fea9108509",
+        "stats": [
+          {
+            "min": 2.591779676143722e-19,
+            "max": 0.5,
+            "mean": 0.09161558521364108,
+            "std": 0.17895904914627542
+          }
+        ],
+        "lr_max": 0.0,
+        "lr_rms": 0.0,
+        "lr_mix_energy_weighted_rms": 0.0
+      },
+      "applied_mask": "runs/A/S4_mono/applied_mask.npy"
+    },
+    {
+      "id": "S5_per_channel",
+      "case": "S5",
+      "mode": "per_channel",
+      "series": "principal",
+      "entrypoint": "run_processing",
+      "argv": [
+        "--manifest",
+        "build/inputs/S5/manifest.json",
+        "--out",
+        "build/runs/A/S5_per_channel/native",
+        "--n-fft",
+        "4096",
+        "--hop",
+        "1024",
+        "--chunk-frames",
+        "64",
+        "--branch",
+        "identity",
+        "--consensus",
+        "magnitudes_first",
+        "--mask-mode",
+        "per_channel",
+        "--power",
+        "1.95",
+        "--epsilon",
+        "1e-12",
+        "--smoothing",
+        "none",
+        "--no-loo"
+      ],
+      "cwd": "S5_STEREO_VALIDATION",
+      "utc": "2026-11-18T21:09:12.661608+00:00",
+      "log": "runs/A/S5_per_channel/console.log",
+      "status": "OK",
+      "engine_exit": 0,
+      "parsed_options": {
+        "manifest": "build/inputs/S5/manifest.json",
+        "out": "build/runs/A/S5_per_channel/native",
+        "branch": "identity",
+        "consensus": "magnitudes_first",
+        "run_mode": "full_processing",
+        "dry_run": false,
+        "power": 1.95,
+        "epsilon": 1e-12,
+        "smoothing": "none",
+        "mask_mode": "per_channel",
+        "n_fft": 4096,
+        "hop": 1024,
+        "chunk_frames": 64,
+        "fix_polarity": false,
+        "allow_misaligned": false,
+        "correct_alignment": false,
+        "enable_loo": false,
+        "ref_vocal": null,
+        "ref_inst": null,
+        "png": false,
+        "no_wav": false,
+        "quiet": false
+      },
+      "inputs": {
+        "Mix": {
+          "path": "inputs/S5/Mix.wav",
+          "sha256": "ea512195057e55e5e511ced39d65f2e88c003ec0c22d296515ec8ebbf45c7261"
+        },
+        "P1/V": {
+          "path": "inputs/S5/V.wav",
+          "sha256": "b83f2d9c5a620cec4b3423b6f1954f79845c1a30f553932447c4d635cbfed04c"
+        },
+        "P1/I": {
+          "path": "inputs/S5/I.wav",
+          "sha256": "0776c45cec139cae0900efa2e0be53b4d4809509c2c2b93e42e504ba9d7dbf9a"
+        }
+      },
+      "kernel_args": {
+        "branch": "identity",
+        "method": "magnitudes_first",
+        "run_dir": "build/runs/A/S5_per_channel/native",
+        "write_wavs": true,
+        "ref_v": null,
+        "ref_i": null,
+        "shifts": {},
+        "gains": {},
+        "enable_loo": false,
+        "mix_info": "probe_file(mix)",
+        "pairs": "load_manifest(manifest)",
+        "opt": "parsed_options"
+      },
+      "outputs": {
+        "SDV": {
+          "path": "runs/A/S5_per_channel/native/Mix SDV [Identity].wav",
+          "sha256": "361cd65356dbcac331452931b299a79e8ceacb92502dd9662ae97814a51ecb59",
+          "pcm_f32le_sha256": "205b905795afc20c3539943019899de39774f85cdd11e18473142c97476b270b",
+          "sr": 44100,
+          "channels": 2,
+          "frames": 176400,
+          "seconds": 4.0,
+          "subtype": "FLOAT",
+          "nonfinite": [
+            0,
+            0
+          ],
+          "rms": [
+            0.03818147669988928,
+            0.03818147626302496
+          ],
+          "peak": [
+            0.20929741859436035,
+            0.20928417146205902
+          ],
+          "tp4x": [
+            0.2094306500242788,
+            0.2094173944593155
+          ],
+          "rms_R_over_L": 0.9999999885582133,
+          "corr_LR": 0.8826771277114679,
+          "rms_L_minus_R": 0.018495201186190927,
+          "max_abs_L_minus_R": 0.09756280109286308
+        },
+        "SDI": {
+          "path": "runs/A/S5_per_channel/native/Mix SDI [Identity].wav",
+          "sha256": "f26a746cb34af5ed678237ba2c1ee46b4910b0d211df14193b4ad113120e9eed",
+          "pcm_f32le_sha256": "66803bb84e1972c917a2934c5683d6da3d529af1a718ed752313533d643333a1",
+          "sr": 44100,
+          "channels": 2,
+          "frames": 176400,
+          "seconds": 4.0,
+          "subtype": "FLOAT",
+          "nonfinite": [
+            0,
+            0
+          ],
+          "rms": [
+            0.04061971759814042,
+            0.04061971931752321
+          ],
+          "peak": [
+            0.15000233054161072,
+            0.15000106394290924
+          ],
+          "tp4x": [
+            0.15009781678851894,
+            0.15009654938354497
+          ],
+          "rms_R_over_L": 1.0000000423287725,
+          "corr_LR": 0.8699746288364051,
+          "rms_L_minus_R": 0.020714094719827242,
+          "max_abs_L_minus_R": 0.06891394779086113
+        }
+      },
+      "reconstruction": {
+        "rms": [
+          1.1960159587882232e-09,
+          1.2005605337158828e-09
+        ],
+        "max_abs": [
+          7.450580596923828e-09,
+          7.450580596923828e-09
+        ]
+      },
+      "delay_residual_R_vs_L_delayed_2205": {
+        "Mix": {
+          "rms": 0.0,
+          "max_abs": 0.0
+        },
+        "SDV": {
+          "rms": 2.1602523353728035e-05,
+          "max_abs": 0.00020869076251983643
+        },
+        "SDI": {
+          "rms": 2.160253652183039e-05,
+          "max_abs": 0.00020869076251983643
+        }
+      },
+      "observation": {
+        "chunks": [
+          {
+            "f0": 0,
+            "config": {
+              "branch": "identity",
+              "mask_mode": "per_channel",
+              "pre_share_formula_max_error": 0.0
+            },
+            "mask_shape": [
+              2,
+              2049,
+              64
+            ],
+            "mix_stft_shape": [
+              2,
+              2049,
+              64
+            ],
+            "V_stft_shape": [
+              2,
+              2049,
+              64
+            ],
+            "I_stft_shape": [
+              2,
+              2049,
+              64
+            ],
+            "SDV_stft_shape": [
+              2,
+              2049,
+              64
+            ],
+            "SDI_stft_shape": [
+              2,
+              2049,
+              64
+            ],
+            "max_abs_SDV_minus_XM": 0.0,
+            "max_abs_SDI_minus_X1mM": 0.0
+          },
+          {
+            "f0": 64,
+            "config": {
+              "branch": "identity",
+              "mask_mode": "per_channel",
+              "pre_share_formula_max_error": 0.0
+            },
+            "mask_shape": [
+              2,
+              2049,
+              64
+            ],
+            "mix_stft_shape": [
+              2,
+              2049,
+              64
+            ],
+            "V_stft_shape": [
+              2,
+              2049,
+              64
+            ],
+            "I_stft_shape": [
+              2,
+              2049,
+              64
+            ],
+            "SDV_stft_shape": [
+              2,
+              2049,
+              64
+            ],
+            "SDI_stft_shape": [
+              2,
+              2049,
+              64
+            ],
+            "max_abs_SDV_minus_XM": 0.0,
+            "max_abs_SDI_minus_X1mM": 0.0
+          },
+          {
+            "f0": 128,
+            "config": {
+              "branch": "identity",
+              "mask_mode": "per_channel",
+              "pre_share_formula_max_error": 0.0
+            },
+            "mask_shape": [
+              2,
+              2049,
+              47
+            ],
+            "mix_stft_shape": [
+              2,
+              2049,
+              47
+            ],
+            "V_stft_shape": [
+              2,
+              2049,
+              47
+            ],
+            "I_stft_shape": [
+              2,
+              2049,
+              47
+            ],
+            "SDV_stft_shape": [
+              2,
+              2049,
+              47
+            ],
+            "SDI_stft_shape": [
+              2,
+              2049,
+              47
+            ],
+            "max_abs_SDV_minus_XM": 0.0,
+            "max_abs_SDI_minus_X1mM": 0.0
+          }
+        ],
+        "guide_inputs": [],
+        "polarity": [],
+        "errors": [],
+        "shape": [
+          2,
+          2049,
+          175
+        ],
+        "dtype": "float64",
+        "shared": false,
+        "nonfinite": 0,
+        "mask_npy_sha256": "e9c407c3b758f5a73cfe3d4b176030d7ba674789d1867b1241bd58c932ba675d",
+        "stats": [
+          {
+            "min": 0.0,
+            "max": 0.9999999999999999,
+            "mean": 0.024910595986960944,
+            "std": 0.1250734865667909
+          },
+          {
+            "min": 0.0,
+            "max": 0.9999999999999999,
+            "mean": 0.02513019987496213,
+            "std": 0.1257435245328376
+          }
+        ],
+        "lr_max": 0.9999999999992968,
+        "lr_rms": 0.05352698222471976,
+        "lr_mix_energy_weighted_rms": 0.16761940960172186
+      },
+      "applied_mask": "runs/A/S5_per_channel/applied_mask.npy"
+    },
+    {
+      "id": "S5_mono",
+      "case": "S5",
+      "mode": "mono",
+      "series": "principal",
+      "entrypoint": "run_processing",
+      "argv": [
+        "--manifest",
+        "build/inputs/S5/manifest.json",
+        "--out",
+        "build/runs/A/S5_mono/native",
+        "--n-fft",
+        "4096",
+        "--hop",
+        "1024",
+        "--chunk-frames",
+        "64",
+        "--branch",
+        "identity",
+        "--consensus",
+        "magnitudes_first",
+        "--mask-mode",
+        "mono",
+        "--power",
+        "1.95",
+        "--epsilon",
+        "1e-12",
+        "--smoothing",
+        "none",
+        "--no-loo"
+      ],
+      "cwd": "S5_STEREO_VALIDATION",
+      "utc": "2026-11-18T21:09:13.135590+00:00",
+      "log": "runs/A/S5_mono/console.log",
+      "status": "OK",
+      "engine_exit": 0,
+      "parsed_options": {
+        "manifest": "build/inputs/S5/manifest.json",
+        "out": "build/runs/A/S5_mono/native",
+        "branch": "identity",
+        "consensus": "magnitudes_first",
+        "run_mode": "full_processing",
+        "dry_run": false,
+        "power": 1.95,
+        "epsilon": 1e-12,
+        "smoothing": "none",
+        "mask_mode": "mono",
+        "n_fft": 4096,
+        "hop": 1024,
+        "chunk_frames": 64,
+        "fix_polarity": false,
+        "allow_misaligned": false,
+        "correct_alignment": false,
+        "enable_loo": false,
+        "ref_vocal": null,
+        "ref_inst": null,
+        "png": false,
+        "no_wav": false,
+        "quiet": false
+      },
+      "inputs": {
+        "Mix": {
+          "path": "inputs/S5/Mix.wav",
+          "sha256": "ea512195057e55e5e511ced39d65f2e88c003ec0c22d296515ec8ebbf45c7261"
+        },
+        "P1/V": {
+          "path": "inputs/S5/V.wav",
+          "sha256": "b83f2d9c5a620cec4b3423b6f1954f79845c1a30f553932447c4d635cbfed04c"
+        },
+        "P1/I": {
+          "path": "inputs/S5/I.wav",
+          "sha256": "0776c45cec139cae0900efa2e0be53b4d4809509c2c2b93e42e504ba9d7dbf9a"
+        }
+      },
+      "kernel_args": {
+        "branch": "identity",
+        "method": "magnitudes_first",
+        "run_dir": "build/runs/A/S5_mono/native",
+        "write_wavs": true,
+        "ref_v": null,
+        "ref_i": null,
+        "shifts": {},
+        "gains": {},
+        "enable_loo": false,
+        "mix_info": "probe_file(mix)",
+        "pairs": "load_manifest(manifest)",
+        "opt": "parsed_options"
+      },
+      "outputs": {
+        "SDV": {
+          "path": "runs/A/S5_mono/native/Mix SDV [Identity].wav",
+          "sha256": "9a31042b0641472342855718cbc7f8681f022a41e6a94b45bb591b68638cb480",
+          "pcm_f32le_sha256": "0282835c68b79b4e1ee13945d7803b227d45c2f5ba4c069759d73f270fc20413",
+          "sr": 44100,
+          "channels": 2,
+          "frames": 176400,
+          "seconds": 4.0,
+          "subtype": "FLOAT",
+          "nonfinite": [
+            0,
+            0
+          ],
+          "rms": [
+            0.039601664718369164,
+            0.035684550218297716
+          ],
+          "peak": [
+            0.21026493608951569,
+            0.2043209969997406
+          ],
+          "tp4x": [
+            0.21039878340729465,
+            0.2044510606134032
+          ],
+          "rms_R_over_L": 0.9010871253032324,
+          "corr_LR": 0.9253926805387497,
+          "rms_L_minus_R": 0.015040248607934346,
+          "max_abs_L_minus_R": 0.07077142596244812
+        },
+        "SDI": {
+          "path": "runs/A/S5_mono/native/Mix SDI [Identity].wav",
+          "sha256": "54194161f148843483b4001248787a23cada794b57b5fa3519821656dbb8e551",
+          "pcm_f32le_sha256": "dee309926e0983f779bfe37fc63bd28a38e64c13ee610b1cfc02bb524568ce80",
+          "sr": 44100,
+          "channels": 2,
+          "frames": 176400,
+          "seconds": 4.0,
+          "subtype": "FLOAT",
+          "nonfinite": [
+            0,
+            0
+          ],
+          "rms": [
+            0.038977062272882876,
+            0.04192825100654157
+          ],
+          "peak": [
+            0.14996759593486786,
+            0.1500004529953003
+          ],
+          "tp4x": [
+            0.15006306007093806,
+            0.1500959380470281
+          ],
+          "rms_R_over_L": 1.0757160381405115,
+          "corr_LR": 0.8911608189702614,
+          "rms_L_minus_R": 0.019090526769606313,
+          "max_abs_L_minus_R": 0.054474422708153725
+        }
+      },
+      "reconstruction": {
+        "rms": [
+          1.2756859978939718e-09,
+          1.1782880280567898e-09
+        ],
+        "max_abs": [
+          7.450580596923828e-09,
+          7.450580596923828e-09
+        ]
+      },
+      "delay_residual_R_vs_L_delayed_2205": {
+        "Mix": {
+          "rms": 0.0,
+          "max_abs": 0.0
+        },
+        "SDV": {
+          "rms": 0.008695345946350196,
+          "max_abs": 0.06616517156362534
+        },
+        "SDI": {
+          "rms": 0.008695345934867711,
+          "max_abs": 0.06616516783833504
+        }
+      },
+      "observation": {
+        "chunks": [
+          {
+            "f0": 0,
+            "config": {
+              "branch": "identity",
+              "mask_mode": "mono",
+              "pre_share_formula_max_error": 0.0
+            },
+            "mask_shape": [
+              1,
+              2049,
+              64
+            ],
+            "mix_stft_shape": [
+              2,
+              2049,
+              64
+            ],
+            "V_stft_shape": [
+              2,
+              2049,
+              64
+            ],
+            "I_stft_shape": [
+              2,
+              2049,
+              64
+            ],
+            "SDV_stft_shape": [
+              2,
+              2049,
+              64
+            ],
+            "SDI_stft_shape": [
+              2,
+              2049,
+              64
+            ],
+            "max_abs_SDV_minus_XM": 0.0,
+            "max_abs_SDI_minus_X1mM": 0.0
+          },
+          {
+            "f0": 64,
+            "config": {
+              "branch": "identity",
+              "mask_mode": "mono",
+              "pre_share_formula_max_error": 0.0
+            },
+            "mask_shape": [
+              1,
+              2049,
+              64
+            ],
+            "mix_stft_shape": [
+              2,
+              2049,
+              64
+            ],
+            "V_stft_shape": [
+              2,
+              2049,
+              64
+            ],
+            "I_stft_shape": [
+              2,
+              2049,
+              64
+            ],
+            "SDV_stft_shape": [
+              2,
+              2049,
+              64
+            ],
+            "SDI_stft_shape": [
+              2,
+              2049,
+              64
+            ],
+            "max_abs_SDV_minus_XM": 0.0,
+            "max_abs_SDI_minus_X1mM": 0.0
+          },
+          {
+            "f0": 128,
+            "config": {
+              "branch": "identity",
+              "mask_mode": "mono",
+              "pre_share_formula_max_error": 0.0
+            },
+            "mask_shape": [
+              1,
+              2049,
+              47
+            ],
+            "mix_stft_shape": [
+              2,
+              2049,
+              47
+            ],
+            "V_stft_shape": [
+              2,
+              2049,
+              47
+            ],
+            "I_stft_shape": [
+              2,
+              2049,
+              47
+            ],
+            "SDV_stft_shape": [
+              2,
+              2049,
+              47
+            ],
+            "SDI_stft_shape": [
+              2,
+              2049,
+              47
+            ],
+            "max_abs_SDV_minus_XM": 0.0,
+            "max_abs_SDI_minus_X1mM": 0.0
+          }
+        ],
+        "guide_inputs": [],
+        "polarity": [],
+        "errors": [],
+        "shape": [
+          1,
+          2049,
+          175
+        ],
+        "dtype": "float64",
+        "shared": true,
+        "nonfinite": 0,
+        "mask_npy_sha256": "da1ef2fe9eb6be943b63f2999a649a34cb3ed36af0c1fda93209c1d293c9ea4e",
+        "stats": [
+          {
+            "min": 0.0,
+            "max": 0.9999999999999998,
+            "mean": 0.025020397930961526,
+            "std": 0.12251992940702469
+          }
+        ],
+        "lr_max": 0.0,
+        "lr_rms": 0.0,
+        "lr_mix_energy_weighted_rms": 0.0
+      },
+      "applied_mask": "runs/A/S5_mono/applied_mask.npy"
+    },
+    {
+      "id": "S6_per_channel",
+      "case": "S6",
+      "mode": "per_channel",
+      "series": "principal",
+      "entrypoint": "run_processing",
+      "argv": [
+        "--manifest",
+        "build/inputs/S6/manifest.json",
+        "--out",
+        "build/runs/A/S6_per_channel/native",
+        "--n-fft",
+        "4096",
+        "--hop",
+        "1024",
+        "--chunk-frames",
+        "64",
+        "--branch",
+        "identity",
+        "--consensus",
+        "magnitudes_first",
+        "--mask-mode",
+        "per_channel",
+        "--power",
+        "1.95",
+        "--epsilon",
+        "1e-12",
+        "--smoothing",
+        "none",
+        "--no-loo"
+      ],
+      "cwd": "S5_STEREO_VALIDATION",
+      "utc": "2026-11-18T21:09:13.600334+00:00",
+      "log": "runs/A/S6_per_channel/console.log",
+      "status": "OK",
+      "engine_exit": 0,
+      "parsed_options": {
+        "manifest": "build/inputs/S6/manifest.json",
+        "out": "build/runs/A/S6_per_channel/native",
+        "branch": "identity",
+        "consensus": "magnitudes_first",
+        "run_mode": "full_processing",
+        "dry_run": false,
+        "power": 1.95,
+        "epsilon": 1e-12,
+        "smoothing": "none",
+        "mask_mode": "per_channel",
+        "n_fft": 4096,
+        "hop": 1024,
+        "chunk_frames": 64,
+        "fix_polarity": false,
+        "allow_misaligned": false,
+        "correct_alignment": false,
+        "enable_loo": false,
+        "ref_vocal": null,
+        "ref_inst": null,
+        "png": false,
+        "no_wav": false,
+        "quiet": false
+      },
+      "inputs": {
+        "Mix": {
+          "path": "inputs/S6/Mix.wav",
+          "sha256": "b9f9056e78f996fb85a0c558a64da22b30195d61f12fc0dff4de6a8e5fe30554"
+        },
+        "P1/V": {
+          "path": "inputs/S6/V.wav",
+          "sha256": "c05474cae558ca51b1c14186aa03ea771356fc897e80472c6599acf571f3d8b0"
+        },
+        "P1/I": {
+          "path": "inputs/S6/I.wav",
+          "sha256": "fc6cfc0e4eac9ed481abc455599572b8098d0536e46cc9c780ecc2b5e13e2793"
+        }
+      },
+      "kernel_args": {
+        "branch": "identity",
+        "method": "magnitudes_first",
+        "run_dir": "build/runs/A/S6_per_channel/native",
+        "write_wavs": true,
+        "ref_v": null,
+        "ref_i": null,
+        "shifts": {},
+        "gains": {},
+        "enable_loo": false,
+        "mix_info": "probe_file(mix)",
+        "pairs": "load_manifest(manifest)",
+        "opt": "parsed_options"
+      },
+      "outputs": {
+        "SDV": {
+          "path": "runs/A/S6_per_channel/native/Mix SDV [Identity].wav",
+          "sha256": "829ace97dd915cbd2b76217f16a5e48c81a8da627c09d00caec7e26afed381cb",
+          "pcm_f32le_sha256": "b978579d2a7995bd36b29ff6c789a9db542618303cb48c58a2ef4769b17d64f6",
+          "sr": 44100,
+          "channels": 2,
+          "frames": 176400,
+          "seconds": 4.0,
+          "subtype": "FLOAT",
+          "nonfinite": [
+            0,
+            0
+          ],
+          "rms": [
+            0.11312814668334932,
+            0.12727849375293274
+          ],
+          "peak": [
+            0.16416090726852417,
+            0.18025743961334229
+          ],
+          "tp4x": [
+            0.16433895885423624,
+            0.18037218520645285
+          ],
+          "rms_R_over_L": 1.1250824616546655,
+          "corr_LR": 7.588561850257958e-05,
+          "rms_L_minus_R": 0.17028096553528516,
+          "max_abs_L_minus_R": 0.297856405377388
+        },
+        "SDI": {
+          "path": "runs/A/S6_per_channel/native/Mix SDI [Identity].wav",
+          "sha256": "e6e0f11b42e8431f37328a0a0310147e3c683cc61bd4637a46cb0d8ff8ead1b1",
+          "pcm_f32le_sha256": "051c42956a727b672c5c4a6dbc2fd462231dce4f0e58d929f584abead76f825d",
+          "sr": 44100,
+          "channels": 2,
+          "frames": 176400,
+          "seconds": 4.0,
+          "subtype": "FLOAT",
+          "nonfinite": [
+            0,
+            0
+          ],
+          "rms": [
+            0.0989907520739902,
+            0.09191924330511954
+          ],
+          "peak": [
+            0.14006733894348145,
+            0.13223068416118622
+          ],
+          "tp4x": [
+            0.1401565009215777,
+            0.13255116266586128
+          ],
+          "rms_R_over_L": 0.9285639454119401,
+          "corr_LR": 5.1194133376145026e-05,
+          "rms_L_minus_R": 0.13508288063082344,
+          "max_abs_L_minus_R": 0.27005869150161743
+        }
+      },
+      "reconstruction": {
+        "rms": [
+          4.324337867686159e-09,
+          4.047429476332228e-09
+        ],
+        "max_abs": [
+          1.0943040251731873e-08,
+          1.1175870895385742e-08
+        ]
+      },
+      "observation": {
+        "chunks": [
+          {
+            "f0": 0,
+            "config": {
+              "branch": "identity",
+              "mask_mode": "per_channel",
+              "pre_share_formula_max_error": 0.0
+            },
+            "mask_shape": [
+              2,
+              2049,
+              64
+            ],
+            "mix_stft_shape": [
+              2,
+              2049,
+              64
+            ],
+            "V_stft_shape": [
+              2,
+              2049,
+              64
+            ],
+            "I_stft_shape": [
+              2,
+              2049,
+              64
+            ],
+            "SDV_stft_shape": [
+              2,
+              2049,
+              64
+            ],
+            "SDI_stft_shape": [
+              2,
+              2049,
+              64
+            ],
+            "max_abs_SDV_minus_XM": 0.0,
+            "max_abs_SDI_minus_X1mM": 0.0
+          },
+          {
+            "f0": 64,
+            "config": {
+              "branch": "identity",
+              "mask_mode": "per_channel",
+              "pre_share_formula_max_error": 0.0
+            },
+            "mask_shape": [
+              2,
+              2049,
+              64
+            ],
+            "mix_stft_shape": [
+              2,
+              2049,
+              64
+            ],
+            "V_stft_shape": [
+              2,
+              2049,
+              64
+            ],
+            "I_stft_shape": [
+              2,
+              2049,
+              64
+            ],
+            "SDV_stft_shape": [
+              2,
+              2049,
+              64
+            ],
+            "SDI_stft_shape": [
+              2,
+              2049,
+              64
+            ],
+            "max_abs_SDV_minus_XM": 0.0,
+            "max_abs_SDI_minus_X1mM": 0.0
+          },
+          {
+            "f0": 128,
+            "config": {
+              "branch": "identity",
+              "mask_mode": "per_channel",
+              "pre_share_formula_max_error": 0.0
+            },
+            "mask_shape": [
+              2,
+              2049,
+              47
+            ],
+            "mix_stft_shape": [
+              2,
+              2049,
+              47
+            ],
+            "V_stft_shape": [
+              2,
+              2049,
+              47
+            ],
+            "I_stft_shape": [
+              2,
+              2049,
+              47
+            ],
+            "SDV_stft_shape": [
+              2,
+              2049,
+              47
+            ],
+            "SDI_stft_shape": [
+              2,
+              2049,
+              47
+            ],
+            "max_abs_SDV_minus_XM": 0.0,
+            "max_abs_SDI_minus_X1mM": 0.0
+          }
+        ],
+        "guide_inputs": [],
+        "polarity": [],
+        "errors": [],
+        "shape": [
+          2,
+          2049,
+          175
+        ],
+        "dtype": "float64",
+        "shared": false,
+        "nonfinite": 0,
+        "mask_npy_sha256": "9960e85a80807edfb44fa2868d420d1f189777f72ec528cdf174d0faf987fea7",
+        "stats": [
+          {
+            "min": 2.0027953166050333e-18,
+            "max": 0.9999999999995061,
+            "mean": 0.17224953544849142,
+            "std": 0.33157715766602774
+          },
+          {
+            "min": 3.4245118153682923e-18,
+            "max": 0.9999999999999606,
+            "mean": 0.05300199581330588,
+            "std": 0.1910335997771812
+          }
+        ],
+        "lr_max": 0.9999999999967624,
+        "lr_rms": 0.3842521874818999,
+        "lr_mix_energy_weighted_rms": 0.9509677120810394
+      },
+      "applied_mask": "runs/A/S6_per_channel/applied_mask.npy"
+    },
+    {
+      "id": "S6_mono",
+      "case": "S6",
+      "mode": "mono",
+      "series": "principal",
+      "entrypoint": "run_processing",
+      "argv": [
+        "--manifest",
+        "build/inputs/S6/manifest.json",
+        "--out",
+        "build/runs/A/S6_mono/native",
+        "--n-fft",
+        "4096",
+        "--hop",
+        "1024",
+        "--chunk-frames",
+        "64",
+        "--branch",
+        "identity",
+        "--consensus",
+        "magnitudes_first",
+        "--mask-mode",
+        "mono",
+        "--power",
+        "1.95",
+        "--epsilon",
+        "1e-12",
+        "--smoothing",
+        "none",
+        "--no-loo"
+      ],
+      "cwd": "S5_STEREO_VALIDATION",
+      "utc": "2026-11-18T21:09:14.057079+00:00",
+      "log": "runs/A/S6_mono/console.log",
+      "status": "OK",
+      "engine_exit": 0,
+      "parsed_options": {
+        "manifest": "build/inputs/S6/manifest.json",
+        "out": "build/runs/A/S6_mono/native",
+        "branch": "identity",
+        "consensus": "magnitudes_first",
+        "run_mode": "full_processing",
+        "dry_run": false,
+        "power": 1.95,
+        "epsilon": 1e-12,
+        "smoothing": "none",
+        "mask_mode": "mono",
+        "n_fft": 4096,
+        "hop": 1024,
+        "chunk_frames": 64,
+        "fix_polarity": false,
+        "allow_misaligned": false,
+        "correct_alignment": false,
+        "enable_loo": false,
+        "ref_vocal": null,
+        "ref_inst": null,
+        "png": false,
+        "no_wav": false,
+        "quiet": false
+      },
+      "inputs": {
+        "Mix": {
+          "path": "inputs/S6/Mix.wav",
+          "sha256": "b9f9056e78f996fb85a0c558a64da22b30195d61f12fc0dff4de6a8e5fe30554"
+        },
+        "P1/V": {
+          "path": "inputs/S6/V.wav",
+          "sha256": "c05474cae558ca51b1c14186aa03ea771356fc897e80472c6599acf571f3d8b0"
+        },
+        "P1/I": {
+          "path": "inputs/S6/I.wav",
+          "sha256": "fc6cfc0e4eac9ed481abc455599572b8098d0536e46cc9c780ecc2b5e13e2793"
+        }
+      },
+      "kernel_args": {
+        "branch": "identity",
+        "method": "magnitudes_first",
+        "run_dir": "build/runs/A/S6_mono/native",
+        "write_wavs": true,
+        "ref_v": null,
+        "ref_i": null,
+        "shifts": {},
+        "gains": {},
+        "enable_loo": false,
+        "mix_info": "probe_file(mix)",
+        "pairs": "load_manifest(manifest)",
+        "opt": "parsed_options"
+      },
+      "outputs": {
+        "SDV": {
+          "path": "runs/A/S6_mono/native/Mix SDV [Identity].wav",
+          "sha256": "cb7bb09b64a3f4b7c196daf8f12ee968942b05d656699f13fffd2c2f8a1784b4",
+          "pcm_f32le_sha256": "5197bd52399d0091eedcc857827b0f2da5d31d332c5815cea6784a996a1acaf4",
+          "sr": 44100,
+          "channels": 2,
+          "frames": 176400,
+          "seconds": 4.0,
+          "subtype": "FLOAT",
+          "nonfinite": [
+            0,
+            0
+          ],
+          "rms": [
+            0.08367685292730923,
+            0.07837470092916501
+          ],
+          "peak": [
+            0.1649612933397293,
+            0.11760351061820984
+          ],
+          "tp4x": [
+            0.16508054690843568,
+            0.11782668694651637
+          ],
+          "rms_R_over_L": 0.9366353798851609,
+          "corr_LR": 0.4803647229297553,
+          "rms_L_minus_R": 0.08272728242520475,
+          "max_abs_L_minus_R": 0.17633656412363052
+        },
+        "SDI": {
+          "path": "runs/A/S6_mono/native/Mix SDI [Identity].wav",
+          "sha256": "d928c209b13afc01df4010f2b52ae5484e23f4e1d206b231fad69bc87c0d502c",
+          "pcm_f32le_sha256": "583ca5e7c6cebf05c00ecac5273cd214cb8af7d4081d7e4ebf23dc84e7bf6446",
+          "sr": 44100,
+          "channels": 2,
+          "frames": 176400,
+          "seconds": 4.0,
+          "subtype": "FLOAT",
+          "nonfinite": [
+            0,
+            0
+          ],
+          "rms": [
+            0.06736906999531207,
+            0.07863118215177527
+          ],
+          "peak": [
+            0.11867868900299072,
+            0.11973453313112259
+          ],
+          "tp4x": [
+            0.11875423571323161,
+            0.11983997101035887
+          ],
+          "rms_R_over_L": 1.1671703670133324,
+          "corr_LR": 0.5945803663923966,
+          "rms_L_minus_R": 0.06649888582536967,
+          "max_abs_L_minus_R": 0.13582096248865128
+        }
+      },
+      "reconstruction": {
+        "rms": [
+          2.5148596728235026e-09,
+          5.4856304952315944e-11
+        ],
+        "max_abs": [
+          7.450580596923828e-09,
+          3.725290298461914e-09
+        ]
+      },
+      "observation": {
+        "chunks": [
+          {
+            "f0": 0,
+            "config": {
+              "branch": "identity",
+              "mask_mode": "mono",
+              "pre_share_formula_max_error": 0.0
+            },
+            "mask_shape": [
+              1,
+              2049,
+              64
+            ],
+            "mix_stft_shape": [
+              2,
+              2049,
+              64
+            ],
+            "V_stft_shape": [
+              2,
+              2049,
+              64
+            ],
+            "I_stft_shape": [
+              2,
+              2049,
+              64
+            ],
+            "SDV_stft_shape": [
+              2,
+              2049,
+              64
+            ],
+            "SDI_stft_shape": [
+              2,
+              2049,
+              64
+            ],
+            "max_abs_SDV_minus_XM": 0.0,
+            "max_abs_SDI_minus_X1mM": 0.0
+          },
+          {
+            "f0": 64,
+            "config": {
+              "branch": "identity",
+              "mask_mode": "mono",
+              "pre_share_formula_max_error": 0.0
+            },
+            "mask_shape": [
+              1,
+              2049,
+              64
+            ],
+            "mix_stft_shape": [
+              2,
+              2049,
+              64
+            ],
+            "V_stft_shape": [
+              2,
+              2049,
+              64
+            ],
+            "I_stft_shape": [
+              2,
+              2049,
+              64
+            ],
+            "SDV_stft_shape": [
+              2,
+              2049,
+              64
+            ],
+            "SDI_stft_shape": [
+              2,
+              2049,
+              64
+            ],
+            "max_abs_SDV_minus_XM": 0.0,
+            "max_abs_SDI_minus_X1mM": 0.0
+          },
+          {
+            "f0": 128,
+            "config": {
+              "branch": "identity",
+              "mask_mode": "mono",
+              "pre_share_formula_max_error": 0.0
+            },
+            "mask_shape": [
+              1,
+              2049,
+              47
+            ],
+            "mix_stft_shape": [
+              2,
+              2049,
+              47
+            ],
+            "V_stft_shape": [
+              2,
+              2049,
+              47
+            ],
+            "I_stft_shape": [
+              2,
+              2049,
+              47
+            ],
+            "SDV_stft_shape": [
+              2,
+              2049,
+              47
+            ],
+            "SDI_stft_shape": [
+              2,
+              2049,
+              47
+            ],
+            "max_abs_SDV_minus_XM": 0.0,
+            "max_abs_SDI_minus_X1mM": 0.0
+          }
+        ],
+        "guide_inputs": [],
+        "polarity": [],
+        "errors": [],
+        "shape": [
+          1,
+          2049,
+          175
+        ],
+        "dtype": "float64",
+        "shared": true,
+        "nonfinite": 0,
+        "mask_npy_sha256": "a040b16502c0f6aef561422a8d2d11425d4ee8d050eadae03ae71ab2c3cb5b7b",
+        "stats": [
+          {
+            "min": 2.713653565986663e-18,
+            "max": 0.9768588963040563,
+            "mean": 0.11262576563089867,
+            "std": 0.19965265311525424
+          }
+        ],
+        "lr_max": 0.0,
+        "lr_rms": 0.0,
+        "lr_mix_energy_weighted_rms": 0.0
+      },
+      "applied_mask": "runs/A/S6_mono/applied_mask.npy"
+    },
+    {
+      "id": "S7_per_channel",
+      "case": "S7",
+      "mode": "per_channel",
+      "series": "principal",
+      "entrypoint": "run_processing",
+      "argv": [
+        "--manifest",
+        "build/inputs/S7/manifest.json",
+        "--out",
+        "build/runs/A/S7_per_channel/native",
+        "--n-fft",
+        "4096",
+        "--hop",
+        "1024",
+        "--chunk-frames",
+        "64",
+        "--branch",
+        "identity",
+        "--consensus",
+        "magnitudes_first",
+        "--mask-mode",
+        "per_channel",
+        "--power",
+        "1.95",
+        "--epsilon",
+        "1e-12",
+        "--smoothing",
+        "none",
+        "--no-loo"
+      ],
+      "cwd": "S5_STEREO_VALIDATION",
+      "utc": "2026-11-18T21:09:14.504675+00:00",
+      "log": "runs/A/S7_per_channel/console.log",
+      "status": "OK",
+      "engine_exit": 0,
+      "parsed_options": {
+        "manifest": "build/inputs/S7/manifest.json",
+        "out": "build/runs/A/S7_per_channel/native",
+        "branch": "identity",
+        "consensus": "magnitudes_first",
+        "run_mode": "full_processing",
+        "dry_run": false,
+        "power": 1.95,
+        "epsilon": 1e-12,
+        "smoothing": "none",
+        "mask_mode": "per_channel",
+        "n_fft": 4096,
+        "hop": 1024,
+        "chunk_frames": 64,
+        "fix_polarity": false,
+        "allow_misaligned": false,
+        "correct_alignment": false,
+        "enable_loo": false,
+        "ref_vocal": null,
+        "ref_inst": null,
+        "png": false,
+        "no_wav": false,
+        "quiet": false
+      },
+      "inputs": {
+        "Mix": {
+          "path": "inputs/S7/Mix.wav",
+          "sha256": "fc17323544418ec14cf4b7c051624f6bafe016ad58eff509a2c052b03d2af1f3"
+        },
+        "P1/V": {
+          "path": "inputs/S7/V.wav",
+          "sha256": "bb274bc1201b7b4f3fdae96af56da238239b66438f466f2a33f864ec484b3e04"
+        },
+        "P1/I": {
+          "path": "inputs/S7/I.wav",
+          "sha256": "c23cefd19206f0c9d9f31b316140ed290094248e8311c712019b7557575d8497"
+        }
+      },
+      "kernel_args": {
+        "branch": "identity",
+        "method": "magnitudes_first",
+        "run_dir": "build/runs/A/S7_per_channel/native",
+        "write_wavs": true,
+        "ref_v": null,
+        "ref_i": null,
+        "shifts": {},
+        "gains": {},
+        "enable_loo": false,
+        "mix_info": "probe_file(mix)",
+        "pairs": "load_manifest(manifest)",
+        "opt": "parsed_options"
+      },
+      "outputs": {
+        "SDV": {
+          "path": "runs/A/S7_per_channel/native/Mix SDV [Identity].wav",
+          "sha256": "4e1a97a54f7899d1fed6729bd2842fd4d9a3b4596665c7566cccd7618e552198",
+          "pcm_f32le_sha256": "35b51ee4d67ad241abe10271c6b28e8f2768e42df711a98c6e4db9a910290956",
+          "sr": 44100,
+          "channels": 2,
+          "frames": 176400,
+          "seconds": 4.0,
+          "subtype": "FLOAT",
+          "nonfinite": [
+            0,
+            0
+          ],
+          "rms": [
+            0.1469105717707318,
+            0.1469105717707318
+          ],
+          "peak": [
+            0.23646415770053864,
+            0.23646415770053864
+          ],
+          "tp4x": [
+            0.23661468252815707,
+            0.23661468252815707
+          ],
+          "rms_R_over_L": 1.0,
+          "corr_LR": -0.9999999999999999,
+          "rms_L_minus_R": 0.29382114354143046,
+          "max_abs_L_minus_R": 0.47292831540107727
+        },
+        "SDI": {
+          "path": "runs/A/S7_per_channel/native/Mix SDI [Identity].wav",
+          "sha256": "46b8705d695f5baed1e8d329b61a592237eb0d8fee5467ba1b7dc461337fbd89",
+          "pcm_f32le_sha256": "3121d4f03149e17acd867f840eb85f7b7e411a91f82b43cc3dc1d9834134437b",
+          "sr": 44100,
+          "channels": 2,
+          "frames": 176400,
+          "seconds": 4.0,
+          "subtype": "FLOAT",
+          "nonfinite": [
+            0,
+            0
+          ],
+          "rms": [
+            0.08905405801229156,
+            0.08905405801229156
+          ],
+          "peak": [
+            0.14045657217502594,
+            0.14045657217502594
+          ],
+          "tp4x": [
+            0.14069410874315189,
+            0.14069410874315189
+          ],
+          "rms_R_over_L": 1.0,
+          "corr_LR": -1.0,
+          "rms_L_minus_R": 0.17810811602459806,
+          "max_abs_L_minus_R": 0.2809131443500519
+        }
+      },
+      "reconstruction": {
+        "rms": [
+          3.6297000268318456e-09,
+          3.6297000268318456e-09
+        ],
+        "max_abs": [
+          7.450580596923828e-09,
+          7.450580596923828e-09
+        ]
+      },
+      "observation": {
+        "chunks": [
+          {
+            "f0": 0,
+            "config": {
+              "branch": "identity",
+              "mask_mode": "per_channel",
+              "pre_share_formula_max_error": 0.0
+            },
+            "mask_shape": [
+              2,
+              2049,
+              64
+            ],
+            "mix_stft_shape": [
+              2,
+              2049,
+              64
+            ],
+            "V_stft_shape": [
+              2,
+              2049,
+              64
+            ],
+            "I_stft_shape": [
+              2,
+              2049,
+              64
+            ],
+            "SDV_stft_shape": [
+              2,
+              2049,
+              64
+            ],
+            "SDI_stft_shape": [
+              2,
+              2049,
+              64
+            ],
+            "max_abs_SDV_minus_XM": 0.0,
+            "max_abs_SDI_minus_X1mM": 0.0
+          },
+          {
+            "f0": 64,
+            "config": {
+              "branch": "identity",
+              "mask_mode": "per_channel",
+              "pre_share_formula_max_error": 0.0
+            },
+            "mask_shape": [
+              2,
+              2049,
+              64
+            ],
+            "mix_stft_shape": [
+              2,
+              2049,
+              64
+            ],
+            "V_stft_shape": [
+              2,
+              2049,
+              64
+            ],
+            "I_stft_shape": [
+              2,
+              2049,
+              64
+            ],
+            "SDV_stft_shape": [
+              2,
+              2049,
+              64
+            ],
+            "SDI_stft_shape": [
+              2,
+              2049,
+              64
+            ],
+            "max_abs_SDV_minus_XM": 0.0,
+            "max_abs_SDI_minus_X1mM": 0.0
+          },
+          {
+            "f0": 128,
+            "config": {
+              "branch": "identity",
+              "mask_mode": "per_channel",
+              "pre_share_formula_max_error": 0.0
+            },
+            "mask_shape": [
+              2,
+              2049,
+              47
+            ],
+            "mix_stft_shape": [
+              2,
+              2049,
+              47
+            ],
+            "V_stft_shape": [
+              2,
+              2049,
+              47
+            ],
+            "I_stft_shape": [
+              2,
+              2049,
+              47
+            ],
+            "SDV_stft_shape": [
+              2,
+              2049,
+              47
+            ],
+            "SDI_stft_shape": [
+              2,
+              2049,
+              47
+            ],
+            "max_abs_SDV_minus_XM": 0.0,
+            "max_abs_SDI_minus_X1mM": 0.0
+          }
+        ],
+        "guide_inputs": [],
+        "polarity": [],
+        "errors": [],
+        "shape": [
+          2,
+          2049,
+          175
+        ],
+        "dtype": "float64",
+        "shared": false,
+        "nonfinite": 0,
+        "mask_npy_sha256": "a785ae7187e6d6a434de222b8e93ae2df8ae2685701dfb84b42b45dc806e3012",
+        "stats": [
+          {
+            "min": 2.014314947767018e-18,
+            "max": 0.9999999999920011,
+            "mean": 0.07434673911090757,
+            "std": 0.20346968791029904
+          },
+          {
+            "min": 2.014314947767018e-18,
+            "max": 0.9999999999920011,
+            "mean": 0.07434673911090757,
+            "std": 0.20346968791029904
+          }
+        ],
+        "lr_max": 0.0,
+        "lr_rms": 0.0,
+        "lr_mix_energy_weighted_rms": 0.0
+      },
+      "applied_mask": "runs/A/S7_per_channel/applied_mask.npy"
+    },
+    {
+      "id": "S7_mono",
+      "case": "S7",
+      "mode": "mono",
+      "series": "principal",
+      "entrypoint": "run_processing",
+      "argv": [
+        "--manifest",
+        "build/inputs/S7/manifest.json",
+        "--out",
+        "build/runs/A/S7_mono/native",
+        "--n-fft",
+        "4096",
+        "--hop",
+        "1024",
+        "--chunk-frames",
+        "64",
+        "--branch",
+        "identity",
+        "--consensus",
+        "magnitudes_first",
+        "--mask-mode",
+        "mono",
+        "--power",
+        "1.95",
+        "--epsilon",
+        "1e-12",
+        "--smoothing",
+        "none",
+        "--no-loo"
+      ],
+      "cwd": "S5_STEREO_VALIDATION",
+      "utc": "2026-11-18T21:09:14.973397+00:00",
+      "log": "runs/A/S7_mono/console.log",
+      "status": "OK",
+      "engine_exit": 0,
+      "parsed_options": {
+        "manifest": "build/inputs/S7/manifest.json",
+        "out": "build/runs/A/S7_mono/native",
+        "branch": "identity",
+        "consensus": "magnitudes_first",
+        "run_mode": "full_processing",
+        "dry_run": false,
+        "power": 1.95,
+        "epsilon": 1e-12,
+        "smoothing": "none",
+        "mask_mode": "mono",
+        "n_fft": 4096,
+        "hop": 1024,
+        "chunk_frames": 64,
+        "fix_polarity": false,
+        "allow_misaligned": false,
+        "correct_alignment": false,
+        "enable_loo": false,
+        "ref_vocal": null,
+        "ref_inst": null,
+        "png": false,
+        "no_wav": false,
+        "quiet": false
+      },
+      "inputs": {
+        "Mix": {
+          "path": "inputs/S7/Mix.wav",
+          "sha256": "fc17323544418ec14cf4b7c051624f6bafe016ad58eff509a2c052b03d2af1f3"
+        },
+        "P1/V": {
+          "path": "inputs/S7/V.wav",
+          "sha256": "bb274bc1201b7b4f3fdae96af56da238239b66438f466f2a33f864ec484b3e04"
+        },
+        "P1/I": {
+          "path": "inputs/S7/I.wav",
+          "sha256": "c23cefd19206f0c9d9f31b316140ed290094248e8311c712019b7557575d8497"
+        }
+      },
+      "kernel_args": {
+        "branch": "identity",
+        "method": "magnitudes_first",
+        "run_dir": "build/runs/A/S7_mono/native",
+        "write_wavs": true,
+        "ref_v": null,
+        "ref_i": null,
+        "shifts": {},
+        "gains": {},
+        "enable_loo": false,
+        "mix_info": "probe_file(mix)",
+        "pairs": "load_manifest(manifest)",
+        "opt": "parsed_options"
+      },
+      "outputs": {
+        "SDV": {
+          "path": "runs/A/S7_mono/native/Mix SDV [Identity].wav",
+          "sha256": "9ee7e21a5ccf78747137be86c44fb29be8e65f9f50ea92dd76d24b8446d63228",
+          "pcm_f32le_sha256": "35b51ee4d67ad241abe10271c6b28e8f2768e42df711a98c6e4db9a910290956",
+          "sr": 44100,
+          "channels": 2,
+          "frames": 176400,
+          "seconds": 4.0,
+          "subtype": "FLOAT",
+          "nonfinite": [
+            0,
+            0
+          ],
+          "rms": [
+            0.1469105717707318,
+            0.1469105717707318
+          ],
+          "peak": [
+            0.23646415770053864,
+            0.23646415770053864
+          ],
+          "tp4x": [
+            0.23661468252815707,
+            0.23661468252815707
+          ],
+          "rms_R_over_L": 1.0,
+          "corr_LR": -0.9999999999999999,
+          "rms_L_minus_R": 0.29382114354143046,
+          "max_abs_L_minus_R": 0.47292831540107727
+        },
+        "SDI": {
+          "path": "runs/A/S7_mono/native/Mix SDI [Identity].wav",
+          "sha256": "905e63555bd0562ac7716263a5bad24271e45e14c8776e3680aea9202947aeb5",
+          "pcm_f32le_sha256": "3121d4f03149e17acd867f840eb85f7b7e411a91f82b43cc3dc1d9834134437b",
+          "sr": 44100,
+          "channels": 2,
+          "frames": 176400,
+          "seconds": 4.0,
+          "subtype": "FLOAT",
+          "nonfinite": [
+            0,
+            0
+          ],
+          "rms": [
+            0.08905405801229156,
+            0.08905405801229156
+          ],
+          "peak": [
+            0.14045657217502594,
+            0.14045657217502594
+          ],
+          "tp4x": [
+            0.14069410874315189,
+            0.14069410874315189
+          ],
+          "rms_R_over_L": 1.0,
+          "corr_LR": -1.0,
+          "rms_L_minus_R": 0.17810811602459806,
+          "max_abs_L_minus_R": 0.2809131443500519
+        }
+      },
+      "reconstruction": {
+        "rms": [
+          3.6297000268318456e-09,
+          3.6297000268318456e-09
+        ],
+        "max_abs": [
+          7.450580596923828e-09,
+          7.450580596923828e-09
+        ]
+      },
+      "observation": {
+        "chunks": [
+          {
+            "f0": 0,
+            "config": {
+              "branch": "identity",
+              "mask_mode": "mono",
+              "pre_share_formula_max_error": 0.0
+            },
+            "mask_shape": [
+              1,
+              2049,
+              64
+            ],
+            "mix_stft_shape": [
+              2,
+              2049,
+              64
+            ],
+            "V_stft_shape": [
+              2,
+              2049,
+              64
+            ],
+            "I_stft_shape": [
+              2,
+              2049,
+              64
+            ],
+            "SDV_stft_shape": [
+              2,
+              2049,
+              64
+            ],
+            "SDI_stft_shape": [
+              2,
+              2049,
+              64
+            ],
+            "max_abs_SDV_minus_XM": 0.0,
+            "max_abs_SDI_minus_X1mM": 0.0
+          },
+          {
+            "f0": 64,
+            "config": {
+              "branch": "identity",
+              "mask_mode": "mono",
+              "pre_share_formula_max_error": 0.0
+            },
+            "mask_shape": [
+              1,
+              2049,
+              64
+            ],
+            "mix_stft_shape": [
+              2,
+              2049,
+              64
+            ],
+            "V_stft_shape": [
+              2,
+              2049,
+              64
+            ],
+            "I_stft_shape": [
+              2,
+              2049,
+              64
+            ],
+            "SDV_stft_shape": [
+              2,
+              2049,
+              64
+            ],
+            "SDI_stft_shape": [
+              2,
+              2049,
+              64
+            ],
+            "max_abs_SDV_minus_XM": 0.0,
+            "max_abs_SDI_minus_X1mM": 0.0
+          },
+          {
+            "f0": 128,
+            "config": {
+              "branch": "identity",
+              "mask_mode": "mono",
+              "pre_share_formula_max_error": 0.0
+            },
+            "mask_shape": [
+              1,
+              2049,
+              47
+            ],
+            "mix_stft_shape": [
+              2,
+              2049,
+              47
+            ],
+            "V_stft_shape": [
+              2,
+              2049,
+              47
+            ],
+            "I_stft_shape": [
+              2,
+              2049,
+              47
+            ],
+            "SDV_stft_shape": [
+              2,
+              2049,
+              47
+            ],
+            "SDI_stft_shape": [
+              2,
+              2049,
+              47
+            ],
+            "max_abs_SDV_minus_XM": 0.0,
+            "max_abs_SDI_minus_X1mM": 0.0
+          }
+        ],
+        "guide_inputs": [],
+        "polarity": [],
+        "errors": [],
+        "shape": [
+          1,
+          2049,
+          175
+        ],
+        "dtype": "float64",
+        "shared": true,
+        "nonfinite": 0,
+        "mask_npy_sha256": "22045c265a012749d34623b5ce341e7f6b466fe00956b6dae3c6101155ed3ceb",
+        "stats": [
+          {
+            "min": 2.014314947767018e-18,
+            "max": 0.9999999999920011,
+            "mean": 0.07434673911090757,
+            "std": 0.20346968791029904
+          }
+        ],
+        "lr_max": 0.0,
+        "lr_rms": 0.0,
+        "lr_mix_energy_weighted_rms": 0.0
+      },
+      "applied_mask": "runs/A/S7_mono/applied_mask.npy"
+    },
+    {
+      "id": "Ronly_per_channel_unilateral",
+      "case": "Ronly",
+      "mode": "per_channel",
+      "series": "unilateral",
+      "entrypoint": "run_processing",
+      "argv": [
+        "--manifest",
+        "build/inputs/Ronly/manifest.json",
+        "--out",
+        "build/runs/A/Ronly_per_channel_unilateral/native",
+        "--n-fft",
+        "4096",
+        "--hop",
+        "1024",
+        "--chunk-frames",
+        "64",
+        "--branch",
+        "identity",
+        "--consensus",
+        "magnitudes_first",
+        "--mask-mode",
+        "per_channel",
+        "--power",
+        "1.95",
+        "--epsilon",
+        "1e-12",
+        "--smoothing",
+        "none",
+        "--no-loo"
+      ],
+      "cwd": "S5_STEREO_VALIDATION",
+      "utc": "2026-11-18T21:10:51.819305+00:00",
+      "log": "runs/A/Ronly_per_channel_unilateral/console.log",
+      "status": "OK",
+      "engine_exit": 0,
+      "parsed_options": {
+        "manifest": "build/inputs/Ronly/manifest.json",
+        "out": "build/runs/A/Ronly_per_channel_unilateral/native",
+        "branch": "identity",
+        "consensus": "magnitudes_first",
+        "run_mode": "full_processing",
+        "dry_run": false,
+        "power": 1.95,
+        "epsilon": 1e-12,
+        "smoothing": "none",
+        "mask_mode": "per_channel",
+        "n_fft": 4096,
+        "hop": 1024,
+        "chunk_frames": 64,
+        "fix_polarity": false,
+        "allow_misaligned": false,
+        "correct_alignment": false,
+        "enable_loo": false,
+        "ref_vocal": null,
+        "ref_inst": null,
+        "png": false,
+        "no_wav": false,
+        "quiet": false
+      },
+      "inputs": {
+        "Mix": {
+          "path": "inputs/S2/Mix.wav",
+          "sha256": "ed9297315c5946f1405fe67f1ca454b399e22f1a3399afc033e2f66997ddf33a"
+        },
+        "P1/V": {
+          "path": "inputs/Ronly/V.wav",
+          "sha256": "b74106c5515cde20b4b0d9824d7be0c70fd626d1e798b8a7f32a2dde3ab58f86"
+        },
+        "P1/I": {
+          "path": "inputs/Ronly/I.wav",
+          "sha256": "b7bee50acda4eddad2ead222aa0354b0c98a13a287cf2979449f8a778240008d"
+        }
+      },
+      "kernel_args": {
+        "branch": "identity",
+        "method": "magnitudes_first",
+        "run_dir": "build/runs/A/Ronly_per_channel_unilateral/native",
+        "write_wavs": true,
+        "ref_v": null,
+        "ref_i": null,
+        "shifts": {},
+        "gains": {},
+        "enable_loo": false,
+        "mix_info": "probe_file(mix)",
+        "pairs": "load_manifest(manifest)",
+        "opt": "parsed_options"
+      },
+      "outputs": {
+        "SDV": {
+          "path": "runs/A/Ronly_per_channel_unilateral/native/Mix SDV [Identity].wav",
+          "sha256": "32724ca24c3b9a55549e5b2bd9c621463f5f6b9f86d72c4b707172559afc640b",
+          "pcm_f32le_sha256": "19cdf8e4c78a3d8bf35454fd8aa96e3172b54d3b1dc7e9c6bd894cb8061bd696",
+          "sr": 44100,
+          "channels": 2,
+          "frames": 176400,
+          "seconds": 4.0,
+          "subtype": "FLOAT",
+          "nonfinite": [
+            0,
+            0
+          ],
+          "rms": [
+            0.12727849375293274,
+            0.09899075206461773
+          ],
+          "peak": [
+            0.18025743961334229,
+            0.14006733894348145
+          ],
+          "tp4x": [
+            0.18037218520645285,
+            0.1401565009215777
+          ],
+          "rms_R_over_L": 0.7777492421993468,
+          "corr_LR": 0.999990961774135,
+          "rms_L_minus_R": 0.02829176703894992,
+          "max_abs_L_minus_R": 0.05161581188440323
+        },
+        "SDI": {
+          "path": "runs/A/Ronly_per_channel_unilateral/native/Mix SDI [Identity].wav",
+          "sha256": "ca29c577c90a6f2c4b36dd41ef9fb8450e5737f587a268ad2a59165849c94cc7",
+          "pcm_f32le_sha256": "9e43b06bc510872a17b7a9da7a1d4a6969da671ce2763bdf5871ad276e9bdf72",
+          "sr": 44100,
+          "channels": 2,
+          "frames": 176400,
+          "seconds": 4.0,
+          "subtype": "FLOAT",
+          "nonfinite": [
+            0,
+            0
+          ],
+          "rms": [
+            0.09191924330511954,
+            0.11312814674589616
+          ],
+          "peak": [
+            0.13223068416118622,
+            0.16416090726852417
+          ],
+          "tp4x": [
+            0.13255116266586128,
+            0.16433895885423624
+          ],
+          "rms_R_over_L": 1.2307340952576724,
+          "corr_LR": -8.064756772883323e-05,
+          "rms_L_minus_R": 0.14576968864587844,
+          "max_abs_L_minus_R": 0.27628326416015625
+        }
+      },
+      "reconstruction": {
+        "rms": [
+          4.047429476332228e-09,
+          4.333829464026511e-09
+        ],
+        "max_abs": [
+          1.1175870895385742e-08,
+          1.0943040251731873e-08
+        ]
+      },
+      "observation": {
+        "chunks": [
+          {
+            "f0": 0,
+            "config": {
+              "branch": "identity",
+              "mask_mode": "per_channel",
+              "pre_share_formula_max_error": 0.0
+            },
+            "mask_shape": [
+              2,
+              2049,
+              64
+            ],
+            "mix_stft_shape": [
+              2,
+              2049,
+              64
+            ],
+            "V_stft_shape": [
+              2,
+              2049,
+              64
+            ],
+            "I_stft_shape": [
+              2,
+              2049,
+              64
+            ],
+            "SDV_stft_shape": [
+              2,
+              2049,
+              64
+            ],
+            "SDI_stft_shape": [
+              2,
+              2049,
+              64
+            ],
+            "max_abs_SDV_minus_XM": 0.0,
+            "max_abs_SDI_minus_X1mM": 0.0
+          },
+          {
+            "f0": 64,
+            "config": {
+              "branch": "identity",
+              "mask_mode": "per_channel",
+              "pre_share_formula_max_error": 0.0
+            },
+            "mask_shape": [
+              2,
+              2049,
+              64
+            ],
+            "mix_stft_shape": [
+              2,
+              2049,
+              64
+            ],
+            "V_stft_shape": [
+              2,
+              2049,
+              64
+            ],
+            "I_stft_shape": [
+              2,
+              2049,
+              64
+            ],
+            "SDV_stft_shape": [
+              2,
+              2049,
+              64
+            ],
+            "SDI_stft_shape": [
+              2,
+              2049,
+              64
+            ],
+            "max_abs_SDV_minus_XM": 0.0,
+            "max_abs_SDI_minus_X1mM": 0.0
+          },
+          {
+            "f0": 128,
+            "config": {
+              "branch": "identity",
+              "mask_mode": "per_channel",
+              "pre_share_formula_max_error": 0.0
+            },
+            "mask_shape": [
+              2,
+              2049,
+              47
+            ],
+            "mix_stft_shape": [
+              2,
+              2049,
+              47
+            ],
+            "V_stft_shape": [
+              2,
+              2049,
+              47
+            ],
+            "I_stft_shape": [
+              2,
+              2049,
+              47
+            ],
+            "SDV_stft_shape": [
+              2,
+              2049,
+              47
+            ],
+            "SDI_stft_shape": [
+              2,
+              2049,
+              47
+            ],
+            "max_abs_SDV_minus_XM": 0.0,
+            "max_abs_SDI_minus_X1mM": 0.0
+          }
+        ],
+        "guide_inputs": [],
+        "polarity": [],
+        "errors": [],
+        "shape": [
+          2,
+          2049,
+          175
+        ],
+        "dtype": "float64",
+        "shared": false,
+        "nonfinite": 0,
+        "mask_npy_sha256": "4271251ff23240bde05d62bce725a552e7a4a29df59f764ddd6f394d4cef14fc",
+        "stats": [
+          {
+            "min": 3.4245118153682923e-18,
+            "max": 0.9999999999999606,
+            "mean": 0.05300199581330588,
+            "std": 0.1910335997771812
+          },
+          {
+            "min": 2.5087733593833675e-19,
+            "max": 0.9999999999968016,
+            "mean": 0.04725365295100936,
+            "std": 0.17016212056509653
+          }
+        ],
+        "lr_max": 0.953717863818836,
+        "lr_rms": 0.08994984427194011,
+        "lr_mix_energy_weighted_rms": 0.10204112088493827
+      },
+      "applied_mask": "runs/A/Ronly_per_channel_unilateral/applied_mask.npy"
+    },
+    {
+      "id": "Ronly_mono_unilateral",
+      "case": "Ronly",
+      "mode": "mono",
+      "series": "unilateral",
+      "entrypoint": "run_processing",
+      "argv": [
+        "--manifest",
+        "build/inputs/Ronly/manifest.json",
+        "--out",
+        "build/runs/A/Ronly_mono_unilateral/native",
+        "--n-fft",
+        "4096",
+        "--hop",
+        "1024",
+        "--chunk-frames",
+        "64",
+        "--branch",
+        "identity",
+        "--consensus",
+        "magnitudes_first",
+        "--mask-mode",
+        "mono",
+        "--power",
+        "1.95",
+        "--epsilon",
+        "1e-12",
+        "--smoothing",
+        "none",
+        "--no-loo"
+      ],
+      "cwd": "S5_STEREO_VALIDATION",
+      "utc": "2026-11-18T21:10:52.311107+00:00",
+      "log": "runs/A/Ronly_mono_unilateral/console.log",
+      "status": "OK",
+      "engine_exit": 0,
+      "parsed_options": {
+        "manifest": "build/inputs/Ronly/manifest.json",
+        "out": "build/runs/A/Ronly_mono_unilateral/native",
+        "branch": "identity",
+        "consensus": "magnitudes_first",
+        "run_mode": "full_processing",
+        "dry_run": false,
+        "power": 1.95,
+        "epsilon": 1e-12,
+        "smoothing": "none",
+        "mask_mode": "mono",
+        "n_fft": 4096,
+        "hop": 1024,
+        "chunk_frames": 64,
+        "fix_polarity": false,
+        "allow_misaligned": false,
+        "correct_alignment": false,
+        "enable_loo": false,
+        "ref_vocal": null,
+        "ref_inst": null,
+        "png": false,
+        "no_wav": false,
+        "quiet": false
+      },
+      "inputs": {
+        "Mix": {
+          "path": "inputs/S2/Mix.wav",
+          "sha256": "ed9297315c5946f1405fe67f1ca454b399e22f1a3399afc033e2f66997ddf33a"
+        },
+        "P1/V": {
+          "path": "inputs/Ronly/V.wav",
+          "sha256": "b74106c5515cde20b4b0d9824d7be0c70fd626d1e798b8a7f32a2dde3ab58f86"
+        },
+        "P1/I": {
+          "path": "inputs/Ronly/I.wav",
+          "sha256": "b7bee50acda4eddad2ead222aa0354b0c98a13a287cf2979449f8a778240008d"
+        }
+      },
+      "kernel_args": {
+        "branch": "identity",
+        "method": "magnitudes_first",
+        "run_dir": "build/runs/A/Ronly_mono_unilateral/native",
+        "write_wavs": true,
+        "ref_v": null,
+        "ref_i": null,
+        "shifts": {},
+        "gains": {},
+        "enable_loo": false,
+        "mix_info": "probe_file(mix)",
+        "pairs": "load_manifest(manifest)",
+        "opt": "parsed_options"
+      },
+      "outputs": {
+        "SDV": {
+          "path": "runs/A/Ronly_mono_unilateral/native/Mix SDV [Identity].wav",
+          "sha256": "84db4be5d5df6d0f6d575d24ce31b8c128ccdd610e286efa3c3b245410aa81db",
+          "pcm_f32le_sha256": "e210e467725d656daf8cf1e8637b649c942af0d3b64d2a5a3e8acee8181d4005",
+          "sr": 44100,
+          "channels": 2,
+          "frames": 176400,
+          "seconds": 4.0,
+          "subtype": "FLOAT",
+          "nonfinite": [
+            0,
+            0
+          ],
+          "rms": [
+            0.1272752221234512,
+            0.09959974987171238
+          ],
+          "peak": [
+            0.179793119430542,
+            0.15111060440540314
+          ],
+          "tp4x": [
+            0.17990756945363404,
+            0.15120679614076224
+          ],
+          "rms_R_over_L": 0.7825541233399314,
+          "corr_LR": 0.9938996189646674,
+          "rms_L_minus_R": 0.030341320082958066,
+          "max_abs_L_minus_R": 0.06556900590658188
+        },
+        "SDI": {
+          "path": "runs/A/Ronly_mono_unilateral/native/Mix SDI [Identity].wav",
+          "sha256": "2b71edf9ef958110ad76f03b1653655b3bf00cfc3758931aa36fcdb9e99f8b31",
+          "pcm_f32le_sha256": "e2f51a441b33beccb00db2e9ac65c20a25b1aff17b29de659e9a2d9bba8fa5a5",
+          "sr": 44100,
+          "channels": 2,
+          "frames": 176400,
+          "seconds": 4.0,
+          "subtype": "FLOAT",
+          "nonfinite": [
+            0,
+            0
+          ],
+          "rms": [
+            0.09169622023069118,
+            0.10225309101352759
+          ],
+          "peak": [
+            0.1327454298734665,
+            0.14495547115802765
+          ],
+          "tp4x": [
+            0.1332497485624233,
+            0.1452944604197045
+          ],
+          "rms_R_over_L": 1.1151287452882706,
+          "corr_LR": -9.292539606851331e-05,
+          "rms_L_minus_R": 0.13735222606265624,
+          "max_abs_L_minus_R": 0.26157384365797043
+        }
+      },
+      "reconstruction": {
+        "rms": [
+          4.2113247655015745e-09,
+          3.86787338239987e-09
+        ],
+        "max_abs": [
+          1.1175870895385742e-08,
+          7.450580596923828e-09
+        ]
+      },
+      "observation": {
+        "chunks": [
+          {
+            "f0": 0,
+            "config": {
+              "branch": "identity",
+              "mask_mode": "mono",
+              "pre_share_formula_max_error": 0.0
+            },
+            "mask_shape": [
+              1,
+              2049,
+              64
+            ],
+            "mix_stft_shape": [
+              2,
+              2049,
+              64
+            ],
+            "V_stft_shape": [
+              2,
+              2049,
+              64
+            ],
+            "I_stft_shape": [
+              2,
+              2049,
+              64
+            ],
+            "SDV_stft_shape": [
+              2,
+              2049,
+              64
+            ],
+            "SDI_stft_shape": [
+              2,
+              2049,
+              64
+            ],
+            "max_abs_SDV_minus_XM": 0.0,
+            "max_abs_SDI_minus_X1mM": 0.0
+          },
+          {
+            "f0": 64,
+            "config": {
+              "branch": "identity",
+              "mask_mode": "mono",
+              "pre_share_formula_max_error": 0.0
+            },
+            "mask_shape": [
+              1,
+              2049,
+              64
+            ],
+            "mix_stft_shape": [
+              2,
+              2049,
+              64
+            ],
+            "V_stft_shape": [
+              2,
+              2049,
+              64
+            ],
+            "I_stft_shape": [
+              2,
+              2049,
+              64
+            ],
+            "SDV_stft_shape": [
+              2,
+              2049,
+              64
+            ],
+            "SDI_stft_shape": [
+              2,
+              2049,
+              64
+            ],
+            "max_abs_SDV_minus_XM": 0.0,
+            "max_abs_SDI_minus_X1mM": 0.0
+          },
+          {
+            "f0": 128,
+            "config": {
+              "branch": "identity",
+              "mask_mode": "mono",
+              "pre_share_formula_max_error": 0.0
+            },
+            "mask_shape": [
+              1,
+              2049,
+              47
+            ],
+            "mix_stft_shape": [
+              2,
+              2049,
+              47
+            ],
+            "V_stft_shape": [
+              2,
+              2049,
+              47
+            ],
+            "I_stft_shape": [
+              2,
+              2049,
+              47
+            ],
+            "SDV_stft_shape": [
+              2,
+              2049,
+              47
+            ],
+            "SDI_stft_shape": [
+              2,
+              2049,
+              47
+            ],
+            "max_abs_SDV_minus_XM": 0.0,
+            "max_abs_SDI_minus_X1mM": 0.0
+          }
+        ],
+        "guide_inputs": [],
+        "polarity": [],
+        "errors": [],
+        "shape": [
+          1,
+          2049,
+          175
+        ],
+        "dtype": "float64",
+        "shared": true,
+        "nonfinite": 0,
+        "mask_npy_sha256": "89eb1f58469bfea48f4583c7498217ed1bb6a52f21f954d494ddeca78a9930ee",
+        "stats": [
+          {
+            "min": 1.8376945756533145e-18,
+            "max": 0.9999999999983811,
+            "mean": 0.05012782438215764,
+            "std": 0.17524271454128523
+          }
+        ],
+        "lr_max": 0.0,
+        "lr_rms": 0.0,
+        "lr_mix_energy_weighted_rms": 0.0
+      },
+      "applied_mask": "runs/A/Ronly_mono_unilateral/applied_mask.npy"
+    }
+  ],
+  "contrasts": {
+    "mode_per_channel_vs_mono": {
+      "S1": {
+        "a": "S1_per_channel",
+        "b": "S1_mono",
+        "swap_b": false,
+        "SDV": {
+          "rms": [
+            0.0,
+            0.0
+          ],
+          "max_abs": [
+            0.0,
+            0.0
+          ]
+        },
+        "SDI": {
+          "rms": [
+            0.0,
+            0.0
+          ],
+          "max_abs": [
+            0.0,
+            0.0
+          ]
+        },
+        "mask": {
+          "rms": [
+            0.0,
+            0.0
+          ],
+          "max_abs": [
+            0.0,
+            0.0
+          ]
+        },
+        "status": "EXPERIMENTAL_RESULT"
+      },
+      "S2": {
+        "a": "S2_per_channel",
+        "b": "S2_mono",
+        "swap_b": false,
+        "SDV": {
+          "rms": [
+            0.07836462272510022,
+            0.06736395490637659
+          ],
+          "max_abs": [
+            0.1547919474542141,
+            0.11868039891123772
+          ]
+        },
+        "SDI": {
+          "rms": [
+            0.07836462286267355,
+            0.06736395490303532
+          ],
+          "max_abs": [
+            0.1547919511795044,
+            0.11868039006367326
+          ]
+        },
+        "mask": {
+          "rms": [
+            0.19212609374094994,
+            0.19212609374094994
+          ],
+          "max_abs": [
+            0.4999999999983812,
+            0.49999999999838113
+          ]
+        },
+        "status": "EXPERIMENTAL_RESULT"
+      },
+      "S3": {
+        "a": "S3_per_channel",
+        "b": "S3_mono",
+        "swap_b": false,
+        "SDV": {
+          "rms": [
+            1.8982919297375465e-09,
+            4.802964580651111e-10
+          ],
+          "max_abs": [
+            1.4901161193847656e-08,
+            3.725290298461914e-09
+          ]
+        },
+        "SDI": {
+          "rms": [
+            1.7837341702548227e-09,
+            4.134359663001322e-10
+          ],
+          "max_abs": [
+            1.4901161193847656e-08,
+            3.725290298461914e-09
+          ]
+        },
+        "mask": {
+          "rms": [
+            0.028804004972960776,
+            0.028804004972960776
+          ],
+          "max_abs": [
+            0.29371850458072224,
+            0.2937185045807223
+          ]
+        },
+        "status": "EXPERIMENTAL_RESULT"
+      },
+      "S4": {
+        "a": "S4_per_channel",
+        "b": "S4_mono",
+        "swap_b": false,
+        "SDV": {
+          "rms": [
+            0.03146178212539657,
+            0.03082053641919574
+          ],
+          "max_abs": [
+            0.1126406192779541,
+            0.10940102487802505
+          ]
+        },
+        "SDI": {
+          "rms": [
+            0.031461782125242345,
+            0.030820536419195584
+          ],
+          "max_abs": [
+            0.11264061189658747,
+            0.10940102487802505
+          ]
+        },
+        "mask": {
+          "rms": [
+            0.2010466531066283,
+            0.2010466531066283
+          ],
+          "max_abs": [
+            0.5,
+            0.5
+          ]
+        },
+        "status": "EXPERIMENTAL_RESULT"
+      },
+      "S5": {
+        "a": "S5_per_channel",
+        "b": "S5_mono",
+        "swap_b": false,
+        "SDV": {
+          "rms": [
+            0.004446588388960854,
+            0.00495689617650455
+          ],
+          "max_abs": [
+            0.036135610193014145,
+            0.04262116551399231
+          ]
+        },
+        "SDI": {
+          "rms": [
+            0.00444658838659012,
+            0.004956896174197819
+          ],
+          "max_abs": [
+            0.03613561391830444,
+            0.042621172964572906
+          ]
+        },
+        "mask": {
+          "rms": [
+            0.02676349111235988,
+            0.02676349111235988
+          ],
+          "max_abs": [
+            0.4999999999996484,
+            0.4999999999996484
+          ]
+        },
+        "status": "EXPERIMENTAL_RESULT"
+      },
+      "S6": {
+        "a": "S6_per_channel",
+        "b": "S6_mono",
+        "swap_b": false,
+        "SDV": {
+          "rms": [
+            0.06736395490637659,
+            0.07836462272510022
+          ],
+          "max_abs": [
+            0.11868039891123772,
+            0.1547919474542141
+          ]
+        },
+        "SDI": {
+          "rms": [
+            0.06736395490303532,
+            0.07836462286267355
+          ],
+          "max_abs": [
+            0.11868039006367326,
+            0.1547919511795044
+          ]
+        },
+        "mask": {
+          "rms": [
+            0.19212609374094994,
+            0.19212609374094994
+          ],
+          "max_abs": [
+            0.49999999999838113,
+            0.4999999999983812
+          ]
+        },
+        "status": "EXPERIMENTAL_RESULT"
+      },
+      "S7": {
+        "a": "S7_per_channel",
+        "b": "S7_mono",
+        "swap_b": false,
+        "SDV": {
+          "rms": [
+            0.0,
+            0.0
+          ],
+          "max_abs": [
+            0.0,
+            0.0
+          ]
+        },
+        "SDI": {
+          "rms": [
+            0.0,
+            0.0
+          ],
+          "max_abs": [
+            0.0,
+            0.0
+          ]
+        },
+        "mask": {
+          "rms": [
+            0.0,
+            0.0
+          ],
+          "max_abs": [
+            0.0,
+            0.0
+          ]
+        },
+        "status": "EXPERIMENTAL_RESULT"
+      }
+    },
+    "swap_S6_vs_S2": {
+      "per_channel": {
+        "a": "S6_per_channel",
+        "b": "S2_per_channel",
+        "swap_b": true,
+        "SDV": {
+          "rms": [
+            0.0,
+            0.0
+          ],
+          "max_abs": [
+            0.0,
+            0.0
+          ]
+        },
+        "SDI": {
+          "rms": [
+            0.0,
+            0.0
+          ],
+          "max_abs": [
+            0.0,
+            0.0
+          ]
+        },
+        "mask": {
+          "rms": [
+            0.0,
+            0.0
+          ],
+          "max_abs": [
+            0.0,
+            0.0
+          ]
+        },
+        "status": "EXPERIMENTAL_RESULT"
+      },
+      "mono": {
+        "a": "S6_mono",
+        "b": "S2_mono",
+        "swap_b": true,
+        "SDV": {
+          "rms": [
+            0.0,
+            0.0
+          ],
+          "max_abs": [
+            0.0,
+            0.0
+          ]
+        },
+        "SDI": {
+          "rms": [
+            0.0,
+            0.0
+          ],
+          "max_abs": [
+            0.0,
+            0.0
+          ]
+        },
+        "mask": {
+          "rms": [
+            0.0,
+            0.0
+          ],
+          "max_abs": [
+            0.0,
+            0.0
+          ]
+        },
+        "status": "EXPERIMENTAL_RESULT"
+      }
+    },
+    "Ronly_vs_S2": {
+      "per_channel": {
+        "a": "Ronly_per_channel_unilateral",
+        "b": "S2_per_channel",
+        "swap_b": false,
+        "SDV": {
+          "rms": [
+            0.0,
+            0.1503139824445214
+          ],
+          "max_abs": [
+            0.0,
+            0.2655693590641022
+          ]
+        },
+        "SDI": {
+          "rms": [
+            0.0,
+            0.15031398254819867
+          ],
+          "max_abs": [
+            0.0,
+            0.2655693590641022
+          ]
+        },
+        "mask": {
+          "rms": [
+            0.0,
+            0.38810136913992266
+          ],
+          "max_abs": [
+            0.0,
+            0.9999999999990121
+          ]
+        },
+        "status": "EXPERIMENTAL_RESULT"
+      },
+      "mono": {
+        "a": "Ronly_mono_unilateral",
+        "b": "S2_mono",
+        "swap_b": false,
+        "SDV": {
+          "rms": [
+            0.078234126927518,
+            0.07515699134887584
+          ],
+          "max_abs": [
+            0.1545850746333599,
+            0.1327846795320511
+          ]
+        },
+        "SDI": {
+          "rms": [
+            0.07823412688433132,
+            0.07515699131040683
+          ],
+          "max_abs": [
+            0.1545850783586502,
+            0.1327846795320511
+          ]
+        },
+        "mask": {
+          "rms": [
+            0.19405068456996133,
+            0.19405068456996133
+          ],
+          "max_abs": [
+            0.49999999999950606,
+            0.49999999999950606
+          ]
+        },
+        "status": "EXPERIMENTAL_RESULT"
+      }
+    }
+  }
+}

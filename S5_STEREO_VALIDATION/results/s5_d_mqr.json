@@ -1,0 +1,3199 @@
+{
+  "block": "D",
+  "source": "sdv_sdi_mqr_engine.py",
+  "sha256": "5990ebe41177b62c57290a7b95a4a0408774878a7217341c40ab87d53737a479",
+  "signature": "(argv=None)",
+  "help": "logs/help_sdv_sdi_mqr_engine.txt",
+  "runs": [
+    {
+      "id": "S1_shared",
+      "case": "S1",
+      "mode": "shared",
+      "series": "principal",
+      "entrypoint": "main",
+      "argv": [
+        "--manifest",
+        "build/inputs/S1/manifest.json",
+        "--out",
+        "build/runs/D/S1_shared/native",
+        "--n-fft",
+        "4096",
+        "--hop",
+        "1024",
+        "--chunk-frames",
+        "64",
+        "--mode",
+        "full_processing",
+        "--allow-misaligned",
+        "--consensus",
+        "confidence_weighted_mean",
+        "--power",
+        "2",
+        "--epsilon",
+        "1e-9"
+      ],
+      "cwd": "S5_STEREO_VALIDATION",
+      "utc": "2026-11-18T21:09:32.072084+00:00",
+      "log": "runs/D/S1_shared/console.log",
+      "status": "OK",
+      "engine_exit": 0,
+      "parsed_options": {
+        "manifest": "build/inputs/S1/manifest.json",
+        "mix": null,
+        "mode": "full_processing",
+        "out": "build/runs/D/S1_shared/native",
+        "n_fft": 4096,
+        "hop": 1024,
+        "power": 2.0,
+        "epsilon": 1e-09,
+        "chunk_frames": 64,
+        "consensus": "confidence_weighted_mean",
+        "smoothing": false,
+        "allow_misaligned": true,
+        "write_all_candidates": false,
+        "png": false,
+        "spec_json": null,
+        "self_test": false
+      },
+      "inputs": {
+        "Mix": {
+          "path": "inputs/S1/Mix.wav",
+          "sha256": "9c26d36ba63c2284885cc3b6e4cf1be7a0d7fbb7216f5977100a7306b91abe5d"
+        },
+        "P1/V": {
+          "path": "inputs/S1/V.wav",
+          "sha256": "d0cbb158c4a71c3b842a61c087ceb1292fed65e659b65479459463722e7f50f8"
+        },
+        "P1/I": {
+          "path": "inputs/S1/I.wav",
+          "sha256": "55993c630add17c42e9c224542f8b7ac5ed4f27d43bf8a3a9bf856d240d389f7"
+        }
+      },
+      "outputs": {
+        "SDV": {
+          "path": "runs/D/S1_shared/native/mqr_run_20261118_210932/SDV.wav",
+          "sha256": "989d17e8bc7a8e7367d29ab15368ff50820fc74f0cb35a68206be8e52fa7b94e",
+          "pcm_f32le_sha256": "3fbbbdee8d653f8c23beb2ecaa9ee9fbf4ab6c7d3a6730ba176d450298a9b886",
+          "sr": 44100,
+          "channels": 2,
+          "frames": 176400,
+          "seconds": 4.0,
+          "subtype": "FLOAT",
+          "nonfinite": [
+            0,
+            0
+          ],
+          "rms": [
+            0.14775943190541735,
+            0.14775943190541735
+          ],
+          "peak": [
+            0.23769906163215637,
+            0.23769906163215637
+          ],
+          "tp4x": [
+            0.2378503725565061,
+            0.2378503725565061
+          ],
+          "rms_R_over_L": 1.0,
+          "corr_LR": 1.0,
+          "rms_L_minus_R": 0.0,
+          "max_abs_L_minus_R": 0.0
+        },
+        "SDI": {
+          "path": "runs/D/S1_shared/native/mqr_run_20261118_210932/SDI.wav",
+          "sha256": "3f4cd5ffc871798744fc3ce9f249522f10aaf550a17f243fb3e384be42da1474",
+          "pcm_f32le_sha256": "fafad1710fb7fefabea748d9c24258bc153479df6169da5210bedbd96c53f6f7",
+          "sr": 44100,
+          "channels": 2,
+          "frames": 176400,
+          "seconds": 4.0,
+          "subtype": "FLOAT",
+          "nonfinite": [
+            0,
+            0
+          ],
+          "rms": [
+            0.08877930285742482,
+            0.08877930285742482
+          ],
+          "peak": [
+            0.13977834582328796,
+            0.13977834582328796
+          ],
+          "tp4x": [
+            0.14003663419659557,
+            0.14003663419659557
+          ],
+          "rms_R_over_L": 1.0,
+          "corr_LR": 1.0,
+          "rms_L_minus_R": 0.0,
+          "max_abs_L_minus_R": 0.0
+        }
+      },
+      "reconstruction": {
+        "rms": [
+          3.584563988639874e-09,
+          3.584563988639874e-09
+        ],
+        "max_abs": [
+          7.450580596923828e-09,
+          7.450580596923828e-09
+        ]
+      },
+      "observation": {
+        "chunks": [
+          {
+            "f0": 0,
+            "config": {
+              "mask_mode": null,
+              "consensus_order": null,
+              "use_physical_residuals": null
+            },
+            "mask_shape": [
+              2049,
+              64
+            ],
+            "mix_stft_shape": [
+              2,
+              2049,
+              64
+            ],
+            "V_stft_shape": [
+              1,
+              2049,
+              64
+            ],
+            "I_stft_shape": [
+              1,
+              2049,
+              64
+            ],
+            "SDV_stft_shape": [
+              2,
+              2049,
+              64
+            ],
+            "SDI_stft_shape": [
+              2,
+              2049,
+              64
+            ],
+            "max_abs_SDV_minus_XM": 0.0,
+            "max_abs_SDI_minus_X1mM": 0.0
+          },
+          {
+            "f0": 64,
+            "config": {
+              "mask_mode": null,
+              "consensus_order": null,
+              "use_physical_residuals": null
+            },
+            "mask_shape": [
+              2049,
+              64
+            ],
+            "mix_stft_shape": [
+              2,
+              2049,
+              64
+            ],
+            "V_stft_shape": [
+              1,
+              2049,
+              64
+            ],
+            "I_stft_shape": [
+              1,
+              2049,
+              64
+            ],
+            "SDV_stft_shape": [
+              2,
+              2049,
+              64
+            ],
+            "SDI_stft_shape": [
+              2,
+              2049,
+              64
+            ],
+            "max_abs_SDV_minus_XM": 0.0,
+            "max_abs_SDI_minus_X1mM": 0.0
+          },
+          {
+            "f0": 128,
+            "config": {
+              "mask_mode": null,
+              "consensus_order": null,
+              "use_physical_residuals": null
+            },
+            "mask_shape": [
+              2049,
+              47
+            ],
+            "mix_stft_shape": [
+              2,
+              2049,
+              47
+            ],
+            "V_stft_shape": [
+              1,
+              2049,
+              47
+            ],
+            "I_stft_shape": [
+              1,
+              2049,
+              47
+            ],
+            "SDV_stft_shape": [
+              2,
+              2049,
+              47
+            ],
+            "SDI_stft_shape": [
+              2,
+              2049,
+              47
+            ],
+            "max_abs_SDV_minus_XM": 0.0,
+            "max_abs_SDI_minus_X1mM": 0.0
+          }
+        ],
+        "guide_inputs": [
+          {
+            "f0": 0,
+            "pair": "P1",
+            "role": "vocal",
+            "guide_shape": [
+              68608,
+              2
+            ],
+            "stft_input_shape": [
+              68608,
+              1
+            ],
+            "relation": "(L+R)/2",
+            "relation_max_error": 0.0,
+            "input_peak": 0.20775529742240906,
+            "stereo_span_peak": 0.20775529742240906
+          },
+          {
+            "f0": 0,
+            "pair": "P1",
+            "role": "instrumental",
+            "guide_shape": [
+              68608,
+              2
+            ],
+            "stft_input_shape": [
+              68608,
+              1
+            ],
+            "relation": "(L+R)/2",
+            "relation_max_error": 0.0,
+            "input_peak": 0.15656164288520813,
+            "stereo_span_peak": 0.15656164288520813
+          },
+          {
+            "f0": 64,
+            "pair": "P1",
+            "role": "vocal",
+            "guide_shape": [
+              68608,
+              2
+            ],
+            "stft_input_shape": [
+              68608,
+              1
+            ],
+            "relation": "(L+R)/2",
+            "relation_max_error": 0.0,
+            "input_peak": 0.20775529742240906,
+            "stereo_span_peak": 0.20775529742240906
+          },
+          {
+            "f0": 64,
+            "pair": "P1",
+            "role": "instrumental",
+            "guide_shape": [
+              68608,
+              2
+            ],
+            "stft_input_shape": [
+              68608,
+              1
+            ],
+            "relation": "(L+R)/2",
+            "relation_max_error": 0.0,
+            "input_peak": 0.15656164288520813,
+            "stereo_span_peak": 0.15656164288520813
+          },
+          {
+            "f0": 128,
+            "pair": "P1",
+            "role": "vocal",
+            "guide_shape": [
+              51200,
+              2
+            ],
+            "stft_input_shape": [
+              51200,
+              1
+            ],
+            "relation": "(L+R)/2",
+            "relation_max_error": 0.0,
+            "input_peak": 0.20775529742240906,
+            "stereo_span_peak": 0.20775529742240906
+          },
+          {
+            "f0": 128,
+            "pair": "P1",
+            "role": "instrumental",
+            "guide_shape": [
+              51200,
+              2
+            ],
+            "stft_input_shape": [
+              51200,
+              1
+            ],
+            "relation": "(L+R)/2",
+            "relation_max_error": 0.0,
+            "input_peak": 0.15656164288520813,
+            "stereo_span_peak": 0.15656164288520813
+          }
+        ],
+        "polarity": [],
+        "errors": [],
+        "shape": [
+          2049,
+          175
+        ],
+        "dtype": "float64",
+        "shared": true,
+        "nonfinite": 0,
+        "mask_npy_sha256": "640dd77b9f64cca0e2ea8b5fbb0f35043ac05479da5cb0e64a16bbd203c3ce13",
+        "stats": [
+          {
+            "min": 2.910591721110591e-22,
+            "max": 0.9999999999956954,
+            "mean": 0.05455535487300784,
+            "std": 0.19704290797021584
+          }
+        ],
+        "lr_max": 0.0,
+        "lr_rms": 0.0,
+        "lr_mix_energy_weighted_rms": 0.0
+      },
+      "applied_mask": "runs/D/S1_shared/applied_mask.npy"
+    },
+    {
+      "id": "S2_shared",
+      "case": "S2",
+      "mode": "shared",
+      "series": "principal",
+      "entrypoint": "main",
+      "argv": [
+        "--manifest",
+        "build/inputs/S2/manifest.json",
+        "--out",
+        "build/runs/D/S2_shared/native",
+        "--n-fft",
+        "4096",
+        "--hop",
+        "1024",
+        "--chunk-frames",
+        "64",
+        "--mode",
+        "full_processing",
+        "--allow-misaligned",
+        "--consensus",
+        "confidence_weighted_mean",
+        "--power",
+        "2",
+        "--epsilon",
+        "1e-9"
+      ],
+      "cwd": "S5_STEREO_VALIDATION",
+      "utc": "2026-11-18T21:09:33.769344+00:00",
+      "log": "runs/D/S2_shared/console.log",
+      "status": "OK",
+      "engine_exit": 0,
+      "parsed_options": {
+        "manifest": "build/inputs/S2/manifest.json",
+        "mix": null,
+        "mode": "full_processing",
+        "out": "build/runs/D/S2_shared/native",
+        "n_fft": 4096,
+        "hop": 1024,
+        "power": 2.0,
+        "epsilon": 1e-09,
+        "chunk_frames": 64,
+        "consensus": "confidence_weighted_mean",
+        "smoothing": false,
+        "allow_misaligned": true,
+        "write_all_candidates": false,
+        "png": false,
+        "spec_json": null,
+        "self_test": false
+      },
+      "inputs": {
+        "Mix": {
+          "path": "inputs/S2/Mix.wav",
+          "sha256": "ed9297315c5946f1405fe67f1ca454b399e22f1a3399afc033e2f66997ddf33a"
+        },
+        "P1/V": {
+          "path": "inputs/S2/V.wav",
+          "sha256": "6b23fc9c0a232cdd001b485652cec0b9cd97da81c5d063fefef1b94e26773c7a"
+        },
+        "P1/I": {
+          "path": "inputs/S2/I.wav",
+          "sha256": "fa4bec6b085159d542b6d34062722c883d4400ddd503da1fb6f9a9530b0ffd86"
+        }
+      },
+      "outputs": {
+        "SDV": {
+          "path": "runs/D/S2_shared/native/mqr_run_20261118_210934/SDV.wav",
+          "sha256": "19d172cdccdf034c9a96b56570884a30a57da56cace9c151f8a6b486441c557f",
+          "pcm_f32le_sha256": "4e79a59d313da22701ff37922d47324f7e231c2c060452c05a1354420b725df8",
+          "sr": 44100,
+          "channels": 2,
+          "frames": 176400,
+          "seconds": 4.0,
+          "subtype": "FLOAT",
+          "nonfinite": [
+            0,
+            0
+          ],
+          "rms": [
+            0.07930556347086173,
+            0.1288524039445616
+          ],
+          "peak": [
+            0.11502847820520401,
+            0.227927565574646
+          ],
+          "tp4x": [
+            0.11510170131868312,
+            0.22807265630573711
+          ],
+          "rms_R_over_L": 1.6247586966821597,
+          "corr_LR": 0.47868048230509613,
+          "rms_L_minus_R": 0.11449592981498972,
+          "max_abs_L_minus_R": 0.1842123568058014
+        },
+        "SDI": {
+          "path": "runs/D/S2_shared/native/mqr_run_20261118_210934/SDI.wav",
+          "sha256": "420fb98e1ad422283356851ace7ffed36ca0267274302e26575fa0d9479a6d97",
+          "pcm_f32le_sha256": "69ada6b7d3be44b1c166d57dd1f9cc01fb37adfdd37c41fb63bf384fd7e81122",
+          "sr": 44100,
+          "channels": 2,
+          "frames": 176400,
+          "seconds": 4.0,
+          "subtype": "FLOAT",
+          "nonfinite": [
+            0,
+            0
+          ],
+          "rms": [
+            0.10368139291011891,
+            0.03731684752155248
+          ],
+          "peak": [
+            0.16922086477279663,
+            0.07405386865139008
+          ],
+          "tp4x": [
+            0.16932858486766034,
+            0.07410100875888724
+          ],
+          "rms_R_over_L": 0.3599184624564443,
+          "corr_LR": 0.46268993420618726,
+          "rms_L_minus_R": 0.0925312141101279,
+          "max_abs_L_minus_R": 0.1464669518172741
+        }
+      },
+      "reconstruction": {
+        "rms": [
+          3.3817738065388395e-09,
+          3.1095461591842644e-09
+        ],
+        "max_abs": [
+          7.450580596923828e-09,
+          7.450580596923828e-09
+        ]
+      },
+      "observation": {
+        "chunks": [
+          {
+            "f0": 0,
+            "config": {
+              "mask_mode": null,
+              "consensus_order": null,
+              "use_physical_residuals": null
+            },
+            "mask_shape": [
+              2049,
+              64
+            ],
+            "mix_stft_shape": [
+              2,
+              2049,
+              64
+            ],
+            "V_stft_shape": [
+              1,
+              2049,
+              64
+            ],
+            "I_stft_shape": [
+              1,
+              2049,
+              64
+            ],
+            "SDV_stft_shape": [
+              2,
+              2049,
+              64
+            ],
+            "SDI_stft_shape": [
+              2,
+              2049,
+              64
+            ],
+            "max_abs_SDV_minus_XM": 0.0,
+            "max_abs_SDI_minus_X1mM": 0.0
+          },
+          {
+            "f0": 64,
+            "config": {
+              "mask_mode": null,
+              "consensus_order": null,
+              "use_physical_residuals": null
+            },
+            "mask_shape": [
+              2049,
+              64
+            ],
+            "mix_stft_shape": [
+              2,
+              2049,
+              64
+            ],
+            "V_stft_shape": [
+              1,
+              2049,
+              64
+            ],
+            "I_stft_shape": [
+              1,
+              2049,
+              64
+            ],
+            "SDV_stft_shape": [
+              2,
+              2049,
+              64
+            ],
+            "SDI_stft_shape": [
+              2,
+              2049,
+              64
+            ],
+            "max_abs_SDV_minus_XM": 0.0,
+            "max_abs_SDI_minus_X1mM": 0.0
+          },
+          {
+            "f0": 128,
+            "config": {
+              "mask_mode": null,
+              "consensus_order": null,
+              "use_physical_residuals": null
+            },
+            "mask_shape": [
+              2049,
+              47
+            ],
+            "mix_stft_shape": [
+              2,
+              2049,
+              47
+            ],
+            "V_stft_shape": [
+              1,
+              2049,
+              47
+            ],
+            "I_stft_shape": [
+              1,
+              2049,
+              47
+            ],
+            "SDV_stft_shape": [
+              2,
+              2049,
+              47
+            ],
+            "SDI_stft_shape": [
+              2,
+              2049,
+              47
+            ],
+            "max_abs_SDV_minus_XM": 0.0,
+            "max_abs_SDI_minus_X1mM": 0.0
+          }
+        ],
+        "guide_inputs": [
+          {
+            "f0": 0,
+            "pair": "P1",
+            "role": "vocal",
+            "guide_shape": [
+              68608,
+              2
+            ],
+            "stft_input_shape": [
+              68608,
+              1
+            ],
+            "relation": "(L+R)/2",
+            "relation_max_error": 0.0,
+            "input_peak": 0.14889605343341827,
+            "stereo_span_peak": 0.18000000715255737
+          },
+          {
+            "f0": 0,
+            "pair": "P1",
+            "role": "instrumental",
+            "guide_shape": [
+              68608,
+              2
+            ],
+            "stft_input_shape": [
+              68608,
+              1
+            ],
+            "relation": "(L+R)/2",
+            "relation_max_error": 0.0,
+            "input_peak": 0.1029636412858963,
+            "stereo_span_peak": 0.14000000059604645
+          },
+          {
+            "f0": 64,
+            "pair": "P1",
+            "role": "vocal",
+            "guide_shape": [
+              68608,
+              2
+            ],
+            "stft_input_shape": [
+              68608,
+              1
+            ],
+            "relation": "(L+R)/2",
+            "relation_max_error": 0.0,
+            "input_peak": 0.14889605343341827,
+            "stereo_span_peak": 0.18000000715255737
+          },
+          {
+            "f0": 64,
+            "pair": "P1",
+            "role": "instrumental",
+            "guide_shape": [
+              68608,
+              2
+            ],
+            "stft_input_shape": [
+              68608,
+              1
+            ],
+            "relation": "(L+R)/2",
+            "relation_max_error": 0.0,
+            "input_peak": 0.1029636412858963,
+            "stereo_span_peak": 0.14000000059604645
+          },
+          {
+            "f0": 128,
+            "pair": "P1",
+            "role": "vocal",
+            "guide_shape": [
+              51200,
+              2
+            ],
+            "stft_input_shape": [
+              51200,
+              1
+            ],
+            "relation": "(L+R)/2",
+            "relation_max_error": 0.0,
+            "input_peak": 0.14889605343341827,
+            "stereo_span_peak": 0.18000000715255737
+          },
+          {
+            "f0": 128,
+            "pair": "P1",
+            "role": "instrumental",
+            "guide_shape": [
+              51200,
+              2
+            ],
+            "stft_input_shape": [
+              51200,
+              1
+            ],
+            "relation": "(L+R)/2",
+            "relation_max_error": 0.0,
+            "input_peak": 0.1029636412858963,
+            "stereo_span_peak": 0.14000000059604645
+          }
+        ],
+        "polarity": [],
+        "errors": [],
+        "shape": [
+          2049,
+          175
+        ],
+        "dtype": "float64",
+        "shared": true,
+        "nonfinite": 0,
+        "mask_npy_sha256": "221750d58c9badb02e1f8cb30e0d01771c80ad4b52cfa2969038a4109559db83",
+        "stats": [
+          {
+            "min": 1.5166773543687935e-22,
+            "max": 0.9999999999991053,
+            "mean": 0.052935908817539366,
+            "std": 0.1839722075930883
+          }
+        ],
+        "lr_max": 0.0,
+        "lr_rms": 0.0,
+        "lr_mix_energy_weighted_rms": 0.0
+      },
+      "applied_mask": "runs/D/S2_shared/applied_mask.npy"
+    },
+    {
+      "id": "S3_shared",
+      "case": "S3",
+      "mode": "shared",
+      "series": "principal",
+      "entrypoint": "main",
+      "argv": [
+        "--manifest",
+        "build/inputs/S3/manifest.json",
+        "--out",
+        "build/runs/D/S3_shared/native",
+        "--n-fft",
+        "4096",
+        "--hop",
+        "1024",
+        "--chunk-frames",
+        "64",
+        "--mode",
+        "full_processing",
+        "--allow-misaligned",
+        "--consensus",
+        "confidence_weighted_mean",
+        "--power",
+        "2",
+        "--epsilon",
+        "1e-9"
+      ],
+      "cwd": "S5_STEREO_VALIDATION",
+      "utc": "2026-11-18T21:09:35.389516+00:00",
+      "log": "runs/D/S3_shared/console.log",
+      "status": "OK",
+      "engine_exit": 0,
+      "parsed_options": {
+        "manifest": "build/inputs/S3/manifest.json",
+        "mix": null,
+        "mode": "full_processing",
+        "out": "build/runs/D/S3_shared/native",
+        "n_fft": 4096,
+        "hop": 1024,
+        "power": 2.0,
+        "epsilon": 1e-09,
+        "chunk_frames": 64,
+        "consensus": "confidence_weighted_mean",
+        "smoothing": false,
+        "allow_misaligned": true,
+        "write_all_candidates": false,
+        "png": false,
+        "spec_json": null,
+        "self_test": false
+      },
+      "inputs": {
+        "Mix": {
+          "path": "inputs/S3/Mix.wav",
+          "sha256": "c660ecd1a6f72f130b6d827c986cdef30320231da93a9f6ad871cb4211b3e558"
+        },
+        "P1/V": {
+          "path": "inputs/S3/V.wav",
+          "sha256": "abc91e312c29733b60690d9d95ed20daddd70990b5b4b577723be94eef47d748"
+        },
+        "P1/I": {
+          "path": "inputs/S3/I.wav",
+          "sha256": "cdbe837e34cd9ab3c0c4602d0cd142d56d3fb8dd7bea4828b463fd6c8c4f4950"
+        }
+      },
+      "outputs": {
+        "SDV": {
+          "path": "runs/D/S3_shared/native/mqr_run_20261118_210935/SDV.wav",
+          "sha256": "4c782be5a3f0c7fd94d84c64b8ca2cef4c0a3b82ca957106a2fdde43f7aea1af",
+          "pcm_f32le_sha256": "8b8c36b81f28d44831dfa46f177fad8ba693750535659e15567a2946aa3e7663",
+          "sr": 44100,
+          "channels": 2,
+          "frames": 176400,
+          "seconds": 4.0,
+          "subtype": "FLOAT",
+          "nonfinite": [
+            0,
+            0
+          ],
+          "rms": [
+            0.1477594319005337,
+            0.036939857975133425
+          ],
+          "peak": [
+            0.23769906163215637,
+            0.05942476540803909
+          ],
+          "tp4x": [
+            0.2378503725565061,
+            0.059462593139126524
+          ],
+          "rms_R_over_L": 0.25,
+          "corr_LR": 0.9999999999999999,
+          "rms_L_minus_R": 0.11081957392539121,
+          "max_abs_L_minus_R": 0.17827429622411728
+        },
+        "SDI": {
+          "path": "runs/D/S3_shared/native/mqr_run_20261118_210935/SDI.wav",
+          "sha256": "ae52af766de48feb734dfff929213603b09beee0741ad372cc81a71a2185401e",
+          "pcm_f32le_sha256": "164bb99a33845716b7af991c03d6b30a483d7e688324b2ad938d40cf96159aae",
+          "sr": 44100,
+          "channels": 2,
+          "frames": 176400,
+          "seconds": 4.0,
+          "subtype": "FLOAT",
+          "nonfinite": [
+            0,
+            0
+          ],
+          "rms": [
+            0.08877930285057312,
+            0.02219482571264328
+          ],
+          "peak": [
+            0.13977834582328796,
+            0.03494458645582199
+          ],
+          "tp4x": [
+            0.14003663419683418,
+            0.035009158549208545
+          ],
+          "rms_R_over_L": 0.25,
+          "corr_LR": 1.0,
+          "rms_L_minus_R": 0.06658447713792451,
+          "max_abs_L_minus_R": 0.10483375936746597
+        }
+      },
+      "reconstruction": {
+        "rms": [
+          3.5879731810267694e-09,
+          8.969932952566924e-10
+        ],
+        "max_abs": [
+          7.450580596923828e-09,
+          1.862645149230957e-09
+        ]
+      },
+      "gain_residual_rms_R_minus_quarter_L": {
+        "SDV": 0.0,
+        "SDI": 0.0
+      },
+      "observation": {
+        "chunks": [
+          {
+            "f0": 0,
+            "config": {
+              "mask_mode": null,
+              "consensus_order": null,
+              "use_physical_residuals": null
+            },
+            "mask_shape": [
+              2049,
+              64
+            ],
+            "mix_stft_shape": [
+              2,
+              2049,
+              64
+            ],
+            "V_stft_shape": [
+              1,
+              2049,
+              64
+            ],
+            "I_stft_shape": [
+              1,
+              2049,
+              64
+            ],
+            "SDV_stft_shape": [
+              2,
+              2049,
+              64
+            ],
+            "SDI_stft_shape": [
+              2,
+              2049,
+              64
+            ],
+            "max_abs_SDV_minus_XM": 0.0,
+            "max_abs_SDI_minus_X1mM": 0.0
+          },
+          {
+            "f0": 64,
+            "config": {
+              "mask_mode": null,
+              "consensus_order": null,
+              "use_physical_residuals": null
+            },
+            "mask_shape": [
+              2049,
+              64
+            ],
+            "mix_stft_shape": [
+              2,
+              2049,
+              64
+            ],
+            "V_stft_shape": [
+              1,
+              2049,
+              64
+            ],
+            "I_stft_shape": [
+              1,
+              2049,
+              64
+            ],
+            "SDV_stft_shape": [
+              2,
+              2049,
+              64
+            ],
+            "SDI_stft_shape": [
+              2,
+              2049,
+              64
+            ],
+            "max_abs_SDV_minus_XM": 0.0,
+            "max_abs_SDI_minus_X1mM": 0.0
+          },
+          {
+            "f0": 128,
+            "config": {
+              "mask_mode": null,
+              "consensus_order": null,
+              "use_physical_residuals": null
+            },
+            "mask_shape": [
+              2049,
+              47
+            ],
+            "mix_stft_shape": [
+              2,
+              2049,
+              47
+            ],
+            "V_stft_shape": [
+              1,
+              2049,
+              47
+            ],
+            "I_stft_shape": [
+              1,
+              2049,
+              47
+            ],
+            "SDV_stft_shape": [
+              2,
+              2049,
+              47
+            ],
+            "SDI_stft_shape": [
+              2,
+              2049,
+              47
+            ],
+            "max_abs_SDV_minus_XM": 0.0,
+            "max_abs_SDI_minus_X1mM": 0.0
+          }
+        ],
+        "guide_inputs": [
+          {
+            "f0": 0,
+            "pair": "P1",
+            "role": "vocal",
+            "guide_shape": [
+              68608,
+              2
+            ],
+            "stft_input_shape": [
+              68608,
+              1
+            ],
+            "relation": "(L+R)/2",
+            "relation_max_error": 0.0,
+            "input_peak": 0.12984706088900566,
+            "stereo_span_peak": 0.20775529742240906
+          },
+          {
+            "f0": 0,
+            "pair": "P1",
+            "role": "instrumental",
+            "guide_shape": [
+              68608,
+              2
+            ],
+            "stft_input_shape": [
+              68608,
+              1
+            ],
+            "relation": "(L+R)/2",
+            "relation_max_error": 0.0,
+            "input_peak": 0.09785102680325508,
+            "stereo_span_peak": 0.15656164288520813
+          },
+          {
+            "f0": 64,
+            "pair": "P1",
+            "role": "vocal",
+            "guide_shape": [
+              68608,
+              2
+            ],
+            "stft_input_shape": [
+              68608,
+              1
+            ],
+            "relation": "(L+R)/2",
+            "relation_max_error": 0.0,
+            "input_peak": 0.12984706088900566,
+            "stereo_span_peak": 0.20775529742240906
+          },
+          {
+            "f0": 64,
+            "pair": "P1",
+            "role": "instrumental",
+            "guide_shape": [
+              68608,
+              2
+            ],
+            "stft_input_shape": [
+              68608,
+              1
+            ],
+            "relation": "(L+R)/2",
+            "relation_max_error": 0.0,
+            "input_peak": 0.09785102680325508,
+            "stereo_span_peak": 0.15656164288520813
+          },
+          {
+            "f0": 128,
+            "pair": "P1",
+            "role": "vocal",
+            "guide_shape": [
+              51200,
+              2
+            ],
+            "stft_input_shape": [
+              51200,
+              1
+            ],
+            "relation": "(L+R)/2",
+            "relation_max_error": 0.0,
+            "input_peak": 0.12984706088900566,
+            "stereo_span_peak": 0.20775529742240906
+          },
+          {
+            "f0": 128,
+            "pair": "P1",
+            "role": "instrumental",
+            "guide_shape": [
+              51200,
+              2
+            ],
+            "stft_input_shape": [
+              51200,
+              1
+            ],
+            "relation": "(L+R)/2",
+            "relation_max_error": 0.0,
+            "input_peak": 0.09785102680325508,
+            "stereo_span_peak": 0.15656164288520813
+          }
+        ],
+        "polarity": [],
+        "errors": [],
+        "shape": [
+          2049,
+          175
+        ],
+        "dtype": "float64",
+        "shared": true,
+        "nonfinite": 0,
+        "mask_npy_sha256": "d33409ff617653c57d69c8cca6e1c208a384ff95ddf18fe6d99902e57479dcbd",
+        "stats": [
+          {
+            "min": 9.641987710642409e-23,
+            "max": 0.9999999999954611,
+            "mean": 0.054115336512594196,
+            "std": 0.19610858840088086
+          }
+        ],
+        "lr_max": 0.0,
+        "lr_rms": 0.0,
+        "lr_mix_energy_weighted_rms": 0.0
+      },
+      "applied_mask": "runs/D/S3_shared/applied_mask.npy"
+    },
+    {
+      "id": "S4_shared",
+      "case": "S4",
+      "mode": "shared",
+      "series": "principal",
+      "entrypoint": "main",
+      "argv": [
+        "--manifest",
+        "build/inputs/S4/manifest.json",
+        "--out",
+        "build/runs/D/S4_shared/native",
+        "--n-fft",
+        "4096",
+        "--hop",
+        "1024",
+        "--chunk-frames",
+        "64",
+        "--mode",
+        "full_processing",
+        "--allow-misaligned",
+        "--consensus",
+        "confidence_weighted_mean",
+        "--power",
+        "2",
+        "--epsilon",
+        "1e-9"
+      ],
+      "cwd": "S5_STEREO_VALIDATION",
+      "utc": "2026-11-18T21:09:37.043888+00:00",
+      "log": "runs/D/S4_shared/console.log",
+      "status": "OK",
+      "engine_exit": 0,
+      "parsed_options": {
+        "manifest": "build/inputs/S4/manifest.json",
+        "mix": null,
+        "mode": "full_processing",
+        "out": "build/runs/D/S4_shared/native",
+        "n_fft": 4096,
+        "hop": 1024,
+        "power": 2.0,
+        "epsilon": 1e-09,
+        "chunk_frames": 64,
+        "consensus": "confidence_weighted_mean",
+        "smoothing": false,
+        "allow_misaligned": true,
+        "write_all_candidates": false,
+        "png": false,
+        "spec_json": null,
+        "self_test": false
+      },
+      "inputs": {
+        "Mix": {
+          "path": "inputs/S4/Mix.wav",
+          "sha256": "ac5a51cd9feca06463d8d83091705527720bd4e1794a8904e89c246516ba3534"
+        },
+        "P1/V": {
+          "path": "inputs/S4/V.wav",
+          "sha256": "f49d5bb448dd6f73af513493095479dcc3a3a67997f33af55162973f23a31c40"
+        },
+        "P1/I": {
+          "path": "inputs/S4/I.wav",
+          "sha256": "f091f59a21dcccb62219c3b3ced042024d0edb063955cf1a51e670e9ae7348a4"
+        }
+      },
+      "outputs": {
+        "SDV": {
+          "path": "runs/D/S4_shared/native/mqr_run_20261118_210937/SDV.wav",
+          "sha256": "86a493673fa210e3a36fce1cb496b1bf36a7c65dee9a36804e10397c457a800a",
+          "pcm_f32le_sha256": "15b1b23438bda907fe023ab5a283a4a484b692235b16cda57d54afcf2e44632b",
+          "sr": 44100,
+          "channels": 2,
+          "frames": 176400,
+          "seconds": 4.0,
+          "subtype": "FLOAT",
+          "nonfinite": [
+            0,
+            0
+          ],
+          "rms": [
+            0.05833969456150456,
+            0.01372649542379943
+          ],
+          "peak": [
+            0.1987265646457672,
+            0.06653376668691635
+          ],
+          "tp4x": [
+            0.19890091819871947,
+            0.06657611976003637
+          ],
+          "rms_R_over_L": 0.2352856923055757,
+          "corr_LR": 0.36815799686489015,
+          "rms_L_minus_R": 0.054793203240927846,
+          "max_abs_L_minus_R": 0.14329899102449417
+        },
+        "SDI": {
+          "path": "runs/D/S4_shared/native/mqr_run_20261118_210937/SDI.wav",
+          "sha256": "12646a290d0d7e3251becc917c2a7e9660b5706fa688dffb4616c5a3797e0b3e",
+          "pcm_f32le_sha256": "c7bb9202b22ceb8ea9b2e4c97293ded5c6766d36e83b6731c99b661bdea9b458",
+          "sr": 44100,
+          "channels": 2,
+          "frames": 176400,
+          "seconds": 4.0,
+          "subtype": "FLOAT",
+          "nonfinite": [
+            0,
+            0
+          ],
+          "rms": [
+            0.013050646476811272,
+            0.057116073603458745
+          ],
+          "peak": [
+            0.06352086365222931,
+            0.18668580055236816
+          ],
+          "tp4x": [
+            0.06366906636414017,
+            0.18680463821563273
+          ],
+          "rms_R_over_L": 4.3764938162216005,
+          "corr_LR": 0.3239716707190977,
+          "rms_L_minus_R": 0.054310101997723396,
+          "max_abs_L_minus_R": 0.12525992840528488
+        }
+      },
+      "reconstruction": {
+        "rms": [
+          1.5925324608952196e-09,
+          1.566381783670779e-09
+        ],
+        "max_abs": [
+          7.450580596923828e-09,
+          7.450580596923828e-09
+        ]
+      },
+      "event_windows": {
+        "V_L": {
+          "Mix": [
+            0.0963068014104887,
+            0.05656854211650424
+          ],
+          "SDV": [
+            0.08199234511823597,
+            0.0320372584739248
+          ],
+          "SDI": [
+            0.021522400021534684,
+            0.03479953125066399
+          ]
+        },
+        "I_R": {
+          "Mix": [
+            0.056568541871337065,
+            0.0894427190533942
+          ],
+          "SDV": [
+            0.03617867894077051,
+            0.021922349264051896
+          ],
+          "SDI": [
+            0.029977887184280388,
+            0.07543730907359623
+          ]
+        }
+      },
+      "observation": {
+        "chunks": [
+          {
+            "f0": 0,
+            "config": {
+              "mask_mode": null,
+              "consensus_order": null,
+              "use_physical_residuals": null
+            },
+            "mask_shape": [
+              2049,
+              64
+            ],
+            "mix_stft_shape": [
+              2,
+              2049,
+              64
+            ],
+            "V_stft_shape": [
+              1,
+              2049,
+              64
+            ],
+            "I_stft_shape": [
+              1,
+              2049,
+              64
+            ],
+            "SDV_stft_shape": [
+              2,
+              2049,
+              64
+            ],
+            "SDI_stft_shape": [
+              2,
+              2049,
+              64
+            ],
+            "max_abs_SDV_minus_XM": 0.0,
+            "max_abs_SDI_minus_X1mM": 0.0
+          },
+          {
+            "f0": 64,
+            "config": {
+              "mask_mode": null,
+              "consensus_order": null,
+              "use_physical_residuals": null
+            },
+            "mask_shape": [
+              2049,
+              64
+            ],
+            "mix_stft_shape": [
+              2,
+              2049,
+              64
+            ],
+            "V_stft_shape": [
+              1,
+              2049,
+              64
+            ],
+            "I_stft_shape": [
+              1,
+              2049,
+              64
+            ],
+            "SDV_stft_shape": [
+              2,
+              2049,
+              64
+            ],
+            "SDI_stft_shape": [
+              2,
+              2049,
+              64
+            ],
+            "max_abs_SDV_minus_XM": 0.0,
+            "max_abs_SDI_minus_X1mM": 0.0
+          },
+          {
+            "f0": 128,
+            "config": {
+              "mask_mode": null,
+              "consensus_order": null,
+              "use_physical_residuals": null
+            },
+            "mask_shape": [
+              2049,
+              47
+            ],
+            "mix_stft_shape": [
+              2,
+              2049,
+              47
+            ],
+            "V_stft_shape": [
+              1,
+              2049,
+              47
+            ],
+            "I_stft_shape": [
+              1,
+              2049,
+              47
+            ],
+            "SDV_stft_shape": [
+              2,
+              2049,
+              47
+            ],
+            "SDI_stft_shape": [
+              2,
+              2049,
+              47
+            ],
+            "max_abs_SDV_minus_XM": 0.0,
+            "max_abs_SDI_minus_X1mM": 0.0
+          }
+        ],
+        "guide_inputs": [
+          {
+            "f0": 0,
+            "pair": "P1",
+            "role": "vocal",
+            "guide_shape": [
+              68608,
+              2
+            ],
+            "stft_input_shape": [
+              68608,
+              1
+            ],
+            "relation": "(L+R)/2",
+            "relation_max_error": 0.0,
+            "input_peak": 0.1126406192779541,
+            "stereo_span_peak": 0.2252812385559082
+          },
+          {
+            "f0": 0,
+            "pair": "P1",
+            "role": "instrumental",
+            "guide_shape": [
+              68608,
+              2
+            ],
+            "stft_input_shape": [
+              68608,
+              1
+            ],
+            "relation": "(L+R)/2",
+            "relation_max_error": 0.0,
+            "input_peak": 0.03999999910593033,
+            "stereo_span_peak": 0.07999999821186066
+          },
+          {
+            "f0": 64,
+            "pair": "P1",
+            "role": "vocal",
+            "guide_shape": [
+              68608,
+              2
+            ],
+            "stft_input_shape": [
+              68608,
+              1
+            ],
+            "relation": "(L+R)/2",
+            "relation_max_error": 0.0,
+            "input_peak": 0.03992106765508652,
+            "stereo_span_peak": 0.07984213531017303
+          },
+          {
+            "f0": 64,
+            "pair": "P1",
+            "role": "instrumental",
+            "guide_shape": [
+              68608,
+              2
+            ],
+            "stft_input_shape": [
+              68608,
+              1
+            ],
+            "relation": "(L+R)/2",
+            "relation_max_error": 0.0,
+            "input_peak": 0.10940331965684891,
+            "stereo_span_peak": 0.21880663931369781
+          },
+          {
+            "f0": 128,
+            "pair": "P1",
+            "role": "vocal",
+            "guide_shape": [
+              51200,
+              2
+            ],
+            "stft_input_shape": [
+              51200,
+              1
+            ],
+            "relation": "(L+R)/2",
+            "relation_max_error": 0.0,
+            "input_peak": 0.03992106765508652,
+            "stereo_span_peak": 0.07984213531017303
+          },
+          {
+            "f0": 128,
+            "pair": "P1",
+            "role": "instrumental",
+            "guide_shape": [
+              51200,
+              2
+            ],
+            "stft_input_shape": [
+              51200,
+              1
+            ],
+            "relation": "(L+R)/2",
+            "relation_max_error": 0.0,
+            "input_peak": 0.03999999910593033,
+            "stereo_span_peak": 0.07999999821186066
+          }
+        ],
+        "polarity": [],
+        "errors": [],
+        "shape": [
+          2049,
+          175
+        ],
+        "dtype": "float64",
+        "shared": true,
+        "nonfinite": 0,
+        "mask_npy_sha256": "05e6320fbb551108edd2edf8c63922a113bce2532a0b995b5eeb87b033391758",
+        "stats": [
+          {
+            "min": 2.6380918685806414e-23,
+            "max": 0.9999999999990871,
+            "mean": 0.060928942285218377,
+            "std": 0.21515776007702672
+          }
+        ],
+        "lr_max": 0.0,
+        "lr_rms": 0.0,
+        "lr_mix_energy_weighted_rms": 0.0
+      },
+      "applied_mask": "runs/D/S4_shared/applied_mask.npy"
+    },
+    {
+      "id": "S5_shared",
+      "case": "S5",
+      "mode": "shared",
+      "series": "principal",
+      "entrypoint": "main",
+      "argv": [
+        "--manifest",
+        "build/inputs/S5/manifest.json",
+        "--out",
+        "build/runs/D/S5_shared/native",
+        "--n-fft",
+        "4096",
+        "--hop",
+        "1024",
+        "--chunk-frames",
+        "64",
+        "--mode",
+        "full_processing",
+        "--allow-misaligned",
+        "--consensus",
+        "confidence_weighted_mean",
+        "--power",
+        "2",
+        "--epsilon",
+        "1e-9"
+      ],
+      "cwd": "S5_STEREO_VALIDATION",
+      "utc": "2026-11-18T21:09:38.693126+00:00",
+      "log": "runs/D/S5_shared/console.log",
+      "status": "OK",
+      "engine_exit": 0,
+      "parsed_options": {
+        "manifest": "build/inputs/S5/manifest.json",
+        "mix": null,
+        "mode": "full_processing",
+        "out": "build/runs/D/S5_shared/native",
+        "n_fft": 4096,
+        "hop": 1024,
+        "power": 2.0,
+        "epsilon": 1e-09,
+        "chunk_frames": 64,
+        "consensus": "confidence_weighted_mean",
+        "smoothing": false,
+        "allow_misaligned": true,
+        "write_all_candidates": false,
+        "png": false,
+        "spec_json": null,
+        "self_test": false
+      },
+      "inputs": {
+        "Mix": {
+          "path": "inputs/S5/Mix.wav",
+          "sha256": "ea512195057e55e5e511ced39d65f2e88c003ec0c22d296515ec8ebbf45c7261"
+        },
+        "P1/V": {
+          "path": "inputs/S5/V.wav",
+          "sha256": "b83f2d9c5a620cec4b3423b6f1954f79845c1a30f553932447c4d635cbfed04c"
+        },
+        "P1/I": {
+          "path": "inputs/S5/I.wav",
+          "sha256": "0776c45cec139cae0900efa2e0be53b4d4809509c2c2b93e42e504ba9d7dbf9a"
+        }
+      },
+      "outputs": {
+        "SDV": {
+          "path": "runs/D/S5_shared/native/mqr_run_20261118_210939/SDV.wav",
+          "sha256": "559da5adfd7fb6d8efe61ecc7d10ef5d3e9b313d7b034321e7728374d9312ab6",
+          "pcm_f32le_sha256": "b8d57ab75bae0d16b2d80af6de8b4bd3fb537414293b4c6a2f2b89590f26023b",
+          "sr": 44100,
+          "channels": 2,
+          "frames": 176400,
+          "seconds": 4.0,
+          "subtype": "FLOAT",
+          "nonfinite": [
+            0,
+            0
+          ],
+          "rms": [
+            0.03992838165201121,
+            0.03612248163710786
+          ],
+          "peak": [
+            0.2107725292444229,
+            0.20607398450374603
+          ],
+          "tp4x": [
+            0.21090669967828377,
+            0.20620516400805533
+          ],
+          "rms_R_over_L": 0.9046818363921433,
+          "corr_LR": 0.9255137868504588,
+          "rms_L_minus_R": 0.015144293570777928,
+          "max_abs_L_minus_R": 0.07077053189277649
+        },
+        "SDI": {
+          "path": "runs/D/S5_shared/native/mqr_run_20261118_210939/SDI.wav",
+          "sha256": "a75abdc0c9e08ce8a2bb0be684f2c7f3e34656ca4a75c65b97873365b45f63a3",
+          "pcm_f32le_sha256": "b01f72d0d63e671cc06839eee7bc1725d88aad3c871c6c236b209aa6048036ea",
+          "sr": 44100,
+          "channels": 2,
+          "frames": 176400,
+          "seconds": 4.0,
+          "subtype": "FLOAT",
+          "nonfinite": [
+            0,
+            0
+          ],
+          "rms": [
+            0.039133349438783056,
+            0.04206494473874089
+          ],
+          "peak": [
+            0.14997820556163788,
+            0.15000031888484955
+          ],
+          "tp4x": [
+            0.15007367645142608,
+            0.15009580385120733
+          ],
+          "rms_R_over_L": 1.0749129666128827,
+          "corr_LR": 0.8915547323855556,
+          "rms_L_minus_R": 0.0191213731156884,
+          "max_abs_L_minus_R": 0.05421988479793072
+        }
+      },
+      "reconstruction": {
+        "rms": [
+          1.285234527987802e-09,
+          1.1880818139320873e-09
+        ],
+        "max_abs": [
+          7.450580596923828e-09,
+          7.450580596923828e-09
+        ]
+      },
+      "delay_residual_R_vs_L_delayed_2205": {
+        "Mix": {
+          "rms": 0.0,
+          "max_abs": 0.0
+        },
+        "SDV": {
+          "rms": 0.009308642221335801,
+          "max_abs": 0.07710116356611252
+        },
+        "SDI": {
+          "rms": 0.009308642210851896,
+          "max_abs": 0.07710116729140282
+        }
+      },
+      "observation": {
+        "chunks": [
+          {
+            "f0": 0,
+            "config": {
+              "mask_mode": null,
+              "consensus_order": null,
+              "use_physical_residuals": null
+            },
+            "mask_shape": [
+              2049,
+              64
+            ],
+            "mix_stft_shape": [
+              2,
+              2049,
+              64
+            ],
+            "V_stft_shape": [
+              1,
+              2049,
+              64
+            ],
+            "I_stft_shape": [
+              1,
+              2049,
+              64
+            ],
+            "SDV_stft_shape": [
+              2,
+              2049,
+              64
+            ],
+            "SDI_stft_shape": [
+              2,
+              2049,
+              64
+            ],
+            "max_abs_SDV_minus_XM": 0.0,
+            "max_abs_SDI_minus_X1mM": 0.0
+          },
+          {
+            "f0": 64,
+            "config": {
+              "mask_mode": null,
+              "consensus_order": null,
+              "use_physical_residuals": null
+            },
+            "mask_shape": [
+              2049,
+              64
+            ],
+            "mix_stft_shape": [
+              2,
+              2049,
+              64
+            ],
+            "V_stft_shape": [
+              1,
+              2049,
+              64
+            ],
+            "I_stft_shape": [
+              1,
+              2049,
+              64
+            ],
+            "SDV_stft_shape": [
+              2,
+              2049,
+              64
+            ],
+            "SDI_stft_shape": [
+              2,
+              2049,
+              64
+            ],
+            "max_abs_SDV_minus_XM": 0.0,
+            "max_abs_SDI_minus_X1mM": 0.0
+          },
+          {
+            "f0": 128,
+            "config": {
+              "mask_mode": null,
+              "consensus_order": null,
+              "use_physical_residuals": null
+            },
+            "mask_shape": [
+              2049,
+              47
+            ],
+            "mix_stft_shape": [
+              2,
+              2049,
+              47
+            ],
+            "V_stft_shape": [
+              1,
+              2049,
+              47
+            ],
+            "I_stft_shape": [
+              1,
+              2049,
+              47
+            ],
+            "SDV_stft_shape": [
+              2,
+              2049,
+              47
+            ],
+            "SDI_stft_shape": [
+              2,
+              2049,
+              47
+            ],
+            "max_abs_SDV_minus_XM": 0.0,
+            "max_abs_SDI_minus_X1mM": 0.0
+          }
+        ],
+        "guide_inputs": [
+          {
+            "f0": 0,
+            "pair": "P1",
+            "role": "vocal",
+            "guide_shape": [
+              68608,
+              2
+            ],
+            "stft_input_shape": [
+              68608,
+              1
+            ],
+            "relation": "(L+R)/2",
+            "relation_max_error": 0.0,
+            "input_peak": 0.1926085203886032,
+            "stereo_span_peak": 0.19999960064888
+          },
+          {
+            "f0": 0,
+            "pair": "P1",
+            "role": "instrumental",
+            "guide_shape": [
+              68608,
+              2
+            ],
+            "stft_input_shape": [
+              68608,
+              1
+            ],
+            "relation": "(L+R)/2",
+            "relation_max_error": 0.0,
+            "input_peak": 0.14622381329536438,
+            "stereo_span_peak": 0.14999984204769135
+          },
+          {
+            "f0": 64,
+            "pair": "P1",
+            "role": "vocal",
+            "guide_shape": [
+              68608,
+              2
+            ],
+            "stft_input_shape": [
+              68608,
+              1
+            ],
+            "relation": "(L+R)/2",
+            "relation_max_error": 0.0,
+            "input_peak": 0.12519505620002747,
+            "stereo_span_peak": 0.12999893724918365
+          },
+          {
+            "f0": 64,
+            "pair": "P1",
+            "role": "instrumental",
+            "guide_shape": [
+              68608,
+              2
+            ],
+            "stft_input_shape": [
+              68608,
+              1
+            ],
+            "relation": "(L+R)/2",
+            "relation_max_error": 0.0,
+            "input_peak": 0.14551594108343124,
+            "stereo_span_peak": 0.14976955950260162
+          },
+          {
+            "f0": 128,
+            "pair": "P1",
+            "role": "vocal",
+            "guide_shape": [
+              51200,
+              2
+            ],
+            "stft_input_shape": [
+              51200,
+              1
+            ],
+            "relation": "(L+R)/2",
+            "relation_max_error": 0.0,
+            "input_peak": 0.0,
+            "stereo_span_peak": 0.0
+          },
+          {
+            "f0": 128,
+            "pair": "P1",
+            "role": "instrumental",
+            "guide_shape": [
+              51200,
+              2
+            ],
+            "stft_input_shape": [
+              51200,
+              1
+            ],
+            "relation": "(L+R)/2",
+            "relation_max_error": 0.0,
+            "input_peak": 0.10056187212467194,
+            "stereo_span_peak": 0.11844642460346222
+          }
+        ],
+        "polarity": [],
+        "errors": [],
+        "shape": [
+          2049,
+          175
+        ],
+        "dtype": "float64",
+        "shared": true,
+        "nonfinite": 0,
+        "mask_npy_sha256": "026753a4558175c3602c5fb0e776f5fecb750e9b1a17575d7609be4f4385e58f",
+        "stats": [
+          {
+            "min": 0.0,
+            "max": 0.999999999999877,
+            "mean": 0.010695315500870271,
+            "std": 0.09135015633781675
+          }
+        ],
+        "lr_max": 0.0,
+        "lr_rms": 0.0,
+        "lr_mix_energy_weighted_rms": 0.0
+      },
+      "applied_mask": "runs/D/S5_shared/applied_mask.npy"
+    },
+    {
+      "id": "S6_shared",
+      "case": "S6",
+      "mode": "shared",
+      "series": "principal",
+      "entrypoint": "main",
+      "argv": [
+        "--manifest",
+        "build/inputs/S6/manifest.json",
+        "--out",
+        "build/runs/D/S6_shared/native",
+        "--n-fft",
+        "4096",
+        "--hop",
+        "1024",
+        "--chunk-frames",
+        "64",
+        "--mode",
+        "full_processing",
+        "--allow-misaligned",
+        "--consensus",
+        "confidence_weighted_mean",
+        "--power",
+        "2",
+        "--epsilon",
+        "1e-9"
+      ],
+      "cwd": "S5_STEREO_VALIDATION",
+      "utc": "2026-11-18T21:09:40.359119+00:00",
+      "log": "runs/D/S6_shared/console.log",
+      "status": "OK",
+      "engine_exit": 0,
+      "parsed_options": {
+        "manifest": "build/inputs/S6/manifest.json",
+        "mix": null,
+        "mode": "full_processing",
+        "out": "build/runs/D/S6_shared/native",
+        "n_fft": 4096,
+        "hop": 1024,
+        "power": 2.0,
+        "epsilon": 1e-09,
+        "chunk_frames": 64,
+        "consensus": "confidence_weighted_mean",
+        "smoothing": false,
+        "allow_misaligned": true,
+        "write_all_candidates": false,
+        "png": false,
+        "spec_json": null,
+        "self_test": false
+      },
+      "inputs": {
+        "Mix": {
+          "path": "inputs/S6/Mix.wav",
+          "sha256": "b9f9056e78f996fb85a0c558a64da22b30195d61f12fc0dff4de6a8e5fe30554"
+        },
+        "P1/V": {
+          "path": "inputs/S6/V.wav",
+          "sha256": "c05474cae558ca51b1c14186aa03ea771356fc897e80472c6599acf571f3d8b0"
+        },
+        "P1/I": {
+          "path": "inputs/S6/I.wav",
+          "sha256": "fc6cfc0e4eac9ed481abc455599572b8098d0536e46cc9c780ecc2b5e13e2793"
+        }
+      },
+      "outputs": {
+        "SDV": {
+          "path": "runs/D/S6_shared/native/mqr_run_20261118_210940/SDV.wav",
+          "sha256": "a85acc51c648d84c299d952740c6bce44b3747bfe806d841c994104c91bf91a0",
+          "pcm_f32le_sha256": "5a101eb365d074d09b12ee1012e8f7c961b6b7e6be9878b41a0999ce43d95459",
+          "sr": 44100,
+          "channels": 2,
+          "frames": 176400,
+          "seconds": 4.0,
+          "subtype": "FLOAT",
+          "nonfinite": [
+            0,
+            0
+          ],
+          "rms": [
+            0.1288524039445616,
+            0.07930556347086173
+          ],
+          "peak": [
+            0.227927565574646,
+            0.11502847820520401
+          ],
+          "tp4x": [
+            0.22807265630573711,
+            0.11510170131868312
+          ],
+          "rms_R_over_L": 0.6154760100943304,
+          "corr_LR": 0.47868048230509613,
+          "rms_L_minus_R": 0.11449592981498972,
+          "max_abs_L_minus_R": 0.1842123568058014
+        },
+        "SDI": {
+          "path": "runs/D/S6_shared/native/mqr_run_20261118_210940/SDI.wav",
+          "sha256": "eb9c91e310afeff62d6a1dc8232619489606036a728911b6eb50f4903678acc9",
+          "pcm_f32le_sha256": "f7c6dce9aaaa86a6317f2b6cfacb092431f35a00e1ac8ef680a8031341fd64d0",
+          "sr": 44100,
+          "channels": 2,
+          "frames": 176400,
+          "seconds": 4.0,
+          "subtype": "FLOAT",
+          "nonfinite": [
+            0,
+            0
+          ],
+          "rms": [
+            0.03731684752155248,
+            0.10368139291011891
+          ],
+          "peak": [
+            0.07405386865139008,
+            0.16922086477279663
+          ],
+          "tp4x": [
+            0.07410100875888724,
+            0.16932858486766034
+          ],
+          "rms_R_over_L": 2.778407068020345,
+          "corr_LR": 0.46268993420618726,
+          "rms_L_minus_R": 0.0925312141101279,
+          "max_abs_L_minus_R": 0.1464669518172741
+        }
+      },
+      "reconstruction": {
+        "rms": [
+          3.1095461591842644e-09,
+          3.3817738065388395e-09
+        ],
+        "max_abs": [
+          7.450580596923828e-09,
+          7.450580596923828e-09
+        ]
+      },
+      "observation": {
+        "chunks": [
+          {
+            "f0": 0,
+            "config": {
+              "mask_mode": null,
+              "consensus_order": null,
+              "use_physical_residuals": null
+            },
+            "mask_shape": [
+              2049,
+              64
+            ],
+            "mix_stft_shape": [
+              2,
+              2049,
+              64
+            ],
+            "V_stft_shape": [
+              1,
+              2049,
+              64
+            ],
+            "I_stft_shape": [
+              1,
+              2049,
+              64
+            ],
+            "SDV_stft_shape": [
+              2,
+              2049,
+              64
+            ],
+            "SDI_stft_shape": [
+              2,
+              2049,
+              64
+            ],
+            "max_abs_SDV_minus_XM": 0.0,
+            "max_abs_SDI_minus_X1mM": 0.0
+          },
+          {
+            "f0": 64,
+            "config": {
+              "mask_mode": null,
+              "consensus_order": null,
+              "use_physical_residuals": null
+            },
+            "mask_shape": [
+              2049,
+              64
+            ],
+            "mix_stft_shape": [
+              2,
+              2049,
+              64
+            ],
+            "V_stft_shape": [
+              1,
+              2049,
+              64
+            ],
+            "I_stft_shape": [
+              1,
+              2049,
+              64
+            ],
+            "SDV_stft_shape": [
+              2,
+              2049,
+              64
+            ],
+            "SDI_stft_shape": [
+              2,
+              2049,
+              64
+            ],
+            "max_abs_SDV_minus_XM": 0.0,
+            "max_abs_SDI_minus_X1mM": 0.0
+          },
+          {
+            "f0": 128,
+            "config": {
+              "mask_mode": null,
+              "consensus_order": null,
+              "use_physical_residuals": null
+            },
+            "mask_shape": [
+              2049,
+              47
+            ],
+            "mix_stft_shape": [
+              2,
+              2049,
+              47
+            ],
+            "V_stft_shape": [
+              1,
+              2049,
+              47
+            ],
+            "I_stft_shape": [
+              1,
+              2049,
+              47
+            ],
+            "SDV_stft_shape": [
+              2,
+              2049,
+              47
+            ],
+            "SDI_stft_shape": [
+              2,
+              2049,
+              47
+            ],
+            "max_abs_SDV_minus_XM": 0.0,
+            "max_abs_SDI_minus_X1mM": 0.0
+          }
+        ],
+        "guide_inputs": [
+          {
+            "f0": 0,
+            "pair": "P1",
+            "role": "vocal",
+            "guide_shape": [
+              68608,
+              2
+            ],
+            "stft_input_shape": [
+              68608,
+              1
+            ],
+            "relation": "(L+R)/2",
+            "relation_max_error": 0.0,
+            "input_peak": 0.14889605343341827,
+            "stereo_span_peak": 0.18000000715255737
+          },
+          {
+            "f0": 0,
+            "pair": "P1",
+            "role": "instrumental",
+            "guide_shape": [
+              68608,
+              2
+            ],
+            "stft_input_shape": [
+              68608,
+              1
+            ],
+            "relation": "(L+R)/2",
+            "relation_max_error": 0.0,
+            "input_peak": 0.1029636412858963,
+            "stereo_span_peak": 0.14000000059604645
+          },
+          {
+            "f0": 64,
+            "pair": "P1",
+            "role": "vocal",
+            "guide_shape": [
+              68608,
+              2
+            ],
+            "stft_input_shape": [
+              68608,
+              1
+            ],
+            "relation": "(L+R)/2",
+            "relation_max_error": 0.0,
+            "input_peak": 0.14889605343341827,
+            "stereo_span_peak": 0.18000000715255737
+          },
+          {
+            "f0": 64,
+            "pair": "P1",
+            "role": "instrumental",
+            "guide_shape": [
+              68608,
+              2
+            ],
+            "stft_input_shape": [
+              68608,
+              1
+            ],
+            "relation": "(L+R)/2",
+            "relation_max_error": 0.0,
+            "input_peak": 0.1029636412858963,
+            "stereo_span_peak": 0.14000000059604645
+          },
+          {
+            "f0": 128,
+            "pair": "P1",
+            "role": "vocal",
+            "guide_shape": [
+              51200,
+              2
+            ],
+            "stft_input_shape": [
+              51200,
+              1
+            ],
+            "relation": "(L+R)/2",
+            "relation_max_error": 0.0,
+            "input_peak": 0.14889605343341827,
+            "stereo_span_peak": 0.18000000715255737
+          },
+          {
+            "f0": 128,
+            "pair": "P1",
+            "role": "instrumental",
+            "guide_shape": [
+              51200,
+              2
+            ],
+            "stft_input_shape": [
+              51200,
+              1
+            ],
+            "relation": "(L+R)/2",
+            "relation_max_error": 0.0,
+            "input_peak": 0.1029636412858963,
+            "stereo_span_peak": 0.14000000059604645
+          }
+        ],
+        "polarity": [],
+        "errors": [],
+        "shape": [
+          2049,
+          175
+        ],
+        "dtype": "float64",
+        "shared": true,
+        "nonfinite": 0,
+        "mask_npy_sha256": "221750d58c9badb02e1f8cb30e0d01771c80ad4b52cfa2969038a4109559db83",
+        "stats": [
+          {
+            "min": 1.5166773543687935e-22,
+            "max": 0.9999999999991053,
+            "mean": 0.052935908817539366,
+            "std": 0.1839722075930883
+          }
+        ],
+        "lr_max": 0.0,
+        "lr_rms": 0.0,
+        "lr_mix_energy_weighted_rms": 0.0
+      },
+      "applied_mask": "runs/D/S6_shared/applied_mask.npy"
+    },
+    {
+      "id": "S7_shared",
+      "case": "S7",
+      "mode": "shared",
+      "series": "principal",
+      "entrypoint": "main",
+      "argv": [
+        "--manifest",
+        "build/inputs/S7/manifest.json",
+        "--out",
+        "build/runs/D/S7_shared/native",
+        "--n-fft",
+        "4096",
+        "--hop",
+        "1024",
+        "--chunk-frames",
+        "64",
+        "--mode",
+        "full_processing",
+        "--allow-misaligned",
+        "--consensus",
+        "confidence_weighted_mean",
+        "--power",
+        "2",
+        "--epsilon",
+        "1e-9"
+      ],
+      "cwd": "S5_STEREO_VALIDATION",
+      "utc": "2026-11-18T21:09:42.012991+00:00",
+      "log": "runs/D/S7_shared/console.log",
+      "status": "FAILED",
+      "engine_exit": 2,
+      "parsed_options": {
+        "manifest": "build/inputs/S7/manifest.json",
+        "mix": null,
+        "mode": "full_processing",
+        "out": "build/runs/D/S7_shared/native",
+        "n_fft": 4096,
+        "hop": 1024,
+        "power": 2.0,
+        "epsilon": 1e-09,
+        "chunk_frames": 64,
+        "consensus": "confidence_weighted_mean",
+        "smoothing": false,
+        "allow_misaligned": true,
+        "write_all_candidates": false,
+        "png": false,
+        "spec_json": null,
+        "self_test": false
+      },
+      "inputs": {
+        "Mix": {
+          "path": "inputs/S7/Mix.wav",
+          "sha256": "fc17323544418ec14cf4b7c051624f6bafe016ad58eff509a2c052b03d2af1f3"
+        },
+        "P1/V": {
+          "path": "inputs/S7/V.wav",
+          "sha256": "bb274bc1201b7b4f3fdae96af56da238239b66438f466f2a33f864ec484b3e04"
+        },
+        "P1/I": {
+          "path": "inputs/S7/I.wav",
+          "sha256": "c23cefd19206f0c9d9f31b316140ed290094248e8311c712019b7557575d8497"
+        }
+      },
+      "error": "RuntimeError: El motor devolvió 2; ver console.log (no se reintenta ni parchea).",
+      "observation": {
+        "chunks": [
+          {
+            "f0": 0,
+            "config": {
+              "mask_mode": null,
+              "consensus_order": null,
+              "use_physical_residuals": null
+            },
+            "mask_shape": [
+              2049,
+              64
+            ],
+            "mix_stft_shape": [
+              2,
+              2049,
+              64
+            ],
+            "V_stft_shape": [
+              1,
+              2049,
+              64
+            ],
+            "I_stft_shape": [
+              1,
+              2049,
+              64
+            ],
+            "SDV_stft_shape": [
+              2,
+              2049,
+              64
+            ],
+            "SDI_stft_shape": [
+              2,
+              2049,
+              64
+            ],
+            "max_abs_SDV_minus_XM": 0.0,
+            "max_abs_SDI_minus_X1mM": 0.0
+          },
+          {
+            "f0": 64,
+            "config": {
+              "mask_mode": null,
+              "consensus_order": null,
+              "use_physical_residuals": null
+            },
+            "mask_shape": [
+              2049,
+              64
+            ],
+            "mix_stft_shape": [
+              2,
+              2049,
+              64
+            ],
+            "V_stft_shape": [
+              1,
+              2049,
+              64
+            ],
+            "I_stft_shape": [
+              1,
+              2049,
+              64
+            ],
+            "SDV_stft_shape": [
+              2,
+              2049,
+              64
+            ],
+            "SDI_stft_shape": [
+              2,
+              2049,
+              64
+            ],
+            "max_abs_SDV_minus_XM": 0.0,
+            "max_abs_SDI_minus_X1mM": 0.0
+          },
+          {
+            "f0": 128,
+            "config": {
+              "mask_mode": null,
+              "consensus_order": null,
+              "use_physical_residuals": null
+            },
+            "mask_shape": [
+              2049,
+              47
+            ],
+            "mix_stft_shape": [
+              2,
+              2049,
+              47
+            ],
+            "V_stft_shape": [
+              1,
+              2049,
+              47
+            ],
+            "I_stft_shape": [
+              1,
+              2049,
+              47
+            ],
+            "SDV_stft_shape": [
+              2,
+              2049,
+              47
+            ],
+            "SDI_stft_shape": [
+              2,
+              2049,
+              47
+            ],
+            "max_abs_SDV_minus_XM": 0.0,
+            "max_abs_SDI_minus_X1mM": 0.0
+          }
+        ],
+        "guide_inputs": [
+          {
+            "f0": 0,
+            "pair": "P1",
+            "role": "vocal",
+            "guide_shape": [
+              68608,
+              2
+            ],
+            "stft_input_shape": [
+              68608,
+              1
+            ],
+            "relation": "(L+R)/2",
+            "relation_max_error": 0.0,
+            "input_peak": 0.0,
+            "stereo_span_peak": 0.20775529742240906
+          },
+          {
+            "f0": 0,
+            "pair": "P1",
+            "role": "instrumental",
+            "guide_shape": [
+              68608,
+              2
+            ],
+            "stft_input_shape": [
+              68608,
+              1
+            ],
+            "relation": "(L+R)/2",
+            "relation_max_error": 0.0,
+            "input_peak": 0.0,
+            "stereo_span_peak": 0.15656164288520813
+          },
+          {
+            "f0": 64,
+            "pair": "P1",
+            "role": "vocal",
+            "guide_shape": [
+              68608,
+              2
+            ],
+            "stft_input_shape": [
+              68608,
+              1
+            ],
+            "relation": "(L+R)/2",
+            "relation_max_error": 0.0,
+            "input_peak": 0.0,
+            "stereo_span_peak": 0.20775529742240906
+          },
+          {
+            "f0": 64,
+            "pair": "P1",
+            "role": "instrumental",
+            "guide_shape": [
+              68608,
+              2
+            ],
+            "stft_input_shape": [
+              68608,
+              1
+            ],
+            "relation": "(L+R)/2",
+            "relation_max_error": 0.0,
+            "input_peak": 0.0,
+            "stereo_span_peak": 0.15656164288520813
+          },
+          {
+            "f0": 128,
+            "pair": "P1",
+            "role": "vocal",
+            "guide_shape": [
+              51200,
+              2
+            ],
+            "stft_input_shape": [
+              51200,
+              1
+            ],
+            "relation": "(L+R)/2",
+            "relation_max_error": 0.0,
+            "input_peak": 0.0,
+            "stereo_span_peak": 0.20775529742240906
+          },
+          {
+            "f0": 128,
+            "pair": "P1",
+            "role": "instrumental",
+            "guide_shape": [
+              51200,
+              2
+            ],
+            "stft_input_shape": [
+              51200,
+              1
+            ],
+            "relation": "(L+R)/2",
+            "relation_max_error": 0.0,
+            "input_peak": 0.0,
+            "stereo_span_peak": 0.15656164288520813
+          }
+        ],
+        "polarity": [],
+        "errors": [],
+        "shape": [
+          2049,
+          175
+        ],
+        "dtype": "float64",
+        "shared": true,
+        "nonfinite": 0,
+        "mask_npy_sha256": "f1cb5f0713879ec99b8b70712aa923d6bb52a9cb0870864f8aa4fa193ca00fdc",
+        "stats": [
+          {
+            "min": 0.0,
+            "max": 0.0,
+            "mean": 0.0,
+            "std": 0.0
+          }
+        ],
+        "lr_max": 0.0,
+        "lr_rms": 0.0,
+        "lr_mix_energy_weighted_rms": 0.0
+      },
+      "applied_mask": "runs/D/S7_shared/applied_mask.npy",
+      "aborted_wavs_not_completed_outputs": {
+        "SDI": {
+          "path": "runs/D/S7_shared/native/mqr_run_20261118_210942_aborted/SDI.wav",
+          "sha256": "2f8ffab0ebfb787c2335c006518b0b5628cc5c4021e2851303243457f12fff32",
+          "pcm_f32le_sha256": "a8fc4f88192a517937c1feb0b637065be5065d96fd7ff7e7bda9b5cf7f16b500",
+          "sr": 44100,
+          "channels": 2,
+          "frames": 176400,
+          "seconds": 4.0,
+          "subtype": "FLOAT",
+          "nonfinite": [
+            0,
+            0
+          ],
+          "rms": [
+            0.1919635379656326,
+            0.1919635379656326
+          ],
+          "peak": [
+            0.33034729957580566,
+            0.33034729957580566
+          ],
+          "tp4x": [
+            0.33084912482254675,
+            0.33084912482254675
+          ],
+          "rms_R_over_L": 1.0,
+          "corr_LR": -0.9999999999999999,
+          "rms_L_minus_R": 0.3839270759312991,
+          "max_abs_L_minus_R": 0.6606945991516113
+        },
+        "SDV": {
+          "path": "runs/D/S7_shared/native/mqr_run_20261118_210942_aborted/SDV.wav",
+          "sha256": "008e09f211aeb436bb4343e3b1b24f6e91c1f24ee88fcce000b4dda775dcff83",
+          "pcm_f32le_sha256": "7a9c38df5318a026bd6fe76ebcb52bc8b125a56579b4b6dd913818b19f920957",
+          "sr": 44100,
+          "channels": 2,
+          "frames": 176400,
+          "seconds": 4.0,
+          "subtype": "FLOAT",
+          "nonfinite": [
+            0,
+            0
+          ],
+          "rms": [
+            0.0,
+            0.0
+          ],
+          "peak": [
+            0.0,
+            0.0
+          ],
+          "tp4x": [
+            0.0,
+            0.0
+          ],
+          "rms_R_over_L": null,
+          "corr_LR": null,
+          "rms_L_minus_R": 0.0,
+          "max_abs_L_minus_R": 0.0
+        }
+      }
+    },
+    {
+      "id": "Ronly_shared_unilateral",
+      "case": "Ronly",
+      "mode": "shared",
+      "series": "unilateral",
+      "entrypoint": "main",
+      "argv": [
+        "--manifest",
+        "build/inputs/Ronly/manifest.json",
+        "--out",
+        "build/runs/D/Ronly_shared_unilateral/native",
+        "--n-fft",
+        "4096",
+        "--hop",
+        "1024",
+        "--chunk-frames",
+        "64",
+        "--mode",
+        "full_processing",
+        "--allow-misaligned",
+        "--consensus",
+        "confidence_weighted_mean",
+        "--power",
+        "2",
+        "--epsilon",
+        "1e-9"
+      ],
+      "cwd": "S5_STEREO_VALIDATION",
+      "utc": "2026-11-18T21:10:58.764930+00:00",
+      "log": "runs/D/Ronly_shared_unilateral/console.log",
+      "status": "OK",
+      "engine_exit": 0,
+      "parsed_options": {
+        "manifest": "build/inputs/Ronly/manifest.json",
+        "mix": null,
+        "mode": "full_processing",
+        "out": "build/runs/D/Ronly_shared_unilateral/native",
+        "n_fft": 4096,
+        "hop": 1024,
+        "power": 2.0,
+        "epsilon": 1e-09,
+        "chunk_frames": 64,
+        "consensus": "confidence_weighted_mean",
+        "smoothing": false,
+        "allow_misaligned": true,
+        "write_all_candidates": false,
+        "png": false,
+        "spec_json": null,
+        "self_test": false
+      },
+      "inputs": {
+        "Mix": {
+          "path": "inputs/S2/Mix.wav",
+          "sha256": "ed9297315c5946f1405fe67f1ca454b399e22f1a3399afc033e2f66997ddf33a"
+        },
+        "P1/V": {
+          "path": "inputs/Ronly/V.wav",
+          "sha256": "b74106c5515cde20b4b0d9824d7be0c70fd626d1e798b8a7f32a2dde3ab58f86"
+        },
+        "P1/I": {
+          "path": "inputs/Ronly/I.wav",
+          "sha256": "b7bee50acda4eddad2ead222aa0354b0c98a13a287cf2979449f8a778240008d"
+        }
+      },
+      "outputs": {
+        "SDV": {
+          "path": "runs/D/Ronly_shared_unilateral/native/mqr_run_20261118_211059/SDV.wav",
+          "sha256": "57646bbd322309b8ca2e6b306e09f0d6340f324181ea1c21d0e353ad5391fc68",
+          "pcm_f32le_sha256": "f9002c86e67f781bb9afed6001f130e1b7fede7487cdf23623662221fe85c23f",
+          "sr": 44100,
+          "channels": 2,
+          "frames": 176400,
+          "seconds": 4.0,
+          "subtype": "FLOAT",
+          "nonfinite": [
+            0,
+            0
+          ],
+          "rms": [
+            0.12727570385500342,
+            0.09899588153965665
+          ],
+          "peak": [
+            0.1838884800672531,
+            0.14579907059669495
+          ],
+          "tp4x": [
+            0.1840055370539538,
+            0.14589188119506177
+          ],
+          "rms_R_over_L": 0.7778065926269474,
+          "corr_LR": 0.9999757942186658,
+          "rms_L_minus_R": 0.028290604885206856,
+          "max_abs_L_minus_R": 0.05851743742823601
+        },
+        "SDI": {
+          "path": "runs/D/Ronly_shared_unilateral/native/mqr_run_20261118_211059/SDI.wav",
+          "sha256": "1ee4ec0250da013d768c2fd954ff92f2f4e26207f4bd46ec8addef335d98970a",
+          "pcm_f32le_sha256": "caccf95847e65788c149beaff18dba657ef104cf315ea0ec9f3148f2de57fa6c",
+          "sr": 44100,
+          "channels": 2,
+          "frames": 176400,
+          "seconds": 4.0,
+          "subtype": "FLOAT",
+          "nonfinite": [
+            0,
+            0
+          ],
+          "rms": [
+            0.09191722333840477,
+            0.11312194585431995
+          ],
+          "peak": [
+            0.1338013857603073,
+            0.16632774472236633
+          ],
+          "tp4x": [
+            0.1341663617219427,
+            0.16648193784112264
+          ],
+          "rms_R_over_L": 1.2306936800935266,
+          "corr_LR": -5.6146817340169654e-05,
+          "rms_L_minus_R": 0.1457618543816441,
+          "max_abs_L_minus_R": 0.2876896262168884
+        }
+      },
+      "reconstruction": {
+        "rms": [
+          4.236116465280798e-09,
+          4.3774670396977195e-09
+        ],
+        "max_abs": [
+          1.1175870895385742e-08,
+          1.1408701539039612e-08
+        ]
+      },
+      "observation": {
+        "chunks": [
+          {
+            "f0": 0,
+            "config": {
+              "mask_mode": null,
+              "consensus_order": null,
+              "use_physical_residuals": null
+            },
+            "mask_shape": [
+              2049,
+              64
+            ],
+            "mix_stft_shape": [
+              2,
+              2049,
+              64
+            ],
+            "V_stft_shape": [
+              1,
+              2049,
+              64
+            ],
+            "I_stft_shape": [
+              1,
+              2049,
+              64
+            ],
+            "SDV_stft_shape": [
+              2,
+              2049,
+              64
+            ],
+            "SDI_stft_shape": [
+              2,
+              2049,
+              64
+            ],
+            "max_abs_SDV_minus_XM": 0.0,
+            "max_abs_SDI_minus_X1mM": 0.0
+          },
+          {
+            "f0": 64,
+            "config": {
+              "mask_mode": null,
+              "consensus_order": null,
+              "use_physical_residuals": null
+            },
+            "mask_shape": [
+              2049,
+              64
+            ],
+            "mix_stft_shape": [
+              2,
+              2049,
+              64
+            ],
+            "V_stft_shape": [
+              1,
+              2049,
+              64
+            ],
+            "I_stft_shape": [
+              1,
+              2049,
+              64
+            ],
+            "SDV_stft_shape": [
+              2,
+              2049,
+              64
+            ],
+            "SDI_stft_shape": [
+              2,
+              2049,
+              64
+            ],
+            "max_abs_SDV_minus_XM": 0.0,
+            "max_abs_SDI_minus_X1mM": 0.0
+          },
+          {
+            "f0": 128,
+            "config": {
+              "mask_mode": null,
+              "consensus_order": null,
+              "use_physical_residuals": null
+            },
+            "mask_shape": [
+              2049,
+              47
+            ],
+            "mix_stft_shape": [
+              2,
+              2049,
+              47
+            ],
+            "V_stft_shape": [
+              1,
+              2049,
+              47
+            ],
+            "I_stft_shape": [
+              1,
+              2049,
+              47
+            ],
+            "SDV_stft_shape": [
+              2,
+              2049,
+              47
+            ],
+            "SDI_stft_shape": [
+              2,
+              2049,
+              47
+            ],
+            "max_abs_SDV_minus_XM": 0.0,
+            "max_abs_SDI_minus_X1mM": 0.0
+          }
+        ],
+        "guide_inputs": [
+          {
+            "f0": 0,
+            "pair": "P1",
+            "role": "vocal",
+            "guide_shape": [
+              68608,
+              2
+            ],
+            "stft_input_shape": [
+              68608,
+              1
+            ],
+            "relation": "(L+R)/2",
+            "relation_max_error": 0.0,
+            "input_peak": 0.1600000038743019,
+            "stereo_span_peak": 0.18000000715255737
+          },
+          {
+            "f0": 0,
+            "pair": "P1",
+            "role": "instrumental",
+            "guide_shape": [
+              68608,
+              2
+            ],
+            "stft_input_shape": [
+              68608,
+              1
+            ],
+            "relation": "(L+R)/2",
+            "relation_max_error": 0.0,
+            "input_peak": 0.13790319859981537,
+            "stereo_span_peak": 0.15968427062034607
+          },
+          {
+            "f0": 64,
+            "pair": "P1",
+            "role": "vocal",
+            "guide_shape": [
+              68608,
+              2
+            ],
+            "stft_input_shape": [
+              68608,
+              1
+            ],
+            "relation": "(L+R)/2",
+            "relation_max_error": 0.0,
+            "input_peak": 0.1600000038743019,
+            "stereo_span_peak": 0.18000000715255737
+          },
+          {
+            "f0": 64,
+            "pair": "P1",
+            "role": "instrumental",
+            "guide_shape": [
+              68608,
+              2
+            ],
+            "stft_input_shape": [
+              68608,
+              1
+            ],
+            "relation": "(L+R)/2",
+            "relation_max_error": 0.0,
+            "input_peak": 0.13790319859981537,
+            "stereo_span_peak": 0.15968427062034607
+          },
+          {
+            "f0": 128,
+            "pair": "P1",
+            "role": "vocal",
+            "guide_shape": [
+              51200,
+              2
+            ],
+            "stft_input_shape": [
+              51200,
+              1
+            ],
+            "relation": "(L+R)/2",
+            "relation_max_error": 0.0,
+            "input_peak": 0.1600000038743019,
+            "stereo_span_peak": 0.18000000715255737
+          },
+          {
+            "f0": 128,
+            "pair": "P1",
+            "role": "instrumental",
+            "guide_shape": [
+              51200,
+              2
+            ],
+            "stft_input_shape": [
+              51200,
+              1
+            ],
+            "relation": "(L+R)/2",
+            "relation_max_error": 0.0,
+            "input_peak": 0.13790319859981537,
+            "stereo_span_peak": 0.15968427062034607
+          }
+        ],
+        "polarity": [],
+        "errors": [],
+        "shape": [
+          2049,
+          175
+        ],
+        "dtype": "float64",
+        "shared": true,
+        "nonfinite": 0,
+        "mask_npy_sha256": "a07ffe280f03c21c1b7e92f414ef8236e0d662615ec703ee42da33fd8eeea48b",
+        "stats": [
+          {
+            "min": 7.25476745191905e-22,
+            "max": 0.9999999999997301,
+            "mean": 0.0350161578485513,
+            "std": 0.16748248066644822
+          }
+        ],
+        "lr_max": 0.0,
+        "lr_rms": 0.0,
+        "lr_mix_energy_weighted_rms": 0.0
+      },
+      "applied_mask": "runs/D/Ronly_shared_unilateral/applied_mask.npy"
+    }
+  ],
+  "contrasts": {
+    "mode_per_channel_vs_mono": {},
+    "swap_S6_vs_S2": {
+      "shared": {
+        "a": "S6_shared",
+        "b": "S2_shared",
+        "swap_b": true,
+        "SDV": {
+          "rms": [
+            0.0,
+            0.0
+          ],
+          "max_abs": [
+            0.0,
+            0.0
+          ]
+        },
+        "SDI": {
+          "rms": [
+            0.0,
+            0.0
+          ],
+          "max_abs": [
+            0.0,
+            0.0
+          ]
+        },
+        "mask": {
+          "rms": [
+            0.0,
+            0.0
+          ],
+          "max_abs": [
+            0.0,
+            0.0
+          ]
+        },
+        "status": "EXPERIMENTAL_RESULT"
+      }
+    },
+    "Ronly_vs_S2": {
+      "shared": {
+        "a": "Ronly_shared_unilateral",
+        "b": "S2_shared",
+        "swap_b": false,
+        "SDV": {
+          "rms": [
+            0.04797149957522936,
+            0.11911120035789662
+          ],
+          "max_abs": [
+            0.07358735799789429,
+            0.20696914941072464
+          ]
+        },
+        "SDI": {
+          "rms": [
+            0.04797149948795026,
+            0.11911120036753448
+          ],
+          "max_abs": [
+            0.07358736172318459,
+            0.20696914941072464
+          ]
+        },
+        "mask": {
+          "rms": [
+            0.15674364252888837,
+            0.15674364252888837
+          ],
+          "max_abs": [
+            0.9999999999976583,
+            0.9999999999976583
+          ]
+        },
+        "status": "EXPERIMENTAL_RESULT"
+      }
+    }
+  }
+}

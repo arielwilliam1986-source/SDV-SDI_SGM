@@ -1,0 +1,831 @@
+{
+  "sr": 44100,
+  "frames": 176400,
+  "seconds": 4.0,
+  "format": "WAV FLOAT 32 bit LE, estéreo",
+  "definitions": "n=0..176399; s_f[n]=sin(2π((fn) mod 44100)/44100); a=s441,b=s882,c=s1323; v=.16a+.08b, i=.07a+.12c. g[A,B]=sin²(π(n-lo)/(hi-lo)) para lo≤n<hi, 0 fuera; lo=round(44100A), hi=round(44100B). Dd[x][n]=x[n-d] con extensión por cero. Mix=V+I por canal en float64; se escribe cada WAV con un único cast float32. Sin ajuste posterior.",
+  "cases": {
+    "S1": {
+      "formula": "V=(v,v), I=(i,i). Control L=R.",
+      "manifest": "inputs/S1/manifest.json"
+    },
+    "S2": {
+      "formula": "V=(0.18a,0.16b), I=(0.13c,0.14a). El tono a pertenece a roles opuestos en L/R.",
+      "manifest": "inputs/S2/manifest.json"
+    },
+    "S3": {
+      "formula": "V=(v,v/4), I=(i,i/4). Ganancia R/L exacta 1/4 en ambos roles.",
+      "manifest": "inputs/S3/manifest.json"
+    },
+    "S4": {
+      "formula": "V=(0.08b+0.18g[0.5,1]a,0), I=(0,0.08a+0.16g[2,2.5]b). Eventos exclusivos con fondo contralateral en su frecuencia.",
+      "manifest": "inputs/S4/manifest.json"
+    },
+    "S5": {
+      "formula": "V=(D137(u),D2342(u)), I=(D137(w),D2342(w)); u=0.2(g[0.6,1.1]+0.65g[2.2,2.7])a; w=0.15(g[0.8,1.5]+g[2.45,3.1])a+0.06g[1.6,2.8]c. Retardos del contenido, no desalineación guía/Mix.",
+      "manifest": "inputs/S5/manifest.json"
+    },
+    "S6": {
+      "formula": "S2 permutado (R,L) en Mix y en las dos guías, sin otro cambio.",
+      "manifest": "inputs/S6/manifest.json"
+    },
+    "S7": {
+      "formula": "V=(v,-v), I=(i,-i). Contenido lateral no nulo, downmix nulo.",
+      "manifest": "inputs/S7/manifest.json"
+    },
+    "Ronly": {
+      "formula": "Control unilateral derivado de S2. Mismo archivo Mix; V e I sin cambio en L; sólo en R se permutan V e I.",
+      "manifest": "inputs/Ronly/manifest.json"
+    },
+    "Ppos": {
+      "formula": "Mix y P1 de S2; P2: V2=+(.72V+.28I), I2=.28V+.72I.",
+      "manifest": "inputs/extra/Ppos.json"
+    },
+    "Pneg": {
+      "formula": "Mix y P1 de S2; P2: V2=−(.72V+.28I), I2=.28V+.72I.",
+      "manifest": "inputs/extra/Pneg.json"
+    }
+  },
+  "audio": {
+    "S1/Mix.wav": {
+      "path": "inputs/S1/Mix.wav",
+      "sha256": "9c26d36ba63c2284885cc3b6e4cf1be7a0d7fbb7216f5977100a7306b91abe5d",
+      "pcm_f32le_sha256": "76db46e399f61f6bed71bb64c29ca83d46ab79581c195d8c89cc989a7c6e7e9d",
+      "sr": 44100,
+      "channels": 2,
+      "frames": 176400,
+      "seconds": 4.0,
+      "subtype": "FLOAT",
+      "nonfinite": [
+        0,
+        0
+      ],
+      "rms": [
+        0.1919635379656326,
+        0.1919635379656326
+      ],
+      "peak": [
+        0.33034729957580566,
+        0.33034729957580566
+      ],
+      "tp4x": [
+        0.33084912482254675,
+        0.33084912482254675
+      ],
+      "rms_R_over_L": 1.0,
+      "corr_LR": 0.9999999999999999,
+      "rms_L_minus_R": 0.0,
+      "max_abs_L_minus_R": 0.0
+    },
+    "S1/V.wav": {
+      "path": "inputs/S1/V.wav",
+      "sha256": "d0cbb158c4a71c3b842a61c087ceb1292fed65e659b65479459463722e7f50f8",
+      "pcm_f32le_sha256": "e58e7bbf462d8ed800171d16c0d4eff52e2735a003224849862badcfebf3ed79",
+      "sr": 44100,
+      "channels": 2,
+      "frames": 176400,
+      "seconds": 4.0,
+      "subtype": "FLOAT",
+      "nonfinite": [
+        0,
+        0
+      ],
+      "rms": [
+        0.12649110621230555,
+        0.12649110621230555
+      ],
+      "peak": [
+        0.20775529742240906,
+        0.20775529742240906
+      ],
+      "tp4x": [
+        0.20788754719182626,
+        0.20788754719182626
+      ],
+      "rms_R_over_L": 1.0,
+      "corr_LR": 1.0,
+      "rms_L_minus_R": 0.0,
+      "max_abs_L_minus_R": 0.0
+    },
+    "S1/I.wav": {
+      "path": "inputs/S1/I.wav",
+      "sha256": "55993c630add17c42e9c224542f8b7ac5ed4f27d43bf8a3a9bf856d240d389f7",
+      "pcm_f32le_sha256": "a329f5b775588b4cdd7e899f3e2ce0968137bdfc2e6eebe6c07cf9a94c67d3cb",
+      "sr": 44100,
+      "channels": 2,
+      "frames": 176400,
+      "seconds": 4.0,
+      "subtype": "FLOAT",
+      "nonfinite": [
+        0,
+        0
+      ],
+      "rms": [
+        0.09823441359688957,
+        0.09823441359688957
+      ],
+      "peak": [
+        0.15656164288520813,
+        0.15656164288520813
+      ],
+      "tp4x": [
+        0.15675644117110418,
+        0.15675644117110418
+      ],
+      "rms_R_over_L": 1.0,
+      "corr_LR": 1.0,
+      "rms_L_minus_R": 0.0,
+      "max_abs_L_minus_R": 0.0
+    },
+    "S2/Mix.wav": {
+      "path": "inputs/S2/Mix.wav",
+      "sha256": "ed9297315c5946f1405fe67f1ca454b399e22f1a3399afc033e2f66997ddf33a",
+      "pcm_f32le_sha256": "1a0b05e329b51b61edf67a1925bbd976285adcc68beb6a9e12003ffeffa11210",
+      "sr": 44100,
+      "channels": 2,
+      "frames": 176400,
+      "seconds": 4.0,
+      "subtype": "FLOAT",
+      "nonfinite": [
+        0,
+        0
+      ],
+      "rms": [
+        0.15700318491529347,
+        0.15033296327878745
+      ],
+      "peak": [
+        0.2294386923313141,
+        0.2654314339160919
+      ],
+      "tp4x": [
+        0.22980660536197509,
+        0.26567056116603843
+      ],
+      "rms_R_over_L": 0.9575153737161145,
+      "corr_LR": 0.5338360037124625,
+      "rms_L_minus_R": 0.1484924245308856,
+      "max_abs_L_minus_R": 0.2993177995085716
+    },
+    "S2/V.wav": {
+      "path": "inputs/S2/V.wav",
+      "sha256": "6b23fc9c0a232cdd001b485652cec0b9cd97da81c5d063fefef1b94e26773c7a",
+      "pcm_f32le_sha256": "df83700ca44e4bf4e261c27401833d45e009d3fa57be36ae9c678a78cccfa2bd",
+      "sr": 44100,
+      "channels": 2,
+      "frames": 176400,
+      "seconds": 4.0,
+      "subtype": "FLOAT",
+      "nonfinite": [
+        0,
+        0
+      ],
+      "rms": [
+        0.12727922040145645,
+        0.11313708374263225
+      ],
+      "peak": [
+        0.18000000715255737,
+        0.15968427062034607
+      ],
+      "tp4x": [
+        0.1801145888731506,
+        0.16005775921979093
+      ],
+      "rms_R_over_L": 0.8888888805712517,
+      "corr_LR": -1.6390055725535336e-20,
+      "rms_L_minus_R": 0.17029386267214974,
+      "max_abs_L_minus_R": 0.29779210686683655
+    },
+    "S2/I.wav": {
+      "path": "inputs/S2/I.wav",
+      "sha256": "fa4bec6b085159d542b6d34062722c883d4400ddd503da1fb6f9a9530b0ffd86",
+      "pcm_f32le_sha256": "7535aca42a168b44e9b82cb5ad2f301fc52ef6b696786c0af6baa74113bb4525",
+      "sr": 44100,
+      "channels": 2,
+      "frames": 176400,
+      "seconds": 4.0,
+      "subtype": "FLOAT",
+      "nonfinite": [
+        0,
+        0
+      ],
+      "rms": [
+        0.09192388180018457,
+        0.09899494938505755
+      ],
+      "peak": [
+        0.12999999523162842,
+        0.14000000059604645
+      ],
+      "tp4x": [
+        0.1301022963957866,
+        0.14008911970890156
+      ],
+      "rms_R_over_L": 1.0769230742479239,
+      "corr_LR": -2.2001460038646562e-10,
+      "rms_L_minus_R": 0.13509256105709022,
+      "max_abs_L_minus_R": 0.26999999582767487
+    },
+    "S3/Mix.wav": {
+      "path": "inputs/S3/Mix.wav",
+      "sha256": "c660ecd1a6f72f130b6d827c986cdef30320231da93a9f6ad871cb4211b3e558",
+      "pcm_f32le_sha256": "696768f78e8c9476fe0844c662a69ac59aa7c0c7c948d7e98ac2ac073adcd8a6",
+      "sr": 44100,
+      "channels": 2,
+      "frames": 176400,
+      "seconds": 4.0,
+      "subtype": "FLOAT",
+      "nonfinite": [
+        0,
+        0
+      ],
+      "rms": [
+        0.1919635379656326,
+        0.04799088449140815
+      ],
+      "peak": [
+        0.33034729957580566,
+        0.08258682489395142
+      ],
+      "tp4x": [
+        0.33084912482254675,
+        0.08271228120563669
+      ],
+      "rms_R_over_L": 0.25,
+      "corr_LR": 0.9999999999999999,
+      "rms_L_minus_R": 0.14397265347423716,
+      "max_abs_L_minus_R": 0.24776047468185425
+    },
+    "S3/V.wav": {
+      "path": "inputs/S3/V.wav",
+      "sha256": "abc91e312c29733b60690d9d95ed20daddd70990b5b4b577723be94eef47d748",
+      "pcm_f32le_sha256": "5ce4636dde80abcc7664acc594ef7afdae68f25b56e6e2c55dd5bf3c0293cea7",
+      "sr": 44100,
+      "channels": 2,
+      "frames": 176400,
+      "seconds": 4.0,
+      "subtype": "FLOAT",
+      "nonfinite": [
+        0,
+        0
+      ],
+      "rms": [
+        0.12649110621230555,
+        0.03162277655307639
+      ],
+      "peak": [
+        0.20775529742240906,
+        0.051938824355602264
+      ],
+      "tp4x": [
+        0.20788754719182626,
+        0.051971886797956564
+      ],
+      "rms_R_over_L": 0.25,
+      "corr_LR": 1.0,
+      "rms_L_minus_R": 0.09486832965922642,
+      "max_abs_L_minus_R": 0.1558164730668068
+    },
+    "S3/I.wav": {
+      "path": "inputs/S3/I.wav",
+      "sha256": "cdbe837e34cd9ab3c0c4602d0cd142d56d3fb8dd7bea4828b463fd6c8c4f4950",
+      "pcm_f32le_sha256": "2645159f5e625011e7b0b74444cf106fa3f66385d0a26b59cf93297869c35fc2",
+      "sr": 44100,
+      "channels": 2,
+      "frames": 176400,
+      "seconds": 4.0,
+      "subtype": "FLOAT",
+      "nonfinite": [
+        0,
+        0
+      ],
+      "rms": [
+        0.09823441359688957,
+        0.024558603399222393
+      ],
+      "peak": [
+        0.15656164288520813,
+        0.03914041072130203
+      ],
+      "tp4x": [
+        0.15675644117110418,
+        0.039189110292776046
+      ],
+      "rms_R_over_L": 0.25,
+      "corr_LR": 1.0,
+      "rms_L_minus_R": 0.07367581019766965,
+      "max_abs_L_minus_R": 0.1174212321639061
+    },
+    "S4/Mix.wav": {
+      "path": "inputs/S4/Mix.wav",
+      "sha256": "ac5a51cd9feca06463d8d83091705527720bd4e1794a8904e89c246516ba3534",
+      "pcm_f32le_sha256": "b4e8ca7aa61a67a27d773466be41e9b3c295efd4f7af975fd7e3710779f82fa8",
+      "sr": 44100,
+      "channels": 2,
+      "frames": 176400,
+      "seconds": 4.0,
+      "subtype": "FLOAT",
+      "nonfinite": [
+        0,
+        0
+      ],
+      "rms": [
+        0.06292356425061095,
+        0.06164413971737021
+      ],
+      "peak": [
+        0.2252812385559082,
+        0.21880663931369781
+      ],
+      "tp4x": [
+        0.22542464472760482,
+        0.21894592398155086
+      ],
+      "rms_R_over_L": 0.9796670047465038,
+      "corr_LR": 0.219136040801968,
+      "rms_L_minus_R": 0.07784198683654167,
+      "max_abs_L_minus_R": 0.15698592364788055
+    },
+    "S4/V.wav": {
+      "path": "inputs/S4/V.wav",
+      "sha256": "f49d5bb448dd6f73af513493095479dcc3a3a67997f33af55162973f23a31c40",
+      "pcm_f32le_sha256": "8bee5f80c115edf815b18829b3d7d2d9f1efb524d290a2f6a8eccf9bc7f56394",
+      "sr": 44100,
+      "channels": 2,
+      "frames": 176400,
+      "seconds": 4.0,
+      "subtype": "FLOAT",
+      "nonfinite": [
+        0,
+        0
+      ],
+      "rms": [
+        0.06292356425061095,
+        0.0
+      ],
+      "peak": [
+        0.2252812385559082,
+        0.0
+      ],
+      "tp4x": [
+        0.22542464472760482,
+        0.0
+      ],
+      "rms_R_over_L": 0.0,
+      "corr_LR": null,
+      "rms_L_minus_R": 0.06292356425066728,
+      "max_abs_L_minus_R": 0.2252812385559082
+    },
+    "S4/I.wav": {
+      "path": "inputs/S4/I.wav",
+      "sha256": "f091f59a21dcccb62219c3b3ced042024d0edb063955cf1a51e670e9ae7348a4",
+      "pcm_f32le_sha256": "ec0b0797019371204757cb98988667b8c198f9cec4275c12885ba2611842fab0",
+      "sr": 44100,
+      "channels": 2,
+      "frames": 176400,
+      "seconds": 4.0,
+      "subtype": "FLOAT",
+      "nonfinite": [
+        0,
+        0
+      ],
+      "rms": [
+        0.0,
+        0.06164413971737021
+      ],
+      "peak": [
+        0.0,
+        0.21880663931369781
+      ],
+      "tp4x": [
+        0.0,
+        0.21894592398155086
+      ],
+      "rms_R_over_L": null,
+      "corr_LR": null,
+      "rms_L_minus_R": 0.06164413971738271,
+      "max_abs_L_minus_R": 0.21880663931369781
+    },
+    "S5/Mix.wav": {
+      "path": "inputs/S5/Mix.wav",
+      "sha256": "ea512195057e55e5e511ced39d65f2e88c003ec0c22d296515ec8ebbf45c7261",
+      "pcm_f32le_sha256": "e7aaa59adee6aa83a8b7f6d36c17fd46dd28cdd6b698507ab8c21636046092e9",
+      "sr": 44100,
+      "channels": 2,
+      "frames": 176400,
+      "seconds": 4.0,
+      "subtype": "FLOAT",
+      "nonfinite": [
+        0,
+        0
+      ],
+      "rms": [
+        0.057844028410824797,
+        0.057844028410824797
+      ],
+      "peak": [
+        0.211516335606575,
+        0.211516335606575
+      ],
+      "tp4x": [
+        0.21165097952159906,
+        0.21165097952159906
+      ],
+      "rms_R_over_L": 1.0,
+      "corr_LR": 0.9069631029671621,
+      "rms_L_minus_R": 0.02495175728755885,
+      "max_abs_L_minus_R": 0.07774848118424416
+    },
+    "S5/V.wav": {
+      "path": "inputs/S5/V.wav",
+      "sha256": "b83f2d9c5a620cec4b3423b6f1954f79845c1a30f553932447c4d635cbfed04c",
+      "pcm_f32le_sha256": "f5e98ae0f94278482bb752e4f162a231bab151766e50ecce73d1dd57709c1069",
+      "sr": 44100,
+      "channels": 2,
+      "frames": 176400,
+      "seconds": 4.0,
+      "subtype": "FLOAT",
+      "nonfinite": [
+        0,
+        0
+      ],
+      "rms": [
+        0.03651840289161613,
+        0.03651840289161613
+      ],
+      "peak": [
+        0.19999960064888,
+        0.19999960064888
+      ],
+      "tp4x": [
+        0.20012691341248942,
+        0.20012691341248942
+      ],
+      "rms_R_over_L": 1.0,
+      "corr_LR": 0.8904304930249909,
+      "rms_L_minus_R": 0.01709509927818716,
+      "max_abs_L_minus_R": 0.07077091187238693
+    },
+    "S5/I.wav": {
+      "path": "inputs/S5/I.wav",
+      "sha256": "0776c45cec139cae0900efa2e0be53b4d4809509c2c2b93e42e504ba9d7dbf9a",
+      "pcm_f32le_sha256": "895d59b2a6c274d0447cc5f7cb6348eacec2c13105a7414130ec4bba8c4247ce",
+      "sr": 44100,
+      "channels": 2,
+      "frames": 176400,
+      "seconds": 4.0,
+      "subtype": "FLOAT",
+      "nonfinite": [
+        0,
+        0
+      ],
+      "rms": [
+        0.04032775874444438,
+        0.04032775874444438
+      ],
+      "peak": [
+        0.14999984204769135,
+        0.14999984204769135
+      ],
+      "tp4x": [
+        0.15009532671051123,
+        0.15009532671051123
+      ],
+      "rms_R_over_L": 1.0,
+      "corr_LR": 0.8754181305575749,
+      "rms_L_minus_R": 0.020130126585935673,
+      "max_abs_L_minus_R": 0.05421988479793072
+    },
+    "S6/Mix.wav": {
+      "path": "inputs/S6/Mix.wav",
+      "sha256": "b9f9056e78f996fb85a0c558a64da22b30195d61f12fc0dff4de6a8e5fe30554",
+      "pcm_f32le_sha256": "75db88bbf348598bcf5f84ffb2c66f282675547218251ac56ee2215035d855e1",
+      "sr": 44100,
+      "channels": 2,
+      "frames": 176400,
+      "seconds": 4.0,
+      "subtype": "FLOAT",
+      "nonfinite": [
+        0,
+        0
+      ],
+      "rms": [
+        0.15033296327878745,
+        0.15700318491529347
+      ],
+      "peak": [
+        0.2654314339160919,
+        0.2294386923313141
+      ],
+      "tp4x": [
+        0.26567056116603843,
+        0.22980660536197509
+      ],
+      "rms_R_over_L": 1.0443696544724945,
+      "corr_LR": 0.5338360037124625,
+      "rms_L_minus_R": 0.1484924245308856,
+      "max_abs_L_minus_R": 0.2993177995085716
+    },
+    "S6/V.wav": {
+      "path": "inputs/S6/V.wav",
+      "sha256": "c05474cae558ca51b1c14186aa03ea771356fc897e80472c6599acf571f3d8b0",
+      "pcm_f32le_sha256": "cd041dc08f19ccae16fdbd4798c4acaaeca2d7814996e0e2001efbed6b0d17de",
+      "sr": 44100,
+      "channels": 2,
+      "frames": 176400,
+      "seconds": 4.0,
+      "subtype": "FLOAT",
+      "nonfinite": [
+        0,
+        0
+      ],
+      "rms": [
+        0.11313708374263225,
+        0.12727922040145645
+      ],
+      "peak": [
+        0.15968427062034607,
+        0.18000000715255737
+      ],
+      "tp4x": [
+        0.16005775921979093,
+        0.1801145888731506
+      ],
+      "rms_R_over_L": 1.1250000105270097,
+      "corr_LR": -1.6390055725535336e-20,
+      "rms_L_minus_R": 0.17029386267214974,
+      "max_abs_L_minus_R": 0.29779210686683655
+    },
+    "S6/I.wav": {
+      "path": "inputs/S6/I.wav",
+      "sha256": "fc6cfc0e4eac9ed481abc455599572b8098d0536e46cc9c780ecc2b5e13e2793",
+      "pcm_f32le_sha256": "052b973e91c99f7ad025913b3599b51a50907ff21676aac3acdaed88edf71081",
+      "sr": 44100,
+      "channels": 2,
+      "frames": 176400,
+      "seconds": 4.0,
+      "subtype": "FLOAT",
+      "nonfinite": [
+        0,
+        0
+      ],
+      "rms": [
+        0.09899494938505755,
+        0.09192388180018457
+      ],
+      "peak": [
+        0.14000000059604645,
+        0.12999999523162842
+      ],
+      "tp4x": [
+        0.14008911970890156,
+        0.1301022963957866
+      ],
+      "rms_R_over_L": 0.9285714308780656,
+      "corr_LR": -2.2001460038646562e-10,
+      "rms_L_minus_R": 0.13509256105709022,
+      "max_abs_L_minus_R": 0.26999999582767487
+    },
+    "S7/Mix.wav": {
+      "path": "inputs/S7/Mix.wav",
+      "sha256": "fc17323544418ec14cf4b7c051624f6bafe016ad58eff509a2c052b03d2af1f3",
+      "pcm_f32le_sha256": "fd155f6f8355f69775b0e0e7412954c859f3b5476bfaceb89c7d231e015a1bb0",
+      "sr": 44100,
+      "channels": 2,
+      "frames": 176400,
+      "seconds": 4.0,
+      "subtype": "FLOAT",
+      "nonfinite": [
+        0,
+        0
+      ],
+      "rms": [
+        0.1919635379656326,
+        0.1919635379656326
+      ],
+      "peak": [
+        0.33034729957580566,
+        0.33034729957580566
+      ],
+      "tp4x": [
+        0.33084912482254675,
+        0.33084912482254675
+      ],
+      "rms_R_over_L": 1.0,
+      "corr_LR": -0.9999999999999999,
+      "rms_L_minus_R": 0.3839270759312991,
+      "max_abs_L_minus_R": 0.6606945991516113
+    },
+    "S7/V.wav": {
+      "path": "inputs/S7/V.wav",
+      "sha256": "bb274bc1201b7b4f3fdae96af56da238239b66438f466f2a33f864ec484b3e04",
+      "pcm_f32le_sha256": "002cf52378d0302a327942e5835ca6dc9b9374ca358ac235a159ab53f78256e2",
+      "sr": 44100,
+      "channels": 2,
+      "frames": 176400,
+      "seconds": 4.0,
+      "subtype": "FLOAT",
+      "nonfinite": [
+        0,
+        0
+      ],
+      "rms": [
+        0.12649110621230555,
+        0.12649110621230555
+      ],
+      "peak": [
+        0.20775529742240906,
+        0.20775529742240906
+      ],
+      "tp4x": [
+        0.20788754719182626,
+        0.20788754719182626
+      ],
+      "rms_R_over_L": 1.0,
+      "corr_LR": -1.0,
+      "rms_L_minus_R": 0.2529822124246038,
+      "max_abs_L_minus_R": 0.4155105948448181
+    },
+    "S7/I.wav": {
+      "path": "inputs/S7/I.wav",
+      "sha256": "c23cefd19206f0c9d9f31b316140ed290094248e8311c712019b7557575d8497",
+      "pcm_f32le_sha256": "a26edcc42e5f32a2ba2effe7306b166d77be5653b532389d9a43140099229561",
+      "sr": 44100,
+      "channels": 2,
+      "frames": 176400,
+      "seconds": 4.0,
+      "subtype": "FLOAT",
+      "nonfinite": [
+        0,
+        0
+      ],
+      "rms": [
+        0.09823441359688957,
+        0.09823441359688957
+      ],
+      "peak": [
+        0.15656164288520813,
+        0.15656164288520813
+      ],
+      "tp4x": [
+        0.15675644117110418,
+        0.15675644117110418
+      ],
+      "rms_R_over_L": 1.0,
+      "corr_LR": -1.0,
+      "rms_L_minus_R": 0.19646882719378575,
+      "max_abs_L_minus_R": 0.31312328577041626
+    },
+    "Ronly/V.wav": {
+      "path": "inputs/Ronly/V.wav",
+      "sha256": "b74106c5515cde20b4b0d9824d7be0c70fd626d1e798b8a7f32a2dde3ab58f86",
+      "pcm_f32le_sha256": "83e38dfe87f6a9bd9074421bc0c2696334f75afac0f88e0bb4a9e89b41683df6",
+      "sr": 44100,
+      "channels": 2,
+      "frames": 176400,
+      "seconds": 4.0,
+      "subtype": "FLOAT",
+      "nonfinite": [
+        0,
+        0
+      ],
+      "rms": [
+        0.12727922040145645,
+        0.09899494938505755
+      ],
+      "peak": [
+        0.18000000715255737,
+        0.14000000059604645
+      ],
+      "tp4x": [
+        0.1801145888731506,
+        0.14008911970890156
+      ],
+      "rms_R_over_L": 0.7777777792228272,
+      "corr_LR": 1.0,
+      "rms_L_minus_R": 0.028284271016424636,
+      "max_abs_L_minus_R": 0.040000006556510925
+    },
+    "Ronly/I.wav": {
+      "path": "inputs/Ronly/I.wav",
+      "sha256": "b7bee50acda4eddad2ead222aa0354b0c98a13a287cf2979449f8a778240008d",
+      "pcm_f32le_sha256": "e57cbcbca9b2ba8b6a9c324f76df78d0089dbe2c307bdc2d63431ef4e821fec9",
+      "sr": 44100,
+      "channels": 2,
+      "frames": 176400,
+      "seconds": 4.0,
+      "subtype": "FLOAT",
+      "nonfinite": [
+        0,
+        0
+      ],
+      "rms": [
+        0.09192388180018457,
+        0.11313708374263225
+      ],
+      "peak": [
+        0.12999999523162842,
+        0.15968427062034607
+      ],
+      "tp4x": [
+        0.1301022963957866,
+        0.16005775921979093
+      ],
+      "rms_R_over_L": 1.2307692139085131,
+      "corr_LR": -1.891160267812187e-21,
+      "rms_L_minus_R": 0.1457737965582604,
+      "max_abs_L_minus_R": 0.27580639719963074
+    },
+    "extra/V2.wav": {
+      "path": "inputs/extra/V2.wav",
+      "sha256": "1aa3f8846bde1ed7d553cbb7325b181b9613bd0a6abad456bbcbf39a7feb25c0",
+      "pcm_f32le_sha256": "2ff4a9e9c04e53e3f52ceb9f707997fbf0a4429682e7c70193b8c21101364a25",
+      "sr": 44100,
+      "channels": 2,
+      "frames": 176400,
+      "seconds": 4.0,
+      "subtype": "FLOAT",
+      "nonfinite": [
+        0,
+        0
+      ],
+      "rms": [
+        0.09518697425333898,
+        0.08604556947532872
+      ],
+      "peak": [
+        0.11767657101154327,
+        0.14354825019836426
+      ],
+      "tp4x": [
+        0.11775147980845564,
+        0.14373341344034213
+      ],
+      "rms_R_over_L": 0.903963700393706,
+      "corr_LR": 0.310138036342514,
+      "rms_L_minus_R": 0.10669620495327022,
+      "max_abs_L_minus_R": 0.20490241795778275
+    },
+    "extra/menosV2.wav": {
+      "path": "inputs/extra/menosV2.wav",
+      "sha256": "0499d73c327cbfe5b8df47768268a288eb989f5f4a17cdbd533af2e8b5e2cf87",
+      "pcm_f32le_sha256": "2c887c1d2e0e472ebb4163ae75be7a0cb328b189b39becaa0ba3525d3a07abe5",
+      "sr": 44100,
+      "channels": 2,
+      "frames": 176400,
+      "seconds": 4.0,
+      "subtype": "FLOAT",
+      "nonfinite": [
+        0,
+        0
+      ],
+      "rms": [
+        0.09518697425333898,
+        0.08604556947532872
+      ],
+      "peak": [
+        0.11767657101154327,
+        0.14354825019836426
+      ],
+      "tp4x": [
+        0.11775147980845564,
+        0.14373341344034213
+      ],
+      "rms_R_over_L": 0.903963700393706,
+      "corr_LR": 0.310138036342514,
+      "rms_L_minus_R": 0.10669620495327022,
+      "max_abs_L_minus_R": 0.20490241795778275
+    },
+    "extra/I2.wav": {
+      "path": "inputs/extra/I2.wav",
+      "sha256": "fce600ab91ad1c8167e16fe546544f6130d15e5bb180ad2a80002ab93a0a69f3",
+      "pcm_f32le_sha256": "0e688e92bfb6bbf6523222851363777e9ab8decf5c659d08c47ca3676f1fa3d0",
+      "sr": 44100,
+      "channels": 2,
+      "frames": 176400,
+      "seconds": 4.0,
+      "subtype": "FLOAT",
+      "nonfinite": [
+        0,
+        0
+      ],
+      "rms": [
+        0.07517020734743496,
+        0.07799897461307909
+      ],
+      "peak": [
+        0.11986760795116425,
+        0.12615761160850525
+      ],
+      "tp4x": [
+        0.11996351864132863,
+        0.12623791913978097
+      ],
+      "rms_R_over_L": 1.037631494783161,
+      "corr_LR": 0.4332378882019763,
+      "rms_L_minus_R": 0.08157254517104723,
+      "max_abs_L_minus_R": 0.14817097038030624
+    }
+  }
+}

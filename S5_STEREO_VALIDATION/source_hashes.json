@@ -1,0 +1,48 @@
+{
+  "repo": "arielwilliam1986-source/SDV-SDI_SGM",
+  "ref": "main",
+  "commit": "b64f15ae8b28e46eef3c024dc62c85fe27c69494",
+  "official_hash_file": "SDV-SDI_FASE_1B_ENTREGA/hashes/FUENTES_SHA256.txt",
+  "sources": [
+    {
+      "block": "A",
+      "path": "Proyecto SDV-SDI_SGM/MOTOR_SEP_SDV-SDI_v3.py",
+      "copy": "sources/MOTOR_SEP_SDV-SDI_v3.py",
+      "bytes": 100554,
+      "git_blob": "72a75f33fc391ae4d9093e2a21b9debfcebdde13",
+      "sha256": "a0550a01cefb1095a0086824e1accfe1d7909b717ff1804920ae6c24d8d8487e",
+      "phase_1b_expected": "a0550a01cefb1095a0086824e1accfe1d7909b717ff1804920ae6c24d8d8487e",
+      "match": true
+    },
+    {
+      "block": "B",
+      "path": "Proyecto SDV-SDI_SGM/MOTOR_SEP_SDV-SDI_v3.1.1_Hardened_Final.py",
+      "copy": "sources/MOTOR_SEP_SDV-SDI_v3.1.1_Hardened_Final.py",
+      "bytes": 87659,
+      "git_blob": "57587b7f22f7515c92af6ac2ca108f4cf24b5763",
+      "sha256": "5141fb5005656db1f6b2ede6165dbc77e6f74375a77e9db2570e69d8c6409dbd",
+      "phase_1b_expected": "5141fb5005656db1f6b2ede6165dbc77e6f74375a77e9db2570e69d8c6409dbd",
+      "match": true
+    },
+    {
+      "block": "C",
+      "path": "Proyecto SDV-SDI_SGM/MOTOR_SEP_SDV-SDI_EVO.py",
+      "copy": "sources/MOTOR_SEP_SDV-SDI_EVO.py",
+      "bytes": 95656,
+      "git_blob": "2323f91e8925bd9a7f1bce8ef8036af5034fbb23",
+      "sha256": "003e698e187b6d6286c39a4f461e924420544ee4bf59c0b66a72258efc35774f",
+      "phase_1b_expected": "003e698e187b6d6286c39a4f461e924420544ee4bf59c0b66a72258efc35774f",
+      "match": true
+    },
+    {
+      "block": "D",
+      "path": "Proyecto SDV-SDI_SGM/sdv_sdi_mqr_engine.py",
+      "copy": "sources/sdv_sdi_mqr_engine.py",
+      "bytes": 150903,
+      "git_blob": "a223b51e380756dc7e41751ed9b3bf01810bdb7c",
+      "sha256": "5990ebe41177b62c57290a7b95a4a0408774878a7217341c40ab87d53737a479",
+      "phase_1b_expected": "5990ebe41177b62c57290a7b95a4a0408774878a7217341c40ab87d53737a479",
+      "match": true
+    }
+  ]
+}
