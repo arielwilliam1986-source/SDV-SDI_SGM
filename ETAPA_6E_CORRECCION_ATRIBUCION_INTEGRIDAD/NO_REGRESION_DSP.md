@@ -1,0 +1,5 @@
+# No regresión DSP
+
+Se compararon salidas decodificadas float64 por SHA-256, con forma, frecuencia y finitud, frente a original y 6C. Los 20 pares comparables (8 Hardened, 8 EVO, 4 MQR) son idénticos para SDV y SDI. Otros 4 pares (MQR, Mid nulo) no son comparables por aborto de las referencias. `signed` incluye inversión **en el estímulo**, no por el motor. Las comparaciones se hicieron con los defaults nativos de cada motor y el mismo manifiesto por par.
+
+La auditoría AST de definiciones de nivel superior contra 6C identifica las funciones distintas; las rutas de STFT, aplicación de máscaras, consensos, reconstrucción y desplazamiento no fueron editadas. Los cambios en `CandidateMetrics` son de informe. Los hashes y el diff permiten revisar también constantes y código fuera de las definiciones. No se instrumentaron tensores intermedios en esta etapa ni se cubrieron todos los modos, parámetros, residual y combinaciones de candidatos. No se hizo comparación de salida con v3 (protegido y con hash, no ejecutado).

@@ -1,0 +1,174 @@
+{
+  "base": "ceae641aaa60e4545ac3ebadf393b01bf090b7ca",
+  "branch": "arena/9ce94b15-sdv-sdi-sgm",
+  "freeze": "b50d30e64b9678b40e303da24047a1de0dc38c9c",
+  "seed": 609174223,
+  "protected_and_references": {
+    "ETAPA_6C_CORRECCION_EXPERIMENTAL/motores/MOTOR_SEP_SDV-SDI_EVO.py": "27e478751920f502744100432141bfb02f57dd42b43b962d27805e0893166610",
+    "ETAPA_6C_CORRECCION_EXPERIMENTAL/motores/MOTOR_SEP_SDV-SDI_v3.1.1_Hardened_Final.py": "48b423c4a97672b61ae437cc3fca441fc4a50fde667865f5627caf08e0bd3137",
+    "ETAPA_6C_CORRECCION_EXPERIMENTAL/motores/sdv_sdi_mqr_engine.py": "9962d4993723b9ec1b6470d200536198447c1cd1b259f1f1a7c32a7ceefbcf8f",
+    "Proyecto SDV-SDI_SGM/MOTOR_SEP_SDV-SDI.py": "896d3b32446ad8a8fab95506acc38a5ef60ec828162e88fe097b912b8d1bf9e0",
+    "Proyecto SDV-SDI_SGM/MOTOR_SEP_SDV-SDI_EVO.py": "003e698e187b6d6286c39a4f461e924420544ee4bf59c0b66a72258efc35774f",
+    "Proyecto SDV-SDI_SGM/MOTOR_SEP_SDV-SDI_v3.1.1_Hardened_Final.py": "5141fb5005656db1f6b2ede6165dbc77e6f74375a77e9db2570e69d8c6409dbd",
+    "Proyecto SDV-SDI_SGM/MOTOR_SEP_SDV-SDI_v3.py": "a0550a01cefb1095a0086824e1accfe1d7909b717ff1804920ae6c24d8d8487e",
+    "Proyecto SDV-SDI_SGM/mix_delta.py": "e373c8354b13cb8615ceeece8940ddfe6d6ad8aed6e0e37989b077455c06b9fb",
+    "Proyecto SDV-SDI_SGM/orquestador_maestro.py": "ea16344ae64eea4ee0ce931b43ee1377dfa1bbb037024aa456b495c2c8db373d",
+    "Proyecto SDV-SDI_SGM/preflight_audit.py": "e17591fb2213331295967732cfcd1f33693ad7fee4c07fff163d6e3a28620412",
+    "Proyecto SDV-SDI_SGM/sdv_sdi_mqr_engine.py": "5990ebe41177b62c57290a7b95a4a0408774878a7217341c40ab87d53737a479"
+  },
+  "experimental": {
+    "ETAPA_6E_CORRECCION_ATRIBUCION_INTEGRIDAD/motores/MOTOR_SEP_SDV-SDI_EVO.py": "3c4062057320d0e6b2b5963af11f7f1a3de656a496c2f782f73f6091be3ad5a9",
+    "ETAPA_6E_CORRECCION_ATRIBUCION_INTEGRIDAD/motores/MOTOR_SEP_SDV-SDI_v3.1.1_Hardened_Final.py": "453754dda52e0b75d29f909349e688dcd31b4fadedd0f933bfb4208636c4faba",
+    "ETAPA_6E_CORRECCION_ATRIBUCION_INTEGRIDAD/motores/atribucion_6e.py": "bedfbf536e7f0261399aac88333f46b894a58045bf30c9c0185078426dcc8e13",
+    "ETAPA_6E_CORRECCION_ATRIBUCION_INTEGRIDAD/motores/sdv_sdi_mqr_engine.py": "166e167b6f32233ec230705fc11e2cec3d12b2ce5714a539ac6fdab928c81372"
+  },
+  "stimuli": {
+    "clean": {
+      "expected": "UNIQUE",
+      "k": 0,
+      "wav": {
+        "clean-M.wav": "b74dbd0b98d51f9e1df01a2eb19fcf9414cd105fe42da9c086031ee4defc7acd",
+        "clean-V.wav": "9020604d83c81437ece92d9706a476831d34a9bebba528a60e1b1b15fa33cecd",
+        "clean-I.wav": "ab2a890c758c7c4ff5a6c2929926cf4fcef9c946aeb10d21924b7161bc598192"
+      }
+    },
+    "signed": {
+      "expected": "UNIQUE",
+      "k": 0,
+      "wav": {
+        "signed-M.wav": "b74dbd0b98d51f9e1df01a2eb19fcf9414cd105fe42da9c086031ee4defc7acd",
+        "signed-V.wav": "3e4412e8e4d026b860729b4f94b419b78c08f73e262d9507dc4c80cb7d680c2f",
+        "signed-I.wav": "ab2a890c758c7c4ff5a6c2929926cf4fcef9c946aeb10d21924b7161bc598192"
+      }
+    },
+    "side": {
+      "expected": "UNIQUE",
+      "k": 0,
+      "wav": {
+        "side-M.wav": "6be364075268da5420455c9bbb0b6326291041b5e148243ecce4a50cfd49de78",
+        "side-V.wav": "51f7cb902e059e5e49701632d5096a8dc7c9bdfaa364769af53db71235b724f7",
+        "side-I.wav": "7e260fe8daf0795495ad56b38cfc34485b3ef825f859af57a66e83173a27377b"
+      }
+    },
+    "side_output": {
+      "expected": "INSUFFICIENT_SIGNAL",
+      "k": null,
+      "wav": {
+        "side_output-M.wav": "6be364075268da5420455c9bbb0b6326291041b5e148243ecce4a50cfd49de78",
+        "side_output-V.wav": "9020604d83c81437ece92d9706a476831d34a9bebba528a60e1b1b15fa33cecd",
+        "side_output-I.wav": "7e260fe8daf0795495ad56b38cfc34485b3ef825f859af57a66e83173a27377b"
+      }
+    },
+    "shift": {
+      "expected": "UNIQUE",
+      "k": -567,
+      "wav": {
+        "shift-M.wav": "6c71bd12f75217dbf8e717fae4d3b17181fe53497aa92c9bee106ca5878c46ea",
+        "shift-V.wav": "66e32c7ffbc2538e8aab8f69cdfea48ee9105ebda314ce706ece9312d6609bf7",
+        "shift-I.wav": "213e3b0eb4059a86aa279485e1fa51f0044173edebcc5a241bb3483f3b950309"
+      }
+    },
+    "dual": {
+      "expected": "AMBIGUOUS",
+      "k": null,
+      "wav": {
+        "dual-M.wav": "fab05d398f1faeef88e92cf6c09d11e76e6d24a0270a8d01c2e5805d91d16b9f",
+        "dual-V.wav": "9020604d83c81437ece92d9706a476831d34a9bebba528a60e1b1b15fa33cecd",
+        "dual-I.wav": "ab2a890c758c7c4ff5a6c2929926cf4fcef9c946aeb10d21924b7161bc598192"
+      }
+    },
+    "dominant": {
+      "expected": "AMBIGUOUS",
+      "k": null,
+      "wav": {
+        "dominant-M.wav": "6a592e6d7905fa4dc9b4c1e1c70bfdf13c44b02f4d50b131031979c60dddd94d",
+        "dominant-V.wav": "9020604d83c81437ece92d9706a476831d34a9bebba528a60e1b1b15fa33cecd",
+        "dominant-I.wav": "ab2a890c758c7c4ff5a6c2929926cf4fcef9c946aeb10d21924b7161bc598192"
+      }
+    },
+    "piecewise": {
+      "expected": "AMBIGUOUS",
+      "k": null,
+      "wav": {
+        "piecewise-M.wav": "f5a733696e2ceb99b600d1cadf35097879147403d332ed3e946d4596ed88916d",
+        "piecewise-V.wav": "9020604d83c81437ece92d9706a476831d34a9bebba528a60e1b1b15fa33cecd",
+        "piecewise-I.wav": "ab2a890c758c7c4ff5a6c2929926cf4fcef9c946aeb10d21924b7161bc598192"
+      }
+    },
+    "right_rival": {
+      "expected": "AMBIGUOUS",
+      "k": null,
+      "wav": {
+        "right_rival-M.wav": "a01eddf07ef404da126efea8763fc012f667004e1ff6430c81d0e68163de9eef",
+        "right_rival-V.wav": "9020604d83c81437ece92d9706a476831d34a9bebba528a60e1b1b15fa33cecd",
+        "right_rival-I.wav": "ab2a890c758c7c4ff5a6c2929926cf4fcef9c946aeb10d21924b7161bc598192"
+      }
+    },
+    "different_lr": {
+      "expected": "AMBIGUOUS",
+      "k": null,
+      "wav": {
+        "different_lr-M.wav": "c3d76f238ec86d5c876c12bddc79ec172fbaa8700c2c1907903fa6e6b8b29f1a",
+        "different_lr-V.wav": "9020604d83c81437ece92d9706a476831d34a9bebba528a60e1b1b15fa33cecd",
+        "different_lr-I.wav": "ab2a890c758c7c4ff5a6c2929926cf4fcef9c946aeb10d21924b7161bc598192"
+      }
+    },
+    "periodic": {
+      "expected": "AMBIGUOUS",
+      "k": null,
+      "wav": {
+        "periodic-M.wav": "0ce027274884681e1221a6b8cbcf37933156136e7cac212f904e72ba07c70849",
+        "periodic-V.wav": "8c49506591a9ea1712da2437c3b792df478139c51e7a3634a9175b76bb94290b",
+        "periodic-I.wav": "ab2a890c758c7c4ff5a6c2929926cf4fcef9c946aeb10d21924b7161bc598192"
+      }
+    },
+    "unrelated": {
+      "expected": "INSUFFICIENT_SIGNAL",
+      "k": null,
+      "wav": {
+        "unrelated-M.wav": "b74dbd0b98d51f9e1df01a2eb19fcf9414cd105fe42da9c086031ee4defc7acd",
+        "unrelated-V.wav": "c65f2abb0b52005b762da64df22f8b213406aa4543491ac9e83b87585797bed4",
+        "unrelated-I.wav": "ab2a890c758c7c4ff5a6c2929926cf4fcef9c946aeb10d21924b7161bc598192"
+      }
+    },
+    "silent": {
+      "expected": "NON_INFORMATIVE",
+      "k": null,
+      "wav": {
+        "silent-M.wav": "b74dbd0b98d51f9e1df01a2eb19fcf9414cd105fe42da9c086031ee4defc7acd",
+        "silent-V.wav": "f88688b95ef00817a7147f43d54ef6445bc4aba719da67f14943968d2486f4ab",
+        "silent-I.wav": "ab2a890c758c7c4ff5a6c2929926cf4fcef9c946aeb10d21924b7161bc598192"
+      }
+    },
+    "dc": {
+      "expected": "NON_INFORMATIVE",
+      "k": null,
+      "wav": {
+        "dc-M.wav": "b74dbd0b98d51f9e1df01a2eb19fcf9414cd105fe42da9c086031ee4defc7acd",
+        "dc-V.wav": "3011cd56c1ddebc51d445c2c69485db762a7814cb2c86c88312a0003fa5aced3",
+        "dc-I.wav": "ab2a890c758c7c4ff5a6c2929926cf4fcef9c946aeb10d21924b7161bc598192"
+      }
+    },
+    "nonfinite": {
+      "expected": "ERROR",
+      "k": null,
+      "wav": {
+        "nonfinite-M.wav": "b74dbd0b98d51f9e1df01a2eb19fcf9414cd105fe42da9c086031ee4defc7acd",
+        "nonfinite-V.wav": "cbe2effb958abd119cede8c3904d2d49aaedf21ebd627cb7cde21e8a9dd9433f",
+        "nonfinite-I.wav": "ab2a890c758c7c4ff5a6c2929926cf4fcef9c946aeb10d21924b7161bc598192"
+      }
+    },
+    "truncated": {
+      "wav": {
+        "truncated.wav": "8e495f824df8ff086a2f50dc8b7146303281c5a2273745b8f10e2e28027c2cd5"
+      },
+      "decoder_frames": 43971
+    },
+    "data_overrun": {
+      "wav": {
+        "data_overrun.wav": "8889b25eb101b559e38e90a338a79cc592df6d548186e199316b6b55e2ebae18"
+      },
+      "decoder_frames": 44100
+    }
+  }
+}
