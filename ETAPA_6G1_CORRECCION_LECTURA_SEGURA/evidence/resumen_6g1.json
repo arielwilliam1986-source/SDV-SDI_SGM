@@ -1,0 +1,340 @@
+{
+  "schema": "resumen-6g1/1",
+  "entorno": {
+    "python": "3.11.2",
+    "numpy": "1.26.4",
+    "scipy": "1.13.1",
+    "soundfile": "0.13.1",
+    "libsndfile": "1.2.2",
+    "platform": "linux",
+    "machine": "x86_64",
+    "cpu_count": 2
+  },
+  "pruebas": {
+    "1": {
+      "ACCEPTED": 8,
+      "NOT_EXECUTED": 1
+    },
+    "2": {
+      "ACCEPTED": 8,
+      "NOT_EXECUTED": 1
+    },
+    "3": {
+      "NOT_APPLICABLE": 5,
+      "PCM_IDENTICAL": 3,
+      "NOT_EXECUTED": 1
+    },
+    "4": {
+      "ACCEPTED": 7
+    },
+    "5": {
+      "ACCEPTED": 3
+    },
+    "6": {
+      "ACCEPTED": 3
+    },
+    "7": {
+      "ACCEPTED": 6
+    },
+    "8": {
+      "ACCEPTED": 6
+    },
+    "9": {
+      "ACCEPTED": 2,
+      "NOT_APPLICABLE": 3,
+      "PCM_IDENTICAL": 3,
+      "NOT_EXECUTED": 1
+    },
+    "10": {
+      "ACCEPTED": 3
+    }
+  },
+  "veredictos": {
+    "ACCEPTED": 46,
+    "NOT_EXECUTED": 4,
+    "NOT_APPLICABLE": 8,
+    "PCM_IDENTICAL": 6
+  },
+  "total_filas": 64,
+  "no_ejecutadas": [
+    {
+      "prueba": "1",
+      "motor": "Hardened",
+      "escenario": "validez/analysis_only",
+      "detalle": "defecto preexistente 6G/6F: write_reports usa ctx[\"post_wav_validation\"] nulo cuando full_mode es False (AttributeError); reproducido igual en la copia 6G"
+    },
+    {
+      "prueba": "2",
+      "motor": "Hardened",
+      "escenario": "validez/analysis_only",
+      "detalle": "defecto preexistente 6G/6F: write_reports usa ctx[\"post_wav_validation\"] nulo cuando full_mode es False (AttributeError); reproducido igual en la copia 6G"
+    },
+    {
+      "prueba": "3",
+      "motor": "Hardened",
+      "escenario": "equivalencia/analysis_only",
+      "detalle": "defecto preexistente 6G/6F: write_reports usa ctx[\"post_wav_validation\"] nulo cuando full_mode es False (AttributeError); reproducido igual en la copia 6G"
+    },
+    {
+      "prueba": "9",
+      "motor": "Hardened",
+      "escenario": "analisis/analysis_only",
+      "detalle": "defecto preexistente 6G/6F: write_reports usa ctx[\"post_wav_validation\"] nulo cuando full_mode es False (AttributeError); reproducido igual en la copia 6G"
+    }
+  ],
+  "bloqueos_conocidos": {
+    "Hardened/analysis_only": "defecto preexistente 6G/6F: write_reports usa ctx[\"post_wav_validation\"] nulo cuando full_mode es False (AttributeError); reproducido igual en la copia 6G"
+  },
+  "equivalencias": {
+    "Hardened/dry_run": {
+      "veredicto_pcm": "NOT_APPLICABLE",
+      "detalle_pcm": "el modo no produce salidas PCM",
+      "veredicto_analisis": "NOT_APPLICABLE",
+      "detalle": "informe_wav_igual_flac=False pcm=NOT_APPLICABLE roles_sdv_sdi_iguales=True"
+    },
+    "Hardened/analysis_only": {
+      "veredicto_pcm": "NOT_EXECUTED",
+      "detalle_pcm": "defecto preexistente 6G/6F: write_reports usa ctx[\"post_wav_validation\"] nulo cuando full_mode es False (AttributeError); reproducido igual en la copia 6G",
+      "veredicto_analisis": "NOT_EXECUTED",
+      "detalle": "defecto preexistente 6G/6F: write_reports usa ctx[\"post_wav_validation\"] nulo cuando full_mode es False (AttributeError); reproducido igual en la copia 6G"
+    },
+    "Hardened/full_processing": {
+      "veredicto_pcm": "PCM_IDENTICAL",
+      "detalle_pcm": "roles=['SDI', 'SDV'] WAV=['mix SDI.wav', 'mix SDV.wav'] FLAC=['mix SDI.wav', 'mix SDV.wav'] validos=True/True",
+      "veredicto_analisis": "PCM_IDENTICAL",
+      "detalle": "informe_wav_igual_flac=True pcm=PCM_IDENTICAL roles_sdv_sdi_iguales=True"
+    },
+    "EVO/dry_run": {
+      "veredicto_pcm": "NOT_APPLICABLE",
+      "detalle_pcm": "el modo no produce salidas PCM",
+      "veredicto_analisis": "NOT_APPLICABLE",
+      "detalle": "informe_wav_igual_flac=False pcm=NOT_APPLICABLE roles_sdv_sdi_iguales=True"
+    },
+    "EVO/analysis_only": {
+      "veredicto_pcm": "NOT_APPLICABLE",
+      "detalle_pcm": "el modo no produce salidas PCM",
+      "veredicto_analisis": "ACCEPTED",
+      "detalle": "informe_wav_igual_flac=True pcm=NOT_APPLICABLE roles_sdv_sdi_iguales=True"
+    },
+    "EVO/full_processing": {
+      "veredicto_pcm": "PCM_IDENTICAL",
+      "detalle_pcm": "roles=['SDI', 'SDV'] WAV=['mix SDI.wav', 'mix SDV.wav'] FLAC=['mix SDI.wav', 'mix SDV.wav'] validos=True/True",
+      "veredicto_analisis": "PCM_IDENTICAL",
+      "detalle": "informe_wav_igual_flac=True pcm=PCM_IDENTICAL roles_sdv_sdi_iguales=True"
+    },
+    "MQR/dry_run": {
+      "veredicto_pcm": "NOT_APPLICABLE",
+      "detalle_pcm": "el modo no produce salidas PCM",
+      "veredicto_analisis": "NOT_APPLICABLE",
+      "detalle": "informe_wav_igual_flac=False pcm=NOT_APPLICABLE roles_sdv_sdi_iguales=True"
+    },
+    "MQR/analysis_only": {
+      "veredicto_pcm": "NOT_APPLICABLE",
+      "detalle_pcm": "el modo no produce salidas PCM",
+      "veredicto_analisis": "ACCEPTED",
+      "detalle": "informe_wav_igual_flac=True pcm=NOT_APPLICABLE roles_sdv_sdi_iguales=True"
+    },
+    "MQR/full_processing": {
+      "veredicto_pcm": "PCM_IDENTICAL",
+      "detalle_pcm": "roles=['SDI', 'SDV'] WAV=['SDI.wav', 'SDV.wav'] FLAC=['SDI.wav', 'SDV.wav'] validos=True/True",
+      "veredicto_analisis": "PCM_IDENTICAL",
+      "detalle": "informe_wav_igual_flac=True pcm=PCM_IDENTICAL roles_sdv_sdi_iguales=True"
+    }
+  },
+  "sustituciones": {
+    "Hardened/antes_dsp_alineacion": {
+      "veredicto": "ACCEPTED",
+      "detalle": "rechazo previo al DSP: exit=1 abort=None sin salidas propias"
+    },
+    "Hardened/antes_dsp": {
+      "veredicto": "ACCEPTED",
+      "detalle": "la sustitución se aplicó después de abrir el descriptor: el rechazo provino de la guarda final (mismo resultado: sin salidas); guarda previa demostrada en la prueba unitaria"
+    },
+    "Hardened/durante_dsp": {
+      "veredicto": "ACCEPTED",
+      "detalle": "aborto MIX_CAMBIADO_DURANTE_EL_PROCESAMIENTO; salidas invalidadas=['mix SDI.wav', 'mix SDV.wav']"
+    },
+    "Hardened/despues_dsp": {
+      "veredicto": "ACCEPTED",
+      "detalle": "aborto MIX_CAMBIADO_DURANTE_EL_PROCESAMIENTO; salidas invalidadas=['mix SDI.wav', 'mix SDV.wav']"
+    },
+    "EVO/antes_dsp_alineacion": {
+      "veredicto": "ACCEPTED",
+      "detalle": "rechazo previo al DSP: exit=1 abort=None sin salidas propias"
+    },
+    "EVO/antes_dsp": {
+      "veredicto": "ACCEPTED",
+      "detalle": "la sustitución se aplicó después de abrir el descriptor: el rechazo provino de la guarda final (mismo resultado: sin salidas); guarda previa demostrada en la prueba unitaria"
+    },
+    "EVO/durante_dsp": {
+      "veredicto": "ACCEPTED",
+      "detalle": "aborto MIX_CAMBIADO_DURANTE_EL_PROCESAMIENTO; salidas invalidadas=['mix SDI.wav', 'mix SDV.wav']"
+    },
+    "EVO/despues_dsp": {
+      "veredicto": "ACCEPTED",
+      "detalle": "aborto MIX_CAMBIADO_DURANTE_EL_PROCESAMIENTO; salidas invalidadas=['mix SDI.wav', 'mix SDV.wav']"
+    },
+    "MQR/antes_dsp_alineacion": {
+      "veredicto": "ACCEPTED",
+      "detalle": "rechazo previo al DSP: exit=1 abort=None sin salidas propias"
+    },
+    "MQR/antes_dsp": {
+      "veredicto": "ACCEPTED",
+      "detalle": "rechazo MIX_SUSTITUIDO_ANTES_DEL_DSP observado"
+    },
+    "MQR/durante_dsp": {
+      "veredicto": "ACCEPTED",
+      "detalle": "aborto MIX_CAMBIADO_DURANTE_EL_PROCESAMIENTO; salidas invalidadas=['SDI.wav', 'SDV.wav']"
+    },
+    "MQR/despues_dsp": {
+      "veredicto": "ACCEPTED",
+      "detalle": "aborto MIX_CAMBIADO_DURANTE_EL_PROCESAMIENTO; salidas invalidadas=['SDI.wav', 'SDV.wav']"
+    }
+  },
+  "no_regresion": {
+    "Hardened": {
+      "veredicto": "ACCEPTED",
+      "dsp_ok": true,
+      "pcm": {
+        "WAV": true,
+        "FLAC": true
+      }
+    },
+    "EVO": {
+      "veredicto": "ACCEPTED",
+      "dsp_ok": true,
+      "pcm": {
+        "WAV": true,
+        "FLAC": true
+      }
+    },
+    "MQR": {
+      "veredicto": "ACCEPTED",
+      "dsp_ok": true,
+      "pcm": {
+        "WAV": true,
+        "FLAC": true
+      }
+    }
+  },
+  "fuentes": {
+    "6G": {
+      "MOTOR_SEP_SDV-SDI_EVO.py": "87bf83651f8f237a4de94d45f0104559b47daf55c03b3e18265f83edfb8a522c",
+      "MOTOR_SEP_SDV-SDI_v3.1.1_Hardened_Final.py": "29b30593d97733eb0c073de437ef6725c6264e42034e4a388b4e4baf3bbdcc1b",
+      "atribucion_6f.py": "dcc251e35d3c222218694444e640d7ffab3fb963d3e7e7f774434ae5f1b8ca48",
+      "audio_integridad_6g.py": "cd5dd521de03cb40bfd99b2d81018663532d126145d9059b41a774b4dc995d1c",
+      "sdv_sdi_mqr_engine.py": "f014cc0c71a0012054eb249862b55bd9cff112e3bd08855604e914c4b1ebe1e8",
+      "wav_integridad_6f.py": "243ba66381f1e949b624bb353e5b23ce65cef6e538b41fb2d48ab932415ec048"
+    },
+    "6G1": {
+      "MOTOR_SEP_SDV-SDI_EVO.py": "8d9ed7804b6c82efc4af2824ee4873d52d8844a1fdb6d03234791f4706859baf",
+      "MOTOR_SEP_SDV-SDI_v3.1.1_Hardened_Final.py": "99ef34b9e2ef69f7d43cca8f9519b3a0c4b99a485662b76aff643d1d21bf24a8",
+      "atribucion_6f.py": "dcc251e35d3c222218694444e640d7ffab3fb963d3e7e7f774434ae5f1b8ca48",
+      "audio_integridad_6g.py": "65bcc902a04b95b4c4f914c3750ff7d9140d5a5aa42024a792b15bdc6d0e32bc",
+      "lectura_segura_6g1.py": "a70a4782d953bb5e7bb2d1cb9542930e382671459935a979cbd88bf97671f1db",
+      "sdv_sdi_mqr_engine.py": "a2767cbc90fe79db09e1faef802c87a1d808a35d971027708b1921f12f825ca9",
+      "wav_integridad_6f.py": "3e03930e083fccbd1bfddc88195aa4bc228058ae6827a74011d56606ae1012d1"
+    }
+  },
+  "fixtures": {
+    "instrumental_mix.wav": {
+      "bytes": 352844,
+      "frames": 88200,
+      "sr": 44100,
+      "channels": 2,
+      "subtype": "PCM_16",
+      "format": "WAV",
+      "sha256": "896bd59b6bdbbcb092bd9bbf4acc28361a6a124941a86af04ef8ca147077cea8"
+    },
+    "instrumental_mix_12s.wav": {
+      "bytes": 2116844,
+      "frames": 529200,
+      "sr": 44100,
+      "channels": 2,
+      "subtype": "PCM_16",
+      "format": "WAV",
+      "sha256": "68c710d5e903dfd41d5441e156e3e1972048b67b3281d643ef6f900382bd1aac"
+    },
+    "mix.flac": {
+      "bytes": 273253,
+      "frames": 88200,
+      "sr": 44100,
+      "channels": 2,
+      "subtype": "PCM_16",
+      "format": "FLAC",
+      "sha256": "2f550ce2cb3a6ec124bc1bc0373adc00a609f32ccf6c4fd9f73cfafafac945fa"
+    },
+    "mix.wav": {
+      "bytes": 352844,
+      "frames": 88200,
+      "sr": 44100,
+      "channels": 2,
+      "subtype": "PCM_16",
+      "format": "WAV",
+      "sha256": "060d6c89b1aabe5d0c449eefa696dc23efe6c77e00d2669dea7a6dfaebfe9627"
+    },
+    "mix_12s.flac": {
+      "bytes": 1594827,
+      "frames": 529200,
+      "sr": 44100,
+      "channels": 2,
+      "subtype": "PCM_16",
+      "format": "FLAC",
+      "sha256": "fb1882e2d0995de82bd61a2413d355f7876a8b7408b99ed8b454034c9bfc39ed"
+    },
+    "mix_12s.wav": {
+      "bytes": 2116844,
+      "frames": 529200,
+      "sr": 44100,
+      "channels": 2,
+      "subtype": "PCM_16",
+      "format": "WAV",
+      "sha256": "e24fbaa59203ed5307a4d66c6bfeb2c0a85cacff3db67d8e4cadaa611f127f21"
+    },
+    "mix_24bit.flac": {
+      "bytes": 278664,
+      "frames": 88200,
+      "sr": 44100,
+      "channels": 2,
+      "subtype": "PCM_24",
+      "format": "FLAC",
+      "sha256": "b8b6fd00d901d33b937f8459de2af00edba6a0b244a33c2e62725dff7fd5bd14"
+    },
+    "mix_otro.flac": {
+      "bytes": 276611,
+      "frames": 88200,
+      "sr": 44100,
+      "channels": 2,
+      "subtype": "PCM_16",
+      "format": "FLAC",
+      "sha256": "636fc4f96b55040fb6d78bfb96a8c53fcf988329d54c32ff9996c2b51a967b40"
+    },
+    "mix_otro.wav": {
+      "bytes": 352844,
+      "frames": 88200,
+      "sr": 44100,
+      "channels": 2,
+      "subtype": "PCM_16",
+      "format": "WAV",
+      "sha256": "2d3d2cdd4ec1a6568f7b184f350ed598c62ea065291d12e80e7606a7d01c40fe"
+    },
+    "vocal_mix.wav": {
+      "bytes": 352844,
+      "frames": 88200,
+      "sr": 44100,
+      "channels": 2,
+      "subtype": "PCM_16",
+      "format": "WAV",
+      "sha256": "69a3a5527accf1db114c00d862bf33af69f50e5fcab2ca8eb5f08051c2038357"
+    },
+    "vocal_mix_12s.wav": {
+      "bytes": 2116844,
+      "frames": 529200,
+      "sr": 44100,
+      "channels": 2,
+      "subtype": "PCM_16",
+      "format": "WAV",
+      "sha256": "cc2c5e940ec35a2f61315607f07fff7ee2b26d7d1dfb8aa2228236da797badab"
+    }
+  }
+}

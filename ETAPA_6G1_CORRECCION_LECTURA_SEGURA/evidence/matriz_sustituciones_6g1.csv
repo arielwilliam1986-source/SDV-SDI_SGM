@@ -1,0 +1,20 @@
+prueba,motor,contenedor,escenario,veredicto,detalle,salida,pcm,ruta_sha256
+4,todos,FLAC,guarda_unitaria_antes_dsp,ACCEPTED,SHA-256 del Mix distinto del sondeo: sustitución antes del DSP (636fc4f96b55040f != fb1882e2d0995de8),abrir_mix,,fb1882e2d0995de8
+4,Hardened,FLAC,antes_dsp_alineacion,ACCEPTED,rechazo previo al DSP: exit=1 abort=None sin salidas propias,exit=1,propios=0,636fc4f96b55040f
+4,Hardened,FLAC,antes_dsp,ACCEPTED,la sustitución se aplicó después de abrir el descriptor: el rechazo provino de la guarda final (mismo resultado: sin salidas); guarda previa demostrada en la prueba unitaria,intentos=3,propios=0,636fc4f96b55040f
+5,Hardened,FLAC,durante_dsp,ACCEPTED,"aborto MIX_CAMBIADO_DURANTE_EL_PROCESAMIENTO; salidas invalidadas=['mix SDI.wav', 'mix SDV.wav']",exit=2 sust@4.165,propios=0,636fc4f96b55040f
+7,Hardened,FLAC,aborto/durante_dsp,ACCEPTED,"propios=[] ajenos={'ajeno.txt': True, 'ajeno.wav': True, 'notas_preexistentes.json': True} conservados=5",,,636fc4f96b55040f
+6,Hardened,FLAC,despues_dsp,ACCEPTED,"aborto MIX_CAMBIADO_DURANTE_EL_PROCESAMIENTO; salidas invalidadas=['mix SDI.wav', 'mix SDV.wav']",exit=2 sust@4.748,propios=0,636fc4f96b55040f
+7,Hardened,FLAC,aborto/despues_dsp,ACCEPTED,"propios=[] ajenos={'ajeno.txt': True, 'ajeno.wav': True, 'notas_preexistentes.json': True} conservados=5",,,636fc4f96b55040f
+4,EVO,FLAC,antes_dsp_alineacion,ACCEPTED,rechazo previo al DSP: exit=1 abort=None sin salidas propias,exit=1,propios=0,636fc4f96b55040f
+4,EVO,FLAC,antes_dsp,ACCEPTED,la sustitución se aplicó después de abrir el descriptor: el rechazo provino de la guarda final (mismo resultado: sin salidas); guarda previa demostrada en la prueba unitaria,intentos=3,propios=0,636fc4f96b55040f
+5,EVO,FLAC,durante_dsp,ACCEPTED,"aborto MIX_CAMBIADO_DURANTE_EL_PROCESAMIENTO; salidas invalidadas=['mix SDI.wav', 'mix SDV.wav']",exit=2 sust@4.169,propios=0,636fc4f96b55040f
+7,EVO,FLAC,aborto/durante_dsp,ACCEPTED,"propios=[] ajenos={'ajeno.txt': True, 'ajeno.wav': True, 'notas_preexistentes.json': True} conservados=5",,,636fc4f96b55040f
+6,EVO,FLAC,despues_dsp,ACCEPTED,"aborto MIX_CAMBIADO_DURANTE_EL_PROCESAMIENTO; salidas invalidadas=['mix SDI.wav', 'mix SDV.wav']",exit=2 sust@4.636,propios=0,636fc4f96b55040f
+7,EVO,FLAC,aborto/despues_dsp,ACCEPTED,"propios=[] ajenos={'ajeno.txt': True, 'ajeno.wav': True, 'notas_preexistentes.json': True} conservados=5",,,636fc4f96b55040f
+4,MQR,FLAC,antes_dsp_alineacion,ACCEPTED,rechazo previo al DSP: exit=1 abort=None sin salidas propias,exit=1,propios=0,636fc4f96b55040f
+4,MQR,FLAC,antes_dsp,ACCEPTED,rechazo MIX_SUSTITUIDO_ANTES_DEL_DSP observado,intentos=3,propios=0,636fc4f96b55040f
+5,MQR,FLAC,durante_dsp,ACCEPTED,"aborto MIX_CAMBIADO_DURANTE_EL_PROCESAMIENTO; salidas invalidadas=['SDI.wav', 'SDV.wav']",exit=2 sust@5.708,propios=0,636fc4f96b55040f
+7,MQR,FLAC,aborto/durante_dsp,ACCEPTED,"propios=[] ajenos={'ajeno.txt': True, 'ajeno.wav': True, 'notas_preexistentes.json': True} conservados=15",,,636fc4f96b55040f
+6,MQR,FLAC,despues_dsp,ACCEPTED,"aborto MIX_CAMBIADO_DURANTE_EL_PROCESAMIENTO; salidas invalidadas=['SDI.wav', 'SDV.wav']",exit=2 sust@5.808,propios=0,636fc4f96b55040f
+7,MQR,FLAC,aborto/despues_dsp,ACCEPTED,"propios=[] ajenos={'ajeno.txt': True, 'ajeno.wav': True, 'notas_preexistentes.json': True} conservados=15",,,636fc4f96b55040f

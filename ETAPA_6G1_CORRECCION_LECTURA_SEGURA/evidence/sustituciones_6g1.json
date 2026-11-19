@@ -1,0 +1,1095 @@
+{
+  "schema": "sustituciones-6g1/2",
+  "entorno": {
+    "python": "3.11.2",
+    "numpy": "1.26.4",
+    "scipy": "1.13.1",
+    "soundfile": "0.13.1",
+    "libsndfile": "1.2.2",
+    "platform": "linux",
+    "machine": "x86_64",
+    "cpu_count": 2
+  },
+  "unitaria": {
+    "detectada": true,
+    "excepcion": "MixCambiado",
+    "detalle": "SHA-256 del Mix distinto del sondeo: sustitución antes del DSP (636fc4f96b55040f != fb1882e2d0995de8)",
+    "sha_validado": "fb1882e2d0995de82bd61a2413d355f7876a8b7408b99ed8b454034c9bfc39ed",
+    "sha_actual": "636fc4f96b55040fb6d78bfb96a8c53fcf988329d54c32ff9996c2b51a967b40"
+  },
+  "casos": {
+    "unitaria/antes_dsp": {
+      "detectada": true,
+      "excepcion": "MixCambiado",
+      "detalle": "SHA-256 del Mix distinto del sondeo: sustitución antes del DSP (636fc4f96b55040f != fb1882e2d0995de8)",
+      "sha_validado": "fb1882e2d0995de82bd61a2413d355f7876a8b7408b99ed8b454034c9bfc39ed",
+      "sha_actual": "636fc4f96b55040fb6d78bfb96a8c53fcf988329d54c32ff9996c2b51a967b40"
+    },
+    "Hardened/antes_dsp_alineacion": {
+      "veredicto": "ACCEPTED",
+      "detalle": "rechazo previo al DSP: exit=1 abort=None sin salidas propias",
+      "exit": 1,
+      "sustitucion": {
+        "patron": null,
+        "etapa": "antes_alineacion",
+        "aplicada": true,
+        "segundos_desde_inicio": 0.301,
+        "sha_destino_nuevo": "636fc4f96b55040fb6d78bfb96a8c53fcf988329d54c32ff9996c2b51a967b40",
+        "sembrados": [],
+        "disparo": "retraso 0.3s"
+      },
+      "estado": {
+        "wavs_propios": [],
+        "wavs_totales": [],
+        "abort_presente": false,
+        "motivo": null,
+        "salidas_invalidadas": [],
+        "conservados": [],
+        "ajenos_presentes": {},
+        "ajenos_conservados": null
+      },
+      "stdout_tail": "[     0.05s] Validación de entradas OK: Mix 44100Hz/2ch (270.13 KiB) | 1 Pares\n[     0.05s] Verificando alineación temporal NCC de las guías...\n[     0.22s]   P01/vocal: k=null ms; NCC=null; INSUFFICIENT_SIGNAL (INCOMPLETE_CHANNEL_EVIDENCE); L: d=null INSUFFICIENT_SIGNAL, R: d=null INSUFFICIENT_SIGNAL; shift=0\n[     0.36s]   P01/instrumental: k=null ms; NCC=null; INSUFFICIENT_SIGNAL (INCOMPLETE_CHANNEL_EVIDENCE); L: d=null INSUFFICIENT_SIGNAL, R: d=null INSUFFICIENT_SIGNAL; shift=0\n[     0.36s] [ABORT] Diagnóstico no validado (INSUFFICIENT_SIGNAL). Se requiere --allow-misaligned para continuar sin corrección; el diagnóstico no cambia.\n"
+    },
+    "Hardened/antes_dsp": {
+      "veredicto": "ACCEPTED",
+      "detalle": "la sustitución se aplicó después de abrir el descriptor: el rechazo provino de la guarda final (mismo resultado: sin salidas); guarda previa demostrada en la prueba unitaria",
+      "intentos": [
+        {
+          "intento": 0,
+          "exit": 2,
+          "sustitucion": {
+            "patron": "(?i)iniciando pipeline",
+            "etapa": "antes",
+            "aplicada": true,
+            "segundos_desde_inicio": 3.301,
+            "sha_destino_nuevo": "636fc4f96b55040fb6d78bfb96a8c53fcf988329d54c32ff9996c2b51a967b40",
+            "log_previo": [
+              "[     3.01s] Iniciando pipeline v3.1.0 en: /tmp/f6g1/sustituciones/Hardened/antes_dsp_0/out/motorA_run_20261119_205659_partial",
+              "[     3.01s] Configuración: consensus_order=magnitudes_first | smoothing=none | mask_mode=mono | residuals=False"
+            ],
+            "sembrados": [
+              "ajeno.txt",
+              "ajeno.wav",
+              "notas_preexistentes.json"
+            ]
+          },
+          "estado": {
+            "wavs_propios": [],
+            "wavs_totales": [
+              "ajeno.wav"
+            ],
+            "abort_presente": true,
+            "motivo": "MIX_CAMBIADO_DURANTE_EL_PROCESAMIENTO",
+            "salidas_invalidadas": [
+              "mix SDI.wav",
+              "mix SDV.wav"
+            ],
+            "conservados": [
+              "ajeno.txt",
+              "ajeno.wav",
+              "analysis.txt",
+              "input_integrity_6g.json",
+              "notas_preexistentes.json"
+            ],
+            "ajenos_presentes": {
+              "ajeno.txt": true,
+              "ajeno.wav": true,
+              "notas_preexistentes.json": true
+            },
+            "ajenos_conservados": true
+          },
+          "stdout_tail": "[     0.07s] Validación de entradas OK: Mix 44100Hz/2ch (1.52 MiB) | 1 Pares\n[     0.08s] Verificando alineación temporal NCC de las guías...\n[     1.63s]   P01/vocal: k=0.00 ms; NCC=0.7412; ALIGNED (MEASURED_AGREEMENT); L: d=0 ALIGNED, R: d=0 ALIGNED; shift=0\n[     2.97s]   P01/instrumental: k=0.00 ms; NCC=0.6736; ALIGNED (MEASURED_AGREEMENT); L: d=0 ALIGNED, R: d=0 ALIGNED; shift=0\n[     3.01s] Iniciando pipeline v3.1.0 en: /tmp/f6g1/sustituciones/Hardened/antes_dsp_0/out/motorA_run_20261119_205659_partial\n[     3.01s] Configuración: consensus_order=magnitudes_first | smoothing=none | mask_mode=mono | residuals=False\n[     3.02s] Procesando 519 tramas en 3 chunks de 256 tramas...\n[     4.52s]   Chunk 03/3 [100.0%] completado (Tramas 512-518)\n[     4.57s] Post-WAV Identity SNR: 154.30 dB (Estado: PASS_EXACT_IDENTITY)\n[     4.59s] Directorio 'masks/' eliminado para liberar espacio.\n[     4.59s] Corrida finalizada exitosamente en: /tmp/f6g1/sustituciones/Hardened/antes_dsp_0/out/motorA_run_20261119_205659\n[     4.60s] [FATAL] Mix cambiado: salidas de audio invalidadas: ['mix SDI.wav', 'mix SDV.wav']\n"
+        },
+        {
+          "intento": 1,
+          "exit": 2,
+          "sustitucion": {
+            "patron": "(?i)iniciando pipeline",
+            "etapa": "antes",
+            "aplicada": true,
+            "segundos_desde_inicio": 3.633,
+            "sha_destino_nuevo": "636fc4f96b55040fb6d78bfb96a8c53fcf988329d54c32ff9996c2b51a967b40",
+            "log_previo": [
+              "[     3.30s] Iniciando pipeline v3.1.0 en: /tmp/f6g1/sustituciones/Hardened/antes_dsp_1/out/motorA_run_20261119_205705_partial",
+              "[     3.30s] Configuración: consensus_order=magnitudes_first | smoothing=none | mask_mode=mono | residuals=False",
+              "[     3.30s] Procesando 519 tramas en 3 chunks de 256 tramas..."
+            ],
+            "sembrados": [
+              "ajeno.txt",
+              "ajeno.wav",
+              "notas_preexistentes.json"
+            ]
+          },
+          "estado": {
+            "wavs_propios": [],
+            "wavs_totales": [
+              "ajeno.wav"
+            ],
+            "abort_presente": true,
+            "motivo": "MIX_CAMBIADO_DURANTE_EL_PROCESAMIENTO",
+            "salidas_invalidadas": [
+              "mix SDI.wav",
+              "mix SDV.wav"
+            ],
+            "conservados": [
+              "ajeno.txt",
+              "ajeno.wav",
+              "analysis.txt",
+              "input_integrity_6g.json",
+              "notas_preexistentes.json"
+            ],
+            "ajenos_presentes": {
+              "ajeno.txt": true,
+              "ajeno.wav": true,
+              "notas_preexistentes.json": true
+            },
+            "ajenos_conservados": true
+          },
+          "stdout_tail": "[     0.08s] Validación de entradas OK: Mix 44100Hz/2ch (1.52 MiB) | 1 Pares\n[     0.08s] Verificando alineación temporal NCC de las guías...\n[     1.64s]   P01/vocal: k=0.00 ms; NCC=0.7412; ALIGNED (MEASURED_AGREEMENT); L: d=0 ALIGNED, R: d=0 ALIGNED; shift=0\n[     3.26s]   P01/instrumental: k=0.00 ms; NCC=0.6736; ALIGNED (MEASURED_AGREEMENT); L: d=0 ALIGNED, R: d=0 ALIGNED; shift=0\n[     3.30s] Iniciando pipeline v3.1.0 en: /tmp/f6g1/sustituciones/Hardened/antes_dsp_1/out/motorA_run_20261119_205705_partial\n[     3.30s] Configuración: consensus_order=magnitudes_first | smoothing=none | mask_mode=mono | residuals=False\n[     3.30s] Procesando 519 tramas en 3 chunks de 256 tramas...\n[     4.72s]   Chunk 03/3 [100.0%] completado (Tramas 512-518)\n[     4.79s] Post-WAV Identity SNR: 154.30 dB (Estado: PASS_EXACT_IDENTITY)\n[     4.80s] Directorio 'masks/' eliminado para liberar espacio.\n[     4.80s] Corrida finalizada exitosamente en: /tmp/f6g1/sustituciones/Hardened/antes_dsp_1/out/motorA_run_20261119_205705\n[     4.81s] [FATAL] Mix cambiado: salidas de audio invalidadas: ['mix SDI.wav', 'mix SDV.wav']\n"
+        },
+        {
+          "intento": 2,
+          "exit": 2,
+          "sustitucion": {
+            "patron": "(?i)iniciando pipeline",
+            "etapa": "antes",
+            "aplicada": true,
+            "segundos_desde_inicio": 3.183,
+            "sha_destino_nuevo": "636fc4f96b55040fb6d78bfb96a8c53fcf988329d54c32ff9996c2b51a967b40",
+            "log_previo": [
+              "[     2.86s] Iniciando pipeline v3.1.0 en: /tmp/f6g1/sustituciones/Hardened/antes_dsp_2/out/motorA_run_20261119_205710_partial",
+              "[     2.86s] Configuración: consensus_order=magnitudes_first | smoothing=none | mask_mode=mono | residuals=False"
+            ],
+            "sembrados": [
+              "ajeno.txt",
+              "ajeno.wav",
+              "notas_preexistentes.json"
+            ]
+          },
+          "estado": {
+            "wavs_propios": [],
+            "wavs_totales": [
+              "ajeno.wav"
+            ],
+            "abort_presente": true,
+            "motivo": "MIX_CAMBIADO_DURANTE_EL_PROCESAMIENTO",
+            "salidas_invalidadas": [
+              "mix SDI.wav",
+              "mix SDV.wav"
+            ],
+            "conservados": [
+              "ajeno.txt",
+              "ajeno.wav",
+              "analysis.txt",
+              "input_integrity_6g.json",
+              "notas_preexistentes.json"
+            ],
+            "ajenos_presentes": {
+              "ajeno.txt": true,
+              "ajeno.wav": true,
+              "notas_preexistentes.json": true
+            },
+            "ajenos_conservados": true
+          },
+          "stdout_tail": "[     0.07s] Validación de entradas OK: Mix 44100Hz/2ch (1.52 MiB) | 1 Pares\n[     0.07s] Verificando alineación temporal NCC de las guías...\n[     1.63s]   P01/vocal: k=0.00 ms; NCC=0.7412; ALIGNED (MEASURED_AGREEMENT); L: d=0 ALIGNED, R: d=0 ALIGNED; shift=0\n[     2.82s]   P01/instrumental: k=0.00 ms; NCC=0.6736; ALIGNED (MEASURED_AGREEMENT); L: d=0 ALIGNED, R: d=0 ALIGNED; shift=0\n[     2.86s] Iniciando pipeline v3.1.0 en: /tmp/f6g1/sustituciones/Hardened/antes_dsp_2/out/motorA_run_20261119_205710_partial\n[     2.86s] Configuración: consensus_order=magnitudes_first | smoothing=none | mask_mode=mono | residuals=False\n[     2.87s] Procesando 519 tramas en 3 chunks de 256 tramas...\n[     4.25s]   Chunk 03/3 [100.0%] completado (Tramas 512-518)\n[     4.30s] Post-WAV Identity SNR: 154.30 dB (Estado: PASS_EXACT_IDENTITY)\n[     4.32s] Directorio 'masks/' eliminado para liberar espacio.\n[     4.32s] Corrida finalizada exitosamente en: /tmp/f6g1/sustituciones/Hardened/antes_dsp_2/out/motorA_run_20261119_205710\n[     4.33s] [FATAL] Mix cambiado: salidas de audio invalidadas: ['mix SDI.wav', 'mix SDV.wav']\n"
+        }
+      ]
+    },
+    "Hardened/durante_dsp": {
+      "veredicto": "ACCEPTED",
+      "detalle": "aborto MIX_CAMBIADO_DURANTE_EL_PROCESAMIENTO; salidas invalidadas=['mix SDI.wav', 'mix SDV.wav']",
+      "exit": 2,
+      "sustitucion": {
+        "patron": "(?i)chunk\\s+10\\s*/",
+        "etapa": "durante_dsp",
+        "aplicada": true,
+        "segundos_desde_inicio": 4.165,
+        "sha_destino_nuevo": "636fc4f96b55040fb6d78bfb96a8c53fcf988329d54c32ff9996c2b51a967b40",
+        "log_previo": [
+          "[     3.84s]   Chunk 10/11 [ 90.9%] completado (Tramas 432-479)"
+        ],
+        "sembrados": [
+          "ajeno.txt",
+          "ajeno.wav",
+          "notas_preexistentes.json"
+        ]
+      },
+      "estado": {
+        "wavs_propios": [],
+        "wavs_totales": [
+          "ajeno.wav"
+        ],
+        "abort_presente": true,
+        "motivo": "MIX_CAMBIADO_DURANTE_EL_PROCESAMIENTO",
+        "salidas_invalidadas": [
+          "mix SDI.wav",
+          "mix SDV.wav"
+        ],
+        "conservados": [
+          "ajeno.txt",
+          "ajeno.wav",
+          "analysis.txt",
+          "input_integrity_6g.json",
+          "notas_preexistentes.json"
+        ],
+        "ajenos_presentes": {
+          "ajeno.txt": true,
+          "ajeno.wav": true,
+          "notas_preexistentes.json": true
+        },
+        "ajenos_conservados": true
+      },
+      "stdout_tail": "[     0.08s] Validación de entradas OK: Mix 44100Hz/2ch (1.52 MiB) | 1 Pares\n[     0.08s] Verificando alineación temporal NCC de las guías...\n[     1.34s]   P01/vocal: k=0.00 ms; NCC=0.7412; ALIGNED (MEASURED_AGREEMENT); L: d=0 ALIGNED, R: d=0 ALIGNED; shift=0\n[     2.65s]   P01/instrumental: k=0.00 ms; NCC=0.6736; ALIGNED (MEASURED_AGREEMENT); L: d=0 ALIGNED, R: d=0 ALIGNED; shift=0\n[     2.70s] Iniciando pipeline v3.1.0 en: /tmp/f6g1/sustituciones/Hardened/durante_dsp/out/motorA_run_20261119_205714_partial\n[     2.70s] Configuración: consensus_order=magnitudes_first | smoothing=none | mask_mode=mono | residuals=False\n[     2.70s] Procesando 519 tramas en 11 chunks de 48 tramas...\n[     3.84s]   Chunk 10/11 [ 90.9%] completado (Tramas 432-479)\n[     3.93s]   Chunk 11/11 [100.0%] completado (Tramas 480-518)\n[     4.00s] Post-WAV Identity SNR: 154.30 dB (Estado: PASS_EXACT_IDENTITY)\n[     4.02s] Directorio 'masks/' eliminado para liberar espacio.\n[     4.02s] Corrida finalizada exitosamente en: /tmp/f6g1/sustituciones/Hardened/durante_dsp/out/motorA_run_20261119_205714\n[     4.03s] [FATAL] Mix cambiado: salidas de audio invalidadas: ['mix SDI.wav', 'mix SDV.wav']\n"
+    },
+    "Hardened/despues_dsp": {
+      "veredicto": "ACCEPTED",
+      "detalle": "aborto MIX_CAMBIADO_DURANTE_EL_PROCESAMIENTO; salidas invalidadas=['mix SDI.wav', 'mix SDV.wav']",
+      "exit": 2,
+      "sustitucion": {
+        "patron": "(?i)post-wav identity",
+        "etapa": "despues_dsp",
+        "aplicada": true,
+        "segundos_desde_inicio": 4.748,
+        "sha_destino_nuevo": "636fc4f96b55040fb6d78bfb96a8c53fcf988329d54c32ff9996c2b51a967b40",
+        "log_previo": [
+          "[     4.48s] Post-WAV Identity SNR: 154.30 dB (Estado: PASS_EXACT_IDENTITY)"
+        ],
+        "sembrados": [
+          "ajeno.txt",
+          "ajeno.wav",
+          "notas_preexistentes.json"
+        ]
+      },
+      "estado": {
+        "wavs_propios": [],
+        "wavs_totales": [
+          "ajeno.wav"
+        ],
+        "abort_presente": true,
+        "motivo": "MIX_CAMBIADO_DURANTE_EL_PROCESAMIENTO",
+        "salidas_invalidadas": [
+          "mix SDI.wav",
+          "mix SDV.wav"
+        ],
+        "conservados": [
+          "ajeno.txt",
+          "ajeno.wav",
+          "analysis.txt",
+          "input_integrity_6g.json",
+          "notas_preexistentes.json"
+        ],
+        "ajenos_presentes": {
+          "ajeno.txt": true,
+          "ajeno.wav": true,
+          "notas_preexistentes.json": true
+        },
+        "ajenos_conservados": true
+      },
+      "stdout_tail": "[     0.06s] Validación de entradas OK: Mix 44100Hz/2ch (1.52 MiB) | 1 Pares\n[     0.06s] Verificando alineación temporal NCC de las guías...\n[     1.52s]   P01/vocal: k=0.00 ms; NCC=0.7412; ALIGNED (MEASURED_AGREEMENT); L: d=0 ALIGNED, R: d=0 ALIGNED; shift=0\n[     2.94s]   P01/instrumental: k=0.00 ms; NCC=0.6736; ALIGNED (MEASURED_AGREEMENT); L: d=0 ALIGNED, R: d=0 ALIGNED; shift=0\n[     2.99s] Iniciando pipeline v3.1.0 en: /tmp/f6g1/sustituciones/Hardened/despues_dsp/out/motorA_run_20261119_205719_partial\n[     2.99s] Configuración: consensus_order=magnitudes_first | smoothing=none | mask_mode=mono | residuals=False\n[     2.99s] Procesando 519 tramas en 3 chunks de 256 tramas...\n[     4.42s]   Chunk 03/3 [100.0%] completado (Tramas 512-518)\n[     4.48s] Post-WAV Identity SNR: 154.30 dB (Estado: PASS_EXACT_IDENTITY)\n[     4.50s] Directorio 'masks/' eliminado para liberar espacio.\n[     4.50s] Corrida finalizada exitosamente en: /tmp/f6g1/sustituciones/Hardened/despues_dsp/out/motorA_run_20261119_205719\n[     4.51s] [FATAL] Mix cambiado: salidas de audio invalidadas: ['mix SDI.wav', 'mix SDV.wav']\n"
+    },
+    "EVO/antes_dsp_alineacion": {
+      "veredicto": "ACCEPTED",
+      "detalle": "rechazo previo al DSP: exit=1 abort=None sin salidas propias",
+      "exit": 1,
+      "sustitucion": {
+        "patron": null,
+        "etapa": "antes_alineacion",
+        "aplicada": true,
+        "segundos_desde_inicio": 0.303,
+        "sha_destino_nuevo": "636fc4f96b55040fb6d78bfb96a8c53fcf988329d54c32ff9996c2b51a967b40",
+        "sembrados": [],
+        "disparo": "retraso 0.3s"
+      },
+      "estado": {
+        "wavs_propios": [],
+        "wavs_totales": [],
+        "abort_presente": false,
+        "motivo": null,
+        "salidas_invalidadas": [],
+        "conservados": [],
+        "ajenos_presentes": {},
+        "ajenos_conservados": null
+      },
+      "stdout_tail": "[     0.06s] Validación de entradas OK: Mix 44100Hz/2ch (1.52 MiB) | 1 Pares\n[     0.06s] Verificando alineación temporal NCC de las guías...\n[     0.08s]   P01/vocal: k=null ms; NCC=null; ERROR (READ_OR_FORMAT_ERROR); L: d=null ERROR, R: d=null ERROR; shift=0; WaveError: mix: geometría inesperada (44100/2/88200)\n[     0.09s]   P01/instrumental: k=null ms; NCC=null; ERROR (READ_OR_FORMAT_ERROR); L: d=null ERROR, R: d=null ERROR; shift=0; WaveError: mix: geometría inesperada (44100/2/88200)\n[     0.09s] [ABORT] ERROR de alineación: no admite permiso explícito.\n"
+    },
+    "EVO/antes_dsp": {
+      "veredicto": "ACCEPTED",
+      "detalle": "la sustitución se aplicó después de abrir el descriptor: el rechazo provino de la guarda final (mismo resultado: sin salidas); guarda previa demostrada en la prueba unitaria",
+      "intentos": [
+        {
+          "intento": 0,
+          "exit": 2,
+          "sustitucion": {
+            "patron": "(?i)iniciando pipeline",
+            "etapa": "antes",
+            "aplicada": true,
+            "segundos_desde_inicio": 2.893,
+            "sha_destino_nuevo": "636fc4f96b55040fb6d78bfb96a8c53fcf988329d54c32ff9996c2b51a967b40",
+            "log_previo": [
+              "[     2.63s] Iniciando pipeline v3.1.0 en: /tmp/f6g1/sustituciones/EVO/antes_dsp_0/out/motorA_run_20261119_205724_partial",
+              "[     2.63s] Configuración Consenso: order=magnitudes_first | consensus=confidence_weighted_mean | smoothing=none | mask_mode=mono",
+              "[     2.63s] Parámetros DSP: p=1.80 | beta=1.00 | eps=1.0e-12 | n_fft=4096 | hop=1024 | residuals=False"
+            ],
+            "sembrados": [
+              "ajeno.txt",
+              "ajeno.wav",
+              "notas_preexistentes.json"
+            ]
+          },
+          "estado": {
+            "wavs_propios": [],
+            "wavs_totales": [
+              "ajeno.wav"
+            ],
+            "abort_presente": true,
+            "motivo": "MIX_CAMBIADO_DURANTE_EL_PROCESAMIENTO",
+            "salidas_invalidadas": [
+              "mix SDI.wav",
+              "mix SDV.wav"
+            ],
+            "conservados": [
+              "ajeno.txt",
+              "ajeno.wav",
+              "analysis.txt",
+              "input_integrity_6g.json",
+              "notas_preexistentes.json"
+            ],
+            "ajenos_presentes": {
+              "ajeno.txt": true,
+              "ajeno.wav": true,
+              "notas_preexistentes.json": true
+            },
+            "ajenos_conservados": true
+          },
+          "stdout_tail": "[     0.07s] Validación de entradas OK: Mix 44100Hz/2ch (1.52 MiB) | 1 Pares\n[     0.07s] Verificando alineación temporal NCC de las guías...\n[     1.32s]   P01/vocal: k=0.00 ms; NCC=0.7412; ALIGNED (MEASURED_AGREEMENT); L: d=0 ALIGNED, R: d=0 ALIGNED; shift=0\n[     2.59s]   P01/instrumental: k=0.00 ms; NCC=0.6736; ALIGNED (MEASURED_AGREEMENT); L: d=0 ALIGNED, R: d=0 ALIGNED; shift=0\n[     2.63s] Iniciando pipeline v3.1.0 en: /tmp/f6g1/sustituciones/EVO/antes_dsp_0/out/motorA_run_20261119_205724_partial\n[     2.63s] Configuración Consenso: order=magnitudes_first | consensus=confidence_weighted_mean | smoothing=none | mask_mode=mono\n[     2.63s] Parámetros DSP: p=1.80 | beta=1.00 | eps=1.0e-12 | n_fft=4096 | hop=1024 | residuals=False\n[     2.63s] Procesando 519 tramas en 3 chunks de 256 tramas...\n[     4.04s]   Chunk 03/3 [100.0%] completado (Tramas 512-518)\n[     4.10s] Post-WAV Identity SNR: 154.30 dB (Estado: PASS_EXACT_IDENTITY)\n[     4.12s] Directorio 'masks/' eliminado para liberar espacio.\n[     4.12s] Corrida finalizada exitosamente en: /tmp/f6g1/sustituciones/EVO/antes_dsp_0/out/motorA_run_20261119_205724\n[     4.13s] [FATAL] Mix cambiado: salidas de audio invalidadas: ['mix SDI.wav', 'mix SDV.wav']\n"
+        },
+        {
+          "intento": 1,
+          "exit": 2,
+          "sustitucion": {
+            "patron": "(?i)iniciando pipeline",
+            "etapa": "antes",
+            "aplicada": true,
+            "segundos_desde_inicio": 3.021,
+            "sha_destino_nuevo": "636fc4f96b55040fb6d78bfb96a8c53fcf988329d54c32ff9996c2b51a967b40",
+            "log_previo": [
+              "[     2.70s] Iniciando pipeline v3.1.0 en: /tmp/f6g1/sustituciones/EVO/antes_dsp_1/out/motorA_run_20261119_205728_partial",
+              "[     2.70s] Configuración Consenso: order=magnitudes_first | consensus=confidence_weighted_mean | smoothing=none | mask_mode=mono",
+              "[     2.70s] Parámetros DSP: p=1.80 | beta=1.00 | eps=1.0e-12 | n_fft=4096 | hop=1024 | residuals=False"
+            ],
+            "sembrados": [
+              "ajeno.txt",
+              "ajeno.wav",
+              "notas_preexistentes.json"
+            ]
+          },
+          "estado": {
+            "wavs_propios": [],
+            "wavs_totales": [
+              "ajeno.wav"
+            ],
+            "abort_presente": true,
+            "motivo": "MIX_CAMBIADO_DURANTE_EL_PROCESAMIENTO",
+            "salidas_invalidadas": [
+              "mix SDI.wav",
+              "mix SDV.wav"
+            ],
+            "conservados": [
+              "ajeno.txt",
+              "ajeno.wav",
+              "analysis.txt",
+              "input_integrity_6g.json",
+              "notas_preexistentes.json"
+            ],
+            "ajenos_presentes": {
+              "ajeno.txt": true,
+              "ajeno.wav": true,
+              "notas_preexistentes.json": true
+            },
+            "ajenos_conservados": true
+          },
+          "stdout_tail": "[     0.08s] Validación de entradas OK: Mix 44100Hz/2ch (1.52 MiB) | 1 Pares\n[     0.08s] Verificando alineación temporal NCC de las guías...\n[     1.50s]   P01/vocal: k=0.00 ms; NCC=0.7412; ALIGNED (MEASURED_AGREEMENT); L: d=0 ALIGNED, R: d=0 ALIGNED; shift=0\n[     2.66s]   P01/instrumental: k=0.00 ms; NCC=0.6736; ALIGNED (MEASURED_AGREEMENT); L: d=0 ALIGNED, R: d=0 ALIGNED; shift=0\n[     2.70s] Iniciando pipeline v3.1.0 en: /tmp/f6g1/sustituciones/EVO/antes_dsp_1/out/motorA_run_20261119_205728_partial\n[     2.70s] Configuración Consenso: order=magnitudes_first | consensus=confidence_weighted_mean | smoothing=none | mask_mode=mono\n[     2.70s] Parámetros DSP: p=1.80 | beta=1.00 | eps=1.0e-12 | n_fft=4096 | hop=1024 | residuals=False\n[     2.70s] Procesando 519 tramas en 3 chunks de 256 tramas...\n[     4.15s]   Chunk 03/3 [100.0%] completado (Tramas 512-518)\n[     4.22s] Post-WAV Identity SNR: 154.30 dB (Estado: PASS_EXACT_IDENTITY)\n[     4.24s] Directorio 'masks/' eliminado para liberar espacio.\n[     4.24s] Corrida finalizada exitosamente en: /tmp/f6g1/sustituciones/EVO/antes_dsp_1/out/motorA_run_20261119_205728\n[     4.25s] [FATAL] Mix cambiado: salidas de audio invalidadas: ['mix SDI.wav', 'mix SDV.wav']\n"
+        },
+        {
+          "intento": 2,
+          "exit": 2,
+          "sustitucion": {
+            "patron": "(?i)iniciando pipeline",
+            "etapa": "antes",
+            "aplicada": true,
+            "segundos_desde_inicio": 3.377,
+            "sha_destino_nuevo": "636fc4f96b55040fb6d78bfb96a8c53fcf988329d54c32ff9996c2b51a967b40",
+            "log_previo": [
+              "[     3.03s] Iniciando pipeline v3.1.0 en: /tmp/f6g1/sustituciones/EVO/antes_dsp_2/out/motorA_run_20261119_205733_partial",
+              "[     3.03s] Configuración Consenso: order=magnitudes_first | consensus=confidence_weighted_mean | smoothing=none | mask_mode=mono",
+              "[     3.03s] Parámetros DSP: p=1.80 | beta=1.00 | eps=1.0e-12 | n_fft=4096 | hop=1024 | residuals=False"
+            ],
+            "sembrados": [
+              "ajeno.txt",
+              "ajeno.wav",
+              "notas_preexistentes.json"
+            ]
+          },
+          "estado": {
+            "wavs_propios": [],
+            "wavs_totales": [
+              "ajeno.wav"
+            ],
+            "abort_presente": true,
+            "motivo": "MIX_CAMBIADO_DURANTE_EL_PROCESAMIENTO",
+            "salidas_invalidadas": [
+              "mix SDI.wav",
+              "mix SDV.wav"
+            ],
+            "conservados": [
+              "ajeno.txt",
+              "ajeno.wav",
+              "analysis.txt",
+              "input_integrity_6g.json",
+              "notas_preexistentes.json"
+            ],
+            "ajenos_presentes": {
+              "ajeno.txt": true,
+              "ajeno.wav": true,
+              "notas_preexistentes.json": true
+            },
+            "ajenos_conservados": true
+          },
+          "stdout_tail": "[     0.07s] Validación de entradas OK: Mix 44100Hz/2ch (1.52 MiB) | 1 Pares\n[     0.07s] Verificando alineación temporal NCC de las guías...\n[     1.58s]   P01/vocal: k=0.00 ms; NCC=0.7412; ALIGNED (MEASURED_AGREEMENT); L: d=0 ALIGNED, R: d=0 ALIGNED; shift=0\n[     2.98s]   P01/instrumental: k=0.00 ms; NCC=0.6736; ALIGNED (MEASURED_AGREEMENT); L: d=0 ALIGNED, R: d=0 ALIGNED; shift=0\n[     3.03s] Iniciando pipeline v3.1.0 en: /tmp/f6g1/sustituciones/EVO/antes_dsp_2/out/motorA_run_20261119_205733_partial\n[     3.03s] Configuración Consenso: order=magnitudes_first | consensus=confidence_weighted_mean | smoothing=none | mask_mode=mono\n[     3.03s] Parámetros DSP: p=1.80 | beta=1.00 | eps=1.0e-12 | n_fft=4096 | hop=1024 | residuals=False\n[     3.03s] Procesando 519 tramas en 3 chunks de 256 tramas...\n[     4.36s]   Chunk 03/3 [100.0%] completado (Tramas 512-518)\n[     4.41s] Post-WAV Identity SNR: 154.30 dB (Estado: PASS_EXACT_IDENTITY)\n[     4.42s] Directorio 'masks/' eliminado para liberar espacio.\n[     4.42s] Corrida finalizada exitosamente en: /tmp/f6g1/sustituciones/EVO/antes_dsp_2/out/motorA_run_20261119_205733\n[     4.43s] [FATAL] Mix cambiado: salidas de audio invalidadas: ['mix SDI.wav', 'mix SDV.wav']\n"
+        }
+      ]
+    },
+    "EVO/durante_dsp": {
+      "veredicto": "ACCEPTED",
+      "detalle": "aborto MIX_CAMBIADO_DURANTE_EL_PROCESAMIENTO; salidas invalidadas=['mix SDI.wav', 'mix SDV.wav']",
+      "exit": 2,
+      "sustitucion": {
+        "patron": "(?i)chunk\\s+10\\s*/",
+        "etapa": "durante_dsp",
+        "aplicada": true,
+        "segundos_desde_inicio": 4.169,
+        "sha_destino_nuevo": "636fc4f96b55040fb6d78bfb96a8c53fcf988329d54c32ff9996c2b51a967b40",
+        "log_previo": [
+          "[     3.86s]   Chunk 10/11 [ 90.9%] completado (Tramas 432-479)"
+        ],
+        "sembrados": [
+          "ajeno.txt",
+          "ajeno.wav",
+          "notas_preexistentes.json"
+        ]
+      },
+      "estado": {
+        "wavs_propios": [],
+        "wavs_totales": [
+          "ajeno.wav"
+        ],
+        "abort_presente": true,
+        "motivo": "MIX_CAMBIADO_DURANTE_EL_PROCESAMIENTO",
+        "salidas_invalidadas": [
+          "mix SDI.wav",
+          "mix SDV.wav"
+        ],
+        "conservados": [
+          "ajeno.txt",
+          "ajeno.wav",
+          "analysis.txt",
+          "input_integrity_6g.json",
+          "notas_preexistentes.json"
+        ],
+        "ajenos_presentes": {
+          "ajeno.txt": true,
+          "ajeno.wav": true,
+          "notas_preexistentes.json": true
+        },
+        "ajenos_conservados": true
+      },
+      "stdout_tail": "[     0.06s] Validación de entradas OK: Mix 44100Hz/2ch (1.52 MiB) | 1 Pares\n[     0.06s] Verificando alineación temporal NCC de las guías...\n[     1.42s]   P01/vocal: k=0.00 ms; NCC=0.7412; ALIGNED (MEASURED_AGREEMENT); L: d=0 ALIGNED, R: d=0 ALIGNED; shift=0\n[     2.72s]   P01/instrumental: k=0.00 ms; NCC=0.6736; ALIGNED (MEASURED_AGREEMENT); L: d=0 ALIGNED, R: d=0 ALIGNED; shift=0\n[     2.76s] Iniciando pipeline v3.1.0 en: /tmp/f6g1/sustituciones/EVO/durante_dsp/out/motorA_run_20261119_205738_partial\n[     2.76s] Configuración Consenso: order=magnitudes_first | consensus=confidence_weighted_mean | smoothing=none | mask_mode=mono\n[     2.76s] Parámetros DSP: p=1.80 | beta=1.00 | eps=1.0e-12 | n_fft=4096 | hop=1024 | residuals=False\n[     2.76s] Procesando 519 tramas en 11 chunks de 48 tramas...\n[     3.86s]   Chunk 10/11 [ 90.9%] completado (Tramas 432-479)\n[     3.95s]   Chunk 11/11 [100.0%] completado (Tramas 480-518)\n[     4.02s] Post-WAV Identity SNR: 154.30 dB (Estado: PASS_EXACT_IDENTITY)\n[     4.04s] Directorio 'masks/' eliminado para liberar espacio.\n[     4.04s] Corrida finalizada exitosamente en: /tmp/f6g1/sustituciones/EVO/durante_dsp/out/motorA_run_20261119_205738\n[     4.05s] [FATAL] Mix cambiado: salidas de audio invalidadas: ['mix SDI.wav', 'mix SDV.wav']\n"
+    },
+    "EVO/despues_dsp": {
+      "veredicto": "ACCEPTED",
+      "detalle": "aborto MIX_CAMBIADO_DURANTE_EL_PROCESAMIENTO; salidas invalidadas=['mix SDI.wav', 'mix SDV.wav']",
+      "exit": 2,
+      "sustitucion": {
+        "patron": "(?i)post-wav identity",
+        "etapa": "despues_dsp",
+        "aplicada": true,
+        "segundos_desde_inicio": 4.636,
+        "sha_destino_nuevo": "636fc4f96b55040fb6d78bfb96a8c53fcf988329d54c32ff9996c2b51a967b40",
+        "log_previo": [
+          "[     4.29s] Post-WAV Identity SNR: 154.30 dB (Estado: PASS_EXACT_IDENTITY)"
+        ],
+        "sembrados": [
+          "ajeno.txt",
+          "ajeno.wav",
+          "notas_preexistentes.json"
+        ]
+      },
+      "estado": {
+        "wavs_propios": [],
+        "wavs_totales": [
+          "ajeno.wav"
+        ],
+        "abort_presente": true,
+        "motivo": "MIX_CAMBIADO_DURANTE_EL_PROCESAMIENTO",
+        "salidas_invalidadas": [
+          "mix SDI.wav",
+          "mix SDV.wav"
+        ],
+        "conservados": [
+          "ajeno.txt",
+          "ajeno.wav",
+          "analysis.txt",
+          "input_integrity_6g.json",
+          "notas_preexistentes.json"
+        ],
+        "ajenos_presentes": {
+          "ajeno.txt": true,
+          "ajeno.wav": true,
+          "notas_preexistentes.json": true
+        },
+        "ajenos_conservados": true
+      },
+      "stdout_tail": "[     0.07s] Validación de entradas OK: Mix 44100Hz/2ch (1.52 MiB) | 1 Pares\n[     0.07s] Verificando alineación temporal NCC de las guías...\n[     1.45s]   P01/vocal: k=0.00 ms; NCC=0.7412; ALIGNED (MEASURED_AGREEMENT); L: d=0 ALIGNED, R: d=0 ALIGNED; shift=0\n[     2.84s]   P01/instrumental: k=0.00 ms; NCC=0.6736; ALIGNED (MEASURED_AGREEMENT); L: d=0 ALIGNED, R: d=0 ALIGNED; shift=0\n[     2.89s] Iniciando pipeline v3.1.0 en: /tmp/f6g1/sustituciones/EVO/despues_dsp/out/motorA_run_20261119_205742_partial\n[     2.89s] Configuración Consenso: order=magnitudes_first | consensus=confidence_weighted_mean | smoothing=none | mask_mode=mono\n[     2.89s] Parámetros DSP: p=1.80 | beta=1.00 | eps=1.0e-12 | n_fft=4096 | hop=1024 | residuals=False\n[     2.89s] Procesando 519 tramas en 3 chunks de 256 tramas...\n[     4.24s]   Chunk 03/3 [100.0%] completado (Tramas 512-518)\n[     4.29s] Post-WAV Identity SNR: 154.30 dB (Estado: PASS_EXACT_IDENTITY)\n[     4.30s] Directorio 'masks/' eliminado para liberar espacio.\n[     4.30s] Corrida finalizada exitosamente en: /tmp/f6g1/sustituciones/EVO/despues_dsp/out/motorA_run_20261119_205742\n[     4.31s] [FATAL] Mix cambiado: salidas de audio invalidadas: ['mix SDI.wav', 'mix SDV.wav']\n"
+    },
+    "MQR/antes_dsp_alineacion": {
+      "veredicto": "ACCEPTED",
+      "detalle": "rechazo previo al DSP: exit=1 abort=None sin salidas propias",
+      "exit": 1,
+      "sustitucion": {
+        "patron": null,
+        "etapa": "antes_alineacion",
+        "aplicada": true,
+        "segundos_desde_inicio": 0.302,
+        "sha_destino_nuevo": "636fc4f96b55040fb6d78bfb96a8c53fcf988329d54c32ff9996c2b51a967b40",
+        "sembrados": [],
+        "disparo": "retraso 0.3s"
+      },
+      "estado": {
+        "wavs_propios": [],
+        "wavs_totales": [],
+        "abort_presente": false,
+        "motivo": null,
+        "salidas_invalidadas": [],
+        "conservados": [],
+        "ajenos_presentes": {},
+        "ajenos_conservados": null
+      },
+      "stdout_tail": "[     0.06s] Validacion de entradas: OK (mix 44100 Hz / 2 ch / 529200 frames; 1 pares)\n[     0.06s] Analisis de alineacion (detect_only_no_correction)...\n[     0.07s]   P01/vocal: k=null ms; NCC=null; ERROR (READ_OR_FORMAT_ERROR); L: d=null ERROR, R: d=null ERROR; shift=0; WaveError: mix: geometría inesperada (44100/2/88200)\n[     0.09s]   P01/instrumental: k=null ms; NCC=null; ERROR (READ_OR_FORMAT_ERROR); L: d=null ERROR, R: d=null ERROR; shift=0; WaveError: mix: geometría inesperada (44100/2/88200)\n[     0.09s] [ABORT] ERROR de alineación: no admite permiso explícito.\n"
+    },
+    "MQR/antes_dsp": {
+      "veredicto": "ACCEPTED",
+      "detalle": "rechazo MIX_SUSTITUIDO_ANTES_DEL_DSP observado",
+      "intentos": [
+        {
+          "intento": 0,
+          "exit": 2,
+          "sustitucion": {
+            "patron": "(?i)directorio de corrida \\(parcial\\)",
+            "etapa": "antes",
+            "aplicada": true,
+            "segundos_desde_inicio": 3.226,
+            "sha_destino_nuevo": "636fc4f96b55040fb6d78bfb96a8c53fcf988329d54c32ff9996c2b51a967b40",
+            "log_previo": [
+              "[     2.96s] Directorio de corrida (parcial): /tmp/f6g1/sustituciones/MQR/antes_dsp_0/out/mqr_run_20261119_205748_partial",
+              "[     2.96s] Pipeline: mode=full_processing, 1 pares, K=519 frames en chunks de 256"
+            ],
+            "sembrados": [
+              "ajeno.txt",
+              "ajeno.wav",
+              "notas_preexistentes.json"
+            ]
+          },
+          "estado": {
+            "wavs_propios": [],
+            "wavs_totales": [
+              "ajeno.wav"
+            ],
+            "abort_presente": true,
+            "motivo": "MIX_CAMBIADO_DURANTE_EL_PROCESAMIENTO",
+            "salidas_invalidadas": [
+              "SDI.wav",
+              "SDV.wav"
+            ],
+            "conservados": [
+              "ajeno.txt",
+              "ajeno.wav",
+              "analysis.txt",
+              "input_integrity_6g.json",
+              "masks/confidence_map.npy",
+              "masks/consensus_instrumental_confidence_weighted_mean.npy",
+              "masks/consensus_instrumental_median.npy",
+              "masks/consensus_instrumental_weighted_mean.npy",
+              "masks/consensus_vocal_confidence_weighted_mean.npy",
+              "masks/consensus_vocal_median.npy",
+              "masks/consensus_vocal_weighted_mean.npy",
+              "masks/mask_P01_instrumental.npy",
+              "masks/mask_P01_vocal.npy",
+              "masks/model_disagreement_map.npy",
+              "notas_preexistentes.json"
+            ],
+            "ajenos_presentes": {
+              "ajeno.txt": true,
+              "ajeno.wav": true,
+              "notas_preexistentes.json": true
+            },
+            "ajenos_conservados": true
+          },
+          "stdout_tail": "[     0.06s] Validacion de entradas: OK (mix 44100 Hz / 2 ch / 529200 frames; 1 pares)\n[     0.06s] Analisis de alineacion (detect_only_no_correction)...\n[     1.51s]   P01/vocal: k=0.00 ms; NCC=0.7412; ALIGNED (MEASURED_AGREEMENT); L: d=0 ALIGNED, R: d=0 ALIGNED; shift=0\n[     2.91s]   P01/instrumental: k=0.00 ms; NCC=0.6736; ALIGNED (MEASURED_AGREEMENT); L: d=0 ALIGNED, R: d=0 ALIGNED; shift=0\n[     2.91s] Analisis de escala de guides (metricas + factores)...\n[     2.96s]   P01: g_vocal=1.0000 g_instr=1.0000 (politica=none)\n[     2.96s] Directorio de corrida (parcial): /tmp/f6g1/sustituciones/MQR/antes_dsp_0/out/mqr_run_20261119_205748_partial\n[     2.96s] Pipeline: mode=full_processing, 1 pares, K=519 frames en chunks de 256\n[     5.59s]   chunk 3/3 (frames 512-518) listo\n[     5.73s] Post-WAV identity: SNR=154.17 dB (esperado > 100 dB)\n[     5.73s] Escribiendo analysis.json / analysis.txt ...\n[     5.74s] Directorio final: /tmp/f6g1/sustituciones/MQR/antes_dsp_0/out/mqr_run_20261119_205748\n[     5.74s] Duracion total: 5.7 s\n[     5.74s] Corrida COMPLETA: /tmp/f6g1/sustituciones/MQR/antes_dsp_0/out/mqr_run_20261119_205748\n[     5.75s] [FATAL] Mix cambiado: salidas de audio invalidadas: ['SDI.wav', 'SDV.wav']\n"
+        },
+        {
+          "intento": 1,
+          "exit": 2,
+          "sustitucion": {
+            "patron": "(?i)directorio de corrida \\(parcial\\)",
+            "etapa": "antes",
+            "aplicada": true,
+            "segundos_desde_inicio": 2.892,
+            "sha_destino_nuevo": "636fc4f96b55040fb6d78bfb96a8c53fcf988329d54c32ff9996c2b51a967b40",
+            "log_previo": [
+              "[     2.57s] Directorio de corrida (parcial): /tmp/f6g1/sustituciones/MQR/antes_dsp_1/out/mqr_run_20261119_205753_partial",
+              "[     2.57s] Pipeline: mode=full_processing, 1 pares, K=519 frames en chunks de 256"
+            ],
+            "sembrados": [
+              "ajeno.txt",
+              "ajeno.wav",
+              "notas_preexistentes.json"
+            ]
+          },
+          "estado": {
+            "wavs_propios": [],
+            "wavs_totales": [
+              "ajeno.wav"
+            ],
+            "abort_presente": true,
+            "motivo": "MIX_CAMBIADO_DURANTE_EL_PROCESAMIENTO",
+            "salidas_invalidadas": [
+              "SDI.wav",
+              "SDV.wav"
+            ],
+            "conservados": [
+              "ajeno.txt",
+              "ajeno.wav",
+              "analysis.txt",
+              "input_integrity_6g.json",
+              "masks/confidence_map.npy",
+              "masks/consensus_instrumental_confidence_weighted_mean.npy",
+              "masks/consensus_instrumental_median.npy",
+              "masks/consensus_instrumental_weighted_mean.npy",
+              "masks/consensus_vocal_confidence_weighted_mean.npy",
+              "masks/consensus_vocal_median.npy",
+              "masks/consensus_vocal_weighted_mean.npy",
+              "masks/mask_P01_instrumental.npy",
+              "masks/mask_P01_vocal.npy",
+              "masks/model_disagreement_map.npy",
+              "notas_preexistentes.json"
+            ],
+            "ajenos_presentes": {
+              "ajeno.txt": true,
+              "ajeno.wav": true,
+              "notas_preexistentes.json": true
+            },
+            "ajenos_conservados": true
+          },
+          "stdout_tail": "[     0.07s] Validacion de entradas: OK (mix 44100 Hz / 2 ch / 529200 frames; 1 pares)\n[     0.07s] Analisis de alineacion (detect_only_no_correction)...\n[     1.37s]   P01/vocal: k=0.00 ms; NCC=0.7412; ALIGNED (MEASURED_AGREEMENT); L: d=0 ALIGNED, R: d=0 ALIGNED; shift=0\n[     2.53s]   P01/instrumental: k=0.00 ms; NCC=0.6736; ALIGNED (MEASURED_AGREEMENT); L: d=0 ALIGNED, R: d=0 ALIGNED; shift=0\n[     2.53s] Analisis de escala de guides (metricas + factores)...\n[     2.57s]   P01: g_vocal=1.0000 g_instr=1.0000 (politica=none)\n[     2.57s] Directorio de corrida (parcial): /tmp/f6g1/sustituciones/MQR/antes_dsp_1/out/mqr_run_20261119_205753_partial\n[     2.57s] Pipeline: mode=full_processing, 1 pares, K=519 frames en chunks de 256\n[     5.19s]   chunk 3/3 (frames 512-518) listo\n[     5.29s] Post-WAV identity: SNR=154.17 dB (esperado > 100 dB)\n[     5.29s] Escribiendo analysis.json / analysis.txt ...\n[     5.30s] Directorio final: /tmp/f6g1/sustituciones/MQR/antes_dsp_1/out/mqr_run_20261119_205753\n[     5.30s] Duracion total: 5.3 s\n[     5.30s] Corrida COMPLETA: /tmp/f6g1/sustituciones/MQR/antes_dsp_1/out/mqr_run_20261119_205753\n[     5.31s] [FATAL] Mix cambiado: salidas de audio invalidadas: ['SDI.wav', 'SDV.wav']\n"
+        },
+        {
+          "intento": 2,
+          "exit": 1,
+          "sustitucion": {
+            "patron": "(?i)directorio de corrida \\(parcial\\)",
+            "etapa": "antes",
+            "aplicada": true,
+            "segundos_desde_inicio": 3.465,
+            "sha_destino_nuevo": "636fc4f96b55040fb6d78bfb96a8c53fcf988329d54c32ff9996c2b51a967b40",
+            "log_previo": [
+              "[     3.13s] Directorio de corrida (parcial): /tmp/f6g1/sustituciones/MQR/antes_dsp_2/out/mqr_run_20261119_205800_partial",
+              "[     3.13s] Pipeline: mode=full_processing, 1 pares, K=519 frames en chunks de 256"
+            ],
+            "sembrados": [
+              "ajeno.txt",
+              "ajeno.wav",
+              "notas_preexistentes.json"
+            ]
+          },
+          "estado": {
+            "wavs_propios": [],
+            "wavs_totales": [
+              "ajeno.wav"
+            ],
+            "abort_presente": true,
+            "motivo": "MIX_SUSTITUIDO_ANTES_DEL_DSP",
+            "salidas_invalidadas": [
+              "SDI.wav",
+              "SDV.wav"
+            ],
+            "conservados": [
+              "ajeno.txt",
+              "ajeno.wav",
+              "masks/confidence_map.npy",
+              "masks/consensus_instrumental_confidence_weighted_mean.npy",
+              "masks/consensus_instrumental_median.npy",
+              "masks/consensus_instrumental_weighted_mean.npy",
+              "masks/consensus_vocal_confidence_weighted_mean.npy",
+              "masks/consensus_vocal_median.npy",
+              "masks/consensus_vocal_weighted_mean.npy",
+              "masks/mask_P01_instrumental.npy",
+              "masks/mask_P01_vocal.npy",
+              "masks/model_disagreement_map.npy",
+              "notas_preexistentes.json"
+            ],
+            "ajenos_presentes": {
+              "ajeno.txt": true,
+              "ajeno.wav": true,
+              "notas_preexistentes.json": true
+            },
+            "ajenos_conservados": true
+          },
+          "stdout_tail": "[     0.08s] Validacion de entradas: OK (mix 44100 Hz / 2 ch / 529200 frames; 1 pares)\n[     0.08s] Analisis de alineacion (detect_only_no_correction)...\n[     1.63s]   P01/vocal: k=0.00 ms; NCC=0.7412; ALIGNED (MEASURED_AGREEMENT); L: d=0 ALIGNED, R: d=0 ALIGNED; shift=0\n[     3.09s]   P01/instrumental: k=0.00 ms; NCC=0.6736; ALIGNED (MEASURED_AGREEMENT); L: d=0 ALIGNED, R: d=0 ALIGNED; shift=0\n[     3.09s] Analisis de escala de guides (metricas + factores)...\n[     3.13s]   P01: g_vocal=1.0000 g_instr=1.0000 (politica=none)\n[     3.13s] Directorio de corrida (parcial): /tmp/f6g1/sustituciones/MQR/antes_dsp_2/out/mqr_run_20261119_205800_partial\n[     3.13s] Pipeline: mode=full_processing, 1 pares, K=519 frames en chunks de 256\n[     3.14s] [FATAL] Mix sustituido antes del DSP: SHA-256 del Mix distinto del sondeo: sustitución antes del DSP (636fc4f96b55040f != fb1882e2d0995de8)\nTraceback (most recent call last):\n  File \"/home/user/SDV-SDI_SGM/ETAPA_6G1_CORRECCION_LECTURA_SEGURA/motores/sdv_sdi_mqr_engine.py\", line 3587, in <module>\n    sys.exit(main())\n             ^^^^^^\n  File \"/home/user/SDV-SDI_SGM/ETAPA_6G1_CORRECCION_LECTURA_SEGURA/motores/sdv_sdi_mqr_engine.py\", line 3573, in main\n    code, run_dir = run_experiment(mix_path, pairs, mode, opt)\n                    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/home/user/SDV-SDI_SGM/ETAPA_6G1_CORRECCION_LECTURA_SEGURA/motores/sdv_sdi_mqr_engine.py\", line 2248, in run_experiment\n    log(\"Corrida COMPLETA: %s\" % run_dir_final)\n        ~~~~~~~~~~~~~~~~~~~~~~~^~~~~~~~~~~~~~~\nTypeError: not all arguments converted during string formatting\n"
+        }
+      ]
+    },
+    "MQR/durante_dsp": {
+      "veredicto": "ACCEPTED",
+      "detalle": "aborto MIX_CAMBIADO_DURANTE_EL_PROCESAMIENTO; salidas invalidadas=['SDI.wav', 'SDV.wav']",
+      "exit": 2,
+      "sustitucion": {
+        "patron": "(?i)chunk\\s+10\\s*/",
+        "etapa": "durante_dsp",
+        "aplicada": true,
+        "segundos_desde_inicio": 5.708,
+        "sha_destino_nuevo": "636fc4f96b55040fb6d78bfb96a8c53fcf988329d54c32ff9996c2b51a967b40",
+        "log_previo": [
+          "[     5.36s]   chunk 10/11 (frames 432-479) listo"
+        ],
+        "sembrados": [
+          "ajeno.txt",
+          "ajeno.wav",
+          "notas_preexistentes.json"
+        ]
+      },
+      "estado": {
+        "wavs_propios": [],
+        "wavs_totales": [
+          "ajeno.wav"
+        ],
+        "abort_presente": true,
+        "motivo": "MIX_CAMBIADO_DURANTE_EL_PROCESAMIENTO",
+        "salidas_invalidadas": [
+          "SDI.wav",
+          "SDV.wav"
+        ],
+        "conservados": [
+          "ajeno.txt",
+          "ajeno.wav",
+          "analysis.txt",
+          "input_integrity_6g.json",
+          "masks/confidence_map.npy",
+          "masks/consensus_instrumental_confidence_weighted_mean.npy",
+          "masks/consensus_instrumental_median.npy",
+          "masks/consensus_instrumental_weighted_mean.npy",
+          "masks/consensus_vocal_confidence_weighted_mean.npy",
+          "masks/consensus_vocal_median.npy",
+          "masks/consensus_vocal_weighted_mean.npy",
+          "masks/mask_P01_instrumental.npy",
+          "masks/mask_P01_vocal.npy",
+          "masks/model_disagreement_map.npy",
+          "notas_preexistentes.json"
+        ],
+        "ajenos_presentes": {
+          "ajeno.txt": true,
+          "ajeno.wav": true,
+          "notas_preexistentes.json": true
+        },
+        "ajenos_conservados": true
+      },
+      "stdout_tail": "[     0.08s] Validacion de entradas: OK (mix 44100 Hz / 2 ch / 529200 frames; 1 pares)\n[     0.08s] Analisis de alineacion (detect_only_no_correction)...\n[     1.59s]   P01/vocal: k=0.00 ms; NCC=0.7412; ALIGNED (MEASURED_AGREEMENT); L: d=0 ALIGNED, R: d=0 ALIGNED; shift=0\n[     3.01s]   P01/instrumental: k=0.00 ms; NCC=0.6736; ALIGNED (MEASURED_AGREEMENT); L: d=0 ALIGNED, R: d=0 ALIGNED; shift=0\n[     3.01s] Analisis de escala de guides (metricas + factores)...\n[     3.06s]   P01: g_vocal=1.0000 g_instr=1.0000 (politica=none)\n[     3.06s] Directorio de corrida (parcial): /tmp/f6g1/sustituciones/MQR/durante_dsp/out/mqr_run_20261119_205803_partial\n[     3.06s] Pipeline: mode=full_processing, 1 pares, K=519 frames en chunks de 48\n[     5.36s]   chunk 10/11 (frames 432-479) listo\n[     5.55s]   chunk 11/11 (frames 480-518) listo\n[     5.66s] Post-WAV identity: SNR=154.17 dB (esperado > 100 dB)\n[     5.67s] Escribiendo analysis.json / analysis.txt ...\n[     5.68s] Directorio final: /tmp/f6g1/sustituciones/MQR/durante_dsp/out/mqr_run_20261119_205803\n[     5.68s] Duracion total: 5.7 s\n[     5.68s] Corrida COMPLETA: /tmp/f6g1/sustituciones/MQR/durante_dsp/out/mqr_run_20261119_205803\n[     5.69s] [FATAL] Mix cambiado: salidas de audio invalidadas: ['SDI.wav', 'SDV.wav']\n"
+    },
+    "MQR/despues_dsp": {
+      "veredicto": "ACCEPTED",
+      "detalle": "aborto MIX_CAMBIADO_DURANTE_EL_PROCESAMIENTO; salidas invalidadas=['SDI.wav', 'SDV.wav']",
+      "exit": 2,
+      "sustitucion": {
+        "patron": "(?i)post-wav identity",
+        "etapa": "despues_dsp",
+        "aplicada": true,
+        "segundos_desde_inicio": 5.808,
+        "sha_destino_nuevo": "636fc4f96b55040fb6d78bfb96a8c53fcf988329d54c32ff9996c2b51a967b40",
+        "log_previo": [
+          "[     5.54s] Post-WAV identity: SNR=154.17 dB (esperado > 100 dB)"
+        ],
+        "sembrados": [
+          "ajeno.txt",
+          "ajeno.wav",
+          "notas_preexistentes.json"
+        ]
+      },
+      "estado": {
+        "wavs_propios": [],
+        "wavs_totales": [
+          "ajeno.wav"
+        ],
+        "abort_presente": true,
+        "motivo": "MIX_CAMBIADO_DURANTE_EL_PROCESAMIENTO",
+        "salidas_invalidadas": [
+          "SDI.wav",
+          "SDV.wav"
+        ],
+        "conservados": [
+          "ajeno.txt",
+          "ajeno.wav",
+          "analysis.txt",
+          "input_integrity_6g.json",
+          "masks/confidence_map.npy",
+          "masks/consensus_instrumental_confidence_weighted_mean.npy",
+          "masks/consensus_instrumental_median.npy",
+          "masks/consensus_instrumental_weighted_mean.npy",
+          "masks/consensus_vocal_confidence_weighted_mean.npy",
+          "masks/consensus_vocal_median.npy",
+          "masks/consensus_vocal_weighted_mean.npy",
+          "masks/mask_P01_instrumental.npy",
+          "masks/mask_P01_vocal.npy",
+          "masks/model_disagreement_map.npy",
+          "notas_preexistentes.json"
+        ],
+        "ajenos_presentes": {
+          "ajeno.txt": true,
+          "ajeno.wav": true,
+          "notas_preexistentes.json": true
+        },
+        "ajenos_conservados": true
+      },
+      "stdout_tail": "[     0.06s] Validacion de entradas: OK (mix 44100 Hz / 2 ch / 529200 frames; 1 pares)\n[     0.06s] Analisis de alineacion (detect_only_no_correction)...\n[     1.45s]   P01/vocal: k=0.00 ms; NCC=0.7412; ALIGNED (MEASURED_AGREEMENT); L: d=0 ALIGNED, R: d=0 ALIGNED; shift=0\n[     2.79s]   P01/instrumental: k=0.00 ms; NCC=0.6736; ALIGNED (MEASURED_AGREEMENT); L: d=0 ALIGNED, R: d=0 ALIGNED; shift=0\n[     2.79s] Analisis de escala de guides (metricas + factores)...\n[     2.83s]   P01: g_vocal=1.0000 g_instr=1.0000 (politica=none)\n[     2.83s] Directorio de corrida (parcial): /tmp/f6g1/sustituciones/MQR/despues_dsp/out/mqr_run_20261119_205809_partial\n[     2.83s] Pipeline: mode=full_processing, 1 pares, K=519 frames en chunks de 256\n[     5.44s]   chunk 3/3 (frames 512-518) listo\n[     5.54s] Post-WAV identity: SNR=154.17 dB (esperado > 100 dB)\n[     5.54s] Escribiendo analysis.json / analysis.txt ...\n[     5.55s] Directorio final: /tmp/f6g1/sustituciones/MQR/despues_dsp/out/mqr_run_20261119_205809\n[     5.55s] Duracion total: 5.5 s\n[     5.56s] Corrida COMPLETA: /tmp/f6g1/sustituciones/MQR/despues_dsp/out/mqr_run_20261119_205809\n[     5.57s] [FATAL] Mix cambiado: salidas de audio invalidadas: ['SDI.wav', 'SDV.wav']\n"
+    }
+  },
+  "filas": [
+    {
+      "prueba": "4",
+      "motor": "todos",
+      "contenedor": "FLAC",
+      "escenario": "guarda_unitaria_antes_dsp",
+      "veredicto": "ACCEPTED",
+      "detalle": "SHA-256 del Mix distinto del sondeo: sustitución antes del DSP (636fc4f96b55040f != fb1882e2d0995de8)",
+      "salida": "abrir_mix",
+      "pcm": "",
+      "ruta_sha256": "fb1882e2d0995de8"
+    },
+    {
+      "prueba": "4",
+      "motor": "Hardened",
+      "contenedor": "FLAC",
+      "escenario": "antes_dsp_alineacion",
+      "veredicto": "ACCEPTED",
+      "detalle": "rechazo previo al DSP: exit=1 abort=None sin salidas propias",
+      "salida": "exit=1",
+      "pcm": "propios=0",
+      "ruta_sha256": "636fc4f96b55040f"
+    },
+    {
+      "prueba": "4",
+      "motor": "Hardened",
+      "contenedor": "FLAC",
+      "escenario": "antes_dsp",
+      "veredicto": "ACCEPTED",
+      "detalle": "la sustitución se aplicó después de abrir el descriptor: el rechazo provino de la guarda final (mismo resultado: sin salidas); guarda previa demostrada en la prueba unitaria",
+      "salida": "intentos=3",
+      "pcm": "propios=0",
+      "ruta_sha256": "636fc4f96b55040f"
+    },
+    {
+      "prueba": "5",
+      "motor": "Hardened",
+      "contenedor": "FLAC",
+      "escenario": "durante_dsp",
+      "veredicto": "ACCEPTED",
+      "detalle": "aborto MIX_CAMBIADO_DURANTE_EL_PROCESAMIENTO; salidas invalidadas=['mix SDI.wav', 'mix SDV.wav']",
+      "salida": "exit=2 sust@4.165",
+      "pcm": "propios=0",
+      "ruta_sha256": "636fc4f96b55040f"
+    },
+    {
+      "prueba": "7",
+      "motor": "Hardened",
+      "contenedor": "FLAC",
+      "escenario": "aborto/durante_dsp",
+      "veredicto": "ACCEPTED",
+      "detalle": "propios=[] ajenos={'ajeno.txt': True, 'ajeno.wav': True, 'notas_preexistentes.json': True} conservados=5",
+      "salida": "",
+      "pcm": "",
+      "ruta_sha256": "636fc4f96b55040f"
+    },
+    {
+      "prueba": "6",
+      "motor": "Hardened",
+      "contenedor": "FLAC",
+      "escenario": "despues_dsp",
+      "veredicto": "ACCEPTED",
+      "detalle": "aborto MIX_CAMBIADO_DURANTE_EL_PROCESAMIENTO; salidas invalidadas=['mix SDI.wav', 'mix SDV.wav']",
+      "salida": "exit=2 sust@4.748",
+      "pcm": "propios=0",
+      "ruta_sha256": "636fc4f96b55040f"
+    },
+    {
+      "prueba": "7",
+      "motor": "Hardened",
+      "contenedor": "FLAC",
+      "escenario": "aborto/despues_dsp",
+      "veredicto": "ACCEPTED",
+      "detalle": "propios=[] ajenos={'ajeno.txt': True, 'ajeno.wav': True, 'notas_preexistentes.json': True} conservados=5",
+      "salida": "",
+      "pcm": "",
+      "ruta_sha256": "636fc4f96b55040f"
+    },
+    {
+      "prueba": "4",
+      "motor": "EVO",
+      "contenedor": "FLAC",
+      "escenario": "antes_dsp_alineacion",
+      "veredicto": "ACCEPTED",
+      "detalle": "rechazo previo al DSP: exit=1 abort=None sin salidas propias",
+      "salida": "exit=1",
+      "pcm": "propios=0",
+      "ruta_sha256": "636fc4f96b55040f"
+    },
+    {
+      "prueba": "4",
+      "motor": "EVO",
+      "contenedor": "FLAC",
+      "escenario": "antes_dsp",
+      "veredicto": "ACCEPTED",
+      "detalle": "la sustitución se aplicó después de abrir el descriptor: el rechazo provino de la guarda final (mismo resultado: sin salidas); guarda previa demostrada en la prueba unitaria",
+      "salida": "intentos=3",
+      "pcm": "propios=0",
+      "ruta_sha256": "636fc4f96b55040f"
+    },
+    {
+      "prueba": "5",
+      "motor": "EVO",
+      "contenedor": "FLAC",
+      "escenario": "durante_dsp",
+      "veredicto": "ACCEPTED",
+      "detalle": "aborto MIX_CAMBIADO_DURANTE_EL_PROCESAMIENTO; salidas invalidadas=['mix SDI.wav', 'mix SDV.wav']",
+      "salida": "exit=2 sust@4.169",
+      "pcm": "propios=0",
+      "ruta_sha256": "636fc4f96b55040f"
+    },
+    {
+      "prueba": "7",
+      "motor": "EVO",
+      "contenedor": "FLAC",
+      "escenario": "aborto/durante_dsp",
+      "veredicto": "ACCEPTED",
+      "detalle": "propios=[] ajenos={'ajeno.txt': True, 'ajeno.wav': True, 'notas_preexistentes.json': True} conservados=5",
+      "salida": "",
+      "pcm": "",
+      "ruta_sha256": "636fc4f96b55040f"
+    },
+    {
+      "prueba": "6",
+      "motor": "EVO",
+      "contenedor": "FLAC",
+      "escenario": "despues_dsp",
+      "veredicto": "ACCEPTED",
+      "detalle": "aborto MIX_CAMBIADO_DURANTE_EL_PROCESAMIENTO; salidas invalidadas=['mix SDI.wav', 'mix SDV.wav']",
+      "salida": "exit=2 sust@4.636",
+      "pcm": "propios=0",
+      "ruta_sha256": "636fc4f96b55040f"
+    },
+    {
+      "prueba": "7",
+      "motor": "EVO",
+      "contenedor": "FLAC",
+      "escenario": "aborto/despues_dsp",
+      "veredicto": "ACCEPTED",
+      "detalle": "propios=[] ajenos={'ajeno.txt': True, 'ajeno.wav': True, 'notas_preexistentes.json': True} conservados=5",
+      "salida": "",
+      "pcm": "",
+      "ruta_sha256": "636fc4f96b55040f"
+    },
+    {
+      "prueba": "4",
+      "motor": "MQR",
+      "contenedor": "FLAC",
+      "escenario": "antes_dsp_alineacion",
+      "veredicto": "ACCEPTED",
+      "detalle": "rechazo previo al DSP: exit=1 abort=None sin salidas propias",
+      "salida": "exit=1",
+      "pcm": "propios=0",
+      "ruta_sha256": "636fc4f96b55040f"
+    },
+    {
+      "prueba": "4",
+      "motor": "MQR",
+      "contenedor": "FLAC",
+      "escenario": "antes_dsp",
+      "veredicto": "ACCEPTED",
+      "detalle": "rechazo MIX_SUSTITUIDO_ANTES_DEL_DSP observado",
+      "salida": "intentos=3",
+      "pcm": "propios=0",
+      "ruta_sha256": "636fc4f96b55040f"
+    },
+    {
+      "prueba": "5",
+      "motor": "MQR",
+      "contenedor": "FLAC",
+      "escenario": "durante_dsp",
+      "veredicto": "ACCEPTED",
+      "detalle": "aborto MIX_CAMBIADO_DURANTE_EL_PROCESAMIENTO; salidas invalidadas=['SDI.wav', 'SDV.wav']",
+      "salida": "exit=2 sust@5.708",
+      "pcm": "propios=0",
+      "ruta_sha256": "636fc4f96b55040f"
+    },
+    {
+      "prueba": "7",
+      "motor": "MQR",
+      "contenedor": "FLAC",
+      "escenario": "aborto/durante_dsp",
+      "veredicto": "ACCEPTED",
+      "detalle": "propios=[] ajenos={'ajeno.txt': True, 'ajeno.wav': True, 'notas_preexistentes.json': True} conservados=15",
+      "salida": "",
+      "pcm": "",
+      "ruta_sha256": "636fc4f96b55040f"
+    },
+    {
+      "prueba": "6",
+      "motor": "MQR",
+      "contenedor": "FLAC",
+      "escenario": "despues_dsp",
+      "veredicto": "ACCEPTED",
+      "detalle": "aborto MIX_CAMBIADO_DURANTE_EL_PROCESAMIENTO; salidas invalidadas=['SDI.wav', 'SDV.wav']",
+      "salida": "exit=2 sust@5.808",
+      "pcm": "propios=0",
+      "ruta_sha256": "636fc4f96b55040f"
+    },
+    {
+      "prueba": "7",
+      "motor": "MQR",
+      "contenedor": "FLAC",
+      "escenario": "aborto/despues_dsp",
+      "veredicto": "ACCEPTED",
+      "detalle": "propios=[] ajenos={'ajeno.txt': True, 'ajeno.wav': True, 'notas_preexistentes.json': True} conservados=15",
+      "salida": "",
+      "pcm": "",
+      "ruta_sha256": "636fc4f96b55040f"
+    }
+  ],
+  "resumen": {
+    "4": {
+      "ACCEPTED": 7
+    },
+    "5": {
+      "ACCEPTED": 3
+    },
+    "7": {
+      "ACCEPTED": 6
+    },
+    "6": {
+      "ACCEPTED": 3
+    }
+  },
+  "sustituto": "/home/user/SDV-SDI_SGM/ETAPA_6G1_CORRECCION_LECTURA_SEGURA/fixtures/mix_otro.flac",
+  "ajenos": [
+    "ajeno.txt",
+    "ajeno.wav",
+    "notas_preexistentes.json"
+  ]
+}

@@ -1,0 +1,4 @@
+motor,defs_cambiadas,defs_anadidas,defs_quitadas,constantes_cambiadas,huella_dsp_ok,pcm_wav,pcm_flac,veredicto
+Hardened,analyze_guide_scale;run_experiment,,,,True,IDENTICO,IDENTICO,ACCEPTED
+EVO,analyze_guide_scale;run_experiment,,,,True,IDENTICO,IDENTICO,ACCEPTED
+MQR,_run_core;analyze_guide_scale;run_experiment,,,,True,IDENTICO,IDENTICO,ACCEPTED

@@ -1,0 +1,142 @@
+{
+  "schema": "fixtures-6g1/1",
+  "sr": 44100,
+  "generado_por": "scripts/preparar_fixtures_6g1.py",
+  "grupos": {
+    "corto": {
+      "base": "mix",
+      "segundos": 2.0,
+      "frames": 88200,
+      "pcm_sha256_mix": "060d6c89b1aabe5d0c449eefa696dc23efe6c77e00d2669dea7a6dfaebfe9627",
+      "guias": {
+        "vocal": "vocal_mix.wav",
+        "instrumental": "instrumental_mix.wav"
+      }
+    },
+    "largo": {
+      "base": "mix_12s",
+      "segundos": 12.0,
+      "frames": 529200,
+      "pcm_sha256_mix": "e24fbaa59203ed5307a4d66c6bfeb2c0a85cacff3db67d8e4cadaa611f127f21",
+      "guias": {
+        "vocal": "vocal_mix_12s.wav",
+        "instrumental": "instrumental_mix_12s.wav"
+      }
+    },
+    "sustitutos": {
+      "mix_24bit.flac": {
+        "subtype": "PCM_24",
+        "sha256": "b8b6fd00d901d33b937f8459de2af00edba6a0b244a33c2e62725dff7fd5bd14"
+      },
+      "mix_otro.flac": {
+        "subtype": "PCM_16",
+        "sha256": "636fc4f96b55040fb6d78bfb96a8c53fcf988329d54c32ff9996c2b51a967b40"
+      },
+      "mix_otro.wav": {
+        "subtype": "PCM_16",
+        "sha256": "2d3d2cdd4ec1a6568f7b184f350ed598c62ea065291d12e80e7606a7d01c40fe"
+      }
+    }
+  },
+  "archivos": {
+    "instrumental_mix.wav": {
+      "bytes": 352844,
+      "frames": 88200,
+      "sr": 44100,
+      "channels": 2,
+      "subtype": "PCM_16",
+      "format": "WAV",
+      "sha256": "896bd59b6bdbbcb092bd9bbf4acc28361a6a124941a86af04ef8ca147077cea8"
+    },
+    "instrumental_mix_12s.wav": {
+      "bytes": 2116844,
+      "frames": 529200,
+      "sr": 44100,
+      "channels": 2,
+      "subtype": "PCM_16",
+      "format": "WAV",
+      "sha256": "68c710d5e903dfd41d5441e156e3e1972048b67b3281d643ef6f900382bd1aac"
+    },
+    "mix.flac": {
+      "bytes": 273253,
+      "frames": 88200,
+      "sr": 44100,
+      "channels": 2,
+      "subtype": "PCM_16",
+      "format": "FLAC",
+      "sha256": "2f550ce2cb3a6ec124bc1bc0373adc00a609f32ccf6c4fd9f73cfafafac945fa"
+    },
+    "mix.wav": {
+      "bytes": 352844,
+      "frames": 88200,
+      "sr": 44100,
+      "channels": 2,
+      "subtype": "PCM_16",
+      "format": "WAV",
+      "sha256": "060d6c89b1aabe5d0c449eefa696dc23efe6c77e00d2669dea7a6dfaebfe9627"
+    },
+    "mix_12s.flac": {
+      "bytes": 1594827,
+      "frames": 529200,
+      "sr": 44100,
+      "channels": 2,
+      "subtype": "PCM_16",
+      "format": "FLAC",
+      "sha256": "fb1882e2d0995de82bd61a2413d355f7876a8b7408b99ed8b454034c9bfc39ed"
+    },
+    "mix_12s.wav": {
+      "bytes": 2116844,
+      "frames": 529200,
+      "sr": 44100,
+      "channels": 2,
+      "subtype": "PCM_16",
+      "format": "WAV",
+      "sha256": "e24fbaa59203ed5307a4d66c6bfeb2c0a85cacff3db67d8e4cadaa611f127f21"
+    },
+    "mix_24bit.flac": {
+      "bytes": 278664,
+      "frames": 88200,
+      "sr": 44100,
+      "channels": 2,
+      "subtype": "PCM_24",
+      "format": "FLAC",
+      "sha256": "b8b6fd00d901d33b937f8459de2af00edba6a0b244a33c2e62725dff7fd5bd14"
+    },
+    "mix_otro.flac": {
+      "bytes": 276611,
+      "frames": 88200,
+      "sr": 44100,
+      "channels": 2,
+      "subtype": "PCM_16",
+      "format": "FLAC",
+      "sha256": "636fc4f96b55040fb6d78bfb96a8c53fcf988329d54c32ff9996c2b51a967b40"
+    },
+    "mix_otro.wav": {
+      "bytes": 352844,
+      "frames": 88200,
+      "sr": 44100,
+      "channels": 2,
+      "subtype": "PCM_16",
+      "format": "WAV",
+      "sha256": "2d3d2cdd4ec1a6568f7b184f350ed598c62ea065291d12e80e7606a7d01c40fe"
+    },
+    "vocal_mix.wav": {
+      "bytes": 352844,
+      "frames": 88200,
+      "sr": 44100,
+      "channels": 2,
+      "subtype": "PCM_16",
+      "format": "WAV",
+      "sha256": "69a3a5527accf1db114c00d862bf33af69f50e5fcab2ca8eb5f08051c2038357"
+    },
+    "vocal_mix_12s.wav": {
+      "bytes": 2116844,
+      "frames": 529200,
+      "sr": 44100,
+      "channels": 2,
+      "subtype": "PCM_16",
+      "format": "WAV",
+      "sha256": "cc2c5e940ec35a2f61315607f07fff7ee2b26d7d1dfb8aa2228236da797badab"
+    }
+  }
+}
