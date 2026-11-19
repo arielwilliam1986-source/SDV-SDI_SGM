@@ -1,0 +1,40 @@
+{
+  "EVO": {
+    "changed": [
+      "_combine",
+      "analyze_alignment",
+      "build_arg_parser",
+      "probe_file"
+    ],
+    "added": [
+      "_attribution_state"
+    ],
+    "unchanged_count": 63
+  },
+  "Hardened": {
+    "changed": [
+      "_combine",
+      "analyze_alignment",
+      "build_arg_parser",
+      "probe_file"
+    ],
+    "added": [
+      "_attribution_state"
+    ],
+    "unchanged_count": 60
+  },
+  "MQR": {
+    "changed": [
+      "CandidateMetrics",
+      "_combine",
+      "analyze_alignment",
+      "probe_file",
+      "run_experiment",
+      "stream_level_stats"
+    ],
+    "added": [
+      "_attribution_state"
+    ],
+    "unchanged_count": 81
+  }
+}

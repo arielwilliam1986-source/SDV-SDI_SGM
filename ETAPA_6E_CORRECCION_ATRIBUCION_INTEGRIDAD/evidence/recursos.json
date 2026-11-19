@@ -1,0 +1,13 @@
+{
+  "seconds": 36.495601522999976,
+  "maxrss_self_kib": 116628,
+  "maxrss_children_kib": 138776,
+  "platform": "Linux-6.1.158+-x86_64-with-glibc2.36",
+  "python": "3.11.2 (main, Apr  8 2026, 01:58:00) [GCC 12.2.0]",
+  "numpy": "1.26.4",
+  "scipy": "1.13.1",
+  "soundfile": "0.13.1",
+  "libsndfile": "1.2.2",
+  "cpu_visible": 2,
+  "threads": 1
+}

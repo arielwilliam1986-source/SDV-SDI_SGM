@@ -1,0 +1,5 @@
+# Integridad física WAV
+
+El analizador RIFF verifica límite físico frente al declarado, cabeceras, extensión y padding de chunks, orden y unicidad de fmt/data, alineación de bloques y concordancia de canales, tasa y frames con libsndfile. Se ejecuta en el sondeo de entrada y antes de leer para alineación. Una lectura decodificada corta también se considera error. No se confía únicamente en que el decodificador abra el archivo.
+
+Casos: truncamiento del tail sin corregir encabezados, longitud interna `data` incompatible con RIFF de tamaño correcto, y flotantes no finitos (este último detectado por el análisis, no por el contenedor). Ver frames que reportó libsndfile en el manifiesto y resultados por motor. Sólo se admite RIFF/WAVE clásico PCM/flotante y extensible de geometría compatible; RF64/RIFX y formatos fuera de ese perfil quedan sin soporte experimental. No autentica contenido manipulado ni garantiza inmutabilidad bajo escrituras concurrentes durante la corrida. Faltan corpus amplios de chunks y validación cruzada de formatos/plataformas.

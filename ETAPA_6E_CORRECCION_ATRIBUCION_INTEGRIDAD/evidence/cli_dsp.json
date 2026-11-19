@@ -1,0 +1,1403 @@
+[
+  {
+    "engine": "EVO",
+    "case": "clean",
+    "override": false,
+    "expected_exit": 0,
+    "ok": true,
+    "exit": 0,
+    "seconds": 0.663288442999999,
+    "pcm": {
+      "SDV": {
+        "sha256": "a0796786049e04eb3bf1cf4efa327ab24bb21ea1b009bc3486592abe644472c2",
+        "shape": [
+          44100,
+          2
+        ],
+        "sr": 44100,
+        "finite": true
+      },
+      "SDI": {
+        "sha256": "8bed10ed57f95a289f648bff1d62fd73d999f96af88af1ff3a2ea7e6ecf2ce33",
+        "shape": [
+          44100,
+          2
+        ],
+        "sr": 44100,
+        "finite": true
+      }
+    },
+    "wavs": 2,
+    "report": true,
+    "6C": {
+      "exit": 0,
+      "seconds": 0.5111018970000032,
+      "pcm": {
+        "SDV": {
+          "sha256": "a0796786049e04eb3bf1cf4efa327ab24bb21ea1b009bc3486592abe644472c2",
+          "shape": [
+            44100,
+            2
+          ],
+          "sr": 44100,
+          "finite": true
+        },
+        "SDI": {
+          "sha256": "8bed10ed57f95a289f648bff1d62fd73d999f96af88af1ff3a2ea7e6ecf2ce33",
+          "shape": [
+            44100,
+            2
+          ],
+          "sr": 44100,
+          "finite": true
+        }
+      },
+      "wavs": 2,
+      "report": true,
+      "identical_pcm": true
+    },
+    "original": {
+      "exit": 0,
+      "seconds": 0.5165531260000193,
+      "pcm": {
+        "SDV": {
+          "sha256": "a0796786049e04eb3bf1cf4efa327ab24bb21ea1b009bc3486592abe644472c2",
+          "shape": [
+            44100,
+            2
+          ],
+          "sr": 44100,
+          "finite": true
+        },
+        "SDI": {
+          "sha256": "8bed10ed57f95a289f648bff1d62fd73d999f96af88af1ff3a2ea7e6ecf2ce33",
+          "shape": [
+            44100,
+            2
+          ],
+          "sr": 44100,
+          "finite": true
+        }
+      },
+      "wavs": 2,
+      "report": true,
+      "identical_pcm": true
+    }
+  },
+  {
+    "engine": "EVO",
+    "case": "signed",
+    "override": false,
+    "expected_exit": 0,
+    "ok": true,
+    "exit": 0,
+    "seconds": 0.6736901919999809,
+    "pcm": {
+      "SDV": {
+        "sha256": "a0796786049e04eb3bf1cf4efa327ab24bb21ea1b009bc3486592abe644472c2",
+        "shape": [
+          44100,
+          2
+        ],
+        "sr": 44100,
+        "finite": true
+      },
+      "SDI": {
+        "sha256": "8bed10ed57f95a289f648bff1d62fd73d999f96af88af1ff3a2ea7e6ecf2ce33",
+        "shape": [
+          44100,
+          2
+        ],
+        "sr": 44100,
+        "finite": true
+      }
+    },
+    "wavs": 2,
+    "report": true,
+    "6C": {
+      "exit": 0,
+      "seconds": 0.5246460740000032,
+      "pcm": {
+        "SDV": {
+          "sha256": "a0796786049e04eb3bf1cf4efa327ab24bb21ea1b009bc3486592abe644472c2",
+          "shape": [
+            44100,
+            2
+          ],
+          "sr": 44100,
+          "finite": true
+        },
+        "SDI": {
+          "sha256": "8bed10ed57f95a289f648bff1d62fd73d999f96af88af1ff3a2ea7e6ecf2ce33",
+          "shape": [
+            44100,
+            2
+          ],
+          "sr": 44100,
+          "finite": true
+        }
+      },
+      "wavs": 2,
+      "report": true,
+      "identical_pcm": true
+    },
+    "original": {
+      "exit": 0,
+      "seconds": 0.5292989800000214,
+      "pcm": {
+        "SDV": {
+          "sha256": "a0796786049e04eb3bf1cf4efa327ab24bb21ea1b009bc3486592abe644472c2",
+          "shape": [
+            44100,
+            2
+          ],
+          "sr": 44100,
+          "finite": true
+        },
+        "SDI": {
+          "sha256": "8bed10ed57f95a289f648bff1d62fd73d999f96af88af1ff3a2ea7e6ecf2ce33",
+          "shape": [
+            44100,
+            2
+          ],
+          "sr": 44100,
+          "finite": true
+        }
+      },
+      "wavs": 2,
+      "report": true,
+      "identical_pcm": true
+    }
+  },
+  {
+    "engine": "EVO",
+    "case": "side",
+    "override": false,
+    "expected_exit": 0,
+    "ok": true,
+    "exit": 0,
+    "seconds": 0.640957912999994,
+    "pcm": {
+      "SDV": {
+        "sha256": "bbbf3baab8a5dc22f0ccabe9c9e753a0ec5a58713d6eab66ea37813498a1625a",
+        "shape": [
+          44100,
+          2
+        ],
+        "sr": 44100,
+        "finite": true
+      },
+      "SDI": {
+        "sha256": "9e20e3289421ef9486f661b4e58766540a926e59468dc0c153e0970d28adaf62",
+        "shape": [
+          44100,
+          2
+        ],
+        "sr": 44100,
+        "finite": true
+      }
+    },
+    "wavs": 2,
+    "report": true,
+    "6C": {
+      "exit": 0,
+      "seconds": 0.561973222000006,
+      "pcm": {
+        "SDV": {
+          "sha256": "bbbf3baab8a5dc22f0ccabe9c9e753a0ec5a58713d6eab66ea37813498a1625a",
+          "shape": [
+            44100,
+            2
+          ],
+          "sr": 44100,
+          "finite": true
+        },
+        "SDI": {
+          "sha256": "9e20e3289421ef9486f661b4e58766540a926e59468dc0c153e0970d28adaf62",
+          "shape": [
+            44100,
+            2
+          ],
+          "sr": 44100,
+          "finite": true
+        }
+      },
+      "wavs": 2,
+      "report": true,
+      "identical_pcm": true
+    },
+    "original": {
+      "exit": 0,
+      "seconds": 0.5289162100000055,
+      "pcm": {
+        "SDV": {
+          "sha256": "bbbf3baab8a5dc22f0ccabe9c9e753a0ec5a58713d6eab66ea37813498a1625a",
+          "shape": [
+            44100,
+            2
+          ],
+          "sr": 44100,
+          "finite": true
+        },
+        "SDI": {
+          "sha256": "9e20e3289421ef9486f661b4e58766540a926e59468dc0c153e0970d28adaf62",
+          "shape": [
+            44100,
+            2
+          ],
+          "sr": 44100,
+          "finite": true
+        }
+      },
+      "wavs": 2,
+      "report": true,
+      "identical_pcm": true
+    }
+  },
+  {
+    "engine": "EVO",
+    "case": "side_output",
+    "override": true,
+    "expected_exit": 0,
+    "ok": true,
+    "exit": 0,
+    "seconds": 0.5963543450000088,
+    "pcm": {
+      "SDV": {
+        "sha256": "3abdecb19dfea3b50c76f75490dcdbcfed348e80248a0cf85a53c2cf16cd803f",
+        "shape": [
+          44100,
+          2
+        ],
+        "sr": 44100,
+        "finite": true
+      },
+      "SDI": {
+        "sha256": "746767de7d71848998d92b002f8674db7d15ea3025dff10e0d95ac4d71632db8",
+        "shape": [
+          44100,
+          2
+        ],
+        "sr": 44100,
+        "finite": true
+      }
+    },
+    "wavs": 2,
+    "report": true,
+    "6C": {
+      "exit": 0,
+      "seconds": 0.5445124759999942,
+      "pcm": {
+        "SDV": {
+          "sha256": "3abdecb19dfea3b50c76f75490dcdbcfed348e80248a0cf85a53c2cf16cd803f",
+          "shape": [
+            44100,
+            2
+          ],
+          "sr": 44100,
+          "finite": true
+        },
+        "SDI": {
+          "sha256": "746767de7d71848998d92b002f8674db7d15ea3025dff10e0d95ac4d71632db8",
+          "shape": [
+            44100,
+            2
+          ],
+          "sr": 44100,
+          "finite": true
+        }
+      },
+      "wavs": 2,
+      "report": true,
+      "identical_pcm": true
+    },
+    "original": {
+      "exit": 0,
+      "seconds": 0.5702638019999995,
+      "pcm": {
+        "SDV": {
+          "sha256": "3abdecb19dfea3b50c76f75490dcdbcfed348e80248a0cf85a53c2cf16cd803f",
+          "shape": [
+            44100,
+            2
+          ],
+          "sr": 44100,
+          "finite": true
+        },
+        "SDI": {
+          "sha256": "746767de7d71848998d92b002f8674db7d15ea3025dff10e0d95ac4d71632db8",
+          "shape": [
+            44100,
+            2
+          ],
+          "sr": 44100,
+          "finite": true
+        }
+      },
+      "wavs": 2,
+      "report": true,
+      "identical_pcm": true
+    }
+  },
+  {
+    "engine": "EVO",
+    "case": "dual",
+    "override": false,
+    "expected_exit": 1,
+    "ok": true,
+    "exit": 1,
+    "seconds": 0.49480136899998683,
+    "pcm": {},
+    "wavs": 0,
+    "report": false
+  },
+  {
+    "engine": "EVO",
+    "case": "dual",
+    "override": true,
+    "expected_exit": 0,
+    "ok": true,
+    "exit": 0,
+    "seconds": 0.5749137269999949,
+    "pcm": {
+      "SDV": {
+        "sha256": "a60591561ce859117e5572973b6521a9928166e81ae9c4a138ed2edb5a8521c4",
+        "shape": [
+          44100,
+          2
+        ],
+        "sr": 44100,
+        "finite": true
+      },
+      "SDI": {
+        "sha256": "2d8b03f539beb059000accb3786c9c9cd85ab0fe2943ebe088d4a91052f71c3a",
+        "shape": [
+          44100,
+          2
+        ],
+        "sr": 44100,
+        "finite": true
+      }
+    },
+    "wavs": 2,
+    "report": true
+  },
+  {
+    "engine": "EVO",
+    "case": "unrelated",
+    "override": false,
+    "expected_exit": 1,
+    "ok": true,
+    "exit": 1,
+    "seconds": 0.4661801910000065,
+    "pcm": {},
+    "wavs": 0,
+    "report": false
+  },
+  {
+    "engine": "EVO",
+    "case": "silent",
+    "override": false,
+    "expected_exit": 1,
+    "ok": true,
+    "exit": 1,
+    "seconds": 0.4539468800000179,
+    "pcm": {},
+    "wavs": 0,
+    "report": false
+  },
+  {
+    "engine": "EVO",
+    "case": "nonfinite",
+    "override": false,
+    "expected_exit": 1,
+    "ok": true,
+    "exit": 1,
+    "seconds": 0.43237569900000494,
+    "pcm": {},
+    "wavs": 0,
+    "report": false
+  },
+  {
+    "engine": "EVO",
+    "case": "nonfinite",
+    "override": true,
+    "expected_exit": 1,
+    "ok": true,
+    "exit": 1,
+    "seconds": 0.4465709289999893,
+    "pcm": {},
+    "wavs": 0,
+    "report": false
+  },
+  {
+    "engine": "EVO",
+    "case": "truncated",
+    "override": false,
+    "expected_exit": 1,
+    "ok": true,
+    "exit": 1,
+    "seconds": 0.37599894400000267,
+    "pcm": {},
+    "wavs": 0,
+    "report": false
+  },
+  {
+    "engine": "EVO",
+    "case": "truncated",
+    "override": true,
+    "expected_exit": 1,
+    "ok": true,
+    "exit": 1,
+    "seconds": 0.3645907449999868,
+    "pcm": {},
+    "wavs": 0,
+    "report": false
+  },
+  {
+    "engine": "EVO",
+    "case": "data_overrun",
+    "override": true,
+    "expected_exit": 1,
+    "ok": true,
+    "exit": 1,
+    "seconds": 0.356531987000011,
+    "pcm": {},
+    "wavs": 0,
+    "report": false
+  },
+  {
+    "engine": "Hardened",
+    "case": "clean",
+    "override": false,
+    "expected_exit": 0,
+    "ok": true,
+    "exit": 0,
+    "seconds": 0.6272392479999951,
+    "pcm": {
+      "SDV": {
+        "sha256": "a0796786049e04eb3bf1cf4efa327ab24bb21ea1b009bc3486592abe644472c2",
+        "shape": [
+          44100,
+          2
+        ],
+        "sr": 44100,
+        "finite": true
+      },
+      "SDI": {
+        "sha256": "8bed10ed57f95a289f648bff1d62fd73d999f96af88af1ff3a2ea7e6ecf2ce33",
+        "shape": [
+          44100,
+          2
+        ],
+        "sr": 44100,
+        "finite": true
+      }
+    },
+    "wavs": 2,
+    "report": true,
+    "6C": {
+      "exit": 0,
+      "seconds": 0.5469621610000104,
+      "pcm": {
+        "SDV": {
+          "sha256": "a0796786049e04eb3bf1cf4efa327ab24bb21ea1b009bc3486592abe644472c2",
+          "shape": [
+            44100,
+            2
+          ],
+          "sr": 44100,
+          "finite": true
+        },
+        "SDI": {
+          "sha256": "8bed10ed57f95a289f648bff1d62fd73d999f96af88af1ff3a2ea7e6ecf2ce33",
+          "shape": [
+            44100,
+            2
+          ],
+          "sr": 44100,
+          "finite": true
+        }
+      },
+      "wavs": 2,
+      "report": true,
+      "identical_pcm": true
+    },
+    "original": {
+      "exit": 0,
+      "seconds": 0.5642609359999824,
+      "pcm": {
+        "SDV": {
+          "sha256": "a0796786049e04eb3bf1cf4efa327ab24bb21ea1b009bc3486592abe644472c2",
+          "shape": [
+            44100,
+            2
+          ],
+          "sr": 44100,
+          "finite": true
+        },
+        "SDI": {
+          "sha256": "8bed10ed57f95a289f648bff1d62fd73d999f96af88af1ff3a2ea7e6ecf2ce33",
+          "shape": [
+            44100,
+            2
+          ],
+          "sr": 44100,
+          "finite": true
+        }
+      },
+      "wavs": 2,
+      "report": true,
+      "identical_pcm": true
+    }
+  },
+  {
+    "engine": "Hardened",
+    "case": "signed",
+    "override": false,
+    "expected_exit": 0,
+    "ok": true,
+    "exit": 0,
+    "seconds": 0.6483231880000062,
+    "pcm": {
+      "SDV": {
+        "sha256": "a0796786049e04eb3bf1cf4efa327ab24bb21ea1b009bc3486592abe644472c2",
+        "shape": [
+          44100,
+          2
+        ],
+        "sr": 44100,
+        "finite": true
+      },
+      "SDI": {
+        "sha256": "8bed10ed57f95a289f648bff1d62fd73d999f96af88af1ff3a2ea7e6ecf2ce33",
+        "shape": [
+          44100,
+          2
+        ],
+        "sr": 44100,
+        "finite": true
+      }
+    },
+    "wavs": 2,
+    "report": true,
+    "6C": {
+      "exit": 0,
+      "seconds": 0.5430234350000092,
+      "pcm": {
+        "SDV": {
+          "sha256": "a0796786049e04eb3bf1cf4efa327ab24bb21ea1b009bc3486592abe644472c2",
+          "shape": [
+            44100,
+            2
+          ],
+          "sr": 44100,
+          "finite": true
+        },
+        "SDI": {
+          "sha256": "8bed10ed57f95a289f648bff1d62fd73d999f96af88af1ff3a2ea7e6ecf2ce33",
+          "shape": [
+            44100,
+            2
+          ],
+          "sr": 44100,
+          "finite": true
+        }
+      },
+      "wavs": 2,
+      "report": true,
+      "identical_pcm": true
+    },
+    "original": {
+      "exit": 0,
+      "seconds": 0.5884752759999969,
+      "pcm": {
+        "SDV": {
+          "sha256": "a0796786049e04eb3bf1cf4efa327ab24bb21ea1b009bc3486592abe644472c2",
+          "shape": [
+            44100,
+            2
+          ],
+          "sr": 44100,
+          "finite": true
+        },
+        "SDI": {
+          "sha256": "8bed10ed57f95a289f648bff1d62fd73d999f96af88af1ff3a2ea7e6ecf2ce33",
+          "shape": [
+            44100,
+            2
+          ],
+          "sr": 44100,
+          "finite": true
+        }
+      },
+      "wavs": 2,
+      "report": true,
+      "identical_pcm": true
+    }
+  },
+  {
+    "engine": "Hardened",
+    "case": "side",
+    "override": false,
+    "expected_exit": 0,
+    "ok": true,
+    "exit": 0,
+    "seconds": 0.6000756249999881,
+    "pcm": {
+      "SDV": {
+        "sha256": "bbbf3baab8a5dc22f0ccabe9c9e753a0ec5a58713d6eab66ea37813498a1625a",
+        "shape": [
+          44100,
+          2
+        ],
+        "sr": 44100,
+        "finite": true
+      },
+      "SDI": {
+        "sha256": "9e20e3289421ef9486f661b4e58766540a926e59468dc0c153e0970d28adaf62",
+        "shape": [
+          44100,
+          2
+        ],
+        "sr": 44100,
+        "finite": true
+      }
+    },
+    "wavs": 2,
+    "report": true,
+    "6C": {
+      "exit": 0,
+      "seconds": 0.5487176820000172,
+      "pcm": {
+        "SDV": {
+          "sha256": "bbbf3baab8a5dc22f0ccabe9c9e753a0ec5a58713d6eab66ea37813498a1625a",
+          "shape": [
+            44100,
+            2
+          ],
+          "sr": 44100,
+          "finite": true
+        },
+        "SDI": {
+          "sha256": "9e20e3289421ef9486f661b4e58766540a926e59468dc0c153e0970d28adaf62",
+          "shape": [
+            44100,
+            2
+          ],
+          "sr": 44100,
+          "finite": true
+        }
+      },
+      "wavs": 2,
+      "report": true,
+      "identical_pcm": true
+    },
+    "original": {
+      "exit": 0,
+      "seconds": 0.49596685599999546,
+      "pcm": {
+        "SDV": {
+          "sha256": "bbbf3baab8a5dc22f0ccabe9c9e753a0ec5a58713d6eab66ea37813498a1625a",
+          "shape": [
+            44100,
+            2
+          ],
+          "sr": 44100,
+          "finite": true
+        },
+        "SDI": {
+          "sha256": "9e20e3289421ef9486f661b4e58766540a926e59468dc0c153e0970d28adaf62",
+          "shape": [
+            44100,
+            2
+          ],
+          "sr": 44100,
+          "finite": true
+        }
+      },
+      "wavs": 2,
+      "report": true,
+      "identical_pcm": true
+    }
+  },
+  {
+    "engine": "Hardened",
+    "case": "side_output",
+    "override": true,
+    "expected_exit": 0,
+    "ok": true,
+    "exit": 0,
+    "seconds": 0.5829818040000134,
+    "pcm": {
+      "SDV": {
+        "sha256": "3abdecb19dfea3b50c76f75490dcdbcfed348e80248a0cf85a53c2cf16cd803f",
+        "shape": [
+          44100,
+          2
+        ],
+        "sr": 44100,
+        "finite": true
+      },
+      "SDI": {
+        "sha256": "746767de7d71848998d92b002f8674db7d15ea3025dff10e0d95ac4d71632db8",
+        "shape": [
+          44100,
+          2
+        ],
+        "sr": 44100,
+        "finite": true
+      }
+    },
+    "wavs": 2,
+    "report": true,
+    "6C": {
+      "exit": 0,
+      "seconds": 0.48554716600000347,
+      "pcm": {
+        "SDV": {
+          "sha256": "3abdecb19dfea3b50c76f75490dcdbcfed348e80248a0cf85a53c2cf16cd803f",
+          "shape": [
+            44100,
+            2
+          ],
+          "sr": 44100,
+          "finite": true
+        },
+        "SDI": {
+          "sha256": "746767de7d71848998d92b002f8674db7d15ea3025dff10e0d95ac4d71632db8",
+          "shape": [
+            44100,
+            2
+          ],
+          "sr": 44100,
+          "finite": true
+        }
+      },
+      "wavs": 2,
+      "report": true,
+      "identical_pcm": true
+    },
+    "original": {
+      "exit": 0,
+      "seconds": 0.5320589220000045,
+      "pcm": {
+        "SDV": {
+          "sha256": "3abdecb19dfea3b50c76f75490dcdbcfed348e80248a0cf85a53c2cf16cd803f",
+          "shape": [
+            44100,
+            2
+          ],
+          "sr": 44100,
+          "finite": true
+        },
+        "SDI": {
+          "sha256": "746767de7d71848998d92b002f8674db7d15ea3025dff10e0d95ac4d71632db8",
+          "shape": [
+            44100,
+            2
+          ],
+          "sr": 44100,
+          "finite": true
+        }
+      },
+      "wavs": 2,
+      "report": true,
+      "identical_pcm": true
+    }
+  },
+  {
+    "engine": "Hardened",
+    "case": "dual",
+    "override": false,
+    "expected_exit": 1,
+    "ok": true,
+    "exit": 1,
+    "seconds": 0.4685105519999979,
+    "pcm": {},
+    "wavs": 0,
+    "report": false
+  },
+  {
+    "engine": "Hardened",
+    "case": "dual",
+    "override": true,
+    "expected_exit": 0,
+    "ok": true,
+    "exit": 0,
+    "seconds": 0.5974108549999926,
+    "pcm": {
+      "SDV": {
+        "sha256": "a60591561ce859117e5572973b6521a9928166e81ae9c4a138ed2edb5a8521c4",
+        "shape": [
+          44100,
+          2
+        ],
+        "sr": 44100,
+        "finite": true
+      },
+      "SDI": {
+        "sha256": "2d8b03f539beb059000accb3786c9c9cd85ab0fe2943ebe088d4a91052f71c3a",
+        "shape": [
+          44100,
+          2
+        ],
+        "sr": 44100,
+        "finite": true
+      }
+    },
+    "wavs": 2,
+    "report": true
+  },
+  {
+    "engine": "Hardened",
+    "case": "unrelated",
+    "override": false,
+    "expected_exit": 1,
+    "ok": true,
+    "exit": 1,
+    "seconds": 0.43629736400001207,
+    "pcm": {},
+    "wavs": 0,
+    "report": false
+  },
+  {
+    "engine": "Hardened",
+    "case": "silent",
+    "override": false,
+    "expected_exit": 1,
+    "ok": true,
+    "exit": 1,
+    "seconds": 0.42486479199999394,
+    "pcm": {},
+    "wavs": 0,
+    "report": false
+  },
+  {
+    "engine": "Hardened",
+    "case": "nonfinite",
+    "override": false,
+    "expected_exit": 1,
+    "ok": true,
+    "exit": 1,
+    "seconds": 0.43512783500000296,
+    "pcm": {},
+    "wavs": 0,
+    "report": false
+  },
+  {
+    "engine": "Hardened",
+    "case": "nonfinite",
+    "override": true,
+    "expected_exit": 1,
+    "ok": true,
+    "exit": 1,
+    "seconds": 0.4277829220000058,
+    "pcm": {},
+    "wavs": 0,
+    "report": false
+  },
+  {
+    "engine": "Hardened",
+    "case": "truncated",
+    "override": false,
+    "expected_exit": 1,
+    "ok": true,
+    "exit": 1,
+    "seconds": 0.3396859919999997,
+    "pcm": {},
+    "wavs": 0,
+    "report": false
+  },
+  {
+    "engine": "Hardened",
+    "case": "truncated",
+    "override": true,
+    "expected_exit": 1,
+    "ok": true,
+    "exit": 1,
+    "seconds": 0.32936570500001494,
+    "pcm": {},
+    "wavs": 0,
+    "report": false
+  },
+  {
+    "engine": "Hardened",
+    "case": "data_overrun",
+    "override": true,
+    "expected_exit": 1,
+    "ok": true,
+    "exit": 1,
+    "seconds": 0.34322003599999107,
+    "pcm": {},
+    "wavs": 0,
+    "report": false
+  },
+  {
+    "engine": "MQR",
+    "case": "clean",
+    "override": false,
+    "expected_exit": 0,
+    "ok": true,
+    "exit": 0,
+    "seconds": 0.7368765800000006,
+    "pcm": {
+      "SDV": {
+        "sha256": "659f969bd078d863135c3234956187aa80ede3cf46d65a9ee0da35e71b3da677",
+        "shape": [
+          44100,
+          2
+        ],
+        "sr": 44100,
+        "finite": true
+      },
+      "SDI": {
+        "sha256": "daff3c6bc3cf85cc9e26a10f66724e4a3dfcc24c882f07b03496383a6641d516",
+        "shape": [
+          44100,
+          2
+        ],
+        "sr": 44100,
+        "finite": true
+      }
+    },
+    "wavs": 2,
+    "report": true,
+    "6C": {
+      "exit": 0,
+      "seconds": 0.6327674650000006,
+      "pcm": {
+        "SDV": {
+          "sha256": "659f969bd078d863135c3234956187aa80ede3cf46d65a9ee0da35e71b3da677",
+          "shape": [
+            44100,
+            2
+          ],
+          "sr": 44100,
+          "finite": true
+        },
+        "SDI": {
+          "sha256": "daff3c6bc3cf85cc9e26a10f66724e4a3dfcc24c882f07b03496383a6641d516",
+          "shape": [
+            44100,
+            2
+          ],
+          "sr": 44100,
+          "finite": true
+        }
+      },
+      "wavs": 2,
+      "report": true,
+      "identical_pcm": true
+    },
+    "original": {
+      "exit": 0,
+      "seconds": 0.6186481430000015,
+      "pcm": {
+        "SDV": {
+          "sha256": "659f969bd078d863135c3234956187aa80ede3cf46d65a9ee0da35e71b3da677",
+          "shape": [
+            44100,
+            2
+          ],
+          "sr": 44100,
+          "finite": true
+        },
+        "SDI": {
+          "sha256": "daff3c6bc3cf85cc9e26a10f66724e4a3dfcc24c882f07b03496383a6641d516",
+          "shape": [
+            44100,
+            2
+          ],
+          "sr": 44100,
+          "finite": true
+        }
+      },
+      "wavs": 2,
+      "report": true,
+      "identical_pcm": true
+    }
+  },
+  {
+    "engine": "MQR",
+    "case": "signed",
+    "override": false,
+    "expected_exit": 0,
+    "ok": true,
+    "exit": 0,
+    "seconds": 0.7544120899999882,
+    "pcm": {
+      "SDV": {
+        "sha256": "659f969bd078d863135c3234956187aa80ede3cf46d65a9ee0da35e71b3da677",
+        "shape": [
+          44100,
+          2
+        ],
+        "sr": 44100,
+        "finite": true
+      },
+      "SDI": {
+        "sha256": "daff3c6bc3cf85cc9e26a10f66724e4a3dfcc24c882f07b03496383a6641d516",
+        "shape": [
+          44100,
+          2
+        ],
+        "sr": 44100,
+        "finite": true
+      }
+    },
+    "wavs": 2,
+    "report": true,
+    "6C": {
+      "exit": 0,
+      "seconds": 0.6262955050000016,
+      "pcm": {
+        "SDV": {
+          "sha256": "659f969bd078d863135c3234956187aa80ede3cf46d65a9ee0da35e71b3da677",
+          "shape": [
+            44100,
+            2
+          ],
+          "sr": 44100,
+          "finite": true
+        },
+        "SDI": {
+          "sha256": "daff3c6bc3cf85cc9e26a10f66724e4a3dfcc24c882f07b03496383a6641d516",
+          "shape": [
+            44100,
+            2
+          ],
+          "sr": 44100,
+          "finite": true
+        }
+      },
+      "wavs": 2,
+      "report": true,
+      "identical_pcm": true
+    },
+    "original": {
+      "exit": 0,
+      "seconds": 0.6030464590000122,
+      "pcm": {
+        "SDV": {
+          "sha256": "659f969bd078d863135c3234956187aa80ede3cf46d65a9ee0da35e71b3da677",
+          "shape": [
+            44100,
+            2
+          ],
+          "sr": 44100,
+          "finite": true
+        },
+        "SDI": {
+          "sha256": "daff3c6bc3cf85cc9e26a10f66724e4a3dfcc24c882f07b03496383a6641d516",
+          "shape": [
+            44100,
+            2
+          ],
+          "sr": 44100,
+          "finite": true
+        }
+      },
+      "wavs": 2,
+      "report": true,
+      "identical_pcm": true
+    }
+  },
+  {
+    "engine": "MQR",
+    "case": "side",
+    "override": false,
+    "expected_exit": 0,
+    "ok": true,
+    "exit": 0,
+    "seconds": 0.7231085270000221,
+    "pcm": {
+      "SDV": {
+        "sha256": "bbbf3baab8a5dc22f0ccabe9c9e753a0ec5a58713d6eab66ea37813498a1625a",
+        "shape": [
+          44100,
+          2
+        ],
+        "sr": 44100,
+        "finite": true
+      },
+      "SDI": {
+        "sha256": "9e20e3289421ef9486f661b4e58766540a926e59468dc0c153e0970d28adaf62",
+        "shape": [
+          44100,
+          2
+        ],
+        "sr": 44100,
+        "finite": true
+      }
+    },
+    "wavs": 2,
+    "report": true,
+    "6C": {
+      "exit": 2,
+      "seconds": 0.6633792039999946,
+      "pcm": {
+        "SDV": {
+          "sha256": "bbbf3baab8a5dc22f0ccabe9c9e753a0ec5a58713d6eab66ea37813498a1625a",
+          "shape": [
+            44100,
+            2
+          ],
+          "sr": 44100,
+          "finite": true
+        },
+        "SDI": {
+          "sha256": "9e20e3289421ef9486f661b4e58766540a926e59468dc0c153e0970d28adaf62",
+          "shape": [
+            44100,
+            2
+          ],
+          "sr": 44100,
+          "finite": true
+        }
+      },
+      "wavs": 2,
+      "report": false,
+      "identical_pcm": null
+    },
+    "original": {
+      "exit": 2,
+      "seconds": 0.6488368090000165,
+      "pcm": {
+        "SDV": {
+          "sha256": "bbbf3baab8a5dc22f0ccabe9c9e753a0ec5a58713d6eab66ea37813498a1625a",
+          "shape": [
+            44100,
+            2
+          ],
+          "sr": 44100,
+          "finite": true
+        },
+        "SDI": {
+          "sha256": "9e20e3289421ef9486f661b4e58766540a926e59468dc0c153e0970d28adaf62",
+          "shape": [
+            44100,
+            2
+          ],
+          "sr": 44100,
+          "finite": true
+        }
+      },
+      "wavs": 2,
+      "report": false,
+      "identical_pcm": null
+    }
+  },
+  {
+    "engine": "MQR",
+    "case": "side_output",
+    "override": true,
+    "expected_exit": 0,
+    "ok": true,
+    "exit": 0,
+    "seconds": 0.7868230990000029,
+    "pcm": {
+      "SDV": {
+        "sha256": "4a676dfef7146bd434bce3ba98d0b5fffd5399e87b22e968f63745181d95453a",
+        "shape": [
+          44100,
+          2
+        ],
+        "sr": 44100,
+        "finite": true
+      },
+      "SDI": {
+        "sha256": "6e44c3aa4a05e1fa7c6dcc8c36bf4d24c9f8551d1cb0cd683df1bdc52275eb7f",
+        "shape": [
+          44100,
+          2
+        ],
+        "sr": 44100,
+        "finite": true
+      }
+    },
+    "wavs": 2,
+    "report": true,
+    "6C": {
+      "exit": 2,
+      "seconds": 0.6477298690000168,
+      "pcm": {
+        "SDV": {
+          "sha256": "4a676dfef7146bd434bce3ba98d0b5fffd5399e87b22e968f63745181d95453a",
+          "shape": [
+            44100,
+            2
+          ],
+          "sr": 44100,
+          "finite": true
+        },
+        "SDI": {
+          "sha256": "6e44c3aa4a05e1fa7c6dcc8c36bf4d24c9f8551d1cb0cd683df1bdc52275eb7f",
+          "shape": [
+            44100,
+            2
+          ],
+          "sr": 44100,
+          "finite": true
+        }
+      },
+      "wavs": 2,
+      "report": false,
+      "identical_pcm": null
+    },
+    "original": {
+      "exit": 2,
+      "seconds": 0.6121982920000164,
+      "pcm": {
+        "SDV": {
+          "sha256": "4a676dfef7146bd434bce3ba98d0b5fffd5399e87b22e968f63745181d95453a",
+          "shape": [
+            44100,
+            2
+          ],
+          "sr": 44100,
+          "finite": true
+        },
+        "SDI": {
+          "sha256": "6e44c3aa4a05e1fa7c6dcc8c36bf4d24c9f8551d1cb0cd683df1bdc52275eb7f",
+          "shape": [
+            44100,
+            2
+          ],
+          "sr": 44100,
+          "finite": true
+        }
+      },
+      "wavs": 2,
+      "report": false,
+      "identical_pcm": null
+    }
+  },
+  {
+    "engine": "MQR",
+    "case": "dual",
+    "override": false,
+    "expected_exit": 1,
+    "ok": true,
+    "exit": 1,
+    "seconds": 0.5023492949999877,
+    "pcm": {},
+    "wavs": 0,
+    "report": false
+  },
+  {
+    "engine": "MQR",
+    "case": "dual",
+    "override": true,
+    "expected_exit": 0,
+    "ok": true,
+    "exit": 0,
+    "seconds": 0.7098793300000068,
+    "pcm": {
+      "SDV": {
+        "sha256": "d0dc828e73c7050b80b8877c244486265bb6140e493dfb6a6ad1a939859ab350",
+        "shape": [
+          44100,
+          2
+        ],
+        "sr": 44100,
+        "finite": true
+      },
+      "SDI": {
+        "sha256": "6864f418a313e39dbe521a7a5ced29a3d68006c2574ebf705157b3c1c8b0f2ef",
+        "shape": [
+          44100,
+          2
+        ],
+        "sr": 44100,
+        "finite": true
+      }
+    },
+    "wavs": 2,
+    "report": true
+  },
+  {
+    "engine": "MQR",
+    "case": "unrelated",
+    "override": false,
+    "expected_exit": 1,
+    "ok": true,
+    "exit": 1,
+    "seconds": 0.4386455580000188,
+    "pcm": {},
+    "wavs": 0,
+    "report": false
+  },
+  {
+    "engine": "MQR",
+    "case": "silent",
+    "override": false,
+    "expected_exit": 1,
+    "ok": true,
+    "exit": 1,
+    "seconds": 0.41687826800000494,
+    "pcm": {},
+    "wavs": 0,
+    "report": false
+  },
+  {
+    "engine": "MQR",
+    "case": "nonfinite",
+    "override": false,
+    "expected_exit": 1,
+    "ok": true,
+    "exit": 1,
+    "seconds": 0.4452234400000066,
+    "pcm": {},
+    "wavs": 0,
+    "report": false
+  },
+  {
+    "engine": "MQR",
+    "case": "nonfinite",
+    "override": true,
+    "expected_exit": 1,
+    "ok": true,
+    "exit": 1,
+    "seconds": 0.42055546500000673,
+    "pcm": {},
+    "wavs": 0,
+    "report": false
+  },
+  {
+    "engine": "MQR",
+    "case": "truncated",
+    "override": false,
+    "expected_exit": 1,
+    "ok": true,
+    "exit": 1,
+    "seconds": 0.3609068680000007,
+    "pcm": {},
+    "wavs": 0,
+    "report": false
+  },
+  {
+    "engine": "MQR",
+    "case": "truncated",
+    "override": true,
+    "expected_exit": 1,
+    "ok": true,
+    "exit": 1,
+    "seconds": 0.36485685900001386,
+    "pcm": {},
+    "wavs": 0,
+    "report": false
+  },
+  {
+    "engine": "MQR",
+    "case": "data_overrun",
+    "override": true,
+    "expected_exit": 1,
+    "ok": true,
+    "exit": 1,
+    "seconds": 0.3777065499999992,
+    "pcm": {},
+    "wavs": 0,
+    "report": false
+  }
+]
