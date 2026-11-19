@@ -1,0 +1,2372 @@
+[
+  {
+    "id": "B/S3/per_channel/magnitudes_first/direct",
+    "case": "S3",
+    "engine": "B",
+    "complete": true,
+    "exits": [
+      0,
+      0
+    ],
+    "params": [
+      "--n-fft",
+      "4096",
+      "--hop",
+      "1024",
+      "--chunk-frames",
+      "64",
+      "--consensus",
+      "confidence_weighted_mean",
+      "--power",
+      "1.8",
+      "--epsilon",
+      "1e-12",
+      "--mask-mode",
+      "per_channel",
+      "--consensus-order",
+      "magnitudes_first",
+      "--beta",
+      "1",
+      "--smoothing",
+      "none",
+      "--allow-misaligned"
+    ],
+    "both_reached_dsp": true,
+    "n": 176400,
+    "peak_mix_LR": [
+      0.33034729957580566,
+      0.08258682489395142
+    ],
+    "rms_mix_LR": [
+      0.1919635379656326,
+      0.04799088449140815
+    ],
+    "rms_mid": 0.11997721122853097,
+    "crest_observed": [
+      [],
+      []
+    ],
+    "validation_calls": [
+      0,
+      0
+    ],
+    "n_tensors": 48,
+    "different_tensors": [],
+    "elementwise": 30,
+    "max_tensor_delta": 0.0,
+    "both_formula_error": 0.0,
+    "identical_scale": true,
+    "identical_span_sign_residual": true,
+    "residual_calls": 0,
+    "signs": [
+      1.0
+    ],
+    "shifts": [
+      0
+    ],
+    "pcm": {
+      "SDV": {
+        "max_delta_LR": [
+          0.0,
+          0.0
+        ],
+        "different_samples": 0,
+        "sr": 44100,
+        "frames": 176400,
+        "channels": 2,
+        "seconds": 4.0,
+        "sha256_decoded": [
+          "ead7e403c2d5c7cb286343789f0aeabce05cde0d60a260f2f2161ba35365172a",
+          "ead7e403c2d5c7cb286343789f0aeabce05cde0d60a260f2f2161ba35365172a"
+        ],
+        "R_L_rms_ratio": 0.2500000001212658
+      },
+      "SDI": {
+        "max_delta_LR": [
+          0.0,
+          0.0
+        ],
+        "different_samples": 0,
+        "sr": 44100,
+        "frames": 176400,
+        "channels": 2,
+        "seconds": 4.0,
+        "sha256_decoded": [
+          "87e5f2727589c5199271c857dd488c169bfd3465fc2ecd2deebf3d1fffac2287",
+          "87e5f2727589c5199271c857dd488c169bfd3465fc2ecd2deebf3d1fffac2287"
+        ],
+        "R_L_rms_ratio": 0.24999999984730711
+      }
+    },
+    "reconstruction_max_abs": [
+      7.450580596923828e-09,
+      7.450580596923828e-09
+    ],
+    "reconstruction_delta": 0.0
+  },
+  {
+    "id": "B/S4/per_channel/magnitudes_first/direct",
+    "case": "S4",
+    "engine": "B",
+    "complete": true,
+    "exits": [
+      0,
+      0
+    ],
+    "params": [
+      "--n-fft",
+      "4096",
+      "--hop",
+      "1024",
+      "--chunk-frames",
+      "64",
+      "--consensus",
+      "confidence_weighted_mean",
+      "--power",
+      "1.8",
+      "--epsilon",
+      "1e-12",
+      "--mask-mode",
+      "per_channel",
+      "--consensus-order",
+      "magnitudes_first",
+      "--beta",
+      "1",
+      "--smoothing",
+      "none",
+      "--allow-misaligned"
+    ],
+    "both_reached_dsp": true,
+    "n": 176400,
+    "peak_mix_LR": [
+      0.2252812385559082,
+      0.21880663931369781
+    ],
+    "rms_mix_LR": [
+      0.06292356425061095,
+      0.06164413971737021
+    ],
+    "rms_mid": 0.04862965886253928,
+    "crest_observed": [
+      [],
+      []
+    ],
+    "validation_calls": [
+      0,
+      0
+    ],
+    "n_tensors": 48,
+    "different_tensors": [],
+    "elementwise": 30,
+    "max_tensor_delta": 0.0,
+    "both_formula_error": 0.0,
+    "identical_scale": true,
+    "identical_span_sign_residual": true,
+    "residual_calls": 0,
+    "signs": [
+      1.0
+    ],
+    "shifts": [
+      0
+    ],
+    "pcm": {
+      "SDV": {
+        "max_delta_LR": [
+          0.0,
+          0.0
+        ],
+        "different_samples": 0,
+        "sr": 44100,
+        "frames": 176400,
+        "channels": 2,
+        "seconds": 4.0,
+        "sha256_decoded": [
+          "f49340f9e7ff0bb75285fa86f03b492b764d0bb121963f1f33ef65ee80bdc6c3",
+          "f49340f9e7ff0bb75285fa86f03b492b764d0bb121963f1f33ef65ee80bdc6c3"
+        ],
+        "R_L_rms_ratio": 0.0
+      },
+      "SDI": {
+        "max_delta_LR": [
+          0.0,
+          0.0
+        ],
+        "different_samples": 0,
+        "sr": 44100,
+        "frames": 176400,
+        "channels": 2,
+        "seconds": 4.0,
+        "sha256_decoded": [
+          "0e9e5fadddfcbbdc9bf21c01d673375bb5f427dbf017fc7eb644eb7cdf91ceb4",
+          "0e9e5fadddfcbbdc9bf21c01d673375bb5f427dbf017fc7eb644eb7cdf91ceb4"
+        ],
+        "R_L_rms_ratio": 111887105.25401387
+      }
+    },
+    "reconstruction_max_abs": [
+      7.348801567275132e-09,
+      7.348801567275132e-09
+    ],
+    "reconstruction_delta": 0.0
+  },
+  {
+    "id": "B/Ppos/mono/masks_first/direct",
+    "case": "Ppos",
+    "engine": "B",
+    "complete": true,
+    "exits": [
+      0,
+      0
+    ],
+    "params": [
+      "--n-fft",
+      "4096",
+      "--hop",
+      "1024",
+      "--chunk-frames",
+      "64",
+      "--consensus",
+      "confidence_weighted_mean",
+      "--power",
+      "1.8",
+      "--epsilon",
+      "1e-12",
+      "--mask-mode",
+      "mono",
+      "--consensus-order",
+      "masks_first",
+      "--beta",
+      "1",
+      "--smoothing",
+      "none",
+      "--allow-misaligned"
+    ],
+    "both_reached_dsp": true,
+    "n": 176400,
+    "peak_mix_LR": [
+      0.2294386923313141,
+      0.2654314339160919
+    ],
+    "rms_mix_LR": [
+      0.15700318491529347,
+      0.15033296327878745
+    ],
+    "rms_mid": 0.1345826880586531,
+    "crest_observed": [
+      [],
+      []
+    ],
+    "validation_calls": [
+      0,
+      0
+    ],
+    "n_tensors": 99,
+    "different_tensors": [],
+    "elementwise": 54,
+    "max_tensor_delta": 0.0,
+    "both_formula_error": 0.0,
+    "identical_scale": true,
+    "identical_span_sign_residual": true,
+    "residual_calls": 0,
+    "signs": [
+      1.0
+    ],
+    "shifts": [
+      0
+    ],
+    "pcm": {
+      "SDV": {
+        "max_delta_LR": [
+          0.0,
+          0.0
+        ],
+        "different_samples": 0,
+        "sr": 44100,
+        "frames": 176400,
+        "channels": 2,
+        "seconds": 4.0,
+        "sha256_decoded": [
+          "e9dc4821a54e363f542b9cf41ce8e5b99b814520e42eb43f6bff822510d11678",
+          "e9dc4821a54e363f542b9cf41ce8e5b99b814520e42eb43f6bff822510d11678"
+        ],
+        "R_L_rms_ratio": 1.605846527350578
+      },
+      "SDI": {
+        "max_delta_LR": [
+          0.0,
+          0.0
+        ],
+        "different_samples": 0,
+        "sr": 44100,
+        "frames": 176400,
+        "channels": 2,
+        "seconds": 4.0,
+        "sha256_decoded": [
+          "37b22552621e3f964ab69a49a5c4e44e649aac38cabf3738d0cdae6cdeae0d8e",
+          "37b22552621e3f964ab69a49a5c4e44e649aac38cabf3738d0cdae6cdeae0d8e"
+        ],
+        "R_L_rms_ratio": 0.42360447783326527
+      }
+    },
+    "reconstruction_max_abs": [
+      7.450580596923828e-09,
+      7.450580596923828e-09
+    ],
+    "reconstruction_delta": 0.0
+  },
+  {
+    "id": "B/Ppos/mono/magnitudes_first/res",
+    "case": "Ppos",
+    "engine": "B",
+    "complete": true,
+    "exits": [
+      0,
+      0
+    ],
+    "params": [
+      "--n-fft",
+      "4096",
+      "--hop",
+      "1024",
+      "--chunk-frames",
+      "64",
+      "--consensus",
+      "confidence_weighted_mean",
+      "--power",
+      "1.8",
+      "--epsilon",
+      "1e-12",
+      "--mask-mode",
+      "mono",
+      "--consensus-order",
+      "magnitudes_first",
+      "--beta",
+      "1",
+      "--smoothing",
+      "none",
+      "--use-residuals",
+      "--allow-misaligned"
+    ],
+    "both_reached_dsp": true,
+    "n": 176400,
+    "peak_mix_LR": [
+      0.2294386923313141,
+      0.2654314339160919
+    ],
+    "rms_mix_LR": [
+      0.15700318491529347,
+      0.15033296327878745
+    ],
+    "rms_mid": 0.1345826880586531,
+    "crest_observed": [
+      [],
+      []
+    ],
+    "validation_calls": [
+      0,
+      0
+    ],
+    "n_tensors": 69,
+    "different_tensors": [],
+    "elementwise": 42,
+    "max_tensor_delta": 0.0,
+    "both_formula_error": 0.0,
+    "identical_scale": true,
+    "identical_span_sign_residual": true,
+    "residual_calls": 12,
+    "signs": [
+      1.0
+    ],
+    "shifts": [
+      0
+    ],
+    "pcm": {
+      "SDV": {
+        "max_delta_LR": [
+          0.0,
+          0.0
+        ],
+        "different_samples": 0,
+        "sr": 44100,
+        "frames": 176400,
+        "channels": 2,
+        "seconds": 4.0,
+        "sha256_decoded": [
+          "843ecac4a18f1bdf05bd6f12b2a1000a99c39c005a8b7cfe55e2f453d520fbc4",
+          "843ecac4a18f1bdf05bd6f12b2a1000a99c39c005a8b7cfe55e2f453d520fbc4"
+        ],
+        "R_L_rms_ratio": 1.2636157963250962
+      },
+      "SDI": {
+        "max_delta_LR": [
+          0.0,
+          0.0
+        ],
+        "different_samples": 0,
+        "sr": 44100,
+        "frames": 176400,
+        "channels": 2,
+        "seconds": 4.0,
+        "sha256_decoded": [
+          "9e3735663dc92cc8c2e66e5154c7fcafb73a9d6c69db1af1ea161c0e5025a968",
+          "9e3735663dc92cc8c2e66e5154c7fcafb73a9d6c69db1af1ea161c0e5025a968"
+        ],
+        "R_L_rms_ratio": 0.6174405391111506
+      }
+    },
+    "reconstruction_max_abs": [
+      7.450580596923828e-09,
+      7.450580596923828e-09
+    ],
+    "reconstruction_delta": 0.0
+  },
+  {
+    "id": "B/S7/per_channel/magnitudes_first/direct",
+    "case": "S7",
+    "engine": "B",
+    "complete": true,
+    "exits": [
+      0,
+      0
+    ],
+    "params": [
+      "--n-fft",
+      "4096",
+      "--hop",
+      "1024",
+      "--chunk-frames",
+      "64",
+      "--consensus",
+      "confidence_weighted_mean",
+      "--power",
+      "1.8",
+      "--epsilon",
+      "1e-12",
+      "--mask-mode",
+      "per_channel",
+      "--consensus-order",
+      "magnitudes_first",
+      "--beta",
+      "1",
+      "--smoothing",
+      "none",
+      "--allow-misaligned"
+    ],
+    "both_reached_dsp": true,
+    "n": 176400,
+    "peak_mix_LR": [
+      0.33034729957580566,
+      0.33034729957580566
+    ],
+    "rms_mix_LR": [
+      0.1919635379656326,
+      0.1919635379656326
+    ],
+    "rms_mid": 0.0,
+    "crest_observed": [
+      [],
+      []
+    ],
+    "validation_calls": [
+      0,
+      0
+    ],
+    "n_tensors": 48,
+    "different_tensors": [],
+    "elementwise": 30,
+    "max_tensor_delta": 0.0,
+    "both_formula_error": 0.0,
+    "identical_scale": true,
+    "identical_span_sign_residual": true,
+    "residual_calls": 0,
+    "signs": [
+      1.0
+    ],
+    "shifts": [
+      0
+    ],
+    "pcm": {
+      "SDV": {
+        "max_delta_LR": [
+          0.0,
+          0.0
+        ],
+        "different_samples": 0,
+        "sr": 44100,
+        "frames": 176400,
+        "channels": 2,
+        "seconds": 4.0,
+        "sha256_decoded": [
+          "02fed958f5f0efdc09e66d63939b0998f7fea4bd8d0821a739daaffad29cb540",
+          "02fed958f5f0efdc09e66d63939b0998f7fea4bd8d0821a739daaffad29cb540"
+        ],
+        "R_L_rms_ratio": 1.0
+      },
+      "SDI": {
+        "max_delta_LR": [
+          0.0,
+          0.0
+        ],
+        "different_samples": 0,
+        "sr": 44100,
+        "frames": 176400,
+        "channels": 2,
+        "seconds": 4.0,
+        "sha256_decoded": [
+          "2f0685a21072dd9b2609c243b74f610db1116fd9a4dbd183bd39470ab0d1ef0d",
+          "2f0685a21072dd9b2609c243b74f610db1116fd9a4dbd183bd39470ab0d1ef0d"
+        ],
+        "R_L_rms_ratio": 1.0
+      }
+    },
+    "reconstruction_max_abs": [
+      7.450580596923828e-09,
+      7.450580596923828e-09
+    ],
+    "reconstruction_delta": 0.0
+  },
+  {
+    "id": "B/invL/per_channel/magnitudes_first/direct",
+    "case": "invL",
+    "engine": "B",
+    "complete": true,
+    "exits": [
+      0,
+      0
+    ],
+    "params": [
+      "--n-fft",
+      "4096",
+      "--hop",
+      "1024",
+      "--chunk-frames",
+      "64",
+      "--consensus",
+      "confidence_weighted_mean",
+      "--power",
+      "1.8",
+      "--epsilon",
+      "1e-12",
+      "--mask-mode",
+      "per_channel",
+      "--consensus-order",
+      "magnitudes_first",
+      "--beta",
+      "1",
+      "--smoothing",
+      "none",
+      "--allow-misaligned"
+    ],
+    "both_reached_dsp": true,
+    "n": 88200,
+    "peak_mix_LR": [
+      0.2675641179084778,
+      0.3216428756713867
+    ],
+    "rms_mix_LR": [
+      0.01922073631031425,
+      0.01775209816109606
+    ],
+    "rms_mid": 0.013071284114739627,
+    "crest_observed": [
+      [],
+      []
+    ],
+    "validation_calls": [
+      0,
+      0
+    ],
+    "n_tensors": 32,
+    "different_tensors": [],
+    "elementwise": 20,
+    "max_tensor_delta": 0.0,
+    "both_formula_error": 0.0,
+    "identical_scale": true,
+    "identical_span_sign_residual": true,
+    "residual_calls": 0,
+    "signs": [
+      1.0
+    ],
+    "shifts": [
+      0
+    ],
+    "pcm": {
+      "SDV": {
+        "max_delta_LR": [
+          0.0,
+          0.0
+        ],
+        "different_samples": 0,
+        "sr": 44100,
+        "frames": 88200,
+        "channels": 2,
+        "seconds": 2.0,
+        "sha256_decoded": [
+          "393a3c5d468b47ee780478d8439a397685ec62f981de980ca184b96bac7814da",
+          "393a3c5d468b47ee780478d8439a397685ec62f981de980ca184b96bac7814da"
+        ],
+        "R_L_rms_ratio": 0.6654774036644682
+      },
+      "SDI": {
+        "max_delta_LR": [
+          0.0,
+          0.0
+        ],
+        "different_samples": 0,
+        "sr": 44100,
+        "frames": 88200,
+        "channels": 2,
+        "seconds": 2.0,
+        "sha256_decoded": [
+          "3324c2b4a2950a31b7a6b9aa9abf7b5439b050c1c16f74dd6fc1c212c3847950",
+          "3324c2b4a2950a31b7a6b9aa9abf7b5439b050c1c16f74dd6fc1c212c3847950"
+        ],
+        "R_L_rms_ratio": 1.2002125714796636
+      }
+    },
+    "reconstruction_max_abs": [
+      7.450580596923828e-09,
+      7.450580596923828e-09
+    ],
+    "reconstruction_delta": 0.0
+  },
+  {
+    "id": "C/S3/per_channel/magnitudes_first/direct",
+    "case": "S3",
+    "engine": "C",
+    "complete": true,
+    "exits": [
+      0,
+      0
+    ],
+    "params": [
+      "--n-fft",
+      "4096",
+      "--hop",
+      "1024",
+      "--chunk-frames",
+      "64",
+      "--consensus",
+      "confidence_weighted_mean",
+      "--power",
+      "1.8",
+      "--epsilon",
+      "1e-12",
+      "--mask-mode",
+      "per_channel",
+      "--consensus-order",
+      "magnitudes_first",
+      "--beta",
+      "1",
+      "--smoothing",
+      "none",
+      "--allow-misaligned"
+    ],
+    "both_reached_dsp": true,
+    "n": 176400,
+    "peak_mix_LR": [
+      0.33034729957580566,
+      0.08258682489395142
+    ],
+    "rms_mix_LR": [
+      0.1919635379656326,
+      0.04799088449140815
+    ],
+    "rms_mid": 0.11997721122853097,
+    "crest_observed": [
+      [],
+      []
+    ],
+    "validation_calls": [
+      0,
+      0
+    ],
+    "n_tensors": 48,
+    "different_tensors": [],
+    "elementwise": 30,
+    "max_tensor_delta": 0.0,
+    "both_formula_error": 0.0,
+    "identical_scale": true,
+    "identical_span_sign_residual": true,
+    "residual_calls": 0,
+    "signs": [
+      1.0
+    ],
+    "shifts": [
+      0
+    ],
+    "pcm": {
+      "SDV": {
+        "max_delta_LR": [
+          0.0,
+          0.0
+        ],
+        "different_samples": 0,
+        "sr": 44100,
+        "frames": 176400,
+        "channels": 2,
+        "seconds": 4.0,
+        "sha256_decoded": [
+          "ead7e403c2d5c7cb286343789f0aeabce05cde0d60a260f2f2161ba35365172a",
+          "ead7e403c2d5c7cb286343789f0aeabce05cde0d60a260f2f2161ba35365172a"
+        ],
+        "R_L_rms_ratio": 0.2500000001212658
+      },
+      "SDI": {
+        "max_delta_LR": [
+          0.0,
+          0.0
+        ],
+        "different_samples": 0,
+        "sr": 44100,
+        "frames": 176400,
+        "channels": 2,
+        "seconds": 4.0,
+        "sha256_decoded": [
+          "87e5f2727589c5199271c857dd488c169bfd3465fc2ecd2deebf3d1fffac2287",
+          "87e5f2727589c5199271c857dd488c169bfd3465fc2ecd2deebf3d1fffac2287"
+        ],
+        "R_L_rms_ratio": 0.24999999984730711
+      }
+    },
+    "reconstruction_max_abs": [
+      7.450580596923828e-09,
+      7.450580596923828e-09
+    ],
+    "reconstruction_delta": 0.0
+  },
+  {
+    "id": "C/S4/per_channel/magnitudes_first/direct",
+    "case": "S4",
+    "engine": "C",
+    "complete": true,
+    "exits": [
+      0,
+      0
+    ],
+    "params": [
+      "--n-fft",
+      "4096",
+      "--hop",
+      "1024",
+      "--chunk-frames",
+      "64",
+      "--consensus",
+      "confidence_weighted_mean",
+      "--power",
+      "1.8",
+      "--epsilon",
+      "1e-12",
+      "--mask-mode",
+      "per_channel",
+      "--consensus-order",
+      "magnitudes_first",
+      "--beta",
+      "1",
+      "--smoothing",
+      "none",
+      "--allow-misaligned"
+    ],
+    "both_reached_dsp": true,
+    "n": 176400,
+    "peak_mix_LR": [
+      0.2252812385559082,
+      0.21880663931369781
+    ],
+    "rms_mix_LR": [
+      0.06292356425061095,
+      0.06164413971737021
+    ],
+    "rms_mid": 0.04862965886253928,
+    "crest_observed": [
+      [],
+      []
+    ],
+    "validation_calls": [
+      0,
+      0
+    ],
+    "n_tensors": 48,
+    "different_tensors": [],
+    "elementwise": 30,
+    "max_tensor_delta": 0.0,
+    "both_formula_error": 0.0,
+    "identical_scale": true,
+    "identical_span_sign_residual": true,
+    "residual_calls": 0,
+    "signs": [
+      1.0
+    ],
+    "shifts": [
+      0
+    ],
+    "pcm": {
+      "SDV": {
+        "max_delta_LR": [
+          0.0,
+          0.0
+        ],
+        "different_samples": 0,
+        "sr": 44100,
+        "frames": 176400,
+        "channels": 2,
+        "seconds": 4.0,
+        "sha256_decoded": [
+          "f49340f9e7ff0bb75285fa86f03b492b764d0bb121963f1f33ef65ee80bdc6c3",
+          "f49340f9e7ff0bb75285fa86f03b492b764d0bb121963f1f33ef65ee80bdc6c3"
+        ],
+        "R_L_rms_ratio": 0.0
+      },
+      "SDI": {
+        "max_delta_LR": [
+          0.0,
+          0.0
+        ],
+        "different_samples": 0,
+        "sr": 44100,
+        "frames": 176400,
+        "channels": 2,
+        "seconds": 4.0,
+        "sha256_decoded": [
+          "0e9e5fadddfcbbdc9bf21c01d673375bb5f427dbf017fc7eb644eb7cdf91ceb4",
+          "0e9e5fadddfcbbdc9bf21c01d673375bb5f427dbf017fc7eb644eb7cdf91ceb4"
+        ],
+        "R_L_rms_ratio": 111887105.25401387
+      }
+    },
+    "reconstruction_max_abs": [
+      7.348801567275132e-09,
+      7.348801567275132e-09
+    ],
+    "reconstruction_delta": 0.0
+  },
+  {
+    "id": "C/Ppos/mono/masks_first/direct",
+    "case": "Ppos",
+    "engine": "C",
+    "complete": true,
+    "exits": [
+      0,
+      0
+    ],
+    "params": [
+      "--n-fft",
+      "4096",
+      "--hop",
+      "1024",
+      "--chunk-frames",
+      "64",
+      "--consensus",
+      "confidence_weighted_mean",
+      "--power",
+      "1.8",
+      "--epsilon",
+      "1e-12",
+      "--mask-mode",
+      "mono",
+      "--consensus-order",
+      "masks_first",
+      "--beta",
+      "1",
+      "--smoothing",
+      "none",
+      "--allow-misaligned"
+    ],
+    "both_reached_dsp": true,
+    "n": 176400,
+    "peak_mix_LR": [
+      0.2294386923313141,
+      0.2654314339160919
+    ],
+    "rms_mix_LR": [
+      0.15700318491529347,
+      0.15033296327878745
+    ],
+    "rms_mid": 0.1345826880586531,
+    "crest_observed": [
+      [],
+      []
+    ],
+    "validation_calls": [
+      0,
+      0
+    ],
+    "n_tensors": 99,
+    "different_tensors": [],
+    "elementwise": 54,
+    "max_tensor_delta": 0.0,
+    "both_formula_error": 0.0,
+    "identical_scale": true,
+    "identical_span_sign_residual": true,
+    "residual_calls": 0,
+    "signs": [
+      1.0
+    ],
+    "shifts": [
+      0
+    ],
+    "pcm": {
+      "SDV": {
+        "max_delta_LR": [
+          0.0,
+          0.0
+        ],
+        "different_samples": 0,
+        "sr": 44100,
+        "frames": 176400,
+        "channels": 2,
+        "seconds": 4.0,
+        "sha256_decoded": [
+          "e9dc4821a54e363f542b9cf41ce8e5b99b814520e42eb43f6bff822510d11678",
+          "e9dc4821a54e363f542b9cf41ce8e5b99b814520e42eb43f6bff822510d11678"
+        ],
+        "R_L_rms_ratio": 1.605846527350578
+      },
+      "SDI": {
+        "max_delta_LR": [
+          0.0,
+          0.0
+        ],
+        "different_samples": 0,
+        "sr": 44100,
+        "frames": 176400,
+        "channels": 2,
+        "seconds": 4.0,
+        "sha256_decoded": [
+          "37b22552621e3f964ab69a49a5c4e44e649aac38cabf3738d0cdae6cdeae0d8e",
+          "37b22552621e3f964ab69a49a5c4e44e649aac38cabf3738d0cdae6cdeae0d8e"
+        ],
+        "R_L_rms_ratio": 0.42360447783326527
+      }
+    },
+    "reconstruction_max_abs": [
+      7.450580596923828e-09,
+      7.450580596923828e-09
+    ],
+    "reconstruction_delta": 0.0
+  },
+  {
+    "id": "C/Ppos/mono/magnitudes_first/res",
+    "case": "Ppos",
+    "engine": "C",
+    "complete": true,
+    "exits": [
+      0,
+      0
+    ],
+    "params": [
+      "--n-fft",
+      "4096",
+      "--hop",
+      "1024",
+      "--chunk-frames",
+      "64",
+      "--consensus",
+      "confidence_weighted_mean",
+      "--power",
+      "1.8",
+      "--epsilon",
+      "1e-12",
+      "--mask-mode",
+      "mono",
+      "--consensus-order",
+      "magnitudes_first",
+      "--beta",
+      "1",
+      "--smoothing",
+      "none",
+      "--use-residuals",
+      "--allow-misaligned"
+    ],
+    "both_reached_dsp": true,
+    "n": 176400,
+    "peak_mix_LR": [
+      0.2294386923313141,
+      0.2654314339160919
+    ],
+    "rms_mix_LR": [
+      0.15700318491529347,
+      0.15033296327878745
+    ],
+    "rms_mid": 0.1345826880586531,
+    "crest_observed": [
+      [],
+      []
+    ],
+    "validation_calls": [
+      0,
+      0
+    ],
+    "n_tensors": 69,
+    "different_tensors": [],
+    "elementwise": 42,
+    "max_tensor_delta": 0.0,
+    "both_formula_error": 0.0,
+    "identical_scale": true,
+    "identical_span_sign_residual": true,
+    "residual_calls": 12,
+    "signs": [
+      1.0
+    ],
+    "shifts": [
+      0
+    ],
+    "pcm": {
+      "SDV": {
+        "max_delta_LR": [
+          0.0,
+          0.0
+        ],
+        "different_samples": 0,
+        "sr": 44100,
+        "frames": 176400,
+        "channels": 2,
+        "seconds": 4.0,
+        "sha256_decoded": [
+          "843ecac4a18f1bdf05bd6f12b2a1000a99c39c005a8b7cfe55e2f453d520fbc4",
+          "843ecac4a18f1bdf05bd6f12b2a1000a99c39c005a8b7cfe55e2f453d520fbc4"
+        ],
+        "R_L_rms_ratio": 1.2636157963250962
+      },
+      "SDI": {
+        "max_delta_LR": [
+          0.0,
+          0.0
+        ],
+        "different_samples": 0,
+        "sr": 44100,
+        "frames": 176400,
+        "channels": 2,
+        "seconds": 4.0,
+        "sha256_decoded": [
+          "9e3735663dc92cc8c2e66e5154c7fcafb73a9d6c69db1af1ea161c0e5025a968",
+          "9e3735663dc92cc8c2e66e5154c7fcafb73a9d6c69db1af1ea161c0e5025a968"
+        ],
+        "R_L_rms_ratio": 0.6174405391111506
+      }
+    },
+    "reconstruction_max_abs": [
+      7.450580596923828e-09,
+      7.450580596923828e-09
+    ],
+    "reconstruction_delta": 0.0
+  },
+  {
+    "id": "C/S7/per_channel/magnitudes_first/direct",
+    "case": "S7",
+    "engine": "C",
+    "complete": true,
+    "exits": [
+      0,
+      0
+    ],
+    "params": [
+      "--n-fft",
+      "4096",
+      "--hop",
+      "1024",
+      "--chunk-frames",
+      "64",
+      "--consensus",
+      "confidence_weighted_mean",
+      "--power",
+      "1.8",
+      "--epsilon",
+      "1e-12",
+      "--mask-mode",
+      "per_channel",
+      "--consensus-order",
+      "magnitudes_first",
+      "--beta",
+      "1",
+      "--smoothing",
+      "none",
+      "--allow-misaligned"
+    ],
+    "both_reached_dsp": true,
+    "n": 176400,
+    "peak_mix_LR": [
+      0.33034729957580566,
+      0.33034729957580566
+    ],
+    "rms_mix_LR": [
+      0.1919635379656326,
+      0.1919635379656326
+    ],
+    "rms_mid": 0.0,
+    "crest_observed": [
+      [],
+      []
+    ],
+    "validation_calls": [
+      0,
+      0
+    ],
+    "n_tensors": 48,
+    "different_tensors": [],
+    "elementwise": 30,
+    "max_tensor_delta": 0.0,
+    "both_formula_error": 0.0,
+    "identical_scale": true,
+    "identical_span_sign_residual": true,
+    "residual_calls": 0,
+    "signs": [
+      1.0
+    ],
+    "shifts": [
+      0
+    ],
+    "pcm": {
+      "SDV": {
+        "max_delta_LR": [
+          0.0,
+          0.0
+        ],
+        "different_samples": 0,
+        "sr": 44100,
+        "frames": 176400,
+        "channels": 2,
+        "seconds": 4.0,
+        "sha256_decoded": [
+          "02fed958f5f0efdc09e66d63939b0998f7fea4bd8d0821a739daaffad29cb540",
+          "02fed958f5f0efdc09e66d63939b0998f7fea4bd8d0821a739daaffad29cb540"
+        ],
+        "R_L_rms_ratio": 1.0
+      },
+      "SDI": {
+        "max_delta_LR": [
+          0.0,
+          0.0
+        ],
+        "different_samples": 0,
+        "sr": 44100,
+        "frames": 176400,
+        "channels": 2,
+        "seconds": 4.0,
+        "sha256_decoded": [
+          "2f0685a21072dd9b2609c243b74f610db1116fd9a4dbd183bd39470ab0d1ef0d",
+          "2f0685a21072dd9b2609c243b74f610db1116fd9a4dbd183bd39470ab0d1ef0d"
+        ],
+        "R_L_rms_ratio": 1.0
+      }
+    },
+    "reconstruction_max_abs": [
+      7.450580596923828e-09,
+      7.450580596923828e-09
+    ],
+    "reconstruction_delta": 0.0
+  },
+  {
+    "id": "C/invL/per_channel/magnitudes_first/direct",
+    "case": "invL",
+    "engine": "C",
+    "complete": true,
+    "exits": [
+      0,
+      0
+    ],
+    "params": [
+      "--n-fft",
+      "4096",
+      "--hop",
+      "1024",
+      "--chunk-frames",
+      "64",
+      "--consensus",
+      "confidence_weighted_mean",
+      "--power",
+      "1.8",
+      "--epsilon",
+      "1e-12",
+      "--mask-mode",
+      "per_channel",
+      "--consensus-order",
+      "magnitudes_first",
+      "--beta",
+      "1",
+      "--smoothing",
+      "none",
+      "--allow-misaligned"
+    ],
+    "both_reached_dsp": true,
+    "n": 88200,
+    "peak_mix_LR": [
+      0.2675641179084778,
+      0.3216428756713867
+    ],
+    "rms_mix_LR": [
+      0.01922073631031425,
+      0.01775209816109606
+    ],
+    "rms_mid": 0.013071284114739627,
+    "crest_observed": [
+      [],
+      []
+    ],
+    "validation_calls": [
+      0,
+      0
+    ],
+    "n_tensors": 32,
+    "different_tensors": [],
+    "elementwise": 20,
+    "max_tensor_delta": 0.0,
+    "both_formula_error": 0.0,
+    "identical_scale": true,
+    "identical_span_sign_residual": true,
+    "residual_calls": 0,
+    "signs": [
+      -1.0,
+      1.0
+    ],
+    "shifts": [
+      0
+    ],
+    "pcm": {
+      "SDV": {
+        "max_delta_LR": [
+          0.0,
+          0.0
+        ],
+        "different_samples": 0,
+        "sr": 44100,
+        "frames": 88200,
+        "channels": 2,
+        "seconds": 2.0,
+        "sha256_decoded": [
+          "393a3c5d468b47ee780478d8439a397685ec62f981de980ca184b96bac7814da",
+          "393a3c5d468b47ee780478d8439a397685ec62f981de980ca184b96bac7814da"
+        ],
+        "R_L_rms_ratio": 0.6654774036644682
+      },
+      "SDI": {
+        "max_delta_LR": [
+          0.0,
+          0.0
+        ],
+        "different_samples": 0,
+        "sr": 44100,
+        "frames": 88200,
+        "channels": 2,
+        "seconds": 2.0,
+        "sha256_decoded": [
+          "3324c2b4a2950a31b7a6b9aa9abf7b5439b050c1c16f74dd6fc1c212c3847950",
+          "3324c2b4a2950a31b7a6b9aa9abf7b5439b050c1c16f74dd6fc1c212c3847950"
+        ],
+        "R_L_rms_ratio": 1.2002125714796636
+      }
+    },
+    "reconstruction_max_abs": [
+      7.450580596923828e-09,
+      7.450580596923828e-09
+    ],
+    "reconstruction_delta": 0.0
+  },
+  {
+    "id": "C/Pneg/per_channel/hybrid_asymmetric/direct",
+    "case": "Pneg",
+    "engine": "C",
+    "complete": true,
+    "exits": [
+      0,
+      0
+    ],
+    "params": [
+      "--n-fft",
+      "4096",
+      "--hop",
+      "1024",
+      "--chunk-frames",
+      "64",
+      "--consensus",
+      "confidence_weighted_mean",
+      "--power",
+      "1.8",
+      "--epsilon",
+      "1e-12",
+      "--mask-mode",
+      "per_channel",
+      "--consensus-order",
+      "hybrid_asymmetric",
+      "--beta",
+      "1",
+      "--smoothing",
+      "none",
+      "--allow-misaligned"
+    ],
+    "both_reached_dsp": true,
+    "n": 176400,
+    "peak_mix_LR": [
+      0.2294386923313141,
+      0.2654314339160919
+    ],
+    "rms_mix_LR": [
+      0.15700318491529347,
+      0.15033296327878745
+    ],
+    "rms_mid": 0.1345826880586531,
+    "crest_observed": [
+      [],
+      []
+    ],
+    "validation_calls": [
+      0,
+      0
+    ],
+    "n_tensors": 99,
+    "different_tensors": [],
+    "elementwise": 54,
+    "max_tensor_delta": 0.0,
+    "both_formula_error": 0.0,
+    "identical_scale": true,
+    "identical_span_sign_residual": true,
+    "residual_calls": 0,
+    "signs": [
+      -1.0,
+      1.0
+    ],
+    "shifts": [
+      0
+    ],
+    "pcm": {
+      "SDV": {
+        "max_delta_LR": [
+          0.0,
+          0.0
+        ],
+        "different_samples": 0,
+        "sr": 44100,
+        "frames": 176400,
+        "channels": 2,
+        "seconds": 4.0,
+        "sha256_decoded": [
+          "f830a945e22ebf5fa62bff3df516b64c9299a3e78fc25cbd5c5f341300419695",
+          "f830a945e22ebf5fa62bff3df516b64c9299a3e78fc25cbd5c5f341300419695"
+        ],
+        "R_L_rms_ratio": 0.8894843203912361
+      },
+      "SDI": {
+        "max_delta_LR": [
+          0.0,
+          0.0
+        ],
+        "different_samples": 0,
+        "sr": 44100,
+        "frames": 176400,
+        "channels": 2,
+        "seconds": 4.0,
+        "sha256_decoded": [
+          "b9a56181022fca36522fe38554860f82b8c5a3edf36d69986a29c65dd7f31141",
+          "b9a56181022fca36522fe38554860f82b8c5a3edf36d69986a29c65dd7f31141"
+        ],
+        "R_L_rms_ratio": 1.076350710257261
+      }
+    },
+    "reconstruction_max_abs": [
+      7.450580596923828e-09,
+      7.450580596923828e-09
+    ],
+    "reconstruction_delta": 0.0
+  },
+  {
+    "id": "D/S3/shared/native/direct",
+    "case": "S3",
+    "engine": "D",
+    "complete": true,
+    "exits": [
+      0,
+      0
+    ],
+    "params": [
+      "--n-fft",
+      "4096",
+      "--hop",
+      "1024",
+      "--chunk-frames",
+      "64",
+      "--consensus",
+      "confidence_weighted_mean",
+      "--power",
+      "2",
+      "--epsilon",
+      "1e-9",
+      "--allow-misaligned"
+    ],
+    "both_reached_dsp": true,
+    "n": 176400,
+    "peak_mix_LR": [
+      0.33034729957580566,
+      0.08258682489395142
+    ],
+    "rms_mix_LR": [
+      0.1919635379656326,
+      0.04799088449140815
+    ],
+    "rms_mid": 0.11997721122853097,
+    "crest_observed": [
+      [
+        {
+          "n_samples": 176400,
+          "sum_mix2": 2539.195306180565,
+          "sum_sdv2": 1504.4198020364804,
+          "sum_sdi2": 543.1028427899902,
+          "sum_err2": 1.4681676114549729e-28,
+          "peak_sdv": 0.23769906460448506,
+          "peak_mix": 0.33034729957580566
+        },
+        {
+          "n_samples": 176400,
+          "sum_mix2": 2539.195306180565,
+          "sum_sdv2": 1504.4198020364804,
+          "sum_sdi2": 543.1028427899902,
+          "sum_err2": 1.4681676114549729e-28,
+          "peak_sdv": 0.23769906460448506,
+          "peak_mix": 0.33034729957580566
+        },
+        {
+          "n_samples": 176400,
+          "sum_mix2": 2539.195306180565,
+          "sum_sdv2": 1504.4198020364804,
+          "sum_sdi2": 543.1028427899902,
+          "sum_err2": 1.4681676114549729e-28,
+          "peak_sdv": 0.23769906460448506,
+          "peak_mix": 0.33034729957580566
+        },
+        {
+          "n_samples": 176400,
+          "sum_mix2": 2539.195306180565,
+          "sum_sdv2": 1504.4198020364804,
+          "sum_sdi2": 543.1028427899902,
+          "sum_err2": 1.4681676114549729e-28,
+          "peak_sdv": 0.23769906460448506,
+          "peak_mix": 0.33034729957580566
+        }
+      ],
+      [
+        {
+          "n_samples": 176400,
+          "sum_mix2": 2539.195306180565,
+          "sum_sdv2": 1504.4198020364804,
+          "sum_sdi2": 543.1028427899902,
+          "sum_err2": 1.4681676114549729e-28,
+          "peak_sdv": 0.23769906460448506,
+          "peak_mix": 0.33034729957580566
+        },
+        {
+          "n_samples": 176400,
+          "sum_mix2": 2539.195306180565,
+          "sum_sdv2": 1504.4198020364804,
+          "sum_sdi2": 543.1028427899902,
+          "sum_err2": 1.4681676114549729e-28,
+          "peak_sdv": 0.23769906460448506,
+          "peak_mix": 0.33034729957580566
+        },
+        {
+          "n_samples": 176400,
+          "sum_mix2": 2539.195306180565,
+          "sum_sdv2": 1504.4198020364804,
+          "sum_sdi2": 543.1028427899902,
+          "sum_err2": 1.4681676114549729e-28,
+          "peak_sdv": 0.23769906460448506,
+          "peak_mix": 0.33034729957580566
+        },
+        {
+          "n_samples": 176400,
+          "sum_mix2": 2539.195306180565,
+          "sum_sdv2": 1504.4198020364804,
+          "sum_sdi2": 543.1028427899902,
+          "sum_err2": 1.4681676114549729e-28,
+          "peak_sdv": 0.23769906460448506,
+          "peak_mix": 0.33034729957580566
+        }
+      ]
+    ],
+    "validation_calls": [
+      1,
+      1
+    ],
+    "n_tensors": 78,
+    "different_tensors": [],
+    "elementwise": 42,
+    "max_tensor_delta": 0.0,
+    "both_formula_error": 0.0,
+    "identical_scale": true,
+    "identical_span_sign_residual": true,
+    "residual_calls": 0,
+    "signs": [
+      1.0
+    ],
+    "shifts": [
+      0
+    ],
+    "pcm": {
+      "SDV": {
+        "max_delta_LR": [
+          0.0,
+          0.0
+        ],
+        "different_samples": 0,
+        "sr": 44100,
+        "frames": 176400,
+        "channels": 2,
+        "seconds": 4.0,
+        "sha256_decoded": [
+          "36dd1633b93bd9683571bcc8a3ee640f776f5220c7d15d423e87d643f6c5336a",
+          "36dd1633b93bd9683571bcc8a3ee640f776f5220c7d15d423e87d643f6c5336a"
+        ],
+        "R_L_rms_ratio": 0.25
+      },
+      "SDI": {
+        "max_delta_LR": [
+          0.0,
+          0.0
+        ],
+        "different_samples": 0,
+        "sr": 44100,
+        "frames": 176400,
+        "channels": 2,
+        "seconds": 4.0,
+        "sha256_decoded": [
+          "854553c047e6796ab266edae55535acfdf7734a0a53b8a74b6dda45877ce7804",
+          "854553c047e6796ab266edae55535acfdf7734a0a53b8a74b6dda45877ce7804"
+        ],
+        "R_L_rms_ratio": 0.25
+      }
+    },
+    "reconstruction_max_abs": [
+      7.450580596923828e-09,
+      7.450580596923828e-09
+    ],
+    "reconstruction_delta": 0.0
+  },
+  {
+    "id": "D/S4/shared/native/direct",
+    "case": "S4",
+    "engine": "D",
+    "complete": true,
+    "exits": [
+      0,
+      0
+    ],
+    "params": [
+      "--n-fft",
+      "4096",
+      "--hop",
+      "1024",
+      "--chunk-frames",
+      "64",
+      "--consensus",
+      "confidence_weighted_mean",
+      "--power",
+      "2",
+      "--epsilon",
+      "1e-9",
+      "--allow-misaligned"
+    ],
+    "both_reached_dsp": true,
+    "n": 176400,
+    "peak_mix_LR": [
+      0.2252812385559082,
+      0.21880663931369781
+    ],
+    "rms_mix_LR": [
+      0.06292356425061095,
+      0.06164413971737021
+    ],
+    "rms_mid": 0.04862965886253928,
+    "crest_observed": [
+      [
+        {
+          "n_samples": 176400,
+          "sum_mix2": 417.15843239973714,
+          "sum_sdv2": 184.40759700844245,
+          "sum_sdi2": 172.67545894254366,
+          "sum_err2": 2.1100545232404903e-29,
+          "peak_sdv": 0.19872656325389199,
+          "peak_mix": 0.2252812385559082
+        },
+        {
+          "n_samples": 176400,
+          "sum_mix2": 417.15843239973714,
+          "sum_sdv2": 184.40759700844245,
+          "sum_sdi2": 172.67545894254366,
+          "sum_err2": 2.1100545232404903e-29,
+          "peak_sdv": 0.19872656325389199,
+          "peak_mix": 0.2252812385559082
+        },
+        {
+          "n_samples": 176400,
+          "sum_mix2": 417.15843239973714,
+          "sum_sdv2": 184.40759700844245,
+          "sum_sdi2": 172.67545894254366,
+          "sum_err2": 2.1100545232404903e-29,
+          "peak_sdv": 0.19872656325389199,
+          "peak_mix": 0.2252812385559082
+        },
+        {
+          "n_samples": 176400,
+          "sum_mix2": 417.15843239973714,
+          "sum_sdv2": 184.40759700844245,
+          "sum_sdi2": 172.67545894254366,
+          "sum_err2": 2.1100545232404903e-29,
+          "peak_sdv": 0.19872656325389199,
+          "peak_mix": 0.2252812385559082
+        }
+      ],
+      [
+        {
+          "n_samples": 176400,
+          "sum_mix2": 417.15843239973714,
+          "sum_sdv2": 184.40759700844245,
+          "sum_sdi2": 172.67545894254366,
+          "sum_err2": 2.1100545232404903e-29,
+          "peak_sdv": 0.19872656325389199,
+          "peak_mix": 0.2252812385559082
+        },
+        {
+          "n_samples": 176400,
+          "sum_mix2": 417.15843239973714,
+          "sum_sdv2": 184.40759700844245,
+          "sum_sdi2": 172.67545894254366,
+          "sum_err2": 2.1100545232404903e-29,
+          "peak_sdv": 0.19872656325389199,
+          "peak_mix": 0.2252812385559082
+        },
+        {
+          "n_samples": 176400,
+          "sum_mix2": 417.15843239973714,
+          "sum_sdv2": 184.40759700844245,
+          "sum_sdi2": 172.67545894254366,
+          "sum_err2": 2.1100545232404903e-29,
+          "peak_sdv": 0.19872656325389199,
+          "peak_mix": 0.2252812385559082
+        },
+        {
+          "n_samples": 176400,
+          "sum_mix2": 417.15843239973714,
+          "sum_sdv2": 184.40759700844245,
+          "sum_sdi2": 172.67545894254366,
+          "sum_err2": 2.1100545232404903e-29,
+          "peak_sdv": 0.19872656325389199,
+          "peak_mix": 0.2252812385559082
+        }
+      ]
+    ],
+    "validation_calls": [
+      1,
+      1
+    ],
+    "n_tensors": 78,
+    "different_tensors": [],
+    "elementwise": 42,
+    "max_tensor_delta": 0.0,
+    "both_formula_error": 0.0,
+    "identical_scale": true,
+    "identical_span_sign_residual": true,
+    "residual_calls": 0,
+    "signs": [
+      1.0
+    ],
+    "shifts": [
+      0
+    ],
+    "pcm": {
+      "SDV": {
+        "max_delta_LR": [
+          0.0,
+          0.0
+        ],
+        "different_samples": 0,
+        "sr": 44100,
+        "frames": 176400,
+        "channels": 2,
+        "seconds": 4.0,
+        "sha256_decoded": [
+          "f19d8ef7468a6e19bca6a0f56f25c76267a1db2f505d85ac98876262aaf0a8ba",
+          "f19d8ef7468a6e19bca6a0f56f25c76267a1db2f505d85ac98876262aaf0a8ba"
+        ],
+        "R_L_rms_ratio": 0.2352856923055635
+      },
+      "SDI": {
+        "max_delta_LR": [
+          0.0,
+          0.0
+        ],
+        "different_samples": 0,
+        "sr": 44100,
+        "frames": 176400,
+        "channels": 2,
+        "seconds": 4.0,
+        "sha256_decoded": [
+          "d4dde42ac65f0a1669063ff8e8b06f6dd820531c0f49168ba9ce100d6cb8b12b",
+          "d4dde42ac65f0a1669063ff8e8b06f6dd820531c0f49168ba9ce100d6cb8b12b"
+        ],
+        "R_L_rms_ratio": 4.376493816221282
+      }
+    },
+    "reconstruction_max_abs": [
+      7.450580596923828e-09,
+      7.450580596923828e-09
+    ],
+    "reconstruction_delta": 0.0
+  },
+  {
+    "id": "D/Ppos/shared/native/direct",
+    "case": "Ppos",
+    "engine": "D",
+    "complete": true,
+    "exits": [
+      0,
+      0
+    ],
+    "params": [
+      "--n-fft",
+      "4096",
+      "--hop",
+      "1024",
+      "--chunk-frames",
+      "64",
+      "--consensus",
+      "confidence_weighted_mean",
+      "--power",
+      "2",
+      "--epsilon",
+      "1e-9",
+      "--allow-misaligned"
+    ],
+    "both_reached_dsp": true,
+    "n": 176400,
+    "peak_mix_LR": [
+      0.2294386923313141,
+      0.2654314339160919
+    ],
+    "rms_mix_LR": [
+      0.15700318491529347,
+      0.15033296327878745
+    ],
+    "rms_mid": 0.1345826880586531,
+    "crest_observed": [
+      [
+        {
+          "n_samples": 176400,
+          "sum_mix2": 3195.0449867863563,
+          "sum_sdv2": 1440.9812076905819,
+          "sum_sdi2": 693.3724418649844,
+          "sum_err2": 1.4229259899911515e-28,
+          "peak_sdv": 0.22792756035509196,
+          "peak_mix": 0.2654314339160919
+        },
+        {
+          "n_samples": 176400,
+          "sum_mix2": 3195.0449867863563,
+          "sum_sdv2": 1127.3937261966455,
+          "sum_sdi2": 738.3422334748443,
+          "sum_err2": 1.369048715338999e-28,
+          "peak_sdv": 0.20577212342629225,
+          "peak_mix": 0.2654314339160919
+        },
+        {
+          "n_samples": 176400,
+          "sum_mix2": 3195.0449867863563,
+          "sum_sdv2": 1277.516902131453,
+          "sum_sdi2": 709.1867728577537,
+          "sum_err2": 1.3994135991690996e-28,
+          "peak_sdv": 0.2168498418906921,
+          "peak_mix": 0.2654314339160919
+        },
+        {
+          "n_samples": 176400,
+          "sum_mix2": 3195.0449867863563,
+          "sum_sdv2": 1277.516902131453,
+          "sum_sdi2": 709.1867728577537,
+          "sum_err2": 1.3994135991690996e-28,
+          "peak_sdv": 0.2168498418906921,
+          "peak_mix": 0.2654314339160919
+        },
+        {
+          "n_samples": 176400,
+          "sum_mix2": 3195.0449867863563,
+          "sum_sdv2": 1277.516902131453,
+          "sum_sdi2": 709.1867728577537,
+          "sum_err2": 1.3994135991690996e-28,
+          "peak_sdv": 0.2168498418906921,
+          "peak_mix": 0.2654314339160919
+        }
+      ],
+      [
+        {
+          "n_samples": 176400,
+          "sum_mix2": 3195.0449867863563,
+          "sum_sdv2": 1440.9812076905819,
+          "sum_sdi2": 693.3724418649844,
+          "sum_err2": 1.4229259899911515e-28,
+          "peak_sdv": 0.22792756035509196,
+          "peak_mix": 0.2654314339160919
+        },
+        {
+          "n_samples": 176400,
+          "sum_mix2": 3195.0449867863563,
+          "sum_sdv2": 1127.3937261966455,
+          "sum_sdi2": 738.3422334748443,
+          "sum_err2": 1.369048715338999e-28,
+          "peak_sdv": 0.20577212342629225,
+          "peak_mix": 0.2654314339160919
+        },
+        {
+          "n_samples": 176400,
+          "sum_mix2": 3195.0449867863563,
+          "sum_sdv2": 1277.516902131453,
+          "sum_sdi2": 709.1867728577537,
+          "sum_err2": 1.3994135991690996e-28,
+          "peak_sdv": 0.2168498418906921,
+          "peak_mix": 0.2654314339160919
+        },
+        {
+          "n_samples": 176400,
+          "sum_mix2": 3195.0449867863563,
+          "sum_sdv2": 1277.516902131453,
+          "sum_sdi2": 709.1867728577537,
+          "sum_err2": 1.3994135991690996e-28,
+          "peak_sdv": 0.2168498418906921,
+          "peak_mix": 0.2654314339160919
+        },
+        {
+          "n_samples": 176400,
+          "sum_mix2": 3195.0449867863563,
+          "sum_sdv2": 1277.516902131453,
+          "sum_sdi2": 709.1867728577537,
+          "sum_err2": 1.3994135991690996e-28,
+          "peak_sdv": 0.2168498418906921,
+          "peak_mix": 0.2654314339160919
+        }
+      ]
+    ],
+    "validation_calls": [
+      1,
+      1
+    ],
+    "n_tensors": 99,
+    "different_tensors": [],
+    "elementwise": 54,
+    "max_tensor_delta": 0.0,
+    "both_formula_error": 0.0,
+    "identical_scale": true,
+    "identical_span_sign_residual": true,
+    "residual_calls": 0,
+    "signs": [
+      1.0
+    ],
+    "shifts": [
+      0
+    ],
+    "pcm": {
+      "SDV": {
+        "max_delta_LR": [
+          0.0,
+          0.0
+        ],
+        "different_samples": 0,
+        "sr": 44100,
+        "frames": 176400,
+        "channels": 2,
+        "seconds": 4.0,
+        "sha256_decoded": [
+          "396af74e7413626a08c6d3f8d516ee016994a6658dad089849cc29504475c236",
+          "396af74e7413626a08c6d3f8d516ee016994a6658dad089849cc29504475c236"
+        ],
+        "R_L_rms_ratio": 1.6051139162290404
+      },
+      "SDI": {
+        "max_delta_LR": [
+          0.0,
+          0.0
+        ],
+        "different_samples": 0,
+        "sr": 44100,
+        "frames": 176400,
+        "channels": 2,
+        "seconds": 4.0,
+        "sha256_decoded": [
+          "7c6c1ad81be56d2354c3102af55a40ec75dc97dfe79a213e7764c071df7d47a9",
+          "7c6c1ad81be56d2354c3102af55a40ec75dc97dfe79a213e7764c071df7d47a9"
+        ],
+        "R_L_rms_ratio": 0.4113762807735658
+      }
+    },
+    "reconstruction_max_abs": [
+      7.450580596923828e-09,
+      7.450580596923828e-09
+    ],
+    "reconstruction_delta": 0.0
+  },
+  {
+    "id": "D/S7/shared/native/direct",
+    "case": "S7",
+    "engine": "D",
+    "complete": false,
+    "exits": [
+      2,
+      2
+    ],
+    "params": [
+      "--n-fft",
+      "4096",
+      "--hop",
+      "1024",
+      "--chunk-frames",
+      "64",
+      "--consensus",
+      "confidence_weighted_mean",
+      "--power",
+      "2",
+      "--epsilon",
+      "1e-9",
+      "--allow-misaligned"
+    ],
+    "both_reached_dsp": true,
+    "n": 176400,
+    "peak_mix_LR": [
+      0.33034729957580566,
+      0.33034729957580566
+    ],
+    "rms_mix_LR": [
+      0.1919635379656326,
+      0.1919635379656326
+    ],
+    "rms_mid": 0.0,
+    "crest_observed": [
+      [
+        {
+          "n_samples": 176400,
+          "sum_mix2": 0.0,
+          "sum_sdv2": 0.0,
+          "sum_sdi2": 0.0,
+          "sum_err2": 0.0,
+          "peak_sdv": 0.0,
+          "peak_mix": 0.33034729957580566
+        }
+      ],
+      [
+        {
+          "n_samples": 176400,
+          "sum_mix2": 0.0,
+          "sum_sdv2": 0.0,
+          "sum_sdi2": 0.0,
+          "sum_err2": 0.0,
+          "peak_sdv": 0.0,
+          "peak_mix": 0.33034729957580566
+        }
+      ]
+    ],
+    "validation_calls": [
+      0,
+      0
+    ],
+    "reason": "NO COMPARABLE: ver exits, excepciones y trazas nativas"
+  },
+  {
+    "id": "D/invL/shared/native/direct",
+    "case": "invL",
+    "engine": "D",
+    "complete": true,
+    "exits": [
+      0,
+      0
+    ],
+    "params": [
+      "--n-fft",
+      "4096",
+      "--hop",
+      "1024",
+      "--chunk-frames",
+      "64",
+      "--consensus",
+      "confidence_weighted_mean",
+      "--power",
+      "2",
+      "--epsilon",
+      "1e-9",
+      "--allow-misaligned"
+    ],
+    "both_reached_dsp": true,
+    "n": 88200,
+    "peak_mix_LR": [
+      0.2675641179084778,
+      0.3216428756713867
+    ],
+    "rms_mix_LR": [
+      0.01922073631031425,
+      0.01775209816109606
+    ],
+    "rms_mid": 0.013071284114739627,
+    "crest_observed": [
+      [
+        {
+          "n_samples": 88200,
+          "sum_mix2": 15.069716913607163,
+          "sum_sdv2": 3.4579007160378286,
+          "sum_sdi2": 6.708845576567674,
+          "sum_err2": 7.536454685357201e-31,
+          "peak_sdv": 0.1875838357921748,
+          "peak_mix": 0.3216428756713867
+        },
+        {
+          "n_samples": 88200,
+          "sum_mix2": 15.069716913607163,
+          "sum_sdv2": 3.4579007160378286,
+          "sum_sdi2": 6.708845576567674,
+          "sum_err2": 7.536454685357201e-31,
+          "peak_sdv": 0.1875838357921748,
+          "peak_mix": 0.3216428756713867
+        },
+        {
+          "n_samples": 88200,
+          "sum_mix2": 15.069716913607163,
+          "sum_sdv2": 3.4579007160378286,
+          "sum_sdi2": 6.708845576567674,
+          "sum_err2": 7.536454685357201e-31,
+          "peak_sdv": 0.1875838357921748,
+          "peak_mix": 0.3216428756713867
+        },
+        {
+          "n_samples": 88200,
+          "sum_mix2": 15.069716913607163,
+          "sum_sdv2": 3.4579007160378286,
+          "sum_sdi2": 6.708845576567674,
+          "sum_err2": 7.536454685357201e-31,
+          "peak_sdv": 0.1875838357921748,
+          "peak_mix": 0.3216428756713867
+        }
+      ],
+      [
+        {
+          "n_samples": 88200,
+          "sum_mix2": 15.069716913607163,
+          "sum_sdv2": 3.4579007160378286,
+          "sum_sdi2": 6.708845576567674,
+          "sum_err2": 7.536454685357201e-31,
+          "peak_sdv": 0.1875838357921748,
+          "peak_mix": 0.3216428756713867
+        },
+        {
+          "n_samples": 88200,
+          "sum_mix2": 15.069716913607163,
+          "sum_sdv2": 3.4579007160378286,
+          "sum_sdi2": 6.708845576567674,
+          "sum_err2": 7.536454685357201e-31,
+          "peak_sdv": 0.1875838357921748,
+          "peak_mix": 0.3216428756713867
+        },
+        {
+          "n_samples": 88200,
+          "sum_mix2": 15.069716913607163,
+          "sum_sdv2": 3.4579007160378286,
+          "sum_sdi2": 6.708845576567674,
+          "sum_err2": 7.536454685357201e-31,
+          "peak_sdv": 0.1875838357921748,
+          "peak_mix": 0.3216428756713867
+        },
+        {
+          "n_samples": 88200,
+          "sum_mix2": 15.069716913607163,
+          "sum_sdv2": 3.4579007160378286,
+          "sum_sdi2": 6.708845576567674,
+          "sum_err2": 7.536454685357201e-31,
+          "peak_sdv": 0.1875838357921748,
+          "peak_mix": 0.3216428756713867
+        }
+      ]
+    ],
+    "validation_calls": [
+      1,
+      1
+    ],
+    "n_tensors": 52,
+    "different_tensors": [],
+    "elementwise": 28,
+    "max_tensor_delta": 0.0,
+    "both_formula_error": 0.0,
+    "identical_scale": true,
+    "identical_span_sign_residual": true,
+    "residual_calls": 0,
+    "signs": [
+      1.0
+    ],
+    "shifts": [
+      0
+    ],
+    "pcm": {
+      "SDV": {
+        "max_delta_LR": [
+          0.0,
+          0.0
+        ],
+        "different_samples": 0,
+        "sr": 44100,
+        "frames": 88200,
+        "channels": 2,
+        "seconds": 2.0,
+        "sha256_decoded": [
+          "1d9ade68519a488236288f9426d73ee5e770afc8faee1d914ee01098a9e2ec11",
+          "1d9ade68519a488236288f9426d73ee5e770afc8faee1d914ee01098a9e2ec11"
+        ],
+        "R_L_rms_ratio": 0.8043740124871062
+      },
+      "SDI": {
+        "max_delta_LR": [
+          0.0,
+          0.0
+        ],
+        "different_samples": 0,
+        "sr": 44100,
+        "frames": 88200,
+        "channels": 2,
+        "seconds": 2.0,
+        "sha256_decoded": [
+          "1c633173d5fd51e15084ee2e3c0da6e2ca3363243727eba35fb2abfa07297755",
+          "1c633173d5fd51e15084ee2e3c0da6e2ca3363243727eba35fb2abfa07297755"
+        ],
+        "R_L_rms_ratio": 1.0519742742291311
+      }
+    },
+    "reconstruction_max_abs": [
+      7.450580596923828e-09,
+      7.450580596923828e-09
+    ],
+    "reconstruction_delta": 0.0
+  },
+  {
+    "id": "D/side_aligned/shared/native/direct",
+    "case": "side_aligned",
+    "engine": "D",
+    "complete": false,
+    "exits": [
+      2,
+      2
+    ],
+    "params": [
+      "--n-fft",
+      "4096",
+      "--hop",
+      "1024",
+      "--chunk-frames",
+      "64",
+      "--consensus",
+      "confidence_weighted_mean",
+      "--power",
+      "2",
+      "--epsilon",
+      "1e-9"
+    ],
+    "both_reached_dsp": true,
+    "n": 88200,
+    "peak_mix_LR": [
+      0.20952293276786804,
+      0.20952293276786804
+    ],
+    "rms_mix_LR": [
+      0.016994194608849867,
+      0.016994194608849867
+    ],
+    "rms_mid": 0.0,
+    "crest_observed": [
+      [
+        {
+          "n_samples": 88200,
+          "sum_mix2": 0.0,
+          "sum_sdv2": 0.0,
+          "sum_sdi2": 0.0,
+          "sum_err2": 0.0,
+          "peak_sdv": 0.0,
+          "peak_mix": 0.20952293276786804
+        }
+      ],
+      [
+        {
+          "n_samples": 88200,
+          "sum_mix2": 0.0,
+          "sum_sdv2": 0.0,
+          "sum_sdi2": 0.0,
+          "sum_err2": 0.0,
+          "peak_sdv": 0.0,
+          "peak_mix": 0.20952293276786804
+        }
+      ]
+    ],
+    "validation_calls": [
+      0,
+      0
+    ],
+    "reason": "NO COMPARABLE: ver exits, excepciones y trazas nativas"
+  },
+  {
+    "id": "D/near_side/shared/native/direct",
+    "case": "near_side",
+    "engine": "D",
+    "complete": true,
+    "exits": [
+      0,
+      0
+    ],
+    "params": [
+      "--n-fft",
+      "4096",
+      "--hop",
+      "1024",
+      "--chunk-frames",
+      "64",
+      "--consensus",
+      "confidence_weighted_mean",
+      "--power",
+      "2",
+      "--epsilon",
+      "1e-9"
+    ],
+    "both_reached_dsp": true,
+    "n": 88200,
+    "peak_mix_LR": [
+      0.20952293276786804,
+      0.20788604021072388
+    ],
+    "rms_mix_LR": [
+      0.016994194608849867,
+      0.01686142744779897
+    ],
+    "rms_mid": 6.638358052580735e-05,
+    "crest_observed": [
+      [
+        {
+          "n_samples": 88200,
+          "sum_mix2": 0.00038867797513420394,
+          "sum_sdv2": 0.00011098142739605659,
+          "sum_sdi2": 0.00018849729840880177,
+          "sum_err2": 3.5589232994348834e-31,
+          "peak_sdv": 0.1837700410619912,
+          "peak_mix": 0.20952293276786804
+        },
+        {
+          "n_samples": 88200,
+          "sum_mix2": 0.00038867797513420394,
+          "sum_sdv2": 0.00011098142739605659,
+          "sum_sdi2": 0.00018849729840880177,
+          "sum_err2": 3.5589232994348834e-31,
+          "peak_sdv": 0.1837700410619912,
+          "peak_mix": 0.20952293276786804
+        },
+        {
+          "n_samples": 88200,
+          "sum_mix2": 0.00038867797513420394,
+          "sum_sdv2": 0.00011098142739605659,
+          "sum_sdi2": 0.00018849729840880177,
+          "sum_err2": 3.5589232994348834e-31,
+          "peak_sdv": 0.1837700410619912,
+          "peak_mix": 0.20952293276786804
+        },
+        {
+          "n_samples": 88200,
+          "sum_mix2": 0.00038867797513420394,
+          "sum_sdv2": 0.00011098142739605659,
+          "sum_sdi2": 0.00018849729840880177,
+          "sum_err2": 3.5589232994348834e-31,
+          "peak_sdv": 0.1837700410619912,
+          "peak_mix": 0.20952293276786804
+        }
+      ],
+      [
+        {
+          "n_samples": 88200,
+          "sum_mix2": 0.00038867797513420394,
+          "sum_sdv2": 0.00011098142739605659,
+          "sum_sdi2": 0.00018849729840880177,
+          "sum_err2": 3.5589232994348834e-31,
+          "peak_sdv": 0.1837700410619912,
+          "peak_mix": 0.20952293276786804
+        },
+        {
+          "n_samples": 88200,
+          "sum_mix2": 0.00038867797513420394,
+          "sum_sdv2": 0.00011098142739605659,
+          "sum_sdi2": 0.00018849729840880177,
+          "sum_err2": 3.5589232994348834e-31,
+          "peak_sdv": 0.1837700410619912,
+          "peak_mix": 0.20952293276786804
+        },
+        {
+          "n_samples": 88200,
+          "sum_mix2": 0.00038867797513420394,
+          "sum_sdv2": 0.00011098142739605659,
+          "sum_sdi2": 0.00018849729840880177,
+          "sum_err2": 3.5589232994348834e-31,
+          "peak_sdv": 0.1837700410619912,
+          "peak_mix": 0.20952293276786804
+        },
+        {
+          "n_samples": 88200,
+          "sum_mix2": 0.00038867797513420394,
+          "sum_sdv2": 0.00011098142739605659,
+          "sum_sdi2": 0.00018849729840880177,
+          "sum_err2": 3.5589232994348834e-31,
+          "peak_sdv": 0.1837700410619912,
+          "peak_mix": 0.20952293276786804
+        }
+      ]
+    ],
+    "validation_calls": [
+      1,
+      1
+    ],
+    "n_tensors": 52,
+    "different_tensors": [],
+    "elementwise": 28,
+    "max_tensor_delta": 0.0,
+    "both_formula_error": 0.0,
+    "identical_scale": true,
+    "identical_span_sign_residual": true,
+    "residual_calls": 0,
+    "signs": [
+      1.0
+    ],
+    "shifts": [
+      0
+    ],
+    "pcm": {
+      "SDV": {
+        "max_delta_LR": [
+          0.0,
+          0.0
+        ],
+        "different_samples": 0,
+        "sr": 44100,
+        "frames": 88200,
+        "channels": 2,
+        "seconds": 2.0,
+        "sha256_decoded": [
+          "c85e598d699ab0da94ea02ba82538e42be99cedf0f99479f7343ef5805c8d94e",
+          "c85e598d699ab0da94ea02ba82538e42be99cedf0f99479f7343ef5805c8d94e"
+        ],
+        "R_L_rms_ratio": 0.992187500506612
+      },
+      "SDI": {
+        "max_delta_LR": [
+          0.0,
+          0.0
+        ],
+        "different_samples": 0,
+        "sr": 44100,
+        "frames": 88200,
+        "channels": 2,
+        "seconds": 2.0,
+        "sha256_decoded": [
+          "1cd910d450aa1c009ffbc81966dd44770a3d228b2b93bf6feb1494552d7ef68f",
+          "1cd910d450aa1c009ffbc81966dd44770a3d228b2b93bf6feb1494552d7ef68f"
+        ],
+        "R_L_rms_ratio": 0.9921874988971243
+      }
+    },
+    "reconstruction_max_abs": [
+      7.450580596923828e-09,
+      7.450580596923828e-09
+    ],
+    "reconstruction_delta": 0.0
+  }
+]

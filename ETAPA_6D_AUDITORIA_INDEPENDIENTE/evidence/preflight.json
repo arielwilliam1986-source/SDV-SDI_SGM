@@ -1,0 +1,32 @@
+{
+  "reference_6B": "7092c6cee764861d4bd8230eccb700f1d4d0556c",
+  "reference_6C": "00979914d77870f2151bc9ea8af4bd60e2df524b",
+  "lists": {
+    "ETAPA_6B_VALIDACION_ALINEACION": {
+      "n": 31,
+      "sha256": "dd77c8fe4e2b6e3eea3493d1b2b76735d473b4bb1d446cd75f6da34b5d2550ce"
+    },
+    "ETAPA_6C_CORRECCION_EXPERIMENTAL": {
+      "n": 40,
+      "sha256": "e7ef377a29007ccd055aa2e539abf7294a715b61e02757d7690c1ed9eaafa0ed"
+    },
+    "S5_STEREO_VALIDATION": {
+      "n": 46,
+      "sha256": "ca686d344174af6a6a157bfa0f6e373b9206b9aa16adaebb7b23dedddf750213"
+    }
+  },
+  "bank_6B": {
+    "unique": 338,
+    "bytes": 4033934804,
+    "all_wav_pcm_L_R_verified": true,
+    "selected": 42
+  },
+  "bank_6C": {
+    "unique": 51,
+    "bytes": 234424534,
+    "all_wav_pcm_L_R_verified": true,
+    "selected": 6
+  },
+  "s5_inputs": "verified",
+  "engines_imported": false
+}

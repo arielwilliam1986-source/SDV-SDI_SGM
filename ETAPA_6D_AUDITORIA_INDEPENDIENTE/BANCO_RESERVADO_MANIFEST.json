@@ -1,0 +1,6050 @@
+{
+  "sr": 44100,
+  "channels": 2,
+  "encoding": "IEEE_FLOAT",
+  "generator_sha256": "4a0760b1d0ebac06f9460d874968d7d1df5756860be0f778fb40f7dd49a877aa",
+  "archive_sha256": "12ce640309fd638d5e57a2863eeefa6fdaaa3dfa625bf8f43b461eece20f531d",
+  "wavs": {
+    "29b74f3c9cfe4ba7ae6f4625e9392925e930b01e44818a34642a262c3cb256c9": {
+      "bytes": 705658,
+      "frames": 88200,
+      "pcm_sha256": "497589eafb4287e9af7eb83ee03cdd77fcaea7705b9d1070e04ba267087360c6",
+      "nonfinite_by_channel": [
+        0,
+        0
+      ]
+    },
+    "8bd4ac863905b6b4ded90e2a6664ae083bb87900fae1b46de0b7617372f73f6e": {
+      "bytes": 705658,
+      "frames": 88200,
+      "pcm_sha256": "730e0879d0e2e9390ca609c050403f69886fb4767440e19e55f6a75c1a02df9f",
+      "nonfinite_by_channel": [
+        0,
+        0
+      ]
+    },
+    "c783a6c079d5141d09278dd75bb2afaf41178cae3ce441d0a838a0eacb03efce": {
+      "bytes": 705658,
+      "frames": 88200,
+      "pcm_sha256": "707f1079a68065b688badc7d7c99ae846c236561fec402e53bf4f57169ac947d",
+      "nonfinite_by_channel": [
+        0,
+        0
+      ]
+    },
+    "32d73ebfdcbb208f7a360a083f7596ad88a9aecfe2e46f26c09b287af605b182": {
+      "bytes": 705658,
+      "frames": 88200,
+      "pcm_sha256": "bbbf3baab8a5dc22f0ccabe9c9e753a0ec5a58713d6eab66ea37813498a1625a",
+      "nonfinite_by_channel": [
+        0,
+        0
+      ]
+    },
+    "62951881a9fca4c1e328e7c5c4908037893785c54b50396cb4bbdf254d09b6cb": {
+      "bytes": 705658,
+      "frames": 88200,
+      "pcm_sha256": "965df92facca473d4a4a4e207d3ecb23bcd5ccf59b6c50c7dd48d8c7dd9d28ce",
+      "nonfinite_by_channel": [
+        0,
+        0
+      ]
+    },
+    "df5428d2e5f787999f63964175ddbda20d1da2a3cb9d6f86b4707f0e071751e2": {
+      "bytes": 705658,
+      "frames": 88200,
+      "pcm_sha256": "889c17e28be3114551f2f6bd481d1c6374f3c6e3e07ef68bf9f1264b657f81e4",
+      "nonfinite_by_channel": [
+        0,
+        0
+      ]
+    },
+    "6496920d32b2af2513f8125b2c94af2118d997e427ffb47f7c58fb29cd6d8e2d": {
+      "bytes": 705658,
+      "frames": 88200,
+      "pcm_sha256": "43477ba197a45fd162b62b3506181548540ba299fdd0c49739b8fd39f93b5362",
+      "nonfinite_by_channel": [
+        0,
+        0
+      ]
+    },
+    "7d18de9ef05457faf49913d4a936330c35ee86dadbe551a8d6a18ab4a63316ef": {
+      "bytes": 705658,
+      "frames": 88200,
+      "pcm_sha256": "e33938c5cd3bda69ec86be69d7630d8e1ebf6f93bd85bba280bd64a44cb3b4c4",
+      "nonfinite_by_channel": [
+        0,
+        0
+      ]
+    },
+    "82048b7664b4d9cf3b66b312f55dc7912368fa82d77116c86299b9588140b223": {
+      "bytes": 705658,
+      "frames": 88200,
+      "pcm_sha256": "278cdc82dee3e516f7435d44886ee12a3247e52f2bda6865058f511dc80d8823",
+      "nonfinite_by_channel": [
+        0,
+        0
+      ]
+    },
+    "e4307b344f44274b44c9b6229d41d2c7fba3648005110ad703e5505a287d6078": {
+      "bytes": 705658,
+      "frames": 88200,
+      "pcm_sha256": "b2d31d5fd2f104e5252014b1643ad16bc06d45739d47f23ea8a3e68beefc0509",
+      "nonfinite_by_channel": [
+        0,
+        0
+      ]
+    },
+    "a6f9f4831b40d8e792a694c03560961e2b5a4001cb00bef207af5df8ac43d60f": {
+      "bytes": 705658,
+      "frames": 88200,
+      "pcm_sha256": "7b62a21b6622dbc2749789ebba261a89aadc8232b42e281cafd17d6407e5ad7f",
+      "nonfinite_by_channel": [
+        0,
+        0
+      ]
+    },
+    "1df4fdb837c3496af8961c5a10e526d363e6532940ba2e75060b8d1e26e78144": {
+      "bytes": 705658,
+      "frames": 88200,
+      "pcm_sha256": "759abbcd2c87e3d9724271917c9fbbc351356616a79d0af7ece03fb291951367",
+      "nonfinite_by_channel": [
+        0,
+        0
+      ]
+    },
+    "684e6d3de2d7d4d41fe3b9eab4583bd041c694ce36cb7f61f20c083df3711828": {
+      "bytes": 705658,
+      "frames": 88200,
+      "pcm_sha256": "b763c58c7b22deee161364f4def6461cff6614307ac7c06381d5b9527b1d8cc0",
+      "nonfinite_by_channel": [
+        0,
+        0
+      ]
+    },
+    "06b81abd5242865a18426c796a92dc165cc2239054ca41b0989a2da18cdd6057": {
+      "bytes": 705658,
+      "frames": 88200,
+      "pcm_sha256": "9e3c05199eb59a04d2e4166eb72a7c63ae345d76007c7a509af0651f5d9eafae",
+      "nonfinite_by_channel": [
+        0,
+        0
+      ]
+    },
+    "100f1b5f9b2c0953b24858a9ade5b4a07e0999aeb3f7ec30a41bb55616451d47": {
+      "bytes": 705658,
+      "frames": 88200,
+      "pcm_sha256": "1ac84da3e388d0e2e322a4bc01c02f0458d502932c13387170d13d317b0075cd",
+      "nonfinite_by_channel": [
+        0,
+        0
+      ]
+    },
+    "c890d8f9121885aa0ea761b508ac619b88b27ab193afcf9be80efa379ca7cc65": {
+      "bytes": 705658,
+      "frames": 88200,
+      "pcm_sha256": "5ee8a343ad0da70fe124da6931684ce3968c28675a3cecf8bc85b438b04b6df5",
+      "nonfinite_by_channel": [
+        0,
+        0
+      ]
+    },
+    "4c9cb63395e5e1f6e8a6e248e1b6cb8b14290b9fb000af91462c543e9aeb340d": {
+      "bytes": 705658,
+      "frames": 88200,
+      "pcm_sha256": "7a605ecdd3d846cb33a8e4c057e79bc4c4593d1d14d084bfaf03aa9ab3f568ce",
+      "nonfinite_by_channel": [
+        0,
+        0
+      ]
+    },
+    "2c218aef4c54389250e626f70d974347ec197af9d16ba9a8df62ca11db8917ee": {
+      "bytes": 705658,
+      "frames": 88200,
+      "pcm_sha256": "e1d98d2831935070b227ec5e70c33e84fe86241faa5640ad0592741c2b4c0a7b",
+      "nonfinite_by_channel": [
+        0,
+        0
+      ]
+    },
+    "08f34ebf651ac9237285d6057074336d5b5ea4322384bbbea6af4552e7e6d7eb": {
+      "bytes": 705658,
+      "frames": 88200,
+      "pcm_sha256": "29bca5115af490c016cb138693f1bd6e36cd1b869d3b3d84dfd0087e3e953e89",
+      "nonfinite_by_channel": [
+        0,
+        0
+      ]
+    },
+    "4066cdc39393ff96ecda3b9a3203a85c35efb101a452ad457d16403d91973721": {
+      "bytes": 705658,
+      "frames": 88200,
+      "pcm_sha256": "9a66271551e457af76e433a8037526e9be344f093257959803202ad9569aea55",
+      "nonfinite_by_channel": [
+        0,
+        0
+      ]
+    },
+    "f4070380d1ca2d99cb7663bbdd05349ebfc66bfb2a38204ef2fad2f035028cdd": {
+      "bytes": 705658,
+      "frames": 88200,
+      "pcm_sha256": "c48c9d04986616bdb259ccea948a20223bd61f0620d2f9d83e12382688834fc5",
+      "nonfinite_by_channel": [
+        0,
+        0
+      ]
+    },
+    "c7e27da3544083d11b640b0b6a0f487358af31a1766bea39c79fbfcea8277ca9": {
+      "bytes": 705658,
+      "frames": 88200,
+      "pcm_sha256": "ebdd3550f368f92c6c76b35849b0989081aedcdcf34469ef175a784a7ef9f67a",
+      "nonfinite_by_channel": [
+        0,
+        0
+      ]
+    },
+    "3837f887df0f45c50da09ed09453e9d768f025aa6aee2387d6d8a872845449b3": {
+      "bytes": 705658,
+      "frames": 88200,
+      "pcm_sha256": "9922793baf7ff95165b4a41d77fe158127bba398a1c0be214dce5eedf95f0269",
+      "nonfinite_by_channel": [
+        0,
+        0
+      ]
+    },
+    "c4b799c23417337805646d840256222b1096690037db463a22467f809008d922": {
+      "bytes": 705658,
+      "frames": 88200,
+      "pcm_sha256": "42a76a828b73e60fdcd8866fd11dc4a25a9fcb8257ea0ff3f5b8951cd999d68a",
+      "nonfinite_by_channel": [
+        0,
+        0
+      ]
+    },
+    "5d5369b79196149505c54e4638f3dd3642113b6172ac717a03b9f6a021ec47f4": {
+      "bytes": 705658,
+      "frames": 88200,
+      "pcm_sha256": "3252ba0421dd2bfce06c3b3a0947865e0a39e681ec6825612126e84b1794b2ac",
+      "nonfinite_by_channel": [
+        0,
+        0
+      ]
+    },
+    "c8368fed1c0e950189d32f4a26bf42576c67fd0dba3c325097732b40903434bd": {
+      "bytes": 705658,
+      "frames": 88200,
+      "pcm_sha256": "b835135b5022764f99b21989f66c7648aa4a002d1b3d11a7b36535f6b7d23894",
+      "nonfinite_by_channel": [
+        0,
+        0
+      ]
+    },
+    "d4e13a897a0bb3d37f5c2612f54c7a0ecbeb11702a5918e316239311afbac63e": {
+      "bytes": 705658,
+      "frames": 88200,
+      "pcm_sha256": "933b0f1d47dc75c2353f268e16dae50965b489d8630ee9917a73990990defe00",
+      "nonfinite_by_channel": [
+        0,
+        0
+      ]
+    },
+    "5d43c0e8f3a4fc42b3c4e1607e60aca2c903a66a16a047671de21f3250b805c7": {
+      "bytes": 705658,
+      "frames": 88200,
+      "pcm_sha256": "cd8d7928e812825064fe56739c5c70090811dd054bcab796a7d0f1cb2bfe07f3",
+      "nonfinite_by_channel": [
+        0,
+        0
+      ]
+    },
+    "1a90351955da792c146f2fc298385cafeb71e44b6737c22b18a7f69eb1111600": {
+      "bytes": 705658,
+      "frames": 88200,
+      "pcm_sha256": "1d827a7b1f609afd647f324de523753b64d4bd47e41b43d17d170f986c9a696d",
+      "nonfinite_by_channel": [
+        0,
+        0
+      ]
+    },
+    "190b3aecde2ad1f9bdd2a74b53df702e3653e55632ccb2b59a1f9a60f7497979": {
+      "bytes": 705658,
+      "frames": 88200,
+      "pcm_sha256": "59ed54a3e6c92381cdacd4aada2544019e7f128e73c7ea0194a0d503bc0a9e6b",
+      "nonfinite_by_channel": [
+        0,
+        0
+      ]
+    },
+    "98b1be01e92370e9cfb32cd743abb658774dd6af06867e560fdc28e083052c0a": {
+      "bytes": 705658,
+      "frames": 88200,
+      "pcm_sha256": "c779d9d9c07e146b712d9142aee740c9858a25154bbc66619873681260f3f173",
+      "nonfinite_by_channel": [
+        0,
+        0
+      ]
+    },
+    "6ed359370f1b5f3a141be12d8b58805f05ad34df3e0c41254f9d640fead703fa": {
+      "bytes": 705658,
+      "frames": 88200,
+      "pcm_sha256": "27542b02cd8a4e7ae5e8f1d4730075e574ac4e3f04ebde3049086bbca6596af3",
+      "nonfinite_by_channel": [
+        0,
+        0
+      ]
+    },
+    "9da3ac5f1f794e9f119bee3448d9f69d6b8b1bf2a53bbe9536d2ece3fd7c672d": {
+      "bytes": 705658,
+      "frames": 88200,
+      "pcm_sha256": "e2b133aa89ac2d273072de9b5ca38808f05d00da75ed08a84ce80e13f28276dc",
+      "nonfinite_by_channel": [
+        0,
+        0
+      ]
+    },
+    "84c4beb55bb29f65967157c20c8a2a81e936443ba82bad49c880e8a224a247fe": {
+      "bytes": 705658,
+      "frames": 88200,
+      "pcm_sha256": "d61ee514578c3b5eb478110b1c5776b1d051cfcd8e2415aa15afc1f6128abaa1",
+      "nonfinite_by_channel": [
+        0,
+        0
+      ]
+    },
+    "bf907e8cc92a079196fd6b0b4ebc9fc6b5cb04af678344d04758358ed7c2ead0": {
+      "bytes": 705658,
+      "frames": 88200,
+      "pcm_sha256": "327a9c0a5b1c731896f19a01b7599299c8abc33afc9dbd4b876495e252dc0fb9",
+      "nonfinite_by_channel": [
+        0,
+        0
+      ]
+    },
+    "2cde27120debb02083575c05343de7c3592dc4c4e11439091145ff397fb33e86": {
+      "bytes": 705658,
+      "frames": 88200,
+      "pcm_sha256": "27174c5a5dd52246fbfd74370895ec8b6c79631f2eb5611cc8ef2378382cd1d4",
+      "nonfinite_by_channel": [
+        0,
+        0
+      ]
+    },
+    "5b8f274c2f818527e9e5e11b26a8e07a87ac80d443e16c3b64e757dbd72d9fd8": {
+      "bytes": 705658,
+      "frames": 88200,
+      "pcm_sha256": "d58122adcba10706df7e5cd4e6739510cca63cfcc01a6242fdd0b8ab3e733f4b",
+      "nonfinite_by_channel": [
+        0,
+        0
+      ]
+    },
+    "618f262d5e2366e5727a9287b28007bd233295b7898144931e2207b46d279d79": {
+      "bytes": 705658,
+      "frames": 88200,
+      "pcm_sha256": "9fda24981e903acf3cfc365793eef1e0eddf70935077cfe42189a2cc67ae8d46",
+      "nonfinite_by_channel": [
+        0,
+        0
+      ]
+    },
+    "ea88fd989e3c410471f45f1e1d66e6ce030369b1322f9962905d85c377062f5d": {
+      "bytes": 705658,
+      "frames": 88200,
+      "pcm_sha256": "b8330f577668338e99413d2fffe7985c7cca893d85fda4266a6e8df2bc1b082b",
+      "nonfinite_by_channel": [
+        0,
+        0
+      ]
+    },
+    "7701527ac5ed47cb85715ca4337864229aa202eabc2e78f25917acb506b71489": {
+      "bytes": 705658,
+      "frames": 88200,
+      "pcm_sha256": "c87af717f180ed4e366514ede53c5af944ac94b9fc1f6ed1facd590f7d30caa5",
+      "nonfinite_by_channel": [
+        0,
+        0
+      ]
+    },
+    "ccffda1605645408d98f196ff232744b9ba49ae9dccb5c5ebdaf80eb1db8aa2e": {
+      "bytes": 705658,
+      "frames": 88200,
+      "pcm_sha256": "3bedc1747d548641bf9918353edbc225064820246670a94e60026ce60754adcd",
+      "nonfinite_by_channel": [
+        0,
+        0
+      ]
+    },
+    "4fdf265dc0585f756660417ae72dd036358b0ee5ce511c60076616e7fe01d0fe": {
+      "bytes": 705658,
+      "frames": 88200,
+      "pcm_sha256": "b75a4ca5a33e98be02b02993245f056004653ee8afcdcbd4e67ceff3494c3035",
+      "nonfinite_by_channel": [
+        0,
+        0
+      ]
+    },
+    "90645a914633fd60292545dacf589cd8a7540fd5810810a952afd7a0608ea940": {
+      "bytes": 705658,
+      "frames": 88200,
+      "pcm_sha256": "d6fb8e7009cbb3766f065bf1580496632879719152773acf153c1e5d3e19701c",
+      "nonfinite_by_channel": [
+        0,
+        0
+      ]
+    },
+    "b595a9efaa2bb9929a98c1870f54529371e8c7024d3c8fe1c1bd8d917d3f25ad": {
+      "bytes": 705658,
+      "frames": 88200,
+      "pcm_sha256": "a78aa5f8404e2ccb4de014076b27021e9b5467ae03e54755091359a240d2fbfe",
+      "nonfinite_by_channel": [
+        0,
+        0
+      ]
+    },
+    "30eae7f2f1dd5c2c2e661fe06eed0e80bf636828a32d6cff28f35b027e054ae6": {
+      "bytes": 705658,
+      "frames": 88200,
+      "pcm_sha256": "d5877d8a5f586e340cbae8d03e8dff699f19646236396ffd89b7c9e0935ad1cf",
+      "nonfinite_by_channel": [
+        0,
+        0
+      ]
+    },
+    "2f142db103dd9e4b5e3e54d2eff36eb2e25a32f20e4ea2c77dc9e59fbbb9b989": {
+      "bytes": 705658,
+      "frames": 88200,
+      "pcm_sha256": "629e8ea9a6b6e34972ad54150d17171e4260eaca4671005db2773a4840ca2297",
+      "nonfinite_by_channel": [
+        0,
+        0
+      ]
+    },
+    "e7b7a123c3bcdfe9898e8df2737c91afc6ca9609a188f2198450f59869a24cb1": {
+      "bytes": 705658,
+      "frames": 88200,
+      "pcm_sha256": "2325f6599f636fb0acddcba71641e07bc90780f60d71e9f88efe0fec76ad4743",
+      "nonfinite_by_channel": [
+        0,
+        0
+      ]
+    },
+    "b9228e8e2d4246eedea0568ae922dd1f10b46bcb257a6cb1a72c4d38754878dd": {
+      "bytes": 705658,
+      "frames": 88200,
+      "pcm_sha256": "da1765e5f43edb90c5a152bd388eb26e231d6f2fd1881879da3df0e0e7ab2227",
+      "nonfinite_by_channel": [
+        0,
+        0
+      ]
+    },
+    "dac2bed3e95148ce2f6f0f5723b334539bfdd8107ff1a137566120384cf913ac": {
+      "bytes": 705658,
+      "frames": 88200,
+      "pcm_sha256": "adc6b972ee274bca760be76942bcd313acf953a597199d8c7ff159ff891b7b01",
+      "nonfinite_by_channel": [
+        0,
+        0
+      ]
+    },
+    "41ec22b0e38df6bbb63ea51a4ce1c2ed20d4b02413ac1d4a1b59b780ccc50b69": {
+      "bytes": 705658,
+      "frames": 88200,
+      "pcm_sha256": "64714ab8dae8aa489817df7b23802c658f0b98ddc9fe81ebb9c173c18721ae56",
+      "nonfinite_by_channel": [
+        0,
+        0
+      ]
+    },
+    "e97d5e1079f777e8a7d0fdeffaa8fcd372ee9beafaf6aa4d962333b7efc2fd0d": {
+      "bytes": 705658,
+      "frames": 88200,
+      "pcm_sha256": "df390fd84f39813e26889bb39bf37bc49b8a930aa6a1e50e90d60471b883f8ba",
+      "nonfinite_by_channel": [
+        0,
+        0
+      ]
+    },
+    "3199963f2d046ab82d690d8e825b29883a4c58bc7f41331b8e8a6a566854bdff": {
+      "bytes": 705658,
+      "frames": 88200,
+      "pcm_sha256": "24a470e293fe262516994f275b78be7748db8620b0b0d5b8c620849410983fae",
+      "nonfinite_by_channel": [
+        0,
+        0
+      ]
+    },
+    "06d321e2d90ed2c53015f45742502b90b8f5b0cad22f57cdfd0c503332b4a994": {
+      "bytes": 705658,
+      "frames": 88200,
+      "pcm_sha256": "33c63de08b440bf491a1b63ecca4526f73fd4e4595079960cc12c3346469c443",
+      "nonfinite_by_channel": [
+        0,
+        0
+      ]
+    },
+    "6c2a0aa18c350faf487ada901b0109a0f85398ceb59c468f90c6a9f27b2b152b": {
+      "bytes": 705658,
+      "frames": 88200,
+      "pcm_sha256": "815c013936479c2ad4c45deab9acca5a7539af646a809d4d0e72db63d3aa7c93",
+      "nonfinite_by_channel": [
+        0,
+        0
+      ]
+    },
+    "13cd092165e2138425ead8ad44d2cb8392e3da2bc3db38709e0cf98fbd5f41a0": {
+      "bytes": 705658,
+      "frames": 88200,
+      "pcm_sha256": "91843085183a346789c09d2f5a3f34c5bec6a54f1accc4c2e120fac8c77a08ab",
+      "nonfinite_by_channel": [
+        0,
+        0
+      ]
+    },
+    "fbeb7e97e56679152a550537274f51b031378f1cbb4a1869fc9cd063b6e73689": {
+      "bytes": 705658,
+      "frames": 88200,
+      "pcm_sha256": "e60ff2523a64f4279f2944d3e565922ebc34936d236a88176a185c8eeddb8aa5",
+      "nonfinite_by_channel": [
+        0,
+        0
+      ]
+    },
+    "e90ff49d29ff688d153543ec2ae965b692998fbfcf3c8313d7e7fd3ad0ba8e58": {
+      "bytes": 705658,
+      "frames": 88200,
+      "pcm_sha256": "d0738e288037e0162aa515424077343da9abf3f9f809a6052678574d59d35b0e",
+      "nonfinite_by_channel": [
+        0,
+        0
+      ]
+    },
+    "8fae6969be66b71639cc599046b84194fb91407df9d7ec01a7000c7e27f669ba": {
+      "bytes": 740218,
+      "frames": 92520,
+      "pcm_sha256": "a18fdf4e6955d81444015f41a8f63c19737f33c593db53e0d72d811a91f3d0d1",
+      "nonfinite_by_channel": [
+        0,
+        0
+      ]
+    },
+    "208b942346ddcdac0450a4fa1a3ed8ca5fdd5f284ab279773b7156ea29559958": {
+      "bytes": 740218,
+      "frames": 92520,
+      "pcm_sha256": "f4d91575af7a0d4cbbb3e27e12d6c16f63501b5bfba48fb8371595da6945e289",
+      "nonfinite_by_channel": [
+        0,
+        0
+      ]
+    },
+    "373dd55c5f872f2427529fdfc6c8e2cbebdaa827fb5dc6f2bc4ed732532c7d5c": {
+      "bytes": 740218,
+      "frames": 92520,
+      "pcm_sha256": "a5481cbd46a16e27d50645245c73a7ed5e7d888e96094ba186fb22effd717df8",
+      "nonfinite_by_channel": [
+        0,
+        0
+      ]
+    },
+    "24003915a65800fa4f74c174cb8b5ece48256fbd8d5c574f4281a8a4e6ff1a6c": {
+      "bytes": 740218,
+      "frames": 92520,
+      "pcm_sha256": "4a0c3e48587d56dfd5fec4bc50becde11fb166ca52b5bd5717e9a26441fd80c9",
+      "nonfinite_by_channel": [
+        0,
+        0
+      ]
+    },
+    "a2a1a970b78fe264a193551d246ce3aad19515fb7063d8378fb9018c078b6d51": {
+      "bytes": 705658,
+      "frames": 88200,
+      "pcm_sha256": "bfda25ac17effd36f1e028f6f6022898210a8e3ea739da1302381ebae8dfb1a4",
+      "nonfinite_by_channel": [
+        0,
+        0
+      ]
+    },
+    "093c4597f7797755d596308ba884f9213e3fb8426a96ebcf74e824a2056b862e": {
+      "bytes": 705658,
+      "frames": 88200,
+      "pcm_sha256": "ab7a1c573b19c523625fbafb8a27786b3a727753cb04eb4553b4e7aab15619c7",
+      "nonfinite_by_channel": [
+        0,
+        0
+      ]
+    },
+    "b89877fdad0001fdce013a4e2b3662c14ce6bdc82555e6546909153b05324e29": {
+      "bytes": 705658,
+      "frames": 88200,
+      "pcm_sha256": "a557917c6ce839282457b9866df56a9402273dabad3c01f817036c2b741a2447",
+      "nonfinite_by_channel": [
+        0,
+        0
+      ]
+    },
+    "a2429cdd7d17cb3a16684f8ebccdfd3aa383a0c08985cc7329d4fc6182e6d215": {
+      "bytes": 705658,
+      "frames": 88200,
+      "pcm_sha256": "dc8794cd9953497320aebb3ebca30f2f4ed1a07c676e55c65ada2d757237332b",
+      "nonfinite_by_channel": [
+        0,
+        0
+      ]
+    },
+    "ba090a95946a3fe7b61d4766ea0cfe9000d95a859e8c652a6d65384ec5809a73": {
+      "bytes": 705658,
+      "frames": 88200,
+      "pcm_sha256": "87bebf23e575ef6444e4063ebce025149021ce0ebf03bce54854e9d7b4b69486",
+      "nonfinite_by_channel": [
+        0,
+        0
+      ]
+    },
+    "3bbeed5b3e9b2601c4a07f5100194153b0c11d74c7b45b0e77b5f858f9ff7b19": {
+      "bytes": 705658,
+      "frames": 88200,
+      "pcm_sha256": "9f2c54ca2b457b094a9bccdc38f907eeafd8c1bdf0cfe2c121dd384c8f064639",
+      "nonfinite_by_channel": [
+        0,
+        0
+      ]
+    },
+    "1d7eb2114eadc7a0dfc804d2335bf8aaa858ac5c25d88d4adf6f09552259655a": {
+      "bytes": 705658,
+      "frames": 88200,
+      "pcm_sha256": "ba481426b10ac7f71d3e534d92c7e6e367b9fd12bc3c270f6dd575cd8d9a79d7",
+      "nonfinite_by_channel": [
+        0,
+        0
+      ]
+    },
+    "c289a144256329dff921a24b7cb854559585d3bd01056de1ad16ae267337e11d": {
+      "bytes": 705658,
+      "frames": 88200,
+      "pcm_sha256": "23478571cb68f9ba178cfb4df67689ea491f0931a1d0b9eb5d15ea512fcf451e",
+      "nonfinite_by_channel": [
+        0,
+        0
+      ]
+    },
+    "6c8cf572f0dfd8fb011c3aef955cc8f7f95f59aa6459bd0100566bed528c921c": {
+      "bytes": 705658,
+      "frames": 88200,
+      "pcm_sha256": "91e976b2d0d9849731fa0883e423e68ec2205161c303c8fa679c203101c72863",
+      "nonfinite_by_channel": [
+        0,
+        0
+      ]
+    },
+    "621880d431a4c7f4233d875627be2b5920cdc629d95cad70e0dabcf33b2a3050": {
+      "bytes": 705658,
+      "frames": 88200,
+      "pcm_sha256": "12cef6cd2d3f43b7afdc006ec7960e6e07524c54b7dbf6514619e51dbdc16fbd",
+      "nonfinite_by_channel": [
+        0,
+        0
+      ]
+    },
+    "8a311f2a71f371aeb0de576c3f36d742aaad9a76485f826c180496afed6a8a68": {
+      "bytes": 705658,
+      "frames": 88200,
+      "pcm_sha256": "a45d4afee84183c4aff30bbcca4fc6972e25ba1e9ab24f15f6d5e5a80a9fbbb8",
+      "nonfinite_by_channel": [
+        0,
+        0
+      ]
+    },
+    "b8a3d8039e67b08eb83ccdd9ea972974fa2d765dee0d509ee936005e6f966212": {
+      "bytes": 705658,
+      "frames": 88200,
+      "pcm_sha256": "9cb1dd2e1a0a0800ca2c3f7aed97708882af74755e800ea5c43bf60370e0fb2c",
+      "nonfinite_by_channel": [
+        0,
+        0
+      ]
+    },
+    "87da5c125023221e68f868a5ba73351c0d81a8c846e8426db6f67cc6d6ce132b": {
+      "bytes": 705658,
+      "frames": 88200,
+      "pcm_sha256": "3b924b08bdc790397fcdff5cb96e9eef341e4e8d51106456cb3813ae31ce518c",
+      "nonfinite_by_channel": [
+        0,
+        0
+      ]
+    },
+    "ad04dbc4237215a04a26491df03611b225155c96cdae30241f82c6a34b3d3255": {
+      "bytes": 705658,
+      "frames": 88200,
+      "pcm_sha256": "824a0afb8e803065c1ab1e100352658a27b5268aa1dfc7836c79ac19005e5bcf",
+      "nonfinite_by_channel": [
+        0,
+        0
+      ]
+    },
+    "698af816daf07bca568a023e818488125c1da5a9408fc602966b26a2fd2a4064": {
+      "bytes": 705658,
+      "frames": 88200,
+      "pcm_sha256": "f4609be7c8eb4c488fdeedf70bb7e72d81d0f130fa7b04b0fffaaa87bf4e2973",
+      "nonfinite_by_channel": [
+        0,
+        0
+      ]
+    },
+    "04ef0cc343ee834030a3ae7bd712199daea7bc8f53d5e803a61488d09237ada7": {
+      "bytes": 705658,
+      "frames": 88200,
+      "pcm_sha256": "15b2e3c8ce023427376fe8d53328c8036c0281ed8327ffa0ccd1970a35a4c550",
+      "nonfinite_by_channel": [
+        0,
+        0
+      ]
+    },
+    "a4ca49e9a276a72c087a81fa8e7bb9ec48eea9f1535e37b79343baf0ec3e6416": {
+      "bytes": 705658,
+      "frames": 88200,
+      "pcm_sha256": "a6bf4d3d9e756123d66ab6295ed568e44d9ea11a8e045f0f3288c04e31d46584",
+      "nonfinite_by_channel": [
+        0,
+        0
+      ]
+    },
+    "b26fabfdf9674bdcc630b60d93eb54070f97b759f48dc6857409d3db08dd82c7": {
+      "bytes": 705658,
+      "frames": 88200,
+      "pcm_sha256": "564397222e15f99971521517ca55fae866dc58437567dbb8e7a3e51d8420f1c6",
+      "nonfinite_by_channel": [
+        0,
+        0
+      ]
+    },
+    "ec597890a5d0521404f776104cbe4a3aff181deb6a03e7b8a0a2755a0bced509": {
+      "bytes": 705658,
+      "frames": 88200,
+      "pcm_sha256": "1f98998079c847bfce3fcf0f8c41e96120714f1604b7c1461b653b4046cccf72",
+      "nonfinite_by_channel": [
+        0,
+        0
+      ]
+    },
+    "cdec975b3522f2f1bdd80c5f4cf5e6f49788a5683a0ca5701b8f0e3c415ee29d": {
+      "bytes": 705658,
+      "frames": 88200,
+      "pcm_sha256": "74465bce68e08984433fd353b3ab31c792ea5ebf774d298c4d6e9571c86f43cb",
+      "nonfinite_by_channel": [
+        0,
+        0
+      ]
+    },
+    "92c09b4de6b8ad1fe705aee00762e8c0eeda2685a43c30864f7320a381fd6154": {
+      "bytes": 705658,
+      "frames": 88200,
+      "pcm_sha256": "27f78e2fa86a69418b4978b58c898c53d46577849751e1eeecf2269feeb86f7c",
+      "nonfinite_by_channel": [
+        0,
+        0
+      ]
+    },
+    "893e8e93a392251d6e7cfe1424d4b26d5a39a54c17c63fb949690a517755fa60": {
+      "bytes": 705658,
+      "frames": 88200,
+      "pcm_sha256": "445e8b557871127592c02b8042021e7b23c6f939333f8ad9ce6b47308dce5244",
+      "nonfinite_by_channel": [
+        0,
+        0
+      ]
+    },
+    "32b0593b6f48b722a267a899efb55233221b32c6f345bafcfd4239ee223872cb": {
+      "bytes": 705658,
+      "frames": 88200,
+      "pcm_sha256": "bd427191250a21323ebb266f2621b18a1cafab756af3fd3cb77f0d014df85111",
+      "nonfinite_by_channel": [
+        0,
+        0
+      ]
+    },
+    "43cb6d7a26fa30e798027803feb936e9ec1c3650308518a2371bf45a66bb1886": {
+      "bytes": 705658,
+      "frames": 88200,
+      "pcm_sha256": "5102d1a16a793684a322c8cfb7afd5b564214f196ecd3541b89ed2bfbdef22ba",
+      "nonfinite_by_channel": [
+        0,
+        0
+      ]
+    },
+    "4b8ffaa512598b46f3211346972f279ba1ea64d293fca7471762311f86de6b75": {
+      "bytes": 705658,
+      "frames": 88200,
+      "pcm_sha256": "a38ec734f4aa2d9189632d04f8d088d681c20d12f62bd5c5d44381ea1f17103a",
+      "nonfinite_by_channel": [
+        0,
+        0
+      ]
+    },
+    "7c33086543d52d53efb4f7179c76d10404a409dcbfd693db34db98a0e9ea77be": {
+      "bytes": 705658,
+      "frames": 88200,
+      "pcm_sha256": "c8fb0899fe6e1d3591ec749e3a89e0afb6bd43fa7b66854eded6aa48902fe142",
+      "nonfinite_by_channel": [
+        0,
+        0
+      ]
+    },
+    "b9acec0e6a2e1617aeb0b09b3e0241cea344c9ffaacba27d3c726701ea716337": {
+      "bytes": 705658,
+      "frames": 88200,
+      "pcm_sha256": "416b33da5f5bbc0454bf42e0f2fc0fe8fb76e05ea9402ac76dca22d6566966ec",
+      "nonfinite_by_channel": [
+        0,
+        0
+      ]
+    },
+    "da7897d15eea9f0d28fa4728b836095c9eaa77bfdfa3f5835b9b7284d37ae513": {
+      "bytes": 705658,
+      "frames": 88200,
+      "pcm_sha256": "319a049c9de368b1df2ffe25f17e447ad90ce72246eb72a00c430539a5fc68ae",
+      "nonfinite_by_channel": [
+        0,
+        0
+      ]
+    },
+    "5695dc1f87673644ae8cd5444980af54adf9444abc5a16fe87c2aca8d68f354d": {
+      "bytes": 705658,
+      "frames": 88200,
+      "pcm_sha256": "9ed06d8c93ae69275bf513839d1653fe10553b8bbb560baa1fca0b8093b36b07",
+      "nonfinite_by_channel": [
+        0,
+        0
+      ]
+    },
+    "1ab83a2fb3751aba69255217a24a7e7c4668f0f48411583402f5d5cc8c22fbbf": {
+      "bytes": 705658,
+      "frames": 88200,
+      "pcm_sha256": "99d35c30535bc44d711bc9fde48dcaa4958b5f717e369fd5bebdbca33307a9f2",
+      "nonfinite_by_channel": [
+        0,
+        0
+      ]
+    },
+    "04866fc5496a1fd1ddce96d15e80b1f901c91dd7f9c33e55933932b0552fae05": {
+      "bytes": 705658,
+      "frames": 88200,
+      "pcm_sha256": "9ace9abbcb556a5a8c00dc9ad8c240d7ed3d641759c5f2735f87e5929ba75675",
+      "nonfinite_by_channel": [
+        0,
+        0
+      ]
+    },
+    "3800fc75fba12ffa451764c6baf3ba09383776bae9447eb26aec81a98c006ecb": {
+      "bytes": 609794,
+      "frames": 76217,
+      "pcm_sha256": "5ebac3a598fd99b2e9a671cb5a38b26f855dad6593526a3239ee931629846bbd",
+      "nonfinite_by_channel": [
+        0,
+        0
+      ]
+    },
+    "19faf266dc6d6206e1b1073c4a4d8634cc8ddeee6ce6529d3ed143c918a5dd66": {
+      "bytes": 705658,
+      "frames": 88200,
+      "pcm_sha256": "7e7c8c1bebce37f4376f173e511903fb40c687d4db48a241ccb104551caa514d",
+      "nonfinite_by_channel": [
+        0,
+        0
+      ]
+    },
+    "12c516cf2ac5b4dd8c399b34d34d140c90f43aa693c5d746a251cc60617be8ef": {
+      "bytes": 705658,
+      "frames": 88200,
+      "pcm_sha256": "fa1617a88f7ade40eda69a456d9739de3c1eae55be43c5cc38e5264375a440ac",
+      "nonfinite_by_channel": [
+        0,
+        0
+      ]
+    },
+    "3ba8f9a619cd2bf40c1eb8b5ffa88d6b87dc4f9cf0801505f72cf23be8c979d6": {
+      "bytes": 705658,
+      "frames": 88200,
+      "pcm_sha256": "98928bf6fa47fd2ace49c9f6c8c00325a3a743f2e670e8769c578f398a3999de",
+      "nonfinite_by_channel": [
+        0,
+        0
+      ]
+    },
+    "8b8b3ba28733ed38538ebf0da8dd2478d9884858e7b0fe25d3ca0d82b2d0e96b": {
+      "bytes": 763506,
+      "frames": 95431,
+      "pcm_sha256": "dd7e7246d7d237893b0de3d5f3bbe5c42c54b96132f0de1bb67a63cb7bd0beea",
+      "nonfinite_by_channel": [
+        0,
+        0
+      ]
+    },
+    "9c78179f507a7ff7717d13a54c6bc573114de70335a1b3913a245fd803bd5872": {
+      "bytes": 12700858,
+      "frames": 1587600,
+      "pcm_sha256": "7b344f360c48ad32f951b2aa3a1390f7b15d30abed6335bf861b66cafa91dc7e",
+      "nonfinite_by_channel": [
+        0,
+        0
+      ]
+    },
+    "158e7cb4bc85b0590b479a60d50fea1fd2324374c9bc8a86e9cfd6969d6a1b5f": {
+      "bytes": 12700858,
+      "frames": 1587600,
+      "pcm_sha256": "c221acac3783e377420da61eb887e3cc2ba85fca82cd4652f3b46bbb42ca8883",
+      "nonfinite_by_channel": [
+        0,
+        0
+      ]
+    },
+    "e4610832818de38c3b4f0b561ba3ea3612eac9484401f2ed92d2721e604e263f": {
+      "bytes": 12700858,
+      "frames": 1587600,
+      "pcm_sha256": "8bf6861f70c9bb44114398018794481d280a1208aa9f9d13523eaa9130a1bad7",
+      "nonfinite_by_channel": [
+        0,
+        0
+      ]
+    },
+    "d86fc93e49db7e329b34f4caa9abc82ce9cc924a359b2c77a3f4a726f240162f": {
+      "bytes": 12700858,
+      "frames": 1587600,
+      "pcm_sha256": "b42f266d16976202887096db7a89f706f47d1ebb71afdcb584ecc97f4b5aa784",
+      "nonfinite_by_channel": [
+        0,
+        0
+      ]
+    },
+    "a295e5cffe73f6c01331ca9dc90a22f1333db6e3c31064d22e841bacf076c999": {
+      "bytes": 12700858,
+      "frames": 1587600,
+      "pcm_sha256": "f741ab8fb3a0b50dac0e4b7ea5a260d25500fe4ca2824a482e073217d589ff39",
+      "nonfinite_by_channel": [
+        0,
+        0
+      ]
+    },
+    "f617ce09899bcaa5fda6a983b6591ceb9952028c279a0f15a1d95f6afa086f64": {
+      "bytes": 12700858,
+      "frames": 1587600,
+      "pcm_sha256": "437a9f44ba1be496acd16986b470a01ff3fc13985d50099c082b50635338fff1",
+      "nonfinite_by_channel": [
+        0,
+        0
+      ]
+    },
+    "4efa7e2646bdc329de165d62bd4f54858ba6d8875f5ea55319849b7f8dea6577": {
+      "bytes": 12700858,
+      "frames": 1587600,
+      "pcm_sha256": "617a09b726dfe11ec34e27ca9314da18e6a3a44873cd90996ca264266ecadb01",
+      "nonfinite_by_channel": [
+        0,
+        0
+      ]
+    },
+    "556a4d644df9418cff28228c1d58f9862e71057a6f0d1fbc4edd3429d2b19130": {
+      "bytes": 12700858,
+      "frames": 1587600,
+      "pcm_sha256": "f2801cc027afdd7582cf9afa153634417228f830ba45008e2ff4ec36bab72295",
+      "nonfinite_by_channel": [
+        0,
+        0
+      ]
+    },
+    "6ae0c2ac46c5b32ca22fd73588d94f316d82a9c98a8e058727fc1cb52db8ba04": {
+      "bytes": 12700858,
+      "frames": 1587600,
+      "pcm_sha256": "b0bf84c3a7a001abaeb01a645c2fb508f7c5e3fb7a018a0282076f1070b1b293",
+      "nonfinite_by_channel": [
+        0,
+        0
+      ]
+    },
+    "1ce49b684a308a11ffebabe54112cf5a824a71bc3c2728aa274da416c3c22ad0": {
+      "bytes": 705658,
+      "frames": 88200,
+      "pcm_sha256": "10b3c220f5b05ed24807d61dc30c8a21e563ad80d8cf2eb140350733c1beadd0",
+      "nonfinite_by_channel": [
+        0,
+        0
+      ]
+    },
+    "cba939c415f65054e04bd84fd87630e0b9b1248a2f07fd9a573b98ae1330daa7": {
+      "bytes": 705658,
+      "frames": 88200,
+      "pcm_sha256": "cfbdda1752b3bedcdf39364389e722d4de8d9e79866eec74ee87b354a2baed2a",
+      "nonfinite_by_channel": [
+        0,
+        0
+      ]
+    },
+    "537e7523062d34ce2175b04504bf0df1d4d824df9e18617fa3132d379f011cab": {
+      "bytes": 705658,
+      "frames": 88200,
+      "pcm_sha256": "cd279d7daf75412840683a968b2d16661ba94e6e46976fcd15927452026013d6",
+      "nonfinite_by_channel": [
+        0,
+        0
+      ]
+    },
+    "bc7026a2f800d7e1f1a073d32897b16e848291b885bcd75b052714df61b8a0ef": {
+      "bytes": 705658,
+      "frames": 88200,
+      "pcm_sha256": "2a4682f01e04063888fdbb6cf7acfa283fb6b5c24fb1821d05fe51927a0fdf50",
+      "nonfinite_by_channel": [
+        1,
+        0
+      ]
+    }
+  },
+  "cases": [
+    {
+      "id": "DEV_cero",
+      "partition": "DEV",
+      "seed": 931442868074081486,
+      "frames_mix": 88200,
+      "frames_v": 88200,
+      "frames_i": 88200,
+      "delay_v": [
+        0,
+        0
+      ],
+      "delay_i": [
+        0,
+        0
+      ],
+      "gains_v": [
+        1.0,
+        1.0
+      ],
+      "replica_amplitudes": [
+        0.0,
+        0.0
+      ],
+      "replica_spacing": null,
+      "noise_snr_vs_V_db": null,
+      "truth": {
+        "vocal": {
+          "L": {
+            "state": "ALIGNED",
+            "d": 0,
+            "alternatives": [
+              0
+            ],
+            "why": "marca única",
+            "tags": [
+              {
+                "ref": 11796,
+                "guide": 11796,
+                "d": 0
+              },
+              {
+                "ref": 17547,
+                "guide": 17547,
+                "d": 0
+              },
+              {
+                "ref": 28602,
+                "guide": 28602,
+                "d": 0
+              },
+              {
+                "ref": 43149,
+                "guide": 43149,
+                "d": 0
+              },
+              {
+                "ref": 53667,
+                "guide": 53667,
+                "d": 0
+              },
+              {
+                "ref": 66547,
+                "guide": 66547,
+                "d": 0
+              }
+            ]
+          },
+          "R": {
+            "state": "ALIGNED",
+            "d": 0,
+            "alternatives": [
+              0
+            ],
+            "why": "marca única",
+            "tags": [
+              {
+                "ref": 11052,
+                "guide": 11052,
+                "d": 0
+              },
+              {
+                "ref": 17807,
+                "guide": 17807,
+                "d": 0
+              },
+              {
+                "ref": 28868,
+                "guide": 28868,
+                "d": 0
+              },
+              {
+                "ref": 43786,
+                "guide": 43786,
+                "d": 0
+              },
+              {
+                "ref": 52864,
+                "guide": 52864,
+                "d": 0
+              },
+              {
+                "ref": 66548,
+                "guide": 66548,
+                "d": 0
+              }
+            ]
+          }
+        },
+        "instrumental": {
+          "L": {
+            "state": "ALIGNED",
+            "d": 0,
+            "alternatives": [
+              0
+            ],
+            "why": "marca única",
+            "tags": [
+              {
+                "ref": 11113,
+                "guide": 11113,
+                "d": 0
+              },
+              {
+                "ref": 17724,
+                "guide": 17724,
+                "d": 0
+              },
+              {
+                "ref": 28946,
+                "guide": 28946,
+                "d": 0
+              },
+              {
+                "ref": 42952,
+                "guide": 42952,
+                "d": 0
+              },
+              {
+                "ref": 53919,
+                "guide": 53919,
+                "d": 0
+              },
+              {
+                "ref": 65874,
+                "guide": 65874,
+                "d": 0
+              }
+            ]
+          },
+          "R": {
+            "state": "ALIGNED",
+            "d": 0,
+            "alternatives": [
+              0
+            ],
+            "why": "marca única",
+            "tags": [
+              {
+                "ref": 11228,
+                "guide": 11228,
+                "d": 0
+              },
+              {
+                "ref": 18335,
+                "guide": 18335,
+                "d": 0
+              },
+              {
+                "ref": 28132,
+                "guide": 28132,
+                "d": 0
+              },
+              {
+                "ref": 43150,
+                "guide": 43150,
+                "d": 0
+              },
+              {
+                "ref": 52748,
+                "guide": 52748,
+                "d": 0
+              },
+              {
+                "ref": 66585,
+                "guide": 66585,
+                "d": 0
+              }
+            ]
+          }
+        }
+      },
+      "files": {
+        "mix": "29b74f3c9cfe4ba7ae6f4625e9392925e930b01e44818a34642a262c3cb256c9",
+        "V0": "8bd4ac863905b6b4ded90e2a6664ae083bb87900fae1b46de0b7617372f73f6e",
+        "I0": "c783a6c079d5141d09278dd75bb2afaf41178cae3ce441d0a838a0eacb03efce",
+        "background": "c783a6c079d5141d09278dd75bb2afaf41178cae3ce441d0a838a0eacb03efce",
+        "noise": "32d73ebfdcbb208f7a360a083f7596ad88a9aecfe2e46f26c09b287af605b182",
+        "vocal": "8bd4ac863905b6b4ded90e2a6664ae083bb87900fae1b46de0b7617372f73f6e",
+        "instrumental": "c783a6c079d5141d09278dd75bb2afaf41178cae3ce441d0a838a0eacb03efce"
+      }
+    },
+    {
+      "id": "DEV_no_cero",
+      "partition": "DEV",
+      "seed": 10739435032651349333,
+      "frames_mix": 88200,
+      "frames_v": 88200,
+      "frames_i": 88200,
+      "delay_v": [
+        -511,
+        -511
+      ],
+      "delay_i": [
+        0,
+        0
+      ],
+      "gains_v": [
+        1.0,
+        1.0
+      ],
+      "replica_amplitudes": [
+        0.0,
+        0.0
+      ],
+      "replica_spacing": null,
+      "noise_snr_vs_V_db": null,
+      "truth": {
+        "vocal": {
+          "L": {
+            "state": "MISALIGNED",
+            "d": -511,
+            "alternatives": [
+              -511
+            ],
+            "why": "marca única",
+            "tags": [
+              {
+                "ref": 11535,
+                "guide": 11024,
+                "d": -511
+              },
+              {
+                "ref": 18587,
+                "guide": 18076,
+                "d": -511
+              },
+              {
+                "ref": 28069,
+                "guide": 27558,
+                "d": -511
+              },
+              {
+                "ref": 42743,
+                "guide": 42232,
+                "d": -511
+              },
+              {
+                "ref": 53408,
+                "guide": 52897,
+                "d": -511
+              },
+              {
+                "ref": 66416,
+                "guide": 65905,
+                "d": -511
+              }
+            ]
+          },
+          "R": {
+            "state": "MISALIGNED",
+            "d": -511,
+            "alternatives": [
+              -511
+            ],
+            "why": "marca única",
+            "tags": [
+              {
+                "ref": 10946,
+                "guide": 10435,
+                "d": -511
+              },
+              {
+                "ref": 17863,
+                "guide": 17352,
+                "d": -511
+              },
+              {
+                "ref": 28317,
+                "guide": 27806,
+                "d": -511
+              },
+              {
+                "ref": 43035,
+                "guide": 42524,
+                "d": -511
+              },
+              {
+                "ref": 53625,
+                "guide": 53114,
+                "d": -511
+              },
+              {
+                "ref": 66389,
+                "guide": 65878,
+                "d": -511
+              }
+            ]
+          }
+        },
+        "instrumental": {
+          "L": {
+            "state": "ALIGNED",
+            "d": 0,
+            "alternatives": [
+              0
+            ],
+            "why": "marca única",
+            "tags": [
+              {
+                "ref": 11749,
+                "guide": 11749,
+                "d": 0
+              },
+              {
+                "ref": 17853,
+                "guide": 17853,
+                "d": 0
+              },
+              {
+                "ref": 28327,
+                "guide": 28327,
+                "d": 0
+              },
+              {
+                "ref": 42922,
+                "guide": 42922,
+                "d": 0
+              },
+              {
+                "ref": 53230,
+                "guide": 53230,
+                "d": 0
+              },
+              {
+                "ref": 66482,
+                "guide": 66482,
+                "d": 0
+              }
+            ]
+          },
+          "R": {
+            "state": "ALIGNED",
+            "d": 0,
+            "alternatives": [
+              0
+            ],
+            "why": "marca única",
+            "tags": [
+              {
+                "ref": 11078,
+                "guide": 11078,
+                "d": 0
+              },
+              {
+                "ref": 17841,
+                "guide": 17841,
+                "d": 0
+              },
+              {
+                "ref": 28497,
+                "guide": 28497,
+                "d": 0
+              },
+              {
+                "ref": 42707,
+                "guide": 42707,
+                "d": 0
+              },
+              {
+                "ref": 53290,
+                "guide": 53290,
+                "d": 0
+              },
+              {
+                "ref": 66305,
+                "guide": 66305,
+                "d": 0
+              }
+            ]
+          }
+        }
+      },
+      "files": {
+        "mix": "62951881a9fca4c1e328e7c5c4908037893785c54b50396cb4bbdf254d09b6cb",
+        "V0": "df5428d2e5f787999f63964175ddbda20d1da2a3cb9d6f86b4707f0e071751e2",
+        "I0": "6496920d32b2af2513f8125b2c94af2118d997e427ffb47f7c58fb29cd6d8e2d",
+        "background": "6496920d32b2af2513f8125b2c94af2118d997e427ffb47f7c58fb29cd6d8e2d",
+        "noise": "32d73ebfdcbb208f7a360a083f7596ad88a9aecfe2e46f26c09b287af605b182",
+        "vocal": "7d18de9ef05457faf49913d4a936330c35ee86dadbe551a8d6a18ab4a63316ef",
+        "instrumental": "6496920d32b2af2513f8125b2c94af2118d997e427ffb47f7c58fb29cd6d8e2d"
+      }
+    },
+    {
+      "id": "Z",
+      "partition": "RESERVA",
+      "seed": 11206213775886481907,
+      "frames_mix": 88200,
+      "frames_v": 88200,
+      "frames_i": 88200,
+      "delay_v": [
+        0,
+        0
+      ],
+      "delay_i": [
+        0,
+        0
+      ],
+      "gains_v": [
+        1.0,
+        1.0
+      ],
+      "replica_amplitudes": [
+        0.0,
+        0.0
+      ],
+      "replica_spacing": null,
+      "noise_snr_vs_V_db": null,
+      "truth": {
+        "vocal": {
+          "L": {
+            "state": "ALIGNED",
+            "d": 0,
+            "alternatives": [
+              0
+            ],
+            "why": "marca única",
+            "tags": [
+              {
+                "ref": 11398,
+                "guide": 11398,
+                "d": 0
+              },
+              {
+                "ref": 18250,
+                "guide": 18250,
+                "d": 0
+              },
+              {
+                "ref": 28450,
+                "guide": 28450,
+                "d": 0
+              },
+              {
+                "ref": 42768,
+                "guide": 42768,
+                "d": 0
+              },
+              {
+                "ref": 53524,
+                "guide": 53524,
+                "d": 0
+              },
+              {
+                "ref": 66127,
+                "guide": 66127,
+                "d": 0
+              }
+            ]
+          },
+          "R": {
+            "state": "ALIGNED",
+            "d": 0,
+            "alternatives": [
+              0
+            ],
+            "why": "marca única",
+            "tags": [
+              {
+                "ref": 11692,
+                "guide": 11692,
+                "d": 0
+              },
+              {
+                "ref": 17872,
+                "guide": 17872,
+                "d": 0
+              },
+              {
+                "ref": 28631,
+                "guide": 28631,
+                "d": 0
+              },
+              {
+                "ref": 43514,
+                "guide": 43514,
+                "d": 0
+              },
+              {
+                "ref": 53777,
+                "guide": 53777,
+                "d": 0
+              },
+              {
+                "ref": 65697,
+                "guide": 65697,
+                "d": 0
+              }
+            ]
+          }
+        },
+        "instrumental": {
+          "L": {
+            "state": "ALIGNED",
+            "d": 0,
+            "alternatives": [
+              0
+            ],
+            "why": "marca única",
+            "tags": [
+              {
+                "ref": 11366,
+                "guide": 11366,
+                "d": 0
+              },
+              {
+                "ref": 17745,
+                "guide": 17745,
+                "d": 0
+              },
+              {
+                "ref": 28716,
+                "guide": 28716,
+                "d": 0
+              },
+              {
+                "ref": 42968,
+                "guide": 42968,
+                "d": 0
+              },
+              {
+                "ref": 53195,
+                "guide": 53195,
+                "d": 0
+              },
+              {
+                "ref": 65457,
+                "guide": 65457,
+                "d": 0
+              }
+            ]
+          },
+          "R": {
+            "state": "ALIGNED",
+            "d": 0,
+            "alternatives": [
+              0
+            ],
+            "why": "marca única",
+            "tags": [
+              {
+                "ref": 11400,
+                "guide": 11400,
+                "d": 0
+              },
+              {
+                "ref": 17944,
+                "guide": 17944,
+                "d": 0
+              },
+              {
+                "ref": 28801,
+                "guide": 28801,
+                "d": 0
+              },
+              {
+                "ref": 42561,
+                "guide": 42561,
+                "d": 0
+              },
+              {
+                "ref": 53002,
+                "guide": 53002,
+                "d": 0
+              },
+              {
+                "ref": 65890,
+                "guide": 65890,
+                "d": 0
+              }
+            ]
+          }
+        }
+      },
+      "files": {
+        "mix": "82048b7664b4d9cf3b66b312f55dc7912368fa82d77116c86299b9588140b223",
+        "V0": "e4307b344f44274b44c9b6229d41d2c7fba3648005110ad703e5505a287d6078",
+        "I0": "a6f9f4831b40d8e792a694c03560961e2b5a4001cb00bef207af5df8ac43d60f",
+        "background": "a6f9f4831b40d8e792a694c03560961e2b5a4001cb00bef207af5df8ac43d60f",
+        "noise": "32d73ebfdcbb208f7a360a083f7596ad88a9aecfe2e46f26c09b287af605b182",
+        "vocal": "e4307b344f44274b44c9b6229d41d2c7fba3648005110ad703e5505a287d6078",
+        "instrumental": "a6f9f4831b40d8e792a694c03560961e2b5a4001cb00bef207af5df8ac43d60f"
+      }
+    },
+    {
+      "id": "W",
+      "partition": "RESERVA",
+      "seed": 383573638139320601,
+      "frames_mix": 88200,
+      "frames_v": 88200,
+      "frames_i": 88200,
+      "delay_v": [
+        219,
+        219
+      ],
+      "delay_i": [
+        0,
+        0
+      ],
+      "gains_v": [
+        1.0,
+        1.0
+      ],
+      "replica_amplitudes": [
+        0.0,
+        0.0
+      ],
+      "replica_spacing": null,
+      "noise_snr_vs_V_db": null,
+      "truth": {
+        "vocal": {
+          "L": {
+            "state": "WARNING",
+            "d": 219,
+            "alternatives": [
+              219
+            ],
+            "why": "marca única",
+            "tags": [
+              {
+                "ref": 11313,
+                "guide": 11532,
+                "d": 219
+              },
+              {
+                "ref": 17900,
+                "guide": 18119,
+                "d": 219
+              },
+              {
+                "ref": 28465,
+                "guide": 28684,
+                "d": 219
+              },
+              {
+                "ref": 43292,
+                "guide": 43511,
+                "d": 219
+              },
+              {
+                "ref": 52993,
+                "guide": 53212,
+                "d": 219
+              },
+              {
+                "ref": 66690,
+                "guide": 66909,
+                "d": 219
+              }
+            ]
+          },
+          "R": {
+            "state": "WARNING",
+            "d": 219,
+            "alternatives": [
+              219
+            ],
+            "why": "marca única",
+            "tags": [
+              {
+                "ref": 11032,
+                "guide": 11251,
+                "d": 219
+              },
+              {
+                "ref": 18165,
+                "guide": 18384,
+                "d": 219
+              },
+              {
+                "ref": 28584,
+                "guide": 28803,
+                "d": 219
+              },
+              {
+                "ref": 43312,
+                "guide": 43531,
+                "d": 219
+              },
+              {
+                "ref": 53480,
+                "guide": 53699,
+                "d": 219
+              },
+              {
+                "ref": 65846,
+                "guide": 66065,
+                "d": 219
+              }
+            ]
+          }
+        },
+        "instrumental": {
+          "L": {
+            "state": "ALIGNED",
+            "d": 0,
+            "alternatives": [
+              0
+            ],
+            "why": "marca única",
+            "tags": [
+              {
+                "ref": 11563,
+                "guide": 11563,
+                "d": 0
+              },
+              {
+                "ref": 18084,
+                "guide": 18084,
+                "d": 0
+              },
+              {
+                "ref": 28633,
+                "guide": 28633,
+                "d": 0
+              },
+              {
+                "ref": 43722,
+                "guide": 43722,
+                "d": 0
+              },
+              {
+                "ref": 53362,
+                "guide": 53362,
+                "d": 0
+              },
+              {
+                "ref": 66054,
+                "guide": 66054,
+                "d": 0
+              }
+            ]
+          },
+          "R": {
+            "state": "ALIGNED",
+            "d": 0,
+            "alternatives": [
+              0
+            ],
+            "why": "marca única",
+            "tags": [
+              {
+                "ref": 11466,
+                "guide": 11466,
+                "d": 0
+              },
+              {
+                "ref": 17768,
+                "guide": 17768,
+                "d": 0
+              },
+              {
+                "ref": 28399,
+                "guide": 28399,
+                "d": 0
+              },
+              {
+                "ref": 42923,
+                "guide": 42923,
+                "d": 0
+              },
+              {
+                "ref": 53399,
+                "guide": 53399,
+                "d": 0
+              },
+              {
+                "ref": 66090,
+                "guide": 66090,
+                "d": 0
+              }
+            ]
+          }
+        }
+      },
+      "files": {
+        "mix": "1df4fdb837c3496af8961c5a10e526d363e6532940ba2e75060b8d1e26e78144",
+        "V0": "684e6d3de2d7d4d41fe3b9eab4583bd041c694ce36cb7f61f20c083df3711828",
+        "I0": "06b81abd5242865a18426c796a92dc165cc2239054ca41b0989a2da18cdd6057",
+        "background": "06b81abd5242865a18426c796a92dc165cc2239054ca41b0989a2da18cdd6057",
+        "noise": "32d73ebfdcbb208f7a360a083f7596ad88a9aecfe2e46f26c09b287af605b182",
+        "vocal": "100f1b5f9b2c0953b24858a9ade5b4a07e0999aeb3f7ec30a41bb55616451d47",
+        "instrumental": "06b81abd5242865a18426c796a92dc165cc2239054ca41b0989a2da18cdd6057"
+      }
+    },
+    {
+      "id": "M",
+      "partition": "RESERVA",
+      "seed": 7749822510855846646,
+      "frames_mix": 88200,
+      "frames_v": 88200,
+      "frames_i": 88200,
+      "delay_v": [
+        -1529,
+        -1529
+      ],
+      "delay_i": [
+        0,
+        0
+      ],
+      "gains_v": [
+        1.0,
+        1.0
+      ],
+      "replica_amplitudes": [
+        0.0,
+        0.0
+      ],
+      "replica_spacing": null,
+      "noise_snr_vs_V_db": null,
+      "truth": {
+        "vocal": {
+          "L": {
+            "state": "MISALIGNED",
+            "d": -1529,
+            "alternatives": [
+              -1529
+            ],
+            "why": "marca única",
+            "tags": [
+              {
+                "ref": 11526,
+                "guide": 9997,
+                "d": -1529
+              },
+              {
+                "ref": 17618,
+                "guide": 16089,
+                "d": -1529
+              },
+              {
+                "ref": 28978,
+                "guide": 27449,
+                "d": -1529
+              },
+              {
+                "ref": 42887,
+                "guide": 41358,
+                "d": -1529
+              },
+              {
+                "ref": 53371,
+                "guide": 51842,
+                "d": -1529
+              },
+              {
+                "ref": 66064,
+                "guide": 64535,
+                "d": -1529
+              }
+            ]
+          },
+          "R": {
+            "state": "MISALIGNED",
+            "d": -1529,
+            "alternatives": [
+              -1529
+            ],
+            "why": "marca única",
+            "tags": [
+              {
+                "ref": 11704,
+                "guide": 10175,
+                "d": -1529
+              },
+              {
+                "ref": 17660,
+                "guide": 16131,
+                "d": -1529
+              },
+              {
+                "ref": 28313,
+                "guide": 26784,
+                "d": -1529
+              },
+              {
+                "ref": 42794,
+                "guide": 41265,
+                "d": -1529
+              },
+              {
+                "ref": 53863,
+                "guide": 52334,
+                "d": -1529
+              },
+              {
+                "ref": 66160,
+                "guide": 64631,
+                "d": -1529
+              }
+            ]
+          }
+        },
+        "instrumental": {
+          "L": {
+            "state": "ALIGNED",
+            "d": 0,
+            "alternatives": [
+              0
+            ],
+            "why": "marca única",
+            "tags": [
+              {
+                "ref": 11046,
+                "guide": 11046,
+                "d": 0
+              },
+              {
+                "ref": 17670,
+                "guide": 17670,
+                "d": 0
+              },
+              {
+                "ref": 28720,
+                "guide": 28720,
+                "d": 0
+              },
+              {
+                "ref": 43317,
+                "guide": 43317,
+                "d": 0
+              },
+              {
+                "ref": 53291,
+                "guide": 53291,
+                "d": 0
+              },
+              {
+                "ref": 65870,
+                "guide": 65870,
+                "d": 0
+              }
+            ]
+          },
+          "R": {
+            "state": "ALIGNED",
+            "d": 0,
+            "alternatives": [
+              0
+            ],
+            "why": "marca única",
+            "tags": [
+              {
+                "ref": 11421,
+                "guide": 11421,
+                "d": 0
+              },
+              {
+                "ref": 18542,
+                "guide": 18542,
+                "d": 0
+              },
+              {
+                "ref": 28488,
+                "guide": 28488,
+                "d": 0
+              },
+              {
+                "ref": 42772,
+                "guide": 42772,
+                "d": 0
+              },
+              {
+                "ref": 53646,
+                "guide": 53646,
+                "d": 0
+              },
+              {
+                "ref": 66169,
+                "guide": 66169,
+                "d": 0
+              }
+            ]
+          }
+        }
+      },
+      "files": {
+        "mix": "c890d8f9121885aa0ea761b508ac619b88b27ab193afcf9be80efa379ca7cc65",
+        "V0": "4c9cb63395e5e1f6e8a6e248e1b6cb8b14290b9fb000af91462c543e9aeb340d",
+        "I0": "2c218aef4c54389250e626f70d974347ec197af9d16ba9a8df62ca11db8917ee",
+        "background": "2c218aef4c54389250e626f70d974347ec197af9d16ba9a8df62ca11db8917ee",
+        "noise": "32d73ebfdcbb208f7a360a083f7596ad88a9aecfe2e46f26c09b287af605b182",
+        "vocal": "08f34ebf651ac9237285d6057074336d5b5ea4322384bbbea6af4552e7e6d7eb",
+        "instrumental": "2c218aef4c54389250e626f70d974347ec197af9d16ba9a8df62ca11db8917ee"
+      }
+    },
+    {
+      "id": "distintos",
+      "partition": "RESERVA",
+      "seed": 1432032695640886562,
+      "frames_mix": 88200,
+      "frames_v": 88200,
+      "frames_i": 88200,
+      "delay_v": [
+        1361,
+        -587
+      ],
+      "delay_i": [
+        -811,
+        331
+      ],
+      "gains_v": [
+        1.0,
+        1.0
+      ],
+      "replica_amplitudes": [
+        0.0,
+        0.0
+      ],
+      "replica_spacing": null,
+      "noise_snr_vs_V_db": null,
+      "truth": {
+        "vocal": {
+          "L": {
+            "state": "MISALIGNED",
+            "d": 1361,
+            "alternatives": [
+              1361
+            ],
+            "why": "marca única",
+            "tags": [
+              {
+                "ref": 11917,
+                "guide": 13278,
+                "d": 1361
+              },
+              {
+                "ref": 18293,
+                "guide": 19654,
+                "d": 1361
+              },
+              {
+                "ref": 28263,
+                "guide": 29624,
+                "d": 1361
+              },
+              {
+                "ref": 43141,
+                "guide": 44502,
+                "d": 1361
+              },
+              {
+                "ref": 53757,
+                "guide": 55118,
+                "d": 1361
+              },
+              {
+                "ref": 65755,
+                "guide": 67116,
+                "d": 1361
+              }
+            ]
+          },
+          "R": {
+            "state": "MISALIGNED",
+            "d": -587,
+            "alternatives": [
+              -587
+            ],
+            "why": "marca única",
+            "tags": [
+              {
+                "ref": 11623,
+                "guide": 11036,
+                "d": -587
+              },
+              {
+                "ref": 18308,
+                "guide": 17721,
+                "d": -587
+              },
+              {
+                "ref": 28903,
+                "guide": 28316,
+                "d": -587
+              },
+              {
+                "ref": 43727,
+                "guide": 43140,
+                "d": -587
+              },
+              {
+                "ref": 53427,
+                "guide": 52840,
+                "d": -587
+              },
+              {
+                "ref": 66234,
+                "guide": 65647,
+                "d": -587
+              }
+            ]
+          }
+        },
+        "instrumental": {
+          "L": {
+            "state": "MISALIGNED",
+            "d": -811,
+            "alternatives": [
+              -811
+            ],
+            "why": "marca única",
+            "tags": [
+              {
+                "ref": 11513,
+                "guide": 10702,
+                "d": -811
+              },
+              {
+                "ref": 18564,
+                "guide": 17753,
+                "d": -811
+              },
+              {
+                "ref": 28943,
+                "guide": 28132,
+                "d": -811
+              },
+              {
+                "ref": 43409,
+                "guide": 42598,
+                "d": -811
+              },
+              {
+                "ref": 53155,
+                "guide": 52344,
+                "d": -811
+              },
+              {
+                "ref": 65650,
+                "guide": 64839,
+                "d": -811
+              }
+            ]
+          },
+          "R": {
+            "state": "WARNING",
+            "d": 331,
+            "alternatives": [
+              331
+            ],
+            "why": "marca única",
+            "tags": [
+              {
+                "ref": 11024,
+                "guide": 11355,
+                "d": 331
+              },
+              {
+                "ref": 17950,
+                "guide": 18281,
+                "d": 331
+              },
+              {
+                "ref": 28839,
+                "guide": 29170,
+                "d": 331
+              },
+              {
+                "ref": 43208,
+                "guide": 43539,
+                "d": 331
+              },
+              {
+                "ref": 53230,
+                "guide": 53561,
+                "d": 331
+              },
+              {
+                "ref": 65984,
+                "guide": 66315,
+                "d": 331
+              }
+            ]
+          }
+        }
+      },
+      "files": {
+        "mix": "4066cdc39393ff96ecda3b9a3203a85c35efb101a452ad457d16403d91973721",
+        "V0": "f4070380d1ca2d99cb7663bbdd05349ebfc66bfb2a38204ef2fad2f035028cdd",
+        "I0": "c7e27da3544083d11b640b0b6a0f487358af31a1766bea39c79fbfcea8277ca9",
+        "background": "c7e27da3544083d11b640b0b6a0f487358af31a1766bea39c79fbfcea8277ca9",
+        "noise": "32d73ebfdcbb208f7a360a083f7596ad88a9aecfe2e46f26c09b287af605b182",
+        "vocal": "3837f887df0f45c50da09ed09453e9d768f025aa6aee2387d6d8a872845449b3",
+        "instrumental": "c4b799c23417337805646d840256222b1096690037db463a22467f809008d922"
+      }
+    },
+    {
+      "id": "swap",
+      "partition": "RESERVA",
+      "seed": 1432032695640886562,
+      "frames_mix": 88200,
+      "frames_v": 88200,
+      "frames_i": 88200,
+      "delay_v": [
+        -587,
+        1361
+      ],
+      "delay_i": [
+        331,
+        -811
+      ],
+      "gains_v": [
+        1.0,
+        1.0
+      ],
+      "replica_amplitudes": [
+        0.0,
+        0.0
+      ],
+      "replica_spacing": null,
+      "noise_snr_vs_V_db": null,
+      "truth": {
+        "vocal": {
+          "L": {
+            "state": "MISALIGNED",
+            "d": -587,
+            "alternatives": [
+              -587
+            ],
+            "why": "marca única",
+            "tags": [
+              {
+                "ref": 11623,
+                "guide": 11036,
+                "d": -587
+              },
+              {
+                "ref": 18308,
+                "guide": 17721,
+                "d": -587
+              },
+              {
+                "ref": 28903,
+                "guide": 28316,
+                "d": -587
+              },
+              {
+                "ref": 43727,
+                "guide": 43140,
+                "d": -587
+              },
+              {
+                "ref": 53427,
+                "guide": 52840,
+                "d": -587
+              },
+              {
+                "ref": 66234,
+                "guide": 65647,
+                "d": -587
+              }
+            ]
+          },
+          "R": {
+            "state": "MISALIGNED",
+            "d": 1361,
+            "alternatives": [
+              1361
+            ],
+            "why": "marca única",
+            "tags": [
+              {
+                "ref": 11917,
+                "guide": 13278,
+                "d": 1361
+              },
+              {
+                "ref": 18293,
+                "guide": 19654,
+                "d": 1361
+              },
+              {
+                "ref": 28263,
+                "guide": 29624,
+                "d": 1361
+              },
+              {
+                "ref": 43141,
+                "guide": 44502,
+                "d": 1361
+              },
+              {
+                "ref": 53757,
+                "guide": 55118,
+                "d": 1361
+              },
+              {
+                "ref": 65755,
+                "guide": 67116,
+                "d": 1361
+              }
+            ]
+          }
+        },
+        "instrumental": {
+          "L": {
+            "state": "WARNING",
+            "d": 331,
+            "alternatives": [
+              331
+            ],
+            "why": "marca única",
+            "tags": [
+              {
+                "ref": 11024,
+                "guide": 11355,
+                "d": 331
+              },
+              {
+                "ref": 17950,
+                "guide": 18281,
+                "d": 331
+              },
+              {
+                "ref": 28839,
+                "guide": 29170,
+                "d": 331
+              },
+              {
+                "ref": 43208,
+                "guide": 43539,
+                "d": 331
+              },
+              {
+                "ref": 53230,
+                "guide": 53561,
+                "d": 331
+              },
+              {
+                "ref": 65984,
+                "guide": 66315,
+                "d": 331
+              }
+            ]
+          },
+          "R": {
+            "state": "MISALIGNED",
+            "d": -811,
+            "alternatives": [
+              -811
+            ],
+            "why": "marca única",
+            "tags": [
+              {
+                "ref": 11513,
+                "guide": 10702,
+                "d": -811
+              },
+              {
+                "ref": 18564,
+                "guide": 17753,
+                "d": -811
+              },
+              {
+                "ref": 28943,
+                "guide": 28132,
+                "d": -811
+              },
+              {
+                "ref": 43409,
+                "guide": 42598,
+                "d": -811
+              },
+              {
+                "ref": 53155,
+                "guide": 52344,
+                "d": -811
+              },
+              {
+                "ref": 65650,
+                "guide": 64839,
+                "d": -811
+              }
+            ]
+          }
+        }
+      },
+      "files": {
+        "mix": "5d5369b79196149505c54e4638f3dd3642113b6172ac717a03b9f6a021ec47f4",
+        "V0": "c8368fed1c0e950189d32f4a26bf42576c67fd0dba3c325097732b40903434bd",
+        "I0": "d4e13a897a0bb3d37f5c2612f54c7a0ecbeb11702a5918e316239311afbac63e",
+        "background": "d4e13a897a0bb3d37f5c2612f54c7a0ecbeb11702a5918e316239311afbac63e",
+        "noise": "32d73ebfdcbb208f7a360a083f7596ad88a9aecfe2e46f26c09b287af605b182",
+        "vocal": "5d43c0e8f3a4fc42b3c4e1607e60aca2c903a66a16a047671de21f3250b805c7",
+        "instrumental": "1a90351955da792c146f2fc298385cafeb71e44b6737c22b18a7f69eb1111600"
+      }
+    },
+    {
+      "id": "invL",
+      "partition": "RESERVA",
+      "seed": 14088540025836981504,
+      "frames_mix": 88200,
+      "frames_v": 88200,
+      "frames_i": 88200,
+      "delay_v": [
+        -827,
+        -827
+      ],
+      "delay_i": [
+        0,
+        0
+      ],
+      "gains_v": [
+        -1.0,
+        1.0
+      ],
+      "replica_amplitudes": [
+        0.0,
+        0.0
+      ],
+      "replica_spacing": null,
+      "noise_snr_vs_V_db": null,
+      "truth": {
+        "vocal": {
+          "L": {
+            "state": "MISALIGNED",
+            "d": -827,
+            "alternatives": [
+              -827
+            ],
+            "why": "marca única",
+            "tags": [
+              {
+                "ref": 11225,
+                "guide": 10398,
+                "d": -827
+              },
+              {
+                "ref": 18025,
+                "guide": 17198,
+                "d": -827
+              },
+              {
+                "ref": 28832,
+                "guide": 28005,
+                "d": -827
+              },
+              {
+                "ref": 42804,
+                "guide": 41977,
+                "d": -827
+              },
+              {
+                "ref": 53710,
+                "guide": 52883,
+                "d": -827
+              },
+              {
+                "ref": 66795,
+                "guide": 65968,
+                "d": -827
+              }
+            ]
+          },
+          "R": {
+            "state": "MISALIGNED",
+            "d": -827,
+            "alternatives": [
+              -827
+            ],
+            "why": "marca única",
+            "tags": [
+              {
+                "ref": 11546,
+                "guide": 10719,
+                "d": -827
+              },
+              {
+                "ref": 18648,
+                "guide": 17821,
+                "d": -827
+              },
+              {
+                "ref": 28708,
+                "guide": 27881,
+                "d": -827
+              },
+              {
+                "ref": 42583,
+                "guide": 41756,
+                "d": -827
+              },
+              {
+                "ref": 53299,
+                "guide": 52472,
+                "d": -827
+              },
+              {
+                "ref": 65997,
+                "guide": 65170,
+                "d": -827
+              }
+            ]
+          }
+        },
+        "instrumental": {
+          "L": {
+            "state": "ALIGNED",
+            "d": 0,
+            "alternatives": [
+              0
+            ],
+            "why": "marca única",
+            "tags": [
+              {
+                "ref": 11698,
+                "guide": 11698,
+                "d": 0
+              },
+              {
+                "ref": 17877,
+                "guide": 17877,
+                "d": 0
+              },
+              {
+                "ref": 28374,
+                "guide": 28374,
+                "d": 0
+              },
+              {
+                "ref": 43217,
+                "guide": 43217,
+                "d": 0
+              },
+              {
+                "ref": 53728,
+                "guide": 53728,
+                "d": 0
+              },
+              {
+                "ref": 65638,
+                "guide": 65638,
+                "d": 0
+              }
+            ]
+          },
+          "R": {
+            "state": "ALIGNED",
+            "d": 0,
+            "alternatives": [
+              0
+            ],
+            "why": "marca única",
+            "tags": [
+              {
+                "ref": 11473,
+                "guide": 11473,
+                "d": 0
+              },
+              {
+                "ref": 17693,
+                "guide": 17693,
+                "d": 0
+              },
+              {
+                "ref": 28658,
+                "guide": 28658,
+                "d": 0
+              },
+              {
+                "ref": 43061,
+                "guide": 43061,
+                "d": 0
+              },
+              {
+                "ref": 53314,
+                "guide": 53314,
+                "d": 0
+              },
+              {
+                "ref": 66016,
+                "guide": 66016,
+                "d": 0
+              }
+            ]
+          }
+        }
+      },
+      "files": {
+        "mix": "190b3aecde2ad1f9bdd2a74b53df702e3653e55632ccb2b59a1f9a60f7497979",
+        "V0": "98b1be01e92370e9cfb32cd743abb658774dd6af06867e560fdc28e083052c0a",
+        "I0": "6ed359370f1b5f3a141be12d8b58805f05ad34df3e0c41254f9d640fead703fa",
+        "background": "6ed359370f1b5f3a141be12d8b58805f05ad34df3e0c41254f9d640fead703fa",
+        "noise": "32d73ebfdcbb208f7a360a083f7596ad88a9aecfe2e46f26c09b287af605b182",
+        "vocal": "9da3ac5f1f794e9f119bee3448d9f69d6b8b1bf2a53bbe9536d2ece3fd7c672d",
+        "instrumental": "6ed359370f1b5f3a141be12d8b58805f05ad34df3e0c41254f9d640fead703fa"
+      }
+    },
+    {
+      "id": "soloL",
+      "partition": "RESERVA",
+      "seed": 15568529779154390470,
+      "frames_mix": 88200,
+      "frames_v": 88200,
+      "frames_i": 88200,
+      "delay_v": [
+        0,
+        0
+      ],
+      "delay_i": [
+        0,
+        0
+      ],
+      "gains_v": [
+        1.0,
+        1.0
+      ],
+      "replica_amplitudes": [
+        0.0,
+        0.0
+      ],
+      "replica_spacing": null,
+      "noise_snr_vs_V_db": null,
+      "truth": {
+        "vocal": {
+          "L": {
+            "state": "ALIGNED",
+            "d": 0,
+            "alternatives": [
+              0
+            ],
+            "why": "marca única",
+            "tags": [
+              {
+                "ref": 11618,
+                "guide": 11618,
+                "d": 0
+              },
+              {
+                "ref": 17564,
+                "guide": 17564,
+                "d": 0
+              },
+              {
+                "ref": 28100,
+                "guide": 28100,
+                "d": 0
+              },
+              {
+                "ref": 43479,
+                "guide": 43479,
+                "d": 0
+              },
+              {
+                "ref": 53576,
+                "guide": 53576,
+                "d": 0
+              },
+              {
+                "ref": 66487,
+                "guide": 66487,
+                "d": 0
+              }
+            ]
+          },
+          "R": {
+            "state": "INSUFFICIENT_SIGNAL",
+            "d": null,
+            "alternatives": [],
+            "why": "columna constante o ausente",
+            "tags": []
+          }
+        },
+        "instrumental": {
+          "L": {
+            "state": "ALIGNED",
+            "d": 0,
+            "alternatives": [
+              0
+            ],
+            "why": "marca única",
+            "tags": [
+              {
+                "ref": 11242,
+                "guide": 11242,
+                "d": 0
+              },
+              {
+                "ref": 18129,
+                "guide": 18129,
+                "d": 0
+              },
+              {
+                "ref": 28521,
+                "guide": 28521,
+                "d": 0
+              },
+              {
+                "ref": 43318,
+                "guide": 43318,
+                "d": 0
+              },
+              {
+                "ref": 53386,
+                "guide": 53386,
+                "d": 0
+              },
+              {
+                "ref": 66487,
+                "guide": 66487,
+                "d": 0
+              }
+            ]
+          },
+          "R": {
+            "state": "ALIGNED",
+            "d": 0,
+            "alternatives": [
+              0
+            ],
+            "why": "marca única",
+            "tags": [
+              {
+                "ref": 11874,
+                "guide": 11874,
+                "d": 0
+              },
+              {
+                "ref": 18461,
+                "guide": 18461,
+                "d": 0
+              },
+              {
+                "ref": 28943,
+                "guide": 28943,
+                "d": 0
+              },
+              {
+                "ref": 43360,
+                "guide": 43360,
+                "d": 0
+              },
+              {
+                "ref": 53341,
+                "guide": 53341,
+                "d": 0
+              },
+              {
+                "ref": 66221,
+                "guide": 66221,
+                "d": 0
+              }
+            ]
+          }
+        }
+      },
+      "files": {
+        "mix": "84c4beb55bb29f65967157c20c8a2a81e936443ba82bad49c880e8a224a247fe",
+        "V0": "bf907e8cc92a079196fd6b0b4ebc9fc6b5cb04af678344d04758358ed7c2ead0",
+        "I0": "2cde27120debb02083575c05343de7c3592dc4c4e11439091145ff397fb33e86",
+        "background": "2cde27120debb02083575c05343de7c3592dc4c4e11439091145ff397fb33e86",
+        "noise": "32d73ebfdcbb208f7a360a083f7596ad88a9aecfe2e46f26c09b287af605b182",
+        "vocal": "bf907e8cc92a079196fd6b0b4ebc9fc6b5cb04af678344d04758358ed7c2ead0",
+        "instrumental": "2cde27120debb02083575c05343de7c3592dc4c4e11439091145ff397fb33e86"
+      }
+    },
+    {
+      "id": "soloR",
+      "partition": "RESERVA",
+      "seed": 15568529779154390470,
+      "frames_mix": 88200,
+      "frames_v": 88200,
+      "frames_i": 88200,
+      "delay_v": [
+        0,
+        0
+      ],
+      "delay_i": [
+        0,
+        0
+      ],
+      "gains_v": [
+        1.0,
+        1.0
+      ],
+      "replica_amplitudes": [
+        0.0,
+        0.0
+      ],
+      "replica_spacing": null,
+      "noise_snr_vs_V_db": null,
+      "truth": {
+        "vocal": {
+          "L": {
+            "state": "INSUFFICIENT_SIGNAL",
+            "d": null,
+            "alternatives": [],
+            "why": "columna constante o ausente",
+            "tags": []
+          },
+          "R": {
+            "state": "ALIGNED",
+            "d": 0,
+            "alternatives": [
+              0
+            ],
+            "why": "marca única",
+            "tags": [
+              {
+                "ref": 11618,
+                "guide": 11618,
+                "d": 0
+              },
+              {
+                "ref": 17564,
+                "guide": 17564,
+                "d": 0
+              },
+              {
+                "ref": 28100,
+                "guide": 28100,
+                "d": 0
+              },
+              {
+                "ref": 43479,
+                "guide": 43479,
+                "d": 0
+              },
+              {
+                "ref": 53576,
+                "guide": 53576,
+                "d": 0
+              },
+              {
+                "ref": 66487,
+                "guide": 66487,
+                "d": 0
+              }
+            ]
+          }
+        },
+        "instrumental": {
+          "L": {
+            "state": "ALIGNED",
+            "d": 0,
+            "alternatives": [
+              0
+            ],
+            "why": "marca única",
+            "tags": [
+              {
+                "ref": 11874,
+                "guide": 11874,
+                "d": 0
+              },
+              {
+                "ref": 18461,
+                "guide": 18461,
+                "d": 0
+              },
+              {
+                "ref": 28943,
+                "guide": 28943,
+                "d": 0
+              },
+              {
+                "ref": 43360,
+                "guide": 43360,
+                "d": 0
+              },
+              {
+                "ref": 53341,
+                "guide": 53341,
+                "d": 0
+              },
+              {
+                "ref": 66221,
+                "guide": 66221,
+                "d": 0
+              }
+            ]
+          },
+          "R": {
+            "state": "ALIGNED",
+            "d": 0,
+            "alternatives": [
+              0
+            ],
+            "why": "marca única",
+            "tags": [
+              {
+                "ref": 11242,
+                "guide": 11242,
+                "d": 0
+              },
+              {
+                "ref": 18129,
+                "guide": 18129,
+                "d": 0
+              },
+              {
+                "ref": 28521,
+                "guide": 28521,
+                "d": 0
+              },
+              {
+                "ref": 43318,
+                "guide": 43318,
+                "d": 0
+              },
+              {
+                "ref": 53386,
+                "guide": 53386,
+                "d": 0
+              },
+              {
+                "ref": 66487,
+                "guide": 66487,
+                "d": 0
+              }
+            ]
+          }
+        }
+      },
+      "files": {
+        "mix": "5b8f274c2f818527e9e5e11b26a8e07a87ac80d443e16c3b64e757dbd72d9fd8",
+        "V0": "618f262d5e2366e5727a9287b28007bd233295b7898144931e2207b46d279d79",
+        "I0": "ea88fd989e3c410471f45f1e1d66e6ce030369b1322f9962905d85c377062f5d",
+        "background": "ea88fd989e3c410471f45f1e1d66e6ce030369b1322f9962905d85c377062f5d",
+        "noise": "32d73ebfdcbb208f7a360a083f7596ad88a9aecfe2e46f26c09b287af605b182",
+        "vocal": "618f262d5e2366e5727a9287b28007bd233295b7898144931e2207b46d279d79",
+        "instrumental": "ea88fd989e3c410471f45f1e1d66e6ce030369b1322f9962905d85c377062f5d"
+      }
+    },
+    {
+      "id": "alarma_mudo",
+      "partition": "RESERVA",
+      "seed": 3630282185080993747,
+      "frames_mix": 88200,
+      "frames_v": 88200,
+      "frames_i": 88200,
+      "delay_v": [
+        937,
+        0
+      ],
+      "delay_i": [
+        0,
+        0
+      ],
+      "gains_v": [
+        1.0,
+        1.0
+      ],
+      "replica_amplitudes": [
+        0.0,
+        0.0
+      ],
+      "replica_spacing": null,
+      "noise_snr_vs_V_db": null,
+      "truth": {
+        "vocal": {
+          "L": {
+            "state": "MISALIGNED",
+            "d": 937,
+            "alternatives": [
+              937
+            ],
+            "why": "marca única",
+            "tags": [
+              {
+                "ref": 11265,
+                "guide": 12202,
+                "d": 937
+              },
+              {
+                "ref": 17545,
+                "guide": 18482,
+                "d": 937
+              },
+              {
+                "ref": 28153,
+                "guide": 29090,
+                "d": 937
+              },
+              {
+                "ref": 43438,
+                "guide": 44375,
+                "d": 937
+              },
+              {
+                "ref": 53098,
+                "guide": 54035,
+                "d": 937
+              },
+              {
+                "ref": 66736,
+                "guide": 67673,
+                "d": 937
+              }
+            ]
+          },
+          "R": {
+            "state": "INSUFFICIENT_SIGNAL",
+            "d": null,
+            "alternatives": [],
+            "why": "columna constante o ausente",
+            "tags": []
+          }
+        },
+        "instrumental": {
+          "L": {
+            "state": "ALIGNED",
+            "d": 0,
+            "alternatives": [
+              0
+            ],
+            "why": "marca única",
+            "tags": [
+              {
+                "ref": 11661,
+                "guide": 11661,
+                "d": 0
+              },
+              {
+                "ref": 18389,
+                "guide": 18389,
+                "d": 0
+              },
+              {
+                "ref": 28594,
+                "guide": 28594,
+                "d": 0
+              },
+              {
+                "ref": 43695,
+                "guide": 43695,
+                "d": 0
+              },
+              {
+                "ref": 53295,
+                "guide": 53295,
+                "d": 0
+              },
+              {
+                "ref": 66239,
+                "guide": 66239,
+                "d": 0
+              }
+            ]
+          },
+          "R": {
+            "state": "ALIGNED",
+            "d": 0,
+            "alternatives": [
+              0
+            ],
+            "why": "marca única",
+            "tags": [
+              {
+                "ref": 11934,
+                "guide": 11934,
+                "d": 0
+              },
+              {
+                "ref": 17454,
+                "guide": 17454,
+                "d": 0
+              },
+              {
+                "ref": 28834,
+                "guide": 28834,
+                "d": 0
+              },
+              {
+                "ref": 43691,
+                "guide": 43691,
+                "d": 0
+              },
+              {
+                "ref": 53512,
+                "guide": 53512,
+                "d": 0
+              },
+              {
+                "ref": 65678,
+                "guide": 65678,
+                "d": 0
+              }
+            ]
+          }
+        }
+      },
+      "files": {
+        "mix": "7701527ac5ed47cb85715ca4337864229aa202eabc2e78f25917acb506b71489",
+        "V0": "ccffda1605645408d98f196ff232744b9ba49ae9dccb5c5ebdaf80eb1db8aa2e",
+        "I0": "4fdf265dc0585f756660417ae72dd036358b0ee5ce511c60076616e7fe01d0fe",
+        "background": "4fdf265dc0585f756660417ae72dd036358b0ee5ce511c60076616e7fe01d0fe",
+        "noise": "32d73ebfdcbb208f7a360a083f7596ad88a9aecfe2e46f26c09b287af605b182",
+        "vocal": "90645a914633fd60292545dacf589cd8a7540fd5810810a952afd7a0608ea940",
+        "instrumental": "4fdf265dc0585f756660417ae72dd036358b0ee5ce511c60076616e7fe01d0fe"
+      }
+    },
+    {
+      "id": "debil",
+      "partition": "RESERVA",
+      "seed": 15100146239927852353,
+      "frames_mix": 88200,
+      "frames_v": 88200,
+      "frames_i": 88200,
+      "delay_v": [
+        763,
+        763
+      ],
+      "delay_i": [
+        0,
+        0
+      ],
+      "gains_v": [
+        3e-07,
+        3e-07
+      ],
+      "replica_amplitudes": [
+        0.0,
+        0.0
+      ],
+      "replica_spacing": null,
+      "noise_snr_vs_V_db": null,
+      "truth": {
+        "vocal": {
+          "L": {
+            "state": "MISALIGNED",
+            "d": 763,
+            "alternatives": [
+              763
+            ],
+            "why": "marca única",
+            "tags": [
+              {
+                "ref": 11701,
+                "guide": 12464,
+                "d": 763
+              },
+              {
+                "ref": 18007,
+                "guide": 18770,
+                "d": 763
+              },
+              {
+                "ref": 28088,
+                "guide": 28851,
+                "d": 763
+              },
+              {
+                "ref": 43677,
+                "guide": 44440,
+                "d": 763
+              },
+              {
+                "ref": 53620,
+                "guide": 54383,
+                "d": 763
+              },
+              {
+                "ref": 65703,
+                "guide": 66466,
+                "d": 763
+              }
+            ]
+          },
+          "R": {
+            "state": "MISALIGNED",
+            "d": 763,
+            "alternatives": [
+              763
+            ],
+            "why": "marca única",
+            "tags": [
+              {
+                "ref": 10930,
+                "guide": 11693,
+                "d": 763
+              },
+              {
+                "ref": 18252,
+                "guide": 19015,
+                "d": 763
+              },
+              {
+                "ref": 28220,
+                "guide": 28983,
+                "d": 763
+              },
+              {
+                "ref": 43121,
+                "guide": 43884,
+                "d": 763
+              },
+              {
+                "ref": 53306,
+                "guide": 54069,
+                "d": 763
+              },
+              {
+                "ref": 66152,
+                "guide": 66915,
+                "d": 763
+              }
+            ]
+          }
+        },
+        "instrumental": {
+          "L": {
+            "state": "ALIGNED",
+            "d": 0,
+            "alternatives": [
+              0
+            ],
+            "why": "marca única",
+            "tags": [
+              {
+                "ref": 11702,
+                "guide": 11702,
+                "d": 0
+              },
+              {
+                "ref": 17971,
+                "guide": 17971,
+                "d": 0
+              },
+              {
+                "ref": 28256,
+                "guide": 28256,
+                "d": 0
+              },
+              {
+                "ref": 43270,
+                "guide": 43270,
+                "d": 0
+              },
+              {
+                "ref": 53304,
+                "guide": 53304,
+                "d": 0
+              },
+              {
+                "ref": 66137,
+                "guide": 66137,
+                "d": 0
+              }
+            ]
+          },
+          "R": {
+            "state": "ALIGNED",
+            "d": 0,
+            "alternatives": [
+              0
+            ],
+            "why": "marca única",
+            "tags": [
+              {
+                "ref": 11055,
+                "guide": 11055,
+                "d": 0
+              },
+              {
+                "ref": 18485,
+                "guide": 18485,
+                "d": 0
+              },
+              {
+                "ref": 28555,
+                "guide": 28555,
+                "d": 0
+              },
+              {
+                "ref": 43110,
+                "guide": 43110,
+                "d": 0
+              },
+              {
+                "ref": 53236,
+                "guide": 53236,
+                "d": 0
+              },
+              {
+                "ref": 65779,
+                "guide": 65779,
+                "d": 0
+              }
+            ]
+          }
+        }
+      },
+      "files": {
+        "mix": "b595a9efaa2bb9929a98c1870f54529371e8c7024d3c8fe1c1bd8d917d3f25ad",
+        "V0": "30eae7f2f1dd5c2c2e661fe06eed0e80bf636828a32d6cff28f35b027e054ae6",
+        "I0": "2f142db103dd9e4b5e3e54d2eff36eb2e25a32f20e4ea2c77dc9e59fbbb9b989",
+        "background": "2f142db103dd9e4b5e3e54d2eff36eb2e25a32f20e4ea2c77dc9e59fbbb9b989",
+        "noise": "32d73ebfdcbb208f7a360a083f7596ad88a9aecfe2e46f26c09b287af605b182",
+        "vocal": "e7b7a123c3bcdfe9898e8df2737c91afc6ca9609a188f2198450f59869a24cb1",
+        "instrumental": "2f142db103dd9e4b5e3e54d2eff36eb2e25a32f20e4ea2c77dc9e59fbbb9b989"
+      }
+    },
+    {
+      "id": "ruido8",
+      "partition": "RESERVA",
+      "seed": 249672996332114600,
+      "frames_mix": 88200,
+      "frames_v": 88200,
+      "frames_i": 88200,
+      "delay_v": [
+        -1541,
+        -1541
+      ],
+      "delay_i": [
+        0,
+        0
+      ],
+      "gains_v": [
+        1.0,
+        1.0
+      ],
+      "replica_amplitudes": [
+        0.0,
+        0.0
+      ],
+      "replica_spacing": null,
+      "noise_snr_vs_V_db": 8.000000001812463,
+      "truth": {
+        "vocal": {
+          "L": {
+            "state": "MISALIGNED",
+            "d": -1541,
+            "alternatives": [
+              -1541
+            ],
+            "why": "marca única",
+            "tags": [
+              {
+                "ref": 11445,
+                "guide": 9904,
+                "d": -1541
+              },
+              {
+                "ref": 17759,
+                "guide": 16218,
+                "d": -1541
+              },
+              {
+                "ref": 28110,
+                "guide": 26569,
+                "d": -1541
+              },
+              {
+                "ref": 43604,
+                "guide": 42063,
+                "d": -1541
+              },
+              {
+                "ref": 52929,
+                "guide": 51388,
+                "d": -1541
+              },
+              {
+                "ref": 66271,
+                "guide": 64730,
+                "d": -1541
+              }
+            ]
+          },
+          "R": {
+            "state": "MISALIGNED",
+            "d": -1541,
+            "alternatives": [
+              -1541
+            ],
+            "why": "marca única",
+            "tags": [
+              {
+                "ref": 11476,
+                "guide": 9935,
+                "d": -1541
+              },
+              {
+                "ref": 17565,
+                "guide": 16024,
+                "d": -1541
+              },
+              {
+                "ref": 28275,
+                "guide": 26734,
+                "d": -1541
+              },
+              {
+                "ref": 43816,
+                "guide": 42275,
+                "d": -1541
+              },
+              {
+                "ref": 53423,
+                "guide": 51882,
+                "d": -1541
+              },
+              {
+                "ref": 65521,
+                "guide": 63980,
+                "d": -1541
+              }
+            ]
+          }
+        },
+        "instrumental": {
+          "L": {
+            "state": "ALIGNED",
+            "d": 0,
+            "alternatives": [
+              0
+            ],
+            "why": "marca única",
+            "tags": [
+              {
+                "ref": 11066,
+                "guide": 11066,
+                "d": 0
+              },
+              {
+                "ref": 18185,
+                "guide": 18185,
+                "d": 0
+              },
+              {
+                "ref": 28693,
+                "guide": 28693,
+                "d": 0
+              },
+              {
+                "ref": 43358,
+                "guide": 43358,
+                "d": 0
+              },
+              {
+                "ref": 52726,
+                "guide": 52726,
+                "d": 0
+              },
+              {
+                "ref": 65960,
+                "guide": 65960,
+                "d": 0
+              }
+            ]
+          },
+          "R": {
+            "state": "ALIGNED",
+            "d": 0,
+            "alternatives": [
+              0
+            ],
+            "why": "marca única",
+            "tags": [
+              {
+                "ref": 11175,
+                "guide": 11175,
+                "d": 0
+              },
+              {
+                "ref": 17684,
+                "guide": 17684,
+                "d": 0
+              },
+              {
+                "ref": 28567,
+                "guide": 28567,
+                "d": 0
+              },
+              {
+                "ref": 43151,
+                "guide": 43151,
+                "d": 0
+              },
+              {
+                "ref": 52877,
+                "guide": 52877,
+                "d": 0
+              },
+              {
+                "ref": 65855,
+                "guide": 65855,
+                "d": 0
+              }
+            ]
+          }
+        }
+      },
+      "files": {
+        "mix": "b9228e8e2d4246eedea0568ae922dd1f10b46bcb257a6cb1a72c4d38754878dd",
+        "V0": "dac2bed3e95148ce2f6f0f5723b334539bfdd8107ff1a137566120384cf913ac",
+        "I0": "41ec22b0e38df6bbb63ea51a4ce1c2ed20d4b02413ac1d4a1b59b780ccc50b69",
+        "background": "41ec22b0e38df6bbb63ea51a4ce1c2ed20d4b02413ac1d4a1b59b780ccc50b69",
+        "noise": "e97d5e1079f777e8a7d0fdeffaa8fcd372ee9beafaf6aa4d962333b7efc2fd0d",
+        "vocal": "3199963f2d046ab82d690d8e825b29883a4c58bc7f41331b8e8a6a566854bdff",
+        "instrumental": "41ec22b0e38df6bbb63ea51a4ce1c2ed20d4b02413ac1d4a1b59b780ccc50b69"
+      }
+    },
+    {
+      "id": "ruido_menos6",
+      "partition": "RESERVA",
+      "seed": 8085319546747252882,
+      "frames_mix": 88200,
+      "frames_v": 88200,
+      "frames_i": 88200,
+      "delay_v": [
+        367,
+        367
+      ],
+      "delay_i": [
+        0,
+        0
+      ],
+      "gains_v": [
+        1.0,
+        1.0
+      ],
+      "replica_amplitudes": [
+        0.0,
+        0.0
+      ],
+      "replica_spacing": null,
+      "noise_snr_vs_V_db": -6.000000000299897,
+      "truth": {
+        "vocal": {
+          "L": {
+            "state": "WARNING",
+            "d": 367,
+            "alternatives": [
+              367
+            ],
+            "why": "marca única",
+            "tags": [
+              {
+                "ref": 11213,
+                "guide": 11580,
+                "d": 367
+              },
+              {
+                "ref": 18025,
+                "guide": 18392,
+                "d": 367
+              },
+              {
+                "ref": 28503,
+                "guide": 28870,
+                "d": 367
+              },
+              {
+                "ref": 43030,
+                "guide": 43397,
+                "d": 367
+              },
+              {
+                "ref": 53000,
+                "guide": 53367,
+                "d": 367
+              },
+              {
+                "ref": 66295,
+                "guide": 66662,
+                "d": 367
+              }
+            ]
+          },
+          "R": {
+            "state": "WARNING",
+            "d": 367,
+            "alternatives": [
+              367
+            ],
+            "why": "marca única",
+            "tags": [
+              {
+                "ref": 11118,
+                "guide": 11485,
+                "d": 367
+              },
+              {
+                "ref": 17849,
+                "guide": 18216,
+                "d": 367
+              },
+              {
+                "ref": 28581,
+                "guide": 28948,
+                "d": 367
+              },
+              {
+                "ref": 43722,
+                "guide": 44089,
+                "d": 367
+              },
+              {
+                "ref": 53408,
+                "guide": 53775,
+                "d": 367
+              },
+              {
+                "ref": 66142,
+                "guide": 66509,
+                "d": 367
+              }
+            ]
+          }
+        },
+        "instrumental": {
+          "L": {
+            "state": "ALIGNED",
+            "d": 0,
+            "alternatives": [
+              0
+            ],
+            "why": "marca única",
+            "tags": [
+              {
+                "ref": 11451,
+                "guide": 11451,
+                "d": 0
+              },
+              {
+                "ref": 18177,
+                "guide": 18177,
+                "d": 0
+              },
+              {
+                "ref": 29107,
+                "guide": 29107,
+                "d": 0
+              },
+              {
+                "ref": 43199,
+                "guide": 43199,
+                "d": 0
+              },
+              {
+                "ref": 53266,
+                "guide": 53266,
+                "d": 0
+              },
+              {
+                "ref": 66414,
+                "guide": 66414,
+                "d": 0
+              }
+            ]
+          },
+          "R": {
+            "state": "ALIGNED",
+            "d": 0,
+            "alternatives": [
+              0
+            ],
+            "why": "marca única",
+            "tags": [
+              {
+                "ref": 11627,
+                "guide": 11627,
+                "d": 0
+              },
+              {
+                "ref": 17983,
+                "guide": 17983,
+                "d": 0
+              },
+              {
+                "ref": 29062,
+                "guide": 29062,
+                "d": 0
+              },
+              {
+                "ref": 43105,
+                "guide": 43105,
+                "d": 0
+              },
+              {
+                "ref": 53842,
+                "guide": 53842,
+                "d": 0
+              },
+              {
+                "ref": 66620,
+                "guide": 66620,
+                "d": 0
+              }
+            ]
+          }
+        }
+      },
+      "files": {
+        "mix": "06d321e2d90ed2c53015f45742502b90b8f5b0cad22f57cdfd0c503332b4a994",
+        "V0": "6c2a0aa18c350faf487ada901b0109a0f85398ceb59c468f90c6a9f27b2b152b",
+        "I0": "13cd092165e2138425ead8ad44d2cb8392e3da2bc3db38709e0cf98fbd5f41a0",
+        "background": "13cd092165e2138425ead8ad44d2cb8392e3da2bc3db38709e0cf98fbd5f41a0",
+        "noise": "fbeb7e97e56679152a550537274f51b031378f1cbb4a1869fc9cd063b6e73689",
+        "vocal": "e90ff49d29ff688d153543ec2ae965b692998fbfcf3c8313d7e7fd3ad0ba8e58",
+        "instrumental": "13cd092165e2138425ead8ad44d2cb8392e3da2bc3db38709e0cf98fbd5f41a0"
+      }
+    },
+    {
+      "id": "circular",
+      "partition": "RESERVA",
+      "seed": 12982323986027739200,
+      "frames_mix": 92520,
+      "frames_v": 92520,
+      "frames_i": 92520,
+      "delay_v": [
+        514,
+        -257
+      ],
+      "delay_i": [
+        0,
+        0
+      ],
+      "gains_v": [
+        1.0,
+        1.0
+      ],
+      "replica_amplitudes": [
+        0.0,
+        0.0
+      ],
+      "replica_spacing": null,
+      "noise_snr_vs_V_db": null,
+      "truth": {
+        "vocal": {
+          "L": {
+            "state": "AMBIGUOUS",
+            "d": null,
+            "alternatives": [
+              257,
+              514,
+              771
+            ],
+            "why": "extensión circular, periodo exacto 257",
+            "tags": []
+          },
+          "R": {
+            "state": "AMBIGUOUS",
+            "d": null,
+            "alternatives": [
+              -514,
+              -257,
+              0
+            ],
+            "why": "extensión circular, periodo exacto 257",
+            "tags": []
+          }
+        },
+        "instrumental": {
+          "L": {
+            "state": "AMBIGUOUS",
+            "d": null,
+            "alternatives": [
+              -257,
+              0,
+              257
+            ],
+            "why": "extensión circular, periodo exacto 257",
+            "tags": []
+          },
+          "R": {
+            "state": "AMBIGUOUS",
+            "d": null,
+            "alternatives": [
+              -257,
+              0,
+              257
+            ],
+            "why": "extensión circular, periodo exacto 257",
+            "tags": []
+          }
+        }
+      },
+      "files": {
+        "mix": "8fae6969be66b71639cc599046b84194fb91407df9d7ec01a7000c7e27f669ba",
+        "V0": "208b942346ddcdac0450a4fa1a3ed8ca5fdd5f284ab279773b7156ea29559958",
+        "I0": "373dd55c5f872f2427529fdfc6c8e2cbebdaa827fb5dc6f2bc4ed732532c7d5c",
+        "background": "373dd55c5f872f2427529fdfc6c8e2cbebdaa827fb5dc6f2bc4ed732532c7d5c",
+        "noise": "24003915a65800fa4f74c174cb8b5ece48256fbd8d5c574f4281a8a4e6ff1a6c",
+        "vocal": "208b942346ddcdac0450a4fa1a3ed8ca5fdd5f284ab279773b7156ea29559958",
+        "instrumental": "373dd55c5f872f2427529fdfc6c8e2cbebdaa827fb5dc6f2bc4ed732532c7d5c"
+      }
+    },
+    {
+      "id": "rep_igual",
+      "partition": "RESERVA",
+      "seed": 7669957848032215697,
+      "frames_mix": 88200,
+      "frames_v": 88200,
+      "frames_i": 88200,
+      "delay_v": [
+        0,
+        0
+      ],
+      "delay_i": [
+        0,
+        0
+      ],
+      "gains_v": [
+        1.0,
+        1.0
+      ],
+      "replica_amplitudes": [
+        1.0,
+        1.0
+      ],
+      "replica_spacing": 2849,
+      "noise_snr_vs_V_db": null,
+      "truth": {
+        "vocal": {
+          "L": {
+            "state": "AMBIGUOUS",
+            "d": null,
+            "alternatives": [
+              0,
+              -2849
+            ],
+            "why": "dos copias en la mezcla",
+            "tags": []
+          },
+          "R": {
+            "state": "AMBIGUOUS",
+            "d": null,
+            "alternatives": [
+              0,
+              -2849
+            ],
+            "why": "dos copias en la mezcla",
+            "tags": []
+          }
+        },
+        "instrumental": {
+          "L": {
+            "state": "ALIGNED",
+            "d": 0,
+            "alternatives": [
+              0
+            ],
+            "why": "marca única",
+            "tags": [
+              {
+                "ref": 11224,
+                "guide": 11224,
+                "d": 0
+              },
+              {
+                "ref": 13807,
+                "guide": 13807,
+                "d": 0
+              },
+              {
+                "ref": 18001,
+                "guide": 18001,
+                "d": 0
+              },
+              {
+                "ref": 20477,
+                "guide": 20477,
+                "d": 0
+              },
+              {
+                "ref": 28789,
+                "guide": 28789,
+                "d": 0
+              },
+              {
+                "ref": 31591,
+                "guide": 31591,
+                "d": 0
+              },
+              {
+                "ref": 43117,
+                "guide": 43117,
+                "d": 0
+              },
+              {
+                "ref": 45956,
+                "guide": 45956,
+                "d": 0
+              },
+              {
+                "ref": 53032,
+                "guide": 53032,
+                "d": 0
+              },
+              {
+                "ref": 56116,
+                "guide": 56116,
+                "d": 0
+              },
+              {
+                "ref": 66166,
+                "guide": 66166,
+                "d": 0
+              },
+              {
+                "ref": 68553,
+                "guide": 68553,
+                "d": 0
+              }
+            ]
+          },
+          "R": {
+            "state": "ALIGNED",
+            "d": 0,
+            "alternatives": [
+              0
+            ],
+            "why": "marca única",
+            "tags": [
+              {
+                "ref": 11477,
+                "guide": 11477,
+                "d": 0
+              },
+              {
+                "ref": 14102,
+                "guide": 14102,
+                "d": 0
+              },
+              {
+                "ref": 18130,
+                "guide": 18130,
+                "d": 0
+              },
+              {
+                "ref": 20805,
+                "guide": 20805,
+                "d": 0
+              },
+              {
+                "ref": 28371,
+                "guide": 28371,
+                "d": 0
+              },
+              {
+                "ref": 31752,
+                "guide": 31752,
+                "d": 0
+              },
+              {
+                "ref": 42559,
+                "guide": 42559,
+                "d": 0
+              },
+              {
+                "ref": 46413,
+                "guide": 46413,
+                "d": 0
+              },
+              {
+                "ref": 53007,
+                "guide": 53007,
+                "d": 0
+              },
+              {
+                "ref": 56127,
+                "guide": 56127,
+                "d": 0
+              },
+              {
+                "ref": 65854,
+                "guide": 65854,
+                "d": 0
+              },
+              {
+                "ref": 69449,
+                "guide": 69449,
+                "d": 0
+              }
+            ]
+          }
+        }
+      },
+      "files": {
+        "mix": "a2a1a970b78fe264a193551d246ce3aad19515fb7063d8378fb9018c078b6d51",
+        "V0": "093c4597f7797755d596308ba884f9213e3fb8426a96ebcf74e824a2056b862e",
+        "I0": "b89877fdad0001fdce013a4e2b3662c14ce6bdc82555e6546909153b05324e29",
+        "background": "a2429cdd7d17cb3a16684f8ebccdfd3aa383a0c08985cc7329d4fc6182e6d215",
+        "noise": "32d73ebfdcbb208f7a360a083f7596ad88a9aecfe2e46f26c09b287af605b182",
+        "vocal": "093c4597f7797755d596308ba884f9213e3fb8426a96ebcf74e824a2056b862e",
+        "instrumental": "b89877fdad0001fdce013a4e2b3662c14ce6bdc82555e6546909153b05324e29"
+      }
+    },
+    {
+      "id": "rep_035",
+      "partition": "RESERVA",
+      "seed": 524306127140241427,
+      "frames_mix": 88200,
+      "frames_v": 88200,
+      "frames_i": 88200,
+      "delay_v": [
+        0,
+        0
+      ],
+      "delay_i": [
+        0,
+        0
+      ],
+      "gains_v": [
+        1.0,
+        1.0
+      ],
+      "replica_amplitudes": [
+        0.35,
+        0.35
+      ],
+      "replica_spacing": 2849,
+      "noise_snr_vs_V_db": null,
+      "truth": {
+        "vocal": {
+          "L": {
+            "state": "AMBIGUOUS",
+            "d": null,
+            "alternatives": [
+              0,
+              -2849
+            ],
+            "why": "dos copias en la mezcla",
+            "tags": []
+          },
+          "R": {
+            "state": "AMBIGUOUS",
+            "d": null,
+            "alternatives": [
+              0,
+              -2849
+            ],
+            "why": "dos copias en la mezcla",
+            "tags": []
+          }
+        },
+        "instrumental": {
+          "L": {
+            "state": "ALIGNED",
+            "d": 0,
+            "alternatives": [
+              0
+            ],
+            "why": "marca única",
+            "tags": [
+              {
+                "ref": 11613,
+                "guide": 11613,
+                "d": 0
+              },
+              {
+                "ref": 13853,
+                "guide": 13853,
+                "d": 0
+              },
+              {
+                "ref": 18195,
+                "guide": 18195,
+                "d": 0
+              },
+              {
+                "ref": 21369,
+                "guide": 21369,
+                "d": 0
+              },
+              {
+                "ref": 28707,
+                "guide": 28707,
+                "d": 0
+              },
+              {
+                "ref": 31277,
+                "guide": 31277,
+                "d": 0
+              },
+              {
+                "ref": 43421,
+                "guide": 43421,
+                "d": 0
+              },
+              {
+                "ref": 45572,
+                "guide": 45572,
+                "d": 0
+              },
+              {
+                "ref": 53495,
+                "guide": 53495,
+                "d": 0
+              },
+              {
+                "ref": 55642,
+                "guide": 55642,
+                "d": 0
+              },
+              {
+                "ref": 66221,
+                "guide": 66221,
+                "d": 0
+              },
+              {
+                "ref": 69210,
+                "guide": 69210,
+                "d": 0
+              }
+            ]
+          },
+          "R": {
+            "state": "ALIGNED",
+            "d": 0,
+            "alternatives": [
+              0
+            ],
+            "why": "marca única",
+            "tags": [
+              {
+                "ref": 11774,
+                "guide": 11774,
+                "d": 0
+              },
+              {
+                "ref": 14463,
+                "guide": 14463,
+                "d": 0
+              },
+              {
+                "ref": 18492,
+                "guide": 18492,
+                "d": 0
+              },
+              {
+                "ref": 20444,
+                "guide": 20444,
+                "d": 0
+              },
+              {
+                "ref": 28547,
+                "guide": 28547,
+                "d": 0
+              },
+              {
+                "ref": 32025,
+                "guide": 32025,
+                "d": 0
+              },
+              {
+                "ref": 43185,
+                "guide": 43185,
+                "d": 0
+              },
+              {
+                "ref": 45844,
+                "guide": 45844,
+                "d": 0
+              },
+              {
+                "ref": 52919,
+                "guide": 52919,
+                "d": 0
+              },
+              {
+                "ref": 56220,
+                "guide": 56220,
+                "d": 0
+              },
+              {
+                "ref": 65645,
+                "guide": 65645,
+                "d": 0
+              },
+              {
+                "ref": 69483,
+                "guide": 69483,
+                "d": 0
+              }
+            ]
+          }
+        }
+      },
+      "files": {
+        "mix": "ba090a95946a3fe7b61d4766ea0cfe9000d95a859e8c652a6d65384ec5809a73",
+        "V0": "3bbeed5b3e9b2601c4a07f5100194153b0c11d74c7b45b0e77b5f858f9ff7b19",
+        "I0": "1d7eb2114eadc7a0dfc804d2335bf8aaa858ac5c25d88d4adf6f09552259655a",
+        "background": "c289a144256329dff921a24b7cb854559585d3bd01056de1ad16ae267337e11d",
+        "noise": "32d73ebfdcbb208f7a360a083f7596ad88a9aecfe2e46f26c09b287af605b182",
+        "vocal": "3bbeed5b3e9b2601c4a07f5100194153b0c11d74c7b45b0e77b5f858f9ff7b19",
+        "instrumental": "1d7eb2114eadc7a0dfc804d2335bf8aaa858ac5c25d88d4adf6f09552259655a"
+      }
+    },
+    {
+      "id": "rep_165",
+      "partition": "RESERVA",
+      "seed": 10195043217206712598,
+      "frames_mix": 88200,
+      "frames_v": 88200,
+      "frames_i": 88200,
+      "delay_v": [
+        0,
+        0
+      ],
+      "delay_i": [
+        0,
+        0
+      ],
+      "gains_v": [
+        1.0,
+        1.0
+      ],
+      "replica_amplitudes": [
+        1.65,
+        1.65
+      ],
+      "replica_spacing": 2849,
+      "noise_snr_vs_V_db": null,
+      "truth": {
+        "vocal": {
+          "L": {
+            "state": "AMBIGUOUS",
+            "d": null,
+            "alternatives": [
+              0,
+              -2849
+            ],
+            "why": "dos copias en la mezcla",
+            "tags": []
+          },
+          "R": {
+            "state": "AMBIGUOUS",
+            "d": null,
+            "alternatives": [
+              0,
+              -2849
+            ],
+            "why": "dos copias en la mezcla",
+            "tags": []
+          }
+        },
+        "instrumental": {
+          "L": {
+            "state": "ALIGNED",
+            "d": 0,
+            "alternatives": [
+              0
+            ],
+            "why": "marca única",
+            "tags": [
+              {
+                "ref": 11346,
+                "guide": 11346,
+                "d": 0
+              },
+              {
+                "ref": 14074,
+                "guide": 14074,
+                "d": 0
+              },
+              {
+                "ref": 17970,
+                "guide": 17970,
+                "d": 0
+              },
+              {
+                "ref": 20942,
+                "guide": 20942,
+                "d": 0
+              },
+              {
+                "ref": 28731,
+                "guide": 28731,
+                "d": 0
+              },
+              {
+                "ref": 31033,
+                "guide": 31033,
+                "d": 0
+              },
+              {
+                "ref": 43400,
+                "guide": 43400,
+                "d": 0
+              },
+              {
+                "ref": 46177,
+                "guide": 46177,
+                "d": 0
+              },
+              {
+                "ref": 53324,
+                "guide": 53324,
+                "d": 0
+              },
+              {
+                "ref": 56534,
+                "guide": 56534,
+                "d": 0
+              },
+              {
+                "ref": 65708,
+                "guide": 65708,
+                "d": 0
+              },
+              {
+                "ref": 68816,
+                "guide": 68816,
+                "d": 0
+              }
+            ]
+          },
+          "R": {
+            "state": "ALIGNED",
+            "d": 0,
+            "alternatives": [
+              0
+            ],
+            "why": "marca única",
+            "tags": [
+              {
+                "ref": 11738,
+                "guide": 11738,
+                "d": 0
+              },
+              {
+                "ref": 14337,
+                "guide": 14337,
+                "d": 0
+              },
+              {
+                "ref": 18079,
+                "guide": 18079,
+                "d": 0
+              },
+              {
+                "ref": 21223,
+                "guide": 21223,
+                "d": 0
+              },
+              {
+                "ref": 28891,
+                "guide": 28891,
+                "d": 0
+              },
+              {
+                "ref": 31098,
+                "guide": 31098,
+                "d": 0
+              },
+              {
+                "ref": 43502,
+                "guide": 43502,
+                "d": 0
+              },
+              {
+                "ref": 46133,
+                "guide": 46133,
+                "d": 0
+              },
+              {
+                "ref": 53697,
+                "guide": 53697,
+                "d": 0
+              },
+              {
+                "ref": 55863,
+                "guide": 55863,
+                "d": 0
+              },
+              {
+                "ref": 65584,
+                "guide": 65584,
+                "d": 0
+              },
+              {
+                "ref": 69431,
+                "guide": 69431,
+                "d": 0
+              }
+            ]
+          }
+        }
+      },
+      "files": {
+        "mix": "6c8cf572f0dfd8fb011c3aef955cc8f7f95f59aa6459bd0100566bed528c921c",
+        "V0": "621880d431a4c7f4233d875627be2b5920cdc629d95cad70e0dabcf33b2a3050",
+        "I0": "8a311f2a71f371aeb0de576c3f36d742aaad9a76485f826c180496afed6a8a68",
+        "background": "b8a3d8039e67b08eb83ccdd9ea972974fa2d765dee0d509ee936005e6f966212",
+        "noise": "32d73ebfdcbb208f7a360a083f7596ad88a9aecfe2e46f26c09b287af605b182",
+        "vocal": "621880d431a4c7f4233d875627be2b5920cdc629d95cad70e0dabcf33b2a3050",
+        "instrumental": "8a311f2a71f371aeb0de576c3f36d742aaad9a76485f826c180496afed6a8a68"
+      }
+    },
+    {
+      "id": "rival_R",
+      "partition": "RESERVA",
+      "seed": 11580773142656592315,
+      "frames_mix": 88200,
+      "frames_v": 88200,
+      "frames_i": 88200,
+      "delay_v": [
+        0,
+        0
+      ],
+      "delay_i": [
+        0,
+        0
+      ],
+      "gains_v": [
+        1.0,
+        1.0
+      ],
+      "replica_amplitudes": [
+        0.0,
+        0.38
+      ],
+      "replica_spacing": 2849,
+      "noise_snr_vs_V_db": null,
+      "truth": {
+        "vocal": {
+          "L": {
+            "state": "ALIGNED",
+            "d": 0,
+            "alternatives": [
+              0
+            ],
+            "why": "marca única",
+            "tags": [
+              {
+                "ref": 11414,
+                "guide": 11414,
+                "d": 0
+              },
+              {
+                "ref": 18386,
+                "guide": 18386,
+                "d": 0
+              },
+              {
+                "ref": 28625,
+                "guide": 28625,
+                "d": 0
+              },
+              {
+                "ref": 42733,
+                "guide": 42733,
+                "d": 0
+              },
+              {
+                "ref": 53740,
+                "guide": 53740,
+                "d": 0
+              },
+              {
+                "ref": 65848,
+                "guide": 65848,
+                "d": 0
+              }
+            ]
+          },
+          "R": {
+            "state": "AMBIGUOUS",
+            "d": null,
+            "alternatives": [
+              0,
+              -2849
+            ],
+            "why": "dos copias en la mezcla",
+            "tags": []
+          }
+        },
+        "instrumental": {
+          "L": {
+            "state": "ALIGNED",
+            "d": 0,
+            "alternatives": [
+              0
+            ],
+            "why": "marca única",
+            "tags": [
+              {
+                "ref": 11657,
+                "guide": 11657,
+                "d": 0
+              },
+              {
+                "ref": 18261,
+                "guide": 18261,
+                "d": 0
+              },
+              {
+                "ref": 28722,
+                "guide": 28722,
+                "d": 0
+              },
+              {
+                "ref": 43211,
+                "guide": 43211,
+                "d": 0
+              },
+              {
+                "ref": 52977,
+                "guide": 52977,
+                "d": 0
+              },
+              {
+                "ref": 66212,
+                "guide": 66212,
+                "d": 0
+              }
+            ]
+          },
+          "R": {
+            "state": "ALIGNED",
+            "d": 0,
+            "alternatives": [
+              0
+            ],
+            "why": "marca única",
+            "tags": [
+              {
+                "ref": 11558,
+                "guide": 11558,
+                "d": 0
+              },
+              {
+                "ref": 14304,
+                "guide": 14304,
+                "d": 0
+              },
+              {
+                "ref": 18267,
+                "guide": 18267,
+                "d": 0
+              },
+              {
+                "ref": 20382,
+                "guide": 20382,
+                "d": 0
+              },
+              {
+                "ref": 28370,
+                "guide": 28370,
+                "d": 0
+              },
+              {
+                "ref": 31749,
+                "guide": 31749,
+                "d": 0
+              },
+              {
+                "ref": 43406,
+                "guide": 43406,
+                "d": 0
+              },
+              {
+                "ref": 45890,
+                "guide": 45890,
+                "d": 0
+              },
+              {
+                "ref": 52806,
+                "guide": 52806,
+                "d": 0
+              },
+              {
+                "ref": 56464,
+                "guide": 56464,
+                "d": 0
+              },
+              {
+                "ref": 65824,
+                "guide": 65824,
+                "d": 0
+              },
+              {
+                "ref": 69258,
+                "guide": 69258,
+                "d": 0
+              }
+            ]
+          }
+        }
+      },
+      "files": {
+        "mix": "87da5c125023221e68f868a5ba73351c0d81a8c846e8426db6f67cc6d6ce132b",
+        "V0": "ad04dbc4237215a04a26491df03611b225155c96cdae30241f82c6a34b3d3255",
+        "I0": "698af816daf07bca568a023e818488125c1da5a9408fc602966b26a2fd2a4064",
+        "background": "04ef0cc343ee834030a3ae7bd712199daea7bc8f53d5e803a61488d09237ada7",
+        "noise": "32d73ebfdcbb208f7a360a083f7596ad88a9aecfe2e46f26c09b287af605b182",
+        "vocal": "ad04dbc4237215a04a26491df03611b225155c96cdae30241f82c6a34b3d3255",
+        "instrumental": "698af816daf07bca568a023e818488125c1da5a9408fc602966b26a2fd2a4064"
+      }
+    },
+    {
+      "id": "lateral",
+      "partition": "RESERVA",
+      "seed": 828262390961505426,
+      "frames_mix": 88200,
+      "frames_v": 88200,
+      "frames_i": 88200,
+      "delay_v": [
+        -1933,
+        -1933
+      ],
+      "delay_i": [
+        0,
+        0
+      ],
+      "gains_v": [
+        1.0,
+        1.0
+      ],
+      "replica_amplitudes": [
+        0.0,
+        0.0
+      ],
+      "replica_spacing": null,
+      "noise_snr_vs_V_db": null,
+      "truth": {
+        "vocal": {
+          "L": {
+            "state": "MISALIGNED",
+            "d": -1933,
+            "alternatives": [
+              -1933
+            ],
+            "why": "marca única",
+            "tags": [
+              {
+                "ref": 11887,
+                "guide": 9954,
+                "d": -1933
+              },
+              {
+                "ref": 18108,
+                "guide": 16175,
+                "d": -1933
+              },
+              {
+                "ref": 28490,
+                "guide": 26557,
+                "d": -1933
+              },
+              {
+                "ref": 42788,
+                "guide": 40855,
+                "d": -1933
+              },
+              {
+                "ref": 52846,
+                "guide": 50913,
+                "d": -1933
+              },
+              {
+                "ref": 65730,
+                "guide": 63797,
+                "d": -1933
+              }
+            ]
+          },
+          "R": {
+            "state": "MISALIGNED",
+            "d": -1933,
+            "alternatives": [
+              -1933
+            ],
+            "why": "marca única",
+            "tags": [
+              {
+                "ref": 11887,
+                "guide": 9954,
+                "d": -1933
+              },
+              {
+                "ref": 18108,
+                "guide": 16175,
+                "d": -1933
+              },
+              {
+                "ref": 28490,
+                "guide": 26557,
+                "d": -1933
+              },
+              {
+                "ref": 42788,
+                "guide": 40855,
+                "d": -1933
+              },
+              {
+                "ref": 52846,
+                "guide": 50913,
+                "d": -1933
+              },
+              {
+                "ref": 65730,
+                "guide": 63797,
+                "d": -1933
+              }
+            ]
+          }
+        },
+        "instrumental": {
+          "L": {
+            "state": "ALIGNED",
+            "d": 0,
+            "alternatives": [
+              0
+            ],
+            "why": "marca única",
+            "tags": [
+              {
+                "ref": 11115,
+                "guide": 11115,
+                "d": 0
+              },
+              {
+                "ref": 17461,
+                "guide": 17461,
+                "d": 0
+              },
+              {
+                "ref": 28585,
+                "guide": 28585,
+                "d": 0
+              },
+              {
+                "ref": 43200,
+                "guide": 43200,
+                "d": 0
+              },
+              {
+                "ref": 53649,
+                "guide": 53649,
+                "d": 0
+              },
+              {
+                "ref": 66343,
+                "guide": 66343,
+                "d": 0
+              }
+            ]
+          },
+          "R": {
+            "state": "ALIGNED",
+            "d": 0,
+            "alternatives": [
+              0
+            ],
+            "why": "marca única",
+            "tags": [
+              {
+                "ref": 11115,
+                "guide": 11115,
+                "d": 0
+              },
+              {
+                "ref": 17461,
+                "guide": 17461,
+                "d": 0
+              },
+              {
+                "ref": 28585,
+                "guide": 28585,
+                "d": 0
+              },
+              {
+                "ref": 43200,
+                "guide": 43200,
+                "d": 0
+              },
+              {
+                "ref": 53649,
+                "guide": 53649,
+                "d": 0
+              },
+              {
+                "ref": 66343,
+                "guide": 66343,
+                "d": 0
+              }
+            ]
+          }
+        }
+      },
+      "files": {
+        "mix": "a4ca49e9a276a72c087a81fa8e7bb9ec48eea9f1535e37b79343baf0ec3e6416",
+        "V0": "b26fabfdf9674bdcc630b60d93eb54070f97b759f48dc6857409d3db08dd82c7",
+        "I0": "ec597890a5d0521404f776104cbe4a3aff181deb6a03e7b8a0a2755a0bced509",
+        "background": "cdec975b3522f2f1bdd80c5f4cf5e6f49788a5683a0ca5701b8f0e3c415ee29d",
+        "noise": "32d73ebfdcbb208f7a360a083f7596ad88a9aecfe2e46f26c09b287af605b182",
+        "vocal": "92c09b4de6b8ad1fe705aee00762e8c0eeda2685a43c30864f7320a381fd6154",
+        "instrumental": "ec597890a5d0521404f776104cbe4a3aff181deb6a03e7b8a0a2755a0bced509"
+      }
+    },
+    {
+      "id": "dc",
+      "partition": "RESERVA",
+      "seed": 6049318035418296053,
+      "frames_mix": 88200,
+      "frames_v": 88200,
+      "frames_i": 88200,
+      "delay_v": [
+        0,
+        0
+      ],
+      "delay_i": [
+        0,
+        0
+      ],
+      "gains_v": [
+        1.0,
+        1.0
+      ],
+      "replica_amplitudes": [
+        0.0,
+        0.0
+      ],
+      "replica_spacing": null,
+      "noise_snr_vs_V_db": null,
+      "truth": {
+        "vocal": {
+          "L": {
+            "state": "INSUFFICIENT_SIGNAL",
+            "d": null,
+            "alternatives": [],
+            "why": "columna constante o ausente",
+            "tags": []
+          },
+          "R": {
+            "state": "INSUFFICIENT_SIGNAL",
+            "d": null,
+            "alternatives": [],
+            "why": "columna constante o ausente",
+            "tags": []
+          }
+        },
+        "instrumental": {
+          "L": {
+            "state": "ALIGNED",
+            "d": 0,
+            "alternatives": [
+              0
+            ],
+            "why": "marca única",
+            "tags": [
+              {
+                "ref": 11162,
+                "guide": 11162,
+                "d": 0
+              },
+              {
+                "ref": 17872,
+                "guide": 17872,
+                "d": 0
+              },
+              {
+                "ref": 28966,
+                "guide": 28966,
+                "d": 0
+              },
+              {
+                "ref": 43558,
+                "guide": 43558,
+                "d": 0
+              },
+              {
+                "ref": 53280,
+                "guide": 53280,
+                "d": 0
+              },
+              {
+                "ref": 66114,
+                "guide": 66114,
+                "d": 0
+              }
+            ]
+          },
+          "R": {
+            "state": "ALIGNED",
+            "d": 0,
+            "alternatives": [
+              0
+            ],
+            "why": "marca única",
+            "tags": [
+              {
+                "ref": 11932,
+                "guide": 11932,
+                "d": 0
+              },
+              {
+                "ref": 17921,
+                "guide": 17921,
+                "d": 0
+              },
+              {
+                "ref": 29045,
+                "guide": 29045,
+                "d": 0
+              },
+              {
+                "ref": 42583,
+                "guide": 42583,
+                "d": 0
+              },
+              {
+                "ref": 53688,
+                "guide": 53688,
+                "d": 0
+              },
+              {
+                "ref": 66447,
+                "guide": 66447,
+                "d": 0
+              }
+            ]
+          }
+        }
+      },
+      "files": {
+        "mix": "893e8e93a392251d6e7cfe1424d4b26d5a39a54c17c63fb949690a517755fa60",
+        "V0": "32b0593b6f48b722a267a899efb55233221b32c6f345bafcfd4239ee223872cb",
+        "I0": "43cb6d7a26fa30e798027803feb936e9ec1c3650308518a2371bf45a66bb1886",
+        "background": "43cb6d7a26fa30e798027803feb936e9ec1c3650308518a2371bf45a66bb1886",
+        "noise": "32d73ebfdcbb208f7a360a083f7596ad88a9aecfe2e46f26c09b287af605b182",
+        "vocal": "32b0593b6f48b722a267a899efb55233221b32c6f345bafcfd4239ee223872cb",
+        "instrumental": "43cb6d7a26fa30e798027803feb936e9ec1c3650308518a2371bf45a66bb1886"
+      }
+    },
+    {
+      "id": "sin_relacion",
+      "partition": "RESERVA",
+      "seed": 14316324352642924355,
+      "frames_mix": 88200,
+      "frames_v": 88200,
+      "frames_i": 88200,
+      "delay_v": [
+        0,
+        0
+      ],
+      "delay_i": [
+        0,
+        0
+      ],
+      "gains_v": [
+        1.0,
+        1.0
+      ],
+      "replica_amplitudes": [
+        0.0,
+        0.0
+      ],
+      "replica_spacing": null,
+      "noise_snr_vs_V_db": null,
+      "truth": {
+        "vocal": {
+          "L": {
+            "state": "INSUFFICIENT_SIGNAL",
+            "d": null,
+            "alternatives": [],
+            "why": "código no incluido en Mix",
+            "tags": []
+          },
+          "R": {
+            "state": "INSUFFICIENT_SIGNAL",
+            "d": null,
+            "alternatives": [],
+            "why": "código no incluido en Mix",
+            "tags": []
+          }
+        },
+        "instrumental": {
+          "L": {
+            "state": "ALIGNED",
+            "d": 0,
+            "alternatives": [
+              0
+            ],
+            "why": "marca única",
+            "tags": [
+              {
+                "ref": 11746,
+                "guide": 11746,
+                "d": 0
+              },
+              {
+                "ref": 18069,
+                "guide": 18069,
+                "d": 0
+              },
+              {
+                "ref": 28672,
+                "guide": 28672,
+                "d": 0
+              },
+              {
+                "ref": 43073,
+                "guide": 43073,
+                "d": 0
+              },
+              {
+                "ref": 53497,
+                "guide": 53497,
+                "d": 0
+              },
+              {
+                "ref": 65906,
+                "guide": 65906,
+                "d": 0
+              }
+            ]
+          },
+          "R": {
+            "state": "ALIGNED",
+            "d": 0,
+            "alternatives": [
+              0
+            ],
+            "why": "marca única",
+            "tags": [
+              {
+                "ref": 10985,
+                "guide": 10985,
+                "d": 0
+              },
+              {
+                "ref": 17772,
+                "guide": 17772,
+                "d": 0
+              },
+              {
+                "ref": 28630,
+                "guide": 28630,
+                "d": 0
+              },
+              {
+                "ref": 42905,
+                "guide": 42905,
+                "d": 0
+              },
+              {
+                "ref": 53858,
+                "guide": 53858,
+                "d": 0
+              },
+              {
+                "ref": 65926,
+                "guide": 65926,
+                "d": 0
+              }
+            ]
+          }
+        }
+      },
+      "files": {
+        "mix": "4b8ffaa512598b46f3211346972f279ba1ea64d293fca7471762311f86de6b75",
+        "V0": "7c33086543d52d53efb4f7179c76d10404a409dcbfd693db34db98a0e9ea77be",
+        "I0": "b9acec0e6a2e1617aeb0b09b3e0241cea344c9ffaacba27d3c726701ea716337",
+        "background": "b9acec0e6a2e1617aeb0b09b3e0241cea344c9ffaacba27d3c726701ea716337",
+        "noise": "32d73ebfdcbb208f7a360a083f7596ad88a9aecfe2e46f26c09b287af605b182",
+        "vocal": "da7897d15eea9f0d28fa4728b836095c9eaa77bfdfa3f5835b9b7284d37ae513",
+        "instrumental": "b9acec0e6a2e1617aeb0b09b3e0241cea344c9ffaacba27d3c726701ea716337"
+      }
+    },
+    {
+      "id": "corta",
+      "partition": "RESERVA",
+      "seed": 7713313049100244511,
+      "frames_mix": 88200,
+      "frames_v": 76217,
+      "frames_i": 88200,
+      "delay_v": [
+        821,
+        -903
+      ],
+      "delay_i": [
+        0,
+        0
+      ],
+      "gains_v": [
+        1.0,
+        1.0
+      ],
+      "replica_amplitudes": [
+        0.0,
+        0.0
+      ],
+      "replica_spacing": null,
+      "noise_snr_vs_V_db": null,
+      "truth": {
+        "vocal": {
+          "L": {
+            "state": "MISALIGNED",
+            "d": 821,
+            "alternatives": [
+              821
+            ],
+            "why": "marca única",
+            "tags": [
+              {
+                "ref": 11149,
+                "guide": 11970,
+                "d": 821
+              },
+              {
+                "ref": 17875,
+                "guide": 18696,
+                "d": 821
+              },
+              {
+                "ref": 28513,
+                "guide": 29334,
+                "d": 821
+              },
+              {
+                "ref": 42849,
+                "guide": 43670,
+                "d": 821
+              },
+              {
+                "ref": 53124,
+                "guide": 53945,
+                "d": 821
+              },
+              {
+                "ref": 66190,
+                "guide": 67011,
+                "d": 821
+              }
+            ]
+          },
+          "R": {
+            "state": "MISALIGNED",
+            "d": -903,
+            "alternatives": [
+              -903
+            ],
+            "why": "marca única",
+            "tags": [
+              {
+                "ref": 11803,
+                "guide": 10900,
+                "d": -903
+              },
+              {
+                "ref": 17892,
+                "guide": 16989,
+                "d": -903
+              },
+              {
+                "ref": 28373,
+                "guide": 27470,
+                "d": -903
+              },
+              {
+                "ref": 43147,
+                "guide": 42244,
+                "d": -903
+              },
+              {
+                "ref": 53334,
+                "guide": 52431,
+                "d": -903
+              },
+              {
+                "ref": 66383,
+                "guide": 65480,
+                "d": -903
+              }
+            ]
+          }
+        },
+        "instrumental": {
+          "L": {
+            "state": "ALIGNED",
+            "d": 0,
+            "alternatives": [
+              0
+            ],
+            "why": "marca única",
+            "tags": [
+              {
+                "ref": 11133,
+                "guide": 11133,
+                "d": 0
+              },
+              {
+                "ref": 17618,
+                "guide": 17618,
+                "d": 0
+              },
+              {
+                "ref": 28821,
+                "guide": 28821,
+                "d": 0
+              },
+              {
+                "ref": 43308,
+                "guide": 43308,
+                "d": 0
+              },
+              {
+                "ref": 53426,
+                "guide": 53426,
+                "d": 0
+              },
+              {
+                "ref": 66542,
+                "guide": 66542,
+                "d": 0
+              }
+            ]
+          },
+          "R": {
+            "state": "ALIGNED",
+            "d": 0,
+            "alternatives": [
+              0
+            ],
+            "why": "marca única",
+            "tags": [
+              {
+                "ref": 11797,
+                "guide": 11797,
+                "d": 0
+              },
+              {
+                "ref": 18433,
+                "guide": 18433,
+                "d": 0
+              },
+              {
+                "ref": 28674,
+                "guide": 28674,
+                "d": 0
+              },
+              {
+                "ref": 43723,
+                "guide": 43723,
+                "d": 0
+              },
+              {
+                "ref": 53069,
+                "guide": 53069,
+                "d": 0
+              },
+              {
+                "ref": 65974,
+                "guide": 65974,
+                "d": 0
+              }
+            ]
+          }
+        }
+      },
+      "files": {
+        "mix": "5695dc1f87673644ae8cd5444980af54adf9444abc5a16fe87c2aca8d68f354d",
+        "V0": "1ab83a2fb3751aba69255217a24a7e7c4668f0f48411583402f5d5cc8c22fbbf",
+        "I0": "04866fc5496a1fd1ddce96d15e80b1f901c91dd7f9c33e55933932b0552fae05",
+        "background": "04866fc5496a1fd1ddce96d15e80b1f901c91dd7f9c33e55933932b0552fae05",
+        "noise": "32d73ebfdcbb208f7a360a083f7596ad88a9aecfe2e46f26c09b287af605b182",
+        "vocal": "3800fc75fba12ffa451764c6baf3ba09383776bae9447eb26aec81a98c006ecb",
+        "instrumental": "04866fc5496a1fd1ddce96d15e80b1f901c91dd7f9c33e55933932b0552fae05"
+      }
+    },
+    {
+      "id": "larga",
+      "partition": "RESERVA",
+      "seed": 6299969211187090635,
+      "frames_mix": 88200,
+      "frames_v": 95431,
+      "frames_i": 88200,
+      "delay_v": [
+        -825,
+        -825
+      ],
+      "delay_i": [
+        0,
+        0
+      ],
+      "gains_v": [
+        1.0,
+        1.0
+      ],
+      "replica_amplitudes": [
+        0.0,
+        0.0
+      ],
+      "replica_spacing": null,
+      "noise_snr_vs_V_db": null,
+      "truth": {
+        "vocal": {
+          "L": {
+            "state": "MISALIGNED",
+            "d": -825,
+            "alternatives": [
+              -825
+            ],
+            "why": "marca única",
+            "tags": [
+              {
+                "ref": 10888,
+                "guide": 10063,
+                "d": -825
+              },
+              {
+                "ref": 17828,
+                "guide": 17003,
+                "d": -825
+              },
+              {
+                "ref": 28751,
+                "guide": 27926,
+                "d": -825
+              },
+              {
+                "ref": 43320,
+                "guide": 42495,
+                "d": -825
+              },
+              {
+                "ref": 53216,
+                "guide": 52391,
+                "d": -825
+              },
+              {
+                "ref": 65940,
+                "guide": 65115,
+                "d": -825
+              }
+            ]
+          },
+          "R": {
+            "state": "MISALIGNED",
+            "d": -825,
+            "alternatives": [
+              -825
+            ],
+            "why": "marca única",
+            "tags": [
+              {
+                "ref": 11087,
+                "guide": 10262,
+                "d": -825
+              },
+              {
+                "ref": 17747,
+                "guide": 16922,
+                "d": -825
+              },
+              {
+                "ref": 28558,
+                "guide": 27733,
+                "d": -825
+              },
+              {
+                "ref": 43659,
+                "guide": 42834,
+                "d": -825
+              },
+              {
+                "ref": 53363,
+                "guide": 52538,
+                "d": -825
+              },
+              {
+                "ref": 66689,
+                "guide": 65864,
+                "d": -825
+              }
+            ]
+          }
+        },
+        "instrumental": {
+          "L": {
+            "state": "ALIGNED",
+            "d": 0,
+            "alternatives": [
+              0
+            ],
+            "why": "marca única",
+            "tags": [
+              {
+                "ref": 12058,
+                "guide": 12058,
+                "d": 0
+              },
+              {
+                "ref": 17558,
+                "guide": 17558,
+                "d": 0
+              },
+              {
+                "ref": 28376,
+                "guide": 28376,
+                "d": 0
+              },
+              {
+                "ref": 43341,
+                "guide": 43341,
+                "d": 0
+              },
+              {
+                "ref": 52943,
+                "guide": 52943,
+                "d": 0
+              },
+              {
+                "ref": 66423,
+                "guide": 66423,
+                "d": 0
+              }
+            ]
+          },
+          "R": {
+            "state": "ALIGNED",
+            "d": 0,
+            "alternatives": [
+              0
+            ],
+            "why": "marca única",
+            "tags": [
+              {
+                "ref": 11654,
+                "guide": 11654,
+                "d": 0
+              },
+              {
+                "ref": 18552,
+                "guide": 18552,
+                "d": 0
+              },
+              {
+                "ref": 28738,
+                "guide": 28738,
+                "d": 0
+              },
+              {
+                "ref": 43040,
+                "guide": 43040,
+                "d": 0
+              },
+              {
+                "ref": 53171,
+                "guide": 53171,
+                "d": 0
+              },
+              {
+                "ref": 65808,
+                "guide": 65808,
+                "d": 0
+              }
+            ]
+          }
+        }
+      },
+      "files": {
+        "mix": "19faf266dc6d6206e1b1073c4a4d8634cc8ddeee6ce6529d3ed143c918a5dd66",
+        "V0": "12c516cf2ac5b4dd8c399b34d34d140c90f43aa693c5d746a251cc60617be8ef",
+        "I0": "3ba8f9a619cd2bf40c1eb8b5ffa88d6b87dc4f9cf0801505f72cf23be8c979d6",
+        "background": "3ba8f9a619cd2bf40c1eb8b5ffa88d6b87dc4f9cf0801505f72cf23be8c979d6",
+        "noise": "32d73ebfdcbb208f7a360a083f7596ad88a9aecfe2e46f26c09b287af605b182",
+        "vocal": "8b8b3ba28733ed38538ebf0da8dd2478d9884858e7b0fe25d3ca0d82b2d0e96b",
+        "instrumental": "3ba8f9a619cd2bf40c1eb8b5ffa88d6b87dc4f9cf0801505f72cf23be8c979d6"
+      }
+    },
+    {
+      "id": "interior_vacio",
+      "partition": "RESERVA",
+      "seed": 2461779604787245394,
+      "frames_mix": 1587600,
+      "frames_v": 1587600,
+      "frames_i": 1587600,
+      "delay_v": [
+        -18013,
+        18103
+      ],
+      "delay_i": [
+        0,
+        0
+      ],
+      "gains_v": [
+        1.0,
+        1.0
+      ],
+      "replica_amplitudes": [
+        0.0,
+        0.0
+      ],
+      "replica_spacing": null,
+      "noise_snr_vs_V_db": null,
+      "truth": {
+        "vocal": {
+          "L": {
+            "state": "MISALIGNED",
+            "d": -18013,
+            "alternatives": [
+              -18013
+            ],
+            "why": "marca única",
+            "tags": [
+              {
+                "ref": 34018,
+                "guide": 16005,
+                "d": -18013
+              },
+              {
+                "ref": 58362,
+                "guide": 40349,
+                "d": -18013
+              },
+              {
+                "ref": 88836,
+                "guide": 70823,
+                "d": -18013
+              },
+              {
+                "ref": 1495890,
+                "guide": 1477877,
+                "d": -18013
+              },
+              {
+                "ref": 1513273,
+                "guide": 1495260,
+                "d": -18013
+              },
+              {
+                "ref": 1548102,
+                "guide": 1530089,
+                "d": -18013
+              }
+            ]
+          },
+          "R": {
+            "state": "MISALIGNED",
+            "d": 18103,
+            "alternatives": [
+              18103
+            ],
+            "why": "marca única",
+            "tags": [
+              {
+                "ref": 33345,
+                "guide": 51448,
+                "d": 18103
+              },
+              {
+                "ref": 58011,
+                "guide": 76114,
+                "d": 18103
+              },
+              {
+                "ref": 89024,
+                "guide": 107127,
+                "d": 18103
+              },
+              {
+                "ref": 1496256,
+                "guide": 1514359,
+                "d": 18103
+              },
+              {
+                "ref": 1513412,
+                "guide": 1531515,
+                "d": 18103
+              },
+              {
+                "ref": 1548938,
+                "guide": 1567041,
+                "d": 18103
+              }
+            ]
+          }
+        },
+        "instrumental": {
+          "L": {
+            "state": "ALIGNED",
+            "d": 0,
+            "alternatives": [
+              0
+            ],
+            "why": "marca única",
+            "tags": [
+              {
+                "ref": 34297,
+                "guide": 34297,
+                "d": 0
+              },
+              {
+                "ref": 57888,
+                "guide": 57888,
+                "d": 0
+              },
+              {
+                "ref": 89445,
+                "guide": 89445,
+                "d": 0
+              },
+              {
+                "ref": 1495343,
+                "guide": 1495343,
+                "d": 0
+              },
+              {
+                "ref": 1513507,
+                "guide": 1513507,
+                "d": 0
+              },
+              {
+                "ref": 1548246,
+                "guide": 1548246,
+                "d": 0
+              }
+            ]
+          },
+          "R": {
+            "state": "ALIGNED",
+            "d": 0,
+            "alternatives": [
+              0
+            ],
+            "why": "marca única",
+            "tags": [
+              {
+                "ref": 33300,
+                "guide": 33300,
+                "d": 0
+              },
+              {
+                "ref": 58097,
+                "guide": 58097,
+                "d": 0
+              },
+              {
+                "ref": 89452,
+                "guide": 89452,
+                "d": 0
+              },
+              {
+                "ref": 1496291,
+                "guide": 1496291,
+                "d": 0
+              },
+              {
+                "ref": 1513717,
+                "guide": 1513717,
+                "d": 0
+              },
+              {
+                "ref": 1549422,
+                "guide": 1549422,
+                "d": 0
+              }
+            ]
+          }
+        }
+      },
+      "files": {
+        "mix": "9c78179f507a7ff7717d13a54c6bc573114de70335a1b3913a245fd803bd5872",
+        "V0": "158e7cb4bc85b0590b479a60d50fea1fd2324374c9bc8a86e9cfd6969d6a1b5f",
+        "I0": "e4610832818de38c3b4f0b561ba3ea3612eac9484401f2ed92d2721e604e263f",
+        "background": "e4610832818de38c3b4f0b561ba3ea3612eac9484401f2ed92d2721e604e263f",
+        "noise": "d86fc93e49db7e329b34f4caa9abc82ce9cc924a359b2c77a3f4a726f240162f",
+        "vocal": "a295e5cffe73f6c01331ca9dc90a22f1333db6e3c31064d22e841bacf076c999",
+        "instrumental": "e4610832818de38c3b4f0b561ba3ea3612eac9484401f2ed92d2721e604e263f"
+      }
+    },
+    {
+      "id": "dos_tramos",
+      "partition": "RESERVA",
+      "seed": 4436345834721178728,
+      "frames_mix": 1587600,
+      "frames_v": 1587600,
+      "frames_i": 1587600,
+      "delay_v": [
+        953,
+        953
+      ],
+      "delay_i": [
+        0,
+        0
+      ],
+      "gains_v": [
+        1.0,
+        1.0
+      ],
+      "replica_amplitudes": [
+        0.0,
+        0.0
+      ],
+      "replica_spacing": null,
+      "noise_snr_vs_V_db": null,
+      "truth": {
+        "vocal": {
+          "L": {
+            "state": "AMBIGUOUS",
+            "d": null,
+            "alternatives": [
+              953,
+              -1213
+            ],
+            "why": "dos relojes por tramo",
+            "tags": [
+              {
+                "ref": 34218,
+                "guide": 35171,
+                "d": 953
+              },
+              {
+                "ref": 58199,
+                "guide": 59152,
+                "d": 953
+              },
+              {
+                "ref": 89206,
+                "guide": 90159,
+                "d": 953
+              },
+              {
+                "ref": 1495798,
+                "guide": 1494585,
+                "d": -1213
+              },
+              {
+                "ref": 1513585,
+                "guide": 1512372,
+                "d": -1213
+              },
+              {
+                "ref": 1548529,
+                "guide": 1547316,
+                "d": -1213
+              }
+            ]
+          },
+          "R": {
+            "state": "AMBIGUOUS",
+            "d": null,
+            "alternatives": [
+              953,
+              -1213
+            ],
+            "why": "dos relojes por tramo",
+            "tags": [
+              {
+                "ref": 33794,
+                "guide": 34747,
+                "d": 953
+              },
+              {
+                "ref": 58443,
+                "guide": 59396,
+                "d": 953
+              },
+              {
+                "ref": 88793,
+                "guide": 89746,
+                "d": 953
+              },
+              {
+                "ref": 1495952,
+                "guide": 1494739,
+                "d": -1213
+              },
+              {
+                "ref": 1513445,
+                "guide": 1512232,
+                "d": -1213
+              },
+              {
+                "ref": 1548780,
+                "guide": 1547567,
+                "d": -1213
+              }
+            ]
+          }
+        },
+        "instrumental": {
+          "L": {
+            "state": "ALIGNED",
+            "d": 0,
+            "alternatives": [
+              0
+            ],
+            "why": "marca única",
+            "tags": [
+              {
+                "ref": 33793,
+                "guide": 33793,
+                "d": 0
+              },
+              {
+                "ref": 58694,
+                "guide": 58694,
+                "d": 0
+              },
+              {
+                "ref": 88726,
+                "guide": 88726,
+                "d": 0
+              },
+              {
+                "ref": 1495779,
+                "guide": 1495779,
+                "d": 0
+              },
+              {
+                "ref": 1513003,
+                "guide": 1513003,
+                "d": 0
+              },
+              {
+                "ref": 1548405,
+                "guide": 1548405,
+                "d": 0
+              }
+            ]
+          },
+          "R": {
+            "state": "ALIGNED",
+            "d": 0,
+            "alternatives": [
+              0
+            ],
+            "why": "marca única",
+            "tags": [
+              {
+                "ref": 34130,
+                "guide": 34130,
+                "d": 0
+              },
+              {
+                "ref": 58643,
+                "guide": 58643,
+                "d": 0
+              },
+              {
+                "ref": 89099,
+                "guide": 89099,
+                "d": 0
+              },
+              {
+                "ref": 1495890,
+                "guide": 1495890,
+                "d": 0
+              },
+              {
+                "ref": 1513603,
+                "guide": 1513603,
+                "d": 0
+              },
+              {
+                "ref": 1549305,
+                "guide": 1549305,
+                "d": 0
+              }
+            ]
+          }
+        }
+      },
+      "files": {
+        "mix": "f617ce09899bcaa5fda6a983b6591ceb9952028c279a0f15a1d95f6afa086f64",
+        "V0": "4efa7e2646bdc329de165d62bd4f54858ba6d8875f5ea55319849b7f8dea6577",
+        "I0": "556a4d644df9418cff28228c1d58f9862e71057a6f0d1fbc4edd3429d2b19130",
+        "background": "556a4d644df9418cff28228c1d58f9862e71057a6f0d1fbc4edd3429d2b19130",
+        "noise": "d86fc93e49db7e329b34f4caa9abc82ce9cc924a359b2c77a3f4a726f240162f",
+        "vocal": "6ae0c2ac46c5b32ca22fd73588d94f316d82a9c98a8e058727fc1cb52db8ba04",
+        "instrumental": "556a4d644df9418cff28228c1d58f9862e71057a6f0d1fbc4edd3429d2b19130"
+      }
+    },
+    {
+      "id": "invalida_L",
+      "partition": "RESERVA",
+      "seed": 16582481588210788731,
+      "frames_mix": 88200,
+      "frames_v": 88200,
+      "frames_i": 88200,
+      "delay_v": [
+        0,
+        0
+      ],
+      "delay_i": [
+        0,
+        0
+      ],
+      "gains_v": [
+        1.0,
+        1.0
+      ],
+      "replica_amplitudes": [
+        0.0,
+        0.0
+      ],
+      "replica_spacing": null,
+      "noise_snr_vs_V_db": null,
+      "truth": {
+        "vocal": {
+          "L": {
+            "state": "ERROR",
+            "d": null,
+            "alternatives": [],
+            "why": "NaN de control sólo en L",
+            "tags": []
+          },
+          "R": {
+            "state": "ALIGNED",
+            "d": 0,
+            "alternatives": [
+              0
+            ],
+            "why": "marca única",
+            "tags": [
+              {
+                "ref": 10812,
+                "guide": 10812,
+                "d": 0
+              },
+              {
+                "ref": 18326,
+                "guide": 18326,
+                "d": 0
+              },
+              {
+                "ref": 28882,
+                "guide": 28882,
+                "d": 0
+              },
+              {
+                "ref": 43134,
+                "guide": 43134,
+                "d": 0
+              },
+              {
+                "ref": 53383,
+                "guide": 53383,
+                "d": 0
+              },
+              {
+                "ref": 65836,
+                "guide": 65836,
+                "d": 0
+              }
+            ]
+          }
+        },
+        "instrumental": {
+          "L": {
+            "state": "ALIGNED",
+            "d": 0,
+            "alternatives": [
+              0
+            ],
+            "why": "marca única",
+            "tags": [
+              {
+                "ref": 11379,
+                "guide": 11379,
+                "d": 0
+              },
+              {
+                "ref": 17778,
+                "guide": 17778,
+                "d": 0
+              },
+              {
+                "ref": 28698,
+                "guide": 28698,
+                "d": 0
+              },
+              {
+                "ref": 43206,
+                "guide": 43206,
+                "d": 0
+              },
+              {
+                "ref": 53407,
+                "guide": 53407,
+                "d": 0
+              },
+              {
+                "ref": 66040,
+                "guide": 66040,
+                "d": 0
+              }
+            ]
+          },
+          "R": {
+            "state": "ALIGNED",
+            "d": 0,
+            "alternatives": [
+              0
+            ],
+            "why": "marca única",
+            "tags": [
+              {
+                "ref": 11984,
+                "guide": 11984,
+                "d": 0
+              },
+              {
+                "ref": 18653,
+                "guide": 18653,
+                "d": 0
+              },
+              {
+                "ref": 28343,
+                "guide": 28343,
+                "d": 0
+              },
+              {
+                "ref": 42760,
+                "guide": 42760,
+                "d": 0
+              },
+              {
+                "ref": 53546,
+                "guide": 53546,
+                "d": 0
+              },
+              {
+                "ref": 65946,
+                "guide": 65946,
+                "d": 0
+              }
+            ]
+          }
+        }
+      },
+      "files": {
+        "mix": "1ce49b684a308a11ffebabe54112cf5a824a71bc3c2728aa274da416c3c22ad0",
+        "V0": "cba939c415f65054e04bd84fd87630e0b9b1248a2f07fd9a573b98ae1330daa7",
+        "I0": "537e7523062d34ce2175b04504bf0df1d4d824df9e18617fa3132d379f011cab",
+        "background": "537e7523062d34ce2175b04504bf0df1d4d824df9e18617fa3132d379f011cab",
+        "noise": "32d73ebfdcbb208f7a360a083f7596ad88a9aecfe2e46f26c09b287af605b182",
+        "vocal": "bc7026a2f800d7e1f1a073d32897b16e848291b885bcd75b052714df61b8a0ef",
+        "instrumental": "537e7523062d34ce2175b04504bf0df1d4d824df9e18617fa3132d379f011cab"
+      }
+    }
+  ]
+}

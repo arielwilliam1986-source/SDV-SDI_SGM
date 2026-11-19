@@ -1,0 +1,304 @@
+{
+  "B": {
+    "6B": {
+      "n": 52,
+      "labels": {
+        "MISALIGNED": 16,
+        "ALIGNED": 28,
+        "INSUFFICIENT_SIGNAL": 4,
+        "AMBIGUOUS": 4
+      },
+      "outcomes": {
+        "EXACTO": 38,
+        "ABSTENCION_CON_MARCA": 6,
+        "ABSTENCION_CORRECTA": 8
+      },
+      "old_scalar_matches": 24,
+      "old_matches_identity": 0,
+      "gain_numerical": 14,
+      "loss_numerical": [],
+      "false_permit": [],
+      "false_veto": [],
+      "misattributions": []
+    },
+    "A_6C": {
+      "n": 8,
+      "labels": {
+        "AMBIGUOUS": 4,
+        "ALIGNED": 4
+      },
+      "outcomes": {
+        "ATRIBUCION_SIN_UNICIDAD": 3,
+        "ABSTENCION_CORRECTA": 1,
+        "EXACTO": 4
+      },
+      "old_scalar_matches": 2,
+      "old_matches_identity": 0,
+      "gain_numerical": 2,
+      "loss_numerical": [],
+      "false_permit": [],
+      "false_veto": [],
+      "misattributions": [
+        "R_dos_origenes/vocal/L",
+        "R_replica_dominante/vocal/L",
+        "R_replica_dominante/vocal/R"
+      ]
+    },
+    "DEV": {
+      "n": 8,
+      "labels": {
+        "ALIGNED": 6,
+        "MISALIGNED": 2
+      },
+      "outcomes": {
+        "EXACTO": 8
+      },
+      "old_scalar_matches": 2,
+      "old_matches_identity": 0,
+      "gain_numerical": 6,
+      "loss_numerical": [],
+      "false_permit": [],
+      "false_veto": [],
+      "misattributions": []
+    },
+    "RESERVA": {
+      "n": 100,
+      "labels": {
+        "ALIGNED": 50,
+        "WARNING": 6,
+        "MISALIGNED": 23,
+        "INSUFFICIENT_SIGNAL": 7,
+        "AMBIGUOUS": 13,
+        "ERROR": 1
+      },
+      "outcomes": {
+        "EXACTO": 79,
+        "ABSTENCION_CORRECTA": 12,
+        "ATRIBUCION_SIN_UNICIDAD": 9
+      },
+      "old_scalar_matches": 10,
+      "old_matches_identity": 0,
+      "gain_numerical": 69,
+      "loss_numerical": [],
+      "false_permit": [
+        "rep_igual",
+        "rep_035",
+        "rival_R"
+      ],
+      "false_veto": [],
+      "misattributions": [
+        "rep_igual/vocal/L",
+        "rep_igual/vocal/R",
+        "rep_035/vocal/L",
+        "rep_035/vocal/R",
+        "rep_165/vocal/L",
+        "rep_165/vocal/R",
+        "rival_R/vocal/R",
+        "dos_tramos/vocal/L",
+        "dos_tramos/vocal/R"
+      ]
+    }
+  },
+  "C": {
+    "6B": {
+      "n": 52,
+      "labels": {
+        "MISALIGNED": 16,
+        "ALIGNED": 28,
+        "INSUFFICIENT_SIGNAL": 4,
+        "AMBIGUOUS": 4
+      },
+      "outcomes": {
+        "EXACTO": 37,
+        "ABSTENCION_CON_MARCA": 7,
+        "ABSTENCION_CORRECTA": 8
+      },
+      "old_scalar_matches": 28,
+      "old_matches_identity": 8,
+      "gain_numerical": 12,
+      "loss_numerical": [
+        "C_archivo_S5_4s/instrumental/L",
+        "C_archivo_S5_4s/instrumental/R",
+        "A_d+0_70s/instrumental/R"
+      ],
+      "false_permit": [],
+      "false_veto": [],
+      "misattributions": []
+    },
+    "A_6C": {
+      "n": 8,
+      "labels": {
+        "AMBIGUOUS": 4,
+        "ALIGNED": 4
+      },
+      "outcomes": {
+        "ATRIBUCION_SIN_UNICIDAD": 3,
+        "ABSTENCION_CORRECTA": 1,
+        "EXACTO": 4
+      },
+      "old_scalar_matches": 4,
+      "old_matches_identity": 2,
+      "gain_numerical": 0,
+      "loss_numerical": [],
+      "false_permit": [],
+      "false_veto": [],
+      "misattributions": [
+        "R_dos_origenes/vocal/L",
+        "R_replica_dominante/vocal/L",
+        "R_replica_dominante/vocal/R"
+      ]
+    },
+    "DEV": {
+      "n": 8,
+      "labels": {
+        "ALIGNED": 6,
+        "MISALIGNED": 2
+      },
+      "outcomes": {
+        "EXACTO": 8
+      },
+      "old_scalar_matches": 6,
+      "old_matches_identity": 4,
+      "gain_numerical": 2,
+      "loss_numerical": [],
+      "false_permit": [],
+      "false_veto": [],
+      "misattributions": []
+    },
+    "RESERVA": {
+      "n": 100,
+      "labels": {
+        "ALIGNED": 50,
+        "WARNING": 6,
+        "MISALIGNED": 23,
+        "INSUFFICIENT_SIGNAL": 7,
+        "AMBIGUOUS": 13,
+        "ERROR": 1
+      },
+      "outcomes": {
+        "EXACTO": 79,
+        "ABSTENCION_CORRECTA": 14,
+        "ATRIBUCION_SIN_UNICIDAD": 7
+      },
+      "old_scalar_matches": 50,
+      "old_matches_identity": 42,
+      "gain_numerical": 29,
+      "loss_numerical": [],
+      "false_permit": [
+        "rep_igual",
+        "rep_035",
+        "rival_R"
+      ],
+      "false_veto": [],
+      "misattributions": [
+        "rep_igual/vocal/L",
+        "rep_igual/vocal/R",
+        "rep_035/vocal/L",
+        "rep_035/vocal/R",
+        "rep_165/vocal/L",
+        "rep_165/vocal/R",
+        "rival_R/vocal/R"
+      ]
+    }
+  },
+  "D": {
+    "6B": {
+      "n": 52,
+      "labels": {
+        "MISALIGNED": 16,
+        "ALIGNED": 28,
+        "INSUFFICIENT_SIGNAL": 4,
+        "AMBIGUOUS": 4
+      },
+      "outcomes": {
+        "EXACTO": 38,
+        "ABSTENCION_CON_MARCA": 6,
+        "ABSTENCION_CORRECTA": 8
+      },
+      "old_scalar_matches": 24,
+      "old_matches_identity": 0,
+      "gain_numerical": 14,
+      "loss_numerical": [],
+      "false_permit": [],
+      "false_veto": [],
+      "misattributions": []
+    },
+    "A_6C": {
+      "n": 8,
+      "labels": {
+        "AMBIGUOUS": 4,
+        "ALIGNED": 4
+      },
+      "outcomes": {
+        "ATRIBUCION_SIN_UNICIDAD": 3,
+        "ABSTENCION_CORRECTA": 1,
+        "EXACTO": 4
+      },
+      "old_scalar_matches": 2,
+      "old_matches_identity": 0,
+      "gain_numerical": 2,
+      "loss_numerical": [],
+      "false_permit": [],
+      "false_veto": [],
+      "misattributions": [
+        "R_dos_origenes/vocal/L",
+        "R_replica_dominante/vocal/L",
+        "R_replica_dominante/vocal/R"
+      ]
+    },
+    "DEV": {
+      "n": 8,
+      "labels": {
+        "ALIGNED": 6,
+        "MISALIGNED": 2
+      },
+      "outcomes": {
+        "EXACTO": 8
+      },
+      "old_scalar_matches": 2,
+      "old_matches_identity": 0,
+      "gain_numerical": 6,
+      "loss_numerical": [],
+      "false_permit": [],
+      "false_veto": [],
+      "misattributions": []
+    },
+    "RESERVA": {
+      "n": 100,
+      "labels": {
+        "ALIGNED": 50,
+        "WARNING": 6,
+        "MISALIGNED": 23,
+        "INSUFFICIENT_SIGNAL": 7,
+        "AMBIGUOUS": 13,
+        "ERROR": 1
+      },
+      "outcomes": {
+        "EXACTO": 79,
+        "ABSTENCION_CORRECTA": 12,
+        "ATRIBUCION_SIN_UNICIDAD": 9
+      },
+      "old_scalar_matches": 10,
+      "old_matches_identity": 0,
+      "gain_numerical": 69,
+      "loss_numerical": [],
+      "false_permit": [
+        "rep_igual",
+        "rep_035",
+        "rival_R"
+      ],
+      "false_veto": [],
+      "misattributions": [
+        "rep_igual/vocal/L",
+        "rep_igual/vocal/R",
+        "rep_035/vocal/L",
+        "rep_035/vocal/R",
+        "rep_165/vocal/L",
+        "rep_165/vocal/R",
+        "rival_R/vocal/R",
+        "dos_tramos/vocal/L",
+        "dos_tramos/vocal/R"
+      ]
+    }
+  }
+}

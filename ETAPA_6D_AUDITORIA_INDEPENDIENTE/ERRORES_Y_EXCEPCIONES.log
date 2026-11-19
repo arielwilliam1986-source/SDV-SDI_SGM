@@ -1,0 +1,127 @@
+Índice de incidencias observadas; trazas, stdout/stderr completos en los primarios indicados.
+Veto de validación ≠ excepción Python. Casos provocados y fallos de instrumento se distinguen.
+det_B_6C:invalida_L/vocal/L: ValueError: Non-finite samples in L
+cli_B:R_dos_origenes/default: exit 1 estados ['AMBIGUOUS', 'ALIGNED']; DSP=False; stdout/stderr y manifest en primario
+cli_B:R_replica_dominante/default: exit 1 estados ['MISALIGNED', 'ALIGNED']; DSP=False; stdout/stderr y manifest en primario
+cli_B:DEV_no_cero/default: exit 1 estados ['MISALIGNED', 'ALIGNED']; DSP=False; stdout/stderr y manifest en primario
+cli_B:M/default: exit 1 estados ['MISALIGNED', 'ALIGNED']; DSP=False; stdout/stderr y manifest en primario
+cli_B:distintos/default: exit 1 estados ['MISALIGNED', 'MISALIGNED']; DSP=False; stdout/stderr y manifest en primario
+cli_B:swap/default: exit 1 estados ['MISALIGNED', 'MISALIGNED']; DSP=False; stdout/stderr y manifest en primario
+cli_B:invL/default: exit 1 estados ['MISALIGNED', 'ALIGNED']; DSP=False; stdout/stderr y manifest en primario
+cli_B:soloL/default: exit 1 estados ['INSUFFICIENT_SIGNAL', 'ALIGNED']; DSP=False; stdout/stderr y manifest en primario
+cli_B:soloR/default: exit 1 estados ['INSUFFICIENT_SIGNAL', 'ALIGNED']; DSP=False; stdout/stderr y manifest en primario
+cli_B:alarma_mudo/default: exit 1 estados ['MISALIGNED', 'ALIGNED']; DSP=False; stdout/stderr y manifest en primario
+cli_B:debil/default: exit 1 estados ['MISALIGNED', 'ALIGNED']; DSP=False; stdout/stderr y manifest en primario
+cli_B:ruido8/default: exit 1 estados ['MISALIGNED', 'ALIGNED']; DSP=False; stdout/stderr y manifest en primario
+cli_B:circular/default: exit 1 estados ['AMBIGUOUS', 'AMBIGUOUS']; DSP=False; stdout/stderr y manifest en primario
+cli_B:rep_165/default: exit 1 estados ['MISALIGNED', 'ALIGNED']; DSP=False; stdout/stderr y manifest en primario
+cli_B:lateral/default: exit 1 estados ['MISALIGNED', 'ALIGNED']; DSP=False; stdout/stderr y manifest en primario
+cli_B:dc/default: exit 1 estados ['INSUFFICIENT_SIGNAL', 'ALIGNED']; DSP=False; stdout/stderr y manifest en primario
+cli_B:sin_relacion/default: exit 1 estados ['INSUFFICIENT_SIGNAL', 'ALIGNED']; DSP=False; stdout/stderr y manifest en primario
+cli_B:corta/default: exit 1 estados ['MISALIGNED', 'ALIGNED']; DSP=False; stdout/stderr y manifest en primario
+cli_B:larga/default: exit 1 estados ['MISALIGNED', 'ALIGNED']; DSP=False; stdout/stderr y manifest en primario
+cli_B:interior_vacio/default: exit 1 estados ['MISALIGNED', 'ALIGNED']; DSP=False; stdout/stderr y manifest en primario
+cli_B:dos_tramos/default: exit 1 estados ['MISALIGNED', 'ALIGNED']; DSP=False; stdout/stderr y manifest en primario
+cli_B:invalida_L/default: exit 1 estados ['ERROR', 'ALIGNED']; DSP=False; stdout/stderr y manifest en primario
+cli_B:invalida_L/override: exit 1 estados ['ERROR', 'ALIGNED']; DSP=False; stdout/stderr y manifest en primario
+cli_B:fault_missing/default: exit 1 estados []; DSP=False; stdout/stderr y manifest en primario
+cli_B:fault_missing/override: exit 1 estados []; DSP=False; stdout/stderr y manifest en primario
+cli_B:fault_header/default: exit 1 estados []; DSP=False; stdout/stderr y manifest en primario
+cli_B:fault_header/override: exit 1 estados []; DSP=False; stdout/stderr y manifest en primario
+cli_B:fault_race/default: exit 1 estados ['ERROR', 'ALIGNED']; DSP=False; stdout/stderr y manifest en primario
+cli_B:fault_race/override: exit 1 estados ['ERROR', 'ALIGNED']; DSP=False; stdout/stderr y manifest en primario
+cli_B:request_shift: exit 1 estados []; DSP=False; stdout/stderr y manifest en primario
+det_C_6C:invalida_L/vocal/L: ValueError: Non-finite samples in L
+cli_C:R_dos_origenes/default: exit 1 estados ['AMBIGUOUS', 'ALIGNED']; DSP=False; stdout/stderr y manifest en primario
+cli_C:R_replica_dominante/default: exit 1 estados ['MISALIGNED', 'ALIGNED']; DSP=False; stdout/stderr y manifest en primario
+cli_C:DEV_no_cero/default: exit 1 estados ['MISALIGNED', 'ALIGNED']; DSP=False; stdout/stderr y manifest en primario
+cli_C:M/default: exit 1 estados ['MISALIGNED', 'ALIGNED']; DSP=False; stdout/stderr y manifest en primario
+cli_C:distintos/default: exit 1 estados ['MISALIGNED', 'MISALIGNED']; DSP=False; stdout/stderr y manifest en primario
+cli_C:swap/default: exit 1 estados ['MISALIGNED', 'MISALIGNED']; DSP=False; stdout/stderr y manifest en primario
+cli_C:invL/default: exit 1 estados ['MISALIGNED', 'ALIGNED']; DSP=False; stdout/stderr y manifest en primario
+cli_C:soloL/default: exit 1 estados ['INSUFFICIENT_SIGNAL', 'ALIGNED']; DSP=False; stdout/stderr y manifest en primario
+cli_C:soloR/default: exit 1 estados ['INSUFFICIENT_SIGNAL', 'ALIGNED']; DSP=False; stdout/stderr y manifest en primario
+cli_C:alarma_mudo/default: exit 1 estados ['MISALIGNED', 'ALIGNED']; DSP=False; stdout/stderr y manifest en primario
+cli_C:debil/default: exit 1 estados ['MISALIGNED', 'ALIGNED']; DSP=False; stdout/stderr y manifest en primario
+cli_C:ruido8/default: exit 1 estados ['MISALIGNED', 'ALIGNED']; DSP=False; stdout/stderr y manifest en primario
+cli_C:circular/default: exit 1 estados ['AMBIGUOUS', 'AMBIGUOUS']; DSP=False; stdout/stderr y manifest en primario
+cli_C:rep_165/default: exit 1 estados ['MISALIGNED', 'ALIGNED']; DSP=False; stdout/stderr y manifest en primario
+cli_C:lateral/default: exit 1 estados ['MISALIGNED', 'ALIGNED']; DSP=False; stdout/stderr y manifest en primario
+cli_C:dc/default: exit 1 estados ['INSUFFICIENT_SIGNAL', 'ALIGNED']; DSP=False; stdout/stderr y manifest en primario
+cli_C:sin_relacion/default: exit 1 estados ['INSUFFICIENT_SIGNAL', 'ALIGNED']; DSP=False; stdout/stderr y manifest en primario
+cli_C:corta/default: exit 1 estados ['MISALIGNED', 'ALIGNED']; DSP=False; stdout/stderr y manifest en primario
+cli_C:larga/default: exit 1 estados ['MISALIGNED', 'ALIGNED']; DSP=False; stdout/stderr y manifest en primario
+cli_C:interior_vacio/default: exit 1 estados ['MISALIGNED', 'ALIGNED']; DSP=False; stdout/stderr y manifest en primario
+cli_C:dos_tramos/default: exit 1 estados ['AMBIGUOUS', 'ALIGNED']; DSP=False; stdout/stderr y manifest en primario
+cli_C:invalida_L/default: exit 1 estados ['ERROR', 'ALIGNED']; DSP=False; stdout/stderr y manifest en primario
+cli_C:invalida_L/override: exit 1 estados ['ERROR', 'ALIGNED']; DSP=False; stdout/stderr y manifest en primario
+cli_C:fault_missing/default: exit 1 estados []; DSP=False; stdout/stderr y manifest en primario
+cli_C:fault_missing/override: exit 1 estados []; DSP=False; stdout/stderr y manifest en primario
+cli_C:fault_header/default: exit 1 estados []; DSP=False; stdout/stderr y manifest en primario
+cli_C:fault_header/override: exit 1 estados []; DSP=False; stdout/stderr y manifest en primario
+cli_C:fault_race/default: exit 1 estados ['ERROR', 'ALIGNED']; DSP=False; stdout/stderr y manifest en primario
+cli_C:fault_race/override: exit 1 estados ['ERROR', 'ALIGNED']; DSP=False; stdout/stderr y manifest en primario
+cli_C:request_shift: exit 1 estados []; DSP=False; stdout/stderr y manifest en primario
+det_D_6C:invalida_L/vocal/L: ValueError: Non-finite samples in L
+cli_D:R_dos_origenes/default: exit 1 estados ['AMBIGUOUS', 'ALIGNED']; DSP=False; stdout/stderr y manifest en primario
+cli_D:R_replica_dominante/default: exit 1 estados ['MISALIGNED', 'ALIGNED']; DSP=False; stdout/stderr y manifest en primario
+cli_D:DEV_no_cero/default: exit 1 estados ['MISALIGNED', 'ALIGNED']; DSP=False; stdout/stderr y manifest en primario
+cli_D:M/default: exit 1 estados ['MISALIGNED', 'ALIGNED']; DSP=False; stdout/stderr y manifest en primario
+cli_D:distintos/default: exit 1 estados ['MISALIGNED', 'MISALIGNED']; DSP=False; stdout/stderr y manifest en primario
+cli_D:swap/default: exit 1 estados ['MISALIGNED', 'MISALIGNED']; DSP=False; stdout/stderr y manifest en primario
+cli_D:invL/default: exit 1 estados ['MISALIGNED', 'ALIGNED']; DSP=False; stdout/stderr y manifest en primario
+cli_D:soloL/default: exit 1 estados ['INSUFFICIENT_SIGNAL', 'ALIGNED']; DSP=False; stdout/stderr y manifest en primario
+cli_D:soloR/default: exit 1 estados ['INSUFFICIENT_SIGNAL', 'ALIGNED']; DSP=False; stdout/stderr y manifest en primario
+cli_D:alarma_mudo/default: exit 1 estados ['MISALIGNED', 'ALIGNED']; DSP=False; stdout/stderr y manifest en primario
+cli_D:debil/default: exit 1 estados ['MISALIGNED', 'ALIGNED']; DSP=False; stdout/stderr y manifest en primario
+cli_D:ruido8/default: exit 1 estados ['MISALIGNED', 'ALIGNED']; DSP=False; stdout/stderr y manifest en primario
+cli_D:circular/default: exit 1 estados ['AMBIGUOUS', 'AMBIGUOUS']; DSP=False; stdout/stderr y manifest en primario
+cli_D:rep_165/default: exit 1 estados ['MISALIGNED', 'ALIGNED']; DSP=False; stdout/stderr y manifest en primario
+cli_D:lateral/default: exit 1 estados ['MISALIGNED', 'ALIGNED']; DSP=False; stdout/stderr y manifest en primario
+cli_D:dc/default: exit 1 estados ['INSUFFICIENT_SIGNAL', 'ALIGNED']; DSP=False; stdout/stderr y manifest en primario
+cli_D:sin_relacion/default: exit 1 estados ['INSUFFICIENT_SIGNAL', 'ALIGNED']; DSP=False; stdout/stderr y manifest en primario
+cli_D:corta/default: exit 1 estados ['MISALIGNED', 'ALIGNED']; DSP=False; stdout/stderr y manifest en primario
+cli_D:larga/default: exit 1 estados ['MISALIGNED', 'ALIGNED']; DSP=False; stdout/stderr y manifest en primario
+cli_D:interior_vacio/default: exit 1 estados ['MISALIGNED', 'ALIGNED']; DSP=False; stdout/stderr y manifest en primario
+cli_D:dos_tramos/default: exit 1 estados ['MISALIGNED', 'ALIGNED']; DSP=False; stdout/stderr y manifest en primario
+cli_D:invalida_L/default: exit 1 estados ['ERROR', 'ALIGNED']; DSP=False; stdout/stderr y manifest en primario
+cli_D:invalida_L/override: exit 1 estados ['ERROR', 'ALIGNED']; DSP=False; stdout/stderr y manifest en primario
+cli_D:fault_missing/default: exit 1 estados []; DSP=False; stdout/stderr y manifest en primario
+cli_D:fault_missing/override: exit 1 estados []; DSP=False; stdout/stderr y manifest en primario
+cli_D:fault_header/default: exit 1 estados []; DSP=False; stdout/stderr y manifest en primario
+cli_D:fault_header/override: exit 1 estados []; DSP=False; stdout/stderr y manifest en primario
+cli_D:fault_race/default: exit 1 estados ['ERROR', 'ALIGNED']; DSP=False; stdout/stderr y manifest en primario
+cli_D:fault_race/override: exit 1 estados ['ERROR', 'ALIGNED']; DSP=False; stdout/stderr y manifest en primario
+cli_D:interactive/no: exit 1 estados ['MISALIGNED', 'ALIGNED']; DSP=False; stdout/stderr y manifest en primario
+dsp_D:D/S7/shared/native/direct/original: ZeroDivisionError crest_factor_sdv; exit 2, _aborted, no validación final
+dsp_D:D/S7/shared/native/direct/6c: ZeroDivisionError crest_factor_sdv; exit 2, _aborted, no validación final
+dsp_D:D/side_aligned/shared/native/direct/original: ZeroDivisionError crest_factor_sdv; exit 2, _aborted, no validación final
+dsp_D:D/side_aligned/shared/native/direct/6c: ZeroDivisionError crest_factor_sdv; exit 2, _aborted, no validación final
+extra_raw:D/nonzero_side_output orig=True exit=2, overall=None, aborted=True; ver consola y JSON
+extra_raw:D/nonzero_side_output orig=False exit=2, overall=None, aborted=True; ver consola y JSON
+extra_raw:D/absent_v_healthy_mix orig=True exit=2, overall=None, aborted=True; ver consola y JSON
+extra_raw:D/absent_v_healthy_mix orig=False exit=2, overall=None, aborted=True; ver consola y JSON
+bordes_cli:B/inventory_empty/default orig=False exit=1, overall=None, aborted=False; ver consola y JSON
+bordes_cli:B/missing_guide_field/default orig=False exit=1, overall=None, aborted=False; ver consola y JSON
+bordes_cli:B/six_last_ERROR/default orig=False exit=1, overall=None, aborted=False; ver consola y JSON
+bordes_cli:B/six_last_ERROR/override orig=False exit=1, overall=None, aborted=False; ver consola y JSON
+bordes_cli:B/opposite_warnings/default orig=False exit=1, overall=None, aborted=False; ver consola y JSON
+bordes_cli:C/inventory_empty/default orig=False exit=1, overall=None, aborted=False; ver consola y JSON
+bordes_cli:C/missing_guide_field/default orig=False exit=1, overall=None, aborted=False; ver consola y JSON
+bordes_cli:C/duplicate_id/default orig=False exit=1, overall=None, aborted=False; ver consola y JSON
+bordes_cli:C/duplicate_id/original orig=True exit=1, overall=None, aborted=False; ver consola y JSON
+bordes_cli:C/six_last_ERROR/default orig=False exit=1, overall=None, aborted=False; ver consola y JSON
+bordes_cli:C/six_last_ERROR/override orig=False exit=1, overall=None, aborted=False; ver consola y JSON
+bordes_cli:C/opposite_warnings/default orig=False exit=1, overall=None, aborted=False; ver consola y JSON
+bordes_cli:D/inventory_empty/default orig=False exit=1, overall=None, aborted=False; ver consola y JSON
+bordes_cli:D/missing_guide_field/default orig=False exit=1, overall=None, aborted=False; ver consola y JSON
+bordes_cli:D/duplicate_id/default orig=False exit=0, overall=fail, aborted=False; ver consola y JSON
+bordes_cli:D/six_last_ERROR/default orig=False exit=1, overall=None, aborted=False; ver consola y JSON
+bordes_cli:D/six_last_ERROR/override orig=False exit=1, overall=None, aborted=False; ver consola y JSON
+bordes_cli:D/opposite_warnings/default orig=False exit=1, overall=None, aborted=False; ver consola y JSON
+bordes_cli:D/opposite_warnings/override orig=False exit=0, overall=fail, aborted=False; ver consola y JSON
+testigos_cli_original:D/S7/default orig=True, código=1 (99=excepción no manejada capturada por observador, NO exit nativo); ver traceback íntegro en primario
+testigos_cli_original:D/S7/default orig=False, código=1 (99=excepción no manejada capturada por observador, NO exit nativo); ver traceback íntegro en primario
+testigos_cli_original:B/race_original/override orig=True, código=99 (99=excepción no manejada capturada por observador, NO exit nativo); ver traceback íntegro en primario
+testigos_cli_original:C/race_original/override orig=True, código=99 (99=excepción no manejada capturada por observador, NO exit nativo); ver traceback íntegro en primario
+testigos_cli_original:D/race_original/override orig=True, código=99 (99=excepción no manejada capturada por observador, NO exit nativo); ver traceback íntegro en primario

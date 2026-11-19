@@ -1,0 +1,5619 @@
+[
+  {
+    "id": "R_dos_origenes/default",
+    "engine": "B",
+    "original": false,
+    "mode": "full_processing",
+    "flags": [],
+    "exit": 1,
+    "reached_dsp": false,
+    "reached_scale": false,
+    "final_report": false,
+    "wavs": 0,
+    "aborted_dir": false,
+    "roles": [
+      {
+        "state": "AMBIGUOUS",
+        "k": null,
+        "channels": {
+          "L": "ALIGNED",
+          "R": "AMBIGUOUS"
+        }
+      },
+      {
+        "state": "ALIGNED",
+        "k": 0,
+        "channels": {
+          "L": "ALIGNED",
+          "R": "ALIGNED"
+        }
+      }
+    ],
+    "overall": null,
+    "permission_BC": [],
+    "permission_D": [],
+    "trace_error": null,
+    "shifts": []
+  },
+  {
+    "id": "R_dos_origenes/override",
+    "engine": "B",
+    "original": false,
+    "mode": "full_processing",
+    "flags": [
+      "--allow-misaligned"
+    ],
+    "exit": 0,
+    "reached_dsp": true,
+    "reached_scale": true,
+    "final_report": true,
+    "wavs": 2,
+    "aborted_dir": false,
+    "roles": [
+      {
+        "state": "AMBIGUOUS",
+        "k": null,
+        "channels": {
+          "L": "ALIGNED",
+          "R": "AMBIGUOUS"
+        }
+      },
+      {
+        "state": "ALIGNED",
+        "k": 0,
+        "channels": {
+          "L": "ALIGNED",
+          "R": "ALIGNED"
+        }
+      }
+    ],
+    "overall": null,
+    "permission_BC": [
+      "cli_allow_misaligned",
+      "cli_allow_misaligned"
+    ],
+    "permission_D": [],
+    "trace_error": null,
+    "shifts": [
+      0
+    ]
+  },
+  {
+    "id": "R_replica_dominante/default",
+    "engine": "B",
+    "original": false,
+    "mode": "full_processing",
+    "flags": [],
+    "exit": 1,
+    "reached_dsp": false,
+    "reached_scale": false,
+    "final_report": false,
+    "wavs": 0,
+    "aborted_dir": false,
+    "roles": [
+      {
+        "state": "MISALIGNED",
+        "k": 3217,
+        "channels": {
+          "L": "MISALIGNED",
+          "R": "MISALIGNED"
+        }
+      },
+      {
+        "state": "ALIGNED",
+        "k": 0,
+        "channels": {
+          "L": "ALIGNED",
+          "R": "ALIGNED"
+        }
+      }
+    ],
+    "overall": null,
+    "permission_BC": [],
+    "permission_D": [],
+    "trace_error": null,
+    "shifts": []
+  },
+  {
+    "id": "R_replica_dominante/override",
+    "engine": "B",
+    "original": false,
+    "mode": "full_processing",
+    "flags": [
+      "--allow-misaligned"
+    ],
+    "exit": 0,
+    "reached_dsp": true,
+    "reached_scale": true,
+    "final_report": true,
+    "wavs": 2,
+    "aborted_dir": false,
+    "roles": [
+      {
+        "state": "MISALIGNED",
+        "k": 3217,
+        "channels": {
+          "L": "MISALIGNED",
+          "R": "MISALIGNED"
+        }
+      },
+      {
+        "state": "ALIGNED",
+        "k": 0,
+        "channels": {
+          "L": "ALIGNED",
+          "R": "ALIGNED"
+        }
+      }
+    ],
+    "overall": null,
+    "permission_BC": [
+      "cli_allow_misaligned",
+      "cli_allow_misaligned"
+    ],
+    "permission_D": [],
+    "trace_error": null,
+    "shifts": [
+      0
+    ]
+  },
+  {
+    "id": "DEV_cero/default",
+    "engine": "B",
+    "original": false,
+    "mode": "full_processing",
+    "flags": [],
+    "exit": 0,
+    "reached_dsp": true,
+    "reached_scale": true,
+    "final_report": true,
+    "wavs": 2,
+    "aborted_dir": false,
+    "roles": [
+      {
+        "state": "ALIGNED",
+        "k": 0,
+        "channels": {
+          "L": "ALIGNED",
+          "R": "ALIGNED"
+        }
+      },
+      {
+        "state": "ALIGNED",
+        "k": 0,
+        "channels": {
+          "L": "ALIGNED",
+          "R": "ALIGNED"
+        }
+      }
+    ],
+    "overall": null,
+    "permission_BC": [
+      null,
+      null
+    ],
+    "permission_D": [],
+    "trace_error": null,
+    "shifts": [
+      0
+    ]
+  },
+  {
+    "id": "DEV_no_cero/default",
+    "engine": "B",
+    "original": false,
+    "mode": "full_processing",
+    "flags": [],
+    "exit": 1,
+    "reached_dsp": false,
+    "reached_scale": false,
+    "final_report": false,
+    "wavs": 0,
+    "aborted_dir": false,
+    "roles": [
+      {
+        "state": "MISALIGNED",
+        "k": 511,
+        "channels": {
+          "L": "MISALIGNED",
+          "R": "MISALIGNED"
+        }
+      },
+      {
+        "state": "ALIGNED",
+        "k": 0,
+        "channels": {
+          "L": "ALIGNED",
+          "R": "ALIGNED"
+        }
+      }
+    ],
+    "overall": null,
+    "permission_BC": [],
+    "permission_D": [],
+    "trace_error": null,
+    "shifts": []
+  },
+  {
+    "id": "Z/default",
+    "engine": "B",
+    "original": false,
+    "mode": "full_processing",
+    "flags": [],
+    "exit": 0,
+    "reached_dsp": true,
+    "reached_scale": true,
+    "final_report": true,
+    "wavs": 2,
+    "aborted_dir": false,
+    "roles": [
+      {
+        "state": "ALIGNED",
+        "k": 0,
+        "channels": {
+          "L": "ALIGNED",
+          "R": "ALIGNED"
+        }
+      },
+      {
+        "state": "ALIGNED",
+        "k": 0,
+        "channels": {
+          "L": "ALIGNED",
+          "R": "ALIGNED"
+        }
+      }
+    ],
+    "overall": null,
+    "permission_BC": [
+      null,
+      null
+    ],
+    "permission_D": [],
+    "trace_error": null,
+    "shifts": [
+      0
+    ]
+  },
+  {
+    "id": "Z/override",
+    "engine": "B",
+    "original": false,
+    "mode": "full_processing",
+    "flags": [
+      "--allow-misaligned"
+    ],
+    "exit": 0,
+    "reached_dsp": true,
+    "reached_scale": true,
+    "final_report": true,
+    "wavs": 2,
+    "aborted_dir": false,
+    "roles": [
+      {
+        "state": "ALIGNED",
+        "k": 0,
+        "channels": {
+          "L": "ALIGNED",
+          "R": "ALIGNED"
+        }
+      },
+      {
+        "state": "ALIGNED",
+        "k": 0,
+        "channels": {
+          "L": "ALIGNED",
+          "R": "ALIGNED"
+        }
+      }
+    ],
+    "overall": null,
+    "permission_BC": [
+      "cli_allow_misaligned",
+      "cli_allow_misaligned"
+    ],
+    "permission_D": [],
+    "trace_error": null,
+    "shifts": [
+      0
+    ]
+  },
+  {
+    "id": "W/default",
+    "engine": "B",
+    "original": false,
+    "mode": "full_processing",
+    "flags": [],
+    "exit": 0,
+    "reached_dsp": true,
+    "reached_scale": true,
+    "final_report": true,
+    "wavs": 2,
+    "aborted_dir": false,
+    "roles": [
+      {
+        "state": "WARNING",
+        "k": -219,
+        "channels": {
+          "L": "WARNING",
+          "R": "WARNING"
+        }
+      },
+      {
+        "state": "ALIGNED",
+        "k": 0,
+        "channels": {
+          "L": "ALIGNED",
+          "R": "ALIGNED"
+        }
+      }
+    ],
+    "overall": null,
+    "permission_BC": [
+      null,
+      null
+    ],
+    "permission_D": [],
+    "trace_error": null,
+    "shifts": [
+      0
+    ]
+  },
+  {
+    "id": "W/override",
+    "engine": "B",
+    "original": false,
+    "mode": "full_processing",
+    "flags": [
+      "--allow-misaligned"
+    ],
+    "exit": 0,
+    "reached_dsp": true,
+    "reached_scale": true,
+    "final_report": true,
+    "wavs": 2,
+    "aborted_dir": false,
+    "roles": [
+      {
+        "state": "WARNING",
+        "k": -219,
+        "channels": {
+          "L": "WARNING",
+          "R": "WARNING"
+        }
+      },
+      {
+        "state": "ALIGNED",
+        "k": 0,
+        "channels": {
+          "L": "ALIGNED",
+          "R": "ALIGNED"
+        }
+      }
+    ],
+    "overall": null,
+    "permission_BC": [
+      "cli_allow_misaligned",
+      "cli_allow_misaligned"
+    ],
+    "permission_D": [],
+    "trace_error": null,
+    "shifts": [
+      0
+    ]
+  },
+  {
+    "id": "M/default",
+    "engine": "B",
+    "original": false,
+    "mode": "full_processing",
+    "flags": [],
+    "exit": 1,
+    "reached_dsp": false,
+    "reached_scale": false,
+    "final_report": false,
+    "wavs": 0,
+    "aborted_dir": false,
+    "roles": [
+      {
+        "state": "MISALIGNED",
+        "k": 1529,
+        "channels": {
+          "L": "MISALIGNED",
+          "R": "MISALIGNED"
+        }
+      },
+      {
+        "state": "ALIGNED",
+        "k": 0,
+        "channels": {
+          "L": "ALIGNED",
+          "R": "ALIGNED"
+        }
+      }
+    ],
+    "overall": null,
+    "permission_BC": [],
+    "permission_D": [],
+    "trace_error": null,
+    "shifts": []
+  },
+  {
+    "id": "M/override",
+    "engine": "B",
+    "original": false,
+    "mode": "full_processing",
+    "flags": [
+      "--allow-misaligned"
+    ],
+    "exit": 0,
+    "reached_dsp": true,
+    "reached_scale": true,
+    "final_report": true,
+    "wavs": 2,
+    "aborted_dir": false,
+    "roles": [
+      {
+        "state": "MISALIGNED",
+        "k": 1529,
+        "channels": {
+          "L": "MISALIGNED",
+          "R": "MISALIGNED"
+        }
+      },
+      {
+        "state": "ALIGNED",
+        "k": 0,
+        "channels": {
+          "L": "ALIGNED",
+          "R": "ALIGNED"
+        }
+      }
+    ],
+    "overall": null,
+    "permission_BC": [
+      "cli_allow_misaligned",
+      "cli_allow_misaligned"
+    ],
+    "permission_D": [],
+    "trace_error": null,
+    "shifts": [
+      0
+    ]
+  },
+  {
+    "id": "distintos/default",
+    "engine": "B",
+    "original": false,
+    "mode": "full_processing",
+    "flags": [],
+    "exit": 1,
+    "reached_dsp": false,
+    "reached_scale": false,
+    "final_report": false,
+    "wavs": 0,
+    "aborted_dir": false,
+    "roles": [
+      {
+        "state": "MISALIGNED",
+        "k": null,
+        "channels": {
+          "L": "MISALIGNED",
+          "R": "MISALIGNED"
+        }
+      },
+      {
+        "state": "MISALIGNED",
+        "k": null,
+        "channels": {
+          "L": "MISALIGNED",
+          "R": "WARNING"
+        }
+      }
+    ],
+    "overall": null,
+    "permission_BC": [],
+    "permission_D": [],
+    "trace_error": null,
+    "shifts": []
+  },
+  {
+    "id": "distintos/override",
+    "engine": "B",
+    "original": false,
+    "mode": "full_processing",
+    "flags": [
+      "--allow-misaligned"
+    ],
+    "exit": 0,
+    "reached_dsp": true,
+    "reached_scale": true,
+    "final_report": true,
+    "wavs": 2,
+    "aborted_dir": false,
+    "roles": [
+      {
+        "state": "MISALIGNED",
+        "k": null,
+        "channels": {
+          "L": "MISALIGNED",
+          "R": "MISALIGNED"
+        }
+      },
+      {
+        "state": "MISALIGNED",
+        "k": null,
+        "channels": {
+          "L": "MISALIGNED",
+          "R": "WARNING"
+        }
+      }
+    ],
+    "overall": null,
+    "permission_BC": [
+      "cli_allow_misaligned",
+      "cli_allow_misaligned"
+    ],
+    "permission_D": [],
+    "trace_error": null,
+    "shifts": [
+      0
+    ]
+  },
+  {
+    "id": "swap/default",
+    "engine": "B",
+    "original": false,
+    "mode": "full_processing",
+    "flags": [],
+    "exit": 1,
+    "reached_dsp": false,
+    "reached_scale": false,
+    "final_report": false,
+    "wavs": 0,
+    "aborted_dir": false,
+    "roles": [
+      {
+        "state": "MISALIGNED",
+        "k": null,
+        "channels": {
+          "L": "MISALIGNED",
+          "R": "MISALIGNED"
+        }
+      },
+      {
+        "state": "MISALIGNED",
+        "k": null,
+        "channels": {
+          "L": "WARNING",
+          "R": "MISALIGNED"
+        }
+      }
+    ],
+    "overall": null,
+    "permission_BC": [],
+    "permission_D": [],
+    "trace_error": null,
+    "shifts": []
+  },
+  {
+    "id": "invL/default",
+    "engine": "B",
+    "original": false,
+    "mode": "full_processing",
+    "flags": [],
+    "exit": 1,
+    "reached_dsp": false,
+    "reached_scale": false,
+    "final_report": false,
+    "wavs": 0,
+    "aborted_dir": false,
+    "roles": [
+      {
+        "state": "MISALIGNED",
+        "k": 827,
+        "channels": {
+          "L": "MISALIGNED",
+          "R": "MISALIGNED"
+        }
+      },
+      {
+        "state": "ALIGNED",
+        "k": 0,
+        "channels": {
+          "L": "ALIGNED",
+          "R": "ALIGNED"
+        }
+      }
+    ],
+    "overall": null,
+    "permission_BC": [],
+    "permission_D": [],
+    "trace_error": null,
+    "shifts": []
+  },
+  {
+    "id": "soloL/default",
+    "engine": "B",
+    "original": false,
+    "mode": "full_processing",
+    "flags": [],
+    "exit": 1,
+    "reached_dsp": false,
+    "reached_scale": false,
+    "final_report": false,
+    "wavs": 0,
+    "aborted_dir": false,
+    "roles": [
+      {
+        "state": "INSUFFICIENT_SIGNAL",
+        "k": null,
+        "channels": {
+          "L": "ALIGNED",
+          "R": "INSUFFICIENT_SIGNAL"
+        }
+      },
+      {
+        "state": "ALIGNED",
+        "k": 0,
+        "channels": {
+          "L": "ALIGNED",
+          "R": "ALIGNED"
+        }
+      }
+    ],
+    "overall": null,
+    "permission_BC": [],
+    "permission_D": [],
+    "trace_error": null,
+    "shifts": []
+  },
+  {
+    "id": "soloL/override",
+    "engine": "B",
+    "original": false,
+    "mode": "full_processing",
+    "flags": [
+      "--allow-misaligned"
+    ],
+    "exit": 0,
+    "reached_dsp": true,
+    "reached_scale": true,
+    "final_report": true,
+    "wavs": 2,
+    "aborted_dir": false,
+    "roles": [
+      {
+        "state": "INSUFFICIENT_SIGNAL",
+        "k": null,
+        "channels": {
+          "L": "ALIGNED",
+          "R": "INSUFFICIENT_SIGNAL"
+        }
+      },
+      {
+        "state": "ALIGNED",
+        "k": 0,
+        "channels": {
+          "L": "ALIGNED",
+          "R": "ALIGNED"
+        }
+      }
+    ],
+    "overall": null,
+    "permission_BC": [
+      "cli_allow_misaligned",
+      "cli_allow_misaligned"
+    ],
+    "permission_D": [],
+    "trace_error": null,
+    "shifts": [
+      0
+    ]
+  },
+  {
+    "id": "soloR/default",
+    "engine": "B",
+    "original": false,
+    "mode": "full_processing",
+    "flags": [],
+    "exit": 1,
+    "reached_dsp": false,
+    "reached_scale": false,
+    "final_report": false,
+    "wavs": 0,
+    "aborted_dir": false,
+    "roles": [
+      {
+        "state": "INSUFFICIENT_SIGNAL",
+        "k": null,
+        "channels": {
+          "L": "INSUFFICIENT_SIGNAL",
+          "R": "ALIGNED"
+        }
+      },
+      {
+        "state": "ALIGNED",
+        "k": 0,
+        "channels": {
+          "L": "ALIGNED",
+          "R": "ALIGNED"
+        }
+      }
+    ],
+    "overall": null,
+    "permission_BC": [],
+    "permission_D": [],
+    "trace_error": null,
+    "shifts": []
+  },
+  {
+    "id": "alarma_mudo/default",
+    "engine": "B",
+    "original": false,
+    "mode": "full_processing",
+    "flags": [],
+    "exit": 1,
+    "reached_dsp": false,
+    "reached_scale": false,
+    "final_report": false,
+    "wavs": 0,
+    "aborted_dir": false,
+    "roles": [
+      {
+        "state": "MISALIGNED",
+        "k": null,
+        "channels": {
+          "L": "MISALIGNED",
+          "R": "INSUFFICIENT_SIGNAL"
+        }
+      },
+      {
+        "state": "ALIGNED",
+        "k": 0,
+        "channels": {
+          "L": "ALIGNED",
+          "R": "ALIGNED"
+        }
+      }
+    ],
+    "overall": null,
+    "permission_BC": [],
+    "permission_D": [],
+    "trace_error": null,
+    "shifts": []
+  },
+  {
+    "id": "alarma_mudo/override",
+    "engine": "B",
+    "original": false,
+    "mode": "full_processing",
+    "flags": [
+      "--allow-misaligned"
+    ],
+    "exit": 0,
+    "reached_dsp": true,
+    "reached_scale": true,
+    "final_report": true,
+    "wavs": 2,
+    "aborted_dir": false,
+    "roles": [
+      {
+        "state": "MISALIGNED",
+        "k": null,
+        "channels": {
+          "L": "MISALIGNED",
+          "R": "INSUFFICIENT_SIGNAL"
+        }
+      },
+      {
+        "state": "ALIGNED",
+        "k": 0,
+        "channels": {
+          "L": "ALIGNED",
+          "R": "ALIGNED"
+        }
+      }
+    ],
+    "overall": null,
+    "permission_BC": [
+      "cli_allow_misaligned",
+      "cli_allow_misaligned"
+    ],
+    "permission_D": [],
+    "trace_error": null,
+    "shifts": [
+      0
+    ]
+  },
+  {
+    "id": "debil/default",
+    "engine": "B",
+    "original": false,
+    "mode": "full_processing",
+    "flags": [],
+    "exit": 1,
+    "reached_dsp": false,
+    "reached_scale": false,
+    "final_report": false,
+    "wavs": 0,
+    "aborted_dir": false,
+    "roles": [
+      {
+        "state": "MISALIGNED",
+        "k": -763,
+        "channels": {
+          "L": "MISALIGNED",
+          "R": "MISALIGNED"
+        }
+      },
+      {
+        "state": "ALIGNED",
+        "k": 0,
+        "channels": {
+          "L": "ALIGNED",
+          "R": "ALIGNED"
+        }
+      }
+    ],
+    "overall": null,
+    "permission_BC": [],
+    "permission_D": [],
+    "trace_error": null,
+    "shifts": []
+  },
+  {
+    "id": "ruido8/default",
+    "engine": "B",
+    "original": false,
+    "mode": "full_processing",
+    "flags": [],
+    "exit": 1,
+    "reached_dsp": false,
+    "reached_scale": false,
+    "final_report": false,
+    "wavs": 0,
+    "aborted_dir": false,
+    "roles": [
+      {
+        "state": "MISALIGNED",
+        "k": 1541,
+        "channels": {
+          "L": "MISALIGNED",
+          "R": "MISALIGNED"
+        }
+      },
+      {
+        "state": "ALIGNED",
+        "k": 0,
+        "channels": {
+          "L": "ALIGNED",
+          "R": "ALIGNED"
+        }
+      }
+    ],
+    "overall": null,
+    "permission_BC": [],
+    "permission_D": [],
+    "trace_error": null,
+    "shifts": []
+  },
+  {
+    "id": "ruido_menos6/default",
+    "engine": "B",
+    "original": false,
+    "mode": "full_processing",
+    "flags": [],
+    "exit": 0,
+    "reached_dsp": true,
+    "reached_scale": true,
+    "final_report": true,
+    "wavs": 2,
+    "aborted_dir": false,
+    "roles": [
+      {
+        "state": "WARNING",
+        "k": -367,
+        "channels": {
+          "L": "WARNING",
+          "R": "WARNING"
+        }
+      },
+      {
+        "state": "ALIGNED",
+        "k": 0,
+        "channels": {
+          "L": "ALIGNED",
+          "R": "ALIGNED"
+        }
+      }
+    ],
+    "overall": null,
+    "permission_BC": [
+      null,
+      null
+    ],
+    "permission_D": [],
+    "trace_error": null,
+    "shifts": [
+      0
+    ]
+  },
+  {
+    "id": "circular/default",
+    "engine": "B",
+    "original": false,
+    "mode": "full_processing",
+    "flags": [],
+    "exit": 1,
+    "reached_dsp": false,
+    "reached_scale": false,
+    "final_report": false,
+    "wavs": 0,
+    "aborted_dir": false,
+    "roles": [
+      {
+        "state": "AMBIGUOUS",
+        "k": null,
+        "channels": {
+          "L": "AMBIGUOUS",
+          "R": "AMBIGUOUS"
+        }
+      },
+      {
+        "state": "AMBIGUOUS",
+        "k": null,
+        "channels": {
+          "L": "AMBIGUOUS",
+          "R": "AMBIGUOUS"
+        }
+      }
+    ],
+    "overall": null,
+    "permission_BC": [],
+    "permission_D": [],
+    "trace_error": null,
+    "shifts": []
+  },
+  {
+    "id": "circular/override",
+    "engine": "B",
+    "original": false,
+    "mode": "full_processing",
+    "flags": [
+      "--allow-misaligned"
+    ],
+    "exit": 0,
+    "reached_dsp": true,
+    "reached_scale": true,
+    "final_report": true,
+    "wavs": 2,
+    "aborted_dir": false,
+    "roles": [
+      {
+        "state": "AMBIGUOUS",
+        "k": null,
+        "channels": {
+          "L": "AMBIGUOUS",
+          "R": "AMBIGUOUS"
+        }
+      },
+      {
+        "state": "AMBIGUOUS",
+        "k": null,
+        "channels": {
+          "L": "AMBIGUOUS",
+          "R": "AMBIGUOUS"
+        }
+      }
+    ],
+    "overall": null,
+    "permission_BC": [
+      "cli_allow_misaligned",
+      "cli_allow_misaligned"
+    ],
+    "permission_D": [],
+    "trace_error": null,
+    "shifts": [
+      0
+    ]
+  },
+  {
+    "id": "rep_igual/default",
+    "engine": "B",
+    "original": false,
+    "mode": "full_processing",
+    "flags": [],
+    "exit": 0,
+    "reached_dsp": true,
+    "reached_scale": true,
+    "final_report": true,
+    "wavs": 2,
+    "aborted_dir": false,
+    "roles": [
+      {
+        "state": "ALIGNED",
+        "k": 0,
+        "channels": {
+          "L": "ALIGNED",
+          "R": "ALIGNED"
+        }
+      },
+      {
+        "state": "ALIGNED",
+        "k": 0,
+        "channels": {
+          "L": "ALIGNED",
+          "R": "ALIGNED"
+        }
+      }
+    ],
+    "overall": null,
+    "permission_BC": [
+      null,
+      null
+    ],
+    "permission_D": [],
+    "trace_error": null,
+    "shifts": [
+      0
+    ]
+  },
+  {
+    "id": "rep_035/default",
+    "engine": "B",
+    "original": false,
+    "mode": "full_processing",
+    "flags": [],
+    "exit": 0,
+    "reached_dsp": true,
+    "reached_scale": true,
+    "final_report": true,
+    "wavs": 2,
+    "aborted_dir": false,
+    "roles": [
+      {
+        "state": "ALIGNED",
+        "k": 0,
+        "channels": {
+          "L": "ALIGNED",
+          "R": "ALIGNED"
+        }
+      },
+      {
+        "state": "ALIGNED",
+        "k": 0,
+        "channels": {
+          "L": "ALIGNED",
+          "R": "ALIGNED"
+        }
+      }
+    ],
+    "overall": null,
+    "permission_BC": [
+      null,
+      null
+    ],
+    "permission_D": [],
+    "trace_error": null,
+    "shifts": [
+      0
+    ]
+  },
+  {
+    "id": "rep_165/default",
+    "engine": "B",
+    "original": false,
+    "mode": "full_processing",
+    "flags": [],
+    "exit": 1,
+    "reached_dsp": false,
+    "reached_scale": false,
+    "final_report": false,
+    "wavs": 0,
+    "aborted_dir": false,
+    "roles": [
+      {
+        "state": "MISALIGNED",
+        "k": 2849,
+        "channels": {
+          "L": "MISALIGNED",
+          "R": "MISALIGNED"
+        }
+      },
+      {
+        "state": "ALIGNED",
+        "k": 0,
+        "channels": {
+          "L": "ALIGNED",
+          "R": "ALIGNED"
+        }
+      }
+    ],
+    "overall": null,
+    "permission_BC": [],
+    "permission_D": [],
+    "trace_error": null,
+    "shifts": []
+  },
+  {
+    "id": "rival_R/default",
+    "engine": "B",
+    "original": false,
+    "mode": "full_processing",
+    "flags": [],
+    "exit": 0,
+    "reached_dsp": true,
+    "reached_scale": true,
+    "final_report": true,
+    "wavs": 2,
+    "aborted_dir": false,
+    "roles": [
+      {
+        "state": "ALIGNED",
+        "k": 0,
+        "channels": {
+          "L": "ALIGNED",
+          "R": "ALIGNED"
+        }
+      },
+      {
+        "state": "ALIGNED",
+        "k": 0,
+        "channels": {
+          "L": "ALIGNED",
+          "R": "ALIGNED"
+        }
+      }
+    ],
+    "overall": null,
+    "permission_BC": [
+      null,
+      null
+    ],
+    "permission_D": [],
+    "trace_error": null,
+    "shifts": [
+      0
+    ]
+  },
+  {
+    "id": "rival_R/override",
+    "engine": "B",
+    "original": false,
+    "mode": "full_processing",
+    "flags": [
+      "--allow-misaligned"
+    ],
+    "exit": 0,
+    "reached_dsp": true,
+    "reached_scale": true,
+    "final_report": true,
+    "wavs": 2,
+    "aborted_dir": false,
+    "roles": [
+      {
+        "state": "ALIGNED",
+        "k": 0,
+        "channels": {
+          "L": "ALIGNED",
+          "R": "ALIGNED"
+        }
+      },
+      {
+        "state": "ALIGNED",
+        "k": 0,
+        "channels": {
+          "L": "ALIGNED",
+          "R": "ALIGNED"
+        }
+      }
+    ],
+    "overall": null,
+    "permission_BC": [
+      "cli_allow_misaligned",
+      "cli_allow_misaligned"
+    ],
+    "permission_D": [],
+    "trace_error": null,
+    "shifts": [
+      0
+    ]
+  },
+  {
+    "id": "lateral/default",
+    "engine": "B",
+    "original": false,
+    "mode": "full_processing",
+    "flags": [],
+    "exit": 1,
+    "reached_dsp": false,
+    "reached_scale": false,
+    "final_report": false,
+    "wavs": 0,
+    "aborted_dir": false,
+    "roles": [
+      {
+        "state": "MISALIGNED",
+        "k": 1933,
+        "channels": {
+          "L": "MISALIGNED",
+          "R": "MISALIGNED"
+        }
+      },
+      {
+        "state": "ALIGNED",
+        "k": 0,
+        "channels": {
+          "L": "ALIGNED",
+          "R": "ALIGNED"
+        }
+      }
+    ],
+    "overall": null,
+    "permission_BC": [],
+    "permission_D": [],
+    "trace_error": null,
+    "shifts": []
+  },
+  {
+    "id": "dc/default",
+    "engine": "B",
+    "original": false,
+    "mode": "full_processing",
+    "flags": [],
+    "exit": 1,
+    "reached_dsp": false,
+    "reached_scale": false,
+    "final_report": false,
+    "wavs": 0,
+    "aborted_dir": false,
+    "roles": [
+      {
+        "state": "INSUFFICIENT_SIGNAL",
+        "k": null,
+        "channels": {
+          "L": "INSUFFICIENT_SIGNAL",
+          "R": "INSUFFICIENT_SIGNAL"
+        }
+      },
+      {
+        "state": "ALIGNED",
+        "k": 0,
+        "channels": {
+          "L": "ALIGNED",
+          "R": "ALIGNED"
+        }
+      }
+    ],
+    "overall": null,
+    "permission_BC": [],
+    "permission_D": [],
+    "trace_error": null,
+    "shifts": []
+  },
+  {
+    "id": "dc/override",
+    "engine": "B",
+    "original": false,
+    "mode": "full_processing",
+    "flags": [
+      "--allow-misaligned"
+    ],
+    "exit": 0,
+    "reached_dsp": true,
+    "reached_scale": true,
+    "final_report": true,
+    "wavs": 2,
+    "aborted_dir": false,
+    "roles": [
+      {
+        "state": "INSUFFICIENT_SIGNAL",
+        "k": null,
+        "channels": {
+          "L": "INSUFFICIENT_SIGNAL",
+          "R": "INSUFFICIENT_SIGNAL"
+        }
+      },
+      {
+        "state": "ALIGNED",
+        "k": 0,
+        "channels": {
+          "L": "ALIGNED",
+          "R": "ALIGNED"
+        }
+      }
+    ],
+    "overall": null,
+    "permission_BC": [
+      "cli_allow_misaligned",
+      "cli_allow_misaligned"
+    ],
+    "permission_D": [],
+    "trace_error": null,
+    "shifts": [
+      0
+    ]
+  },
+  {
+    "id": "sin_relacion/default",
+    "engine": "B",
+    "original": false,
+    "mode": "full_processing",
+    "flags": [],
+    "exit": 1,
+    "reached_dsp": false,
+    "reached_scale": false,
+    "final_report": false,
+    "wavs": 0,
+    "aborted_dir": false,
+    "roles": [
+      {
+        "state": "INSUFFICIENT_SIGNAL",
+        "k": null,
+        "channels": {
+          "L": "INSUFFICIENT_SIGNAL",
+          "R": "INSUFFICIENT_SIGNAL"
+        }
+      },
+      {
+        "state": "ALIGNED",
+        "k": 0,
+        "channels": {
+          "L": "ALIGNED",
+          "R": "ALIGNED"
+        }
+      }
+    ],
+    "overall": null,
+    "permission_BC": [],
+    "permission_D": [],
+    "trace_error": null,
+    "shifts": []
+  },
+  {
+    "id": "corta/default",
+    "engine": "B",
+    "original": false,
+    "mode": "full_processing",
+    "flags": [],
+    "exit": 1,
+    "reached_dsp": false,
+    "reached_scale": false,
+    "final_report": false,
+    "wavs": 0,
+    "aborted_dir": false,
+    "roles": [
+      {
+        "state": "MISALIGNED",
+        "k": null,
+        "channels": {
+          "L": "MISALIGNED",
+          "R": "MISALIGNED"
+        }
+      },
+      {
+        "state": "ALIGNED",
+        "k": 0,
+        "channels": {
+          "L": "ALIGNED",
+          "R": "ALIGNED"
+        }
+      }
+    ],
+    "overall": null,
+    "permission_BC": [],
+    "permission_D": [],
+    "trace_error": null,
+    "shifts": []
+  },
+  {
+    "id": "larga/default",
+    "engine": "B",
+    "original": false,
+    "mode": "full_processing",
+    "flags": [],
+    "exit": 1,
+    "reached_dsp": false,
+    "reached_scale": false,
+    "final_report": false,
+    "wavs": 0,
+    "aborted_dir": false,
+    "roles": [
+      {
+        "state": "MISALIGNED",
+        "k": 825,
+        "channels": {
+          "L": "MISALIGNED",
+          "R": "MISALIGNED"
+        }
+      },
+      {
+        "state": "ALIGNED",
+        "k": 0,
+        "channels": {
+          "L": "ALIGNED",
+          "R": "ALIGNED"
+        }
+      }
+    ],
+    "overall": null,
+    "permission_BC": [],
+    "permission_D": [],
+    "trace_error": null,
+    "shifts": []
+  },
+  {
+    "id": "interior_vacio/default",
+    "engine": "B",
+    "original": false,
+    "mode": "full_processing",
+    "flags": [],
+    "exit": 1,
+    "reached_dsp": false,
+    "reached_scale": false,
+    "final_report": false,
+    "wavs": 0,
+    "aborted_dir": false,
+    "roles": [
+      {
+        "state": "MISALIGNED",
+        "k": null,
+        "channels": {
+          "L": "MISALIGNED",
+          "R": "MISALIGNED"
+        }
+      },
+      {
+        "state": "ALIGNED",
+        "k": 0,
+        "channels": {
+          "L": "ALIGNED",
+          "R": "ALIGNED"
+        }
+      }
+    ],
+    "overall": null,
+    "permission_BC": [],
+    "permission_D": [],
+    "trace_error": null,
+    "shifts": []
+  },
+  {
+    "id": "dos_tramos/default",
+    "engine": "B",
+    "original": false,
+    "mode": "full_processing",
+    "flags": [],
+    "exit": 1,
+    "reached_dsp": false,
+    "reached_scale": false,
+    "final_report": false,
+    "wavs": 0,
+    "aborted_dir": false,
+    "roles": [
+      {
+        "state": "MISALIGNED",
+        "k": 1213,
+        "channels": {
+          "L": "MISALIGNED",
+          "R": "MISALIGNED"
+        }
+      },
+      {
+        "state": "ALIGNED",
+        "k": 0,
+        "channels": {
+          "L": "ALIGNED",
+          "R": "ALIGNED"
+        }
+      }
+    ],
+    "overall": null,
+    "permission_BC": [],
+    "permission_D": [],
+    "trace_error": null,
+    "shifts": []
+  },
+  {
+    "id": "invalida_L/default",
+    "engine": "B",
+    "original": false,
+    "mode": "full_processing",
+    "flags": [],
+    "exit": 1,
+    "reached_dsp": false,
+    "reached_scale": false,
+    "final_report": false,
+    "wavs": 0,
+    "aborted_dir": false,
+    "roles": [
+      {
+        "state": "ERROR",
+        "k": null,
+        "channels": {
+          "L": "ERROR",
+          "R": "ALIGNED"
+        }
+      },
+      {
+        "state": "ALIGNED",
+        "k": 0,
+        "channels": {
+          "L": "ALIGNED",
+          "R": "ALIGNED"
+        }
+      }
+    ],
+    "overall": null,
+    "permission_BC": [],
+    "permission_D": [],
+    "trace_error": null,
+    "shifts": []
+  },
+  {
+    "id": "invalida_L/override",
+    "engine": "B",
+    "original": false,
+    "mode": "full_processing",
+    "flags": [
+      "--allow-misaligned"
+    ],
+    "exit": 1,
+    "reached_dsp": false,
+    "reached_scale": false,
+    "final_report": false,
+    "wavs": 0,
+    "aborted_dir": false,
+    "roles": [
+      {
+        "state": "ERROR",
+        "k": null,
+        "channels": {
+          "L": "ERROR",
+          "R": "ALIGNED"
+        }
+      },
+      {
+        "state": "ALIGNED",
+        "k": 0,
+        "channels": {
+          "L": "ALIGNED",
+          "R": "ALIGNED"
+        }
+      }
+    ],
+    "overall": null,
+    "permission_BC": [],
+    "permission_D": [],
+    "trace_error": null,
+    "shifts": []
+  },
+  {
+    "id": "fault_missing/default",
+    "engine": "B",
+    "original": false,
+    "mode": "full_processing",
+    "flags": [],
+    "exit": 1,
+    "reached_dsp": false,
+    "reached_scale": false,
+    "final_report": false,
+    "wavs": 0,
+    "aborted_dir": false,
+    "roles": [],
+    "overall": null,
+    "permission_BC": [],
+    "permission_D": [],
+    "trace_error": null,
+    "shifts": []
+  },
+  {
+    "id": "fault_missing/override",
+    "engine": "B",
+    "original": false,
+    "mode": "full_processing",
+    "flags": [
+      "--allow-misaligned"
+    ],
+    "exit": 1,
+    "reached_dsp": false,
+    "reached_scale": false,
+    "final_report": false,
+    "wavs": 0,
+    "aborted_dir": false,
+    "roles": [],
+    "overall": null,
+    "permission_BC": [],
+    "permission_D": [],
+    "trace_error": null,
+    "shifts": []
+  },
+  {
+    "id": "fault_header/default",
+    "engine": "B",
+    "original": false,
+    "mode": "full_processing",
+    "flags": [],
+    "exit": 1,
+    "reached_dsp": false,
+    "reached_scale": false,
+    "final_report": false,
+    "wavs": 0,
+    "aborted_dir": false,
+    "roles": [],
+    "overall": null,
+    "permission_BC": [],
+    "permission_D": [],
+    "trace_error": null,
+    "shifts": []
+  },
+  {
+    "id": "fault_header/override",
+    "engine": "B",
+    "original": false,
+    "mode": "full_processing",
+    "flags": [
+      "--allow-misaligned"
+    ],
+    "exit": 1,
+    "reached_dsp": false,
+    "reached_scale": false,
+    "final_report": false,
+    "wavs": 0,
+    "aborted_dir": false,
+    "roles": [],
+    "overall": null,
+    "permission_BC": [],
+    "permission_D": [],
+    "trace_error": null,
+    "shifts": []
+  },
+  {
+    "id": "fault_truncated/default",
+    "engine": "B",
+    "original": false,
+    "mode": "full_processing",
+    "flags": [],
+    "exit": 0,
+    "reached_dsp": true,
+    "reached_scale": true,
+    "final_report": true,
+    "wavs": 2,
+    "aborted_dir": false,
+    "roles": [
+      {
+        "state": "ALIGNED",
+        "k": 0,
+        "channels": {
+          "L": "ALIGNED",
+          "R": "ALIGNED"
+        }
+      },
+      {
+        "state": "ALIGNED",
+        "k": 0,
+        "channels": {
+          "L": "ALIGNED",
+          "R": "ALIGNED"
+        }
+      }
+    ],
+    "overall": null,
+    "permission_BC": [
+      null,
+      null
+    ],
+    "permission_D": [],
+    "trace_error": null,
+    "shifts": [
+      0
+    ]
+  },
+  {
+    "id": "fault_truncated/override",
+    "engine": "B",
+    "original": false,
+    "mode": "full_processing",
+    "flags": [
+      "--allow-misaligned"
+    ],
+    "exit": 0,
+    "reached_dsp": true,
+    "reached_scale": true,
+    "final_report": true,
+    "wavs": 2,
+    "aborted_dir": false,
+    "roles": [
+      {
+        "state": "ALIGNED",
+        "k": 0,
+        "channels": {
+          "L": "ALIGNED",
+          "R": "ALIGNED"
+        }
+      },
+      {
+        "state": "ALIGNED",
+        "k": 0,
+        "channels": {
+          "L": "ALIGNED",
+          "R": "ALIGNED"
+        }
+      }
+    ],
+    "overall": null,
+    "permission_BC": [
+      "cli_allow_misaligned",
+      "cli_allow_misaligned"
+    ],
+    "permission_D": [],
+    "trace_error": null,
+    "shifts": [
+      0
+    ]
+  },
+  {
+    "id": "fault_race/default",
+    "engine": "B",
+    "original": false,
+    "mode": "full_processing",
+    "flags": [],
+    "exit": 1,
+    "reached_dsp": false,
+    "reached_scale": false,
+    "final_report": false,
+    "wavs": 0,
+    "aborted_dir": false,
+    "roles": [
+      {
+        "state": "ERROR",
+        "k": null,
+        "channels": {
+          "L": "ERROR",
+          "R": "ERROR"
+        }
+      },
+      {
+        "state": "ALIGNED",
+        "k": 0,
+        "channels": {
+          "L": "ALIGNED",
+          "R": "ALIGNED"
+        }
+      }
+    ],
+    "overall": null,
+    "permission_BC": [],
+    "permission_D": [],
+    "trace_error": null,
+    "shifts": []
+  },
+  {
+    "id": "fault_race/override",
+    "engine": "B",
+    "original": false,
+    "mode": "full_processing",
+    "flags": [
+      "--allow-misaligned"
+    ],
+    "exit": 1,
+    "reached_dsp": false,
+    "reached_scale": false,
+    "final_report": false,
+    "wavs": 0,
+    "aborted_dir": false,
+    "roles": [
+      {
+        "state": "ERROR",
+        "k": null,
+        "channels": {
+          "L": "ERROR",
+          "R": "ERROR"
+        }
+      },
+      {
+        "state": "ALIGNED",
+        "k": 0,
+        "channels": {
+          "L": "ALIGNED",
+          "R": "ALIGNED"
+        }
+      }
+    ],
+    "overall": null,
+    "permission_BC": [],
+    "permission_D": [],
+    "trace_error": null,
+    "shifts": []
+  },
+  {
+    "id": "request_shift",
+    "engine": "B",
+    "original": false,
+    "mode": "full_processing",
+    "flags": [
+      "--correct-alignment",
+      "--allow-misaligned"
+    ],
+    "exit": 1,
+    "reached_dsp": false,
+    "reached_scale": false,
+    "final_report": false,
+    "wavs": 0,
+    "aborted_dir": false,
+    "roles": [],
+    "overall": null,
+    "permission_BC": [],
+    "permission_D": [],
+    "trace_error": null,
+    "shifts": []
+  },
+  {
+    "id": "dry_not_audit",
+    "engine": "B",
+    "original": false,
+    "mode": "dry_run",
+    "flags": [],
+    "exit": 0,
+    "reached_dsp": false,
+    "reached_scale": false,
+    "final_report": false,
+    "wavs": 0,
+    "aborted_dir": false,
+    "roles": [],
+    "overall": null,
+    "permission_BC": [],
+    "permission_D": [],
+    "trace_error": null,
+    "shifts": []
+  },
+  {
+    "id": "R_dos_origenes/default",
+    "engine": "C",
+    "original": false,
+    "mode": "full_processing",
+    "flags": [],
+    "exit": 1,
+    "reached_dsp": false,
+    "reached_scale": false,
+    "final_report": false,
+    "wavs": 0,
+    "aborted_dir": false,
+    "roles": [
+      {
+        "state": "AMBIGUOUS",
+        "k": null,
+        "channels": {
+          "L": "ALIGNED",
+          "R": "AMBIGUOUS"
+        }
+      },
+      {
+        "state": "ALIGNED",
+        "k": 0,
+        "channels": {
+          "L": "ALIGNED",
+          "R": "ALIGNED"
+        }
+      }
+    ],
+    "overall": null,
+    "permission_BC": [],
+    "permission_D": [],
+    "trace_error": null,
+    "shifts": []
+  },
+  {
+    "id": "R_dos_origenes/override",
+    "engine": "C",
+    "original": false,
+    "mode": "full_processing",
+    "flags": [
+      "--allow-misaligned"
+    ],
+    "exit": 0,
+    "reached_dsp": true,
+    "reached_scale": true,
+    "final_report": true,
+    "wavs": 2,
+    "aborted_dir": false,
+    "roles": [
+      {
+        "state": "AMBIGUOUS",
+        "k": null,
+        "channels": {
+          "L": "ALIGNED",
+          "R": "AMBIGUOUS"
+        }
+      },
+      {
+        "state": "ALIGNED",
+        "k": 0,
+        "channels": {
+          "L": "ALIGNED",
+          "R": "ALIGNED"
+        }
+      }
+    ],
+    "overall": null,
+    "permission_BC": [
+      "cli_allow_misaligned",
+      "cli_allow_misaligned"
+    ],
+    "permission_D": [],
+    "trace_error": null,
+    "shifts": [
+      0
+    ]
+  },
+  {
+    "id": "R_replica_dominante/default",
+    "engine": "C",
+    "original": false,
+    "mode": "full_processing",
+    "flags": [],
+    "exit": 1,
+    "reached_dsp": false,
+    "reached_scale": false,
+    "final_report": false,
+    "wavs": 0,
+    "aborted_dir": false,
+    "roles": [
+      {
+        "state": "MISALIGNED",
+        "k": 3217,
+        "channels": {
+          "L": "MISALIGNED",
+          "R": "MISALIGNED"
+        }
+      },
+      {
+        "state": "ALIGNED",
+        "k": 0,
+        "channels": {
+          "L": "ALIGNED",
+          "R": "ALIGNED"
+        }
+      }
+    ],
+    "overall": null,
+    "permission_BC": [],
+    "permission_D": [],
+    "trace_error": null,
+    "shifts": []
+  },
+  {
+    "id": "R_replica_dominante/override",
+    "engine": "C",
+    "original": false,
+    "mode": "full_processing",
+    "flags": [
+      "--allow-misaligned"
+    ],
+    "exit": 0,
+    "reached_dsp": true,
+    "reached_scale": true,
+    "final_report": true,
+    "wavs": 2,
+    "aborted_dir": false,
+    "roles": [
+      {
+        "state": "MISALIGNED",
+        "k": 3217,
+        "channels": {
+          "L": "MISALIGNED",
+          "R": "MISALIGNED"
+        }
+      },
+      {
+        "state": "ALIGNED",
+        "k": 0,
+        "channels": {
+          "L": "ALIGNED",
+          "R": "ALIGNED"
+        }
+      }
+    ],
+    "overall": null,
+    "permission_BC": [
+      "cli_allow_misaligned",
+      "cli_allow_misaligned"
+    ],
+    "permission_D": [],
+    "trace_error": null,
+    "shifts": [
+      0
+    ]
+  },
+  {
+    "id": "DEV_cero/default",
+    "engine": "C",
+    "original": false,
+    "mode": "full_processing",
+    "flags": [],
+    "exit": 0,
+    "reached_dsp": true,
+    "reached_scale": true,
+    "final_report": true,
+    "wavs": 2,
+    "aborted_dir": false,
+    "roles": [
+      {
+        "state": "ALIGNED",
+        "k": 0,
+        "channels": {
+          "L": "ALIGNED",
+          "R": "ALIGNED"
+        }
+      },
+      {
+        "state": "ALIGNED",
+        "k": 0,
+        "channels": {
+          "L": "ALIGNED",
+          "R": "ALIGNED"
+        }
+      }
+    ],
+    "overall": null,
+    "permission_BC": [
+      null,
+      null
+    ],
+    "permission_D": [],
+    "trace_error": null,
+    "shifts": [
+      0
+    ]
+  },
+  {
+    "id": "DEV_no_cero/default",
+    "engine": "C",
+    "original": false,
+    "mode": "full_processing",
+    "flags": [],
+    "exit": 1,
+    "reached_dsp": false,
+    "reached_scale": false,
+    "final_report": false,
+    "wavs": 0,
+    "aborted_dir": false,
+    "roles": [
+      {
+        "state": "MISALIGNED",
+        "k": 511,
+        "channels": {
+          "L": "MISALIGNED",
+          "R": "MISALIGNED"
+        }
+      },
+      {
+        "state": "ALIGNED",
+        "k": 0,
+        "channels": {
+          "L": "ALIGNED",
+          "R": "ALIGNED"
+        }
+      }
+    ],
+    "overall": null,
+    "permission_BC": [],
+    "permission_D": [],
+    "trace_error": null,
+    "shifts": []
+  },
+  {
+    "id": "Z/default",
+    "engine": "C",
+    "original": false,
+    "mode": "full_processing",
+    "flags": [],
+    "exit": 0,
+    "reached_dsp": true,
+    "reached_scale": true,
+    "final_report": true,
+    "wavs": 2,
+    "aborted_dir": false,
+    "roles": [
+      {
+        "state": "ALIGNED",
+        "k": 0,
+        "channels": {
+          "L": "ALIGNED",
+          "R": "ALIGNED"
+        }
+      },
+      {
+        "state": "ALIGNED",
+        "k": 0,
+        "channels": {
+          "L": "ALIGNED",
+          "R": "ALIGNED"
+        }
+      }
+    ],
+    "overall": null,
+    "permission_BC": [
+      null,
+      null
+    ],
+    "permission_D": [],
+    "trace_error": null,
+    "shifts": [
+      0
+    ]
+  },
+  {
+    "id": "Z/override",
+    "engine": "C",
+    "original": false,
+    "mode": "full_processing",
+    "flags": [
+      "--allow-misaligned"
+    ],
+    "exit": 0,
+    "reached_dsp": true,
+    "reached_scale": true,
+    "final_report": true,
+    "wavs": 2,
+    "aborted_dir": false,
+    "roles": [
+      {
+        "state": "ALIGNED",
+        "k": 0,
+        "channels": {
+          "L": "ALIGNED",
+          "R": "ALIGNED"
+        }
+      },
+      {
+        "state": "ALIGNED",
+        "k": 0,
+        "channels": {
+          "L": "ALIGNED",
+          "R": "ALIGNED"
+        }
+      }
+    ],
+    "overall": null,
+    "permission_BC": [
+      "cli_allow_misaligned",
+      "cli_allow_misaligned"
+    ],
+    "permission_D": [],
+    "trace_error": null,
+    "shifts": [
+      0
+    ]
+  },
+  {
+    "id": "W/default",
+    "engine": "C",
+    "original": false,
+    "mode": "full_processing",
+    "flags": [],
+    "exit": 0,
+    "reached_dsp": true,
+    "reached_scale": true,
+    "final_report": true,
+    "wavs": 2,
+    "aborted_dir": false,
+    "roles": [
+      {
+        "state": "WARNING",
+        "k": -219,
+        "channels": {
+          "L": "WARNING",
+          "R": "WARNING"
+        }
+      },
+      {
+        "state": "ALIGNED",
+        "k": 0,
+        "channels": {
+          "L": "ALIGNED",
+          "R": "ALIGNED"
+        }
+      }
+    ],
+    "overall": null,
+    "permission_BC": [
+      null,
+      null
+    ],
+    "permission_D": [],
+    "trace_error": null,
+    "shifts": [
+      0
+    ]
+  },
+  {
+    "id": "W/override",
+    "engine": "C",
+    "original": false,
+    "mode": "full_processing",
+    "flags": [
+      "--allow-misaligned"
+    ],
+    "exit": 0,
+    "reached_dsp": true,
+    "reached_scale": true,
+    "final_report": true,
+    "wavs": 2,
+    "aborted_dir": false,
+    "roles": [
+      {
+        "state": "WARNING",
+        "k": -219,
+        "channels": {
+          "L": "WARNING",
+          "R": "WARNING"
+        }
+      },
+      {
+        "state": "ALIGNED",
+        "k": 0,
+        "channels": {
+          "L": "ALIGNED",
+          "R": "ALIGNED"
+        }
+      }
+    ],
+    "overall": null,
+    "permission_BC": [
+      "cli_allow_misaligned",
+      "cli_allow_misaligned"
+    ],
+    "permission_D": [],
+    "trace_error": null,
+    "shifts": [
+      0
+    ]
+  },
+  {
+    "id": "M/default",
+    "engine": "C",
+    "original": false,
+    "mode": "full_processing",
+    "flags": [],
+    "exit": 1,
+    "reached_dsp": false,
+    "reached_scale": false,
+    "final_report": false,
+    "wavs": 0,
+    "aborted_dir": false,
+    "roles": [
+      {
+        "state": "MISALIGNED",
+        "k": 1529,
+        "channels": {
+          "L": "MISALIGNED",
+          "R": "MISALIGNED"
+        }
+      },
+      {
+        "state": "ALIGNED",
+        "k": 0,
+        "channels": {
+          "L": "ALIGNED",
+          "R": "ALIGNED"
+        }
+      }
+    ],
+    "overall": null,
+    "permission_BC": [],
+    "permission_D": [],
+    "trace_error": null,
+    "shifts": []
+  },
+  {
+    "id": "M/override",
+    "engine": "C",
+    "original": false,
+    "mode": "full_processing",
+    "flags": [
+      "--allow-misaligned"
+    ],
+    "exit": 0,
+    "reached_dsp": true,
+    "reached_scale": true,
+    "final_report": true,
+    "wavs": 2,
+    "aborted_dir": false,
+    "roles": [
+      {
+        "state": "MISALIGNED",
+        "k": 1529,
+        "channels": {
+          "L": "MISALIGNED",
+          "R": "MISALIGNED"
+        }
+      },
+      {
+        "state": "ALIGNED",
+        "k": 0,
+        "channels": {
+          "L": "ALIGNED",
+          "R": "ALIGNED"
+        }
+      }
+    ],
+    "overall": null,
+    "permission_BC": [
+      "cli_allow_misaligned",
+      "cli_allow_misaligned"
+    ],
+    "permission_D": [],
+    "trace_error": null,
+    "shifts": [
+      0
+    ]
+  },
+  {
+    "id": "distintos/default",
+    "engine": "C",
+    "original": false,
+    "mode": "full_processing",
+    "flags": [],
+    "exit": 1,
+    "reached_dsp": false,
+    "reached_scale": false,
+    "final_report": false,
+    "wavs": 0,
+    "aborted_dir": false,
+    "roles": [
+      {
+        "state": "MISALIGNED",
+        "k": null,
+        "channels": {
+          "L": "MISALIGNED",
+          "R": "MISALIGNED"
+        }
+      },
+      {
+        "state": "MISALIGNED",
+        "k": null,
+        "channels": {
+          "L": "MISALIGNED",
+          "R": "WARNING"
+        }
+      }
+    ],
+    "overall": null,
+    "permission_BC": [],
+    "permission_D": [],
+    "trace_error": null,
+    "shifts": []
+  },
+  {
+    "id": "distintos/override",
+    "engine": "C",
+    "original": false,
+    "mode": "full_processing",
+    "flags": [
+      "--allow-misaligned"
+    ],
+    "exit": 0,
+    "reached_dsp": true,
+    "reached_scale": true,
+    "final_report": true,
+    "wavs": 2,
+    "aborted_dir": false,
+    "roles": [
+      {
+        "state": "MISALIGNED",
+        "k": null,
+        "channels": {
+          "L": "MISALIGNED",
+          "R": "MISALIGNED"
+        }
+      },
+      {
+        "state": "MISALIGNED",
+        "k": null,
+        "channels": {
+          "L": "MISALIGNED",
+          "R": "WARNING"
+        }
+      }
+    ],
+    "overall": null,
+    "permission_BC": [
+      "cli_allow_misaligned",
+      "cli_allow_misaligned"
+    ],
+    "permission_D": [],
+    "trace_error": null,
+    "shifts": [
+      0
+    ]
+  },
+  {
+    "id": "swap/default",
+    "engine": "C",
+    "original": false,
+    "mode": "full_processing",
+    "flags": [],
+    "exit": 1,
+    "reached_dsp": false,
+    "reached_scale": false,
+    "final_report": false,
+    "wavs": 0,
+    "aborted_dir": false,
+    "roles": [
+      {
+        "state": "MISALIGNED",
+        "k": null,
+        "channels": {
+          "L": "MISALIGNED",
+          "R": "MISALIGNED"
+        }
+      },
+      {
+        "state": "MISALIGNED",
+        "k": null,
+        "channels": {
+          "L": "WARNING",
+          "R": "MISALIGNED"
+        }
+      }
+    ],
+    "overall": null,
+    "permission_BC": [],
+    "permission_D": [],
+    "trace_error": null,
+    "shifts": []
+  },
+  {
+    "id": "invL/default",
+    "engine": "C",
+    "original": false,
+    "mode": "full_processing",
+    "flags": [],
+    "exit": 1,
+    "reached_dsp": false,
+    "reached_scale": false,
+    "final_report": false,
+    "wavs": 0,
+    "aborted_dir": false,
+    "roles": [
+      {
+        "state": "MISALIGNED",
+        "k": 827,
+        "channels": {
+          "L": "MISALIGNED",
+          "R": "MISALIGNED"
+        }
+      },
+      {
+        "state": "ALIGNED",
+        "k": 0,
+        "channels": {
+          "L": "ALIGNED",
+          "R": "ALIGNED"
+        }
+      }
+    ],
+    "overall": null,
+    "permission_BC": [],
+    "permission_D": [],
+    "trace_error": null,
+    "shifts": []
+  },
+  {
+    "id": "soloL/default",
+    "engine": "C",
+    "original": false,
+    "mode": "full_processing",
+    "flags": [],
+    "exit": 1,
+    "reached_dsp": false,
+    "reached_scale": false,
+    "final_report": false,
+    "wavs": 0,
+    "aborted_dir": false,
+    "roles": [
+      {
+        "state": "INSUFFICIENT_SIGNAL",
+        "k": null,
+        "channels": {
+          "L": "ALIGNED",
+          "R": "INSUFFICIENT_SIGNAL"
+        }
+      },
+      {
+        "state": "ALIGNED",
+        "k": 0,
+        "channels": {
+          "L": "ALIGNED",
+          "R": "ALIGNED"
+        }
+      }
+    ],
+    "overall": null,
+    "permission_BC": [],
+    "permission_D": [],
+    "trace_error": null,
+    "shifts": []
+  },
+  {
+    "id": "soloL/override",
+    "engine": "C",
+    "original": false,
+    "mode": "full_processing",
+    "flags": [
+      "--allow-misaligned"
+    ],
+    "exit": 0,
+    "reached_dsp": true,
+    "reached_scale": true,
+    "final_report": true,
+    "wavs": 2,
+    "aborted_dir": false,
+    "roles": [
+      {
+        "state": "INSUFFICIENT_SIGNAL",
+        "k": null,
+        "channels": {
+          "L": "ALIGNED",
+          "R": "INSUFFICIENT_SIGNAL"
+        }
+      },
+      {
+        "state": "ALIGNED",
+        "k": 0,
+        "channels": {
+          "L": "ALIGNED",
+          "R": "ALIGNED"
+        }
+      }
+    ],
+    "overall": null,
+    "permission_BC": [
+      "cli_allow_misaligned",
+      "cli_allow_misaligned"
+    ],
+    "permission_D": [],
+    "trace_error": null,
+    "shifts": [
+      0
+    ]
+  },
+  {
+    "id": "soloR/default",
+    "engine": "C",
+    "original": false,
+    "mode": "full_processing",
+    "flags": [],
+    "exit": 1,
+    "reached_dsp": false,
+    "reached_scale": false,
+    "final_report": false,
+    "wavs": 0,
+    "aborted_dir": false,
+    "roles": [
+      {
+        "state": "INSUFFICIENT_SIGNAL",
+        "k": null,
+        "channels": {
+          "L": "INSUFFICIENT_SIGNAL",
+          "R": "ALIGNED"
+        }
+      },
+      {
+        "state": "ALIGNED",
+        "k": 0,
+        "channels": {
+          "L": "ALIGNED",
+          "R": "ALIGNED"
+        }
+      }
+    ],
+    "overall": null,
+    "permission_BC": [],
+    "permission_D": [],
+    "trace_error": null,
+    "shifts": []
+  },
+  {
+    "id": "alarma_mudo/default",
+    "engine": "C",
+    "original": false,
+    "mode": "full_processing",
+    "flags": [],
+    "exit": 1,
+    "reached_dsp": false,
+    "reached_scale": false,
+    "final_report": false,
+    "wavs": 0,
+    "aborted_dir": false,
+    "roles": [
+      {
+        "state": "MISALIGNED",
+        "k": null,
+        "channels": {
+          "L": "MISALIGNED",
+          "R": "INSUFFICIENT_SIGNAL"
+        }
+      },
+      {
+        "state": "ALIGNED",
+        "k": 0,
+        "channels": {
+          "L": "ALIGNED",
+          "R": "ALIGNED"
+        }
+      }
+    ],
+    "overall": null,
+    "permission_BC": [],
+    "permission_D": [],
+    "trace_error": null,
+    "shifts": []
+  },
+  {
+    "id": "alarma_mudo/override",
+    "engine": "C",
+    "original": false,
+    "mode": "full_processing",
+    "flags": [
+      "--allow-misaligned"
+    ],
+    "exit": 0,
+    "reached_dsp": true,
+    "reached_scale": true,
+    "final_report": true,
+    "wavs": 2,
+    "aborted_dir": false,
+    "roles": [
+      {
+        "state": "MISALIGNED",
+        "k": null,
+        "channels": {
+          "L": "MISALIGNED",
+          "R": "INSUFFICIENT_SIGNAL"
+        }
+      },
+      {
+        "state": "ALIGNED",
+        "k": 0,
+        "channels": {
+          "L": "ALIGNED",
+          "R": "ALIGNED"
+        }
+      }
+    ],
+    "overall": null,
+    "permission_BC": [
+      "cli_allow_misaligned",
+      "cli_allow_misaligned"
+    ],
+    "permission_D": [],
+    "trace_error": null,
+    "shifts": [
+      0
+    ]
+  },
+  {
+    "id": "debil/default",
+    "engine": "C",
+    "original": false,
+    "mode": "full_processing",
+    "flags": [],
+    "exit": 1,
+    "reached_dsp": false,
+    "reached_scale": false,
+    "final_report": false,
+    "wavs": 0,
+    "aborted_dir": false,
+    "roles": [
+      {
+        "state": "MISALIGNED",
+        "k": -763,
+        "channels": {
+          "L": "MISALIGNED",
+          "R": "MISALIGNED"
+        }
+      },
+      {
+        "state": "ALIGNED",
+        "k": 0,
+        "channels": {
+          "L": "ALIGNED",
+          "R": "ALIGNED"
+        }
+      }
+    ],
+    "overall": null,
+    "permission_BC": [],
+    "permission_D": [],
+    "trace_error": null,
+    "shifts": []
+  },
+  {
+    "id": "ruido8/default",
+    "engine": "C",
+    "original": false,
+    "mode": "full_processing",
+    "flags": [],
+    "exit": 1,
+    "reached_dsp": false,
+    "reached_scale": false,
+    "final_report": false,
+    "wavs": 0,
+    "aborted_dir": false,
+    "roles": [
+      {
+        "state": "MISALIGNED",
+        "k": 1541,
+        "channels": {
+          "L": "MISALIGNED",
+          "R": "MISALIGNED"
+        }
+      },
+      {
+        "state": "ALIGNED",
+        "k": 0,
+        "channels": {
+          "L": "ALIGNED",
+          "R": "ALIGNED"
+        }
+      }
+    ],
+    "overall": null,
+    "permission_BC": [],
+    "permission_D": [],
+    "trace_error": null,
+    "shifts": []
+  },
+  {
+    "id": "ruido_menos6/default",
+    "engine": "C",
+    "original": false,
+    "mode": "full_processing",
+    "flags": [],
+    "exit": 0,
+    "reached_dsp": true,
+    "reached_scale": true,
+    "final_report": true,
+    "wavs": 2,
+    "aborted_dir": false,
+    "roles": [
+      {
+        "state": "WARNING",
+        "k": -367,
+        "channels": {
+          "L": "WARNING",
+          "R": "WARNING"
+        }
+      },
+      {
+        "state": "ALIGNED",
+        "k": 0,
+        "channels": {
+          "L": "ALIGNED",
+          "R": "ALIGNED"
+        }
+      }
+    ],
+    "overall": null,
+    "permission_BC": [
+      null,
+      null
+    ],
+    "permission_D": [],
+    "trace_error": null,
+    "shifts": [
+      0
+    ]
+  },
+  {
+    "id": "circular/default",
+    "engine": "C",
+    "original": false,
+    "mode": "full_processing",
+    "flags": [],
+    "exit": 1,
+    "reached_dsp": false,
+    "reached_scale": false,
+    "final_report": false,
+    "wavs": 0,
+    "aborted_dir": false,
+    "roles": [
+      {
+        "state": "AMBIGUOUS",
+        "k": null,
+        "channels": {
+          "L": "AMBIGUOUS",
+          "R": "AMBIGUOUS"
+        }
+      },
+      {
+        "state": "AMBIGUOUS",
+        "k": null,
+        "channels": {
+          "L": "AMBIGUOUS",
+          "R": "AMBIGUOUS"
+        }
+      }
+    ],
+    "overall": null,
+    "permission_BC": [],
+    "permission_D": [],
+    "trace_error": null,
+    "shifts": []
+  },
+  {
+    "id": "circular/override",
+    "engine": "C",
+    "original": false,
+    "mode": "full_processing",
+    "flags": [
+      "--allow-misaligned"
+    ],
+    "exit": 0,
+    "reached_dsp": true,
+    "reached_scale": true,
+    "final_report": true,
+    "wavs": 2,
+    "aborted_dir": false,
+    "roles": [
+      {
+        "state": "AMBIGUOUS",
+        "k": null,
+        "channels": {
+          "L": "AMBIGUOUS",
+          "R": "AMBIGUOUS"
+        }
+      },
+      {
+        "state": "AMBIGUOUS",
+        "k": null,
+        "channels": {
+          "L": "AMBIGUOUS",
+          "R": "AMBIGUOUS"
+        }
+      }
+    ],
+    "overall": null,
+    "permission_BC": [
+      "cli_allow_misaligned",
+      "cli_allow_misaligned"
+    ],
+    "permission_D": [],
+    "trace_error": null,
+    "shifts": [
+      0
+    ]
+  },
+  {
+    "id": "rep_igual/default",
+    "engine": "C",
+    "original": false,
+    "mode": "full_processing",
+    "flags": [],
+    "exit": 0,
+    "reached_dsp": true,
+    "reached_scale": true,
+    "final_report": true,
+    "wavs": 2,
+    "aborted_dir": false,
+    "roles": [
+      {
+        "state": "ALIGNED",
+        "k": 0,
+        "channels": {
+          "L": "ALIGNED",
+          "R": "ALIGNED"
+        }
+      },
+      {
+        "state": "ALIGNED",
+        "k": 0,
+        "channels": {
+          "L": "ALIGNED",
+          "R": "ALIGNED"
+        }
+      }
+    ],
+    "overall": null,
+    "permission_BC": [
+      null,
+      null
+    ],
+    "permission_D": [],
+    "trace_error": null,
+    "shifts": [
+      0
+    ]
+  },
+  {
+    "id": "rep_035/default",
+    "engine": "C",
+    "original": false,
+    "mode": "full_processing",
+    "flags": [],
+    "exit": 0,
+    "reached_dsp": true,
+    "reached_scale": true,
+    "final_report": true,
+    "wavs": 2,
+    "aborted_dir": false,
+    "roles": [
+      {
+        "state": "ALIGNED",
+        "k": 0,
+        "channels": {
+          "L": "ALIGNED",
+          "R": "ALIGNED"
+        }
+      },
+      {
+        "state": "ALIGNED",
+        "k": 0,
+        "channels": {
+          "L": "ALIGNED",
+          "R": "ALIGNED"
+        }
+      }
+    ],
+    "overall": null,
+    "permission_BC": [
+      null,
+      null
+    ],
+    "permission_D": [],
+    "trace_error": null,
+    "shifts": [
+      0
+    ]
+  },
+  {
+    "id": "rep_165/default",
+    "engine": "C",
+    "original": false,
+    "mode": "full_processing",
+    "flags": [],
+    "exit": 1,
+    "reached_dsp": false,
+    "reached_scale": false,
+    "final_report": false,
+    "wavs": 0,
+    "aborted_dir": false,
+    "roles": [
+      {
+        "state": "MISALIGNED",
+        "k": 2849,
+        "channels": {
+          "L": "MISALIGNED",
+          "R": "MISALIGNED"
+        }
+      },
+      {
+        "state": "ALIGNED",
+        "k": 0,
+        "channels": {
+          "L": "ALIGNED",
+          "R": "ALIGNED"
+        }
+      }
+    ],
+    "overall": null,
+    "permission_BC": [],
+    "permission_D": [],
+    "trace_error": null,
+    "shifts": []
+  },
+  {
+    "id": "rival_R/default",
+    "engine": "C",
+    "original": false,
+    "mode": "full_processing",
+    "flags": [],
+    "exit": 0,
+    "reached_dsp": true,
+    "reached_scale": true,
+    "final_report": true,
+    "wavs": 2,
+    "aborted_dir": false,
+    "roles": [
+      {
+        "state": "ALIGNED",
+        "k": 0,
+        "channels": {
+          "L": "ALIGNED",
+          "R": "ALIGNED"
+        }
+      },
+      {
+        "state": "ALIGNED",
+        "k": 0,
+        "channels": {
+          "L": "ALIGNED",
+          "R": "ALIGNED"
+        }
+      }
+    ],
+    "overall": null,
+    "permission_BC": [
+      null,
+      null
+    ],
+    "permission_D": [],
+    "trace_error": null,
+    "shifts": [
+      0
+    ]
+  },
+  {
+    "id": "rival_R/override",
+    "engine": "C",
+    "original": false,
+    "mode": "full_processing",
+    "flags": [
+      "--allow-misaligned"
+    ],
+    "exit": 0,
+    "reached_dsp": true,
+    "reached_scale": true,
+    "final_report": true,
+    "wavs": 2,
+    "aborted_dir": false,
+    "roles": [
+      {
+        "state": "ALIGNED",
+        "k": 0,
+        "channels": {
+          "L": "ALIGNED",
+          "R": "ALIGNED"
+        }
+      },
+      {
+        "state": "ALIGNED",
+        "k": 0,
+        "channels": {
+          "L": "ALIGNED",
+          "R": "ALIGNED"
+        }
+      }
+    ],
+    "overall": null,
+    "permission_BC": [
+      "cli_allow_misaligned",
+      "cli_allow_misaligned"
+    ],
+    "permission_D": [],
+    "trace_error": null,
+    "shifts": [
+      0
+    ]
+  },
+  {
+    "id": "lateral/default",
+    "engine": "C",
+    "original": false,
+    "mode": "full_processing",
+    "flags": [],
+    "exit": 1,
+    "reached_dsp": false,
+    "reached_scale": false,
+    "final_report": false,
+    "wavs": 0,
+    "aborted_dir": false,
+    "roles": [
+      {
+        "state": "MISALIGNED",
+        "k": 1933,
+        "channels": {
+          "L": "MISALIGNED",
+          "R": "MISALIGNED"
+        }
+      },
+      {
+        "state": "ALIGNED",
+        "k": 0,
+        "channels": {
+          "L": "ALIGNED",
+          "R": "ALIGNED"
+        }
+      }
+    ],
+    "overall": null,
+    "permission_BC": [],
+    "permission_D": [],
+    "trace_error": null,
+    "shifts": []
+  },
+  {
+    "id": "dc/default",
+    "engine": "C",
+    "original": false,
+    "mode": "full_processing",
+    "flags": [],
+    "exit": 1,
+    "reached_dsp": false,
+    "reached_scale": false,
+    "final_report": false,
+    "wavs": 0,
+    "aborted_dir": false,
+    "roles": [
+      {
+        "state": "INSUFFICIENT_SIGNAL",
+        "k": null,
+        "channels": {
+          "L": "INSUFFICIENT_SIGNAL",
+          "R": "INSUFFICIENT_SIGNAL"
+        }
+      },
+      {
+        "state": "ALIGNED",
+        "k": 0,
+        "channels": {
+          "L": "ALIGNED",
+          "R": "ALIGNED"
+        }
+      }
+    ],
+    "overall": null,
+    "permission_BC": [],
+    "permission_D": [],
+    "trace_error": null,
+    "shifts": []
+  },
+  {
+    "id": "dc/override",
+    "engine": "C",
+    "original": false,
+    "mode": "full_processing",
+    "flags": [
+      "--allow-misaligned"
+    ],
+    "exit": 0,
+    "reached_dsp": true,
+    "reached_scale": true,
+    "final_report": true,
+    "wavs": 2,
+    "aborted_dir": false,
+    "roles": [
+      {
+        "state": "INSUFFICIENT_SIGNAL",
+        "k": null,
+        "channels": {
+          "L": "INSUFFICIENT_SIGNAL",
+          "R": "INSUFFICIENT_SIGNAL"
+        }
+      },
+      {
+        "state": "ALIGNED",
+        "k": 0,
+        "channels": {
+          "L": "ALIGNED",
+          "R": "ALIGNED"
+        }
+      }
+    ],
+    "overall": null,
+    "permission_BC": [
+      "cli_allow_misaligned",
+      "cli_allow_misaligned"
+    ],
+    "permission_D": [],
+    "trace_error": null,
+    "shifts": [
+      0
+    ]
+  },
+  {
+    "id": "sin_relacion/default",
+    "engine": "C",
+    "original": false,
+    "mode": "full_processing",
+    "flags": [],
+    "exit": 1,
+    "reached_dsp": false,
+    "reached_scale": false,
+    "final_report": false,
+    "wavs": 0,
+    "aborted_dir": false,
+    "roles": [
+      {
+        "state": "INSUFFICIENT_SIGNAL",
+        "k": null,
+        "channels": {
+          "L": "INSUFFICIENT_SIGNAL",
+          "R": "INSUFFICIENT_SIGNAL"
+        }
+      },
+      {
+        "state": "ALIGNED",
+        "k": 0,
+        "channels": {
+          "L": "ALIGNED",
+          "R": "ALIGNED"
+        }
+      }
+    ],
+    "overall": null,
+    "permission_BC": [],
+    "permission_D": [],
+    "trace_error": null,
+    "shifts": []
+  },
+  {
+    "id": "corta/default",
+    "engine": "C",
+    "original": false,
+    "mode": "full_processing",
+    "flags": [],
+    "exit": 1,
+    "reached_dsp": false,
+    "reached_scale": false,
+    "final_report": false,
+    "wavs": 0,
+    "aborted_dir": false,
+    "roles": [
+      {
+        "state": "MISALIGNED",
+        "k": null,
+        "channels": {
+          "L": "MISALIGNED",
+          "R": "MISALIGNED"
+        }
+      },
+      {
+        "state": "ALIGNED",
+        "k": 0,
+        "channels": {
+          "L": "ALIGNED",
+          "R": "ALIGNED"
+        }
+      }
+    ],
+    "overall": null,
+    "permission_BC": [],
+    "permission_D": [],
+    "trace_error": null,
+    "shifts": []
+  },
+  {
+    "id": "larga/default",
+    "engine": "C",
+    "original": false,
+    "mode": "full_processing",
+    "flags": [],
+    "exit": 1,
+    "reached_dsp": false,
+    "reached_scale": false,
+    "final_report": false,
+    "wavs": 0,
+    "aborted_dir": false,
+    "roles": [
+      {
+        "state": "MISALIGNED",
+        "k": 825,
+        "channels": {
+          "L": "MISALIGNED",
+          "R": "MISALIGNED"
+        }
+      },
+      {
+        "state": "ALIGNED",
+        "k": 0,
+        "channels": {
+          "L": "ALIGNED",
+          "R": "ALIGNED"
+        }
+      }
+    ],
+    "overall": null,
+    "permission_BC": [],
+    "permission_D": [],
+    "trace_error": null,
+    "shifts": []
+  },
+  {
+    "id": "interior_vacio/default",
+    "engine": "C",
+    "original": false,
+    "mode": "full_processing",
+    "flags": [],
+    "exit": 1,
+    "reached_dsp": false,
+    "reached_scale": false,
+    "final_report": false,
+    "wavs": 0,
+    "aborted_dir": false,
+    "roles": [
+      {
+        "state": "MISALIGNED",
+        "k": null,
+        "channels": {
+          "L": "MISALIGNED",
+          "R": "MISALIGNED"
+        }
+      },
+      {
+        "state": "ALIGNED",
+        "k": 0,
+        "channels": {
+          "L": "ALIGNED",
+          "R": "ALIGNED"
+        }
+      }
+    ],
+    "overall": null,
+    "permission_BC": [],
+    "permission_D": [],
+    "trace_error": null,
+    "shifts": []
+  },
+  {
+    "id": "dos_tramos/default",
+    "engine": "C",
+    "original": false,
+    "mode": "full_processing",
+    "flags": [],
+    "exit": 1,
+    "reached_dsp": false,
+    "reached_scale": false,
+    "final_report": false,
+    "wavs": 0,
+    "aborted_dir": false,
+    "roles": [
+      {
+        "state": "AMBIGUOUS",
+        "k": null,
+        "channels": {
+          "L": "AMBIGUOUS",
+          "R": "AMBIGUOUS"
+        }
+      },
+      {
+        "state": "ALIGNED",
+        "k": 0,
+        "channels": {
+          "L": "ALIGNED",
+          "R": "ALIGNED"
+        }
+      }
+    ],
+    "overall": null,
+    "permission_BC": [],
+    "permission_D": [],
+    "trace_error": null,
+    "shifts": []
+  },
+  {
+    "id": "invalida_L/default",
+    "engine": "C",
+    "original": false,
+    "mode": "full_processing",
+    "flags": [],
+    "exit": 1,
+    "reached_dsp": false,
+    "reached_scale": false,
+    "final_report": false,
+    "wavs": 0,
+    "aborted_dir": false,
+    "roles": [
+      {
+        "state": "ERROR",
+        "k": null,
+        "channels": {
+          "L": "ERROR",
+          "R": "ALIGNED"
+        }
+      },
+      {
+        "state": "ALIGNED",
+        "k": 0,
+        "channels": {
+          "L": "ALIGNED",
+          "R": "ALIGNED"
+        }
+      }
+    ],
+    "overall": null,
+    "permission_BC": [],
+    "permission_D": [],
+    "trace_error": null,
+    "shifts": []
+  },
+  {
+    "id": "invalida_L/override",
+    "engine": "C",
+    "original": false,
+    "mode": "full_processing",
+    "flags": [
+      "--allow-misaligned"
+    ],
+    "exit": 1,
+    "reached_dsp": false,
+    "reached_scale": false,
+    "final_report": false,
+    "wavs": 0,
+    "aborted_dir": false,
+    "roles": [
+      {
+        "state": "ERROR",
+        "k": null,
+        "channels": {
+          "L": "ERROR",
+          "R": "ALIGNED"
+        }
+      },
+      {
+        "state": "ALIGNED",
+        "k": 0,
+        "channels": {
+          "L": "ALIGNED",
+          "R": "ALIGNED"
+        }
+      }
+    ],
+    "overall": null,
+    "permission_BC": [],
+    "permission_D": [],
+    "trace_error": null,
+    "shifts": []
+  },
+  {
+    "id": "fault_missing/default",
+    "engine": "C",
+    "original": false,
+    "mode": "full_processing",
+    "flags": [],
+    "exit": 1,
+    "reached_dsp": false,
+    "reached_scale": false,
+    "final_report": false,
+    "wavs": 0,
+    "aborted_dir": false,
+    "roles": [],
+    "overall": null,
+    "permission_BC": [],
+    "permission_D": [],
+    "trace_error": null,
+    "shifts": []
+  },
+  {
+    "id": "fault_missing/override",
+    "engine": "C",
+    "original": false,
+    "mode": "full_processing",
+    "flags": [
+      "--allow-misaligned"
+    ],
+    "exit": 1,
+    "reached_dsp": false,
+    "reached_scale": false,
+    "final_report": false,
+    "wavs": 0,
+    "aborted_dir": false,
+    "roles": [],
+    "overall": null,
+    "permission_BC": [],
+    "permission_D": [],
+    "trace_error": null,
+    "shifts": []
+  },
+  {
+    "id": "fault_header/default",
+    "engine": "C",
+    "original": false,
+    "mode": "full_processing",
+    "flags": [],
+    "exit": 1,
+    "reached_dsp": false,
+    "reached_scale": false,
+    "final_report": false,
+    "wavs": 0,
+    "aborted_dir": false,
+    "roles": [],
+    "overall": null,
+    "permission_BC": [],
+    "permission_D": [],
+    "trace_error": null,
+    "shifts": []
+  },
+  {
+    "id": "fault_header/override",
+    "engine": "C",
+    "original": false,
+    "mode": "full_processing",
+    "flags": [
+      "--allow-misaligned"
+    ],
+    "exit": 1,
+    "reached_dsp": false,
+    "reached_scale": false,
+    "final_report": false,
+    "wavs": 0,
+    "aborted_dir": false,
+    "roles": [],
+    "overall": null,
+    "permission_BC": [],
+    "permission_D": [],
+    "trace_error": null,
+    "shifts": []
+  },
+  {
+    "id": "fault_truncated/default",
+    "engine": "C",
+    "original": false,
+    "mode": "full_processing",
+    "flags": [],
+    "exit": 0,
+    "reached_dsp": true,
+    "reached_scale": true,
+    "final_report": true,
+    "wavs": 2,
+    "aborted_dir": false,
+    "roles": [
+      {
+        "state": "ALIGNED",
+        "k": 0,
+        "channels": {
+          "L": "ALIGNED",
+          "R": "ALIGNED"
+        }
+      },
+      {
+        "state": "ALIGNED",
+        "k": 0,
+        "channels": {
+          "L": "ALIGNED",
+          "R": "ALIGNED"
+        }
+      }
+    ],
+    "overall": null,
+    "permission_BC": [
+      null,
+      null
+    ],
+    "permission_D": [],
+    "trace_error": null,
+    "shifts": [
+      0
+    ]
+  },
+  {
+    "id": "fault_truncated/override",
+    "engine": "C",
+    "original": false,
+    "mode": "full_processing",
+    "flags": [
+      "--allow-misaligned"
+    ],
+    "exit": 0,
+    "reached_dsp": true,
+    "reached_scale": true,
+    "final_report": true,
+    "wavs": 2,
+    "aborted_dir": false,
+    "roles": [
+      {
+        "state": "ALIGNED",
+        "k": 0,
+        "channels": {
+          "L": "ALIGNED",
+          "R": "ALIGNED"
+        }
+      },
+      {
+        "state": "ALIGNED",
+        "k": 0,
+        "channels": {
+          "L": "ALIGNED",
+          "R": "ALIGNED"
+        }
+      }
+    ],
+    "overall": null,
+    "permission_BC": [
+      "cli_allow_misaligned",
+      "cli_allow_misaligned"
+    ],
+    "permission_D": [],
+    "trace_error": null,
+    "shifts": [
+      0
+    ]
+  },
+  {
+    "id": "fault_race/default",
+    "engine": "C",
+    "original": false,
+    "mode": "full_processing",
+    "flags": [],
+    "exit": 1,
+    "reached_dsp": false,
+    "reached_scale": false,
+    "final_report": false,
+    "wavs": 0,
+    "aborted_dir": false,
+    "roles": [
+      {
+        "state": "ERROR",
+        "k": null,
+        "channels": {
+          "L": "ERROR",
+          "R": "ERROR"
+        }
+      },
+      {
+        "state": "ALIGNED",
+        "k": 0,
+        "channels": {
+          "L": "ALIGNED",
+          "R": "ALIGNED"
+        }
+      }
+    ],
+    "overall": null,
+    "permission_BC": [],
+    "permission_D": [],
+    "trace_error": null,
+    "shifts": []
+  },
+  {
+    "id": "fault_race/override",
+    "engine": "C",
+    "original": false,
+    "mode": "full_processing",
+    "flags": [
+      "--allow-misaligned"
+    ],
+    "exit": 1,
+    "reached_dsp": false,
+    "reached_scale": false,
+    "final_report": false,
+    "wavs": 0,
+    "aborted_dir": false,
+    "roles": [
+      {
+        "state": "ERROR",
+        "k": null,
+        "channels": {
+          "L": "ERROR",
+          "R": "ERROR"
+        }
+      },
+      {
+        "state": "ALIGNED",
+        "k": 0,
+        "channels": {
+          "L": "ALIGNED",
+          "R": "ALIGNED"
+        }
+      }
+    ],
+    "overall": null,
+    "permission_BC": [],
+    "permission_D": [],
+    "trace_error": null,
+    "shifts": []
+  },
+  {
+    "id": "request_shift",
+    "engine": "C",
+    "original": false,
+    "mode": "full_processing",
+    "flags": [
+      "--correct-alignment",
+      "--allow-misaligned"
+    ],
+    "exit": 1,
+    "reached_dsp": false,
+    "reached_scale": false,
+    "final_report": false,
+    "wavs": 0,
+    "aborted_dir": false,
+    "roles": [],
+    "overall": null,
+    "permission_BC": [],
+    "permission_D": [],
+    "trace_error": null,
+    "shifts": []
+  },
+  {
+    "id": "dry_not_audit",
+    "engine": "C",
+    "original": false,
+    "mode": "dry_run",
+    "flags": [],
+    "exit": 0,
+    "reached_dsp": false,
+    "reached_scale": false,
+    "final_report": false,
+    "wavs": 0,
+    "aborted_dir": false,
+    "roles": [],
+    "overall": null,
+    "permission_BC": [],
+    "permission_D": [],
+    "trace_error": null,
+    "shifts": []
+  },
+  {
+    "id": "R_dos_origenes/default",
+    "engine": "D",
+    "original": false,
+    "mode": "full_processing",
+    "flags": [],
+    "exit": 1,
+    "reached_dsp": false,
+    "reached_scale": false,
+    "final_report": false,
+    "wavs": 0,
+    "aborted_dir": false,
+    "roles": [
+      {
+        "state": "AMBIGUOUS",
+        "k": null,
+        "channels": {
+          "L": "ALIGNED",
+          "R": "AMBIGUOUS"
+        }
+      },
+      {
+        "state": "ALIGNED",
+        "k": 0,
+        "channels": {
+          "L": "ALIGNED",
+          "R": "ALIGNED"
+        }
+      }
+    ],
+    "overall": null,
+    "permission_BC": null,
+    "permission_D": [],
+    "trace_error": null,
+    "shifts": []
+  },
+  {
+    "id": "R_dos_origenes/override",
+    "engine": "D",
+    "original": false,
+    "mode": "full_processing",
+    "flags": [
+      "--allow-misaligned"
+    ],
+    "exit": 0,
+    "reached_dsp": true,
+    "reached_scale": true,
+    "final_report": true,
+    "wavs": 2,
+    "aborted_dir": false,
+    "roles": [
+      {
+        "state": "AMBIGUOUS",
+        "k": null,
+        "channels": {
+          "L": "ALIGNED",
+          "R": "AMBIGUOUS"
+        }
+      },
+      {
+        "state": "ALIGNED",
+        "k": 0,
+        "channels": {
+          "L": "ALIGNED",
+          "R": "ALIGNED"
+        }
+      }
+    ],
+    "overall": "fail",
+    "permission_BC": null,
+    "permission_D": [
+      "cli_allow_misaligned"
+    ],
+    "trace_error": null,
+    "shifts": [
+      0
+    ]
+  },
+  {
+    "id": "R_replica_dominante/default",
+    "engine": "D",
+    "original": false,
+    "mode": "full_processing",
+    "flags": [],
+    "exit": 1,
+    "reached_dsp": false,
+    "reached_scale": false,
+    "final_report": false,
+    "wavs": 0,
+    "aborted_dir": false,
+    "roles": [
+      {
+        "state": "MISALIGNED",
+        "k": 3217,
+        "channels": {
+          "L": "MISALIGNED",
+          "R": "MISALIGNED"
+        }
+      },
+      {
+        "state": "ALIGNED",
+        "k": 0,
+        "channels": {
+          "L": "ALIGNED",
+          "R": "ALIGNED"
+        }
+      }
+    ],
+    "overall": null,
+    "permission_BC": null,
+    "permission_D": [],
+    "trace_error": null,
+    "shifts": []
+  },
+  {
+    "id": "R_replica_dominante/override",
+    "engine": "D",
+    "original": false,
+    "mode": "full_processing",
+    "flags": [
+      "--allow-misaligned"
+    ],
+    "exit": 0,
+    "reached_dsp": true,
+    "reached_scale": true,
+    "final_report": true,
+    "wavs": 2,
+    "aborted_dir": false,
+    "roles": [
+      {
+        "state": "MISALIGNED",
+        "k": 3217,
+        "channels": {
+          "L": "MISALIGNED",
+          "R": "MISALIGNED"
+        }
+      },
+      {
+        "state": "ALIGNED",
+        "k": 0,
+        "channels": {
+          "L": "ALIGNED",
+          "R": "ALIGNED"
+        }
+      }
+    ],
+    "overall": "fail",
+    "permission_BC": null,
+    "permission_D": [
+      "cli_allow_misaligned"
+    ],
+    "trace_error": null,
+    "shifts": [
+      0
+    ]
+  },
+  {
+    "id": "DEV_cero/default",
+    "engine": "D",
+    "original": false,
+    "mode": "full_processing",
+    "flags": [],
+    "exit": 0,
+    "reached_dsp": true,
+    "reached_scale": true,
+    "final_report": true,
+    "wavs": 2,
+    "aborted_dir": false,
+    "roles": [
+      {
+        "state": "ALIGNED",
+        "k": 0,
+        "channels": {
+          "L": "ALIGNED",
+          "R": "ALIGNED"
+        }
+      },
+      {
+        "state": "ALIGNED",
+        "k": 0,
+        "channels": {
+          "L": "ALIGNED",
+          "R": "ALIGNED"
+        }
+      }
+    ],
+    "overall": "pass",
+    "permission_BC": null,
+    "permission_D": [],
+    "trace_error": null,
+    "shifts": [
+      0
+    ]
+  },
+  {
+    "id": "DEV_no_cero/default",
+    "engine": "D",
+    "original": false,
+    "mode": "full_processing",
+    "flags": [],
+    "exit": 1,
+    "reached_dsp": false,
+    "reached_scale": false,
+    "final_report": false,
+    "wavs": 0,
+    "aborted_dir": false,
+    "roles": [
+      {
+        "state": "MISALIGNED",
+        "k": 511,
+        "channels": {
+          "L": "MISALIGNED",
+          "R": "MISALIGNED"
+        }
+      },
+      {
+        "state": "ALIGNED",
+        "k": 0,
+        "channels": {
+          "L": "ALIGNED",
+          "R": "ALIGNED"
+        }
+      }
+    ],
+    "overall": null,
+    "permission_BC": null,
+    "permission_D": [],
+    "trace_error": null,
+    "shifts": []
+  },
+  {
+    "id": "Z/default",
+    "engine": "D",
+    "original": false,
+    "mode": "full_processing",
+    "flags": [],
+    "exit": 0,
+    "reached_dsp": true,
+    "reached_scale": true,
+    "final_report": true,
+    "wavs": 2,
+    "aborted_dir": false,
+    "roles": [
+      {
+        "state": "ALIGNED",
+        "k": 0,
+        "channels": {
+          "L": "ALIGNED",
+          "R": "ALIGNED"
+        }
+      },
+      {
+        "state": "ALIGNED",
+        "k": 0,
+        "channels": {
+          "L": "ALIGNED",
+          "R": "ALIGNED"
+        }
+      }
+    ],
+    "overall": "pass",
+    "permission_BC": null,
+    "permission_D": [],
+    "trace_error": null,
+    "shifts": [
+      0
+    ]
+  },
+  {
+    "id": "Z/override",
+    "engine": "D",
+    "original": false,
+    "mode": "full_processing",
+    "flags": [
+      "--allow-misaligned"
+    ],
+    "exit": 0,
+    "reached_dsp": true,
+    "reached_scale": true,
+    "final_report": true,
+    "wavs": 2,
+    "aborted_dir": false,
+    "roles": [
+      {
+        "state": "ALIGNED",
+        "k": 0,
+        "channels": {
+          "L": "ALIGNED",
+          "R": "ALIGNED"
+        }
+      },
+      {
+        "state": "ALIGNED",
+        "k": 0,
+        "channels": {
+          "L": "ALIGNED",
+          "R": "ALIGNED"
+        }
+      }
+    ],
+    "overall": "pass",
+    "permission_BC": null,
+    "permission_D": [],
+    "trace_error": null,
+    "shifts": [
+      0
+    ]
+  },
+  {
+    "id": "W/default",
+    "engine": "D",
+    "original": false,
+    "mode": "full_processing",
+    "flags": [],
+    "exit": 0,
+    "reached_dsp": true,
+    "reached_scale": true,
+    "final_report": true,
+    "wavs": 2,
+    "aborted_dir": false,
+    "roles": [
+      {
+        "state": "WARNING",
+        "k": -219,
+        "channels": {
+          "L": "WARNING",
+          "R": "WARNING"
+        }
+      },
+      {
+        "state": "ALIGNED",
+        "k": 0,
+        "channels": {
+          "L": "ALIGNED",
+          "R": "ALIGNED"
+        }
+      }
+    ],
+    "overall": "pass_with_warnings",
+    "permission_BC": null,
+    "permission_D": [],
+    "trace_error": null,
+    "shifts": [
+      0
+    ]
+  },
+  {
+    "id": "W/override",
+    "engine": "D",
+    "original": false,
+    "mode": "full_processing",
+    "flags": [
+      "--allow-misaligned"
+    ],
+    "exit": 0,
+    "reached_dsp": true,
+    "reached_scale": true,
+    "final_report": true,
+    "wavs": 2,
+    "aborted_dir": false,
+    "roles": [
+      {
+        "state": "WARNING",
+        "k": -219,
+        "channels": {
+          "L": "WARNING",
+          "R": "WARNING"
+        }
+      },
+      {
+        "state": "ALIGNED",
+        "k": 0,
+        "channels": {
+          "L": "ALIGNED",
+          "R": "ALIGNED"
+        }
+      }
+    ],
+    "overall": "pass_with_warnings",
+    "permission_BC": null,
+    "permission_D": [],
+    "trace_error": null,
+    "shifts": [
+      0
+    ]
+  },
+  {
+    "id": "M/default",
+    "engine": "D",
+    "original": false,
+    "mode": "full_processing",
+    "flags": [],
+    "exit": 1,
+    "reached_dsp": false,
+    "reached_scale": false,
+    "final_report": false,
+    "wavs": 0,
+    "aborted_dir": false,
+    "roles": [
+      {
+        "state": "MISALIGNED",
+        "k": 1529,
+        "channels": {
+          "L": "MISALIGNED",
+          "R": "MISALIGNED"
+        }
+      },
+      {
+        "state": "ALIGNED",
+        "k": 0,
+        "channels": {
+          "L": "ALIGNED",
+          "R": "ALIGNED"
+        }
+      }
+    ],
+    "overall": null,
+    "permission_BC": null,
+    "permission_D": [],
+    "trace_error": null,
+    "shifts": []
+  },
+  {
+    "id": "M/override",
+    "engine": "D",
+    "original": false,
+    "mode": "full_processing",
+    "flags": [
+      "--allow-misaligned"
+    ],
+    "exit": 0,
+    "reached_dsp": true,
+    "reached_scale": true,
+    "final_report": true,
+    "wavs": 2,
+    "aborted_dir": false,
+    "roles": [
+      {
+        "state": "MISALIGNED",
+        "k": 1529,
+        "channels": {
+          "L": "MISALIGNED",
+          "R": "MISALIGNED"
+        }
+      },
+      {
+        "state": "ALIGNED",
+        "k": 0,
+        "channels": {
+          "L": "ALIGNED",
+          "R": "ALIGNED"
+        }
+      }
+    ],
+    "overall": "fail",
+    "permission_BC": null,
+    "permission_D": [
+      "cli_allow_misaligned"
+    ],
+    "trace_error": null,
+    "shifts": [
+      0
+    ]
+  },
+  {
+    "id": "distintos/default",
+    "engine": "D",
+    "original": false,
+    "mode": "full_processing",
+    "flags": [],
+    "exit": 1,
+    "reached_dsp": false,
+    "reached_scale": false,
+    "final_report": false,
+    "wavs": 0,
+    "aborted_dir": false,
+    "roles": [
+      {
+        "state": "MISALIGNED",
+        "k": null,
+        "channels": {
+          "L": "MISALIGNED",
+          "R": "MISALIGNED"
+        }
+      },
+      {
+        "state": "MISALIGNED",
+        "k": null,
+        "channels": {
+          "L": "MISALIGNED",
+          "R": "WARNING"
+        }
+      }
+    ],
+    "overall": null,
+    "permission_BC": null,
+    "permission_D": [],
+    "trace_error": null,
+    "shifts": []
+  },
+  {
+    "id": "distintos/override",
+    "engine": "D",
+    "original": false,
+    "mode": "full_processing",
+    "flags": [
+      "--allow-misaligned"
+    ],
+    "exit": 0,
+    "reached_dsp": true,
+    "reached_scale": true,
+    "final_report": true,
+    "wavs": 2,
+    "aborted_dir": false,
+    "roles": [
+      {
+        "state": "MISALIGNED",
+        "k": null,
+        "channels": {
+          "L": "MISALIGNED",
+          "R": "MISALIGNED"
+        }
+      },
+      {
+        "state": "MISALIGNED",
+        "k": null,
+        "channels": {
+          "L": "MISALIGNED",
+          "R": "WARNING"
+        }
+      }
+    ],
+    "overall": "fail",
+    "permission_BC": null,
+    "permission_D": [
+      "cli_allow_misaligned"
+    ],
+    "trace_error": null,
+    "shifts": [
+      0
+    ]
+  },
+  {
+    "id": "swap/default",
+    "engine": "D",
+    "original": false,
+    "mode": "full_processing",
+    "flags": [],
+    "exit": 1,
+    "reached_dsp": false,
+    "reached_scale": false,
+    "final_report": false,
+    "wavs": 0,
+    "aborted_dir": false,
+    "roles": [
+      {
+        "state": "MISALIGNED",
+        "k": null,
+        "channels": {
+          "L": "MISALIGNED",
+          "R": "MISALIGNED"
+        }
+      },
+      {
+        "state": "MISALIGNED",
+        "k": null,
+        "channels": {
+          "L": "WARNING",
+          "R": "MISALIGNED"
+        }
+      }
+    ],
+    "overall": null,
+    "permission_BC": null,
+    "permission_D": [],
+    "trace_error": null,
+    "shifts": []
+  },
+  {
+    "id": "invL/default",
+    "engine": "D",
+    "original": false,
+    "mode": "full_processing",
+    "flags": [],
+    "exit": 1,
+    "reached_dsp": false,
+    "reached_scale": false,
+    "final_report": false,
+    "wavs": 0,
+    "aborted_dir": false,
+    "roles": [
+      {
+        "state": "MISALIGNED",
+        "k": 827,
+        "channels": {
+          "L": "MISALIGNED",
+          "R": "MISALIGNED"
+        }
+      },
+      {
+        "state": "ALIGNED",
+        "k": 0,
+        "channels": {
+          "L": "ALIGNED",
+          "R": "ALIGNED"
+        }
+      }
+    ],
+    "overall": null,
+    "permission_BC": null,
+    "permission_D": [],
+    "trace_error": null,
+    "shifts": []
+  },
+  {
+    "id": "soloL/default",
+    "engine": "D",
+    "original": false,
+    "mode": "full_processing",
+    "flags": [],
+    "exit": 1,
+    "reached_dsp": false,
+    "reached_scale": false,
+    "final_report": false,
+    "wavs": 0,
+    "aborted_dir": false,
+    "roles": [
+      {
+        "state": "INSUFFICIENT_SIGNAL",
+        "k": null,
+        "channels": {
+          "L": "ALIGNED",
+          "R": "INSUFFICIENT_SIGNAL"
+        }
+      },
+      {
+        "state": "ALIGNED",
+        "k": 0,
+        "channels": {
+          "L": "ALIGNED",
+          "R": "ALIGNED"
+        }
+      }
+    ],
+    "overall": null,
+    "permission_BC": null,
+    "permission_D": [],
+    "trace_error": null,
+    "shifts": []
+  },
+  {
+    "id": "soloL/override",
+    "engine": "D",
+    "original": false,
+    "mode": "full_processing",
+    "flags": [
+      "--allow-misaligned"
+    ],
+    "exit": 0,
+    "reached_dsp": true,
+    "reached_scale": true,
+    "final_report": true,
+    "wavs": 2,
+    "aborted_dir": false,
+    "roles": [
+      {
+        "state": "INSUFFICIENT_SIGNAL",
+        "k": null,
+        "channels": {
+          "L": "ALIGNED",
+          "R": "INSUFFICIENT_SIGNAL"
+        }
+      },
+      {
+        "state": "ALIGNED",
+        "k": 0,
+        "channels": {
+          "L": "ALIGNED",
+          "R": "ALIGNED"
+        }
+      }
+    ],
+    "overall": "fail",
+    "permission_BC": null,
+    "permission_D": [
+      "cli_allow_misaligned"
+    ],
+    "trace_error": null,
+    "shifts": [
+      0
+    ]
+  },
+  {
+    "id": "soloR/default",
+    "engine": "D",
+    "original": false,
+    "mode": "full_processing",
+    "flags": [],
+    "exit": 1,
+    "reached_dsp": false,
+    "reached_scale": false,
+    "final_report": false,
+    "wavs": 0,
+    "aborted_dir": false,
+    "roles": [
+      {
+        "state": "INSUFFICIENT_SIGNAL",
+        "k": null,
+        "channels": {
+          "L": "INSUFFICIENT_SIGNAL",
+          "R": "ALIGNED"
+        }
+      },
+      {
+        "state": "ALIGNED",
+        "k": 0,
+        "channels": {
+          "L": "ALIGNED",
+          "R": "ALIGNED"
+        }
+      }
+    ],
+    "overall": null,
+    "permission_BC": null,
+    "permission_D": [],
+    "trace_error": null,
+    "shifts": []
+  },
+  {
+    "id": "alarma_mudo/default",
+    "engine": "D",
+    "original": false,
+    "mode": "full_processing",
+    "flags": [],
+    "exit": 1,
+    "reached_dsp": false,
+    "reached_scale": false,
+    "final_report": false,
+    "wavs": 0,
+    "aborted_dir": false,
+    "roles": [
+      {
+        "state": "MISALIGNED",
+        "k": null,
+        "channels": {
+          "L": "MISALIGNED",
+          "R": "INSUFFICIENT_SIGNAL"
+        }
+      },
+      {
+        "state": "ALIGNED",
+        "k": 0,
+        "channels": {
+          "L": "ALIGNED",
+          "R": "ALIGNED"
+        }
+      }
+    ],
+    "overall": null,
+    "permission_BC": null,
+    "permission_D": [],
+    "trace_error": null,
+    "shifts": []
+  },
+  {
+    "id": "alarma_mudo/override",
+    "engine": "D",
+    "original": false,
+    "mode": "full_processing",
+    "flags": [
+      "--allow-misaligned"
+    ],
+    "exit": 0,
+    "reached_dsp": true,
+    "reached_scale": true,
+    "final_report": true,
+    "wavs": 2,
+    "aborted_dir": false,
+    "roles": [
+      {
+        "state": "MISALIGNED",
+        "k": null,
+        "channels": {
+          "L": "MISALIGNED",
+          "R": "INSUFFICIENT_SIGNAL"
+        }
+      },
+      {
+        "state": "ALIGNED",
+        "k": 0,
+        "channels": {
+          "L": "ALIGNED",
+          "R": "ALIGNED"
+        }
+      }
+    ],
+    "overall": "fail",
+    "permission_BC": null,
+    "permission_D": [
+      "cli_allow_misaligned"
+    ],
+    "trace_error": null,
+    "shifts": [
+      0
+    ]
+  },
+  {
+    "id": "debil/default",
+    "engine": "D",
+    "original": false,
+    "mode": "full_processing",
+    "flags": [],
+    "exit": 1,
+    "reached_dsp": false,
+    "reached_scale": false,
+    "final_report": false,
+    "wavs": 0,
+    "aborted_dir": false,
+    "roles": [
+      {
+        "state": "MISALIGNED",
+        "k": -763,
+        "channels": {
+          "L": "MISALIGNED",
+          "R": "MISALIGNED"
+        }
+      },
+      {
+        "state": "ALIGNED",
+        "k": 0,
+        "channels": {
+          "L": "ALIGNED",
+          "R": "ALIGNED"
+        }
+      }
+    ],
+    "overall": null,
+    "permission_BC": null,
+    "permission_D": [],
+    "trace_error": null,
+    "shifts": []
+  },
+  {
+    "id": "ruido8/default",
+    "engine": "D",
+    "original": false,
+    "mode": "full_processing",
+    "flags": [],
+    "exit": 1,
+    "reached_dsp": false,
+    "reached_scale": false,
+    "final_report": false,
+    "wavs": 0,
+    "aborted_dir": false,
+    "roles": [
+      {
+        "state": "MISALIGNED",
+        "k": 1541,
+        "channels": {
+          "L": "MISALIGNED",
+          "R": "MISALIGNED"
+        }
+      },
+      {
+        "state": "ALIGNED",
+        "k": 0,
+        "channels": {
+          "L": "ALIGNED",
+          "R": "ALIGNED"
+        }
+      }
+    ],
+    "overall": null,
+    "permission_BC": null,
+    "permission_D": [],
+    "trace_error": null,
+    "shifts": []
+  },
+  {
+    "id": "ruido_menos6/default",
+    "engine": "D",
+    "original": false,
+    "mode": "full_processing",
+    "flags": [],
+    "exit": 0,
+    "reached_dsp": true,
+    "reached_scale": true,
+    "final_report": true,
+    "wavs": 2,
+    "aborted_dir": false,
+    "roles": [
+      {
+        "state": "WARNING",
+        "k": -367,
+        "channels": {
+          "L": "WARNING",
+          "R": "WARNING"
+        }
+      },
+      {
+        "state": "ALIGNED",
+        "k": 0,
+        "channels": {
+          "L": "ALIGNED",
+          "R": "ALIGNED"
+        }
+      }
+    ],
+    "overall": "pass_with_warnings",
+    "permission_BC": null,
+    "permission_D": [],
+    "trace_error": null,
+    "shifts": [
+      0
+    ]
+  },
+  {
+    "id": "circular/default",
+    "engine": "D",
+    "original": false,
+    "mode": "full_processing",
+    "flags": [],
+    "exit": 1,
+    "reached_dsp": false,
+    "reached_scale": false,
+    "final_report": false,
+    "wavs": 0,
+    "aborted_dir": false,
+    "roles": [
+      {
+        "state": "AMBIGUOUS",
+        "k": null,
+        "channels": {
+          "L": "AMBIGUOUS",
+          "R": "AMBIGUOUS"
+        }
+      },
+      {
+        "state": "AMBIGUOUS",
+        "k": null,
+        "channels": {
+          "L": "AMBIGUOUS",
+          "R": "AMBIGUOUS"
+        }
+      }
+    ],
+    "overall": null,
+    "permission_BC": null,
+    "permission_D": [],
+    "trace_error": null,
+    "shifts": []
+  },
+  {
+    "id": "circular/override",
+    "engine": "D",
+    "original": false,
+    "mode": "full_processing",
+    "flags": [
+      "--allow-misaligned"
+    ],
+    "exit": 0,
+    "reached_dsp": true,
+    "reached_scale": true,
+    "final_report": true,
+    "wavs": 2,
+    "aborted_dir": false,
+    "roles": [
+      {
+        "state": "AMBIGUOUS",
+        "k": null,
+        "channels": {
+          "L": "AMBIGUOUS",
+          "R": "AMBIGUOUS"
+        }
+      },
+      {
+        "state": "AMBIGUOUS",
+        "k": null,
+        "channels": {
+          "L": "AMBIGUOUS",
+          "R": "AMBIGUOUS"
+        }
+      }
+    ],
+    "overall": "fail",
+    "permission_BC": null,
+    "permission_D": [
+      "cli_allow_misaligned"
+    ],
+    "trace_error": null,
+    "shifts": [
+      0
+    ]
+  },
+  {
+    "id": "rep_igual/default",
+    "engine": "D",
+    "original": false,
+    "mode": "full_processing",
+    "flags": [],
+    "exit": 0,
+    "reached_dsp": true,
+    "reached_scale": true,
+    "final_report": true,
+    "wavs": 2,
+    "aborted_dir": false,
+    "roles": [
+      {
+        "state": "ALIGNED",
+        "k": 0,
+        "channels": {
+          "L": "ALIGNED",
+          "R": "ALIGNED"
+        }
+      },
+      {
+        "state": "ALIGNED",
+        "k": 0,
+        "channels": {
+          "L": "ALIGNED",
+          "R": "ALIGNED"
+        }
+      }
+    ],
+    "overall": "pass",
+    "permission_BC": null,
+    "permission_D": [],
+    "trace_error": null,
+    "shifts": [
+      0
+    ]
+  },
+  {
+    "id": "rep_035/default",
+    "engine": "D",
+    "original": false,
+    "mode": "full_processing",
+    "flags": [],
+    "exit": 0,
+    "reached_dsp": true,
+    "reached_scale": true,
+    "final_report": true,
+    "wavs": 2,
+    "aborted_dir": false,
+    "roles": [
+      {
+        "state": "ALIGNED",
+        "k": 0,
+        "channels": {
+          "L": "ALIGNED",
+          "R": "ALIGNED"
+        }
+      },
+      {
+        "state": "ALIGNED",
+        "k": 0,
+        "channels": {
+          "L": "ALIGNED",
+          "R": "ALIGNED"
+        }
+      }
+    ],
+    "overall": "pass",
+    "permission_BC": null,
+    "permission_D": [],
+    "trace_error": null,
+    "shifts": [
+      0
+    ]
+  },
+  {
+    "id": "rep_165/default",
+    "engine": "D",
+    "original": false,
+    "mode": "full_processing",
+    "flags": [],
+    "exit": 1,
+    "reached_dsp": false,
+    "reached_scale": false,
+    "final_report": false,
+    "wavs": 0,
+    "aborted_dir": false,
+    "roles": [
+      {
+        "state": "MISALIGNED",
+        "k": 2849,
+        "channels": {
+          "L": "MISALIGNED",
+          "R": "MISALIGNED"
+        }
+      },
+      {
+        "state": "ALIGNED",
+        "k": 0,
+        "channels": {
+          "L": "ALIGNED",
+          "R": "ALIGNED"
+        }
+      }
+    ],
+    "overall": null,
+    "permission_BC": null,
+    "permission_D": [],
+    "trace_error": null,
+    "shifts": []
+  },
+  {
+    "id": "rival_R/default",
+    "engine": "D",
+    "original": false,
+    "mode": "full_processing",
+    "flags": [],
+    "exit": 0,
+    "reached_dsp": true,
+    "reached_scale": true,
+    "final_report": true,
+    "wavs": 2,
+    "aborted_dir": false,
+    "roles": [
+      {
+        "state": "ALIGNED",
+        "k": 0,
+        "channels": {
+          "L": "ALIGNED",
+          "R": "ALIGNED"
+        }
+      },
+      {
+        "state": "ALIGNED",
+        "k": 0,
+        "channels": {
+          "L": "ALIGNED",
+          "R": "ALIGNED"
+        }
+      }
+    ],
+    "overall": "pass",
+    "permission_BC": null,
+    "permission_D": [],
+    "trace_error": null,
+    "shifts": [
+      0
+    ]
+  },
+  {
+    "id": "rival_R/override",
+    "engine": "D",
+    "original": false,
+    "mode": "full_processing",
+    "flags": [
+      "--allow-misaligned"
+    ],
+    "exit": 0,
+    "reached_dsp": true,
+    "reached_scale": true,
+    "final_report": true,
+    "wavs": 2,
+    "aborted_dir": false,
+    "roles": [
+      {
+        "state": "ALIGNED",
+        "k": 0,
+        "channels": {
+          "L": "ALIGNED",
+          "R": "ALIGNED"
+        }
+      },
+      {
+        "state": "ALIGNED",
+        "k": 0,
+        "channels": {
+          "L": "ALIGNED",
+          "R": "ALIGNED"
+        }
+      }
+    ],
+    "overall": "pass",
+    "permission_BC": null,
+    "permission_D": [],
+    "trace_error": null,
+    "shifts": [
+      0
+    ]
+  },
+  {
+    "id": "lateral/default",
+    "engine": "D",
+    "original": false,
+    "mode": "full_processing",
+    "flags": [],
+    "exit": 1,
+    "reached_dsp": false,
+    "reached_scale": false,
+    "final_report": false,
+    "wavs": 0,
+    "aborted_dir": false,
+    "roles": [
+      {
+        "state": "MISALIGNED",
+        "k": 1933,
+        "channels": {
+          "L": "MISALIGNED",
+          "R": "MISALIGNED"
+        }
+      },
+      {
+        "state": "ALIGNED",
+        "k": 0,
+        "channels": {
+          "L": "ALIGNED",
+          "R": "ALIGNED"
+        }
+      }
+    ],
+    "overall": null,
+    "permission_BC": null,
+    "permission_D": [],
+    "trace_error": null,
+    "shifts": []
+  },
+  {
+    "id": "dc/default",
+    "engine": "D",
+    "original": false,
+    "mode": "full_processing",
+    "flags": [],
+    "exit": 1,
+    "reached_dsp": false,
+    "reached_scale": false,
+    "final_report": false,
+    "wavs": 0,
+    "aborted_dir": false,
+    "roles": [
+      {
+        "state": "INSUFFICIENT_SIGNAL",
+        "k": null,
+        "channels": {
+          "L": "INSUFFICIENT_SIGNAL",
+          "R": "INSUFFICIENT_SIGNAL"
+        }
+      },
+      {
+        "state": "ALIGNED",
+        "k": 0,
+        "channels": {
+          "L": "ALIGNED",
+          "R": "ALIGNED"
+        }
+      }
+    ],
+    "overall": null,
+    "permission_BC": null,
+    "permission_D": [],
+    "trace_error": null,
+    "shifts": []
+  },
+  {
+    "id": "dc/override",
+    "engine": "D",
+    "original": false,
+    "mode": "full_processing",
+    "flags": [
+      "--allow-misaligned"
+    ],
+    "exit": 0,
+    "reached_dsp": true,
+    "reached_scale": true,
+    "final_report": true,
+    "wavs": 2,
+    "aborted_dir": false,
+    "roles": [
+      {
+        "state": "INSUFFICIENT_SIGNAL",
+        "k": null,
+        "channels": {
+          "L": "INSUFFICIENT_SIGNAL",
+          "R": "INSUFFICIENT_SIGNAL"
+        }
+      },
+      {
+        "state": "ALIGNED",
+        "k": 0,
+        "channels": {
+          "L": "ALIGNED",
+          "R": "ALIGNED"
+        }
+      }
+    ],
+    "overall": "fail",
+    "permission_BC": null,
+    "permission_D": [
+      "cli_allow_misaligned"
+    ],
+    "trace_error": null,
+    "shifts": [
+      0
+    ]
+  },
+  {
+    "id": "sin_relacion/default",
+    "engine": "D",
+    "original": false,
+    "mode": "full_processing",
+    "flags": [],
+    "exit": 1,
+    "reached_dsp": false,
+    "reached_scale": false,
+    "final_report": false,
+    "wavs": 0,
+    "aborted_dir": false,
+    "roles": [
+      {
+        "state": "INSUFFICIENT_SIGNAL",
+        "k": null,
+        "channels": {
+          "L": "INSUFFICIENT_SIGNAL",
+          "R": "INSUFFICIENT_SIGNAL"
+        }
+      },
+      {
+        "state": "ALIGNED",
+        "k": 0,
+        "channels": {
+          "L": "ALIGNED",
+          "R": "ALIGNED"
+        }
+      }
+    ],
+    "overall": null,
+    "permission_BC": null,
+    "permission_D": [],
+    "trace_error": null,
+    "shifts": []
+  },
+  {
+    "id": "corta/default",
+    "engine": "D",
+    "original": false,
+    "mode": "full_processing",
+    "flags": [],
+    "exit": 1,
+    "reached_dsp": false,
+    "reached_scale": false,
+    "final_report": false,
+    "wavs": 0,
+    "aborted_dir": false,
+    "roles": [
+      {
+        "state": "MISALIGNED",
+        "k": null,
+        "channels": {
+          "L": "MISALIGNED",
+          "R": "MISALIGNED"
+        }
+      },
+      {
+        "state": "ALIGNED",
+        "k": 0,
+        "channels": {
+          "L": "ALIGNED",
+          "R": "ALIGNED"
+        }
+      }
+    ],
+    "overall": null,
+    "permission_BC": null,
+    "permission_D": [],
+    "trace_error": null,
+    "shifts": []
+  },
+  {
+    "id": "larga/default",
+    "engine": "D",
+    "original": false,
+    "mode": "full_processing",
+    "flags": [],
+    "exit": 1,
+    "reached_dsp": false,
+    "reached_scale": false,
+    "final_report": false,
+    "wavs": 0,
+    "aborted_dir": false,
+    "roles": [
+      {
+        "state": "MISALIGNED",
+        "k": 825,
+        "channels": {
+          "L": "MISALIGNED",
+          "R": "MISALIGNED"
+        }
+      },
+      {
+        "state": "ALIGNED",
+        "k": 0,
+        "channels": {
+          "L": "ALIGNED",
+          "R": "ALIGNED"
+        }
+      }
+    ],
+    "overall": null,
+    "permission_BC": null,
+    "permission_D": [],
+    "trace_error": null,
+    "shifts": []
+  },
+  {
+    "id": "interior_vacio/default",
+    "engine": "D",
+    "original": false,
+    "mode": "full_processing",
+    "flags": [],
+    "exit": 1,
+    "reached_dsp": false,
+    "reached_scale": false,
+    "final_report": false,
+    "wavs": 0,
+    "aborted_dir": false,
+    "roles": [
+      {
+        "state": "MISALIGNED",
+        "k": null,
+        "channels": {
+          "L": "MISALIGNED",
+          "R": "MISALIGNED"
+        }
+      },
+      {
+        "state": "ALIGNED",
+        "k": 0,
+        "channels": {
+          "L": "ALIGNED",
+          "R": "ALIGNED"
+        }
+      }
+    ],
+    "overall": null,
+    "permission_BC": null,
+    "permission_D": [],
+    "trace_error": null,
+    "shifts": []
+  },
+  {
+    "id": "dos_tramos/default",
+    "engine": "D",
+    "original": false,
+    "mode": "full_processing",
+    "flags": [],
+    "exit": 1,
+    "reached_dsp": false,
+    "reached_scale": false,
+    "final_report": false,
+    "wavs": 0,
+    "aborted_dir": false,
+    "roles": [
+      {
+        "state": "MISALIGNED",
+        "k": 1213,
+        "channels": {
+          "L": "MISALIGNED",
+          "R": "MISALIGNED"
+        }
+      },
+      {
+        "state": "ALIGNED",
+        "k": 0,
+        "channels": {
+          "L": "ALIGNED",
+          "R": "ALIGNED"
+        }
+      }
+    ],
+    "overall": null,
+    "permission_BC": null,
+    "permission_D": [],
+    "trace_error": null,
+    "shifts": []
+  },
+  {
+    "id": "invalida_L/default",
+    "engine": "D",
+    "original": false,
+    "mode": "full_processing",
+    "flags": [],
+    "exit": 1,
+    "reached_dsp": false,
+    "reached_scale": false,
+    "final_report": false,
+    "wavs": 0,
+    "aborted_dir": false,
+    "roles": [
+      {
+        "state": "ERROR",
+        "k": null,
+        "channels": {
+          "L": "ERROR",
+          "R": "ALIGNED"
+        }
+      },
+      {
+        "state": "ALIGNED",
+        "k": 0,
+        "channels": {
+          "L": "ALIGNED",
+          "R": "ALIGNED"
+        }
+      }
+    ],
+    "overall": null,
+    "permission_BC": null,
+    "permission_D": [],
+    "trace_error": null,
+    "shifts": []
+  },
+  {
+    "id": "invalida_L/override",
+    "engine": "D",
+    "original": false,
+    "mode": "full_processing",
+    "flags": [
+      "--allow-misaligned"
+    ],
+    "exit": 1,
+    "reached_dsp": false,
+    "reached_scale": false,
+    "final_report": false,
+    "wavs": 0,
+    "aborted_dir": false,
+    "roles": [
+      {
+        "state": "ERROR",
+        "k": null,
+        "channels": {
+          "L": "ERROR",
+          "R": "ALIGNED"
+        }
+      },
+      {
+        "state": "ALIGNED",
+        "k": 0,
+        "channels": {
+          "L": "ALIGNED",
+          "R": "ALIGNED"
+        }
+      }
+    ],
+    "overall": null,
+    "permission_BC": null,
+    "permission_D": [],
+    "trace_error": null,
+    "shifts": []
+  },
+  {
+    "id": "fault_missing/default",
+    "engine": "D",
+    "original": false,
+    "mode": "full_processing",
+    "flags": [],
+    "exit": 1,
+    "reached_dsp": false,
+    "reached_scale": false,
+    "final_report": false,
+    "wavs": 0,
+    "aborted_dir": false,
+    "roles": [],
+    "overall": null,
+    "permission_BC": null,
+    "permission_D": [],
+    "trace_error": null,
+    "shifts": []
+  },
+  {
+    "id": "fault_missing/override",
+    "engine": "D",
+    "original": false,
+    "mode": "full_processing",
+    "flags": [
+      "--allow-misaligned"
+    ],
+    "exit": 1,
+    "reached_dsp": false,
+    "reached_scale": false,
+    "final_report": false,
+    "wavs": 0,
+    "aborted_dir": false,
+    "roles": [],
+    "overall": null,
+    "permission_BC": null,
+    "permission_D": [],
+    "trace_error": null,
+    "shifts": []
+  },
+  {
+    "id": "fault_header/default",
+    "engine": "D",
+    "original": false,
+    "mode": "full_processing",
+    "flags": [],
+    "exit": 1,
+    "reached_dsp": false,
+    "reached_scale": false,
+    "final_report": false,
+    "wavs": 0,
+    "aborted_dir": false,
+    "roles": [],
+    "overall": null,
+    "permission_BC": null,
+    "permission_D": [],
+    "trace_error": null,
+    "shifts": []
+  },
+  {
+    "id": "fault_header/override",
+    "engine": "D",
+    "original": false,
+    "mode": "full_processing",
+    "flags": [
+      "--allow-misaligned"
+    ],
+    "exit": 1,
+    "reached_dsp": false,
+    "reached_scale": false,
+    "final_report": false,
+    "wavs": 0,
+    "aborted_dir": false,
+    "roles": [],
+    "overall": null,
+    "permission_BC": null,
+    "permission_D": [],
+    "trace_error": null,
+    "shifts": []
+  },
+  {
+    "id": "fault_truncated/default",
+    "engine": "D",
+    "original": false,
+    "mode": "full_processing",
+    "flags": [],
+    "exit": 0,
+    "reached_dsp": true,
+    "reached_scale": true,
+    "final_report": true,
+    "wavs": 2,
+    "aborted_dir": false,
+    "roles": [
+      {
+        "state": "ALIGNED",
+        "k": 0,
+        "channels": {
+          "L": "ALIGNED",
+          "R": "ALIGNED"
+        }
+      },
+      {
+        "state": "ALIGNED",
+        "k": 0,
+        "channels": {
+          "L": "ALIGNED",
+          "R": "ALIGNED"
+        }
+      }
+    ],
+    "overall": "pass_with_warnings",
+    "permission_BC": null,
+    "permission_D": [],
+    "trace_error": null,
+    "shifts": [
+      0
+    ]
+  },
+  {
+    "id": "fault_truncated/override",
+    "engine": "D",
+    "original": false,
+    "mode": "full_processing",
+    "flags": [
+      "--allow-misaligned"
+    ],
+    "exit": 0,
+    "reached_dsp": true,
+    "reached_scale": true,
+    "final_report": true,
+    "wavs": 2,
+    "aborted_dir": false,
+    "roles": [
+      {
+        "state": "ALIGNED",
+        "k": 0,
+        "channels": {
+          "L": "ALIGNED",
+          "R": "ALIGNED"
+        }
+      },
+      {
+        "state": "ALIGNED",
+        "k": 0,
+        "channels": {
+          "L": "ALIGNED",
+          "R": "ALIGNED"
+        }
+      }
+    ],
+    "overall": "pass_with_warnings",
+    "permission_BC": null,
+    "permission_D": [],
+    "trace_error": null,
+    "shifts": [
+      0
+    ]
+  },
+  {
+    "id": "fault_race/default",
+    "engine": "D",
+    "original": false,
+    "mode": "full_processing",
+    "flags": [],
+    "exit": 1,
+    "reached_dsp": false,
+    "reached_scale": false,
+    "final_report": false,
+    "wavs": 0,
+    "aborted_dir": false,
+    "roles": [
+      {
+        "state": "ERROR",
+        "k": null,
+        "channels": {
+          "L": "ERROR",
+          "R": "ERROR"
+        }
+      },
+      {
+        "state": "ALIGNED",
+        "k": 0,
+        "channels": {
+          "L": "ALIGNED",
+          "R": "ALIGNED"
+        }
+      }
+    ],
+    "overall": null,
+    "permission_BC": null,
+    "permission_D": [],
+    "trace_error": null,
+    "shifts": []
+  },
+  {
+    "id": "fault_race/override",
+    "engine": "D",
+    "original": false,
+    "mode": "full_processing",
+    "flags": [
+      "--allow-misaligned"
+    ],
+    "exit": 1,
+    "reached_dsp": false,
+    "reached_scale": false,
+    "final_report": false,
+    "wavs": 0,
+    "aborted_dir": false,
+    "roles": [
+      {
+        "state": "ERROR",
+        "k": null,
+        "channels": {
+          "L": "ERROR",
+          "R": "ERROR"
+        }
+      },
+      {
+        "state": "ALIGNED",
+        "k": 0,
+        "channels": {
+          "L": "ALIGNED",
+          "R": "ALIGNED"
+        }
+      }
+    ],
+    "overall": null,
+    "permission_BC": null,
+    "permission_D": [],
+    "trace_error": null,
+    "shifts": []
+  },
+  {
+    "id": "interactive/si",
+    "engine": "D",
+    "original": false,
+    "mode": "full_processing",
+    "flags": [],
+    "exit": 0,
+    "reached_dsp": true,
+    "reached_scale": true,
+    "final_report": true,
+    "wavs": 2,
+    "aborted_dir": false,
+    "roles": [
+      {
+        "state": "MISALIGNED",
+        "k": 1529,
+        "channels": {
+          "L": "MISALIGNED",
+          "R": "MISALIGNED"
+        }
+      },
+      {
+        "state": "ALIGNED",
+        "k": 0,
+        "channels": {
+          "L": "ALIGNED",
+          "R": "ALIGNED"
+        }
+      }
+    ],
+    "overall": "fail",
+    "permission_BC": null,
+    "permission_D": [
+      "interactive_confirmation"
+    ],
+    "trace_error": null,
+    "shifts": [
+      0
+    ]
+  },
+  {
+    "id": "interactive/no",
+    "engine": "D",
+    "original": false,
+    "mode": "full_processing",
+    "flags": [],
+    "exit": 1,
+    "reached_dsp": false,
+    "reached_scale": false,
+    "final_report": false,
+    "wavs": 0,
+    "aborted_dir": false,
+    "roles": [
+      {
+        "state": "MISALIGNED",
+        "k": 1529,
+        "channels": {
+          "L": "MISALIGNED",
+          "R": "MISALIGNED"
+        }
+      },
+      {
+        "state": "ALIGNED",
+        "k": 0,
+        "channels": {
+          "L": "ALIGNED",
+          "R": "ALIGNED"
+        }
+      }
+    ],
+    "overall": null,
+    "permission_BC": null,
+    "permission_D": [],
+    "trace_error": null,
+    "shifts": []
+  },
+  {
+    "id": "dry_not_audit",
+    "engine": "D",
+    "original": false,
+    "mode": "dry_run",
+    "flags": [],
+    "exit": 0,
+    "reached_dsp": false,
+    "reached_scale": false,
+    "final_report": false,
+    "wavs": 0,
+    "aborted_dir": false,
+    "roles": [],
+    "overall": null,
+    "permission_BC": null,
+    "permission_D": [],
+    "trace_error": null,
+    "shifts": []
+  }
+]

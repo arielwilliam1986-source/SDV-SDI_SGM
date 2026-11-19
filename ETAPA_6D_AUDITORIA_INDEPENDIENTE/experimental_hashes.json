@@ -1,0 +1,26 @@
+{
+  "commit_6C": "00979914d77870f2151bc9ea8af4bd60e2df524b",
+  "engines": {
+    "B": {
+      "path": "ETAPA_6C_CORRECCION_EXPERIMENTAL/motores/MOTOR_SEP_SDV-SDI_v3.1.1_Hardened_Final.py",
+      "sha256": "48b423c4a97672b61ae437cc3fca441fc4a50fde667865f5627caf08e0bd3137",
+      "bytes": 95968,
+      "blob": "1b4dd9a1e95430c13cd1c9b874f7ecab74d2d973",
+      "input_sha256": "5141fb5005656db1f6b2ede6165dbc77e6f74375a77e9db2570e69d8c6409dbd"
+    },
+    "C": {
+      "path": "ETAPA_6C_CORRECCION_EXPERIMENTAL/motores/MOTOR_SEP_SDV-SDI_EVO.py",
+      "sha256": "27e478751920f502744100432141bfb02f57dd42b43b962d27805e0893166610",
+      "bytes": 102295,
+      "blob": "486b1b97652ac7fd425aeb57b00a35dc3a5b3484",
+      "input_sha256": "003e698e187b6d6286c39a4f461e924420544ee4bf59c0b66a72258efc35774f"
+    },
+    "D": {
+      "path": "ETAPA_6C_CORRECCION_EXPERIMENTAL/motores/sdv_sdi_mqr_engine.py",
+      "sha256": "9962d4993723b9ec1b6470d200536198447c1cd1b259f1f1a7c32a7ceefbcf8f",
+      "bytes": 158254,
+      "blob": "598b7917afaf7cc0e7fdc8ba3f773deb846233a8",
+      "input_sha256": "5990ebe41177b62c57290a7b95a4a0408774878a7217341c40ab87d53737a479"
+    }
+  }
+}

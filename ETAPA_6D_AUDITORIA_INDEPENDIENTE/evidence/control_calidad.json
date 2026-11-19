@@ -1,0 +1,401 @@
+{
+  "engines": {
+    "B": {
+      "protected_ast": {
+        "identical": [
+          "CandidateMetrics",
+          "CandidateRunner",
+          "Colors",
+          "FileInfo",
+          "FramePlan",
+          "GlobalMaskAccum",
+          "IPDAccum",
+          "OlaStream",
+          "OnsetAccum",
+          "PairMeta",
+          "PairwiseAccum",
+          "PearsonAccum",
+          "StereoAccum",
+          "Tee",
+          "TruePeakStream",
+          "_decimate_block_mean",
+          "_fmt",
+          "_moving_rms",
+          "_nominal_bit_depth",
+          "_open_memmap",
+          "analyze_guide_scale",
+          "apply_sfumato_smoothing",
+          "build_band_masks",
+          "close_tee",
+          "compute_vocal_mask",
+          "confidence_and_disagreement",
+          "consensus_from_masks",
+          "create_run_dir",
+          "fmt_size",
+          "init_tee",
+          "interactive_collect_inputs",
+          "json_safe",
+          "load_manifest",
+          "log",
+          "main",
+          "mask_stats_stream_finalize",
+          "mask_stats_stream_init",
+          "mask_stats_stream_update",
+          "mono_downmix",
+          "next_pow2",
+          "post_wav_identity",
+          "probe_file",
+          "read_span",
+          "safe_name",
+          "sha256_file",
+          "stft_span_frames",
+          "stream_level_stats",
+          "utc_now_iso",
+          "validate_guide",
+          "validate_mix",
+          "write_pngs",
+          "write_reports"
+        ],
+        "changed": [
+          "analyze_alignment",
+          "build_arg_parser",
+          "run_experiment",
+          "write_analysis_txt"
+        ],
+        "added": [
+          "_alignment_line",
+          "_alignment_spans",
+          "_combine",
+          "_decision",
+          "_lag_curve",
+          "_measure_window",
+          "_peaks",
+          "_severity"
+        ],
+        "removed": [
+          "_aligned_pair",
+          "_ncc_fft_coarse",
+          "_pearson",
+          "_refine_alignment"
+        ]
+      },
+      "raw_matches_archived_roles": {
+        "6C": 30,
+        "original": 26
+      },
+      "detectors": {
+        "counts": {
+          "python_warnings": 0,
+          "native_calls": 168,
+          "candidate_checks": 1220,
+          "A_direct_Pearsons": 58,
+          "A_curves": 16,
+          "A_bins": 2976752
+        },
+        "max_native_vs_fftconvolve": 1.1102230246251565e-15,
+        "max_proposal_vs_direct": 4.285460875053104e-14
+      },
+      "cli": {
+        "counts": {
+          "ran": 51
+        },
+        "exit": {
+          "1": 30,
+          "0": 21
+        },
+        "progress": {
+          "no_dsp": 31,
+          "dsp": 20
+        }
+      },
+      "dsp": {
+        "counts": {
+          "same_6C_output_pairs": 10,
+          "complete": 6,
+          "tensor_hashes": 344,
+          "direct_tensor_comparisons": 206
+        },
+        "sign_residual_max_error": [
+          0.0,
+          0.0
+        ],
+        "unequal_file_hashes_with_equal_pcm": 12
+      }
+    },
+    "C": {
+      "protected_ast": {
+        "identical": [
+          "CandidateMetrics",
+          "CandidateRunner",
+          "Colors",
+          "FileInfo",
+          "FramePlan",
+          "GlobalMaskAccum",
+          "IPDAccum",
+          "OlaStream",
+          "OnsetAccum",
+          "PairMeta",
+          "PairwiseAccum",
+          "PearsonAccum",
+          "StereoAccum",
+          "Tee",
+          "TruePeakStream",
+          "_decimate_block_mean",
+          "_fmt",
+          "_moving_rms",
+          "_nominal_bit_depth",
+          "_open_memmap",
+          "analyze_guide_scale",
+          "apply_sfumato_smoothing",
+          "build_band_masks",
+          "close_tee",
+          "compute_vocal_mask",
+          "confidence_and_disagreement",
+          "consensus_from_masks",
+          "create_run_dir",
+          "fmt_size",
+          "init_tee",
+          "interactive_collect_inputs",
+          "json_safe",
+          "load_manifest",
+          "log",
+          "main",
+          "mask_stats_stream_finalize",
+          "mask_stats_stream_init",
+          "mask_stats_stream_update",
+          "mono_downmix",
+          "next_pow2",
+          "post_wav_identity",
+          "probe_file",
+          "read_span",
+          "safe_name",
+          "sha256_file",
+          "stft_span_frames",
+          "utc_now_iso",
+          "validate_cal_params",
+          "validate_enums",
+          "validate_guide",
+          "validate_mix",
+          "validate_numeric_params",
+          "validate_pair_uniqueness",
+          "write_pngs",
+          "write_reports"
+        ],
+        "changed": [
+          "analyze_alignment",
+          "build_arg_parser",
+          "run_experiment",
+          "write_analysis_txt"
+        ],
+        "added": [
+          "_alignment_line",
+          "_alignment_spans",
+          "_combine",
+          "_decision",
+          "_lag_curve",
+          "_measure_window",
+          "_peaks",
+          "_severity"
+        ],
+        "removed": [
+          "_aligned_pair",
+          "_ncc_fft_coarse",
+          "_pearson",
+          "_refine_alignment"
+        ]
+      },
+      "raw_matches_archived_roles": {
+        "6C": 30,
+        "original": 26
+      },
+      "detectors": {
+        "counts": {
+          "python_warnings": 0,
+          "native_calls": 168,
+          "candidate_checks": 1298,
+          "A_direct_Pearsons": 58,
+          "A_curves": 16,
+          "A_bins": 1190704
+        },
+        "max_native_vs_fftconvolve": 1.1102230246251565e-15,
+        "max_proposal_vs_direct": 4.285460875053104e-14
+      },
+      "cli": {
+        "counts": {
+          "ran": 51
+        },
+        "exit": {
+          "1": 30,
+          "0": 21
+        },
+        "progress": {
+          "no_dsp": 31,
+          "dsp": 20
+        }
+      },
+      "dsp": {
+        "counts": {
+          "same_6C_output_pairs": 12,
+          "complete": 7,
+          "tensor_hashes": 443,
+          "direct_tensor_comparisons": 260
+        },
+        "sign_residual_max_error": [
+          0.0,
+          0.0
+        ],
+        "unequal_file_hashes_with_equal_pcm": 14
+      }
+    },
+    "D": {
+      "protected_ast": {
+        "identical": [
+          "CandidateMetrics",
+          "CandidateRunner",
+          "FileInfo",
+          "FramePlan",
+          "FreqProfileAccum",
+          "GlobalMaskAccum",
+          "IPDAccum",
+          "OlaStream",
+          "OnsetAccum",
+          "PairMeta",
+          "PairwiseAccum",
+          "PearsonAccum",
+          "StereoAccum",
+          "Tee",
+          "TruePeakStream",
+          "_confirm_interactive",
+          "_decimate_block_mean",
+          "_fmt",
+          "_interactive_mode",
+          "_moving_rms",
+          "_nominal_bit_depth",
+          "_open_memmap",
+          "_prompt_optional",
+          "_prompt_required",
+          "_run_core",
+          "_st_write",
+          "analyze_guide_scale",
+          "apply_optional_smoothing",
+          "build_band_masks",
+          "build_family_comparison",
+          "build_family_inventory",
+          "build_individual_metrics",
+          "build_input_integrity",
+          "build_interpretation",
+          "build_model_agreement",
+          "build_variant_comparison",
+          "build_variant_inventory",
+          "close_tee",
+          "compare_durations",
+          "compute_pairwise_stride",
+          "compute_vocal_mask",
+          "confidence_and_disagreement",
+          "consensus_cross_diffs_finalize",
+          "consensus_cross_diffs_init",
+          "consensus_cross_diffs_update",
+          "consensus_from_masks",
+          "create_run_dir",
+          "fmt_size",
+          "init_tee",
+          "interactive_collect_inputs",
+          "json_safe",
+          "load_manifest",
+          "log",
+          "main",
+          "mask_stats_stream_finalize",
+          "mask_stats_stream_init",
+          "mask_stats_stream_update",
+          "mono_downmix",
+          "next_pow2",
+          "post_wav_identity",
+          "probe_file",
+          "read_span",
+          "read_span_from_array",
+          "safe_name",
+          "sha256_file",
+          "stft_span_frames",
+          "stream_level_stats",
+          "utc_now_iso",
+          "validate_guide",
+          "validate_mix",
+          "write_pngs",
+          "write_reports"
+        ],
+        "changed": [
+          "analyze_alignment",
+          "build_arg_parser",
+          "build_document_meta",
+          "build_validation_status",
+          "run_experiment",
+          "run_self_test",
+          "write_analysis_txt"
+        ],
+        "added": [
+          "_alignment_line",
+          "_alignment_spans",
+          "_combine",
+          "_decision",
+          "_lag_curve",
+          "_measure_window",
+          "_peaks",
+          "_severity"
+        ],
+        "removed": [
+          "_aligned_pair",
+          "_ncc_fft_coarse",
+          "_pearson",
+          "_refine_alignment"
+        ]
+      },
+      "raw_matches_archived_roles": {
+        "6C": 30,
+        "original": 26
+      },
+      "detectors": {
+        "counts": {
+          "python_warnings": 0,
+          "native_calls": 168,
+          "candidate_checks": 1220,
+          "A_direct_Pearsons": 58,
+          "A_curves": 16,
+          "A_bins": 2976752
+        },
+        "max_native_vs_fftconvolve": 1.1102230246251565e-15,
+        "max_proposal_vs_direct": 4.285460875053104e-14
+      },
+      "cli": {
+        "counts": {
+          "ran": 52
+        },
+        "exit": {
+          "1": 30,
+          "0": 22
+        },
+        "progress": {
+          "no_dsp": 31,
+          "dsp": 21
+        }
+      },
+      "dsp": {
+        "counts": {
+          "complete": 5,
+          "tensor_hashes": 359,
+          "direct_tensor_comparisons": 194,
+          "no_PCM_conclusion": 2
+        },
+        "sign_residual_max_error": [
+          0.0,
+          0.0
+        ],
+        "unequal_file_hashes_with_equal_pcm": 10
+      }
+    }
+  },
+  "resource_runs": 36,
+  "matrix_rows": 504,
+  "evidence": "EXPERIMENTAL_RESULT",
+  "status": "CONFIRMADO",
+  "scope": "reproducibilidad de mediciones; no aprobación de motores"
+}

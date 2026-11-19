@@ -1,0 +1,334 @@
+{
+  "unique_wav": 110,
+  "n_dev_reserve_common_inputs": 0,
+  "n_historical_reserve_common_inputs": 0,
+  "cases": {
+    "DEV_cero": {
+      "exact_components": true,
+      "verified_tag_occurrences": 24,
+      "independent_negative_columns": [],
+      "states": {
+        "vocal/L": "ALIGNED",
+        "vocal/R": "ALIGNED",
+        "instrumental/L": "ALIGNED",
+        "instrumental/R": "ALIGNED"
+      },
+      "snr_vs_V_db": null
+    },
+    "DEV_no_cero": {
+      "exact_components": true,
+      "verified_tag_occurrences": 24,
+      "independent_negative_columns": [],
+      "states": {
+        "vocal/L": "MISALIGNED",
+        "vocal/R": "MISALIGNED",
+        "instrumental/L": "ALIGNED",
+        "instrumental/R": "ALIGNED"
+      },
+      "snr_vs_V_db": null
+    },
+    "Z": {
+      "exact_components": true,
+      "verified_tag_occurrences": 24,
+      "independent_negative_columns": [],
+      "states": {
+        "vocal/L": "ALIGNED",
+        "vocal/R": "ALIGNED",
+        "instrumental/L": "ALIGNED",
+        "instrumental/R": "ALIGNED"
+      },
+      "snr_vs_V_db": null
+    },
+    "W": {
+      "exact_components": true,
+      "verified_tag_occurrences": 24,
+      "independent_negative_columns": [],
+      "states": {
+        "vocal/L": "WARNING",
+        "vocal/R": "WARNING",
+        "instrumental/L": "ALIGNED",
+        "instrumental/R": "ALIGNED"
+      },
+      "snr_vs_V_db": null
+    },
+    "M": {
+      "exact_components": true,
+      "verified_tag_occurrences": 24,
+      "independent_negative_columns": [],
+      "states": {
+        "vocal/L": "MISALIGNED",
+        "vocal/R": "MISALIGNED",
+        "instrumental/L": "ALIGNED",
+        "instrumental/R": "ALIGNED"
+      },
+      "snr_vs_V_db": null
+    },
+    "distintos": {
+      "exact_components": true,
+      "verified_tag_occurrences": 24,
+      "independent_negative_columns": [],
+      "states": {
+        "vocal/L": "MISALIGNED",
+        "vocal/R": "MISALIGNED",
+        "instrumental/L": "MISALIGNED",
+        "instrumental/R": "WARNING"
+      },
+      "snr_vs_V_db": null
+    },
+    "swap": {
+      "exact_components": true,
+      "verified_tag_occurrences": 24,
+      "independent_negative_columns": [],
+      "states": {
+        "vocal/L": "MISALIGNED",
+        "vocal/R": "MISALIGNED",
+        "instrumental/L": "WARNING",
+        "instrumental/R": "MISALIGNED"
+      },
+      "snr_vs_V_db": null
+    },
+    "invL": {
+      "exact_components": true,
+      "verified_tag_occurrences": 24,
+      "independent_negative_columns": [],
+      "states": {
+        "vocal/L": "MISALIGNED",
+        "vocal/R": "MISALIGNED",
+        "instrumental/L": "ALIGNED",
+        "instrumental/R": "ALIGNED"
+      },
+      "snr_vs_V_db": null
+    },
+    "soloL": {
+      "exact_components": true,
+      "verified_tag_occurrences": 18,
+      "independent_negative_columns": [],
+      "states": {
+        "vocal/L": "ALIGNED",
+        "vocal/R": "INSUFFICIENT_SIGNAL",
+        "instrumental/L": "ALIGNED",
+        "instrumental/R": "ALIGNED"
+      },
+      "snr_vs_V_db": null
+    },
+    "soloR": {
+      "exact_components": true,
+      "verified_tag_occurrences": 18,
+      "independent_negative_columns": [],
+      "states": {
+        "vocal/L": "INSUFFICIENT_SIGNAL",
+        "vocal/R": "ALIGNED",
+        "instrumental/L": "ALIGNED",
+        "instrumental/R": "ALIGNED"
+      },
+      "snr_vs_V_db": null
+    },
+    "alarma_mudo": {
+      "exact_components": true,
+      "verified_tag_occurrences": 18,
+      "independent_negative_columns": [],
+      "states": {
+        "vocal/L": "MISALIGNED",
+        "vocal/R": "INSUFFICIENT_SIGNAL",
+        "instrumental/L": "ALIGNED",
+        "instrumental/R": "ALIGNED"
+      },
+      "snr_vs_V_db": null
+    },
+    "debil": {
+      "exact_components": true,
+      "verified_tag_occurrences": 24,
+      "independent_negative_columns": [],
+      "states": {
+        "vocal/L": "MISALIGNED",
+        "vocal/R": "MISALIGNED",
+        "instrumental/L": "ALIGNED",
+        "instrumental/R": "ALIGNED"
+      },
+      "snr_vs_V_db": null
+    },
+    "ruido8": {
+      "exact_components": true,
+      "verified_tag_occurrences": 24,
+      "independent_negative_columns": [],
+      "states": {
+        "vocal/L": "MISALIGNED",
+        "vocal/R": "MISALIGNED",
+        "instrumental/L": "ALIGNED",
+        "instrumental/R": "ALIGNED"
+      },
+      "snr_vs_V_db": 8.000000001812463
+    },
+    "ruido_menos6": {
+      "exact_components": true,
+      "verified_tag_occurrences": 24,
+      "independent_negative_columns": [],
+      "states": {
+        "vocal/L": "WARNING",
+        "vocal/R": "WARNING",
+        "instrumental/L": "ALIGNED",
+        "instrumental/R": "ALIGNED"
+      },
+      "snr_vs_V_db": -6.000000000299897
+    },
+    "circular": {
+      "exact_components": true,
+      "verified_tag_occurrences": 0,
+      "independent_negative_columns": [],
+      "states": {
+        "vocal/L": "AMBIGUOUS",
+        "vocal/R": "AMBIGUOUS",
+        "instrumental/L": "AMBIGUOUS",
+        "instrumental/R": "AMBIGUOUS"
+      },
+      "snr_vs_V_db": null
+    },
+    "rep_igual": {
+      "exact_components": true,
+      "verified_tag_occurrences": 24,
+      "independent_negative_columns": [],
+      "states": {
+        "vocal/L": "AMBIGUOUS",
+        "vocal/R": "AMBIGUOUS",
+        "instrumental/L": "ALIGNED",
+        "instrumental/R": "ALIGNED"
+      },
+      "snr_vs_V_db": null
+    },
+    "rep_035": {
+      "exact_components": true,
+      "verified_tag_occurrences": 24,
+      "independent_negative_columns": [],
+      "states": {
+        "vocal/L": "AMBIGUOUS",
+        "vocal/R": "AMBIGUOUS",
+        "instrumental/L": "ALIGNED",
+        "instrumental/R": "ALIGNED"
+      },
+      "snr_vs_V_db": null
+    },
+    "rep_165": {
+      "exact_components": true,
+      "verified_tag_occurrences": 24,
+      "independent_negative_columns": [],
+      "states": {
+        "vocal/L": "AMBIGUOUS",
+        "vocal/R": "AMBIGUOUS",
+        "instrumental/L": "ALIGNED",
+        "instrumental/R": "ALIGNED"
+      },
+      "snr_vs_V_db": null
+    },
+    "rival_R": {
+      "exact_components": true,
+      "verified_tag_occurrences": 24,
+      "independent_negative_columns": [],
+      "states": {
+        "vocal/L": "ALIGNED",
+        "vocal/R": "AMBIGUOUS",
+        "instrumental/L": "ALIGNED",
+        "instrumental/R": "ALIGNED"
+      },
+      "snr_vs_V_db": null
+    },
+    "lateral": {
+      "exact_components": true,
+      "verified_tag_occurrences": 24,
+      "independent_negative_columns": [],
+      "states": {
+        "vocal/L": "MISALIGNED",
+        "vocal/R": "MISALIGNED",
+        "instrumental/L": "ALIGNED",
+        "instrumental/R": "ALIGNED"
+      },
+      "snr_vs_V_db": null
+    },
+    "dc": {
+      "exact_components": true,
+      "verified_tag_occurrences": 12,
+      "independent_negative_columns": [],
+      "states": {
+        "vocal/L": "INSUFFICIENT_SIGNAL",
+        "vocal/R": "INSUFFICIENT_SIGNAL",
+        "instrumental/L": "ALIGNED",
+        "instrumental/R": "ALIGNED"
+      },
+      "snr_vs_V_db": null
+    },
+    "sin_relacion": {
+      "exact_components": true,
+      "verified_tag_occurrences": 12,
+      "independent_negative_columns": [
+        "L",
+        "R"
+      ],
+      "states": {
+        "vocal/L": "INSUFFICIENT_SIGNAL",
+        "vocal/R": "INSUFFICIENT_SIGNAL",
+        "instrumental/L": "ALIGNED",
+        "instrumental/R": "ALIGNED"
+      },
+      "snr_vs_V_db": null
+    },
+    "corta": {
+      "exact_components": true,
+      "verified_tag_occurrences": 24,
+      "independent_negative_columns": [],
+      "states": {
+        "vocal/L": "MISALIGNED",
+        "vocal/R": "MISALIGNED",
+        "instrumental/L": "ALIGNED",
+        "instrumental/R": "ALIGNED"
+      },
+      "snr_vs_V_db": null
+    },
+    "larga": {
+      "exact_components": true,
+      "verified_tag_occurrences": 24,
+      "independent_negative_columns": [],
+      "states": {
+        "vocal/L": "MISALIGNED",
+        "vocal/R": "MISALIGNED",
+        "instrumental/L": "ALIGNED",
+        "instrumental/R": "ALIGNED"
+      },
+      "snr_vs_V_db": null
+    },
+    "interior_vacio": {
+      "exact_components": true,
+      "verified_tag_occurrences": 24,
+      "independent_negative_columns": [],
+      "states": {
+        "vocal/L": "MISALIGNED",
+        "vocal/R": "MISALIGNED",
+        "instrumental/L": "ALIGNED",
+        "instrumental/R": "ALIGNED"
+      },
+      "snr_vs_V_db": null
+    },
+    "dos_tramos": {
+      "exact_components": true,
+      "verified_tag_occurrences": 24,
+      "independent_negative_columns": [],
+      "states": {
+        "vocal/L": "AMBIGUOUS",
+        "vocal/R": "AMBIGUOUS",
+        "instrumental/L": "ALIGNED",
+        "instrumental/R": "ALIGNED"
+      },
+      "snr_vs_V_db": null
+    },
+    "invalida_L": {
+      "exact_components": true,
+      "verified_tag_occurrences": 18,
+      "independent_negative_columns": [],
+      "states": {
+        "vocal/L": "ERROR",
+        "vocal/R": "ALIGNED",
+        "instrumental/L": "ALIGNED",
+        "instrumental/R": "ALIGNED"
+      },
+      "snr_vs_V_db": null
+    }
+  }
+}

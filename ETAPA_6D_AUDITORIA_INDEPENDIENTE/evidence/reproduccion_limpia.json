@@ -1,0 +1,68 @@
+{
+  "scope": "new output root: bank, truth and derivations; native engine timing NOT replayed here",
+  "argv_results": [
+    {
+      "argv": [
+        "/tmp/sdv6d-env/bin/python",
+        "-Bu",
+        "/home/user/SDV-SDI_SGM/ETAPA_6D_AUDITORIA_INDEPENDIENTE/scripts/preflight.py"
+      ],
+      "exit": 0,
+      "stdout": "{'unique': 338, 'bytes': 4033934804, 'all_wav_pcm_L_R_verified': True, 'selected': 42} {'unique': 51, 'bytes': 234424534, 'all_wav_pcm_L_R_verified': True, 'selected': 6}\n",
+      "stderr": ""
+    },
+    {
+      "argv": [
+        "/tmp/sdv6d-env/bin/python",
+        "-Bu",
+        "/home/user/SDV-SDI_SGM/ETAPA_6D_AUDITORIA_INDEPENDIENTE/scripts/bank.py"
+      ],
+      "exit": 0,
+      "stdout": "banco congelado 27 110 9e35280d3a10cab2fa3644ab3f8340ce76f308adc7d89bcca4b65fb6016de256\n",
+      "stderr": ""
+    },
+    {
+      "argv": [
+        "/tmp/sdv6d-env/bin/python",
+        "-Bu",
+        "/home/user/SDV-SDI_SGM/ETAPA_6D_AUDITORIA_INDEPENDIENTE/scripts/origenes.py"
+      ],
+      "exit": 0,
+      "stdout": "dict_keys(['R_dos_origenes', 'R_replica_dominante'])\n",
+      "stderr": ""
+    },
+    {
+      "argv": [
+        "/tmp/sdv6d-env/bin/python",
+        "-Bu",
+        "/home/user/SDV-SDI_SGM/ETAPA_6D_AUDITORIA_INDEPENDIENTE/scripts/oraculo_pcm.py"
+      ],
+      "exit": 0,
+      "stdout": "110 WAV 576 testigos\n",
+      "stderr": ""
+    },
+    {
+      "argv": [
+        "/tmp/sdv6d-env/bin/python",
+        "-Bu",
+        "/home/user/SDV-SDI_SGM/ETAPA_6D_AUDITORIA_INDEPENDIENTE/scripts/consolidar.py"
+      ],
+      "exit": 0,
+      "stdout": "504 filas 126 contextos 246 propuestas/semillas A\n",
+      "stderr": ""
+    }
+  ],
+  "identical_sha256": {
+    "source_hashes.json": "0a5a2773f81f7d4086c174b9cfd13499902b5d10c431fbbaa66e9817b1b7f5ed",
+    "experimental_hashes.json": "655752d29fcb5d9602728857f23c0f2768c227ede7a32f1e2786efc18ce23868",
+    "evidence/preflight.json": "87affbe185fcadb7dfaf261a691ddbbd3aefde5d07bedb6594cbb7527296e19b",
+    "BANCO_RESERVADO_MANIFEST.json": "9e35280d3a10cab2fa3644ab3f8340ce76f308adc7d89bcca4b65fb6016de256",
+    "evidence/banco_6d.tar.xz": "12ce640309fd638d5e57a2863eeefa6fdaaa3dfa625bf8f43b461eece20f531d",
+    "evidence/verdad_doble_origen.json": "fa7215fbd218440809ede0132d5511fa80f6379940300f74b0c9a889834a3ada",
+    "evidence/oraculo_pcm.json": "2f20f016265e62347296d5e10ef348344d5591fd71ac5700eee12730bb34b297",
+    "MATRIZ_RESULTADOS_6D.csv": "45761bede8c959d1bb5f31a9cd3e940a900a73e9873dfeb5f784a4b3f915d5c4",
+    "evidence/desglose.json": "af46583c659c91344f88d364c6d58f210f73123f9d49e51c7d7dc540f695563c",
+    "evidence/cli_por_caso.csv": "5c340ccb0b8920aba5d4c2413ac40bdf5ec2da913e686cfdde2c50be2c91cc11",
+    "evidence/candidatos_A.csv": "7f591c90d434c6648c98adcb26973b694158a34f133cf3b3d445795855f9d312"
+  }
+}

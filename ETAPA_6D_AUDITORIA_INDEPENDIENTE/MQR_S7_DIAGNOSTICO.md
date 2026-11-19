@@ -1,0 +1,25 @@
+# F · S7: el aborto es de la métrica de cresta, no del estimador de reloj
+
+**EXPERIMENTAL_RESULT · CONFIRMADO. Severidad: bloqueante para terminar una corrida afectada.** D original y D experimental interrumpen `full_processing` **después** de ejecutar STFT/máscaras y escribir archivos. En las ejecuciones S7 no hay validación global final, ni PASS ni `fail` calculado por el agregador; hay **exit 2**, `ZeroDivisionError: float division by zero`, directorio `_aborted` con log y dos WAV parciales en el sentido transaccional. Su presencia no significa que la corrida acabó ni autoriza compararlos como entregas. No se alteró la métrica.
+
+## Condición exacta y orden
+
+**DOCUMENTED_FACT · CONFIRMADO.** En [la copia D auditada](../ETAPA_6C_CORRECCION_EXPERIMENTAL/motores/sdv_sdi_mqr_engine.py), `CandidateMetrics.update_time` (1886 y ss.) calcula `sum_sdv2` y `sum_mix2` sobre la **media de canales**; `peak_sdv` y `peak_mix` sobre el máximo absoluto de las matrices multicanal. En `finalize` (2037–2042; 1949 y ss. en [el original](../Proyecto%20SDV-SDI_SGM/sdv_sdi_mqr_engine.py)) se divide `peak / sqrt(sum2/max(n_samples,1))` si `n_samples` es distinto de cero. La guarda protege la longitud, **no** el denominador de la cresta. Con `n_samples>0` y RMS calculado `0.0` hay división Python por cero, incluso si el pico es cero. Con `n_samples=0` esa expresión retorna `None`. Si SDV no falla primero, la expresión de Mix tiene la misma condición. Esto último es lectura de código, no una segunda traza de S7.
+
+`_run_core` llama a `runner.close()` y `runner.metrics.finalize()` antes de `post_wav_identity` y de construir el informe. En la copia: llamada en 2554 y excepción en **crest_factor_sdv**; original: 2469 → 1949. El pipeline captura la excepción, conserva el directorio abortado y devuelve código de procesamiento 2, distinto del veto de entrada 1. `build_validation_status` no se llamó en los abortos observados. Los AST de `CandidateMetrics` coinciden, y los acumuladores se observaron a la **entrada real** de `finalize`.
+
+## Controles de necesidad, material y etapa
+
+**EXPERIMENTAL_RESULT · CONFIRMADO.** Mismo resultado original/copia en cada fila. La política de continuación del original puede requerir permiso donde la copia no lo requiere. Las sumas y picos son del primer candidato observado; no se infiere que todos los candidatos llegaran a finalizar.
+
+| Control | Reloj de la copia (V / I), permiso | RMS Mid Mix o suma; acumuladores | Resultado nativo |
+|---|---|---|---|
+| S5 histórico **S7**, 176 400 frames | AMBIGUOUS / AMBIGUOUS; permiso para llegar a la ruta a investigar | RMS L y R .191964, Mid 0; `sum_sdv2=0`, `peak_sdv=0`, `peak_mix=.330347` | exit 2 en cresta SDV; no informe. Sin permiso ambas versiones dieron **exit 1 antes de escala**, sin llegar a `finalize` ([CLI S7 por defecto](evidence/testigos_cli_original.json.gz)). |
+| `side_aligned`, 88 200 frames, contenido aperiódico con L=−R | ALIGNED / ALIGNED, k=0, **sin** permiso | RMS L/R .016994, Mid 0; `sum_sdv2=0`, `peak_sdv=0`, `peak_mix=.209523` | mismo exit 2. Descarta que sea necesario un diagnóstico ambiguo o un override. |
+| `nonzero_side_output`, Mix side con guías que sí dan máscara vocal | ALIGNED / ALIGNED, **sin** permiso | `sum_sdv2=0`, **`peak_sdv=.183771`** | exit 2 en el mismo cociente. No es necesario que SDV esté muda en ambos canales. |
+| `absent_v_healthy_mix`, vocal realmente ausente | INSUFFICIENT_SIGNAL / ALIGNED, permiso | Mix **no** es side: `sum_mix2=15.1070`; `sum_sdv2=0`, `peak_sdv=0` | mismo exit 2; no es necesario que el **Mix** tenga Mid nulo. |
+| `near_side`, R de las tres entradas reescalada sólo para construir el control, factor .9921875 | ALIGNED / ALIGNED, **sin** permiso | RMS Mid Mix .00006638, `sum_sdv2=.000110981`, `peak_sdv=.183770` | exit 0, validación final ejecutada y `overall=pass` en la copia. |
+
+Fuentes: [índice DSP](evidence/dsp_index.json), [dos versiones y trazas S7/side/near-side](evidence/dsp_D.json.gz), [controles adicionales con acumuladores](evidence/extra_raw.json.gz), [registro histórico S5](../S5_STEREO_VALIDATION/logs/aborto_D_S7_shared.log). Se generó `near_side` como **estímulo distinto** de diagnóstico, no se cambió la ganancia ni la arquitectura del motor. No se introdujo epsilon, se suprimió excepción ni se sustituyó indicador.
+
+**THEORETICAL_DEDUCTION · CONFIRMADO.** Un estéreo no nulo puede ser un WAV válido y una entrada informativa por canal aunque sea degenerado *para una métrica basada en Mid*. Un fallo para material válido y un fallo en una salida ausente tienen aquí la misma causa aritmética. Es una limitación de disponibilidad e integridad del resultado final de MQR, no una regresión de alineación 6C ni prueba de un error en las muestras SDV/SDI completadas de otros casos. **UNKNOWN · UNKNOWN:** prevalencia en otras entradas y comportamiento con formatos/plataformas no ensayados. Requiere decisión específica sobre qué representa una cresta no definida antes de una corrección separadamente autorizada.

@@ -1,0 +1,28 @@
+{
+  "hashes": {
+    "source/A": "a0550a01cefb1095a0086824e1accfe1d7909b717ff1804920ae6c24d8d8487e",
+    "source/B": "5141fb5005656db1f6b2ede6165dbc77e6f74375a77e9db2570e69d8c6409dbd",
+    "source/C": "003e698e187b6d6286c39a4f461e924420544ee4bf59c0b66a72258efc35774f",
+    "source/D": "5990ebe41177b62c57290a7b95a4a0408774878a7217341c40ab87d53737a479",
+    "experimental/B": "48b423c4a97672b61ae437cc3fca441fc4a50fde667865f5627caf08e0bd3137",
+    "experimental/C": "27e478751920f502744100432141bfb02f57dd42b43b962d27805e0893166610",
+    "experimental/D": "9962d4993723b9ec1b6470d200536198447c1cd1b259f1f1a7c32a7ceefbcf8f"
+  },
+  "lists": {
+    "ETAPA_6B_VALIDACION_ALINEACION": {
+      "n": 31,
+      "sha256": "dd77c8fe4e2b6e3eea3493d1b2b76735d473b4bb1d446cd75f6da34b5d2550ce"
+    },
+    "ETAPA_6C_CORRECCION_EXPERIMENTAL": {
+      "n": 40,
+      "sha256": "e7ef377a29007ccd055aa2e539abf7294a715b61e02757d7690c1ed9eaafa0ed"
+    },
+    "S5_STEREO_VALIDATION": {
+      "n": 46,
+      "sha256": "ca686d344174af6a6a157bfa0f6e373b9206b9aa16adaebb7b23dedddf750213"
+    }
+  },
+  "work_wav_verified": 158,
+  "s5_inputs": true,
+  "protected_paths_unchanged_from_RC": true
+}

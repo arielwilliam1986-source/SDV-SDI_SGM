@@ -1,0 +1,94 @@
+{
+  "R_dos_origenes": {
+    "files": {
+      "mix": "6455d85b4df3ee621dca1646be0a9c9bd864d2fd89d4185f424ae2f7bfeedc9d",
+      "vocal0": "29347844b7f9b428e768a1a820b2af7a0075bdef59895b9400038f0ce8bc7dd1",
+      "instrumental0": "693c51102bb433968f36466b995ec84449063691f37f588dd113456d08456ec4",
+      "vocal": "29347844b7f9b428e768a1a820b2af7a0075bdef59895b9400038f0ce8bc7dd1",
+      "instrumental": "693c51102bb433968f36466b995ec84449063691f37f588dd113456d08456ec4"
+    },
+    "seed": 16861559655550275548,
+    "channels": {
+      "L": {
+        "d_origins": [
+          0,
+          -3217
+        ],
+        "recovered_amplitude": 0.9999999996917698,
+        "nominal_reconstruction_amplitude": 1.0,
+        "fit_coefficients": [
+          0.9999999997564613,
+          0.9999999996917693
+        ],
+        "design_rank": 2,
+        "condition_number": 1.0,
+        "joint_max_abs_error": 3.754557748036902e-09,
+        "reconstructed_I0_and_Mix_bit_exact": true
+      },
+      "R": {
+        "d_origins": [
+          0,
+          -3217
+        ],
+        "recovered_amplitude": 1.0,
+        "nominal_reconstruction_amplitude": 1.0,
+        "fit_coefficients": [
+          1.0000000001594747,
+          0.9999999998722136
+        ],
+        "design_rank": 2,
+        "condition_number": 1.003184159811895,
+        "joint_max_abs_error": 3.731297534836919e-09,
+        "reconstructed_I0_and_Mix_bit_exact": true
+      }
+    },
+    "expected_V": "AMBIGUOUS",
+    "expected_I": "ALIGNED"
+  },
+  "R_replica_dominante": {
+    "files": {
+      "mix": "b6d3317bdee5a4320f2daa5acfe79df85a5df20e9c1ce080ec998a3805ebfbf9",
+      "vocal0": "a84ed501e8320b1409dfd32093aa2cfd0721e4a9a6ca2f2326bbae4ab0dc30e8",
+      "instrumental0": "a241aa6b49c3fee890ce5fa13602851c302a7a8a998487c20e56d9bbe6ad927f",
+      "vocal": "a84ed501e8320b1409dfd32093aa2cfd0721e4a9a6ca2f2326bbae4ab0dc30e8",
+      "instrumental": "a241aa6b49c3fee890ce5fa13602851c302a7a8a998487c20e56d9bbe6ad927f"
+    },
+    "seed": 10197374176242934721,
+    "channels": {
+      "L": {
+        "d_origins": [
+          0,
+          -3217
+        ],
+        "recovered_amplitude": 1.7999999515995508,
+        "nominal_reconstruction_amplitude": 1.8,
+        "fit_coefficients": [
+          1.0000000001760985,
+          1.7999999515409897
+        ],
+        "design_rank": 2,
+        "condition_number": 1.00008381176163,
+        "joint_max_abs_error": 1.228532120478576e-08,
+        "reconstructed_I0_and_Mix_bit_exact": true
+      },
+      "R": {
+        "d_origins": [
+          0,
+          -3217
+        ],
+        "recovered_amplitude": 1.7999999513785376,
+        "nominal_reconstruction_amplitude": 1.8,
+        "fit_coefficients": [
+          0.9999999999999999,
+          1.7999999513785365
+        ],
+        "design_rank": 2,
+        "condition_number": 1.0,
+        "joint_max_abs_error": 1.1186792575612614e-08,
+        "reconstructed_I0_and_Mix_bit_exact": true
+      }
+    },
+    "expected_V": "AMBIGUOUS",
+    "expected_I": "ALIGNED"
+  }
+}

@@ -1,0 +1,27 @@
+# Protección de la separación · comparación física pareada
+
+**EXPERIMENTAL_RESULT · NO REPRODUCIDO: cambio de DSP entre cada original y su copia en las rutas completas medidas.** No significa «ninguna regresión» del producto. Sí cambian los diagnósticos, la admisión, el coste y, en algunos casos, la cobertura del reloj. No se validó calidad perceptual.
+
+## Qué se comparó
+
+- Dos procesos frescos, misma entrada y configuración DSP dentro de cada pareja. CLI `full_processing`; donde hizo falta se permitió continuar **sin corregir**. La opción de permiso no se usó como evidencia de alineación. [Argv y pares ensayados](evidence/dsp_index.json) · [observador](scripts/cli_child.py) · [comparador](scripts/dsp.py).
+- Configuración histórica 6C: `n_fft=4096`, `hop=1024`, `chunk_frames=64`, consenso de salida `confidence_weighted_mean`. B/C `power=1.8`, `epsilon=1e−12`, `beta=1`, smoothing `none`; `per_channel/magnitudes_first` en S3, S4, S7, `invL`; en Ppos `mono/masks_first` y `mono/magnitudes_first` **con** `--use-residuals` sólo para la segunda ruta. C también `per_channel/hybrid_asymmetric` en Pneg. D `power=2`, `epsilon=1e−9`, máscara compartida **nativa**, S3, S4, Ppos, S7, `invL`, `side_aligned`, `near_side`. No se simularon en D `mask_mode=per_channel` ni residuales de B/C. Estos parámetros no se sustituyeron ni optimizaron.
+- En cada bloque: SHA, shape y dtype de entradas efectivas de STFT, consensos, máscaras que **llegan** a `update_freq`, STFT compleja de Mix y salidas SDV/SDI. Para entradas, consensos y máscaras: también resta elemento a elemento contra el array original guardado temporalmente. Se verificaron las dos multiplicaciones complejas y la partición de máscaras. Se siguieron los `read_span` efectivamente consumidos, escala/polaridad aplicada y el contenido residual que entra en STFT. No es sólo una comparación de nombres de función o PNG.
+- Se releyeron los dos WAV: misma forma que el Mix, dos columnas, SR=44 100, 88 200 o 176 400 frames (2 o 4 s según caso), FLOAT, finitos. Diferencia máxima y muestras distintas L/R, SHA de PCM intercalado y por canal, relación RMS R/L y `Mix−SDV−SDI` después de escritura. No se descartan las columnas al comprobar reconstrucción.
+
+| Original ↔ copia | Parejas completas / intentadas | Tensores con SHA pareado | También comparados elemento a elemento | Delta máx. tensor / PCM L,R |
+|---|---:|---:|---:|---|
+| Hardened | 6/6 | 344 | 206 | 0 / (0,0) |
+| EVO | 7/7 | 443 | 260 | 0 / (0,0) |
+| MQR | 5/7 | 359 | 194 | 0 / (0,0) sólo en las 5 completas |
+| **Total** | **18/20** | **1146** | **660** | 0 muestras distintas en 36 pares de WAV completos |
+
+**EXPERIMENTAL_RESULT · CONFIRMADO.** En esas 18 parejas: error de las fórmulas `SDV_stft=X·Mv`, `SDI_stft=X·Mi` y de `Mv+Mi=1` igual a 0 en las observaciones; factores y signos iguales a sus originales, **shift consumido 0**. En Ppos residual se observaron 12 entradas residuales por versión de B y de C, con error de fórmula 0; en las rutas directas, ninguna. C ejercitó signos −1 y +1 en Pneg y en `invL`; se verificó que los spans que llegaron al DSP son los mismos que en el original. **No** se afirma que EVO nativo nunca invierta una guía: es su política LS previa, no una inversión impuesta por el signo de la correlación 6C.
+
+Reconstrucción física: el máximo `|Mix−SDV−SDI|` después del WAV fue ≤7.451×10⁻⁹ en las completas; la **diferencia** de ese error entre versiones fue exactamente cero. En S3 B, por ejemplo, la razón RMS R/L de SDV sigue siendo ≈.25; igualdad entre versiones no exige igualdad de L y R entre sí. Los 36 pares de contenedores tienen SHA distintos entre versiones pese al PCM idéntico: no se declaró identidad binaria del archivo. En las 14 parejas completas que tienen ensayo histórico equivalente, coincidieron además los hashes de PCM decodificado en 6D con los publicados en 6C para SDV e SDI (28 comparaciones de parejas de salidas). [QA cruzada](evidence/control_calidad.json).
+
+**EXPERIMENTAL_RESULT · CONFIRMADO.** Las dos parejas D incompletas (S7 y `side_aligned`) abortan **en ambas versiones**; no contribuyen a «cero muestras distintas». [Diagnóstico e influencia en la validación](MQR_S7_DIAGNOSTICO.md). Primarios con tensores/huellas, fórmulas, informes nativos, argv y consola: [B](evidence/dsp_B.json.gz), [C](evidence/dsp_C.json.gz), [D](evidence/dsp_D.json.gz). Los grandes arrays de comparación fueron temporales; no se afirma archivar todas las matrices WAV/STFT de cada salida.
+
+**DOCUMENTED_FACT · CONFIRMADO.** Entre original y copia se comparó el AST de todas las clases/funciones de nivel superior: 52/55/72 definiciones B/C/D iguales. Las listas completas de añadidas, retiradas y modificadas están en la QA. `run_experiment` sí cambia por el consumidor del diagnóstico; no se dedujo igualdad física de ese hecho ni de los SHA de código por sí solos. Se verificaron de nuevo los cuatro originales y las tres copias **después** de medir, más los árboles históricos protegidos, sellos, 158 WAV temporales de los tres bancos y los inputs de S5. [Postcustodia](evidence/postflight.json).
+
+**UNKNOWN · UNKNOWN.** Configuraciones no recorridas, todos los códecs/layouts, smoothing alternativo, todas las duraciones y máquinas, calidad audible y paridad de una salida abortada. No se cambió ni se recomendó cambiar STFT, `power`, `epsilon`, `chunk_frames`, máscaras, consensos, ganancias, normalización, remuestreo, EQ, limitación, polaridad ni alineación del audio.
