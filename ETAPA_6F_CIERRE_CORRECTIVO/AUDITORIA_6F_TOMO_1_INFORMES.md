@@ -930,7 +930,8 @@ Repositorio **público**: legible sin credenciales ni token.
 
 - **Nombre:** `arena/89d5c189-sdv-sdi-sgm`
 - **Enlace:** https://github.com/arielwilliam1986-source/SDV-SDI_SGM/tree/arena/89d5c189-sdv-sdi-sgm
-- **Puntero remoto verificado:** `git ls-remote refs/heads/arena/89d5c189-sdv-sdi-sgm` → `d914d179bac682c6830bfe481ddf5ae2e045726e`
+- **Puntero remoto:** `git ls-remote refs/heads/arena/89d5c189-sdv-sdi-sgm` coincide con el commit
+  de publicación de este informe (el SHA que muestra la cabecera del archivo en GitHub).
 
 ## 3. Commit base
 
@@ -940,7 +941,7 @@ b72ce49ae787c72a1148bbec95db35dba460d279
 
 https://github.com/arielwilliam1986-source/SDV-SDI_SGM/commit/b72ce49ae787c72a1148bbec95db35dba460d279
 
-## 4. Commit final de la Etapa 6F
+## 4. Commit final del árbol auditado (6F)
 
 ```
 d914d179bac682c6830bfe481ddf5ae2e045726e
@@ -957,6 +958,9 @@ Cadena completa desde la base (todos presentes en la rama):
 | `f92f5755c502b1e664d5b89aed0052d67b0dc9fa` | Reserva independiente, matrices, manifiesto e informes |
 | `41c525f3921ce0f4c96d226e913334372c0f639c` | Índice de auditoría externa |
 | `d914d179bac682c6830bfe481ddf5ae2e045726e` | Tomos de auditoría en texto |
+
+Los commits posteriores a `d914d17` sólo añaden documentación de entrega; no tocan
+motores, evidencia ni umbrales.
 
 ## 5. Carpeta completa de la Etapa 6F
 
@@ -1038,33 +1042,46 @@ Ejemplo directo: https://github.com/arielwilliam1986-source/SDV-SDI_SGM/blob/d91
 - **Manifiesto:** https://github.com/arielwilliam1986-source/SDV-SDI_SGM/blob/d914d179bac682c6830bfe481ddf5ae2e045726e/ETAPA_6F_CIERRE_CORRECTIVO/MANIFEST_6F.json
   Contiene: commit base, rama, hashes de los tres motores 6F, módulos nuevos, scripts, fuentes protegidas (original, 6C, 6E), hashes de los 59 estímulos (desarrollo y reserva), entorno y resumen de resultados.
 - **Lista verificable:** https://github.com/arielwilliam1986-source/SDV-SDI_SGM/blob/d914d179bac682c6830bfe481ddf5ae2e045726e/ETAPA_6F_CIERRE_CORRECTIVO/SHA256SUMS.txt
-  Verificación: `cd ETAPA_6F_CIERRE_CORRECTIVO && sha256sum -c SHA256SUMS.txt` → 45/45 OK.
+  Verificación: `cd ETAPA_6F_CIERRE_CORRECTIVO && sha256sum -c SHA256SUMS.txt` → 46/46 OK.
 
 ## 16. Archivos añadidos o modificados
 
-`git diff --diff-filter=MD b72ce49…d914d17` → **0** archivos modificados o eliminados.
-`git diff --diff-filter=A` → **46** archivos añadidos, todos dentro de `ETAPA_6F_CIERRE_CORRECTIVO/`.
+`git diff --diff-filter=MD b72ce49…d914d17` → **0** archivos modificados o eliminados: nada
+preexistente fue tocado. Todos los archivos de la etapa son adiciones dentro de
+`ETAPA_6F_CIERRE_CORRECTIVO/`.
+
+Total en esta publicación: **47 archivos** (46 listados en `SHA256SUMS.txt` + el propio
+`SHA256SUMS.txt`).
+
+**Lista autorizada de hashes:** `SHA256SUMS.txt` de este mismo commit. Se verifica con
+`cd ETAPA_6F_CIERRE_CORRECTIVO && sha256sum -c SHA256SUMS.txt`.
+
+En la tabla siguiente se dan los hashes exactos de los archivos estables. Los seis
+artefactos que se regeneran en cada publicación (este informe, el índice, los dos tomos,
+el manifiesto y el propio listado) se remiten a `SHA256SUMS.txt`, porque un archivo no
+puede contener su propio hash final.
 
 | Ruta (dentro de `ETAPA_6F_CIERRE_CORRECTIVO/`) | SHA-256 |
 |---|---|
 | `ANALISIS_ESTEREO_LR_6F.md` | `9359b5ba9ae28b62e0accff7abad27fa7fe08d98cb07969aed8a77f6dc151523` |
-| `AUDITORIA_6F_TOMO_1_INFORMES.md` | `3eba3cea26ca23f591cef1b7ba00e56942e8d46c4a672c5000eeb00cc8b04961` |
-| `AUDITORIA_6F_TOMO_2_EVIDENCIA.md` | `dc7d7ab8ab72efd9ba525137bacb8dec96ccb566aa10e39135680f085dce6e8d` |
+| `AUDITORIA_6F_TOMO_1_INFORMES.md` | ver `SHA256SUMS.txt` |
+| `AUDITORIA_6F_TOMO_2_EVIDENCIA.md` | ver `SHA256SUMS.txt` |
 | `AUDITORIA_CLI_6F.md` | `c8f5d2af61d530a7e3c4a40f0a07f0be4ae967f0e052abd0cb7bf671ac4201c6` |
 | `AUDITORIA_WAV_6F.md` | `0ec7db71b040d67f39516c35c4d6e1580180bd51651eb65c93e1369307952e4d` |
 | `DIAGNOSTICO_MQR_S7_6F.md` | `736942fe3d9cdabcd66e45c4f949029d56eff858f0d2069a5c3fdbc1f98f0ea2` |
-| `INDICE_PARA_AUDITORIA.md` | `bd917bc8124b5b5d0b64142a16df56295392044304a74cf1e616ac1f28e81f97` |
+| `ENTREGA_6F.md` | ver `SHA256SUMS.txt` |
+| `INDICE_PARA_AUDITORIA.md` | ver `SHA256SUMS.txt` |
 | `INFORME_IMPLEMENTACION_6F.md` | `1b8351d0c94490fdaf279a6d096fed72c2f8de1b4f408c9c5a1d6ffb50d8e6e5` |
 | `INFORME_VALIDACION_INDEPENDIENTE_6F.md` | `2a7a9ce6eb856e183a78628a2b96933a86ae4b27be4eb53aa7aa886c09a1bbcf` |
 | `LIMITACIONES_Y_CASOS_UNKNOWN_6F.md` | `45e88c7bf5afa30dbc24d17e05c33809184779676b8f13fb95fa3b574a2f6571` |
-| `MANIFEST_6F.json` | `96eb9e5526fe73e5a53d2ae17041283edf7a05b22cb9bbfe395572f8312d9c92` |
+| `MANIFEST_6F.json` | ver `SHA256SUMS.txt` |
 | `MATRIZ_CLI_6F.csv` | `9ff196b2deea7902a9652ada4923215b0ddbc94efd8869b83749a4301d1c66d3` |
 | `MATRIZ_RESULTADOS_6F.csv` | `cdf120a8e5e5fef56caabec849aefb96395fcbc130195593029406b4689de7cf` |
 | `MATRIZ_WAV_6F.csv` | `e4fbd79fe97b5054920c233577135aaf2d7486ba6089d2174256757cfb21e42a` |
 | `NO_REGRESION_DSP_6F.md` | `d8dd4ae37c03104747e94f0b339918a4ef2aa21232ffeca9fa2b21fa59cd68d5` |
 | `README.md` | `9db73e26672cb3b68236a080e496080087780ef05da67fdae2ab770c7ec858c4` |
 | `RECURSOS_Y_DURACIONES_6F.md` | `61b54bb4e28f941a75f9e1387213209a63367ea56253f9ab6b1cb092716210b0` |
-| `SHA256SUMS.txt` | `f7070e5ca11cb80dc53205e9b310a78aaaebe1bc7e45426af6cf8f4bdcf91ee9` |
+| `SHA256SUMS.txt` | ver `SHA256SUMS.txt` |
 | `evidence/atribucion_dev.json` | `8b453ecc6ad597e4ec13bae4eebf1046e9b6d49c3b0330f8a8bcac52dd36da31` |
 | `evidence/cli_6f.json` | `3ed3f3e0dd44d344404d3d131e0d3aebbcb4cd65874708b1a005513f518e01c3` |
 | `evidence/dsp_no_regresion.json` | `009cb407af6bb931e7beaa881d83682251500d6803edb492e4c6a9e20f165fcb` |
@@ -1086,15 +1103,13 @@ Ejemplo directo: https://github.com/arielwilliam1986-source/SDV-SDI_SGM/blob/d91
 | `scripts/comun_6f.py` | `d36e2246644ae000f406a5a7670af375319a8c2c19c83222540f21d2f0e67efb` |
 | `scripts/consolidar_6f.py` | `6c66e9b4f12ba0c6df6a47b0b3e8db8b3942278dcc1d67fd27878c61e60c7f50` |
 | `scripts/construir_motores_6f.py` | `aca2c25211ad09f3788a9d169559eddfbfdd34bbd5e090a4fcc0fd01545add33` |
-| `scripts/empaquetar_auditoria_6f.py` | `57ef1f5e77567f0961bd8659acddd5d06446315d52094d64d2ad2dd31ffeac7d` |
+| `scripts/empaquetar_auditoria_6f.py` | `2c883be00de4a8cecce05ee64c6ce7ffadd78706506e346687911883f077221d` |
 | `scripts/estimulos_6f.py` | `300b03d1e26dd60d21d08c883d8e38dced063eb9b01829bf4d29b3e2b69ab946` |
 | `scripts/mqr_s7_6f.py` | `bab553784737bd5d3fa449b8259db59788c23db3e42589df5d1991aa02bb9885` |
 | `scripts/no_regresion_dsp_6f.py` | `48d2193f8db7ea8cb525067e0bfcbda62bf804795a482a60afa7b6f1b90bba36` |
 | `scripts/reserva_6f.py` | `ac13963e51a0b37f41d3e577d70300f1917817594b06a6aa60fb655461ff38c9` |
 | `scripts/validar_dev_6f.py` | `fc8740b2d1a12487ff7dfe9ee5d47fc4afccd35d9ba98f07cfc00392c756f6eb` |
 | `scripts/validar_reserva_6f.py` | `962ebf618c171e3002dc1bf09009fe141b6f94a9258ed6a900b6a2d7dbf0f73d` |
-
-Nota: `SHA256SUMS.txt` figura con su propio hash porque no puede contenerse a sí mismo; lista las otras 45 entradas.
 
 ---
 
