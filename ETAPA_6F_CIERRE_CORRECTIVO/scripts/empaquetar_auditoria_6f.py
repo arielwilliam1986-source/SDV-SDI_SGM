@@ -20,6 +20,7 @@ INFORMES = [
     ('NO_REGRESION_DSP_6F.md', 'No regresión DSP'),
     ('RECURSOS_Y_DURACIONES_6F.md', 'Recursos y duraciones'),
     ('LIMITACIONES_Y_CASOS_UNKNOWN_6F.md', 'Limitaciones y casos fuera de capacidad'),
+    ('ENTREGA_6F.md', 'Informe de entrega para auditoría independiente'),
 ]
 
 CABECERA = """# Etapa 6F · {titulo}

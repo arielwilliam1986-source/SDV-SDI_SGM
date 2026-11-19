@@ -6,7 +6,7 @@ Punto de entrada único para revisión independiente de la etapa 6F.
 
 | Tomo | Contenido | URL raw |
 |---|---|---|
-| 1 | los nueve informes completos + este índice | `https://raw.githubusercontent.com/arielwilliam1986-source/SDV-SDI_SGM/arena/89d5c189-sdv-sdi-sgm/ETAPA_6F_CIERRE_CORRECTIVO/AUDITORIA_6F_TOMO_1_INFORMES.md` |
+| 1 | los nueve informes, este índice y el informe de entrega | `https://raw.githubusercontent.com/arielwilliam1986-source/SDV-SDI_SGM/arena/89d5c189-sdv-sdi-sgm/ETAPA_6F_CIERRE_CORRECTIVO/AUDITORIA_6F_TOMO_1_INFORMES.md` |
 | 2 | hashes, matrices completas (atribución, CLI, WAV) | `https://raw.githubusercontent.com/arielwilliam1986-source/SDV-SDI_SGM/arena/89d5c189-sdv-sdi-sgm/ETAPA_6F_CIERRE_CORRECTIVO/AUDITORIA_6F_TOMO_2_EVIDENCIA.md` |
 
 Ambos tomos se regeneran con `scripts/empaquetar_auditoria_6f.py`. Este índice
@@ -20,6 +20,7 @@ solo no contiene los informes: es un mapa con resumen y advertencias.
 | Congelamiento de implementación | `5d344e1` |
 | Cierre 6F (este árbol) | ver el commit que contiene este índice |
 | Dictamen | **APROBADO CON LIMITACIONES** |
+| Informe de entrega (16 puntos + confirmaciones) | `ENTREGA_6F.md` |
 
 ## Informes
 
