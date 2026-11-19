@@ -5,7 +5,7 @@ REGLAMENTO GENERAL DE AGENTES — SDV-SDI_SGM
 **Proyecto:** SDV-SDI_SGM  
 **Responsable:** Propietario del repositorio  
 **Versión:** 1.1  
-**Estado:** Aprobado por el propietario, pendiente de incorporación a GitHub.
+**Estado:** Aprobado por el propietario, pendiente de revisión e integración en `main` mediante Pull Request.
 
 1. PROPÓSITO Y AUTORIDAD
 
