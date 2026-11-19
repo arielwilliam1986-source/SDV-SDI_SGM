@@ -1,0 +1,2414 @@
+{
+  "rows": [
+    {
+      "engine": "Hardened",
+      "case": "clean",
+      "override": false,
+      "expected_exit": 0,
+      "exit": 0,
+      "n_wavs": 2,
+      "report": true,
+      "attribution": "UNIQUE",
+      "classification": "ALIGNED",
+      "k": 0,
+      "channel_lags": {
+        "L": 0,
+        "R": 0
+      },
+      "permission": null,
+      "gate_verdict": "ALIGNED",
+      "pcm": {
+        "clean-mix SDI.wav": {
+          "sha256": "8bed10ed57f95a289f648bff1d62fd73d999f96af88af1ff3a2ea7e6ecf2ce33",
+          "shape": [
+            44100,
+            2
+          ],
+          "sr": 44100,
+          "finite": true
+        },
+        "clean-mix SDV.wav": {
+          "sha256": "a0796786049e04eb3bf1cf4efa327ab24bb21ea1b009bc3486592abe644472c2",
+          "shape": [
+            44100,
+            2
+          ],
+          "sr": 44100,
+          "finite": true
+        }
+      },
+      "ok": true,
+      "pcm_finite": true,
+      "permission_recorded": false,
+      "action": {
+        "shift_authorized": false,
+        "applied_shift_samples": 0,
+        "polarity_changed": false
+      }
+    },
+    {
+      "engine": "Hardened",
+      "case": "clean",
+      "override": true,
+      "expected_exit": 0,
+      "exit": 0,
+      "n_wavs": 2,
+      "report": true,
+      "attribution": "UNIQUE",
+      "classification": "ALIGNED",
+      "k": 0,
+      "channel_lags": {
+        "L": 0,
+        "R": 0
+      },
+      "permission": null,
+      "gate_verdict": "ALIGNED",
+      "pcm": {
+        "clean-mix SDI.wav": {
+          "sha256": "8bed10ed57f95a289f648bff1d62fd73d999f96af88af1ff3a2ea7e6ecf2ce33",
+          "shape": [
+            44100,
+            2
+          ],
+          "sr": 44100,
+          "finite": true
+        },
+        "clean-mix SDV.wav": {
+          "sha256": "a0796786049e04eb3bf1cf4efa327ab24bb21ea1b009bc3486592abe644472c2",
+          "shape": [
+            44100,
+            2
+          ],
+          "sr": 44100,
+          "finite": true
+        }
+      },
+      "ok": true,
+      "pcm_finite": true,
+      "permission_recorded": false,
+      "action": {
+        "shift_authorized": false,
+        "applied_shift_samples": 0,
+        "polarity_changed": false
+      },
+      "blocked_by_default": false
+    },
+    {
+      "engine": "Hardened",
+      "case": "side",
+      "override": false,
+      "expected_exit": 0,
+      "exit": 0,
+      "n_wavs": 2,
+      "report": true,
+      "attribution": "UNIQUE",
+      "classification": "ALIGNED",
+      "k": 0,
+      "channel_lags": {
+        "L": 0,
+        "R": 0
+      },
+      "permission": null,
+      "gate_verdict": "ALIGNED",
+      "pcm": {
+        "side-mix SDI.wav": {
+          "sha256": "9e20e3289421ef9486f661b4e58766540a926e59468dc0c153e0970d28adaf62",
+          "shape": [
+            44100,
+            2
+          ],
+          "sr": 44100,
+          "finite": true
+        },
+        "side-mix SDV.wav": {
+          "sha256": "bbbf3baab8a5dc22f0ccabe9c9e753a0ec5a58713d6eab66ea37813498a1625a",
+          "shape": [
+            44100,
+            2
+          ],
+          "sr": 44100,
+          "finite": true
+        }
+      },
+      "ok": true,
+      "pcm_finite": true,
+      "permission_recorded": false,
+      "action": {
+        "shift_authorized": false,
+        "applied_shift_samples": 0,
+        "polarity_changed": false
+      }
+    },
+    {
+      "engine": "Hardened",
+      "case": "shift_567",
+      "override": false,
+      "expected_exit": 1,
+      "exit": 1,
+      "n_wavs": 0,
+      "report": false,
+      "attribution": null,
+      "classification": null,
+      "k": null,
+      "channel_lags": null,
+      "permission": null,
+      "gate_verdict": null,
+      "pcm": {},
+      "ok": true,
+      "permission_recorded": false,
+      "action": null
+    },
+    {
+      "engine": "Hardened",
+      "case": "shift_567",
+      "override": true,
+      "expected_exit": 0,
+      "exit": 0,
+      "n_wavs": 2,
+      "report": true,
+      "attribution": "UNIQUE",
+      "classification": "MISALIGNED",
+      "k": -567,
+      "channel_lags": {
+        "L": -567,
+        "R": -567
+      },
+      "permission": "cli_allow_misaligned",
+      "gate_verdict": "ALLOWED_EXPLICIT",
+      "pcm": {
+        "shift_567-mix SDI.wav": {
+          "sha256": "8be3873403270e938e31d37c498272ef132e25b0637435cbe05be0bbae87700b",
+          "shape": [
+            44667,
+            2
+          ],
+          "sr": 44100,
+          "finite": true
+        },
+        "shift_567-mix SDV.wav": {
+          "sha256": "f1f0f5df32b3b5be1e16f5d6dfbc93361c69b53a92a211d3e4dbc631e22c4aa1",
+          "shape": [
+            44667,
+            2
+          ],
+          "sr": 44100,
+          "finite": true
+        }
+      },
+      "ok": true,
+      "pcm_finite": true,
+      "permission_recorded": true,
+      "action": {
+        "shift_authorized": false,
+        "applied_shift_samples": 0,
+        "polarity_changed": false
+      },
+      "blocked_by_default": true
+    },
+    {
+      "engine": "Hardened",
+      "case": "dual_173",
+      "override": false,
+      "expected_exit": 1,
+      "exit": 1,
+      "n_wavs": 0,
+      "report": false,
+      "attribution": null,
+      "classification": null,
+      "k": null,
+      "channel_lags": null,
+      "permission": null,
+      "gate_verdict": null,
+      "pcm": {},
+      "ok": true,
+      "permission_recorded": false,
+      "action": null
+    },
+    {
+      "engine": "Hardened",
+      "case": "dual_173",
+      "override": true,
+      "expected_exit": 0,
+      "exit": 0,
+      "n_wavs": 2,
+      "report": true,
+      "attribution": "AMBIGUOUS",
+      "classification": "AMBIGUOUS",
+      "k": null,
+      "channel_lags": {},
+      "permission": "cli_allow_misaligned",
+      "gate_verdict": "ALLOWED_EXPLICIT",
+      "pcm": {
+        "dual_173-mix SDI.wav": {
+          "sha256": "2d8b03f539beb059000accb3786c9c9cd85ab0fe2943ebe088d4a91052f71c3a",
+          "shape": [
+            44100,
+            2
+          ],
+          "sr": 44100,
+          "finite": true
+        },
+        "dual_173-mix SDV.wav": {
+          "sha256": "a60591561ce859117e5572973b6521a9928166e81ae9c4a138ed2edb5a8521c4",
+          "shape": [
+            44100,
+            2
+          ],
+          "sr": 44100,
+          "finite": true
+        }
+      },
+      "ok": true,
+      "pcm_finite": true,
+      "permission_recorded": true,
+      "action": {
+        "shift_authorized": false,
+        "applied_shift_samples": 0,
+        "polarity_changed": false
+      },
+      "blocked_by_default": true
+    },
+    {
+      "engine": "Hardened",
+      "case": "right_rival_.125",
+      "override": false,
+      "expected_exit": 1,
+      "exit": 1,
+      "n_wavs": 0,
+      "report": false,
+      "attribution": null,
+      "classification": null,
+      "k": null,
+      "channel_lags": null,
+      "permission": null,
+      "gate_verdict": null,
+      "pcm": {},
+      "ok": true,
+      "permission_recorded": false,
+      "action": null
+    },
+    {
+      "engine": "Hardened",
+      "case": "right_rival_.125",
+      "override": true,
+      "expected_exit": 0,
+      "exit": 0,
+      "n_wavs": 2,
+      "report": true,
+      "attribution": "AMBIGUOUS",
+      "classification": "AMBIGUOUS",
+      "k": null,
+      "channel_lags": {
+        "L": 0
+      },
+      "permission": "cli_allow_misaligned",
+      "gate_verdict": "ALLOWED_EXPLICIT",
+      "pcm": {
+        "right_rival_.125-mix SDI.wav": {
+          "sha256": "9abd02f9f357007d0c5a5cb348c564721650ee2c0c7e05bcdddc304b72877f9e",
+          "shape": [
+            44100,
+            2
+          ],
+          "sr": 44100,
+          "finite": true
+        },
+        "right_rival_.125-mix SDV.wav": {
+          "sha256": "e36e0ea169c0d82cba903c4a3a5decf1f9cd6dd61eabb7ca728ce1d9226c87aa",
+          "shape": [
+            44100,
+            2
+          ],
+          "sr": 44100,
+          "finite": true
+        }
+      },
+      "ok": true,
+      "pcm_finite": true,
+      "permission_recorded": true,
+      "action": {
+        "shift_authorized": false,
+        "applied_shift_samples": 0,
+        "polarity_changed": false
+      },
+      "blocked_by_default": true
+    },
+    {
+      "engine": "Hardened",
+      "case": "different_lr",
+      "override": false,
+      "expected_exit": 1,
+      "exit": 1,
+      "n_wavs": 0,
+      "report": false,
+      "attribution": null,
+      "classification": null,
+      "k": null,
+      "channel_lags": null,
+      "permission": null,
+      "gate_verdict": null,
+      "pcm": {},
+      "ok": true,
+      "permission_recorded": false,
+      "action": null
+    },
+    {
+      "engine": "Hardened",
+      "case": "different_lr",
+      "override": true,
+      "expected_exit": 0,
+      "exit": 0,
+      "n_wavs": 2,
+      "report": true,
+      "attribution": "AMBIGUOUS",
+      "classification": "AMBIGUOUS",
+      "k": null,
+      "channel_lags": {
+        "L": 0,
+        "R": 33
+      },
+      "permission": "cli_allow_misaligned",
+      "gate_verdict": "ALLOWED_EXPLICIT",
+      "pcm": {
+        "different_lr-mix SDI.wav": {
+          "sha256": "d993950a887a4918e284dc48136ddfeba17a6bf47103ed8c2b976d9a9f3b8769",
+          "shape": [
+            44100,
+            2
+          ],
+          "sr": 44100,
+          "finite": true
+        },
+        "different_lr-mix SDV.wav": {
+          "sha256": "83f69dd0b5bff69c57c89e8a01a240cff24e883ded03b946366a84596ace3220",
+          "shape": [
+            44100,
+            2
+          ],
+          "sr": 44100,
+          "finite": true
+        }
+      },
+      "ok": true,
+      "pcm_finite": true,
+      "permission_recorded": true,
+      "action": {
+        "shift_authorized": false,
+        "applied_shift_samples": 0,
+        "polarity_changed": false
+      },
+      "blocked_by_default": true
+    },
+    {
+      "engine": "Hardened",
+      "case": "silent",
+      "override": false,
+      "expected_exit": 1,
+      "exit": 1,
+      "n_wavs": 0,
+      "report": false,
+      "attribution": null,
+      "classification": null,
+      "k": null,
+      "channel_lags": null,
+      "permission": null,
+      "gate_verdict": null,
+      "pcm": {},
+      "ok": true,
+      "permission_recorded": false,
+      "action": null
+    },
+    {
+      "engine": "Hardened",
+      "case": "silent",
+      "override": true,
+      "expected_exit": 0,
+      "exit": 0,
+      "n_wavs": 2,
+      "report": true,
+      "attribution": "NON_INFORMATIVE",
+      "classification": "NON_INFORMATIVE",
+      "k": null,
+      "channel_lags": null,
+      "permission": "cli_allow_misaligned",
+      "gate_verdict": "ALLOWED_EXPLICIT",
+      "pcm": {
+        "silent-mix SDI.wav": {
+          "sha256": "dce4176128034d11955f62284dad9a98c15bc2f64767566d99bd6caa3eba1025",
+          "shape": [
+            44100,
+            2
+          ],
+          "sr": 44100,
+          "finite": true
+        },
+        "silent-mix SDV.wav": {
+          "sha256": "bbbf3baab8a5dc22f0ccabe9c9e753a0ec5a58713d6eab66ea37813498a1625a",
+          "shape": [
+            44100,
+            2
+          ],
+          "sr": 44100,
+          "finite": true
+        }
+      },
+      "ok": true,
+      "pcm_finite": true,
+      "permission_recorded": true,
+      "action": {
+        "shift_authorized": false,
+        "applied_shift_samples": 0,
+        "polarity_changed": false
+      },
+      "blocked_by_default": true
+    },
+    {
+      "engine": "Hardened",
+      "case": "nonfinite",
+      "override": false,
+      "expected_exit": 1,
+      "exit": 1,
+      "n_wavs": 0,
+      "report": false,
+      "attribution": null,
+      "classification": null,
+      "k": null,
+      "channel_lags": null,
+      "permission": null,
+      "gate_verdict": null,
+      "pcm": {},
+      "ok": true,
+      "permission_recorded": false,
+      "action": null
+    },
+    {
+      "engine": "Hardened",
+      "case": "nonfinite",
+      "override": true,
+      "expected_exit": 1,
+      "exit": 1,
+      "n_wavs": 0,
+      "report": false,
+      "attribution": null,
+      "classification": null,
+      "k": null,
+      "channel_lags": null,
+      "permission": null,
+      "gate_verdict": null,
+      "pcm": {},
+      "ok": true,
+      "permission_recorded": false,
+      "action": null
+    },
+    {
+      "engine": "Hardened",
+      "case": "truncated",
+      "override": false,
+      "expected_exit": 1,
+      "exit": 1,
+      "n_wavs": 0,
+      "report": false,
+      "attribution": null,
+      "classification": null,
+      "k": null,
+      "channel_lags": null,
+      "permission": null,
+      "gate_verdict": null,
+      "pcm": {},
+      "ok": true,
+      "permission_recorded": false,
+      "action": null
+    },
+    {
+      "engine": "Hardened",
+      "case": "truncated",
+      "override": true,
+      "expected_exit": 1,
+      "exit": 1,
+      "n_wavs": 0,
+      "report": false,
+      "attribution": null,
+      "classification": null,
+      "k": null,
+      "channel_lags": null,
+      "permission": null,
+      "gate_verdict": null,
+      "pcm": {},
+      "ok": true,
+      "permission_recorded": false,
+      "action": null
+    },
+    {
+      "engine": "Hardened",
+      "case": "nan_samples",
+      "override": false,
+      "expected_exit": 1,
+      "exit": 1,
+      "n_wavs": 0,
+      "report": false,
+      "attribution": null,
+      "classification": null,
+      "k": null,
+      "channel_lags": null,
+      "permission": null,
+      "gate_verdict": null,
+      "pcm": {},
+      "ok": true,
+      "permission_recorded": false,
+      "action": null
+    },
+    {
+      "engine": "Hardened",
+      "case": "nan_samples",
+      "override": true,
+      "expected_exit": 1,
+      "exit": 1,
+      "n_wavs": 0,
+      "report": false,
+      "attribution": null,
+      "classification": null,
+      "k": null,
+      "channel_lags": null,
+      "permission": null,
+      "gate_verdict": null,
+      "pcm": {},
+      "ok": true,
+      "permission_recorded": false,
+      "action": null
+    },
+    {
+      "engine": "EVO",
+      "case": "clean",
+      "override": false,
+      "expected_exit": 0,
+      "exit": 0,
+      "n_wavs": 2,
+      "report": true,
+      "attribution": "UNIQUE",
+      "classification": "ALIGNED",
+      "k": 0,
+      "channel_lags": {
+        "L": 0,
+        "R": 0
+      },
+      "permission": null,
+      "gate_verdict": "ALIGNED",
+      "pcm": {
+        "clean-mix SDI.wav": {
+          "sha256": "8bed10ed57f95a289f648bff1d62fd73d999f96af88af1ff3a2ea7e6ecf2ce33",
+          "shape": [
+            44100,
+            2
+          ],
+          "sr": 44100,
+          "finite": true
+        },
+        "clean-mix SDV.wav": {
+          "sha256": "a0796786049e04eb3bf1cf4efa327ab24bb21ea1b009bc3486592abe644472c2",
+          "shape": [
+            44100,
+            2
+          ],
+          "sr": 44100,
+          "finite": true
+        }
+      },
+      "ok": true,
+      "pcm_finite": true,
+      "permission_recorded": false,
+      "action": {
+        "shift_authorized": false,
+        "applied_shift_samples": 0,
+        "polarity_changed": false
+      }
+    },
+    {
+      "engine": "EVO",
+      "case": "clean",
+      "override": true,
+      "expected_exit": 0,
+      "exit": 0,
+      "n_wavs": 2,
+      "report": true,
+      "attribution": "UNIQUE",
+      "classification": "ALIGNED",
+      "k": 0,
+      "channel_lags": {
+        "L": 0,
+        "R": 0
+      },
+      "permission": null,
+      "gate_verdict": "ALIGNED",
+      "pcm": {
+        "clean-mix SDI.wav": {
+          "sha256": "8bed10ed57f95a289f648bff1d62fd73d999f96af88af1ff3a2ea7e6ecf2ce33",
+          "shape": [
+            44100,
+            2
+          ],
+          "sr": 44100,
+          "finite": true
+        },
+        "clean-mix SDV.wav": {
+          "sha256": "a0796786049e04eb3bf1cf4efa327ab24bb21ea1b009bc3486592abe644472c2",
+          "shape": [
+            44100,
+            2
+          ],
+          "sr": 44100,
+          "finite": true
+        }
+      },
+      "ok": true,
+      "pcm_finite": true,
+      "permission_recorded": false,
+      "action": {
+        "shift_authorized": false,
+        "applied_shift_samples": 0,
+        "polarity_changed": false
+      },
+      "blocked_by_default": false
+    },
+    {
+      "engine": "EVO",
+      "case": "side",
+      "override": false,
+      "expected_exit": 0,
+      "exit": 0,
+      "n_wavs": 2,
+      "report": true,
+      "attribution": "UNIQUE",
+      "classification": "ALIGNED",
+      "k": 0,
+      "channel_lags": {
+        "L": 0,
+        "R": 0
+      },
+      "permission": null,
+      "gate_verdict": "ALIGNED",
+      "pcm": {
+        "side-mix SDI.wav": {
+          "sha256": "9e20e3289421ef9486f661b4e58766540a926e59468dc0c153e0970d28adaf62",
+          "shape": [
+            44100,
+            2
+          ],
+          "sr": 44100,
+          "finite": true
+        },
+        "side-mix SDV.wav": {
+          "sha256": "bbbf3baab8a5dc22f0ccabe9c9e753a0ec5a58713d6eab66ea37813498a1625a",
+          "shape": [
+            44100,
+            2
+          ],
+          "sr": 44100,
+          "finite": true
+        }
+      },
+      "ok": true,
+      "pcm_finite": true,
+      "permission_recorded": false,
+      "action": {
+        "shift_authorized": false,
+        "applied_shift_samples": 0,
+        "polarity_changed": false
+      }
+    },
+    {
+      "engine": "EVO",
+      "case": "shift_567",
+      "override": false,
+      "expected_exit": 1,
+      "exit": 1,
+      "n_wavs": 0,
+      "report": false,
+      "attribution": null,
+      "classification": null,
+      "k": null,
+      "channel_lags": null,
+      "permission": null,
+      "gate_verdict": null,
+      "pcm": {},
+      "ok": true,
+      "permission_recorded": false,
+      "action": null
+    },
+    {
+      "engine": "EVO",
+      "case": "shift_567",
+      "override": true,
+      "expected_exit": 0,
+      "exit": 0,
+      "n_wavs": 2,
+      "report": true,
+      "attribution": "UNIQUE",
+      "classification": "MISALIGNED",
+      "k": -567,
+      "channel_lags": {
+        "L": -567,
+        "R": -567
+      },
+      "permission": "cli_allow_misaligned",
+      "gate_verdict": "ALLOWED_EXPLICIT",
+      "pcm": {
+        "shift_567-mix SDI.wav": {
+          "sha256": "8be3873403270e938e31d37c498272ef132e25b0637435cbe05be0bbae87700b",
+          "shape": [
+            44667,
+            2
+          ],
+          "sr": 44100,
+          "finite": true
+        },
+        "shift_567-mix SDV.wav": {
+          "sha256": "f1f0f5df32b3b5be1e16f5d6dfbc93361c69b53a92a211d3e4dbc631e22c4aa1",
+          "shape": [
+            44667,
+            2
+          ],
+          "sr": 44100,
+          "finite": true
+        }
+      },
+      "ok": true,
+      "pcm_finite": true,
+      "permission_recorded": true,
+      "action": {
+        "shift_authorized": false,
+        "applied_shift_samples": 0,
+        "polarity_changed": false
+      },
+      "blocked_by_default": true
+    },
+    {
+      "engine": "EVO",
+      "case": "dual_173",
+      "override": false,
+      "expected_exit": 1,
+      "exit": 1,
+      "n_wavs": 0,
+      "report": false,
+      "attribution": null,
+      "classification": null,
+      "k": null,
+      "channel_lags": null,
+      "permission": null,
+      "gate_verdict": null,
+      "pcm": {},
+      "ok": true,
+      "permission_recorded": false,
+      "action": null
+    },
+    {
+      "engine": "EVO",
+      "case": "dual_173",
+      "override": true,
+      "expected_exit": 0,
+      "exit": 0,
+      "n_wavs": 2,
+      "report": true,
+      "attribution": "AMBIGUOUS",
+      "classification": "AMBIGUOUS",
+      "k": null,
+      "channel_lags": {},
+      "permission": "cli_allow_misaligned",
+      "gate_verdict": "ALLOWED_EXPLICIT",
+      "pcm": {
+        "dual_173-mix SDI.wav": {
+          "sha256": "2d8b03f539beb059000accb3786c9c9cd85ab0fe2943ebe088d4a91052f71c3a",
+          "shape": [
+            44100,
+            2
+          ],
+          "sr": 44100,
+          "finite": true
+        },
+        "dual_173-mix SDV.wav": {
+          "sha256": "a60591561ce859117e5572973b6521a9928166e81ae9c4a138ed2edb5a8521c4",
+          "shape": [
+            44100,
+            2
+          ],
+          "sr": 44100,
+          "finite": true
+        }
+      },
+      "ok": true,
+      "pcm_finite": true,
+      "permission_recorded": true,
+      "action": {
+        "shift_authorized": false,
+        "applied_shift_samples": 0,
+        "polarity_changed": false
+      },
+      "blocked_by_default": true
+    },
+    {
+      "engine": "EVO",
+      "case": "right_rival_.125",
+      "override": false,
+      "expected_exit": 1,
+      "exit": 1,
+      "n_wavs": 0,
+      "report": false,
+      "attribution": null,
+      "classification": null,
+      "k": null,
+      "channel_lags": null,
+      "permission": null,
+      "gate_verdict": null,
+      "pcm": {},
+      "ok": true,
+      "permission_recorded": false,
+      "action": null
+    },
+    {
+      "engine": "EVO",
+      "case": "right_rival_.125",
+      "override": true,
+      "expected_exit": 0,
+      "exit": 0,
+      "n_wavs": 2,
+      "report": true,
+      "attribution": "AMBIGUOUS",
+      "classification": "AMBIGUOUS",
+      "k": null,
+      "channel_lags": {
+        "L": 0
+      },
+      "permission": "cli_allow_misaligned",
+      "gate_verdict": "ALLOWED_EXPLICIT",
+      "pcm": {
+        "right_rival_.125-mix SDI.wav": {
+          "sha256": "9abd02f9f357007d0c5a5cb348c564721650ee2c0c7e05bcdddc304b72877f9e",
+          "shape": [
+            44100,
+            2
+          ],
+          "sr": 44100,
+          "finite": true
+        },
+        "right_rival_.125-mix SDV.wav": {
+          "sha256": "e36e0ea169c0d82cba903c4a3a5decf1f9cd6dd61eabb7ca728ce1d9226c87aa",
+          "shape": [
+            44100,
+            2
+          ],
+          "sr": 44100,
+          "finite": true
+        }
+      },
+      "ok": true,
+      "pcm_finite": true,
+      "permission_recorded": true,
+      "action": {
+        "shift_authorized": false,
+        "applied_shift_samples": 0,
+        "polarity_changed": false
+      },
+      "blocked_by_default": true
+    },
+    {
+      "engine": "EVO",
+      "case": "different_lr",
+      "override": false,
+      "expected_exit": 1,
+      "exit": 1,
+      "n_wavs": 0,
+      "report": false,
+      "attribution": null,
+      "classification": null,
+      "k": null,
+      "channel_lags": null,
+      "permission": null,
+      "gate_verdict": null,
+      "pcm": {},
+      "ok": true,
+      "permission_recorded": false,
+      "action": null
+    },
+    {
+      "engine": "EVO",
+      "case": "different_lr",
+      "override": true,
+      "expected_exit": 0,
+      "exit": 0,
+      "n_wavs": 2,
+      "report": true,
+      "attribution": "AMBIGUOUS",
+      "classification": "AMBIGUOUS",
+      "k": null,
+      "channel_lags": {
+        "L": 0,
+        "R": 33
+      },
+      "permission": "cli_allow_misaligned",
+      "gate_verdict": "ALLOWED_EXPLICIT",
+      "pcm": {
+        "different_lr-mix SDI.wav": {
+          "sha256": "d993950a887a4918e284dc48136ddfeba17a6bf47103ed8c2b976d9a9f3b8769",
+          "shape": [
+            44100,
+            2
+          ],
+          "sr": 44100,
+          "finite": true
+        },
+        "different_lr-mix SDV.wav": {
+          "sha256": "83f69dd0b5bff69c57c89e8a01a240cff24e883ded03b946366a84596ace3220",
+          "shape": [
+            44100,
+            2
+          ],
+          "sr": 44100,
+          "finite": true
+        }
+      },
+      "ok": true,
+      "pcm_finite": true,
+      "permission_recorded": true,
+      "action": {
+        "shift_authorized": false,
+        "applied_shift_samples": 0,
+        "polarity_changed": false
+      },
+      "blocked_by_default": true
+    },
+    {
+      "engine": "EVO",
+      "case": "silent",
+      "override": false,
+      "expected_exit": 1,
+      "exit": 1,
+      "n_wavs": 0,
+      "report": false,
+      "attribution": null,
+      "classification": null,
+      "k": null,
+      "channel_lags": null,
+      "permission": null,
+      "gate_verdict": null,
+      "pcm": {},
+      "ok": true,
+      "permission_recorded": false,
+      "action": null
+    },
+    {
+      "engine": "EVO",
+      "case": "silent",
+      "override": true,
+      "expected_exit": 0,
+      "exit": 0,
+      "n_wavs": 2,
+      "report": true,
+      "attribution": "NON_INFORMATIVE",
+      "classification": "NON_INFORMATIVE",
+      "k": null,
+      "channel_lags": null,
+      "permission": "cli_allow_misaligned",
+      "gate_verdict": "ALLOWED_EXPLICIT",
+      "pcm": {
+        "silent-mix SDI.wav": {
+          "sha256": "dce4176128034d11955f62284dad9a98c15bc2f64767566d99bd6caa3eba1025",
+          "shape": [
+            44100,
+            2
+          ],
+          "sr": 44100,
+          "finite": true
+        },
+        "silent-mix SDV.wav": {
+          "sha256": "bbbf3baab8a5dc22f0ccabe9c9e753a0ec5a58713d6eab66ea37813498a1625a",
+          "shape": [
+            44100,
+            2
+          ],
+          "sr": 44100,
+          "finite": true
+        }
+      },
+      "ok": true,
+      "pcm_finite": true,
+      "permission_recorded": true,
+      "action": {
+        "shift_authorized": false,
+        "applied_shift_samples": 0,
+        "polarity_changed": false
+      },
+      "blocked_by_default": true
+    },
+    {
+      "engine": "EVO",
+      "case": "nonfinite",
+      "override": false,
+      "expected_exit": 1,
+      "exit": 1,
+      "n_wavs": 0,
+      "report": false,
+      "attribution": null,
+      "classification": null,
+      "k": null,
+      "channel_lags": null,
+      "permission": null,
+      "gate_verdict": null,
+      "pcm": {},
+      "ok": true,
+      "permission_recorded": false,
+      "action": null
+    },
+    {
+      "engine": "EVO",
+      "case": "nonfinite",
+      "override": true,
+      "expected_exit": 1,
+      "exit": 1,
+      "n_wavs": 0,
+      "report": false,
+      "attribution": null,
+      "classification": null,
+      "k": null,
+      "channel_lags": null,
+      "permission": null,
+      "gate_verdict": null,
+      "pcm": {},
+      "ok": true,
+      "permission_recorded": false,
+      "action": null
+    },
+    {
+      "engine": "EVO",
+      "case": "truncated",
+      "override": false,
+      "expected_exit": 1,
+      "exit": 1,
+      "n_wavs": 0,
+      "report": false,
+      "attribution": null,
+      "classification": null,
+      "k": null,
+      "channel_lags": null,
+      "permission": null,
+      "gate_verdict": null,
+      "pcm": {},
+      "ok": true,
+      "permission_recorded": false,
+      "action": null
+    },
+    {
+      "engine": "EVO",
+      "case": "truncated",
+      "override": true,
+      "expected_exit": 1,
+      "exit": 1,
+      "n_wavs": 0,
+      "report": false,
+      "attribution": null,
+      "classification": null,
+      "k": null,
+      "channel_lags": null,
+      "permission": null,
+      "gate_verdict": null,
+      "pcm": {},
+      "ok": true,
+      "permission_recorded": false,
+      "action": null
+    },
+    {
+      "engine": "EVO",
+      "case": "nan_samples",
+      "override": false,
+      "expected_exit": 1,
+      "exit": 1,
+      "n_wavs": 0,
+      "report": false,
+      "attribution": null,
+      "classification": null,
+      "k": null,
+      "channel_lags": null,
+      "permission": null,
+      "gate_verdict": null,
+      "pcm": {},
+      "ok": true,
+      "permission_recorded": false,
+      "action": null
+    },
+    {
+      "engine": "EVO",
+      "case": "nan_samples",
+      "override": true,
+      "expected_exit": 1,
+      "exit": 1,
+      "n_wavs": 0,
+      "report": false,
+      "attribution": null,
+      "classification": null,
+      "k": null,
+      "channel_lags": null,
+      "permission": null,
+      "gate_verdict": null,
+      "pcm": {},
+      "ok": true,
+      "permission_recorded": false,
+      "action": null
+    },
+    {
+      "engine": "MQR",
+      "case": "clean",
+      "override": false,
+      "expected_exit": 0,
+      "exit": 0,
+      "n_wavs": 2,
+      "report": true,
+      "attribution": "UNIQUE",
+      "classification": "ALIGNED",
+      "k": 0,
+      "channel_lags": {
+        "L": 0,
+        "R": 0
+      },
+      "permission": null,
+      "gate_verdict": null,
+      "pcm": {
+        "SDI.wav": {
+          "sha256": "daff3c6bc3cf85cc9e26a10f66724e4a3dfcc24c882f07b03496383a6641d516",
+          "shape": [
+            44100,
+            2
+          ],
+          "sr": 44100,
+          "finite": true
+        },
+        "SDV.wav": {
+          "sha256": "659f969bd078d863135c3234956187aa80ede3cf46d65a9ee0da35e71b3da677",
+          "shape": [
+            44100,
+            2
+          ],
+          "sr": 44100,
+          "finite": true
+        }
+      },
+      "ok": true,
+      "pcm_finite": true,
+      "permission_recorded": false,
+      "action": {
+        "shift_authorized": false,
+        "applied_shift_samples": 0,
+        "polarity_changed": false
+      }
+    },
+    {
+      "engine": "MQR",
+      "case": "clean",
+      "override": true,
+      "expected_exit": 0,
+      "exit": 0,
+      "n_wavs": 2,
+      "report": true,
+      "attribution": "UNIQUE",
+      "classification": "ALIGNED",
+      "k": 0,
+      "channel_lags": {
+        "L": 0,
+        "R": 0
+      },
+      "permission": null,
+      "gate_verdict": null,
+      "pcm": {
+        "SDI.wav": {
+          "sha256": "daff3c6bc3cf85cc9e26a10f66724e4a3dfcc24c882f07b03496383a6641d516",
+          "shape": [
+            44100,
+            2
+          ],
+          "sr": 44100,
+          "finite": true
+        },
+        "SDV.wav": {
+          "sha256": "659f969bd078d863135c3234956187aa80ede3cf46d65a9ee0da35e71b3da677",
+          "shape": [
+            44100,
+            2
+          ],
+          "sr": 44100,
+          "finite": true
+        }
+      },
+      "ok": true,
+      "pcm_finite": true,
+      "permission_recorded": false,
+      "action": {
+        "shift_authorized": false,
+        "applied_shift_samples": 0,
+        "polarity_changed": false
+      },
+      "blocked_by_default": false
+    },
+    {
+      "engine": "MQR",
+      "case": "side",
+      "override": false,
+      "expected_exit": 0,
+      "exit": 0,
+      "n_wavs": 2,
+      "report": true,
+      "attribution": "UNIQUE",
+      "classification": "ALIGNED",
+      "k": 0,
+      "channel_lags": {
+        "L": 0,
+        "R": 0
+      },
+      "permission": null,
+      "gate_verdict": null,
+      "pcm": {
+        "SDI.wav": {
+          "sha256": "9e20e3289421ef9486f661b4e58766540a926e59468dc0c153e0970d28adaf62",
+          "shape": [
+            44100,
+            2
+          ],
+          "sr": 44100,
+          "finite": true
+        },
+        "SDV.wav": {
+          "sha256": "bbbf3baab8a5dc22f0ccabe9c9e753a0ec5a58713d6eab66ea37813498a1625a",
+          "shape": [
+            44100,
+            2
+          ],
+          "sr": 44100,
+          "finite": true
+        }
+      },
+      "ok": true,
+      "pcm_finite": true,
+      "permission_recorded": false,
+      "action": {
+        "shift_authorized": false,
+        "applied_shift_samples": 0,
+        "polarity_changed": false
+      }
+    },
+    {
+      "engine": "MQR",
+      "case": "shift_567",
+      "override": false,
+      "expected_exit": 1,
+      "exit": 1,
+      "n_wavs": 0,
+      "report": false,
+      "attribution": null,
+      "classification": null,
+      "k": null,
+      "channel_lags": null,
+      "permission": null,
+      "gate_verdict": null,
+      "pcm": {},
+      "ok": true,
+      "permission_recorded": false,
+      "action": null
+    },
+    {
+      "engine": "MQR",
+      "case": "shift_567",
+      "override": true,
+      "expected_exit": 0,
+      "exit": 0,
+      "n_wavs": 2,
+      "report": true,
+      "attribution": "UNIQUE",
+      "classification": "MISALIGNED",
+      "k": -567,
+      "channel_lags": {
+        "L": -567,
+        "R": -567
+      },
+      "permission": "cli_allow_misaligned",
+      "gate_verdict": null,
+      "pcm": {
+        "SDI.wav": {
+          "sha256": "0873b180c692f2214a28fbb06ba8b023bd3158987b62e5dcffc47e10bfc89414",
+          "shape": [
+            44667,
+            2
+          ],
+          "sr": 44100,
+          "finite": true
+        },
+        "SDV.wav": {
+          "sha256": "6d29c1c1fff750dba250e47541751128f88109274a4e93a0352ba4e4278fe9fe",
+          "shape": [
+            44667,
+            2
+          ],
+          "sr": 44100,
+          "finite": true
+        }
+      },
+      "ok": true,
+      "pcm_finite": true,
+      "permission_recorded": true,
+      "action": {
+        "shift_authorized": false,
+        "applied_shift_samples": 0,
+        "polarity_changed": false
+      },
+      "blocked_by_default": true
+    },
+    {
+      "engine": "MQR",
+      "case": "dual_173",
+      "override": false,
+      "expected_exit": 1,
+      "exit": 1,
+      "n_wavs": 0,
+      "report": false,
+      "attribution": null,
+      "classification": null,
+      "k": null,
+      "channel_lags": null,
+      "permission": null,
+      "gate_verdict": null,
+      "pcm": {},
+      "ok": true,
+      "permission_recorded": false,
+      "action": null
+    },
+    {
+      "engine": "MQR",
+      "case": "dual_173",
+      "override": true,
+      "expected_exit": 0,
+      "exit": 0,
+      "n_wavs": 2,
+      "report": true,
+      "attribution": "AMBIGUOUS",
+      "classification": "AMBIGUOUS",
+      "k": null,
+      "channel_lags": {},
+      "permission": "cli_allow_misaligned",
+      "gate_verdict": null,
+      "pcm": {
+        "SDI.wav": {
+          "sha256": "6864f418a313e39dbe521a7a5ced29a3d68006c2574ebf705157b3c1c8b0f2ef",
+          "shape": [
+            44100,
+            2
+          ],
+          "sr": 44100,
+          "finite": true
+        },
+        "SDV.wav": {
+          "sha256": "d0dc828e73c7050b80b8877c244486265bb6140e493dfb6a6ad1a939859ab350",
+          "shape": [
+            44100,
+            2
+          ],
+          "sr": 44100,
+          "finite": true
+        }
+      },
+      "ok": true,
+      "pcm_finite": true,
+      "permission_recorded": true,
+      "action": {
+        "shift_authorized": false,
+        "applied_shift_samples": 0,
+        "polarity_changed": false
+      },
+      "blocked_by_default": true
+    },
+    {
+      "engine": "MQR",
+      "case": "right_rival_.125",
+      "override": false,
+      "expected_exit": 1,
+      "exit": 1,
+      "n_wavs": 0,
+      "report": false,
+      "attribution": null,
+      "classification": null,
+      "k": null,
+      "channel_lags": null,
+      "permission": null,
+      "gate_verdict": null,
+      "pcm": {},
+      "ok": true,
+      "permission_recorded": false,
+      "action": null
+    },
+    {
+      "engine": "MQR",
+      "case": "right_rival_.125",
+      "override": true,
+      "expected_exit": 0,
+      "exit": 0,
+      "n_wavs": 2,
+      "report": true,
+      "attribution": "AMBIGUOUS",
+      "classification": "AMBIGUOUS",
+      "k": null,
+      "channel_lags": {
+        "L": 0
+      },
+      "permission": "cli_allow_misaligned",
+      "gate_verdict": null,
+      "pcm": {
+        "SDI.wav": {
+          "sha256": "8d5887e6b504bd9de02d5422d1b77eb976752423159770876103a3b1cfc5edf2",
+          "shape": [
+            44100,
+            2
+          ],
+          "sr": 44100,
+          "finite": true
+        },
+        "SDV.wav": {
+          "sha256": "55a190af230215928a19655d1267cc74118028488dfd06b60ffca39328cd206e",
+          "shape": [
+            44100,
+            2
+          ],
+          "sr": 44100,
+          "finite": true
+        }
+      },
+      "ok": true,
+      "pcm_finite": true,
+      "permission_recorded": true,
+      "action": {
+        "shift_authorized": false,
+        "applied_shift_samples": 0,
+        "polarity_changed": false
+      },
+      "blocked_by_default": true
+    },
+    {
+      "engine": "MQR",
+      "case": "different_lr",
+      "override": false,
+      "expected_exit": 1,
+      "exit": 1,
+      "n_wavs": 0,
+      "report": false,
+      "attribution": null,
+      "classification": null,
+      "k": null,
+      "channel_lags": null,
+      "permission": null,
+      "gate_verdict": null,
+      "pcm": {},
+      "ok": true,
+      "permission_recorded": false,
+      "action": null
+    },
+    {
+      "engine": "MQR",
+      "case": "different_lr",
+      "override": true,
+      "expected_exit": 0,
+      "exit": 0,
+      "n_wavs": 2,
+      "report": true,
+      "attribution": "AMBIGUOUS",
+      "classification": "AMBIGUOUS",
+      "k": null,
+      "channel_lags": {
+        "L": 0,
+        "R": 33
+      },
+      "permission": "cli_allow_misaligned",
+      "gate_verdict": null,
+      "pcm": {
+        "SDI.wav": {
+          "sha256": "8e4e8c579d2a9cd019e6e677d4214b0d47f309a9e1478c401565b33372919859",
+          "shape": [
+            44100,
+            2
+          ],
+          "sr": 44100,
+          "finite": true
+        },
+        "SDV.wav": {
+          "sha256": "2f0c8e255ce02f6767eeb2aa6c8cb6e2caeef79cf3f95b9cfe153a5bbad92a09",
+          "shape": [
+            44100,
+            2
+          ],
+          "sr": 44100,
+          "finite": true
+        }
+      },
+      "ok": true,
+      "pcm_finite": true,
+      "permission_recorded": true,
+      "action": {
+        "shift_authorized": false,
+        "applied_shift_samples": 0,
+        "polarity_changed": false
+      },
+      "blocked_by_default": true
+    },
+    {
+      "engine": "MQR",
+      "case": "silent",
+      "override": false,
+      "expected_exit": 1,
+      "exit": 1,
+      "n_wavs": 0,
+      "report": false,
+      "attribution": null,
+      "classification": null,
+      "k": null,
+      "channel_lags": null,
+      "permission": null,
+      "gate_verdict": null,
+      "pcm": {},
+      "ok": true,
+      "permission_recorded": false,
+      "action": null
+    },
+    {
+      "engine": "MQR",
+      "case": "silent",
+      "override": true,
+      "expected_exit": 0,
+      "exit": 0,
+      "n_wavs": 2,
+      "report": true,
+      "attribution": "NON_INFORMATIVE",
+      "classification": "NON_INFORMATIVE",
+      "k": null,
+      "channel_lags": null,
+      "permission": "cli_allow_misaligned",
+      "gate_verdict": null,
+      "pcm": {
+        "SDI.wav": {
+          "sha256": "dce4176128034d11955f62284dad9a98c15bc2f64767566d99bd6caa3eba1025",
+          "shape": [
+            44100,
+            2
+          ],
+          "sr": 44100,
+          "finite": true
+        },
+        "SDV.wav": {
+          "sha256": "bbbf3baab8a5dc22f0ccabe9c9e753a0ec5a58713d6eab66ea37813498a1625a",
+          "shape": [
+            44100,
+            2
+          ],
+          "sr": 44100,
+          "finite": true
+        }
+      },
+      "ok": true,
+      "pcm_finite": true,
+      "permission_recorded": true,
+      "action": {
+        "shift_authorized": false,
+        "applied_shift_samples": 0,
+        "polarity_changed": false
+      },
+      "blocked_by_default": true
+    },
+    {
+      "engine": "MQR",
+      "case": "nonfinite",
+      "override": false,
+      "expected_exit": 1,
+      "exit": 1,
+      "n_wavs": 0,
+      "report": false,
+      "attribution": null,
+      "classification": null,
+      "k": null,
+      "channel_lags": null,
+      "permission": null,
+      "gate_verdict": null,
+      "pcm": {},
+      "ok": true,
+      "permission_recorded": false,
+      "action": null
+    },
+    {
+      "engine": "MQR",
+      "case": "nonfinite",
+      "override": true,
+      "expected_exit": 1,
+      "exit": 1,
+      "n_wavs": 0,
+      "report": false,
+      "attribution": null,
+      "classification": null,
+      "k": null,
+      "channel_lags": null,
+      "permission": null,
+      "gate_verdict": null,
+      "pcm": {},
+      "ok": true,
+      "permission_recorded": false,
+      "action": null
+    },
+    {
+      "engine": "MQR",
+      "case": "truncated",
+      "override": false,
+      "expected_exit": 1,
+      "exit": 1,
+      "n_wavs": 0,
+      "report": false,
+      "attribution": null,
+      "classification": null,
+      "k": null,
+      "channel_lags": null,
+      "permission": null,
+      "gate_verdict": null,
+      "pcm": {},
+      "ok": true,
+      "permission_recorded": false,
+      "action": null
+    },
+    {
+      "engine": "MQR",
+      "case": "truncated",
+      "override": true,
+      "expected_exit": 1,
+      "exit": 1,
+      "n_wavs": 0,
+      "report": false,
+      "attribution": null,
+      "classification": null,
+      "k": null,
+      "channel_lags": null,
+      "permission": null,
+      "gate_verdict": null,
+      "pcm": {},
+      "ok": true,
+      "permission_recorded": false,
+      "action": null
+    },
+    {
+      "engine": "MQR",
+      "case": "nan_samples",
+      "override": false,
+      "expected_exit": 1,
+      "exit": 1,
+      "n_wavs": 0,
+      "report": false,
+      "attribution": null,
+      "classification": null,
+      "k": null,
+      "channel_lags": null,
+      "permission": null,
+      "gate_verdict": null,
+      "pcm": {},
+      "ok": true,
+      "permission_recorded": false,
+      "action": null
+    },
+    {
+      "engine": "MQR",
+      "case": "nan_samples",
+      "override": true,
+      "expected_exit": 1,
+      "exit": 1,
+      "n_wavs": 0,
+      "report": false,
+      "attribution": null,
+      "classification": null,
+      "k": null,
+      "channel_lags": null,
+      "permission": null,
+      "gate_verdict": null,
+      "pcm": {},
+      "ok": true,
+      "permission_recorded": false,
+      "action": null
+    }
+  ],
+  "logs": [
+    {
+      "run": "Hardened_clean_0",
+      "exit": 0,
+      "stdout": "[     0.01s] Validación de entradas OK: Mix 44100Hz/2ch (344.62 KiB) | 1 Pares\n[     0.01s] Verificando alineación temporal NCC de las guías...\n[     0.11s]   P01/vocal: k=0.00 ms; NCC=0.7037; ALIGNED (MEASURED_AGREEMENT); L: d=0 ALIGNED, R: d=0 ALIGNED; shift=0\n[     0.20s]   P01/instrumental: k=0.00 ms; NCC=0.7048; ALIGNED (MEASURED_AGREEMENT); L: d=0 ALIGNED, R: d=0 ALIGNED; shift=0\n[     0.20s] Iniciando pipeline v3.1.0 en: /tmp/sdv6f-cli-taz_zvme/Hardened_clean_0/out/motorA_run_20261119_033531_partial\n[     0.20s] Configuración: consensus_order=magnitudes_first | smoothing=none | mask_mode=mono | residuals=False\n[     0.20s] Procesando 46 tramas en 1 chunks de 256 tramas...\n[     0.30s]   Chunk 01/1 [100.0%] completado (Tramas 0-45)\n[     0.30s] Post-WAV Identity SNR: 156.05 dB (Estado: PASS_EXACT_IDENTITY)\n[     0.31s] Directorio 'masks/' eliminado para liberar espacio.\n[     0.31s] Corrida finalizada exitosamente en: /tmp/sdv6f-cli-taz_zvme/Hardened_clean_0/out/motorA_run_20261119_033531\n\n============================================================================\n\u001b[92m[✓] SEPARACIÓN MOTOR A v3.1.0 COMPLETADA CON ÉXITO (SNR > 140 dB)\u001b[0m\nDirectorio de Resultados : \u001b[96m/tmp/sdv6f-cli-taz_zvme/Hardened_clean_0/out/motorA_run_20261119_033531\u001b[0m\nArtefactos Generados     : clean-mix SDV.wav | clean-mix SDI.wav | analysis.json | analysis.txt\n============================================================================\n\n",
+      "stderr": "",
+      "files": [
+        "clean-mix SDI.wav",
+        "clean-mix SDV.wav"
+      ],
+      "run_dir": "/tmp/sdv6f-cli-taz_zvme/Hardened_clean_0/out"
+    },
+    {
+      "run": "Hardened_clean_1",
+      "exit": 0,
+      "stdout": "[     0.01s] Validación de entradas OK: Mix 44100Hz/2ch (344.62 KiB) | 1 Pares\n[     0.01s] Verificando alineación temporal NCC de las guías...\n[     0.10s]   P01/vocal: k=0.00 ms; NCC=0.7037; ALIGNED (MEASURED_AGREEMENT); L: d=0 ALIGNED, R: d=0 ALIGNED; shift=0\n[     0.20s]   P01/instrumental: k=0.00 ms; NCC=0.7048; ALIGNED (MEASURED_AGREEMENT); L: d=0 ALIGNED, R: d=0 ALIGNED; shift=0\n[     0.20s] Iniciando pipeline v3.1.0 en: /tmp/sdv6f-cli-taz_zvme/Hardened_clean_1/out/motorA_run_20261119_033532_partial\n[     0.20s] Configuración: consensus_order=magnitudes_first | smoothing=none | mask_mode=mono | residuals=False\n[     0.20s] Procesando 46 tramas en 1 chunks de 256 tramas...\n[     0.30s]   Chunk 01/1 [100.0%] completado (Tramas 0-45)\n[     0.31s] Post-WAV Identity SNR: 156.05 dB (Estado: PASS_EXACT_IDENTITY)\n[     0.31s] Directorio 'masks/' eliminado para liberar espacio.\n[     0.31s] Corrida finalizada exitosamente en: /tmp/sdv6f-cli-taz_zvme/Hardened_clean_1/out/motorA_run_20261119_033532\n\n============================================================================\n\u001b[92m[✓] SEPARACIÓN MOTOR A v3.1.0 COMPLETADA CON ÉXITO (SNR > 140 dB)\u001b[0m\nDirectorio de Resultados : \u001b[96m/tmp/sdv6f-cli-taz_zvme/Hardened_clean_1/out/motorA_run_20261119_033532\u001b[0m\nArtefactos Generados     : clean-mix SDV.wav | clean-mix SDI.wav | analysis.json | analysis.txt\n============================================================================\n\n",
+      "stderr": "",
+      "files": [
+        "clean-mix SDI.wav",
+        "clean-mix SDV.wav"
+      ],
+      "run_dir": "/tmp/sdv6f-cli-taz_zvme/Hardened_clean_1/out"
+    },
+    {
+      "run": "Hardened_side_0",
+      "exit": 0,
+      "stdout": "[     0.01s] Validación de entradas OK: Mix 44100Hz/2ch (344.62 KiB) | 1 Pares\n[     0.01s] Verificando alineación temporal NCC de las guías...\n[     0.11s]   P01/vocal: k=0.00 ms; NCC=0.7037; ALIGNED (MEASURED_AGREEMENT); L: d=0 ALIGNED, R: d=0 ALIGNED; shift=0\n[     0.20s]   P01/instrumental: k=0.00 ms; NCC=0.7048; ALIGNED (MEASURED_AGREEMENT); L: d=0 ALIGNED, R: d=0 ALIGNED; shift=0\n[     0.20s] Iniciando pipeline v3.1.0 en: /tmp/sdv6f-cli-taz_zvme/Hardened_side_0/out/motorA_run_20261119_033532_partial\n[     0.20s] Configuración: consensus_order=magnitudes_first | smoothing=none | mask_mode=mono | residuals=False\n[     0.20s] Procesando 46 tramas en 1 chunks de 256 tramas...\n[     0.31s]   Chunk 01/1 [100.0%] completado (Tramas 0-45)\n[     0.31s] Post-WAV Identity SNR: 353.23 dB (Estado: PASS_EXACT_IDENTITY)\n[     0.32s] Directorio 'masks/' eliminado para liberar espacio.\n[     0.32s] Corrida finalizada exitosamente en: /tmp/sdv6f-cli-taz_zvme/Hardened_side_0/out/motorA_run_20261119_033532\n\n============================================================================\n\u001b[92m[✓] SEPARACIÓN MOTOR A v3.1.0 COMPLETADA CON ÉXITO (SNR > 140 dB)\u001b[0m\nDirectorio de Resultados : \u001b[96m/tmp/sdv6f-cli-taz_zvme/Hardened_side_0/out/motorA_run_20261119_033532\u001b[0m\nArtefactos Generados     : side-mix SDV.wav | side-mix SDI.wav | analysis.json | analysis.txt\n============================================================================\n\n",
+      "stderr": "",
+      "files": [
+        "side-mix SDI.wav",
+        "side-mix SDV.wav"
+      ],
+      "run_dir": "/tmp/sdv6f-cli-taz_zvme/Hardened_side_0/out"
+    },
+    {
+      "run": "Hardened_shift_567_0",
+      "exit": 1,
+      "stdout": "[     0.01s] Validación de entradas OK: Mix 44100Hz/2ch (349.05 KiB) | 1 Pares\n[     0.01s] Verificando alineación temporal NCC de las guías...\n[     0.10s]   P01/vocal: k=-12.86 ms; NCC=0.7103; MISALIGNED (MEASURED_AGREEMENT); L: d=567 MISALIGNED, R: d=567 MISALIGNED; shift=0\n[     0.19s]   P01/instrumental: k=0.00 ms; NCC=0.7048; ALIGNED (MEASURED_AGREEMENT); L: d=0 ALIGNED, R: d=0 ALIGNED; shift=0\n[     0.19s] [ABORT] Diagnóstico no validado (MISALIGNED). Se requiere --allow-misaligned para continuar sin corrección; el diagnóstico no cambia.\n",
+      "stderr": "",
+      "files": [],
+      "run_dir": "/tmp/sdv6f-cli-taz_zvme/Hardened_shift_567_0/out"
+    },
+    {
+      "run": "Hardened_shift_567_1",
+      "exit": 0,
+      "stdout": "[     0.01s] Validación de entradas OK: Mix 44100Hz/2ch (349.05 KiB) | 1 Pares\n[     0.01s] Verificando alineación temporal NCC de las guías...\n[     0.10s]   P01/vocal: k=-12.86 ms; NCC=0.7103; MISALIGNED (MEASURED_AGREEMENT); L: d=567 MISALIGNED, R: d=567 MISALIGNED; shift=0\n[     0.20s]   P01/instrumental: k=0.00 ms; NCC=0.7048; ALIGNED (MEASURED_AGREEMENT); L: d=0 ALIGNED, R: d=0 ALIGNED; shift=0\n[     0.20s] [PERMISO] continuación explícita: cli_allow_misaligned (diagnóstico intacto).\n[     0.20s] Iniciando pipeline v3.1.0 en: /tmp/sdv6f-cli-taz_zvme/Hardened_shift_567_1/out/motorA_run_20261119_033534_partial\n[     0.20s] Configuración: consensus_order=magnitudes_first | smoothing=none | mask_mode=mono | residuals=False\n[     0.21s] Procesando 46 tramas en 1 chunks de 256 tramas...\n[     0.30s]   Chunk 01/1 [100.0%] completado (Tramas 0-45)\n[     0.31s] Post-WAV Identity SNR: 156.09 dB (Estado: PASS_EXACT_IDENTITY)\n[     0.32s] Directorio 'masks/' eliminado para liberar espacio.\n[     0.32s] Corrida finalizada exitosamente en: /tmp/sdv6f-cli-taz_zvme/Hardened_shift_567_1/out/motorA_run_20261119_033534\n\n============================================================================\n\u001b[92m[✓] SEPARACIÓN MOTOR A v3.1.0 COMPLETADA CON ÉXITO (SNR > 140 dB)\u001b[0m\nDirectorio de Resultados : \u001b[96m/tmp/sdv6f-cli-taz_zvme/Hardened_shift_567_1/out/motorA_run_20261119_033534\u001b[0m\nArtefactos Generados     : shift_567-mix SDV.wav | shift_567-mix SDI.wav | analysis.json | analysis.txt\n============================================================================\n\n",
+      "stderr": "",
+      "files": [
+        "shift_567-mix SDI.wav",
+        "shift_567-mix SDV.wav"
+      ],
+      "run_dir": "/tmp/sdv6f-cli-taz_zvme/Hardened_shift_567_1/out"
+    },
+    {
+      "run": "Hardened_dual_173_0",
+      "exit": 1,
+      "stdout": "[     0.01s] Validación de entradas OK: Mix 44100Hz/2ch (344.62 KiB) | 1 Pares\n[     0.01s] Verificando alineación temporal NCC de las guías...\n[     0.11s]   P01/vocal: k=null ms; NCC=null; AMBIGUOUS (MEMBER_AMBIGUITY_OR_CONFLICT); L: d=null AMBIGUOUS, R: d=null AMBIGUOUS; shift=0\n[     0.20s]   P01/instrumental: k=0.00 ms; NCC=0.5779; ALIGNED (MEASURED_AGREEMENT); L: d=0 ALIGNED, R: d=0 ALIGNED; shift=0\n[     0.20s] [ABORT] Diagnóstico no validado (AMBIGUOUS). Se requiere --allow-misaligned para continuar sin corrección; el diagnóstico no cambia.\n",
+      "stderr": "",
+      "files": [],
+      "run_dir": "/tmp/sdv6f-cli-taz_zvme/Hardened_dual_173_0/out"
+    },
+    {
+      "run": "Hardened_dual_173_1",
+      "exit": 0,
+      "stdout": "[     0.01s] Validación de entradas OK: Mix 44100Hz/2ch (344.62 KiB) | 1 Pares\n[     0.01s] Verificando alineación temporal NCC de las guías...\n[     0.10s]   P01/vocal: k=null ms; NCC=null; AMBIGUOUS (MEMBER_AMBIGUITY_OR_CONFLICT); L: d=null AMBIGUOUS, R: d=null AMBIGUOUS; shift=0\n[     0.19s]   P01/instrumental: k=0.00 ms; NCC=0.5779; ALIGNED (MEASURED_AGREEMENT); L: d=0 ALIGNED, R: d=0 ALIGNED; shift=0\n[     0.19s] [PERMISO] continuación explícita: cli_allow_misaligned (diagnóstico intacto).\n[     0.20s] Iniciando pipeline v3.1.0 en: /tmp/sdv6f-cli-taz_zvme/Hardened_dual_173_1/out/motorA_run_20261119_033535_partial\n[     0.20s] Configuración: consensus_order=magnitudes_first | smoothing=none | mask_mode=mono | residuals=False\n[     0.20s] Procesando 46 tramas en 1 chunks de 256 tramas...\n[     0.29s]   Chunk 01/1 [100.0%] completado (Tramas 0-45)\n[     0.30s] Post-WAV Identity SNR: 155.54 dB (Estado: PASS_EXACT_IDENTITY)\n[     0.31s] Directorio 'masks/' eliminado para liberar espacio.\n[     0.31s] Corrida finalizada exitosamente en: /tmp/sdv6f-cli-taz_zvme/Hardened_dual_173_1/out/motorA_run_20261119_033535\n\n============================================================================\n\u001b[92m[✓] SEPARACIÓN MOTOR A v3.1.0 COMPLETADA CON ÉXITO (SNR > 140 dB)\u001b[0m\nDirectorio de Resultados : \u001b[96m/tmp/sdv6f-cli-taz_zvme/Hardened_dual_173_1/out/motorA_run_20261119_033535\u001b[0m\nArtefactos Generados     : dual_173-mix SDV.wav | dual_173-mix SDI.wav | analysis.json | analysis.txt\n============================================================================\n\n",
+      "stderr": "",
+      "files": [
+        "dual_173-mix SDI.wav",
+        "dual_173-mix SDV.wav"
+      ],
+      "run_dir": "/tmp/sdv6f-cli-taz_zvme/Hardened_dual_173_1/out"
+    },
+    {
+      "run": "Hardened_right_rival_.125_0",
+      "exit": 1,
+      "stdout": "[     0.01s] Validación de entradas OK: Mix 44100Hz/2ch (344.62 KiB) | 1 Pares\n[     0.01s] Verificando alineación temporal NCC de las guías...\n[     0.10s]   P01/vocal: k=null ms; NCC=null; AMBIGUOUS (MEMBER_AMBIGUITY_OR_CONFLICT); L: d=0 ALIGNED, R: d=null AMBIGUOUS; shift=0\n[     0.19s]   P01/instrumental: k=0.00 ms; NCC=0.7048; ALIGNED (MEASURED_AGREEMENT); L: d=0 ALIGNED, R: d=0 ALIGNED; shift=0\n[     0.19s] [ABORT] Diagnóstico no validado (AMBIGUOUS). Se requiere --allow-misaligned para continuar sin corrección; el diagnóstico no cambia.\n",
+      "stderr": "",
+      "files": [],
+      "run_dir": "/tmp/sdv6f-cli-taz_zvme/Hardened_right_rival_.125_0/out"
+    },
+    {
+      "run": "Hardened_right_rival_.125_1",
+      "exit": 0,
+      "stdout": "[     0.01s] Validación de entradas OK: Mix 44100Hz/2ch (344.62 KiB) | 1 Pares\n[     0.01s] Verificando alineación temporal NCC de las guías...\n[     0.11s]   P01/vocal: k=null ms; NCC=null; AMBIGUOUS (MEMBER_AMBIGUITY_OR_CONFLICT); L: d=0 ALIGNED, R: d=null AMBIGUOUS; shift=0\n[     0.19s]   P01/instrumental: k=0.00 ms; NCC=0.7048; ALIGNED (MEASURED_AGREEMENT); L: d=0 ALIGNED, R: d=0 ALIGNED; shift=0\n[     0.19s] [PERMISO] continuación explícita: cli_allow_misaligned (diagnóstico intacto).\n[     0.20s] Iniciando pipeline v3.1.0 en: /tmp/sdv6f-cli-taz_zvme/Hardened_right_rival_.125_1/out/motorA_run_20261119_033536_partial\n[     0.20s] Configuración: consensus_order=magnitudes_first | smoothing=none | mask_mode=mono | residuals=False\n[     0.20s] Procesando 46 tramas en 1 chunks de 256 tramas...\n[     0.29s]   Chunk 01/1 [100.0%] completado (Tramas 0-45)\n[     0.30s] Post-WAV Identity SNR: 156.07 dB (Estado: PASS_EXACT_IDENTITY)\n[     0.31s] Directorio 'masks/' eliminado para liberar espacio.\n[     0.31s] Corrida finalizada exitosamente en: /tmp/sdv6f-cli-taz_zvme/Hardened_right_rival_.125_1/out/motorA_run_20261119_033536\n\n============================================================================\n\u001b[92m[✓] SEPARACIÓN MOTOR A v3.1.0 COMPLETADA CON ÉXITO (SNR > 140 dB)\u001b[0m\nDirectorio de Resultados : \u001b[96m/tmp/sdv6f-cli-taz_zvme/Hardened_right_rival_.125_1/out/motorA_run_20261119_033536\u001b[0m\nArtefactos Generados     : right_rival_.125-mix SDV.wav | right_rival_.125-mix SDI.wav | analysis.json | analysis.txt\n============================================================================\n\n",
+      "stderr": "",
+      "files": [
+        "right_rival_.125-mix SDI.wav",
+        "right_rival_.125-mix SDV.wav"
+      ],
+      "run_dir": "/tmp/sdv6f-cli-taz_zvme/Hardened_right_rival_.125_1/out"
+    },
+    {
+      "run": "Hardened_different_lr_0",
+      "exit": 1,
+      "stdout": "[     0.01s] Validación de entradas OK: Mix 44100Hz/2ch (344.62 KiB) | 1 Pares\n[     0.01s] Verificando alineación temporal NCC de las guías...\n[     0.11s]   P01/vocal: k=null ms; NCC=null; AMBIGUOUS (CHANNEL_DISAGREEMENT); L: d=0 ALIGNED, R: d=-33 WARNING; shift=0\n[     0.20s]   P01/instrumental: k=0.00 ms; NCC=0.7048; ALIGNED (MEASURED_AGREEMENT); L: d=0 ALIGNED, R: d=0 ALIGNED; shift=0\n[     0.20s] [ABORT] Diagnóstico no validado (AMBIGUOUS). Se requiere --allow-misaligned para continuar sin corrección; el diagnóstico no cambia.\n",
+      "stderr": "",
+      "files": [],
+      "run_dir": "/tmp/sdv6f-cli-taz_zvme/Hardened_different_lr_0/out"
+    },
+    {
+      "run": "Hardened_different_lr_1",
+      "exit": 0,
+      "stdout": "[     0.01s] Validación de entradas OK: Mix 44100Hz/2ch (344.62 KiB) | 1 Pares\n[     0.01s] Verificando alineación temporal NCC de las guías...\n[     0.10s]   P01/vocal: k=null ms; NCC=null; AMBIGUOUS (CHANNEL_DISAGREEMENT); L: d=0 ALIGNED, R: d=-33 WARNING; shift=0\n[     0.20s]   P01/instrumental: k=0.00 ms; NCC=0.7048; ALIGNED (MEASURED_AGREEMENT); L: d=0 ALIGNED, R: d=0 ALIGNED; shift=0\n[     0.20s] [PERMISO] continuación explícita: cli_allow_misaligned (diagnóstico intacto).\n[     0.20s] Iniciando pipeline v3.1.0 en: /tmp/sdv6f-cli-taz_zvme/Hardened_different_lr_1/out/motorA_run_20261119_033537_partial\n[     0.20s] Configuración: consensus_order=magnitudes_first | smoothing=none | mask_mode=mono | residuals=False\n[     0.20s] Procesando 46 tramas en 1 chunks de 256 tramas...\n[     0.30s]   Chunk 01/1 [100.0%] completado (Tramas 0-45)\n[     0.31s] Post-WAV Identity SNR: 156.12 dB (Estado: PASS_EXACT_IDENTITY)\n[     0.32s] Directorio 'masks/' eliminado para liberar espacio.\n[     0.32s] Corrida finalizada exitosamente en: /tmp/sdv6f-cli-taz_zvme/Hardened_different_lr_1/out/motorA_run_20261119_033537\n\n============================================================================\n\u001b[92m[✓] SEPARACIÓN MOTOR A v3.1.0 COMPLETADA CON ÉXITO (SNR > 140 dB)\u001b[0m\nDirectorio de Resultados : \u001b[96m/tmp/sdv6f-cli-taz_zvme/Hardened_different_lr_1/out/motorA_run_20261119_033537\u001b[0m\nArtefactos Generados     : different_lr-mix SDV.wav | different_lr-mix SDI.wav | analysis.json | analysis.txt\n============================================================================\n\n",
+      "stderr": "",
+      "files": [
+        "different_lr-mix SDI.wav",
+        "different_lr-mix SDV.wav"
+      ],
+      "run_dir": "/tmp/sdv6f-cli-taz_zvme/Hardened_different_lr_1/out"
+    },
+    {
+      "run": "Hardened_silent_0",
+      "exit": 1,
+      "stdout": "[     0.01s] Validación de entradas OK: Mix 44100Hz/2ch (344.62 KiB) | 1 Pares\n[     0.01s] Verificando alineación temporal NCC de las guías...\n[     0.01s]   P01/vocal: k=null ms; NCC=null; NON_INFORMATIVE (ALL_CHANNELS_NON_INFORMATIVE); L: d=null NON_INFORMATIVE, R: d=null NON_INFORMATIVE; shift=0\n[     0.11s]   P01/instrumental: k=0.00 ms; NCC=0.7048; ALIGNED (MEASURED_AGREEMENT); L: d=0 ALIGNED, R: d=0 ALIGNED; shift=0\n[     0.11s] [ABORT] Diagnóstico no validado (NON_INFORMATIVE). Se requiere --allow-misaligned para continuar sin corrección; el diagnóstico no cambia.\n",
+      "stderr": "",
+      "files": [],
+      "run_dir": "/tmp/sdv6f-cli-taz_zvme/Hardened_silent_0/out"
+    },
+    {
+      "run": "Hardened_silent_1",
+      "exit": 0,
+      "stdout": "[     0.01s] Validación de entradas OK: Mix 44100Hz/2ch (344.62 KiB) | 1 Pares\n[     0.01s] Verificando alineación temporal NCC de las guías...\n[     0.01s]   P01/vocal: k=null ms; NCC=null; NON_INFORMATIVE (ALL_CHANNELS_NON_INFORMATIVE); L: d=null NON_INFORMATIVE, R: d=null NON_INFORMATIVE; shift=0\n[     0.10s]   P01/instrumental: k=0.00 ms; NCC=0.7048; ALIGNED (MEASURED_AGREEMENT); L: d=0 ALIGNED, R: d=0 ALIGNED; shift=0\n[     0.10s] [PERMISO] continuación explícita: cli_allow_misaligned (diagnóstico intacto).\n[     0.11s] Iniciando pipeline v3.1.0 en: /tmp/sdv6f-cli-taz_zvme/Hardened_silent_1/out/motorA_run_20261119_033538_partial\n[     0.11s] Configuración: consensus_order=magnitudes_first | smoothing=none | mask_mode=mono | residuals=False\n[     0.11s] Procesando 46 tramas en 1 chunks de 256 tramas...\n[     0.20s]   Chunk 01/1 [100.0%] completado (Tramas 0-45)\n[     0.21s] Post-WAV Identity SNR: 350.59 dB (Estado: PASS_EXACT_IDENTITY)\n[     0.22s] Directorio 'masks/' eliminado para liberar espacio.\n[     0.22s] Corrida finalizada exitosamente en: /tmp/sdv6f-cli-taz_zvme/Hardened_silent_1/out/motorA_run_20261119_033538\n\n============================================================================\n\u001b[92m[✓] SEPARACIÓN MOTOR A v3.1.0 COMPLETADA CON ÉXITO (SNR > 140 dB)\u001b[0m\nDirectorio de Resultados : \u001b[96m/tmp/sdv6f-cli-taz_zvme/Hardened_silent_1/out/motorA_run_20261119_033538\u001b[0m\nArtefactos Generados     : silent-mix SDV.wav | silent-mix SDI.wav | analysis.json | analysis.txt\n============================================================================\n\n",
+      "stderr": "",
+      "files": [
+        "silent-mix SDI.wav",
+        "silent-mix SDV.wav"
+      ],
+      "run_dir": "/tmp/sdv6f-cli-taz_zvme/Hardened_silent_1/out"
+    },
+    {
+      "run": "Hardened_nonfinite_0",
+      "exit": 1,
+      "stdout": "[     0.01s] [FATAL] Guías inválidas detectadas:\n[     0.01s]   - P01/vocal: soundfile no pudo abrir el archivo: Muestras no finitas en el payload float\n",
+      "stderr": "",
+      "files": [],
+      "run_dir": "/tmp/sdv6f-cli-taz_zvme/Hardened_nonfinite_0/out"
+    },
+    {
+      "run": "Hardened_nonfinite_1",
+      "exit": 1,
+      "stdout": "[     0.01s] [FATAL] Guías inválidas detectadas:\n[     0.01s]   - P01/vocal: soundfile no pudo abrir el archivo: Muestras no finitas en el payload float\n",
+      "stderr": "",
+      "files": [],
+      "run_dir": "/tmp/sdv6f-cli-taz_zvme/Hardened_nonfinite_1/out"
+    },
+    {
+      "run": "Hardened_truncated_0",
+      "exit": 1,
+      "stdout": "[     0.01s] [FATAL] Guías inválidas detectadas:\n[     0.01s]   - P01/vocal: soundfile no pudo abrir el archivo: RIFF declara 352888 bytes; el archivo físico tiene 351888\n",
+      "stderr": "",
+      "files": [],
+      "run_dir": "/tmp/sdv6f-cli-taz_zvme/Hardened_truncated_0/out"
+    },
+    {
+      "run": "Hardened_truncated_1",
+      "exit": 1,
+      "stdout": "[     0.01s] [FATAL] Guías inválidas detectadas:\n[     0.01s]   - P01/vocal: soundfile no pudo abrir el archivo: RIFF declara 352888 bytes; el archivo físico tiene 351888\n",
+      "stderr": "",
+      "files": [],
+      "run_dir": "/tmp/sdv6f-cli-taz_zvme/Hardened_truncated_1/out"
+    },
+    {
+      "run": "Hardened_nan_samples_0",
+      "exit": 1,
+      "stdout": "[     0.01s] [FATAL] Guías inválidas detectadas:\n[     0.01s]   - P01/vocal: soundfile no pudo abrir el archivo: Muestras no finitas en el payload float\n",
+      "stderr": "",
+      "files": [],
+      "run_dir": "/tmp/sdv6f-cli-taz_zvme/Hardened_nan_samples_0/out"
+    },
+    {
+      "run": "Hardened_nan_samples_1",
+      "exit": 1,
+      "stdout": "[     0.01s] [FATAL] Guías inválidas detectadas:\n[     0.01s]   - P01/vocal: soundfile no pudo abrir el archivo: Muestras no finitas en el payload float\n",
+      "stderr": "",
+      "files": [],
+      "run_dir": "/tmp/sdv6f-cli-taz_zvme/Hardened_nan_samples_1/out"
+    },
+    {
+      "run": "EVO_clean_0",
+      "exit": 0,
+      "stdout": "[     0.01s] Validación de entradas OK: Mix 44100Hz/2ch (344.62 KiB) | 1 Pares\n[     0.01s] Verificando alineación temporal NCC de las guías...\n[     0.10s]   P01/vocal: k=0.00 ms; NCC=0.7037; ALIGNED (MEASURED_AGREEMENT); L: d=0 ALIGNED, R: d=0 ALIGNED; shift=0\n[     0.19s]   P01/instrumental: k=0.00 ms; NCC=0.7048; ALIGNED (MEASURED_AGREEMENT); L: d=0 ALIGNED, R: d=0 ALIGNED; shift=0\n[     0.20s] Iniciando pipeline v3.1.0 en: /tmp/sdv6f-cli-taz_zvme/EVO_clean_0/out/motorA_run_20261119_033540_partial\n[     0.20s] Configuración Consenso: order=magnitudes_first | consensus=confidence_weighted_mean | smoothing=none | mask_mode=mono\n[     0.20s] Parámetros DSP: p=1.80 | beta=1.00 | eps=1.0e-12 | n_fft=4096 | hop=1024 | residuals=False\n[     0.20s] Procesando 46 tramas en 1 chunks de 256 tramas...\n[     0.29s]   Chunk 01/1 [100.0%] completado (Tramas 0-45)\n[     0.30s] Post-WAV Identity SNR: 156.05 dB (Estado: PASS_EXACT_IDENTITY)\n[     0.31s] Directorio 'masks/' eliminado para liberar espacio.\n[     0.31s] Corrida finalizada exitosamente en: /tmp/sdv6f-cli-taz_zvme/EVO_clean_0/out/motorA_run_20261119_033540\n\n============================================================================\n\u001b[92m[✓] SEPARACIÓN MOTOR A v3.1.0 COMPLETADA CON ÉXITO (SNR > 140 dB)\u001b[0m\nDirectorio de Resultados : \u001b[96m/tmp/sdv6f-cli-taz_zvme/EVO_clean_0/out/motorA_run_20261119_033540\u001b[0m\nArtefactos Generados     : clean-mix SDV.wav | clean-mix SDI.wav | analysis.json | analysis.txt\n============================================================================\n\n",
+      "stderr": "",
+      "files": [
+        "clean-mix SDI.wav",
+        "clean-mix SDV.wav"
+      ],
+      "run_dir": "/tmp/sdv6f-cli-taz_zvme/EVO_clean_0/out"
+    },
+    {
+      "run": "EVO_clean_1",
+      "exit": 0,
+      "stdout": "[     0.01s] Validación de entradas OK: Mix 44100Hz/2ch (344.62 KiB) | 1 Pares\n[     0.01s] Verificando alineación temporal NCC de las guías...\n[     0.10s]   P01/vocal: k=0.00 ms; NCC=0.7037; ALIGNED (MEASURED_AGREEMENT); L: d=0 ALIGNED, R: d=0 ALIGNED; shift=0\n[     0.19s]   P01/instrumental: k=0.00 ms; NCC=0.7048; ALIGNED (MEASURED_AGREEMENT); L: d=0 ALIGNED, R: d=0 ALIGNED; shift=0\n[     0.20s] Iniciando pipeline v3.1.0 en: /tmp/sdv6f-cli-taz_zvme/EVO_clean_1/out/motorA_run_20261119_033541_partial\n[     0.20s] Configuración Consenso: order=magnitudes_first | consensus=confidence_weighted_mean | smoothing=none | mask_mode=mono\n[     0.20s] Parámetros DSP: p=1.80 | beta=1.00 | eps=1.0e-12 | n_fft=4096 | hop=1024 | residuals=False\n[     0.20s] Procesando 46 tramas en 1 chunks de 256 tramas...\n[     0.29s]   Chunk 01/1 [100.0%] completado (Tramas 0-45)\n[     0.30s] Post-WAV Identity SNR: 156.05 dB (Estado: PASS_EXACT_IDENTITY)\n[     0.31s] Directorio 'masks/' eliminado para liberar espacio.\n[     0.31s] Corrida finalizada exitosamente en: /tmp/sdv6f-cli-taz_zvme/EVO_clean_1/out/motorA_run_20261119_033541\n\n============================================================================\n\u001b[92m[✓] SEPARACIÓN MOTOR A v3.1.0 COMPLETADA CON ÉXITO (SNR > 140 dB)\u001b[0m\nDirectorio de Resultados : \u001b[96m/tmp/sdv6f-cli-taz_zvme/EVO_clean_1/out/motorA_run_20261119_033541\u001b[0m\nArtefactos Generados     : clean-mix SDV.wav | clean-mix SDI.wav | analysis.json | analysis.txt\n============================================================================\n\n",
+      "stderr": "",
+      "files": [
+        "clean-mix SDI.wav",
+        "clean-mix SDV.wav"
+      ],
+      "run_dir": "/tmp/sdv6f-cli-taz_zvme/EVO_clean_1/out"
+    },
+    {
+      "run": "EVO_side_0",
+      "exit": 0,
+      "stdout": "[     0.01s] Validación de entradas OK: Mix 44100Hz/2ch (344.62 KiB) | 1 Pares\n[     0.01s] Verificando alineación temporal NCC de las guías...\n[     0.10s]   P01/vocal: k=0.00 ms; NCC=0.7037; ALIGNED (MEASURED_AGREEMENT); L: d=0 ALIGNED, R: d=0 ALIGNED; shift=0\n[     0.19s]   P01/instrumental: k=0.00 ms; NCC=0.7048; ALIGNED (MEASURED_AGREEMENT); L: d=0 ALIGNED, R: d=0 ALIGNED; shift=0\n[     0.20s] Iniciando pipeline v3.1.0 en: /tmp/sdv6f-cli-taz_zvme/EVO_side_0/out/motorA_run_20261119_033542_partial\n[     0.20s] Configuración Consenso: order=magnitudes_first | consensus=confidence_weighted_mean | smoothing=none | mask_mode=mono\n[     0.20s] Parámetros DSP: p=1.80 | beta=1.00 | eps=1.0e-12 | n_fft=4096 | hop=1024 | residuals=False\n[     0.20s] Procesando 46 tramas en 1 chunks de 256 tramas...\n[     0.30s]   Chunk 01/1 [100.0%] completado (Tramas 0-45)\n[     0.30s] Post-WAV Identity SNR: 353.23 dB (Estado: PASS_EXACT_IDENTITY)\n[     0.31s] Directorio 'masks/' eliminado para liberar espacio.\n[     0.31s] Corrida finalizada exitosamente en: /tmp/sdv6f-cli-taz_zvme/EVO_side_0/out/motorA_run_20261119_033542\n\n============================================================================\n\u001b[92m[✓] SEPARACIÓN MOTOR A v3.1.0 COMPLETADA CON ÉXITO (SNR > 140 dB)\u001b[0m\nDirectorio de Resultados : \u001b[96m/tmp/sdv6f-cli-taz_zvme/EVO_side_0/out/motorA_run_20261119_033542\u001b[0m\nArtefactos Generados     : side-mix SDV.wav | side-mix SDI.wav | analysis.json | analysis.txt\n============================================================================\n\n",
+      "stderr": "",
+      "files": [
+        "side-mix SDI.wav",
+        "side-mix SDV.wav"
+      ],
+      "run_dir": "/tmp/sdv6f-cli-taz_zvme/EVO_side_0/out"
+    },
+    {
+      "run": "EVO_shift_567_0",
+      "exit": 1,
+      "stdout": "[     0.01s] Validación de entradas OK: Mix 44100Hz/2ch (349.05 KiB) | 1 Pares\n[     0.01s] Verificando alineación temporal NCC de las guías...\n[     0.10s]   P01/vocal: k=-12.86 ms; NCC=0.7103; MISALIGNED (MEASURED_AGREEMENT); L: d=567 MISALIGNED, R: d=567 MISALIGNED; shift=0\n[     0.20s]   P01/instrumental: k=0.00 ms; NCC=0.7048; ALIGNED (MEASURED_AGREEMENT); L: d=0 ALIGNED, R: d=0 ALIGNED; shift=0\n[     0.20s] [ABORT] Diagnóstico no validado (MISALIGNED). Se requiere --allow-misaligned para continuar sin corrección; el diagnóstico no cambia.\n",
+      "stderr": "",
+      "files": [],
+      "run_dir": "/tmp/sdv6f-cli-taz_zvme/EVO_shift_567_0/out"
+    },
+    {
+      "run": "EVO_shift_567_1",
+      "exit": 0,
+      "stdout": "[     0.01s] Validación de entradas OK: Mix 44100Hz/2ch (349.05 KiB) | 1 Pares\n[     0.01s] Verificando alineación temporal NCC de las guías...\n[     0.10s]   P01/vocal: k=-12.86 ms; NCC=0.7103; MISALIGNED (MEASURED_AGREEMENT); L: d=567 MISALIGNED, R: d=567 MISALIGNED; shift=0\n[     0.20s]   P01/instrumental: k=0.00 ms; NCC=0.7048; ALIGNED (MEASURED_AGREEMENT); L: d=0 ALIGNED, R: d=0 ALIGNED; shift=0\n[     0.20s] [PERMISO] continuación explícita: cli_allow_misaligned (diagnóstico intacto).\n[     0.20s] Iniciando pipeline v3.1.0 en: /tmp/sdv6f-cli-taz_zvme/EVO_shift_567_1/out/motorA_run_20261119_033543_partial\n[     0.20s] Configuración Consenso: order=magnitudes_first | consensus=confidence_weighted_mean | smoothing=none | mask_mode=mono\n[     0.20s] Parámetros DSP: p=1.80 | beta=1.00 | eps=1.0e-12 | n_fft=4096 | hop=1024 | residuals=False\n[     0.20s] Procesando 46 tramas en 1 chunks de 256 tramas...\n[     0.30s]   Chunk 01/1 [100.0%] completado (Tramas 0-45)\n[     0.30s] Post-WAV Identity SNR: 156.09 dB (Estado: PASS_EXACT_IDENTITY)\n[     0.31s] Directorio 'masks/' eliminado para liberar espacio.\n[     0.31s] Corrida finalizada exitosamente en: /tmp/sdv6f-cli-taz_zvme/EVO_shift_567_1/out/motorA_run_20261119_033543\n\n============================================================================\n\u001b[92m[✓] SEPARACIÓN MOTOR A v3.1.0 COMPLETADA CON ÉXITO (SNR > 140 dB)\u001b[0m\nDirectorio de Resultados : \u001b[96m/tmp/sdv6f-cli-taz_zvme/EVO_shift_567_1/out/motorA_run_20261119_033543\u001b[0m\nArtefactos Generados     : shift_567-mix SDV.wav | shift_567-mix SDI.wav | analysis.json | analysis.txt\n============================================================================\n\n",
+      "stderr": "",
+      "files": [
+        "shift_567-mix SDI.wav",
+        "shift_567-mix SDV.wav"
+      ],
+      "run_dir": "/tmp/sdv6f-cli-taz_zvme/EVO_shift_567_1/out"
+    },
+    {
+      "run": "EVO_dual_173_0",
+      "exit": 1,
+      "stdout": "[     0.01s] Validación de entradas OK: Mix 44100Hz/2ch (344.62 KiB) | 1 Pares\n[     0.01s] Verificando alineación temporal NCC de las guías...\n[     0.10s]   P01/vocal: k=null ms; NCC=null; AMBIGUOUS (MEMBER_AMBIGUITY_OR_CONFLICT); L: d=null AMBIGUOUS, R: d=null AMBIGUOUS; shift=0\n[     0.19s]   P01/instrumental: k=0.00 ms; NCC=0.5779; ALIGNED (MEASURED_AGREEMENT); L: d=0 ALIGNED, R: d=0 ALIGNED; shift=0\n[     0.19s] [ABORT] Diagnóstico no validado (AMBIGUOUS). Se requiere --allow-misaligned para continuar sin corrección; el diagnóstico no cambia.\n",
+      "stderr": "",
+      "files": [],
+      "run_dir": "/tmp/sdv6f-cli-taz_zvme/EVO_dual_173_0/out"
+    },
+    {
+      "run": "EVO_dual_173_1",
+      "exit": 0,
+      "stdout": "[     0.01s] Validación de entradas OK: Mix 44100Hz/2ch (344.62 KiB) | 1 Pares\n[     0.01s] Verificando alineación temporal NCC de las guías...\n[     0.11s]   P01/vocal: k=null ms; NCC=null; AMBIGUOUS (MEMBER_AMBIGUITY_OR_CONFLICT); L: d=null AMBIGUOUS, R: d=null AMBIGUOUS; shift=0\n[     0.20s]   P01/instrumental: k=0.00 ms; NCC=0.5779; ALIGNED (MEASURED_AGREEMENT); L: d=0 ALIGNED, R: d=0 ALIGNED; shift=0\n[     0.20s] [PERMISO] continuación explícita: cli_allow_misaligned (diagnóstico intacto).\n[     0.20s] Iniciando pipeline v3.1.0 en: /tmp/sdv6f-cli-taz_zvme/EVO_dual_173_1/out/motorA_run_20261119_033544_partial\n[     0.20s] Configuración Consenso: order=magnitudes_first | consensus=confidence_weighted_mean | smoothing=none | mask_mode=mono\n[     0.20s] Parámetros DSP: p=1.80 | beta=1.00 | eps=1.0e-12 | n_fft=4096 | hop=1024 | residuals=False\n[     0.20s] Procesando 46 tramas en 1 chunks de 256 tramas...\n[     0.30s]   Chunk 01/1 [100.0%] completado (Tramas 0-45)\n[     0.31s] Post-WAV Identity SNR: 155.54 dB (Estado: PASS_EXACT_IDENTITY)\n[     0.32s] Directorio 'masks/' eliminado para liberar espacio.\n[     0.32s] Corrida finalizada exitosamente en: /tmp/sdv6f-cli-taz_zvme/EVO_dual_173_1/out/motorA_run_20261119_033544\n\n============================================================================\n\u001b[92m[✓] SEPARACIÓN MOTOR A v3.1.0 COMPLETADA CON ÉXITO (SNR > 140 dB)\u001b[0m\nDirectorio de Resultados : \u001b[96m/tmp/sdv6f-cli-taz_zvme/EVO_dual_173_1/out/motorA_run_20261119_033544\u001b[0m\nArtefactos Generados     : dual_173-mix SDV.wav | dual_173-mix SDI.wav | analysis.json | analysis.txt\n============================================================================\n\n",
+      "stderr": "",
+      "files": [
+        "dual_173-mix SDI.wav",
+        "dual_173-mix SDV.wav"
+      ],
+      "run_dir": "/tmp/sdv6f-cli-taz_zvme/EVO_dual_173_1/out"
+    },
+    {
+      "run": "EVO_right_rival_.125_0",
+      "exit": 1,
+      "stdout": "[     0.01s] Validación de entradas OK: Mix 44100Hz/2ch (344.62 KiB) | 1 Pares\n[     0.01s] Verificando alineación temporal NCC de las guías...\n[     0.11s]   P01/vocal: k=null ms; NCC=null; AMBIGUOUS (MEMBER_AMBIGUITY_OR_CONFLICT); L: d=0 ALIGNED, R: d=null AMBIGUOUS; shift=0\n[     0.19s]   P01/instrumental: k=0.00 ms; NCC=0.7048; ALIGNED (MEASURED_AGREEMENT); L: d=0 ALIGNED, R: d=0 ALIGNED; shift=0\n[     0.19s] [ABORT] Diagnóstico no validado (AMBIGUOUS). Se requiere --allow-misaligned para continuar sin corrección; el diagnóstico no cambia.\n",
+      "stderr": "",
+      "files": [],
+      "run_dir": "/tmp/sdv6f-cli-taz_zvme/EVO_right_rival_.125_0/out"
+    },
+    {
+      "run": "EVO_right_rival_.125_1",
+      "exit": 0,
+      "stdout": "[     0.01s] Validación de entradas OK: Mix 44100Hz/2ch (344.62 KiB) | 1 Pares\n[     0.01s] Verificando alineación temporal NCC de las guías...\n[     0.10s]   P01/vocal: k=null ms; NCC=null; AMBIGUOUS (MEMBER_AMBIGUITY_OR_CONFLICT); L: d=0 ALIGNED, R: d=null AMBIGUOUS; shift=0\n[     0.19s]   P01/instrumental: k=0.00 ms; NCC=0.7048; ALIGNED (MEASURED_AGREEMENT); L: d=0 ALIGNED, R: d=0 ALIGNED; shift=0\n[     0.19s] [PERMISO] continuación explícita: cli_allow_misaligned (diagnóstico intacto).\n[     0.20s] Iniciando pipeline v3.1.0 en: /tmp/sdv6f-cli-taz_zvme/EVO_right_rival_.125_1/out/motorA_run_20261119_033545_partial\n[     0.20s] Configuración Consenso: order=magnitudes_first | consensus=confidence_weighted_mean | smoothing=none | mask_mode=mono\n[     0.20s] Parámetros DSP: p=1.80 | beta=1.00 | eps=1.0e-12 | n_fft=4096 | hop=1024 | residuals=False\n[     0.20s] Procesando 46 tramas en 1 chunks de 256 tramas...\n[     0.30s]   Chunk 01/1 [100.0%] completado (Tramas 0-45)\n[     0.31s] Post-WAV Identity SNR: 156.07 dB (Estado: PASS_EXACT_IDENTITY)\n[     0.32s] Directorio 'masks/' eliminado para liberar espacio.\n[     0.32s] Corrida finalizada exitosamente en: /tmp/sdv6f-cli-taz_zvme/EVO_right_rival_.125_1/out/motorA_run_20261119_033545\n\n============================================================================\n\u001b[92m[✓] SEPARACIÓN MOTOR A v3.1.0 COMPLETADA CON ÉXITO (SNR > 140 dB)\u001b[0m\nDirectorio de Resultados : \u001b[96m/tmp/sdv6f-cli-taz_zvme/EVO_right_rival_.125_1/out/motorA_run_20261119_033545\u001b[0m\nArtefactos Generados     : right_rival_.125-mix SDV.wav | right_rival_.125-mix SDI.wav | analysis.json | analysis.txt\n============================================================================\n\n",
+      "stderr": "",
+      "files": [
+        "right_rival_.125-mix SDI.wav",
+        "right_rival_.125-mix SDV.wav"
+      ],
+      "run_dir": "/tmp/sdv6f-cli-taz_zvme/EVO_right_rival_.125_1/out"
+    },
+    {
+      "run": "EVO_different_lr_0",
+      "exit": 1,
+      "stdout": "[     0.01s] Validación de entradas OK: Mix 44100Hz/2ch (344.62 KiB) | 1 Pares\n[     0.01s] Verificando alineación temporal NCC de las guías...\n[     0.10s]   P01/vocal: k=null ms; NCC=null; AMBIGUOUS (CHANNEL_DISAGREEMENT); L: d=0 ALIGNED, R: d=-33 WARNING; shift=0\n[     0.19s]   P01/instrumental: k=0.00 ms; NCC=0.7048; ALIGNED (MEASURED_AGREEMENT); L: d=0 ALIGNED, R: d=0 ALIGNED; shift=0\n[     0.19s] [ABORT] Diagnóstico no validado (AMBIGUOUS). Se requiere --allow-misaligned para continuar sin corrección; el diagnóstico no cambia.\n",
+      "stderr": "",
+      "files": [],
+      "run_dir": "/tmp/sdv6f-cli-taz_zvme/EVO_different_lr_0/out"
+    },
+    {
+      "run": "EVO_different_lr_1",
+      "exit": 0,
+      "stdout": "[     0.01s] Validación de entradas OK: Mix 44100Hz/2ch (344.62 KiB) | 1 Pares\n[     0.01s] Verificando alineación temporal NCC de las guías...\n[     0.10s]   P01/vocal: k=null ms; NCC=null; AMBIGUOUS (CHANNEL_DISAGREEMENT); L: d=0 ALIGNED, R: d=-33 WARNING; shift=0\n[     0.20s]   P01/instrumental: k=0.00 ms; NCC=0.7048; ALIGNED (MEASURED_AGREEMENT); L: d=0 ALIGNED, R: d=0 ALIGNED; shift=0\n[     0.20s] [PERMISO] continuación explícita: cli_allow_misaligned (diagnóstico intacto).\n[     0.20s] Iniciando pipeline v3.1.0 en: /tmp/sdv6f-cli-taz_zvme/EVO_different_lr_1/out/motorA_run_20261119_033546_partial\n[     0.20s] Configuración Consenso: order=magnitudes_first | consensus=confidence_weighted_mean | smoothing=none | mask_mode=mono\n[     0.20s] Parámetros DSP: p=1.80 | beta=1.00 | eps=1.0e-12 | n_fft=4096 | hop=1024 | residuals=False\n[     0.20s] Procesando 46 tramas en 1 chunks de 256 tramas...\n[     0.30s]   Chunk 01/1 [100.0%] completado (Tramas 0-45)\n[     0.30s] Post-WAV Identity SNR: 156.12 dB (Estado: PASS_EXACT_IDENTITY)\n[     0.31s] Directorio 'masks/' eliminado para liberar espacio.\n[     0.31s] Corrida finalizada exitosamente en: /tmp/sdv6f-cli-taz_zvme/EVO_different_lr_1/out/motorA_run_20261119_033546\n\n============================================================================\n\u001b[92m[✓] SEPARACIÓN MOTOR A v3.1.0 COMPLETADA CON ÉXITO (SNR > 140 dB)\u001b[0m\nDirectorio de Resultados : \u001b[96m/tmp/sdv6f-cli-taz_zvme/EVO_different_lr_1/out/motorA_run_20261119_033546\u001b[0m\nArtefactos Generados     : different_lr-mix SDV.wav | different_lr-mix SDI.wav | analysis.json | analysis.txt\n============================================================================\n\n",
+      "stderr": "",
+      "files": [
+        "different_lr-mix SDI.wav",
+        "different_lr-mix SDV.wav"
+      ],
+      "run_dir": "/tmp/sdv6f-cli-taz_zvme/EVO_different_lr_1/out"
+    },
+    {
+      "run": "EVO_silent_0",
+      "exit": 1,
+      "stdout": "[     0.01s] Validación de entradas OK: Mix 44100Hz/2ch (344.62 KiB) | 1 Pares\n[     0.01s] Verificando alineación temporal NCC de las guías...\n[     0.01s]   P01/vocal: k=null ms; NCC=null; NON_INFORMATIVE (ALL_CHANNELS_NON_INFORMATIVE); L: d=null NON_INFORMATIVE, R: d=null NON_INFORMATIVE; shift=0\n[     0.11s]   P01/instrumental: k=0.00 ms; NCC=0.7048; ALIGNED (MEASURED_AGREEMENT); L: d=0 ALIGNED, R: d=0 ALIGNED; shift=0\n[     0.11s] [ABORT] Diagnóstico no validado (NON_INFORMATIVE). Se requiere --allow-misaligned para continuar sin corrección; el diagnóstico no cambia.\n",
+      "stderr": "",
+      "files": [],
+      "run_dir": "/tmp/sdv6f-cli-taz_zvme/EVO_silent_0/out"
+    },
+    {
+      "run": "EVO_silent_1",
+      "exit": 0,
+      "stdout": "[     0.01s] Validación de entradas OK: Mix 44100Hz/2ch (344.62 KiB) | 1 Pares\n[     0.01s] Verificando alineación temporal NCC de las guías...\n[     0.01s]   P01/vocal: k=null ms; NCC=null; NON_INFORMATIVE (ALL_CHANNELS_NON_INFORMATIVE); L: d=null NON_INFORMATIVE, R: d=null NON_INFORMATIVE; shift=0\n[     0.11s]   P01/instrumental: k=0.00 ms; NCC=0.7048; ALIGNED (MEASURED_AGREEMENT); L: d=0 ALIGNED, R: d=0 ALIGNED; shift=0\n[     0.11s] [PERMISO] continuación explícita: cli_allow_misaligned (diagnóstico intacto).\n[     0.11s] Iniciando pipeline v3.1.0 en: /tmp/sdv6f-cli-taz_zvme/EVO_silent_1/out/motorA_run_20261119_033547_partial\n[     0.11s] Configuración Consenso: order=magnitudes_first | consensus=confidence_weighted_mean | smoothing=none | mask_mode=mono\n[     0.11s] Parámetros DSP: p=1.80 | beta=1.00 | eps=1.0e-12 | n_fft=4096 | hop=1024 | residuals=False\n[     0.11s] Procesando 46 tramas en 1 chunks de 256 tramas...\n[     0.22s]   Chunk 01/1 [100.0%] completado (Tramas 0-45)\n[     0.22s] Post-WAV Identity SNR: 350.59 dB (Estado: PASS_EXACT_IDENTITY)\n[     0.23s] Directorio 'masks/' eliminado para liberar espacio.\n[     0.23s] Corrida finalizada exitosamente en: /tmp/sdv6f-cli-taz_zvme/EVO_silent_1/out/motorA_run_20261119_033547\n\n============================================================================\n\u001b[92m[✓] SEPARACIÓN MOTOR A v3.1.0 COMPLETADA CON ÉXITO (SNR > 140 dB)\u001b[0m\nDirectorio de Resultados : \u001b[96m/tmp/sdv6f-cli-taz_zvme/EVO_silent_1/out/motorA_run_20261119_033547\u001b[0m\nArtefactos Generados     : silent-mix SDV.wav | silent-mix SDI.wav | analysis.json | analysis.txt\n============================================================================\n\n",
+      "stderr": "",
+      "files": [
+        "silent-mix SDI.wav",
+        "silent-mix SDV.wav"
+      ],
+      "run_dir": "/tmp/sdv6f-cli-taz_zvme/EVO_silent_1/out"
+    },
+    {
+      "run": "EVO_nonfinite_0",
+      "exit": 1,
+      "stdout": "[     0.01s] [FATAL] Guías inválidas detectadas:\n[     0.01s]   - P01/vocal: soundfile no pudo abrir el archivo: Muestras no finitas en el payload float\n",
+      "stderr": "",
+      "files": [],
+      "run_dir": "/tmp/sdv6f-cli-taz_zvme/EVO_nonfinite_0/out"
+    },
+    {
+      "run": "EVO_nonfinite_1",
+      "exit": 1,
+      "stdout": "[     0.01s] [FATAL] Guías inválidas detectadas:\n[     0.01s]   - P01/vocal: soundfile no pudo abrir el archivo: Muestras no finitas en el payload float\n",
+      "stderr": "",
+      "files": [],
+      "run_dir": "/tmp/sdv6f-cli-taz_zvme/EVO_nonfinite_1/out"
+    },
+    {
+      "run": "EVO_truncated_0",
+      "exit": 1,
+      "stdout": "[     0.01s] [FATAL] Guías inválidas detectadas:\n[     0.01s]   - P01/vocal: soundfile no pudo abrir el archivo: RIFF declara 352888 bytes; el archivo físico tiene 351888\n",
+      "stderr": "",
+      "files": [],
+      "run_dir": "/tmp/sdv6f-cli-taz_zvme/EVO_truncated_0/out"
+    },
+    {
+      "run": "EVO_truncated_1",
+      "exit": 1,
+      "stdout": "[     0.01s] [FATAL] Guías inválidas detectadas:\n[     0.01s]   - P01/vocal: soundfile no pudo abrir el archivo: RIFF declara 352888 bytes; el archivo físico tiene 351888\n",
+      "stderr": "",
+      "files": [],
+      "run_dir": "/tmp/sdv6f-cli-taz_zvme/EVO_truncated_1/out"
+    },
+    {
+      "run": "EVO_nan_samples_0",
+      "exit": 1,
+      "stdout": "[     0.01s] [FATAL] Guías inválidas detectadas:\n[     0.01s]   - P01/vocal: soundfile no pudo abrir el archivo: Muestras no finitas en el payload float\n",
+      "stderr": "",
+      "files": [],
+      "run_dir": "/tmp/sdv6f-cli-taz_zvme/EVO_nan_samples_0/out"
+    },
+    {
+      "run": "EVO_nan_samples_1",
+      "exit": 1,
+      "stdout": "[     0.01s] [FATAL] Guías inválidas detectadas:\n[     0.01s]   - P01/vocal: soundfile no pudo abrir el archivo: Muestras no finitas en el payload float\n",
+      "stderr": "",
+      "files": [],
+      "run_dir": "/tmp/sdv6f-cli-taz_zvme/EVO_nan_samples_1/out"
+    },
+    {
+      "run": "MQR_clean_0",
+      "exit": 0,
+      "stdout": "[     0.01s] Validacion de entradas: OK (mix 44100 Hz / 2 ch / 44100 frames; 1 pares)\n[     0.01s] Analisis de alineacion (detect_only_no_correction)...\n[     0.10s]   P01/vocal: k=0.00 ms; NCC=0.7037; ALIGNED (MEASURED_AGREEMENT); L: d=0 ALIGNED, R: d=0 ALIGNED; shift=0\n[     0.19s]   P01/instrumental: k=0.00 ms; NCC=0.7048; ALIGNED (MEASURED_AGREEMENT); L: d=0 ALIGNED, R: d=0 ALIGNED; shift=0\n[     0.20s] Analisis de escala de guides (metricas + factores)...\n[     0.20s]   P01: g_vocal=1.0000 g_instr=1.0000 (politica=none)\n[     0.20s] Directorio de corrida (parcial): /tmp/sdv6f-cli-taz_zvme/MQR_clean_0/out/mqr_run_20261119_033549_partial\n[     0.20s] Pipeline: mode=full_processing, 1 pares, K=46 frames en chunks de 256\n[     0.38s]   chunk 1/1 (frames 0-45) listo\n[     0.39s] Post-WAV identity: SNR=155.79 dB (esperado > 100 dB)\n[     0.39s] Escribiendo analysis.json / analysis.txt ...\n[     0.40s] Directorio final: /tmp/sdv6f-cli-taz_zvme/MQR_clean_0/out/mqr_run_20261119_033549\n[     0.40s] Duracion total: 0.4 s\n[     0.40s] Corrida COMPLETA: /tmp/sdv6f-cli-taz_zvme/MQR_clean_0/out/mqr_run_20261119_033549\n\nRESULTADO: OK\n  salida: /tmp/sdv6f-cli-taz_zvme/MQR_clean_0/out/mqr_run_20261119_033549\n  SDV.wav / SDI.wav / analysis.json / analysis.txt / masks/\n",
+      "stderr": "",
+      "files": [
+        "SDI.wav",
+        "SDV.wav"
+      ],
+      "run_dir": "/tmp/sdv6f-cli-taz_zvme/MQR_clean_0/out"
+    },
+    {
+      "run": "MQR_clean_1",
+      "exit": 0,
+      "stdout": "[     0.01s] Validacion de entradas: OK (mix 44100 Hz / 2 ch / 44100 frames; 1 pares)\n[     0.01s] Analisis de alineacion (detect_only_no_correction)...\n[     0.10s]   P01/vocal: k=0.00 ms; NCC=0.7037; ALIGNED (MEASURED_AGREEMENT); L: d=0 ALIGNED, R: d=0 ALIGNED; shift=0\n[     0.19s]   P01/instrumental: k=0.00 ms; NCC=0.7048; ALIGNED (MEASURED_AGREEMENT); L: d=0 ALIGNED, R: d=0 ALIGNED; shift=0\n[     0.19s] Analisis de escala de guides (metricas + factores)...\n[     0.20s]   P01: g_vocal=1.0000 g_instr=1.0000 (politica=none)\n[     0.20s] Directorio de corrida (parcial): /tmp/sdv6f-cli-taz_zvme/MQR_clean_1/out/mqr_run_20261119_033550_partial\n[     0.20s] Pipeline: mode=full_processing, 1 pares, K=46 frames en chunks de 256\n[     0.37s]   chunk 1/1 (frames 0-45) listo\n[     0.39s] Post-WAV identity: SNR=155.79 dB (esperado > 100 dB)\n[     0.39s] Escribiendo analysis.json / analysis.txt ...\n[     0.40s] Directorio final: /tmp/sdv6f-cli-taz_zvme/MQR_clean_1/out/mqr_run_20261119_033550\n[     0.40s] Duracion total: 0.4 s\n[     0.40s] Corrida COMPLETA: /tmp/sdv6f-cli-taz_zvme/MQR_clean_1/out/mqr_run_20261119_033550\n\nRESULTADO: OK\n  salida: /tmp/sdv6f-cli-taz_zvme/MQR_clean_1/out/mqr_run_20261119_033550\n  SDV.wav / SDI.wav / analysis.json / analysis.txt / masks/\n",
+      "stderr": "",
+      "files": [
+        "SDI.wav",
+        "SDV.wav"
+      ],
+      "run_dir": "/tmp/sdv6f-cli-taz_zvme/MQR_clean_1/out"
+    },
+    {
+      "run": "MQR_side_0",
+      "exit": 0,
+      "stdout": "[     0.01s] Validacion de entradas: OK (mix 44100 Hz / 2 ch / 44100 frames; 1 pares)\n[     0.01s] Analisis de alineacion (detect_only_no_correction)...\n[     0.10s]   P01/vocal: k=0.00 ms; NCC=0.7037; ALIGNED (MEASURED_AGREEMENT); L: d=0 ALIGNED, R: d=0 ALIGNED; shift=0\n[     0.19s]   P01/instrumental: k=0.00 ms; NCC=0.7048; ALIGNED (MEASURED_AGREEMENT); L: d=0 ALIGNED, R: d=0 ALIGNED; shift=0\n[     0.19s] Analisis de escala de guides (metricas + factores)...\n[     0.19s]   P01: g_vocal=1.0000 g_instr=1.0000 (politica=none)\n[     0.19s] Directorio de corrida (parcial): /tmp/sdv6f-cli-taz_zvme/MQR_side_0/out/mqr_run_20261119_033551_partial\n[     0.19s] Pipeline: mode=full_processing, 1 pares, K=46 frames en chunks de 256\n[     0.38s]   chunk 1/1 (frames 0-45) listo\n[     0.39s] Post-WAV identity: SNR=inf dB (esperado > 100 dB)\n[     0.40s] Escribiendo analysis.json / analysis.txt ...\n[     0.40s] Directorio final: /tmp/sdv6f-cli-taz_zvme/MQR_side_0/out/mqr_run_20261119_033551\n[     0.40s] Duracion total: 0.4 s\n[     0.40s] Corrida COMPLETA: /tmp/sdv6f-cli-taz_zvme/MQR_side_0/out/mqr_run_20261119_033551\n\nRESULTADO: OK\n  salida: /tmp/sdv6f-cli-taz_zvme/MQR_side_0/out/mqr_run_20261119_033551\n  SDV.wav / SDI.wav / analysis.json / analysis.txt / masks/\n",
+      "stderr": "",
+      "files": [
+        "SDI.wav",
+        "SDV.wav"
+      ],
+      "run_dir": "/tmp/sdv6f-cli-taz_zvme/MQR_side_0/out"
+    },
+    {
+      "run": "MQR_shift_567_0",
+      "exit": 1,
+      "stdout": "[     0.01s] Validacion de entradas: OK (mix 44100 Hz / 2 ch / 44667 frames; 1 pares)\n[     0.01s] Analisis de alineacion (detect_only_no_correction)...\n[     0.10s]   P01/vocal: k=-12.86 ms; NCC=0.7103; MISALIGNED (MEASURED_AGREEMENT); L: d=567 MISALIGNED, R: d=567 MISALIGNED; shift=0\n[     0.19s]   P01/instrumental: k=0.00 ms; NCC=0.7048; ALIGNED (MEASURED_AGREEMENT); L: d=0 ALIGNED, R: d=0 ALIGNED; shift=0\n[     0.19s] [ABORT] Diagnóstico no validado (MISALIGNED). Se requiere --allow-misaligned para continuar sin corrección; el diagnóstico no cambia.\n",
+      "stderr": "",
+      "files": [],
+      "run_dir": "/tmp/sdv6f-cli-taz_zvme/MQR_shift_567_0/out"
+    },
+    {
+      "run": "MQR_shift_567_1",
+      "exit": 0,
+      "stdout": "[     0.01s] Validacion de entradas: OK (mix 44100 Hz / 2 ch / 44667 frames; 1 pares)\n[     0.01s] Analisis de alineacion (detect_only_no_correction)...\n[     0.10s]   P01/vocal: k=-12.86 ms; NCC=0.7103; MISALIGNED (MEASURED_AGREEMENT); L: d=567 MISALIGNED, R: d=567 MISALIGNED; shift=0\n[     0.19s]   P01/instrumental: k=0.00 ms; NCC=0.7048; ALIGNED (MEASURED_AGREEMENT); L: d=0 ALIGNED, R: d=0 ALIGNED; shift=0\n[     0.19s] [PERMISO] continuación explícita: cli_allow_misaligned (diagnóstico intacto).\n[     0.19s] Analisis de escala de guides (metricas + factores)...\n[     0.20s]   P01: g_vocal=1.0000 g_instr=1.0000 (politica=none)\n[     0.20s] Directorio de corrida (parcial): /tmp/sdv6f-cli-taz_zvme/MQR_shift_567_1/out/mqr_run_20261119_033552_partial\n[     0.20s] Pipeline: mode=full_processing, 1 pares, K=46 frames en chunks de 256\n[     0.38s]   chunk 1/1 (frames 0-45) listo\n[     0.40s] Post-WAV identity: SNR=155.87 dB (esperado > 100 dB)\n[     0.40s] Escribiendo analysis.json / analysis.txt ...\n[     0.41s] Directorio final: /tmp/sdv6f-cli-taz_zvme/MQR_shift_567_1/out/mqr_run_20261119_033552\n[     0.41s] Duracion total: 0.4 s\n[     0.41s] Corrida COMPLETA: /tmp/sdv6f-cli-taz_zvme/MQR_shift_567_1/out/mqr_run_20261119_033552\n\nRESULTADO: OK\n  salida: /tmp/sdv6f-cli-taz_zvme/MQR_shift_567_1/out/mqr_run_20261119_033552\n  SDV.wav / SDI.wav / analysis.json / analysis.txt / masks/\n",
+      "stderr": "",
+      "files": [
+        "SDI.wav",
+        "SDV.wav"
+      ],
+      "run_dir": "/tmp/sdv6f-cli-taz_zvme/MQR_shift_567_1/out"
+    },
+    {
+      "run": "MQR_dual_173_0",
+      "exit": 1,
+      "stdout": "[     0.01s] Validacion de entradas: OK (mix 44100 Hz / 2 ch / 44100 frames; 1 pares)\n[     0.01s] Analisis de alineacion (detect_only_no_correction)...\n[     0.10s]   P01/vocal: k=null ms; NCC=null; AMBIGUOUS (MEMBER_AMBIGUITY_OR_CONFLICT); L: d=null AMBIGUOUS, R: d=null AMBIGUOUS; shift=0\n[     0.19s]   P01/instrumental: k=0.00 ms; NCC=0.5779; ALIGNED (MEASURED_AGREEMENT); L: d=0 ALIGNED, R: d=0 ALIGNED; shift=0\n[     0.19s] [ABORT] Diagnóstico no validado (AMBIGUOUS). Se requiere --allow-misaligned para continuar sin corrección; el diagnóstico no cambia.\n",
+      "stderr": "",
+      "files": [],
+      "run_dir": "/tmp/sdv6f-cli-taz_zvme/MQR_dual_173_0/out"
+    },
+    {
+      "run": "MQR_dual_173_1",
+      "exit": 0,
+      "stdout": "[     0.01s] Validacion de entradas: OK (mix 44100 Hz / 2 ch / 44100 frames; 1 pares)\n[     0.01s] Analisis de alineacion (detect_only_no_correction)...\n[     0.11s]   P01/vocal: k=null ms; NCC=null; AMBIGUOUS (MEMBER_AMBIGUITY_OR_CONFLICT); L: d=null AMBIGUOUS, R: d=null AMBIGUOUS; shift=0\n[     0.22s]   P01/instrumental: k=0.00 ms; NCC=0.5779; ALIGNED (MEASURED_AGREEMENT); L: d=0 ALIGNED, R: d=0 ALIGNED; shift=0\n[     0.22s] [PERMISO] continuación explícita: cli_allow_misaligned (diagnóstico intacto).\n[     0.22s] Analisis de escala de guides (metricas + factores)...\n[     0.22s]   P01: g_vocal=1.0000 g_instr=1.0000 (politica=none)\n[     0.22s] Directorio de corrida (parcial): /tmp/sdv6f-cli-taz_zvme/MQR_dual_173_1/out/mqr_run_20261119_033553_partial\n[     0.22s] Pipeline: mode=full_processing, 1 pares, K=46 frames en chunks de 256\n[     0.41s]   chunk 1/1 (frames 0-45) listo\n[     0.43s] Post-WAV identity: SNR=155.40 dB (esperado > 100 dB)\n[     0.43s] Escribiendo analysis.json / analysis.txt ...\n[     0.44s] Directorio final: /tmp/sdv6f-cli-taz_zvme/MQR_dual_173_1/out/mqr_run_20261119_033553\n[     0.44s] Duracion total: 0.4 s\n[     0.44s] Corrida COMPLETA: /tmp/sdv6f-cli-taz_zvme/MQR_dual_173_1/out/mqr_run_20261119_033553\n\nRESULTADO: OK\n  salida: /tmp/sdv6f-cli-taz_zvme/MQR_dual_173_1/out/mqr_run_20261119_033553\n  SDV.wav / SDI.wav / analysis.json / analysis.txt / masks/\n",
+      "stderr": "",
+      "files": [
+        "SDI.wav",
+        "SDV.wav"
+      ],
+      "run_dir": "/tmp/sdv6f-cli-taz_zvme/MQR_dual_173_1/out"
+    },
+    {
+      "run": "MQR_right_rival_.125_0",
+      "exit": 1,
+      "stdout": "[     0.01s] Validacion de entradas: OK (mix 44100 Hz / 2 ch / 44100 frames; 1 pares)\n[     0.01s] Analisis de alineacion (detect_only_no_correction)...\n[     0.11s]   P01/vocal: k=null ms; NCC=null; AMBIGUOUS (MEMBER_AMBIGUITY_OR_CONFLICT); L: d=0 ALIGNED, R: d=null AMBIGUOUS; shift=0\n[     0.20s]   P01/instrumental: k=0.00 ms; NCC=0.7048; ALIGNED (MEASURED_AGREEMENT); L: d=0 ALIGNED, R: d=0 ALIGNED; shift=0\n[     0.20s] [ABORT] Diagnóstico no validado (AMBIGUOUS). Se requiere --allow-misaligned para continuar sin corrección; el diagnóstico no cambia.\n",
+      "stderr": "",
+      "files": [],
+      "run_dir": "/tmp/sdv6f-cli-taz_zvme/MQR_right_rival_.125_0/out"
+    },
+    {
+      "run": "MQR_right_rival_.125_1",
+      "exit": 0,
+      "stdout": "[     0.01s] Validacion de entradas: OK (mix 44100 Hz / 2 ch / 44100 frames; 1 pares)\n[     0.01s] Analisis de alineacion (detect_only_no_correction)...\n[     0.10s]   P01/vocal: k=null ms; NCC=null; AMBIGUOUS (MEMBER_AMBIGUITY_OR_CONFLICT); L: d=0 ALIGNED, R: d=null AMBIGUOUS; shift=0\n[     0.19s]   P01/instrumental: k=0.00 ms; NCC=0.7048; ALIGNED (MEASURED_AGREEMENT); L: d=0 ALIGNED, R: d=0 ALIGNED; shift=0\n[     0.19s] [PERMISO] continuación explícita: cli_allow_misaligned (diagnóstico intacto).\n[     0.19s] Analisis de escala de guides (metricas + factores)...\n[     0.20s]   P01: g_vocal=1.0000 g_instr=1.0000 (politica=none)\n[     0.20s] Directorio de corrida (parcial): /tmp/sdv6f-cli-taz_zvme/MQR_right_rival_.125_1/out/mqr_run_20261119_033554_partial\n[     0.20s] Pipeline: mode=full_processing, 1 pares, K=46 frames en chunks de 256\n[     0.38s]   chunk 1/1 (frames 0-45) listo\n[     0.40s] Post-WAV identity: SNR=155.84 dB (esperado > 100 dB)\n[     0.40s] Escribiendo analysis.json / analysis.txt ...\n[     0.41s] Directorio final: /tmp/sdv6f-cli-taz_zvme/MQR_right_rival_.125_1/out/mqr_run_20261119_033554\n[     0.41s] Duracion total: 0.4 s\n[     0.41s] Corrida COMPLETA: /tmp/sdv6f-cli-taz_zvme/MQR_right_rival_.125_1/out/mqr_run_20261119_033554\n\nRESULTADO: OK\n  salida: /tmp/sdv6f-cli-taz_zvme/MQR_right_rival_.125_1/out/mqr_run_20261119_033554\n  SDV.wav / SDI.wav / analysis.json / analysis.txt / masks/\n",
+      "stderr": "",
+      "files": [
+        "SDI.wav",
+        "SDV.wav"
+      ],
+      "run_dir": "/tmp/sdv6f-cli-taz_zvme/MQR_right_rival_.125_1/out"
+    },
+    {
+      "run": "MQR_different_lr_0",
+      "exit": 1,
+      "stdout": "[     0.01s] Validacion de entradas: OK (mix 44100 Hz / 2 ch / 44100 frames; 1 pares)\n[     0.01s] Analisis de alineacion (detect_only_no_correction)...\n[     0.11s]   P01/vocal: k=null ms; NCC=null; AMBIGUOUS (CHANNEL_DISAGREEMENT); L: d=0 ALIGNED, R: d=-33 WARNING; shift=0\n[     0.20s]   P01/instrumental: k=0.00 ms; NCC=0.7048; ALIGNED (MEASURED_AGREEMENT); L: d=0 ALIGNED, R: d=0 ALIGNED; shift=0\n[     0.20s] [ABORT] Diagnóstico no validado (AMBIGUOUS). Se requiere --allow-misaligned para continuar sin corrección; el diagnóstico no cambia.\n",
+      "stderr": "",
+      "files": [],
+      "run_dir": "/tmp/sdv6f-cli-taz_zvme/MQR_different_lr_0/out"
+    },
+    {
+      "run": "MQR_different_lr_1",
+      "exit": 0,
+      "stdout": "[     0.01s] Validacion de entradas: OK (mix 44100 Hz / 2 ch / 44100 frames; 1 pares)\n[     0.01s] Analisis de alineacion (detect_only_no_correction)...\n[     0.11s]   P01/vocal: k=null ms; NCC=null; AMBIGUOUS (CHANNEL_DISAGREEMENT); L: d=0 ALIGNED, R: d=-33 WARNING; shift=0\n[     0.21s]   P01/instrumental: k=0.00 ms; NCC=0.7048; ALIGNED (MEASURED_AGREEMENT); L: d=0 ALIGNED, R: d=0 ALIGNED; shift=0\n[     0.21s] [PERMISO] continuación explícita: cli_allow_misaligned (diagnóstico intacto).\n[     0.21s] Analisis de escala de guides (metricas + factores)...\n[     0.21s]   P01: g_vocal=1.0000 g_instr=1.0000 (politica=none)\n[     0.21s] Directorio de corrida (parcial): /tmp/sdv6f-cli-taz_zvme/MQR_different_lr_1/out/mqr_run_20261119_033556_partial\n[     0.21s] Pipeline: mode=full_processing, 1 pares, K=46 frames en chunks de 256\n[     0.40s]   chunk 1/1 (frames 0-45) listo\n[     0.41s] Post-WAV identity: SNR=155.81 dB (esperado > 100 dB)\n[     0.41s] Escribiendo analysis.json / analysis.txt ...\n[     0.42s] Directorio final: /tmp/sdv6f-cli-taz_zvme/MQR_different_lr_1/out/mqr_run_20261119_033556\n[     0.42s] Duracion total: 0.4 s\n[     0.42s] Corrida COMPLETA: /tmp/sdv6f-cli-taz_zvme/MQR_different_lr_1/out/mqr_run_20261119_033556\n\nRESULTADO: OK\n  salida: /tmp/sdv6f-cli-taz_zvme/MQR_different_lr_1/out/mqr_run_20261119_033556\n  SDV.wav / SDI.wav / analysis.json / analysis.txt / masks/\n",
+      "stderr": "",
+      "files": [
+        "SDI.wav",
+        "SDV.wav"
+      ],
+      "run_dir": "/tmp/sdv6f-cli-taz_zvme/MQR_different_lr_1/out"
+    },
+    {
+      "run": "MQR_silent_0",
+      "exit": 1,
+      "stdout": "[     0.01s] Validacion de entradas: OK (mix 44100 Hz / 2 ch / 44100 frames; 1 pares)\n[     0.01s] Analisis de alineacion (detect_only_no_correction)...\n[     0.01s]   P01/vocal: k=null ms; NCC=null; NON_INFORMATIVE (ALL_CHANNELS_NON_INFORMATIVE); L: d=null NON_INFORMATIVE, R: d=null NON_INFORMATIVE; shift=0\n[     0.11s]   P01/instrumental: k=0.00 ms; NCC=0.7048; ALIGNED (MEASURED_AGREEMENT); L: d=0 ALIGNED, R: d=0 ALIGNED; shift=0\n[     0.11s] [ABORT] Diagnóstico no validado (NON_INFORMATIVE). Se requiere --allow-misaligned para continuar sin corrección; el diagnóstico no cambia.\n",
+      "stderr": "",
+      "files": [],
+      "run_dir": "/tmp/sdv6f-cli-taz_zvme/MQR_silent_0/out"
+    },
+    {
+      "run": "MQR_silent_1",
+      "exit": 0,
+      "stdout": "[     0.01s] Validacion de entradas: OK (mix 44100 Hz / 2 ch / 44100 frames; 1 pares)\n[     0.01s] Analisis de alineacion (detect_only_no_correction)...\n[     0.01s]   P01/vocal: k=null ms; NCC=null; NON_INFORMATIVE (ALL_CHANNELS_NON_INFORMATIVE); L: d=null NON_INFORMATIVE, R: d=null NON_INFORMATIVE; shift=0\n[     0.11s]   P01/instrumental: k=0.00 ms; NCC=0.7048; ALIGNED (MEASURED_AGREEMENT); L: d=0 ALIGNED, R: d=0 ALIGNED; shift=0\n[     0.11s] [PERMISO] continuación explícita: cli_allow_misaligned (diagnóstico intacto).\n[     0.11s] Analisis de escala de guides (metricas + factores)...\n[     0.11s]   P01: g_vocal=1.0000 g_instr=1.0000 (politica=none)\n[     0.11s] Directorio de corrida (parcial): /tmp/sdv6f-cli-taz_zvme/MQR_silent_1/out/mqr_run_20261119_033557_partial\n[     0.11s] Pipeline: mode=full_processing, 1 pares, K=46 frames en chunks de 256\n[     0.30s]   chunk 1/1 (frames 0-45) listo\n[     0.31s] Post-WAV identity: SNR=350.39 dB (esperado > 100 dB)\n[     0.31s] Escribiendo analysis.json / analysis.txt ...\n[     0.32s] Directorio final: /tmp/sdv6f-cli-taz_zvme/MQR_silent_1/out/mqr_run_20261119_033557\n[     0.32s] Duracion total: 0.3 s\n[     0.32s] Corrida COMPLETA: /tmp/sdv6f-cli-taz_zvme/MQR_silent_1/out/mqr_run_20261119_033557\n\nRESULTADO: OK\n  salida: /tmp/sdv6f-cli-taz_zvme/MQR_silent_1/out/mqr_run_20261119_033557\n  SDV.wav / SDI.wav / analysis.json / analysis.txt / masks/\n",
+      "stderr": "",
+      "files": [
+        "SDI.wav",
+        "SDV.wav"
+      ],
+      "run_dir": "/tmp/sdv6f-cli-taz_zvme/MQR_silent_1/out"
+    },
+    {
+      "run": "MQR_nonfinite_0",
+      "exit": 1,
+      "stdout": "[     0.01s] [FATAL] guides invalidos (policy reject_by_default):\n[     0.01s]   - P01/vocal: soundfile no pudo abrir el archivo: Muestras no finitas en el payload float\n",
+      "stderr": "",
+      "files": [],
+      "run_dir": "/tmp/sdv6f-cli-taz_zvme/MQR_nonfinite_0/out"
+    },
+    {
+      "run": "MQR_nonfinite_1",
+      "exit": 1,
+      "stdout": "[     0.01s] [FATAL] guides invalidos (policy reject_by_default):\n[     0.01s]   - P01/vocal: soundfile no pudo abrir el archivo: Muestras no finitas en el payload float\n",
+      "stderr": "",
+      "files": [],
+      "run_dir": "/tmp/sdv6f-cli-taz_zvme/MQR_nonfinite_1/out"
+    },
+    {
+      "run": "MQR_truncated_0",
+      "exit": 1,
+      "stdout": "[     0.01s] [FATAL] guides invalidos (policy reject_by_default):\n[     0.01s]   - P01/vocal: soundfile no pudo abrir el archivo: RIFF declara 352888 bytes; el archivo físico tiene 351888\n",
+      "stderr": "",
+      "files": [],
+      "run_dir": "/tmp/sdv6f-cli-taz_zvme/MQR_truncated_0/out"
+    },
+    {
+      "run": "MQR_truncated_1",
+      "exit": 1,
+      "stdout": "[     0.01s] [FATAL] guides invalidos (policy reject_by_default):\n[     0.01s]   - P01/vocal: soundfile no pudo abrir el archivo: RIFF declara 352888 bytes; el archivo físico tiene 351888\n",
+      "stderr": "",
+      "files": [],
+      "run_dir": "/tmp/sdv6f-cli-taz_zvme/MQR_truncated_1/out"
+    },
+    {
+      "run": "MQR_nan_samples_0",
+      "exit": 1,
+      "stdout": "[     0.01s] [FATAL] guides invalidos (policy reject_by_default):\n[     0.01s]   - P01/vocal: soundfile no pudo abrir el archivo: Muestras no finitas en el payload float\n",
+      "stderr": "",
+      "files": [],
+      "run_dir": "/tmp/sdv6f-cli-taz_zvme/MQR_nan_samples_0/out"
+    },
+    {
+      "run": "MQR_nan_samples_1",
+      "exit": 1,
+      "stdout": "[     0.01s] [FATAL] guides invalidos (policy reject_by_default):\n[     0.01s]   - P01/vocal: soundfile no pudo abrir el archivo: Muestras no finitas en el payload float\n",
+      "stderr": "",
+      "files": [],
+      "run_dir": "/tmp/sdv6f-cli-taz_zvme/MQR_nan_samples_1/out"
+    }
+  ],
+  "resumen": {
+    "ok": 57,
+    "total": 57
+  },
+  "determinism_and_permission": {
+    "Hardened/dual_173/determinismo": {
+      "same_pcm": true,
+      "same_exit": true,
+      "same_diagnostic": true
+    },
+    "Hardened/shift_567/determinismo": {
+      "same_pcm": true,
+      "same_exit": true,
+      "same_diagnostic": true
+    },
+    "Hardened/clean/determinismo": {
+      "same_pcm": true,
+      "same_exit": true,
+      "same_diagnostic": true
+    },
+    "EVO/dual_173/determinismo": {
+      "same_pcm": true,
+      "same_exit": true,
+      "same_diagnostic": true
+    },
+    "EVO/shift_567/determinismo": {
+      "same_pcm": true,
+      "same_exit": true,
+      "same_diagnostic": true
+    },
+    "EVO/clean/determinismo": {
+      "same_pcm": true,
+      "same_exit": true,
+      "same_diagnostic": true
+    },
+    "MQR/dual_173/determinismo": {
+      "same_pcm": true,
+      "same_exit": true,
+      "same_diagnostic": true
+    },
+    "MQR/shift_567/determinismo": {
+      "same_pcm": true,
+      "same_exit": true,
+      "same_diagnostic": true
+    },
+    "MQR/clean/determinismo": {
+      "same_pcm": true,
+      "same_exit": true,
+      "same_diagnostic": true
+    }
+  },
+  "dsp_vs_6E": {
+    "Hardened/clean": {
+      "ref_exit": 0,
+      "cur_exit": 0,
+      "ref_wavs": 2,
+      "cur_wavs": 2,
+      "identical_pcm": true,
+      "same_shape": true
+    },
+    "Hardened/dual_173": {
+      "ref_exit": 0,
+      "cur_exit": 0,
+      "ref_wavs": 2,
+      "cur_wavs": 2,
+      "identical_pcm": true,
+      "same_shape": true
+    },
+    "Hardened/shift_567": {
+      "ref_exit": 0,
+      "cur_exit": 0,
+      "ref_wavs": 2,
+      "cur_wavs": 2,
+      "identical_pcm": true,
+      "same_shape": true
+    },
+    "Hardened/right_rival_.125": {
+      "ref_exit": 0,
+      "cur_exit": 0,
+      "ref_wavs": 2,
+      "cur_wavs": 2,
+      "identical_pcm": true,
+      "same_shape": true
+    },
+    "EVO/clean": {
+      "ref_exit": 0,
+      "cur_exit": 0,
+      "ref_wavs": 2,
+      "cur_wavs": 2,
+      "identical_pcm": true,
+      "same_shape": true
+    },
+    "EVO/dual_173": {
+      "ref_exit": 0,
+      "cur_exit": 0,
+      "ref_wavs": 2,
+      "cur_wavs": 2,
+      "identical_pcm": true,
+      "same_shape": true
+    },
+    "EVO/shift_567": {
+      "ref_exit": 0,
+      "cur_exit": 0,
+      "ref_wavs": 2,
+      "cur_wavs": 2,
+      "identical_pcm": true,
+      "same_shape": true
+    },
+    "EVO/right_rival_.125": {
+      "ref_exit": 0,
+      "cur_exit": 0,
+      "ref_wavs": 2,
+      "cur_wavs": 2,
+      "identical_pcm": true,
+      "same_shape": true
+    },
+    "MQR/clean": {
+      "ref_exit": 0,
+      "cur_exit": 0,
+      "ref_wavs": 2,
+      "cur_wavs": 2,
+      "identical_pcm": true,
+      "same_shape": true
+    },
+    "MQR/dual_173": {
+      "ref_exit": 0,
+      "cur_exit": 0,
+      "ref_wavs": 2,
+      "cur_wavs": 2,
+      "identical_pcm": true,
+      "same_shape": true
+    },
+    "MQR/shift_567": {
+      "ref_exit": 0,
+      "cur_exit": 0,
+      "ref_wavs": 2,
+      "cur_wavs": 2,
+      "identical_pcm": true,
+      "same_shape": true
+    },
+    "MQR/right_rival_.125": {
+      "ref_exit": 0,
+      "cur_exit": 0,
+      "ref_wavs": 2,
+      "cur_wavs": 2,
+      "identical_pcm": true,
+      "same_shape": true
+    }
+  },
+  "seconds": 41.00405885199996,
+  "maxrss_kib": 57472,
+  "child_rss_kib": 139980
+}

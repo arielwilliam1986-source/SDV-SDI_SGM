@@ -1,0 +1,1239 @@
+{
+  "casos": {
+    "pcm16": {
+      "path": "pcm16.wav",
+      "size": 17684,
+      "sha256": "9c641ab1cbbf3d5bc0ee7b251e3bcf02a77a03ae480ab54404fe0dcc3117888c",
+      "expected_valid": true,
+      "motivo": null,
+      "decoder": {
+        "frames": 4410,
+        "channels": 2,
+        "samplerate": 44100,
+        "subtype": "PCM_16"
+      },
+      "spec": {
+        "path": "/tmp/sdv6f-wav-td99qfch/pcm16.wav",
+        "audio_format": 1,
+        "extensible": false,
+        "channels": 2,
+        "rate": 44100,
+        "bits": 16,
+        "valid_bits": 16,
+        "block_align": 4,
+        "byte_rate": 176400,
+        "frames": 4410,
+        "channel_mask": 0,
+        "data_offset": 44,
+        "data_size": 17640,
+        "riff_size": 17676,
+        "physical_size": 17684,
+        "fact_frames": null,
+        "notes": [
+          "channel mask ausente o cero (geometría deducida del conteo de canales)"
+        ],
+        "chunks": [
+          {
+            "kind": "fmt ",
+            "size": 16,
+            "offset": 12
+          },
+          {
+            "kind": "data",
+            "size": 17640,
+            "offset": 36
+          }
+        ]
+      },
+      "samples_shape": [
+        4410,
+        2
+      ],
+      "samples_finite": true,
+      "peak": 0.39996337890625,
+      "same_descriptor": true,
+      "unchanged_after": {
+        "unchanged": true,
+        "reason": "sha256 revalidado",
+        "sha256": "9c641ab1cbbf3d5bc0ee7b251e3bcf02a77a03ae480ab54404fe0dcc3117888c"
+      },
+      "accepted": true,
+      "error": null,
+      "ok": true
+    },
+    "pcm24": {
+      "path": "pcm24.wav",
+      "size": 26504,
+      "sha256": "3d27515833ac3fe69c8d64a7ce677b6320280600782d68829b00de2fda11674b",
+      "expected_valid": true,
+      "motivo": null,
+      "decoder": {
+        "frames": 4410,
+        "channels": 2,
+        "samplerate": 44100,
+        "subtype": "PCM_24"
+      },
+      "spec": {
+        "path": "/tmp/sdv6f-wav-td99qfch/pcm24.wav",
+        "audio_format": 1,
+        "extensible": false,
+        "channels": 2,
+        "rate": 44100,
+        "bits": 24,
+        "valid_bits": 24,
+        "block_align": 6,
+        "byte_rate": 264600,
+        "frames": 4410,
+        "channel_mask": 0,
+        "data_offset": 44,
+        "data_size": 26460,
+        "riff_size": 26496,
+        "physical_size": 26504,
+        "fact_frames": null,
+        "notes": [
+          "channel mask ausente o cero (geometría deducida del conteo de canales)"
+        ],
+        "chunks": [
+          {
+            "kind": "fmt ",
+            "size": 16,
+            "offset": 12
+          },
+          {
+            "kind": "data",
+            "size": 26460,
+            "offset": 36
+          }
+        ]
+      },
+      "samples_shape": [
+        4410,
+        2
+      ],
+      "samples_finite": true,
+      "peak": 0.3999992609024048,
+      "same_descriptor": true,
+      "unchanged_after": {
+        "unchanged": true,
+        "reason": "sha256 revalidado",
+        "sha256": "3d27515833ac3fe69c8d64a7ce677b6320280600782d68829b00de2fda11674b"
+      },
+      "accepted": true,
+      "error": null,
+      "ok": true
+    },
+    "pcm32": {
+      "path": "pcm32.wav",
+      "size": 35324,
+      "sha256": "de53f03e31e9721fd6edbb314f5cb9da2962b8a31eda85ee817515356b36d6f7",
+      "expected_valid": true,
+      "motivo": null,
+      "decoder": {
+        "frames": 4410,
+        "channels": 2,
+        "samplerate": 44100,
+        "subtype": "PCM_32"
+      },
+      "spec": {
+        "path": "/tmp/sdv6f-wav-td99qfch/pcm32.wav",
+        "audio_format": 1,
+        "extensible": false,
+        "channels": 2,
+        "rate": 44100,
+        "bits": 32,
+        "valid_bits": 32,
+        "block_align": 8,
+        "byte_rate": 352800,
+        "frames": 4410,
+        "channel_mask": 0,
+        "data_offset": 44,
+        "data_size": 35280,
+        "riff_size": 35316,
+        "physical_size": 35324,
+        "fact_frames": null,
+        "notes": [
+          "channel mask ausente o cero (geometría deducida del conteo de canales)"
+        ],
+        "chunks": [
+          {
+            "kind": "fmt ",
+            "size": 16,
+            "offset": 12
+          },
+          {
+            "kind": "data",
+            "size": 35280,
+            "offset": 36
+          }
+        ]
+      },
+      "samples_shape": [
+        4410,
+        2
+      ],
+      "samples_finite": true,
+      "peak": 0.3999993144534528,
+      "same_descriptor": true,
+      "unchanged_after": {
+        "unchanged": true,
+        "reason": "sha256 revalidado",
+        "sha256": "de53f03e31e9721fd6edbb314f5cb9da2962b8a31eda85ee817515356b36d6f7"
+      },
+      "accepted": true,
+      "error": null,
+      "ok": true
+    },
+    "float32": {
+      "path": "float32.wav",
+      "size": 35324,
+      "sha256": "b3d868568dcd2f54d5d6db5fc917d776675bd29c9ae0b02facbda5d612a955ee",
+      "expected_valid": true,
+      "motivo": null,
+      "decoder": {
+        "frames": 4410,
+        "channels": 2,
+        "samplerate": 44100,
+        "subtype": "FLOAT"
+      },
+      "spec": {
+        "path": "/tmp/sdv6f-wav-td99qfch/float32.wav",
+        "audio_format": 3,
+        "extensible": false,
+        "channels": 2,
+        "rate": 44100,
+        "bits": 32,
+        "valid_bits": 32,
+        "block_align": 8,
+        "byte_rate": 352800,
+        "frames": 4410,
+        "channel_mask": 0,
+        "data_offset": 44,
+        "data_size": 35280,
+        "riff_size": 35316,
+        "physical_size": 35324,
+        "fact_frames": null,
+        "notes": [
+          "channel mask ausente o cero (geometría deducida del conteo de canales)",
+          "float sin chunk fact (permitido; frames se derivan de data)"
+        ],
+        "chunks": [
+          {
+            "kind": "fmt ",
+            "size": 16,
+            "offset": 12
+          },
+          {
+            "kind": "data",
+            "size": 35280,
+            "offset": 36
+          }
+        ]
+      },
+      "samples_shape": [
+        4410,
+        2
+      ],
+      "samples_finite": true,
+      "peak": 0.39999932050704956,
+      "same_descriptor": true,
+      "unchanged_after": {
+        "unchanged": true,
+        "reason": "sha256 revalidado",
+        "sha256": "b3d868568dcd2f54d5d6db5fc917d776675bd29c9ae0b02facbda5d612a955ee"
+      },
+      "accepted": true,
+      "error": null,
+      "ok": true
+    },
+    "float64": {
+      "path": "float64.wav",
+      "size": 70604,
+      "sha256": "e8c902ac8e64a3a94a7f1b6a9f3f1539f866d8c842c0731904688ee6c598c038",
+      "expected_valid": true,
+      "motivo": null,
+      "decoder": {
+        "frames": 4410,
+        "channels": 2,
+        "samplerate": 44100,
+        "subtype": "DOUBLE"
+      },
+      "spec": {
+        "path": "/tmp/sdv6f-wav-td99qfch/float64.wav",
+        "audio_format": 3,
+        "extensible": false,
+        "channels": 2,
+        "rate": 44100,
+        "bits": 64,
+        "valid_bits": 64,
+        "block_align": 16,
+        "byte_rate": 705600,
+        "frames": 4410,
+        "channel_mask": 0,
+        "data_offset": 44,
+        "data_size": 70560,
+        "riff_size": 70596,
+        "physical_size": 70604,
+        "fact_frames": null,
+        "notes": [
+          "channel mask ausente o cero (geometría deducida del conteo de canales)",
+          "float sin chunk fact (permitido; frames se derivan de data)"
+        ],
+        "chunks": [
+          {
+            "kind": "fmt ",
+            "size": 16,
+            "offset": 12
+          },
+          {
+            "kind": "data",
+            "size": 70560,
+            "offset": 36
+          }
+        ]
+      },
+      "samples_shape": [
+        4410,
+        2
+      ],
+      "samples_finite": true,
+      "peak": 0.3999993148965262,
+      "same_descriptor": true,
+      "unchanged_after": {
+        "unchanged": true,
+        "reason": "sha256 revalidado",
+        "sha256": "e8c902ac8e64a3a94a7f1b6a9f3f1539f866d8c842c0731904688ee6c598c038"
+      },
+      "accepted": true,
+      "error": null,
+      "ok": true
+    },
+    "ext_pcm16_mask3": {
+      "path": "ext_pcm16_mask3.wav",
+      "size": 17708,
+      "sha256": "9d9d8290feaf327c65349da0c9e5f35f145ec584018b4349b6fdc4d01f4b6c24",
+      "expected_valid": true,
+      "motivo": null,
+      "decoder": {
+        "frames": 4410,
+        "channels": 2,
+        "samplerate": 44100,
+        "subtype": "PCM_16"
+      },
+      "spec": {
+        "path": "/tmp/sdv6f-wav-td99qfch/ext_pcm16_mask3.wav",
+        "audio_format": 1,
+        "extensible": true,
+        "channels": 2,
+        "rate": 44100,
+        "bits": 16,
+        "valid_bits": 16,
+        "block_align": 4,
+        "byte_rate": 176400,
+        "frames": 4410,
+        "channel_mask": 3,
+        "data_offset": 68,
+        "data_size": 17640,
+        "riff_size": 17700,
+        "physical_size": 17708,
+        "fact_frames": null,
+        "notes": [],
+        "chunks": [
+          {
+            "kind": "fmt ",
+            "size": 40,
+            "offset": 12
+          },
+          {
+            "kind": "data",
+            "size": 17640,
+            "offset": 60
+          }
+        ]
+      },
+      "samples_shape": [
+        4410,
+        2
+      ],
+      "samples_finite": true,
+      "peak": 0.39996337890625,
+      "same_descriptor": true,
+      "unchanged_after": {
+        "unchanged": true,
+        "reason": "sha256 revalidado",
+        "sha256": "9d9d8290feaf327c65349da0c9e5f35f145ec584018b4349b6fdc4d01f4b6c24"
+      },
+      "accepted": true,
+      "error": null,
+      "ok": true
+    },
+    "ext_float32_mask3": {
+      "path": "ext_float32_mask3.wav",
+      "size": 35348,
+      "sha256": "36358dc9a35bd3791fab38bda0232e94ca39a91628853a850d55daea17d11396",
+      "expected_valid": true,
+      "motivo": null,
+      "decoder": {
+        "frames": 4410,
+        "channels": 2,
+        "samplerate": 44100,
+        "subtype": "FLOAT"
+      },
+      "spec": {
+        "path": "/tmp/sdv6f-wav-td99qfch/ext_float32_mask3.wav",
+        "audio_format": 3,
+        "extensible": true,
+        "channels": 2,
+        "rate": 44100,
+        "bits": 32,
+        "valid_bits": 32,
+        "block_align": 8,
+        "byte_rate": 352800,
+        "frames": 4410,
+        "channel_mask": 3,
+        "data_offset": 68,
+        "data_size": 35280,
+        "riff_size": 35340,
+        "physical_size": 35348,
+        "fact_frames": null,
+        "notes": [
+          "float sin chunk fact (permitido; frames se derivan de data)"
+        ],
+        "chunks": [
+          {
+            "kind": "fmt ",
+            "size": 40,
+            "offset": 12
+          },
+          {
+            "kind": "data",
+            "size": 35280,
+            "offset": 60
+          }
+        ]
+      },
+      "samples_shape": [
+        4410,
+        2
+      ],
+      "samples_finite": true,
+      "peak": 0.39999932050704956,
+      "same_descriptor": true,
+      "unchanged_after": {
+        "unchanged": true,
+        "reason": "sha256 revalidado",
+        "sha256": "36358dc9a35bd3791fab38bda0232e94ca39a91628853a850d55daea17d11396"
+      },
+      "accepted": true,
+      "error": null,
+      "ok": true
+    },
+    "ext_pcm24_vb24_mask3": {
+      "path": "ext_pcm24_vb24_mask3.wav",
+      "size": 26528,
+      "sha256": "ad54c4a58d5a630ad51f1ce71da868b0051e3aa802ddfbe16e87ecbd468e61b1",
+      "expected_valid": true,
+      "motivo": null,
+      "decoder": {
+        "frames": 4410,
+        "channels": 2,
+        "samplerate": 44100,
+        "subtype": "PCM_24"
+      },
+      "spec": {
+        "path": "/tmp/sdv6f-wav-td99qfch/ext_pcm24_vb24_mask3.wav",
+        "audio_format": 1,
+        "extensible": true,
+        "channels": 2,
+        "rate": 44100,
+        "bits": 24,
+        "valid_bits": 24,
+        "block_align": 6,
+        "byte_rate": 264600,
+        "frames": 4410,
+        "channel_mask": 3,
+        "data_offset": 68,
+        "data_size": 26460,
+        "riff_size": 26520,
+        "physical_size": 26528,
+        "fact_frames": null,
+        "notes": [],
+        "chunks": [
+          {
+            "kind": "fmt ",
+            "size": 40,
+            "offset": 12
+          },
+          {
+            "kind": "data",
+            "size": 26460,
+            "offset": 60
+          }
+        ]
+      },
+      "samples_shape": [
+        4410,
+        2
+      ],
+      "samples_finite": true,
+      "peak": 0.3999992609024048,
+      "same_descriptor": true,
+      "unchanged_after": {
+        "unchanged": true,
+        "reason": "sha256 revalidado",
+        "sha256": "ad54c4a58d5a630ad51f1ce71da868b0051e3aa802ddfbe16e87ecbd468e61b1"
+      },
+      "accepted": true,
+      "error": null,
+      "ok": true
+    },
+    "ext_pcm24_in32_vb24": {
+      "path": "ext_pcm24_in32_vb24.wav",
+      "size": 35348,
+      "sha256": "96a1146995e7c1605510dc47b856ffa4b9e968d8c76544058c78d89aa71f3fd1",
+      "expected_valid": true,
+      "motivo": null,
+      "decoder": {
+        "frames": 4410,
+        "channels": 2,
+        "samplerate": 44100,
+        "subtype": "PCM_32"
+      },
+      "spec": {
+        "path": "/tmp/sdv6f-wav-td99qfch/ext_pcm24_in32_vb24.wav",
+        "audio_format": 1,
+        "extensible": true,
+        "channels": 2,
+        "rate": 44100,
+        "bits": 32,
+        "valid_bits": 24,
+        "block_align": 8,
+        "byte_rate": 352800,
+        "frames": 4410,
+        "channel_mask": 3,
+        "data_offset": 68,
+        "data_size": 35280,
+        "riff_size": 35340,
+        "physical_size": 35348,
+        "fact_frames": null,
+        "notes": [],
+        "chunks": [
+          {
+            "kind": "fmt ",
+            "size": 40,
+            "offset": 12
+          },
+          {
+            "kind": "data",
+            "size": 35280,
+            "offset": 60
+          }
+        ]
+      },
+      "samples_shape": [
+        4410,
+        2
+      ],
+      "samples_finite": true,
+      "peak": 0.3999992609024048,
+      "same_descriptor": true,
+      "unchanged_after": {
+        "unchanged": true,
+        "reason": "sha256 revalidado",
+        "sha256": "96a1146995e7c1605510dc47b856ffa4b9e968d8c76544058c78d89aa71f3fd1"
+      },
+      "accepted": true,
+      "error": null,
+      "ok": true
+    },
+    "mono_pcm16": {
+      "path": "mono_pcm16.wav",
+      "size": 8864,
+      "sha256": "e7df68c6a7450cb6261936f070cf159354b5700c3af1eb65fab115144739bd15",
+      "expected_valid": true,
+      "motivo": null,
+      "decoder": {
+        "frames": 4410,
+        "channels": 1,
+        "samplerate": 44100,
+        "subtype": "PCM_16"
+      },
+      "spec": {
+        "path": "/tmp/sdv6f-wav-td99qfch/mono_pcm16.wav",
+        "audio_format": 1,
+        "extensible": false,
+        "channels": 1,
+        "rate": 44100,
+        "bits": 16,
+        "valid_bits": 16,
+        "block_align": 2,
+        "byte_rate": 88200,
+        "frames": 4410,
+        "channel_mask": 0,
+        "data_offset": 44,
+        "data_size": 8820,
+        "riff_size": 8856,
+        "physical_size": 8864,
+        "fact_frames": null,
+        "notes": [
+          "channel mask ausente o cero (geometría deducida del conteo de canales)"
+        ],
+        "chunks": [
+          {
+            "kind": "fmt ",
+            "size": 16,
+            "offset": 12
+          },
+          {
+            "kind": "data",
+            "size": 8820,
+            "offset": 36
+          }
+        ]
+      },
+      "samples_shape": [
+        4410,
+        1
+      ],
+      "samples_finite": true,
+      "peak": 0.3499755859375,
+      "same_descriptor": true,
+      "unchanged_after": {
+        "unchanged": true,
+        "reason": "sha256 revalidado",
+        "sha256": "e7df68c6a7450cb6261936f070cf159354b5700c3af1eb65fab115144739bd15"
+      },
+      "accepted": true,
+      "error": null,
+      "ok": true
+    },
+    "ext_mask_zero": {
+      "path": "ext_mask_zero.wav",
+      "size": 17708,
+      "sha256": "263ddbf40dabb2063338b71509c8a67efd5aa32c043d17a03b68bbcbfb925227",
+      "expected_valid": true,
+      "motivo": null,
+      "decoder": {
+        "frames": 4410,
+        "channels": 2,
+        "samplerate": 44100,
+        "subtype": "PCM_16"
+      },
+      "spec": {
+        "path": "/tmp/sdv6f-wav-td99qfch/ext_mask_zero.wav",
+        "audio_format": 1,
+        "extensible": true,
+        "channels": 2,
+        "rate": 44100,
+        "bits": 16,
+        "valid_bits": 16,
+        "block_align": 4,
+        "byte_rate": 176400,
+        "frames": 4410,
+        "channel_mask": 0,
+        "data_offset": 68,
+        "data_size": 17640,
+        "riff_size": 17700,
+        "physical_size": 17708,
+        "fact_frames": null,
+        "notes": [
+          "channel mask ausente o cero (geometría deducida del conteo de canales)"
+        ],
+        "chunks": [
+          {
+            "kind": "fmt ",
+            "size": 40,
+            "offset": 12
+          },
+          {
+            "kind": "data",
+            "size": 17640,
+            "offset": 60
+          }
+        ]
+      },
+      "samples_shape": [
+        4410,
+        2
+      ],
+      "samples_finite": true,
+      "peak": 0.39996337890625,
+      "same_descriptor": true,
+      "unchanged_after": {
+        "unchanged": true,
+        "reason": "sha256 revalidado",
+        "sha256": "263ddbf40dabb2063338b71509c8a67efd5aa32c043d17a03b68bbcbfb925227"
+      },
+      "accepted": true,
+      "error": null,
+      "ok": true
+    },
+    "extra_list": {
+      "path": "extra_list.wav",
+      "size": 17708,
+      "sha256": "fa4a880aee0d2f15529d7869908a3cddf9c5cb9ecd2d1fa810bdca839774a243",
+      "expected_valid": true,
+      "motivo": null,
+      "decoder": {
+        "frames": 4410,
+        "channels": 2,
+        "samplerate": 44100,
+        "subtype": "PCM_16"
+      },
+      "spec": {
+        "path": "/tmp/sdv6f-wav-td99qfch/extra_list.wav",
+        "audio_format": 1,
+        "extensible": false,
+        "channels": 2,
+        "rate": 44100,
+        "bits": 16,
+        "valid_bits": 16,
+        "block_align": 4,
+        "byte_rate": 176400,
+        "frames": 4410,
+        "channel_mask": 0,
+        "data_offset": 68,
+        "data_size": 17640,
+        "riff_size": 17700,
+        "physical_size": 17708,
+        "fact_frames": null,
+        "notes": [
+          "channel mask ausente o cero (geometría deducida del conteo de canales)"
+        ],
+        "chunks": [
+          {
+            "kind": "fmt ",
+            "size": 16,
+            "offset": 12
+          },
+          {
+            "kind": "LIST",
+            "size": 15,
+            "offset": 36
+          },
+          {
+            "kind": "data",
+            "size": 17640,
+            "offset": 60
+          }
+        ]
+      },
+      "samples_shape": [
+        4410,
+        2
+      ],
+      "samples_finite": true,
+      "peak": 0.39996337890625,
+      "same_descriptor": true,
+      "unchanged_after": {
+        "unchanged": true,
+        "reason": "sha256 revalidado",
+        "sha256": "fa4a880aee0d2f15529d7869908a3cddf9c5cb9ecd2d1fa810bdca839774a243"
+      },
+      "accepted": true,
+      "error": null,
+      "ok": true
+    },
+    "fact_float": {
+      "path": "fact_float.wav",
+      "size": 35336,
+      "sha256": "4e3525f8f5d360cb96a4e00b9d699445e0084724bd80088ae8286bdf87491f92",
+      "expected_valid": true,
+      "motivo": null,
+      "decoder": {
+        "frames": 4410,
+        "channels": 2,
+        "samplerate": 44100,
+        "subtype": "FLOAT"
+      },
+      "spec": {
+        "path": "/tmp/sdv6f-wav-td99qfch/fact_float.wav",
+        "audio_format": 3,
+        "extensible": false,
+        "channels": 2,
+        "rate": 44100,
+        "bits": 32,
+        "valid_bits": 32,
+        "block_align": 8,
+        "byte_rate": 352800,
+        "frames": 4410,
+        "channel_mask": 0,
+        "data_offset": 56,
+        "data_size": 35280,
+        "riff_size": 35328,
+        "physical_size": 35336,
+        "fact_frames": 4410,
+        "notes": [
+          "channel mask ausente o cero (geometría deducida del conteo de canales)"
+        ],
+        "chunks": [
+          {
+            "kind": "fmt ",
+            "size": 16,
+            "offset": 12
+          },
+          {
+            "kind": "fact",
+            "size": 4,
+            "offset": 36
+          },
+          {
+            "kind": "data",
+            "size": 35280,
+            "offset": 48
+          }
+        ]
+      },
+      "samples_shape": [
+        4410,
+        2
+      ],
+      "samples_finite": true,
+      "peak": 0.39999932050704956,
+      "same_descriptor": true,
+      "unchanged_after": {
+        "unchanged": true,
+        "reason": "sha256 revalidado",
+        "sha256": "4e3525f8f5d360cb96a4e00b9d699445e0084724bd80088ae8286bdf87491f92"
+      },
+      "accepted": true,
+      "error": null,
+      "ok": true
+    },
+    "truncado": {
+      "path": "truncado.wav",
+      "size": 16684,
+      "sha256": "b6914bfb1efb9ceaabfc4388472bf9cbc13b630aa05decdc7a9983e2d1190fb8",
+      "expected_valid": false,
+      "motivo": "data desborda el archivo",
+      "decoder": {
+        "frames": 4160,
+        "channels": 2,
+        "samplerate": 44100,
+        "subtype": "PCM_16"
+      },
+      "accepted": false,
+      "error": "RIFF declara 17684 bytes; el archivo físico tiene 16684",
+      "ok": true
+    },
+    "riff_size_corto": {
+      "path": "riff_size_corto.wav",
+      "size": 17684,
+      "sha256": "c18e23dfdf436ea8cea77ce8350fe86688a6f0498b06eb40c71d4350882e6992",
+      "expected_valid": false,
+      "motivo": "RIFF no coincide con tamaño físico",
+      "decoder": {
+        "frames": 4410,
+        "channels": 2,
+        "samplerate": 44100,
+        "subtype": "PCM_16"
+      },
+      "accepted": false,
+      "error": "RIFF declara 17692 bytes; el archivo físico tiene 17684",
+      "ok": true
+    },
+    "riff_size_largo": {
+      "path": "riff_size_largo.wav",
+      "size": 17684,
+      "sha256": "a200e2e94d4d6beb4caf007ac6b2efe55ca46299546d4246ab013f7bd4a8f377",
+      "expected_valid": false,
+      "motivo": "declara menos que el archivo",
+      "decoder": {
+        "frames": 4410,
+        "channels": 2,
+        "samplerate": 44100,
+        "subtype": "PCM_16"
+      },
+      "accepted": false,
+      "error": "RIFF declara 16 bytes; el archivo físico tiene 17684",
+      "ok": true
+    },
+    "data_desborda": {
+      "path": "data_desborda.wav",
+      "size": 17584,
+      "sha256": "357f232865643063a09bb55ca17cd7844d5f64cb2d525e5fe298a41e26041b4c",
+      "expected_valid": false,
+      "motivo": "chunk data incompleto",
+      "decoder": {
+        "frames": 4385,
+        "channels": 2,
+        "samplerate": 44100,
+        "subtype": "PCM_16"
+      },
+      "accepted": false,
+      "error": "RIFF declara 17684 bytes; el archivo físico tiene 17584",
+      "ok": true
+    },
+    "data_no_multiplo": {
+      "path": "data_no_multiplo.wav",
+      "size": 17682,
+      "sha256": "97fb0985e64bac375cb7cdffe73f2897c6bae8898aa5c5430e57f83b78d9cff6",
+      "expected_valid": false,
+      "motivo": "data no múltiplo de block align",
+      "decoder": {
+        "frames": 4409,
+        "channels": 2,
+        "samplerate": 44100,
+        "subtype": "PCM_16"
+      },
+      "accepted": false,
+      "error": "Tamaño data 17638 no múltiplo de block align 4",
+      "ok": true
+    },
+    "sin_padding": {
+      "path": "sin_padding.wav",
+      "size": 17683,
+      "sha256": "06e2f86734f7d687998ba0c35405f814da84e06d97767ab18e13bd475c43f87a",
+      "expected_valid": false,
+      "motivo": "data impar sin byte de padding",
+      "decoder": {
+        "frames": 4409,
+        "channels": 2,
+        "samplerate": 44100,
+        "subtype": "PCM_16"
+      },
+      "accepted": false,
+      "error": "Chunk b'data' sin byte de padding dentro del RIFF",
+      "ok": true
+    },
+    "guid_alaw": {
+      "path": "guid_alaw.wav",
+      "size": 17708,
+      "sha256": "bb072ee8269516ab44fbdde91b5327a4eefca59737855739cf6511d2a5109372",
+      "expected_valid": false,
+      "motivo": "GUID no PCM/float",
+      "decoder": {
+        "frames": 8820,
+        "channels": 2,
+        "samplerate": 44100,
+        "subtype": "ALAW"
+      },
+      "accepted": false,
+      "error": "GUID de subformato no admitido: sólo PCM (01...) o FLOAT (03...)",
+      "ok": true
+    },
+    "ext_cbsize_corto": {
+      "path": "ext_cbsize_corto.wav",
+      "size": 17708,
+      "sha256": "8f7352f258dd7e6bdea59afcbbfa8f98ef0e6758069e2e7f1ad58b1e4f5d27e7",
+      "expected_valid": false,
+      "motivo": "cbSize < 22",
+      "decoder": {
+        "frames": 4410,
+        "channels": 2,
+        "samplerate": 44100,
+        "subtype": "PCM_16"
+      },
+      "accepted": false,
+      "error": "cbSize inválido en fmt extensible: 10",
+      "ok": true
+    },
+    "valid_bits_mayor": {
+      "path": "valid_bits_mayor.wav",
+      "size": 17708,
+      "sha256": "3bc948c88ba8cd9382152db74298265282884a6cddba6e969fd085277689d940",
+      "expected_valid": false,
+      "motivo": "valid_bits > bits",
+      "decoder": {
+        "frames": 4410,
+        "channels": 2,
+        "samplerate": 44100,
+        "subtype": "PCM_16"
+      },
+      "accepted": false,
+      "error": "valid_bits=24 incoherente con bits=16",
+      "ok": true
+    },
+    "mask_incoherente": {
+      "path": "mask_incoherente.wav",
+      "size": 17708,
+      "sha256": "32da23c402f3c847d90e8ddb848e5a16da8ce306ab225f5f6b4c8125f1063161",
+      "expected_valid": false,
+      "motivo": "channel mask 3 bits para 2 canales",
+      "decoder": {
+        "frames": 4410,
+        "channels": 2,
+        "samplerate": 44100,
+        "subtype": "PCM_16"
+      },
+      "accepted": false,
+      "error": "channel mask con 3 bits para 2 canales",
+      "ok": true
+    },
+    "align_malo": {
+      "path": "align_malo.wav",
+      "size": 17684,
+      "sha256": "3ad78dcc46aa8c067d5da092fc272be8d664040ff81528997e45cf4423642dce",
+      "expected_valid": false,
+      "motivo": "block align != canales*ancho",
+      "decoder": {
+        "frames": 4410,
+        "channels": 2,
+        "samplerate": 44100,
+        "subtype": "PCM_16"
+      },
+      "accepted": false,
+      "error": "block align 6 != canales*ancho (4)",
+      "ok": true
+    },
+    "byte_rate_malo": {
+      "path": "byte_rate_malo.wav",
+      "size": 17684,
+      "sha256": "e6e1675dc73b4db20516f78959e1bc0de18cfaef63159c086a57eff8e3aa45f4",
+      "expected_valid": false,
+      "motivo": "byte rate incoherente",
+      "decoder": {
+        "frames": 4410,
+        "channels": 2,
+        "samplerate": 44100,
+        "subtype": "PCM_16"
+      },
+      "accepted": false,
+      "error": "byte rate 12345 != rate*align (176400)",
+      "ok": true
+    },
+    "data_duplicado": {
+      "path": "data_duplicado.wav",
+      "size": 35332,
+      "sha256": "3e6dfd1642a895e4ca3614c465e23d102a6585c2080ac0bf675e9d30288bd85a",
+      "expected_valid": false,
+      "motivo": "data repetido",
+      "decoder": null,
+      "decoder_error": "LibsndfileError: Error opening '/tmp/sdv6f-wav-td99qfch/data_duplicado.wav': Internal error : SF_INFO struct incomplete.",
+      "accepted": false,
+      "error": "Chunk data duplicado",
+      "ok": true
+    },
+    "fmt_despues_data": {
+      "path": "fmt_despues_data.wav",
+      "size": 17684,
+      "sha256": "324c1de842565570df0eba1fa43a4001a0fc6a19ebcb65c27888453432f61ce0",
+      "expected_valid": false,
+      "motivo": "data antes de fmt",
+      "decoder": null,
+      "decoder_error": "LibsndfileError: Error opening '/tmp/sdv6f-wav-td99qfch/fmt_despues_data.wav': Error in WAV file. No 'data' chunk marker.",
+      "accepted": false,
+      "error": "data antes de fmt",
+      "ok": true
+    },
+    "sin_fmt": {
+      "path": "sin_fmt.wav",
+      "size": 17660,
+      "sha256": "e072eb641e19ab13cbd152984b56c43ab711f988d7ff1ccb17956f974b5b4e85",
+      "expected_valid": false,
+      "motivo": "falta fmt",
+      "decoder": null,
+      "decoder_error": "LibsndfileError: Error opening '/tmp/sdv6f-wav-td99qfch/sin_fmt.wav': Error in WAV file. No 'data' chunk marker.",
+      "accepted": false,
+      "error": "data antes de fmt",
+      "ok": true
+    },
+    "sin_data": {
+      "path": "sin_data.wav",
+      "size": 36,
+      "sha256": "5214564ca5ba32915b6e58d73c8a1333386b26659e47086980abc683f14f6d9d",
+      "expected_valid": false,
+      "motivo": "falta data",
+      "decoder": null,
+      "decoder_error": "LibsndfileError: Error opening '/tmp/sdv6f-wav-td99qfch/sin_data.wav': Error in WAV file. No 'data' chunk marker.",
+      "accepted": false,
+      "error": "Falta el chunk data",
+      "ok": true
+    },
+    "data_vacio": {
+      "path": "data_vacio.wav",
+      "size": 44,
+      "sha256": "991cd2a53281fab26a26b23f2b3d7a020e277b83978ea36796679e0952ae7575",
+      "expected_valid": false,
+      "motivo": "0 frames",
+      "decoder": {
+        "frames": 0,
+        "channels": 2,
+        "samplerate": 44100,
+        "subtype": "PCM_16"
+      },
+      "accepted": false,
+      "error": "data sin muestras (0 frames)",
+      "ok": true
+    },
+    "rf64": {
+      "path": "rf64.wav",
+      "size": 17684,
+      "sha256": "14f73efed274729c8711fd73d2090b872e943718ee378f95d477de7907e1e3b9",
+      "expected_valid": false,
+      "motivo": "RF64 no admitido",
+      "decoder": {
+        "frames": 4410,
+        "channels": 2,
+        "samplerate": 44100,
+        "subtype": "PCM_16"
+      },
+      "accepted": false,
+      "error": "RF64 no admitido en el perfil 6F",
+      "ok": true
+    },
+    "rifx": {
+      "path": "rifx.wav",
+      "size": 17684,
+      "sha256": "385d76d121c3058414ac98669e3d6ca27ab90c39395e25f31e0b5281374b8969",
+      "expected_valid": false,
+      "motivo": "RIFX no admitido",
+      "decoder": null,
+      "decoder_error": "LibsndfileError: Error opening '/tmp/sdv6f-wav-td99qfch/rifx.wav': Error in WAV/W64/RF64 file. Malformed 'fmt ' chunk.",
+      "accepted": false,
+      "error": "RIFX (big-endian) no admitido en el perfil 6F",
+      "ok": true
+    },
+    "alaw": {
+      "path": "alaw.wav",
+      "size": 17684,
+      "sha256": "162b3b2c86e7da4644e469108b836fac62a9392de603cddb4f2f0acc6cfd0833",
+      "expected_valid": false,
+      "motivo": "formato comprimido",
+      "decoder": {
+        "frames": 8820,
+        "channels": 2,
+        "samplerate": 44100,
+        "subtype": "ALAW"
+      },
+      "accepted": false,
+      "error": "Formato 6 no admitido: sólo PCM (1), IEEE float (3) o EXTENSIBLE",
+      "ok": true
+    },
+    "bits_20": {
+      "path": "bits_20.wav",
+      "size": 17684,
+      "sha256": "62882b487d018b219916f457a83fcac3ecee1395ec16f87c69a87ee4426071e9",
+      "expected_valid": false,
+      "motivo": "profundidad no admitida",
+      "decoder": {
+        "frames": 2940,
+        "channels": 2,
+        "samplerate": 44100,
+        "subtype": "PCM_24"
+      },
+      "accepted": false,
+      "error": "Bits por muestra no admitidos: 20",
+      "ok": true
+    },
+    "pcm64": {
+      "path": "pcm64.wav",
+      "size": 17684,
+      "sha256": "a1786dc620fb0d3e41e54fccbd252dc08a335d64cec2803368da382b67a52e7d",
+      "expected_valid": false,
+      "motivo": "PCM entero 64 bits",
+      "decoder": null,
+      "decoder_error": "LibsndfileError: Error opening '/tmp/sdv6f-wav-td99qfch/pcm64.wav': File contains data in an unimplemented format.",
+      "accepted": false,
+      "error": "PCM entero de 64 bits no admitido",
+      "ok": true
+    },
+    "nan_float": {
+      "path": "nan_float.wav",
+      "size": 35324,
+      "sha256": "7c8905411ccb3decd13323feaeafb0ff0d518cad4d36a01dea1d3895e6272e64",
+      "expected_valid": false,
+      "motivo": "muestras no finitas",
+      "decoder": {
+        "frames": 4410,
+        "channels": 2,
+        "samplerate": 44100,
+        "subtype": "FLOAT"
+      },
+      "accepted": false,
+      "error": "Muestras no finitas en el payload float",
+      "ok": true
+    },
+    "fmt_corto": {
+      "path": "fmt_corto.wav",
+      "size": 17682,
+      "sha256": "7d7114b5e99989eb9cf599654e51c2a564704d4ccb28dd026b0b7cf0f5d0d2bc",
+      "expected_valid": false,
+      "motivo": "fmt de 14 bytes",
+      "decoder": null,
+      "decoder_error": "LibsndfileError: Error opening '/tmp/sdv6f-wav-td99qfch/fmt_corto.wav': Error in WAV/W64/RF64 file. Short 'fmt ' chunk.",
+      "accepted": false,
+      "error": "fmt demasiado corto",
+      "ok": true
+    },
+    "fact_malo": {
+      "path": "fact_malo.wav",
+      "size": 35336,
+      "sha256": "f37d6a28a60357f470a27747c22161bf5d6a12bbc0b52de90faafaedd4794b25",
+      "expected_valid": false,
+      "motivo": "fact no coincide con frames",
+      "decoder": {
+        "frames": 4410,
+        "channels": 2,
+        "samplerate": 44100,
+        "subtype": "FLOAT"
+      },
+      "accepted": false,
+      "error": "fact declara 4405 frames; data contiene 4410",
+      "ok": true
+    },
+    "chunk_gigante": {
+      "path": "chunk_gigante.wav",
+      "size": 44,
+      "sha256": "3e5cb889df72c7519e39f7d18af5deb3c9869fbd58b1c0c59978737b4dad6f72",
+      "expected_valid": false,
+      "motivo": "tamaño de chunk absurdo",
+      "decoder": {
+        "frames": 0,
+        "channels": 2,
+        "samplerate": 44100,
+        "subtype": "PCM_16"
+      },
+      "accepted": false,
+      "error": "Tamaño de chunk fuera de rango: b'data'",
+      "ok": true
+    },
+    "_toctou": {
+      "replace_after_open": {
+        "samples_unchanged": true,
+        "digest_original": "9c641ab1cbbf3d5bc0ee7b251e3bcf02a77a03ae480ab54404fe0dcc3117888c",
+        "sha_on_disk": "b3d868568dcd2f54d5d6db5fc917d776675bd29c9ae0b02facbda5d612a955ee",
+        "detection": {
+          "unchanged": false,
+          "reason": "identidad fstat distinta",
+          "before": {
+            "device": 65024,
+            "inode": 535476,
+            "size": 17684,
+            "mtime_ns": 1795059206902416623
+          },
+          "after": {
+            "device": 65024,
+            "inode": 535479,
+            "size": 35324,
+            "mtime_ns": 1795059206902416623
+          }
+        }
+      },
+      "inplace_modification": {
+        "unchanged": false,
+        "reason": "sha256 revalidado",
+        "sha256": "fe9bd32a7671ee398a9a1c5ee468c3cef44bf08671d2d904c5f6ee403dbb21bc"
+      },
+      "probe_then_substitute": {
+        "attribution": "ERROR",
+        "error": "WaveError: guide: sha256 distinto del sondeo (posible sustitución entre validación y lectura)",
+        "detected": true
+      }
+    }
+  },
+  "conformes": 39,
+  "total": 39,
+  "seconds": 0.21264311800007363,
+  "maxrss_kib": 90600,
+  "entorno": {
+    "platform": "Linux-6.1.158+-x86_64-with-glibc2.36",
+    "python": "3.11.2 (main, Apr  8 2026, 01:58:00) [GCC 12.2.0]",
+    "machine": "x86_64",
+    "cpu_visible": 2,
+    "numpy": "1.26.4",
+    "scipy": "1.13.1",
+    "soundfile": "0.13.1",
+    "libsndfile": "1.2.2",
+    "threads": "OPENBLAS/MKL/OMP=1"
+  }
+}

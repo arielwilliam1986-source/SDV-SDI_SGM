@@ -1,0 +1,544 @@
+{
+  "definicion": "n=0..176399; s_f[n]=sin(2π((fn) mod 44100)/44100); a=s441,b=s882,c=s1323; v=.16a+.08b, i=.07a+.12c. g[A,B]=sin²(π(n-lo)/(hi-lo)) para lo≤n<hi, 0 fuera; lo=round(44100A), hi=round(44100B). Dd[x][n]=x[n-d] con extensión por cero. Mix=V+I por canal en float64; se escribe cada WAV con un único cast float32. Sin ajuste posterior.",
+  "frames": 176400,
+  "sr": 44100,
+  "sha_wav": {
+    "mix.wav": "4262316fdc7bf23bb95bf9de09372d758856cf86dace2ed893742e97b306e9a0",
+    "voc.wav": "4ea8628160160c7d2e92068eb5b1a14faeee4dfe74065c3564e6d87e60278b1a",
+    "ins.wav": "f06a123d2c09959d9f30c9422a31129fe228f484e93fde2948e35b653b42614e"
+  },
+  "resultados": {
+    "Hardened_6C_perm": {
+      "exit": 0,
+      "report": true,
+      "wavs": 2,
+      "pcm": {
+        "mix SDI.wav": {
+          "frames": 176400,
+          "sr": 44100,
+          "sha256": "a4eb9ae7c84f6dced92607d860cf52f7bf71b290db752c0178f2e795cf8bca77",
+          "lr_peak": 0.33034729957580566,
+          "mid_rms": 0.0,
+          "finite": true
+        },
+        "mix SDV.wav": {
+          "frames": 176400,
+          "sr": 44100,
+          "sha256": "5be893ca4a928c1e16ed816dbca42f3bce14277436f4c0fc5f184cac6498240a",
+          "lr_peak": 0.0,
+          "mid_rms": 0.0,
+          "finite": true
+        }
+      },
+      "crest": {},
+      "alignment": {
+        "P1/vocal": {
+          "attribution": null,
+          "classification": "AMBIGUOUS",
+          "reason": "INCOMPLETE_EVIDENCE",
+          "k": null,
+          "channel_lags": null,
+          "channel_states": null
+        },
+        "P1/instrumental": {
+          "attribution": null,
+          "classification": "AMBIGUOUS",
+          "reason": "INCOMPLETE_EVIDENCE",
+          "k": null,
+          "channel_lags": null,
+          "channel_states": null
+        }
+      },
+      "validation_overall": null,
+      "stdout": "[     0.01s] Validación de entradas OK: Mix 44100Hz/2ch (1.35 MiB) | 1 Pares\n[     0.01s] Verificando alineación temporal NCC de las guías...\n[     0.11s]   P1/vocal: k=null ms; NCC=null; AMBIGUOUS (INCOMPLETE_EVIDENCE); L: d=null AMBIGUOUS, R: d=null AMBIGUOUS; shift=0\n[     0.21s]   P1/instrumental: k=null ms; NCC=null; AMBIGUOUS (INCOMPLETE_EVIDENCE); L: d=null AMBIGUOUS, R: d=null AMBIGUOUS; shift=0\n[     0.22s] Iniciando pipeline v3.1.0 en: /tmp/sdv6f-s7-5kg23s00/Hardened_6C_perm/motorA_run_20261119_033659_partial\n[     0.22s] Configuración: consensus_order=magnitudes_first | smoothing=none | mask_mode=mono | residuals=False\n[     0.22s] Procesando 175 tramas en 1 chunks de 256 tramas...\n[     0.61s]   Chunk 01/1 [100.0%] completado (Tramas 0-174)\n[     0.62s] Post-WAV Identity SNR: 336.31 dB (Estado: PASS_EXACT_IDENTITY)\n[     0.62s] Directorio 'masks/' eliminado para liberar espacio.\n[     0.62s] Corrida finalizada exitosamente en: /tmp/sdv6f-s7-5kg23s00/Hardened_6C_perm/motorA_run_20261119_033659\n\n============================================================================\n\u001b[92m[✓] SEPARACIÓN MOTOR A v3.1.0 COMPLETADA CON ÉXITO (SNR > 140 dB)\u001b[0m\nDirectorio de Resultados : \u001b[96m/tmp/sdv6f-s7-5kg23s00/Hardened_6C_perm/motorA_run_20261119_033659\u001b[0m\nArtefactos Generados     : mix SDV.wav | mix SDI.wav | analysis.json | analysis.txt\n============================================================================\n\n",
+      "stderr": "",
+      "abort": false,
+      "engine": "Hardened",
+      "version": "6C",
+      "flags": [
+        "--allow-misaligned"
+      ]
+    },
+    "Hardened_6E_perm": {
+      "exit": 0,
+      "report": true,
+      "wavs": 2,
+      "pcm": {
+        "mix SDI.wav": {
+          "frames": 176400,
+          "sr": 44100,
+          "sha256": "23544b49924bc5f9b9267b6c86ae3c0ee2bb83c54d35d3bbe115218d8224eb44",
+          "lr_peak": 0.33034729957580566,
+          "mid_rms": 0.0,
+          "finite": true
+        },
+        "mix SDV.wav": {
+          "frames": 176400,
+          "sr": 44100,
+          "sha256": "f232159425d2ca9e40ee4f56111c4e9f09a1d6b4dfded66e7dfb4652f186a48d",
+          "lr_peak": 0.0,
+          "mid_rms": 0.0,
+          "finite": true
+        }
+      },
+      "crest": {},
+      "alignment": {
+        "P1/vocal": {
+          "attribution": "AMBIGUOUS",
+          "classification": "AMBIGUOUS",
+          "reason": "MEMBER_AMBIGUITY_OR_CONFLICT",
+          "k": null,
+          "channel_lags": null,
+          "channel_states": null
+        },
+        "P1/instrumental": {
+          "attribution": "AMBIGUOUS",
+          "classification": "AMBIGUOUS",
+          "reason": "MEMBER_AMBIGUITY_OR_CONFLICT",
+          "k": null,
+          "channel_lags": null,
+          "channel_states": null
+        }
+      },
+      "validation_overall": null,
+      "stdout": "[     0.01s] Validación de entradas OK: Mix 44100Hz/2ch (1.35 MiB) | 1 Pares\n[     0.01s] Verificando alineación temporal NCC de las guías...\n[     0.02s]   P1/vocal: k=null ms; NCC=null; AMBIGUOUS (MEMBER_AMBIGUITY_OR_CONFLICT); L: d=null AMBIGUOUS, R: d=null AMBIGUOUS; shift=0\n[     0.03s]   P1/instrumental: k=null ms; NCC=null; AMBIGUOUS (MEMBER_AMBIGUITY_OR_CONFLICT); L: d=null AMBIGUOUS, R: d=null AMBIGUOUS; shift=0\n[     0.05s] Iniciando pipeline v3.1.0 en: /tmp/sdv6f-s7-5kg23s00/Hardened_6E_perm/motorA_run_20261119_033659_partial\n[     0.05s] Configuración: consensus_order=magnitudes_first | smoothing=none | mask_mode=mono | residuals=False\n[     0.05s] Procesando 175 tramas en 1 chunks de 256 tramas...\n[     0.42s]   Chunk 01/1 [100.0%] completado (Tramas 0-174)\n[     0.43s] Post-WAV Identity SNR: 336.31 dB (Estado: PASS_EXACT_IDENTITY)\n[     0.43s] Directorio 'masks/' eliminado para liberar espacio.\n[     0.43s] Corrida finalizada exitosamente en: /tmp/sdv6f-s7-5kg23s00/Hardened_6E_perm/motorA_run_20261119_033659\n\n============================================================================\n\u001b[92m[✓] SEPARACIÓN MOTOR A v3.1.0 COMPLETADA CON ÉXITO (SNR > 140 dB)\u001b[0m\nDirectorio de Resultados : \u001b[96m/tmp/sdv6f-s7-5kg23s00/Hardened_6E_perm/motorA_run_20261119_033659\u001b[0m\nArtefactos Generados     : mix SDV.wav | mix SDI.wav | analysis.json | analysis.txt\n============================================================================\n\n",
+      "stderr": "",
+      "abort": false,
+      "engine": "Hardened",
+      "version": "6E",
+      "flags": [
+        "--allow-misaligned"
+      ]
+    },
+    "Hardened_6F_noperm": {
+      "exit": 1,
+      "report": false,
+      "wavs": 0,
+      "pcm": {},
+      "crest": {},
+      "alignment": {},
+      "validation_overall": null,
+      "stdout": "[     0.02s] Validación de entradas OK: Mix 44100Hz/2ch (1.35 MiB) | 1 Pares\n[     0.02s] Verificando alineación temporal NCC de las guías...\n[     0.33s]   P1/vocal: k=null ms; NCC=null; AMBIGUOUS (MEMBER_AMBIGUITY_OR_CONFLICT); L: d=null AMBIGUOUS, R: d=null AMBIGUOUS; shift=0\n[     0.64s]   P1/instrumental: k=null ms; NCC=null; AMBIGUOUS (MEMBER_AMBIGUITY_OR_CONFLICT); L: d=null AMBIGUOUS, R: d=null AMBIGUOUS; shift=0\n[     0.64s] [ABORT] Diagnóstico no validado (AMBIGUOUS). Se requiere --allow-misaligned para continuar sin corrección; el diagnóstico no cambia.\n",
+      "stderr": "",
+      "abort": false,
+      "engine": "Hardened",
+      "version": "6F",
+      "flags": []
+    },
+    "Hardened_6F_perm": {
+      "exit": 0,
+      "report": true,
+      "wavs": 2,
+      "pcm": {
+        "mix SDI.wav": {
+          "frames": 176400,
+          "sr": 44100,
+          "sha256": "155bc51998f9ff693500d6c9bb66e8c4400e4f34498ee449bc7f18383bd2caf9",
+          "lr_peak": 0.33034729957580566,
+          "mid_rms": 0.0,
+          "finite": true
+        },
+        "mix SDV.wav": {
+          "frames": 176400,
+          "sr": 44100,
+          "sha256": "24fe90d60127d291f0a065105c27d419f4e7017f92c23611be66cb3ed0da130f",
+          "lr_peak": 0.0,
+          "mid_rms": 0.0,
+          "finite": true
+        }
+      },
+      "crest": {},
+      "alignment": {
+        "P1/vocal": {
+          "attribution": "AMBIGUOUS",
+          "classification": "AMBIGUOUS",
+          "reason": "MEMBER_AMBIGUITY_OR_CONFLICT",
+          "k": null,
+          "channel_lags": {},
+          "channel_states": {
+            "L": "AMBIGUOUS",
+            "R": "AMBIGUOUS"
+          }
+        },
+        "P1/instrumental": {
+          "attribution": "AMBIGUOUS",
+          "classification": "AMBIGUOUS",
+          "reason": "MEMBER_AMBIGUITY_OR_CONFLICT",
+          "k": null,
+          "channel_lags": {},
+          "channel_states": {
+            "L": "AMBIGUOUS",
+            "R": "AMBIGUOUS"
+          }
+        }
+      },
+      "validation_overall": null,
+      "stdout": "[     0.02s] Validación de entradas OK: Mix 44100Hz/2ch (1.35 MiB) | 1 Pares\n[     0.02s] Verificando alineación temporal NCC de las guías...\n[     0.32s]   P1/vocal: k=null ms; NCC=null; AMBIGUOUS (MEMBER_AMBIGUITY_OR_CONFLICT); L: d=null AMBIGUOUS, R: d=null AMBIGUOUS; shift=0\n[     0.64s]   P1/instrumental: k=null ms; NCC=null; AMBIGUOUS (MEMBER_AMBIGUITY_OR_CONFLICT); L: d=null AMBIGUOUS, R: d=null AMBIGUOUS; shift=0\n[     0.64s] [PERMISO] continuación explícita: cli_allow_misaligned (diagnóstico intacto).\n[     0.65s] Iniciando pipeline v3.1.0 en: /tmp/sdv6f-s7-5kg23s00/Hardened_6F_perm/motorA_run_20261119_033702_partial\n[     0.65s] Configuración: consensus_order=magnitudes_first | smoothing=none | mask_mode=mono | residuals=False\n[     0.65s] Procesando 175 tramas en 1 chunks de 256 tramas...\n[     1.03s]   Chunk 01/1 [100.0%] completado (Tramas 0-174)\n[     1.05s] Post-WAV Identity SNR: 336.31 dB (Estado: PASS_EXACT_IDENTITY)\n[     1.06s] Directorio 'masks/' eliminado para liberar espacio.\n[     1.06s] Corrida finalizada exitosamente en: /tmp/sdv6f-s7-5kg23s00/Hardened_6F_perm/motorA_run_20261119_033702\n\n============================================================================\n\u001b[92m[✓] SEPARACIÓN MOTOR A v3.1.0 COMPLETADA CON ÉXITO (SNR > 140 dB)\u001b[0m\nDirectorio de Resultados : \u001b[96m/tmp/sdv6f-s7-5kg23s00/Hardened_6F_perm/motorA_run_20261119_033702\u001b[0m\nArtefactos Generados     : mix SDV.wav | mix SDI.wav | analysis.json | analysis.txt\n============================================================================\n\n",
+      "stderr": "",
+      "abort": false,
+      "engine": "Hardened",
+      "version": "6F",
+      "flags": [
+        "--allow-misaligned"
+      ]
+    },
+    "EVO_6C_perm": {
+      "exit": 0,
+      "report": true,
+      "wavs": 2,
+      "pcm": {
+        "mix SDI.wav": {
+          "frames": 176400,
+          "sr": 44100,
+          "sha256": "db461f07a2153a95d2f95d5b0eba9137a9d6ed5bf7c14e1fd0654457b27e406f",
+          "lr_peak": 0.33034729957580566,
+          "mid_rms": 0.0,
+          "finite": true
+        },
+        "mix SDV.wav": {
+          "frames": 176400,
+          "sr": 44100,
+          "sha256": "107c4bebc194d0ed2714f6c6348f48047abdafeb1c04f7d2ec801af40fc98852",
+          "lr_peak": 0.0,
+          "mid_rms": 0.0,
+          "finite": true
+        }
+      },
+      "crest": {},
+      "alignment": {
+        "P1/vocal": {
+          "attribution": null,
+          "classification": "AMBIGUOUS",
+          "reason": "INCOMPLETE_EVIDENCE",
+          "k": null,
+          "channel_lags": null,
+          "channel_states": null
+        },
+        "P1/instrumental": {
+          "attribution": null,
+          "classification": "AMBIGUOUS",
+          "reason": "INCOMPLETE_EVIDENCE",
+          "k": null,
+          "channel_lags": null,
+          "channel_states": null
+        }
+      },
+      "validation_overall": null,
+      "stdout": "[     0.01s] Validación de entradas OK: Mix 44100Hz/2ch (1.35 MiB) | 1 Pares\n[     0.01s] Verificando alineación temporal NCC de las guías...\n[     0.10s]   P1/vocal: k=null ms; NCC=null; AMBIGUOUS (INCOMPLETE_EVIDENCE); L: d=null AMBIGUOUS, R: d=null AMBIGUOUS; shift=0\n[     0.19s]   P1/instrumental: k=null ms; NCC=null; AMBIGUOUS (INCOMPLETE_EVIDENCE); L: d=null AMBIGUOUS, R: d=null AMBIGUOUS; shift=0\n[     0.20s] Iniciando pipeline v3.1.0 en: /tmp/sdv6f-s7-5kg23s00/EVO_6C_perm/motorA_run_20261119_033703_partial\n[     0.20s] Configuración Consenso: order=magnitudes_first | consensus=confidence_weighted_mean | smoothing=none | mask_mode=mono\n[     0.20s] Parámetros DSP: p=1.80 | beta=1.00 | eps=1.0e-12 | n_fft=4096 | hop=1024 | residuals=False\n[     0.20s] Procesando 175 tramas en 1 chunks de 256 tramas...\n[     0.57s]   Chunk 01/1 [100.0%] completado (Tramas 0-174)\n[     0.59s] Post-WAV Identity SNR: 336.31 dB (Estado: PASS_EXACT_IDENTITY)\n[     0.59s] Directorio 'masks/' eliminado para liberar espacio.\n[     0.59s] Corrida finalizada exitosamente en: /tmp/sdv6f-s7-5kg23s00/EVO_6C_perm/motorA_run_20261119_033703\n\n============================================================================\n\u001b[92m[✓] SEPARACIÓN MOTOR A v3.1.0 COMPLETADA CON ÉXITO (SNR > 140 dB)\u001b[0m\nDirectorio de Resultados : \u001b[96m/tmp/sdv6f-s7-5kg23s00/EVO_6C_perm/motorA_run_20261119_033703\u001b[0m\nArtefactos Generados     : mix SDV.wav | mix SDI.wav | analysis.json | analysis.txt\n============================================================================\n\n",
+      "stderr": "",
+      "abort": false,
+      "engine": "EVO",
+      "version": "6C",
+      "flags": [
+        "--allow-misaligned"
+      ]
+    },
+    "EVO_6E_perm": {
+      "exit": 0,
+      "report": true,
+      "wavs": 2,
+      "pcm": {
+        "mix SDI.wav": {
+          "frames": 176400,
+          "sr": 44100,
+          "sha256": "5e591f636d821a216bdc7e9308b2306200d7d0b89358623df6444d9a5aa64372",
+          "lr_peak": 0.33034729957580566,
+          "mid_rms": 0.0,
+          "finite": true
+        },
+        "mix SDV.wav": {
+          "frames": 176400,
+          "sr": 44100,
+          "sha256": "d1feb1cbfb888a073b3708ab7f154f8b4786ac7b5cf43c953ba2af0fb7894106",
+          "lr_peak": 0.0,
+          "mid_rms": 0.0,
+          "finite": true
+        }
+      },
+      "crest": {},
+      "alignment": {
+        "P1/vocal": {
+          "attribution": "AMBIGUOUS",
+          "classification": "AMBIGUOUS",
+          "reason": "MEMBER_AMBIGUITY_OR_CONFLICT",
+          "k": null,
+          "channel_lags": null,
+          "channel_states": null
+        },
+        "P1/instrumental": {
+          "attribution": "AMBIGUOUS",
+          "classification": "AMBIGUOUS",
+          "reason": "MEMBER_AMBIGUITY_OR_CONFLICT",
+          "k": null,
+          "channel_lags": null,
+          "channel_states": null
+        }
+      },
+      "validation_overall": null,
+      "stdout": "[     0.01s] Validación de entradas OK: Mix 44100Hz/2ch (1.35 MiB) | 1 Pares\n[     0.01s] Verificando alineación temporal NCC de las guías...\n[     0.02s]   P1/vocal: k=null ms; NCC=null; AMBIGUOUS (MEMBER_AMBIGUITY_OR_CONFLICT); L: d=null AMBIGUOUS, R: d=null AMBIGUOUS; shift=0\n[     0.04s]   P1/instrumental: k=null ms; NCC=null; AMBIGUOUS (MEMBER_AMBIGUITY_OR_CONFLICT); L: d=null AMBIGUOUS, R: d=null AMBIGUOUS; shift=0\n[     0.05s] Iniciando pipeline v3.1.0 en: /tmp/sdv6f-s7-5kg23s00/EVO_6E_perm/motorA_run_20261119_033703_partial\n[     0.05s] Configuración Consenso: order=magnitudes_first | consensus=confidence_weighted_mean | smoothing=none | mask_mode=mono\n[     0.05s] Parámetros DSP: p=1.80 | beta=1.00 | eps=1.0e-12 | n_fft=4096 | hop=1024 | residuals=False\n[     0.05s] Procesando 175 tramas en 1 chunks de 256 tramas...\n[     0.41s]   Chunk 01/1 [100.0%] completado (Tramas 0-174)\n[     0.43s] Post-WAV Identity SNR: 336.31 dB (Estado: PASS_EXACT_IDENTITY)\n[     0.43s] Directorio 'masks/' eliminado para liberar espacio.\n[     0.43s] Corrida finalizada exitosamente en: /tmp/sdv6f-s7-5kg23s00/EVO_6E_perm/motorA_run_20261119_033703\n\n============================================================================\n\u001b[92m[✓] SEPARACIÓN MOTOR A v3.1.0 COMPLETADA CON ÉXITO (SNR > 140 dB)\u001b[0m\nDirectorio de Resultados : \u001b[96m/tmp/sdv6f-s7-5kg23s00/EVO_6E_perm/motorA_run_20261119_033703\u001b[0m\nArtefactos Generados     : mix SDV.wav | mix SDI.wav | analysis.json | analysis.txt\n============================================================================\n\n",
+      "stderr": "",
+      "abort": false,
+      "engine": "EVO",
+      "version": "6E",
+      "flags": [
+        "--allow-misaligned"
+      ]
+    },
+    "EVO_6F_noperm": {
+      "exit": 1,
+      "report": false,
+      "wavs": 0,
+      "pcm": {},
+      "crest": {},
+      "alignment": {},
+      "validation_overall": null,
+      "stdout": "[     0.02s] Validación de entradas OK: Mix 44100Hz/2ch (1.35 MiB) | 1 Pares\n[     0.02s] Verificando alineación temporal NCC de las guías...\n[     0.32s]   P1/vocal: k=null ms; NCC=null; AMBIGUOUS (MEMBER_AMBIGUITY_OR_CONFLICT); L: d=null AMBIGUOUS, R: d=null AMBIGUOUS; shift=0\n[     0.63s]   P1/instrumental: k=null ms; NCC=null; AMBIGUOUS (MEMBER_AMBIGUITY_OR_CONFLICT); L: d=null AMBIGUOUS, R: d=null AMBIGUOUS; shift=0\n[     0.63s] [ABORT] Diagnóstico no validado (AMBIGUOUS). Se requiere --allow-misaligned para continuar sin corrección; el diagnóstico no cambia.\n",
+      "stderr": "",
+      "abort": false,
+      "engine": "EVO",
+      "version": "6F",
+      "flags": []
+    },
+    "EVO_6F_perm": {
+      "exit": 0,
+      "report": true,
+      "wavs": 2,
+      "pcm": {
+        "mix SDI.wav": {
+          "frames": 176400,
+          "sr": 44100,
+          "sha256": "504c5479c10b2832a15a0f13be1ab9913def9f4324b6ec6b7c2280a5483cffee",
+          "lr_peak": 0.33034729957580566,
+          "mid_rms": 0.0,
+          "finite": true
+        },
+        "mix SDV.wav": {
+          "frames": 176400,
+          "sr": 44100,
+          "sha256": "deefdcd58a5920451e235bf52f84799de94aac9e4a126858cfbe48035619f1e3",
+          "lr_peak": 0.0,
+          "mid_rms": 0.0,
+          "finite": true
+        }
+      },
+      "crest": {},
+      "alignment": {
+        "P1/vocal": {
+          "attribution": "AMBIGUOUS",
+          "classification": "AMBIGUOUS",
+          "reason": "MEMBER_AMBIGUITY_OR_CONFLICT",
+          "k": null,
+          "channel_lags": {},
+          "channel_states": {
+            "L": "AMBIGUOUS",
+            "R": "AMBIGUOUS"
+          }
+        },
+        "P1/instrumental": {
+          "attribution": "AMBIGUOUS",
+          "classification": "AMBIGUOUS",
+          "reason": "MEMBER_AMBIGUITY_OR_CONFLICT",
+          "k": null,
+          "channel_lags": {},
+          "channel_states": {
+            "L": "AMBIGUOUS",
+            "R": "AMBIGUOUS"
+          }
+        }
+      },
+      "validation_overall": null,
+      "stdout": "[     0.02s] Validación de entradas OK: Mix 44100Hz/2ch (1.35 MiB) | 1 Pares\n[     0.02s] Verificando alineación temporal NCC de las guías...\n[     0.32s]   P1/vocal: k=null ms; NCC=null; AMBIGUOUS (MEMBER_AMBIGUITY_OR_CONFLICT); L: d=null AMBIGUOUS, R: d=null AMBIGUOUS; shift=0\n[     0.62s]   P1/instrumental: k=null ms; NCC=null; AMBIGUOUS (MEMBER_AMBIGUITY_OR_CONFLICT); L: d=null AMBIGUOUS, R: d=null AMBIGUOUS; shift=0\n[     0.62s] [PERMISO] continuación explícita: cli_allow_misaligned (diagnóstico intacto).\n[     0.63s] Iniciando pipeline v3.1.0 en: /tmp/sdv6f-s7-5kg23s00/EVO_6F_perm/motorA_run_20261119_033706_partial\n[     0.63s] Configuración Consenso: order=magnitudes_first | consensus=confidence_weighted_mean | smoothing=none | mask_mode=mono\n[     0.63s] Parámetros DSP: p=1.80 | beta=1.00 | eps=1.0e-12 | n_fft=4096 | hop=1024 | residuals=False\n[     0.63s] Procesando 175 tramas en 1 chunks de 256 tramas...\n[     1.02s]   Chunk 01/1 [100.0%] completado (Tramas 0-174)\n[     1.03s] Post-WAV Identity SNR: 336.31 dB (Estado: PASS_EXACT_IDENTITY)\n[     1.04s] Directorio 'masks/' eliminado para liberar espacio.\n[     1.04s] Corrida finalizada exitosamente en: /tmp/sdv6f-s7-5kg23s00/EVO_6F_perm/motorA_run_20261119_033706\n\n============================================================================\n\u001b[92m[✓] SEPARACIÓN MOTOR A v3.1.0 COMPLETADA CON ÉXITO (SNR > 140 dB)\u001b[0m\nDirectorio de Resultados : \u001b[96m/tmp/sdv6f-s7-5kg23s00/EVO_6F_perm/motorA_run_20261119_033706\u001b[0m\nArtefactos Generados     : mix SDV.wav | mix SDI.wav | analysis.json | analysis.txt\n============================================================================\n\n",
+      "stderr": "",
+      "abort": false,
+      "engine": "EVO",
+      "version": "6F",
+      "flags": [
+        "--allow-misaligned"
+      ]
+    },
+    "MQR_6C_perm": {
+      "exit": 2,
+      "report": false,
+      "wavs": 2,
+      "pcm": {
+        "SDI.wav": {
+          "frames": 176400,
+          "sr": 44100,
+          "sha256": "860a6afb1dc087287cd06b14783140841530b1b76cc8e3a94cbd5c981d57972f",
+          "lr_peak": 0.33034729957580566,
+          "mid_rms": 0.0,
+          "finite": true
+        },
+        "SDV.wav": {
+          "frames": 176400,
+          "sr": 44100,
+          "sha256": "31b13592a11cd14996daa975421d4f0b306326b7900bc54bf244af70dbbd3b05",
+          "lr_peak": 0.0,
+          "mid_rms": 0.0,
+          "finite": true
+        }
+      },
+      "crest": {},
+      "alignment": {},
+      "validation_overall": null,
+      "stdout": "[     0.01s] Validacion de entradas: OK (mix 44100 Hz / 2 ch / 176400 frames; 1 pares)\n[     0.01s] Analisis de alineacion (detect_only_no_correction)...\n[     0.11s]   P1/vocal: k=null ms; NCC=null; AMBIGUOUS (INCOMPLETE_EVIDENCE); L: d=null AMBIGUOUS, R: d=null AMBIGUOUS; shift=0\n[     0.20s]   P1/instrumental: k=null ms; NCC=null; AMBIGUOUS (INCOMPLETE_EVIDENCE); L: d=null AMBIGUOUS, R: d=null AMBIGUOUS; shift=0\n[     0.20s] Continuación explícita sin corrección: cli_allow_misaligned\n[     0.20s] Analisis de escala de guides (metricas + factores)...\n[     0.21s]   P1: g_vocal=1.0000 g_instr=1.0000 (politica=none)\n[     0.21s] Directorio de corrida (parcial): /tmp/sdv6f-s7-5kg23s00/MQR_6C_perm/mqr_run_20261119_033707_partial\n[     0.21s] Pipeline: mode=full_processing, 1 pares, K=175 frames en chunks de 256\n[     0.90s]   chunk 1/1 (frames 0-174) listo\n[     0.92s] [FATAL] excepcion en el pipeline; corrida preservada en /tmp/sdv6f-s7-5kg23s00/MQR_6C_perm/mqr_run_20261119_033707_aborted\nTraceback (most recent call last):\n  File \"/home/user/SDV-SDI_SGM/ETAPA_6C_CORRECCION_EXPERIMENTAL/motores/sdv_sdi_mqr_engine.py\", line 2271, in run_experiment\n    run_dir_final = _run_core(mix_info, pairs, mode, opt, plan, freqs,\n                    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/home/user/SDV-SDI_SGM/ETAPA_6C_CORRECCION_EXPERIMENTAL/motores/sdv_sdi_mqr_engine.py\", line 2554, in _run_core\n    per_candidate[runner.cand_id] = runner.metrics.finalize()\n                                    ^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/home/user/SDV-SDI_SGM/ETAPA_6C_CORRECCION_EXPERIMENTAL/motores/sdv_sdi_mqr_engine.py\", line 2037, in finalize\n    \"crest_factor_sdv\": (self.peak_sdv / math.sqrt(\n                         ^^^^^^^^^^^^^^^^^^^^^^^^^^\nZeroDivisionError: float division by zero\n",
+      "stderr": "",
+      "abort": true,
+      "engine": "MQR",
+      "version": "6C",
+      "flags": [
+        "--allow-misaligned"
+      ]
+    },
+    "MQR_6E_perm": {
+      "exit": 0,
+      "report": true,
+      "wavs": 2,
+      "pcm": {
+        "SDI.wav": {
+          "frames": 176400,
+          "sr": 44100,
+          "sha256": "33de6e4e83bcf96e4d20e7309d77d6a5eb7ac9f7a5a53378564471340a4f1de9",
+          "lr_peak": 0.33034729957580566,
+          "mid_rms": 0.0,
+          "finite": true
+        },
+        "SDV.wav": {
+          "frames": 176400,
+          "sr": 44100,
+          "sha256": "03465dda616b0e0d9fb167f9cc2c3fb69a6845219b72b7f0cc5fdaaeba4711e1",
+          "lr_peak": 0.0,
+          "mid_rms": 0.0,
+          "finite": true
+        }
+      },
+      "crest": {
+        "individual_P1": null,
+        "individual_P1/mix": null,
+        "consensus_weighted_mean": null,
+        "consensus_weighted_mean/mix": null,
+        "consensus_median": null,
+        "consensus_median/mix": null,
+        "consensus_confidence_weighted_mean": null,
+        "consensus_confidence_weighted_mean/mix": null
+      },
+      "alignment": {
+        "P1/vocal": {
+          "attribution": "AMBIGUOUS",
+          "classification": "AMBIGUOUS",
+          "reason": "MEMBER_AMBIGUITY_OR_CONFLICT",
+          "k": null,
+          "channel_lags": null,
+          "channel_states": null
+        },
+        "P1/instrumental": {
+          "attribution": "AMBIGUOUS",
+          "classification": "AMBIGUOUS",
+          "reason": "MEMBER_AMBIGUITY_OR_CONFLICT",
+          "k": null,
+          "channel_lags": null,
+          "channel_states": null
+        }
+      },
+      "validation_overall": "fail",
+      "stdout": "[     0.01s] Validacion de entradas: OK (mix 44100 Hz / 2 ch / 176400 frames; 1 pares)\n[     0.01s] Analisis de alineacion (detect_only_no_correction)...\n[     0.02s]   P1/vocal: k=null ms; NCC=null; AMBIGUOUS (MEMBER_AMBIGUITY_OR_CONFLICT); L: d=null AMBIGUOUS, R: d=null AMBIGUOUS; shift=0\n[     0.03s]   P1/instrumental: k=null ms; NCC=null; AMBIGUOUS (MEMBER_AMBIGUITY_OR_CONFLICT); L: d=null AMBIGUOUS, R: d=null AMBIGUOUS; shift=0\n[     0.03s] Continuación explícita sin corrección: cli_allow_misaligned\n[     0.03s] Analisis de escala de guides (metricas + factores)...\n[     0.05s]   P1: g_vocal=1.0000 g_instr=1.0000 (politica=none)\n[     0.05s] Directorio de corrida (parcial): /tmp/sdv6f-s7-5kg23s00/MQR_6E_perm/mqr_run_20261119_033708_partial\n[     0.05s] Pipeline: mode=full_processing, 1 pares, K=175 frames en chunks de 256\n[     0.74s]   chunk 1/1 (frames 0-174) listo\n[     0.77s] Post-WAV identity: SNR=inf dB (esperado > 100 dB)\n[     0.77s] Escribiendo analysis.json / analysis.txt ...\n[     0.78s] Directorio final: /tmp/sdv6f-s7-5kg23s00/MQR_6E_perm/mqr_run_20261119_033708\n[     0.78s] Duracion total: 0.8 s\n[     0.78s] Corrida COMPLETA: /tmp/sdv6f-s7-5kg23s00/MQR_6E_perm/mqr_run_20261119_033708\n\nRESULTADO: OK\n  salida: /tmp/sdv6f-s7-5kg23s00/MQR_6E_perm/mqr_run_20261119_033708\n  SDV.wav / SDI.wav / analysis.json / analysis.txt / masks/\n",
+      "stderr": "",
+      "abort": false,
+      "engine": "MQR",
+      "version": "6E",
+      "flags": [
+        "--allow-misaligned"
+      ]
+    },
+    "MQR_6F_noperm": {
+      "exit": 1,
+      "report": false,
+      "wavs": 0,
+      "pcm": {},
+      "crest": {},
+      "alignment": {},
+      "validation_overall": null,
+      "stdout": "[     0.02s] Validacion de entradas: OK (mix 44100 Hz / 2 ch / 176400 frames; 1 pares)\n[     0.02s] Analisis de alineacion (detect_only_no_correction)...\n[     0.32s]   P1/vocal: k=null ms; NCC=null; AMBIGUOUS (MEMBER_AMBIGUITY_OR_CONFLICT); L: d=null AMBIGUOUS, R: d=null AMBIGUOUS; shift=0\n[     0.63s]   P1/instrumental: k=null ms; NCC=null; AMBIGUOUS (MEMBER_AMBIGUITY_OR_CONFLICT); L: d=null AMBIGUOUS, R: d=null AMBIGUOUS; shift=0\n[     0.63s] [ABORT] Diagnóstico no validado (AMBIGUOUS). Se requiere --allow-misaligned para continuar sin corrección; el diagnóstico no cambia.\n",
+      "stderr": "",
+      "abort": false,
+      "engine": "MQR",
+      "version": "6F",
+      "flags": []
+    },
+    "MQR_6F_perm": {
+      "exit": 0,
+      "report": true,
+      "wavs": 2,
+      "pcm": {
+        "SDI.wav": {
+          "frames": 176400,
+          "sr": 44100,
+          "sha256": "e95b5773b2e5c134d34d21ab56e36427356887ae03eb311628439149850c5f20",
+          "lr_peak": 0.33034729957580566,
+          "mid_rms": 0.0,
+          "finite": true
+        },
+        "SDV.wav": {
+          "frames": 176400,
+          "sr": 44100,
+          "sha256": "5afb5680441de4befbe5d57496b07f32edcbfb255346eabdc14ca85adb5d2f63",
+          "lr_peak": 0.0,
+          "mid_rms": 0.0,
+          "finite": true
+        }
+      },
+      "crest": {
+        "individual_P1": null,
+        "individual_P1/mix": null,
+        "consensus_weighted_mean": null,
+        "consensus_weighted_mean/mix": null,
+        "consensus_median": null,
+        "consensus_median/mix": null,
+        "consensus_confidence_weighted_mean": null,
+        "consensus_confidence_weighted_mean/mix": null
+      },
+      "alignment": {
+        "P1/vocal": {
+          "attribution": "AMBIGUOUS",
+          "classification": "AMBIGUOUS",
+          "reason": "MEMBER_AMBIGUITY_OR_CONFLICT",
+          "k": null,
+          "channel_lags": {},
+          "channel_states": {
+            "L": "AMBIGUOUS",
+            "R": "AMBIGUOUS"
+          }
+        },
+        "P1/instrumental": {
+          "attribution": "AMBIGUOUS",
+          "classification": "AMBIGUOUS",
+          "reason": "MEMBER_AMBIGUITY_OR_CONFLICT",
+          "k": null,
+          "channel_lags": {},
+          "channel_states": {
+            "L": "AMBIGUOUS",
+            "R": "AMBIGUOUS"
+          }
+        }
+      },
+      "validation_overall": "fail",
+      "stdout": "[     0.02s] Validacion de entradas: OK (mix 44100 Hz / 2 ch / 176400 frames; 1 pares)\n[     0.02s] Analisis de alineacion (detect_only_no_correction)...\n[     0.32s]   P1/vocal: k=null ms; NCC=null; AMBIGUOUS (MEMBER_AMBIGUITY_OR_CONFLICT); L: d=null AMBIGUOUS, R: d=null AMBIGUOUS; shift=0\n[     0.63s]   P1/instrumental: k=null ms; NCC=null; AMBIGUOUS (MEMBER_AMBIGUITY_OR_CONFLICT); L: d=null AMBIGUOUS, R: d=null AMBIGUOUS; shift=0\n[     0.63s] [PERMISO] continuación explícita: cli_allow_misaligned (diagnóstico intacto).\n[     0.63s] Analisis de escala de guides (metricas + factores)...\n[     0.64s]   P1: g_vocal=1.0000 g_instr=1.0000 (politica=none)\n[     0.64s] Directorio de corrida (parcial): /tmp/sdv6f-s7-5kg23s00/MQR_6F_perm/mqr_run_20261119_033710_partial\n[     0.64s] Pipeline: mode=full_processing, 1 pares, K=175 frames en chunks de 256\n[     1.32s]   chunk 1/1 (frames 0-174) listo\n[     1.35s] Post-WAV identity: SNR=inf dB (esperado > 100 dB)\n[     1.35s] Escribiendo analysis.json / analysis.txt ...\n[     1.36s] Directorio final: /tmp/sdv6f-s7-5kg23s00/MQR_6F_perm/mqr_run_20261119_033710\n[     1.36s] Duracion total: 1.3 s\n[     1.36s] Corrida COMPLETA: /tmp/sdv6f-s7-5kg23s00/MQR_6F_perm/mqr_run_20261119_033710\n\nRESULTADO: OK\n  salida: /tmp/sdv6f-s7-5kg23s00/MQR_6F_perm/mqr_run_20261119_033710\n  SDV.wav / SDI.wav / analysis.json / analysis.txt / masks/\n",
+      "stderr": "",
+      "abort": false,
+      "engine": "MQR",
+      "version": "6F",
+      "flags": [
+        "--allow-misaligned"
+      ]
+    },
+    "_matematica": {
+      "mix_mid_rms": 0.0,
+      "mix_lr_peak": 0.33034729957580566,
+      "guia_v_mid_rms": 0.0,
+      "notas": "cresta = pico L/R / RMS Mid: no definida si RMS Mid = 0, aunque el pico sea positivo"
+    }
+  },
+  "seconds": 12.877590792999968,
+  "maxrss_kib": 51740,
+  "child_rss_kib": 250044
+}
