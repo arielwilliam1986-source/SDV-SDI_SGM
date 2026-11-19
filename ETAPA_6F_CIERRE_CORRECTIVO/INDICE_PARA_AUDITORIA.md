@@ -2,6 +2,16 @@
 
 Punto de entrada único para revisión independiente de la etapa 6F.
 
+## Lectura en dos enlaces (todo el texto, sin navegar el repositorio)
+
+| Tomo | Contenido | URL raw |
+|---|---|---|
+| 1 | los nueve informes completos + este índice | `https://raw.githubusercontent.com/arielwilliam1986-source/SDV-SDI_SGM/arena/89d5c189-sdv-sdi-sgm/ETAPA_6F_CIERRE_CORRECTIVO/AUDITORIA_6F_TOMO_1_INFORMES.md` |
+| 2 | hashes, matrices completas (atribución, CLI, WAV) | `https://raw.githubusercontent.com/arielwilliam1986-source/SDV-SDI_SGM/arena/89d5c189-sdv-sdi-sgm/ETAPA_6F_CIERRE_CORRECTIVO/AUDITORIA_6F_TOMO_2_EVIDENCIA.md` |
+
+Ambos tomos se regeneran con `scripts/empaquetar_auditoria_6f.py`. Este índice
+solo no contiene los informes: es un mapa con resumen y advertencias.
+
 | Dato | Valor |
 |---|---|
 | Repositorio | `arielwilliam1986-source/SDV-SDI_SGM` (público) |
