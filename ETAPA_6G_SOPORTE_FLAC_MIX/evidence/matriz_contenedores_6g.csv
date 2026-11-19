@@ -1,0 +1,53 @@
+capa,motor,caso,archivo,esperado,observado,exit,wavs,report,detalle,motivo,verdict
+modulo,-,wav_valido,mix.wav,ACEPTA,ACEPTA,-,-,-,container=WAV rate=44100 ch=2 frames=44100,WAV PCM_16 estricto,PASS
+modulo,-,flac_valido,mix.flac,ACEPTA,ACEPTA,-,-,-,container=FLAC rate=44100 ch=2 frames=44100 md5_checked=True,FLAC PCM_16,PASS
+modulo,-,wav_24bit,mix_24bit.wav,ACEPTA,ACEPTA,-,-,-,container=WAV rate=44100 ch=2 frames=44100,WAV PCM_24,PASS
+modulo,-,flac_24bit,mix_24bit.flac,ACEPTA,ACEPTA,-,-,-,container=FLAC rate=44100 ch=2 frames=44100 md5_checked=True,FLAC PCM_24,PASS
+modulo,-,wav_como_flac,wav_renombrado_flac.flac,RECHAZA,RECHAZA,-,-,-,AudioError: Contenedor WAV con extensión '.flac': se exige .wav,contenedor WAV con extensión .flac,PASS
+modulo,-,flac_como_wav,flac_renombrado_wav.wav,RECHAZA,RECHAZA,-,-,-,AudioError: Contenedor FLAC con extensión '.wav': se exige .flac,contenedor FLAC con extensión .wav,PASS
+modulo,-,flac_truncado,flac_truncado.flac,RECHAZA,RECHAZA,-,-,-,AudioError: Decodificación FLAC falló tras 0 frames: Error : flac decoder lost sync.,FLAC cortado,PASS
+modulo,-,flac_corrupto,flac_corrupto.flac,RECHAZA,RECHAZA,-,-,-,AudioError: Decodificación FLAC falló tras 0 frames: Error : flac decoder lost sync.,frames FLAC alterados,PASS
+modulo,-,flac_sin_audio,flac_sin_audio.flac,RECHAZA,RECHAZA,-,-,-,AudioError: FLAC sin datos de audio,"solo metadatos, sin frames",PASS
+modulo,-,flac_48k,mix_48k.flac,ACEPTA,ACEPTA,-,-,-,container=FLAC rate=48000 ch=2 frames=44100 md5_checked=True,contenedor válido; tasa no admitida es política del motor,PASS
+modulo,-,flac_3ch,flac_3ch.flac,ACEPTA,ACEPTA,-,-,-,container=FLAC rate=44100 ch=3 frames=44100 md5_checked=True,contenedor válido; 3 canales fuera de rango del motor,PASS
+modulo,-,wav_nan,mix_nan.wav,RECHAZA,RECHAZA,-,-,-,WaveError: Muestras no finitas en el payload float,muestras no finitas,PASS
+modulo,-,otro_formato,mp3_renombrado.flac,RECHAZA,RECHAZA,-,-,-,AudioError: Contenedor no admitido: OGG,contenedor OGG/otro con extensión .flac,PASS
+motor,Hardened,wav_valido,mix.wav,ACEPTA,ACEPTA,0,0,False,,WAV PCM_16 estricto,PASS
+motor,Hardened,flac_valido,mix.flac,ACEPTA,ACEPTA,0,0,False,,FLAC PCM_16,PASS
+motor,Hardened,wav_24bit,mix_24bit.wav,ACEPTA,ACEPTA,0,0,False,,WAV PCM_24,PASS
+motor,Hardened,flac_24bit,mix_24bit.flac,ACEPTA,ACEPTA,0,0,False,,FLAC PCM_24,PASS
+motor,Hardened,wav_como_flac,wav_renombrado_flac.flac,RECHAZA,RECHAZA,1,0,False,,contenedor WAV con extensión .flac,PASS
+motor,Hardened,flac_como_wav,flac_renombrado_wav.wav,RECHAZA,RECHAZA,1,0,False,,contenedor FLAC con extensión .wav,PASS
+motor,Hardened,flac_truncado,flac_truncado.flac,RECHAZA,RECHAZA,1,0,False,,FLAC cortado,PASS
+motor,Hardened,flac_corrupto,flac_corrupto.flac,RECHAZA,RECHAZA,1,0,False,,frames FLAC alterados,PASS
+motor,Hardened,flac_sin_audio,flac_sin_audio.flac,RECHAZA,RECHAZA,1,0,False,,"solo metadatos, sin frames",PASS
+motor,Hardened,flac_48k,mix_48k.flac,RECHAZA,RECHAZA,1,0,False,,contenedor válido; tasa no admitida es política del motor,PASS
+motor,Hardened,flac_3ch,flac_3ch.flac,RECHAZA,RECHAZA,1,0,False,,contenedor válido; 3 canales fuera de rango del motor,PASS
+motor,Hardened,wav_nan,mix_nan.wav,RECHAZA,RECHAZA,1,0,False,,muestras no finitas,PASS
+motor,Hardened,otro_formato,mp3_renombrado.flac,RECHAZA,RECHAZA,1,0,False,,contenedor OGG/otro con extensión .flac,PASS
+motor,EVO,wav_valido,mix.wav,ACEPTA,ACEPTA,0,0,False,,WAV PCM_16 estricto,PASS
+motor,EVO,flac_valido,mix.flac,ACEPTA,ACEPTA,0,0,False,,FLAC PCM_16,PASS
+motor,EVO,wav_24bit,mix_24bit.wav,ACEPTA,ACEPTA,0,0,False,,WAV PCM_24,PASS
+motor,EVO,flac_24bit,mix_24bit.flac,ACEPTA,ACEPTA,0,0,False,,FLAC PCM_24,PASS
+motor,EVO,wav_como_flac,wav_renombrado_flac.flac,RECHAZA,RECHAZA,1,0,False,,contenedor WAV con extensión .flac,PASS
+motor,EVO,flac_como_wav,flac_renombrado_wav.wav,RECHAZA,RECHAZA,1,0,False,,contenedor FLAC con extensión .wav,PASS
+motor,EVO,flac_truncado,flac_truncado.flac,RECHAZA,RECHAZA,1,0,False,,FLAC cortado,PASS
+motor,EVO,flac_corrupto,flac_corrupto.flac,RECHAZA,RECHAZA,1,0,False,,frames FLAC alterados,PASS
+motor,EVO,flac_sin_audio,flac_sin_audio.flac,RECHAZA,RECHAZA,1,0,False,,"solo metadatos, sin frames",PASS
+motor,EVO,flac_48k,mix_48k.flac,RECHAZA,RECHAZA,1,0,False,,contenedor válido; tasa no admitida es política del motor,PASS
+motor,EVO,flac_3ch,flac_3ch.flac,RECHAZA,RECHAZA,1,0,False,,contenedor válido; 3 canales fuera de rango del motor,PASS
+motor,EVO,wav_nan,mix_nan.wav,RECHAZA,RECHAZA,1,0,False,,muestras no finitas,PASS
+motor,EVO,otro_formato,mp3_renombrado.flac,RECHAZA,RECHAZA,1,0,False,,contenedor OGG/otro con extensión .flac,PASS
+motor,MQR,wav_valido,mix.wav,ACEPTA,ACEPTA,0,0,False,,WAV PCM_16 estricto,PASS
+motor,MQR,flac_valido,mix.flac,ACEPTA,ACEPTA,0,0,False,,FLAC PCM_16,PASS
+motor,MQR,wav_24bit,mix_24bit.wav,ACEPTA,ACEPTA,0,0,False,,WAV PCM_24,PASS
+motor,MQR,flac_24bit,mix_24bit.flac,ACEPTA,ACEPTA,0,0,False,,FLAC PCM_24,PASS
+motor,MQR,wav_como_flac,wav_renombrado_flac.flac,RECHAZA,RECHAZA,1,0,False,,contenedor WAV con extensión .flac,PASS
+motor,MQR,flac_como_wav,flac_renombrado_wav.wav,RECHAZA,RECHAZA,1,0,False,,contenedor FLAC con extensión .wav,PASS
+motor,MQR,flac_truncado,flac_truncado.flac,RECHAZA,RECHAZA,1,0,False,,FLAC cortado,PASS
+motor,MQR,flac_corrupto,flac_corrupto.flac,RECHAZA,RECHAZA,1,0,False,,frames FLAC alterados,PASS
+motor,MQR,flac_sin_audio,flac_sin_audio.flac,RECHAZA,RECHAZA,1,0,False,,"solo metadatos, sin frames",PASS
+motor,MQR,flac_48k,mix_48k.flac,RECHAZA,RECHAZA,1,0,False,,contenedor válido; tasa no admitida es política del motor,PASS
+motor,MQR,flac_3ch,flac_3ch.flac,RECHAZA,RECHAZA,1,0,False,,contenedor válido; 3 canales fuera de rango del motor,PASS
+motor,MQR,wav_nan,mix_nan.wav,RECHAZA,RECHAZA,1,0,False,,muestras no finitas,PASS
+motor,MQR,otro_formato,mp3_renombrado.flac,RECHAZA,RECHAZA,1,0,False,,contenedor OGG/otro con extensión .flac,PASS

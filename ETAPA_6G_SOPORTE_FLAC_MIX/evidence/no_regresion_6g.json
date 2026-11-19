@@ -1,0 +1,211 @@
+{
+  "seconds": 5.244793688000016,
+  "maxrss_kib": 54036,
+  "entorno": {
+    "python": "3.11.2",
+    "numpy": "1.26.4",
+    "scipy": "1.13.1",
+    "soundfile": "0.13.1",
+    "libsndfile": "1.2.2",
+    "platform": "linux",
+    "machine": "x86_64",
+    "cpu_count": 2,
+    "ram_mb": 3940
+  },
+  "comparaciones": {
+    "Hardened/ast": {
+      "cambiadas": [
+        "probe_file",
+        "run_experiment"
+      ],
+      "anadidas": [],
+      "quitadas": [],
+      "constantes_cambiadas": {},
+      "defs_identicas": 63,
+      "dsp_tocadas": []
+    },
+    "Hardened/pcm": {
+      "pcm_igual": true,
+      "informe_igual": true,
+      "pcm_6f": {
+        "mix SDI.wav": "bf7aa2b187306fc65b0bcd22905821869bef9a8d0286b5f53bbfb3f655f8c623",
+        "mix SDV.wav": "3f8cc4bbabb9f1e3c25487587e0cb1287b932fcc6b2393497fb6b9b5308ad14b"
+      },
+      "pcm_6g": {
+        "mix SDI.wav": "bf7aa2b187306fc65b0bcd22905821869bef9a8d0286b5f53bbfb3f655f8c623",
+        "mix SDV.wav": "3f8cc4bbabb9f1e3c25487587e0cb1287b932fcc6b2393497fb6b9b5308ad14b"
+      },
+      "shapes_6f": {
+        "mix SDI.wav": [
+          44100,
+          2,
+          44100
+        ],
+        "mix SDV.wav": [
+          44100,
+          2,
+          44100
+        ]
+      },
+      "shapes_6g": {
+        "mix SDI.wav": [
+          44100,
+          2,
+          44100
+        ],
+        "mix SDV.wav": [
+          44100,
+          2,
+          44100
+        ]
+      },
+      "exit_6f": 0,
+      "exit_6g": 0
+    },
+    "EVO/ast": {
+      "cambiadas": [
+        "probe_file",
+        "run_experiment"
+      ],
+      "anadidas": [],
+      "quitadas": [],
+      "constantes_cambiadas": {},
+      "defs_identicas": 66,
+      "dsp_tocadas": []
+    },
+    "EVO/pcm": {
+      "pcm_igual": true,
+      "informe_igual": true,
+      "pcm_6f": {
+        "mix SDI.wav": "bf7aa2b187306fc65b0bcd22905821869bef9a8d0286b5f53bbfb3f655f8c623",
+        "mix SDV.wav": "3f8cc4bbabb9f1e3c25487587e0cb1287b932fcc6b2393497fb6b9b5308ad14b"
+      },
+      "pcm_6g": {
+        "mix SDI.wav": "bf7aa2b187306fc65b0bcd22905821869bef9a8d0286b5f53bbfb3f655f8c623",
+        "mix SDV.wav": "3f8cc4bbabb9f1e3c25487587e0cb1287b932fcc6b2393497fb6b9b5308ad14b"
+      },
+      "shapes_6f": {
+        "mix SDI.wav": [
+          44100,
+          2,
+          44100
+        ],
+        "mix SDV.wav": [
+          44100,
+          2,
+          44100
+        ]
+      },
+      "shapes_6g": {
+        "mix SDI.wav": [
+          44100,
+          2,
+          44100
+        ],
+        "mix SDV.wav": [
+          44100,
+          2,
+          44100
+        ]
+      },
+      "exit_6f": 0,
+      "exit_6g": 0
+    },
+    "MQR/ast": {
+      "cambiadas": [
+        "probe_file",
+        "run_experiment"
+      ],
+      "anadidas": [],
+      "quitadas": [],
+      "constantes_cambiadas": {
+        "MIX_ALLOWED_EXTENSIONS": {
+          "antes": [
+            ".wav"
+          ],
+          "ahora": [
+            ".wav",
+            ".flac"
+          ]
+        }
+      },
+      "defs_identicas": 86,
+      "dsp_tocadas": []
+    },
+    "MQR/pcm": {
+      "pcm_igual": true,
+      "informe_igual": true,
+      "pcm_6f": {
+        "SDI.wav": "63920cef756c45ca73a43714e4308d55aff52fc8cd347f211b1c0a4586143e40",
+        "SDV.wav": "26ae82cb1507b45bd92c3815ee11b8c5817adca0f658ec1f853c4e3b05dfbf4d"
+      },
+      "pcm_6g": {
+        "SDI.wav": "63920cef756c45ca73a43714e4308d55aff52fc8cd347f211b1c0a4586143e40",
+        "SDV.wav": "26ae82cb1507b45bd92c3815ee11b8c5817adca0f658ec1f853c4e3b05dfbf4d"
+      },
+      "shapes_6f": {
+        "SDI.wav": [
+          44100,
+          2,
+          44100
+        ],
+        "SDV.wav": [
+          44100,
+          2,
+          44100
+        ]
+      },
+      "shapes_6g": {
+        "SDI.wav": [
+          44100,
+          2,
+          44100
+        ],
+        "SDV.wav": [
+          44100,
+          2,
+          44100
+        ]
+      },
+      "exit_6f": 0,
+      "exit_6g": 0
+    }
+  },
+  "filas": [
+    {
+      "motor": "Hardened",
+      "defs_cambiadas": "probe_file;run_experiment",
+      "defs_anadidas": "",
+      "defs_quitadas": "",
+      "constantes": "",
+      "defs_identicas": 63,
+      "pcm_6f_vs_6g": "IDENTICO",
+      "informe_igual": true
+    },
+    {
+      "motor": "EVO",
+      "defs_cambiadas": "probe_file;run_experiment",
+      "defs_anadidas": "",
+      "defs_quitadas": "",
+      "constantes": "",
+      "defs_identicas": 66,
+      "pcm_6f_vs_6g": "IDENTICO",
+      "informe_igual": true
+    },
+    {
+      "motor": "MQR",
+      "defs_cambiadas": "probe_file;run_experiment",
+      "defs_anadidas": "",
+      "defs_quitadas": "",
+      "constantes": "MIX_ALLOWED_EXTENSIONS",
+      "defs_identicas": 86,
+      "pcm_6f_vs_6g": "IDENTICO",
+      "informe_igual": true
+    }
+  ],
+  "resumen": {
+    "motores_con_pcm_identico": 3,
+    "motores_con_informe_igual": 3,
+    "total": 3
+  }
+}

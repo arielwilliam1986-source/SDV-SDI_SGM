@@ -1,0 +1,25 @@
+motor,modo,contenedor,exit,wavs,report,attribution,k,seconds,container_6g,pcm_sdv,pcm_sdi,geometry
+Hardened,dry_run,wav,0,0,False,,,0.382,,,,{}
+Hardened,dry_run,flac,0,0,False,,,0.393,,,,{}
+Hardened,analysis_only,wav,2,0,False,,,0.771,,,,{}
+Hardened,analysis_only,flac,2,0,False,,,0.665,,,,{}
+Hardened,single_pair,wav,0,6,False,,,0.705,WAV,3f8cc4bbabb9f1e3c25487587e0cb1287b932fcc6b2393497fb6b9b5308ad14b,bf7aa2b187306fc65b0bcd22905821869bef9a8d0286b5f53bbfb3f655f8c623,"{""mix SDI.wav"": [44100, 2, 44100], ""mix SDV.wav"": [44100, 2, 44100]}"
+Hardened,single_pair,flac,0,6,False,,,0.818,FLAC,3f8cc4bbabb9f1e3c25487587e0cb1287b932fcc6b2393497fb6b9b5308ad14b,bf7aa2b187306fc65b0bcd22905821869bef9a8d0286b5f53bbfb3f655f8c623,"{""mix SDI.wav"": [44100, 2, 44100], ""mix SDV.wav"": [44100, 2, 44100]}"
+Hardened,full_processing,wav,0,6,False,,,0.836,WAV,3f8cc4bbabb9f1e3c25487587e0cb1287b932fcc6b2393497fb6b9b5308ad14b,bf7aa2b187306fc65b0bcd22905821869bef9a8d0286b5f53bbfb3f655f8c623,"{""mix SDI.wav"": [44100, 2, 44100], ""mix SDV.wav"": [44100, 2, 44100]}"
+Hardened,full_processing,flac,0,6,False,,,0.685,FLAC,3f8cc4bbabb9f1e3c25487587e0cb1287b932fcc6b2393497fb6b9b5308ad14b,bf7aa2b187306fc65b0bcd22905821869bef9a8d0286b5f53bbfb3f655f8c623,"{""mix SDI.wav"": [44100, 2, 44100], ""mix SDV.wav"": [44100, 2, 44100]}"
+EVO,dry_run,wav,0,0,False,,,0.394,,,,{}
+EVO,dry_run,flac,0,0,False,,,0.39,,,,{}
+EVO,analysis_only,wav,0,0,False,,,0.778,WAV,,,{}
+EVO,analysis_only,flac,0,0,False,,,0.828,FLAC,,,{}
+EVO,single_pair,wav,0,6,False,,,0.694,WAV,3f8cc4bbabb9f1e3c25487587e0cb1287b932fcc6b2393497fb6b9b5308ad14b,bf7aa2b187306fc65b0bcd22905821869bef9a8d0286b5f53bbfb3f655f8c623,"{""mix SDI.wav"": [44100, 2, 44100], ""mix SDV.wav"": [44100, 2, 44100]}"
+EVO,single_pair,flac,0,6,False,,,0.735,FLAC,3f8cc4bbabb9f1e3c25487587e0cb1287b932fcc6b2393497fb6b9b5308ad14b,bf7aa2b187306fc65b0bcd22905821869bef9a8d0286b5f53bbfb3f655f8c623,"{""mix SDI.wav"": [44100, 2, 44100], ""mix SDV.wav"": [44100, 2, 44100]}"
+EVO,full_processing,wav,0,6,False,,,0.783,WAV,3f8cc4bbabb9f1e3c25487587e0cb1287b932fcc6b2393497fb6b9b5308ad14b,bf7aa2b187306fc65b0bcd22905821869bef9a8d0286b5f53bbfb3f655f8c623,"{""mix SDI.wav"": [44100, 2, 44100], ""mix SDV.wav"": [44100, 2, 44100]}"
+EVO,full_processing,flac,0,6,False,,,0.791,FLAC,3f8cc4bbabb9f1e3c25487587e0cb1287b932fcc6b2393497fb6b9b5308ad14b,bf7aa2b187306fc65b0bcd22905821869bef9a8d0286b5f53bbfb3f655f8c623,"{""mix SDI.wav"": [44100, 2, 44100], ""mix SDV.wav"": [44100, 2, 44100]}"
+MQR,dry_run,wav,0,0,False,,,0.395,,,,{}
+MQR,dry_run,flac,0,0,False,,,0.408,,,,{}
+MQR,analysis_only,wav,0,0,False,,,0.97,WAV,,,{}
+MQR,analysis_only,flac,0,0,False,,,0.956,FLAC,,,{}
+MQR,single_file,wav,0,0,False,,,0.834,WAV,,,{}
+MQR,single_file,flac,0,0,False,,,0.92,FLAC,,,{}
+MQR,full_processing,wav,0,6,False,,,0.785,WAV,26ae82cb1507b45bd92c3815ee11b8c5817adca0f658ec1f853c4e3b05dfbf4d,63920cef756c45ca73a43714e4308d55aff52fc8cd347f211b1c0a4586143e40,"{""SDI.wav"": [44100, 2, 44100], ""SDV.wav"": [44100, 2, 44100]}"
+MQR,full_processing,flac,0,6,False,,,0.924,FLAC,26ae82cb1507b45bd92c3815ee11b8c5817adca0f658ec1f853c4e3b05dfbf4d,63920cef756c45ca73a43714e4308d55aff52fc8cd347f211b1c0a4586143e40,"{""SDI.wav"": [44100, 2, 44100], ""SDV.wav"": [44100, 2, 44100]}"

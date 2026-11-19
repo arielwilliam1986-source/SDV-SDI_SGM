@@ -1,0 +1,83 @@
+{
+  "sr": 44100,
+  "seed": 618033,
+  "frames": 44100,
+  "validos": {
+    "vocal": {
+      "path": "vocal.wav",
+      "sha256": "3ef174738bbcec940e97150d3b0ec1a8939d05fde3d6cb93a87d0d214830674a"
+    },
+    "instrumental": {
+      "path": "instrumental.wav",
+      "sha256": "14f9537686d0fbc10c4d34130ffd7ec37f6eb0610300deee6cafa61e289a0dd2"
+    },
+    "mix_wav": {
+      "path": "mix.wav",
+      "sha256": "2a378c24c2dcb2d0a5187d90061b06232cde2a4ed77eac8dcb74e469b9096ce7"
+    },
+    "mix_flac": {
+      "path": "mix.flac",
+      "sha256": "cb0bd85c05ec2c9f8f0a2225f10cca2337414196aaa7002dea7a1c97446ca548"
+    }
+  },
+  "validos_extra": {
+    "mix_24bit.flac": "7dedfcc9de63fd875f7a60422f3cc2bff242e641b1c07f99c276e913da27177c",
+    "mix_24bit.wav": "4bab83531f1c6f32fb64eaed7c37074af7975a475e9aa0dd42365a21ef7193b0"
+  },
+  "invalidos": [
+    {
+      "caso": "wav_como_flac",
+      "path": "wav_renombrado_flac.flac",
+      "sha256": "2a378c24c2dcb2d0a5187d90061b06232cde2a4ed77eac8dcb74e469b9096ce7",
+      "nota": "WAV con extensión .flac"
+    },
+    {
+      "caso": "flac_como_wav",
+      "path": "flac_renombrado_wav.wav",
+      "sha256": "cb0bd85c05ec2c9f8f0a2225f10cca2337414196aaa7002dea7a1c97446ca548",
+      "nota": "FLAC con extensión .wav"
+    },
+    {
+      "caso": "flac_truncado",
+      "path": "flac_truncado.flac",
+      "sha256": "cdc99ec9b381a883eb2d600b5d903e60e2064d2493cd7f22bb7df3dfd670bd85",
+      "nota": "FLAC cortado a la mitad"
+    },
+    {
+      "caso": "flac_corrupto",
+      "path": "flac_corrupto.flac",
+      "sha256": "19023638881c008227e8f8a6fd6fccfeae8cc93d3644ae9655c56f195c764501",
+      "nota": "frames FLAC alterados"
+    },
+    {
+      "caso": "flac_48k",
+      "path": "mix_48k.flac",
+      "sha256": "b848c834afec011a772df94867150d6a25ed06d4dd06dc62c153eda776042ac4",
+      "nota": "sample rate 48000 no admitido"
+    },
+    {
+      "caso": "flac_3ch",
+      "path": "flac_3ch.flac",
+      "sha256": "487542930858462f0d8c765f6f7903e5fca6efa202229f252a1bfc3159959a4d",
+      "nota": "3 canales no admitidos"
+    },
+    {
+      "caso": "otro_formato_como_flac",
+      "path": "mp3_renombrado.flac",
+      "sha256": "00d07839c9a70f1ecbd5bbf189bcb1a3af6fe77d0e3541d2dfd55900981a0808",
+      "nota": "contenedor no FLAC"
+    },
+    {
+      "caso": "wav_nan",
+      "path": "mix_nan.wav",
+      "sha256": "413a46709a1b60ac4ccc0beb977680a4d889514bca61fd25852d46fa73c8f40a",
+      "nota": "muestras no finitas (FLOAT WAV)"
+    },
+    {
+      "caso": "flac_sin_audio",
+      "path": "flac_sin_audio.flac",
+      "sha256": "ae2506ae8100147e4f9b937d17166f3d9f663cc199b07d80f5a87b165770f308",
+      "nota": "FLAC sin frames de audio"
+    }
+  ]
+}

@@ -1,0 +1,52 @@
+{
+  "seconds": 0.34446991000004346,
+  "entorno": {
+    "python": "3.11.2",
+    "numpy": "1.26.4",
+    "scipy": "1.13.1",
+    "soundfile": "0.13.1",
+    "libsndfile": "1.2.2",
+    "platform": "linux",
+    "machine": "x86_64",
+    "cpu_count": 2,
+    "ram_mb": 3940
+  },
+  "filas": [
+    {
+      "caso": "modulo_open_audio",
+      "muestras_siguen_siendo_las_validadas": true,
+      "intacto_antes": true,
+      "sustitucion_detectada": true,
+      "detalle": "identidad fstat distinta"
+    },
+    {
+      "caso": "motor_Hardened",
+      "exit": 1,
+      "abortado": true,
+      "informes": 0,
+      "wavs": 0,
+      "run_dir": "None"
+    },
+    {
+      "caso": "motor_EVO",
+      "exit": 1,
+      "abortado": true,
+      "informes": 0,
+      "wavs": 0,
+      "run_dir": "None"
+    },
+    {
+      "caso": "motor_MQR",
+      "exit": 1,
+      "abortado": true,
+      "informes": 0,
+      "wavs": 0,
+      "run_dir": "{'mode': 'full_processing', 'warnings': [], 'mix_info': FileInfo(path='/tmp/f6g/toctou/MQR/mix.flac', role='mix', exists=True, format='FLAC', subtype='PCM_16', sample_rate=44100, channels=2, frames=44100, duration_s=1.0, size_bytes=159048, sha256='cb0bd85c05ec2c9f8f0a2225f10cca2337414196aaa7002dea7a1c97446ca548', bit_depth_nominal=16, warnings=[], notes=[], errors=[], valid=True), 'container_6g': {'mix_path': '/tmp/f6g/toctou/MQR/mix.flac', 'container': 'FLAC', 'format': 'FLAC', 'subtype': 'PCM_16', 'probe_sha256': 'cb0bd85c05ec2c9f8f0a2225f10cca2337414196aaa7002dea7a1c97446ca548', 'after': None, 'policy': 'detect_only_no_conversion'}, 'pairs': [PairMeta(pair_id='P01', family='6G', variant='V01', configuration='synthetic', vocal_path='/home/user/SDV-SDI_SGM/ETAPA_6G_SOPORTE_FLAC_MIX/fixtures/vocal.wav', instrumental_path='/home/user/SDV-SDI_SGM/ETAPA_6G_SOPORTE_FLAC_MIX/fixtures/instrumental.wav', source='synthetic', overlap='', vocal=FileInfo(path='/home/user/SDV-SDI_SGM/ETAPA_6G_SOPORTE_FLAC_MIX/fixtures/vocal.wav', role='vocal_guide', exists=True, format='WAV', subtype='PCM_16', sample_rate=44100, channels=2, frames=44100, duration_s=1.0, size_bytes=176444, sha256='3ef174738bbcec940e97150d3b0ec1a8939d05fde3d6cb93a87d0d214830674a', bit_depth_nominal=16, warnings=[], notes=[], errors=[], valid=True), instrumental=FileInfo(path='/home/user/SDV-SDI_SGM/ETAPA_6G_SOPORTE_FLAC_MIX/fixtures/instrumental.wav', role='instrumental_guide', exists=True, format='WAV', subtype='PCM_16', sample_rate=44100, channels=2, frames=44100, duration_s=1.0, size_bytes=176444, sha256='14f9537686d0fbc10c4d34130ffd7ec37f6eb0610300deee6cafa61e289a0dd2', bit_depth_nominal=16, warnings=[], notes=[], errors=[], valid=True))], 'alignment': [{'schema': 'alignment-6f/1', 'policy': 'detect_only_no_correction', 'guide': 'vocal.wav', 'duration_difference_samples': 0, 'duration_difference_ms': 0.0, 'convention': 'M[t] ~ G[t-k]; d=-k', 'search_window_seconds': 30.0, 'search_window_samples': 1323000, 'tolerances': {'aligned_max_samples': 1, 'warning_max_ms': 10.0}, 'channels': {'L': {'classification': 'ERROR', 'reason': 'READ_OR_FORMAT_ERROR', 'estimated_offset_samples': None, 'guide_delay_samples': None, 'correlation_peak': None, 'alignment_confidence': None}, 'R': {'classification': 'ERROR', 'reason': 'READ_OR_FORMAT_ERROR', 'estimated_offset_samples': None, 'guide_delay_samples': None, 'correlation_peak': None, 'alignment_confidence': None}}, 'estimated_offset_ms': None, 'cross_correlation': None, 'guide_delay_R_minus_L': None, 'k_R_minus_L': None, 'action': {'shift_authorized': False, 'applied_shift_samples': 0, 'polarity_changed': False}, 'integrity': {'same_descriptor_read': True, 'mix': {'sha256': '7dedfcc9de63fd875f7a60422f3cc2bff242e641b1c07f99c276e913da27177c', 'identity': {'device': 65024, 'inode': 535716, 'size': 159974, 'mtime_ns': 1795120144804307995, 'mode': '0o100644'}, 'spec': {'path': '/tmp/f6g/toctou/MQR/mix.flac', 'format': 'FLAC', 'subtype': 'PCM_24', 'bits': 24, 'channels': 2, 'rate': 44100, 'frames': 44100, 'md5_pcm': '9cee542d351bf5f728fa87b5141e7315', 'md5_checked': True, 'notes': 'MD5 de PCM verificado contra STREAMINFO'}}, 'guide': {'sha256': '3ef174738bbcec940e97150d3b0ec1a8939d05fde3d6cb93a87d0d214830674a', 'identity': {'device': 65024, 'inode': 535112, 'size': 176444, 'mtime_ns': 1795119981543483387}, 'spec': {'path': '/home/user/SDV-SDI_SGM/ETAPA_6G_SOPORTE_FLAC_MIX/fixtures/vocal.wav', 'audio_format': 1, 'extensible': False, 'channels': 2, 'rate': 44100, 'bits': 16, 'valid_bits': 16, 'block_align': 4, 'byte_rate': 176400, 'frames': 44100, 'channel_mask': 0, 'data_offset': 44, 'data_size': 176400, 'riff_size': 176436, 'physical_size': 176444, 'fact_frames': None, 'notes': ['channel mask ausente o cero (geometría deducida del conteo de canales)'], 'chunks': [{'kind': 'fmt ', 'size': 16, 'offset': 12}, {'kind': 'data', 'size': 176400, 'offset': 36}]}}, 'mix_unchanged_on_close': True, 'mix_after': {'unchanged': False, 'reason': 'identidad fstat distinta', 'before': {'device': 65024, 'inode': 535716, 'size': 159974, 'mtime_ns': 1795120144804307995, 'mode': '0o100644'}, 'after': {'device': 65024, 'inode': 535716, 'size': 159974, 'mtime_ns': 1795120144804307995}}, 'guide_unchanged_on_close': True, 'guide_after': {'unchanged': True, 'reason': 'sha256 revalidado', 'sha256': '3ef174738bbcec940e97150d3b0ec1a8939d05fde3d6cb93a87d0d214830674a'}}, 'classification': 'ERROR', 'reason': 'READ_OR_FORMAT_ERROR', 'estimated_offset_samples': None, 'guide_delay_samples': None, 'correlation_peak': None, 'alignment_confidence': None, 'error': 'WaveError: mix: sha256 distinto del sondeo (posible sustitución entre validación y lectura)', 'traceback': 'Traceback (most recent call last):\\n  File \"/home/user/SDV-SDI_SGM/ETAPA_6G_SOPORTE_FLAC_MIX/motores/atribucion_6f.py\", line 469, in analyze_files\\n    raise WaveError(f\\'{tag}: sha256 distinto del sondeo (posible sustitución \\'\\nwav_integridad_6f.WaveError: mix: sha256 distinto del sondeo (posible sustitución entre validación y lectura)\\n', 'attribution': 'ERROR', 'pair_id': 'P01', 'role': 'vocal', 'continuation_permission': None}, {'schema': 'alignment-6f/1', 'policy': 'detect_only_no_correction', 'guide': 'instrumental.wav', 'duration_difference_samples': 0, 'duration_difference_ms': 0.0, 'convention': 'M[t] ~ G[t-k]; d=-k', 'search_window_seconds': 30.0, 'search_window_samples': 1323000, 'tolerances': {'aligned_max_samples': 1, 'warning_max_ms': 10.0}, 'channels': {'L': {'classification': 'ERROR', 'reason': 'READ_OR_FORMAT_ERROR', 'estimated_offset_samples': None, 'guide_delay_samples': None, 'correlation_peak': None, 'alignment_confidence': None}, 'R': {'classification': 'ERROR', 'reason': 'READ_OR_FORMAT_ERROR', 'estimated_offset_samples': None, 'guide_delay_samples': None, 'correlation_peak': None, 'alignment_confidence': None}}, 'estimated_offset_ms': None, 'cross_correlation': None, 'guide_delay_R_minus_L': None, 'k_R_minus_L': None, 'action': {'shift_authorized': False, 'applied_shift_samples': 0, 'polarity_changed': False}, 'integrity': {'same_descriptor_read': True, 'mix': {'sha256': '7dedfcc9de63fd875f7a60422f3cc2bff242e641b1c07f99c276e913da27177c', 'identity': {'device': 65024, 'inode': 535716, 'size': 159974, 'mtime_ns': 1795120144804307995, 'mode': '0o100644'}, 'spec': {'path': '/tmp/f6g/toctou/MQR/mix.flac', 'format': 'FLAC', 'subtype': 'PCM_24', 'bits': 24, 'channels': 2, 'rate': 44100, 'frames': 44100, 'md5_pcm': '9cee542d351bf5f728fa87b5141e7315', 'md5_checked': True, 'notes': 'MD5 de PCM verificado contra STREAMINFO'}}, 'guide': {'sha256': '14f9537686d0fbc10c4d34130ffd7ec37f6eb0610300deee6cafa61e289a0dd2', 'identity': {'device': 65024, 'inode': 535113, 'size': 176444, 'mtime_ns': 1795119981543483387}, 'spec': {'path': '/home/user/SDV-SDI_SGM/ETAPA_6G_SOPORTE_FLAC_MIX/fixtures/instrumental.wav', 'audio_format': 1, 'extensible': False, 'channels': 2, 'rate': 44100, 'bits': 16, 'valid_bits': 16, 'block_align': 4, 'byte_rate': 176400, 'frames': 44100, 'channel_mask': 0, 'data_offset': 44, 'data_size': 176400, 'riff_size': 176436, 'physical_size': 176444, 'fact_frames': None, 'notes': ['channel mask ausente o cero (geometría deducida del conteo de canales)'], 'chunks': [{'kind': 'fmt ', 'size': 16, 'offset': 12}, {'kind': 'data', 'size': 176400, 'offset': 36}]}}, 'mix_unchanged_on_close': True, 'mix_after': {'unchanged': False, 'reason': 'identidad fstat distinta', 'before': {'device': 65024, 'inode': 535716, 'size': 159974, 'mtime_ns': 1795120144804307995, 'mode': '0o100644'}, 'after': {'device': 65024, 'inode': 535716, 'size': 159974, 'mtime_ns': 1795120144804307995}}, 'guide_unchanged_on_close': True, 'guide_after': {'unchanged': True, 'reason': 'sha256 revalidado', 'sha256': '14f9537686d0fbc10c4d34130ffd7ec37f6eb0610300deee6cafa61e289a0dd2'}}, 'classification': 'ERROR', 'reason': 'READ_OR_FORMAT_ERROR', 'estimated_offset_samples': None, 'guide_delay_samples': None, 'correlation_peak': None, 'alignment_confidence': None, 'error': 'WaveError: mix: sha256 distinto del sondeo (posible sustitución entre validación y lectura)', 'traceback': 'Traceback (most recent call last):\\n  File \"/home/user/SDV-SDI_SGM/ETAPA_6G_SOPORTE_FLAC_MIX/motores/atribucion_6f.py\", line 469, in analyze_files\\n    raise WaveError(f\\'{tag}: sha256 distinto del sondeo (posible sustitución \\'\\nwav_integridad_6f.WaveError: mix: sha256 distinto del sondeo (posible sustitución entre validación y lectura)\\n', 'attribution': 'ERROR', 'pair_id': 'P01', 'role': 'instrumental', 'continuation_permission': None}], 'alignment_gate': {'permission': None, 'allowed': False, 'states': {'P01/vocal': 'ERROR', 'P01/instrumental': 'ERROR'}, 'blocking': [{'pair': 'P01', 'role': 'vocal', 'classification': 'ERROR', 'attribution': 'ERROR', 'reason': 'READ_OR_FORMAT_ERROR', 'channel_lags': None}, {'pair': 'P01', 'role': 'instrumental', 'classification': 'ERROR', 'attribution': 'ERROR', 'reason': 'READ_OR_FORMAT_ERROR', 'channel_lags': None}], 'does_not_bypass': ['validacion_fisica_wav', 'datos_no_finitos', 'integridad_identidad_archivo'], 'action': {'shift_authorized': False, 'applied_shift_samples': 0, 'polarity_changed': False}, 'verdict': 'ABORT_ERROR'}}"
+    }
+  ],
+  "maxrss_kib": 100072,
+  "resumen": {
+    "detectados": 4,
+    "total": 4
+  }
+}

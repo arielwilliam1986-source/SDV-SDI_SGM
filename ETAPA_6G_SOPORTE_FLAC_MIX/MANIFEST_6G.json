@@ -1,0 +1,187 @@
+{
+  "stage": "6G",
+  "objetivo": "Mix original WAV y FLAC sin conversión ni cambios DSP",
+  "repositorio": "arielwilliam1986-source/SDV-SDI_SGM",
+  "rama": "arena/89d5c189-sdv-sdi-sgm",
+  "head": "663fb5f8b4d53c8445d482ecec4df6a0208c59f0",
+  "commit_base_6f": "663fb5f8b4d53c8445d482ecec4df6a0208c59f0",
+  "commit_base_es_ancestro": true,
+  "motores": {
+    "Hardened": {
+      "file": "MOTOR_SEP_SDV-SDI_v3.1.1_Hardened_Final.py",
+      "sha256": "29b30593d97733eb0c073de437ef6725c6264e42034e4a388b4e4baf3bbdcc1b",
+      "sha256_fuente_6f": "8b74211dda8f34f7b563a7426fb68a837d424016ca03a4f9aead3bdfb0b09d12",
+      "bytes": 92906
+    },
+    "EVO": {
+      "file": "MOTOR_SEP_SDV-SDI_EVO.py",
+      "sha256": "87bf83651f8f237a4de94d45f0104559b47daf55c03b3e18265f83edfb8a522c",
+      "sha256_fuente_6f": "6084c68fdd88c9ba1b77663f4ec217de0800b1ffeb2e322c2fbe8ffcc019beae",
+      "bytes": 99267
+    },
+    "MQR": {
+      "file": "sdv_sdi_mqr_engine.py",
+      "sha256": "f014cc0c71a0012054eb249862b55bd9cff112e3bd08855604e914c4b1ebe1e8",
+      "sha256_fuente_6f": "0867768e2e7116f0b3210a839aad31adf37092279b91ae4eb4f7931141e0224f",
+      "bytes": 155024
+    }
+  },
+  "auxiliares": {
+    "atribucion_6f.py": {
+      "sha256": "dcc251e35d3c222218694444e640d7ffab3fb963d3e7e7f774434ae5f1b8ca48",
+      "bytes": 25503
+    },
+    "audio_integridad_6g.py": {
+      "sha256": "cd5dd521de03cb40bfd99b2d81018663532d126145d9059b41a774b4dc995d1c",
+      "bytes": 12635
+    },
+    "wav_integridad_6f.py": {
+      "sha256": "243ba66381f1e949b624bb353e5b23ce65cef6e538b41fb2d48ab932415ec048",
+      "bytes": 14061
+    }
+  },
+  "scripts": {
+    "aplicar_cambios_6g.py": "44b4e60163a97b9cd4b09689792907a60c26975bd1c272af08c30a3168eebe0c",
+    "comun_6g.py": "5e962ce56ef32b447b6b781b759b1bbb981655ecd1f1eaadcdebcbfa7105267d",
+    "consolidar_6g.py": "3713ff2882e036c05dd7a96a7104866a9ee6076ddc65e1664f6df5b921cde8da",
+    "estimulos_6g.py": "af55fcbacde3e722974ff611ce624b2f68fc13256a236a79e36980fc12a093af",
+    "no_regresion_dsp_6g.py": "ac8b31b6b9e2980a825da679cbf08212bf5a8aa4bce70c226f6048ed0975c588",
+    "preparar_fixtures_6g.py": "8e7487619cb61d0c7564e593ad0281106d4b939b4dec850e8e770a182500c509",
+    "toctou_6g.py": "37637dca419ebc2215959f24a6b03b4cc1572d7c064079c9764baf5ff4237991",
+    "validar_contenedores_6g.py": "22db1794acc7bee472d0c7b4c8523f4caa1f88bacd9ae688548be04d5e0dca5e",
+    "validar_motores_6g.py": "01aa94b810983532ff13180bf5149ade295c90de80b1789673f6d4b614917cf1"
+  },
+  "fixtures": {
+    "fixtures_manifest.json": {
+      "sha256": "087acb1b4bbab675f2e2d6ea3d7f5e9e7c233c548149e20c36a79e49dfd70ef7",
+      "bytes": 2677
+    },
+    "flac_3ch.flac": {
+      "sha256": "487542930858462f0d8c765f6f7903e5fca6efa202229f252a1bfc3159959a4d",
+      "bytes": 239750
+    },
+    "flac_corrupto.flac": {
+      "sha256": "19023638881c008227e8f8a6fd6fccfeae8cc93d3644ae9655c56f195c764501",
+      "bytes": 159048
+    },
+    "flac_renombrado_wav.wav": {
+      "sha256": "cb0bd85c05ec2c9f8f0a2225f10cca2337414196aaa7002dea7a1c97446ca548",
+      "bytes": 159048
+    },
+    "flac_sin_audio.flac": {
+      "sha256": "ae2506ae8100147e4f9b937d17166f3d9f663cc199b07d80f5a87b165770f308",
+      "bytes": 86
+    },
+    "flac_truncado.flac": {
+      "sha256": "cdc99ec9b381a883eb2d600b5d903e60e2064d2493cd7f22bb7df3dfd670bd85",
+      "bytes": 79524
+    },
+    "instrumental.wav": {
+      "sha256": "14f9537686d0fbc10c4d34130ffd7ec37f6eb0610300deee6cafa61e289a0dd2",
+      "bytes": 176444
+    },
+    "mix.flac": {
+      "sha256": "cb0bd85c05ec2c9f8f0a2225f10cca2337414196aaa7002dea7a1c97446ca548",
+      "bytes": 159048
+    },
+    "mix.wav": {
+      "sha256": "2a378c24c2dcb2d0a5187d90061b06232cde2a4ed77eac8dcb74e469b9096ce7",
+      "bytes": 176444
+    },
+    "mix_24bit.flac": {
+      "sha256": "7dedfcc9de63fd875f7a60422f3cc2bff242e641b1c07f99c276e913da27177c",
+      "bytes": 159974
+    },
+    "mix_24bit.wav": {
+      "sha256": "4bab83531f1c6f32fb64eaed7c37074af7975a475e9aa0dd42365a21ef7193b0",
+      "bytes": 264644
+    },
+    "mix_48k.flac": {
+      "sha256": "b848c834afec011a772df94867150d6a25ed06d4dd06dc62c153eda776042ac4",
+      "bytes": 159048
+    },
+    "mix_nan.wav": {
+      "sha256": "413a46709a1b60ac4ccc0beb977680a4d889514bca61fd25852d46fa73c8f40a",
+      "bytes": 352888
+    },
+    "mp3_renombrado.flac": {
+      "sha256": "00d07839c9a70f1ecbd5bbf189bcb1a3af6fe77d0e3541d2dfd55900981a0808",
+      "bytes": 159048
+    },
+    "vocal.wav": {
+      "sha256": "3ef174738bbcec940e97150d3b0ec1a8939d05fde3d6cb93a87d0d214830674a",
+      "bytes": 176444
+    },
+    "wav_renombrado_flac.flac": {
+      "sha256": "2a378c24c2dcb2d0a5187d90061b06232cde2a4ed77eac8dcb74e469b9096ce7",
+      "bytes": 176444
+    }
+  },
+  "entorno": {
+    "python": "3.11.2",
+    "numpy": "1.26.4",
+    "scipy": "1.13.1",
+    "soundfile": "0.13.1",
+    "libsndfile": "1.2.2",
+    "platform": "linux",
+    "machine": "x86_64",
+    "cpu_count": 2,
+    "ram_mb": 3940
+  },
+  "resultados": {
+    "contenedores_6g.json": {
+      "seconds": 15.458302032000006,
+      "maxrss_kib": 41348,
+      "resumen": {
+        "modulo": {
+          "ok": 13,
+          "total": 13
+        },
+        "Hardened": {
+          "ok": 13,
+          "total": 13
+        },
+        "EVO": {
+          "ok": 13,
+          "total": 13
+        },
+        "MQR": {
+          "ok": 13,
+          "total": 13
+        }
+      }
+    },
+    "motores_6g.json": {
+      "seconds": 16.922194167999976,
+      "maxrss_kib": 41280,
+      "resumen": {
+        "combinaciones_identicas": 12,
+        "total": 12,
+        "entrada_decodificada_identica": true,
+        "fixtures_intactos": true
+      }
+    },
+    "no_regresion_6g.json": {
+      "seconds": 5.244793688000016,
+      "maxrss_kib": 54036,
+      "resumen": {
+        "motores_con_pcm_identico": 3,
+        "motores_con_informe_igual": 3,
+        "total": 3
+      }
+    },
+    "toctou_6g.json": {
+      "seconds": 0.34446991000004346,
+      "maxrss_kib": 100072,
+      "resumen": {
+        "detectados": 4,
+        "total": 4
+      }
+    }
+  },
+  "limites": {
+    "notas": "6G sólo valida contenedores, lee y traza; el DSP es el de 6F",
+    "mqr": "las máscaras de MQR se derivan por downmix mono de las guías; no equivale al modo L/R independiente de Hardened/EVO",
+    "no_probado": "canciones reales, Termux ARM64, archivos > 2 GB, modos no listados, FLAC con tasas distintas de 44100"
+  }
+}

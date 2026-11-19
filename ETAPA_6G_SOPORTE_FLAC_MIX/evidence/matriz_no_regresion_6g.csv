@@ -1,0 +1,4 @@
+motor,defs_cambiadas,defs_anadidas,defs_quitadas,constantes,defs_identicas,pcm_6f_vs_6g,informe_igual
+Hardened,probe_file;run_experiment,,,,63,IDENTICO,True
+EVO,probe_file;run_experiment,,,,66,IDENTICO,True
+MQR,probe_file;run_experiment,,,MIX_ALLOWED_EXTENSIONS,86,IDENTICO,True

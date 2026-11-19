@@ -1,0 +1,601 @@
+{
+  "seconds": 16.922194167999976,
+  "maxrss_kib": 41280,
+  "entorno": {
+    "python": "3.11.2",
+    "numpy": "1.26.4",
+    "scipy": "1.13.1",
+    "soundfile": "0.13.1",
+    "libsndfile": "1.2.2",
+    "platform": "linux",
+    "machine": "x86_64",
+    "cpu_count": 2,
+    "ram_mb": 3940
+  },
+  "entrada_decodificada_identica": true,
+  "fixtures_intactos": true,
+  "detalle": {
+    "Hardened/dry_run": {
+      "pcm_igual": true,
+      "geometria_igual": true,
+      "exit_y_wavs_iguales": true,
+      "alineacion_igual": true,
+      "informe_igual": true,
+      "diferencias_informe": [],
+      "pcm": {},
+      "shapes": {},
+      "attribution": null,
+      "k": null
+    },
+    "Hardened/analysis_only": {
+      "pcm_igual": true,
+      "geometria_igual": true,
+      "exit_y_wavs_iguales": true,
+      "alineacion_igual": true,
+      "informe_igual": true,
+      "diferencias_informe": [],
+      "pcm": {},
+      "shapes": {},
+      "attribution": null,
+      "k": null
+    },
+    "Hardened/single_pair": {
+      "pcm_igual": true,
+      "geometria_igual": true,
+      "exit_y_wavs_iguales": true,
+      "alineacion_igual": true,
+      "informe_igual": true,
+      "diferencias_informe": [],
+      "pcm": {
+        "mix SDI.wav": "bf7aa2b187306fc65b0bcd22905821869bef9a8d0286b5f53bbfb3f655f8c623",
+        "mix SDV.wav": "3f8cc4bbabb9f1e3c25487587e0cb1287b932fcc6b2393497fb6b9b5308ad14b"
+      },
+      "shapes": {
+        "mix SDI.wav": [
+          44100,
+          2,
+          44100
+        ],
+        "mix SDV.wav": [
+          44100,
+          2,
+          44100
+        ]
+      },
+      "attribution": null,
+      "k": null
+    },
+    "Hardened/full_processing": {
+      "pcm_igual": true,
+      "geometria_igual": true,
+      "exit_y_wavs_iguales": true,
+      "alineacion_igual": true,
+      "informe_igual": true,
+      "diferencias_informe": [],
+      "pcm": {
+        "mix SDI.wav": "bf7aa2b187306fc65b0bcd22905821869bef9a8d0286b5f53bbfb3f655f8c623",
+        "mix SDV.wav": "3f8cc4bbabb9f1e3c25487587e0cb1287b932fcc6b2393497fb6b9b5308ad14b"
+      },
+      "shapes": {
+        "mix SDI.wav": [
+          44100,
+          2,
+          44100
+        ],
+        "mix SDV.wav": [
+          44100,
+          2,
+          44100
+        ]
+      },
+      "attribution": null,
+      "k": null
+    },
+    "EVO/dry_run": {
+      "pcm_igual": true,
+      "geometria_igual": true,
+      "exit_y_wavs_iguales": true,
+      "alineacion_igual": true,
+      "informe_igual": true,
+      "diferencias_informe": [],
+      "pcm": {},
+      "shapes": {},
+      "attribution": null,
+      "k": null
+    },
+    "EVO/analysis_only": {
+      "pcm_igual": true,
+      "geometria_igual": true,
+      "exit_y_wavs_iguales": true,
+      "alineacion_igual": true,
+      "informe_igual": true,
+      "diferencias_informe": [],
+      "pcm": {},
+      "shapes": {},
+      "attribution": null,
+      "k": null
+    },
+    "EVO/single_pair": {
+      "pcm_igual": true,
+      "geometria_igual": true,
+      "exit_y_wavs_iguales": true,
+      "alineacion_igual": true,
+      "informe_igual": true,
+      "diferencias_informe": [],
+      "pcm": {
+        "mix SDI.wav": "bf7aa2b187306fc65b0bcd22905821869bef9a8d0286b5f53bbfb3f655f8c623",
+        "mix SDV.wav": "3f8cc4bbabb9f1e3c25487587e0cb1287b932fcc6b2393497fb6b9b5308ad14b"
+      },
+      "shapes": {
+        "mix SDI.wav": [
+          44100,
+          2,
+          44100
+        ],
+        "mix SDV.wav": [
+          44100,
+          2,
+          44100
+        ]
+      },
+      "attribution": null,
+      "k": null
+    },
+    "EVO/full_processing": {
+      "pcm_igual": true,
+      "geometria_igual": true,
+      "exit_y_wavs_iguales": true,
+      "alineacion_igual": true,
+      "informe_igual": true,
+      "diferencias_informe": [],
+      "pcm": {
+        "mix SDI.wav": "bf7aa2b187306fc65b0bcd22905821869bef9a8d0286b5f53bbfb3f655f8c623",
+        "mix SDV.wav": "3f8cc4bbabb9f1e3c25487587e0cb1287b932fcc6b2393497fb6b9b5308ad14b"
+      },
+      "shapes": {
+        "mix SDI.wav": [
+          44100,
+          2,
+          44100
+        ],
+        "mix SDV.wav": [
+          44100,
+          2,
+          44100
+        ]
+      },
+      "attribution": null,
+      "k": null
+    },
+    "MQR/dry_run": {
+      "pcm_igual": true,
+      "geometria_igual": true,
+      "exit_y_wavs_iguales": true,
+      "alineacion_igual": true,
+      "informe_igual": true,
+      "diferencias_informe": [],
+      "pcm": {},
+      "shapes": {},
+      "attribution": null,
+      "k": null
+    },
+    "MQR/analysis_only": {
+      "pcm_igual": true,
+      "geometria_igual": true,
+      "exit_y_wavs_iguales": true,
+      "alineacion_igual": true,
+      "informe_igual": true,
+      "diferencias_informe": [],
+      "pcm": {},
+      "shapes": {},
+      "attribution": null,
+      "k": null
+    },
+    "MQR/single_file": {
+      "pcm_igual": true,
+      "geometria_igual": true,
+      "exit_y_wavs_iguales": true,
+      "alineacion_igual": true,
+      "informe_igual": true,
+      "diferencias_informe": [],
+      "pcm": {},
+      "shapes": {},
+      "attribution": null,
+      "k": null
+    },
+    "MQR/full_processing": {
+      "pcm_igual": true,
+      "geometria_igual": true,
+      "exit_y_wavs_iguales": true,
+      "alineacion_igual": true,
+      "informe_igual": true,
+      "diferencias_informe": [],
+      "pcm": {
+        "SDI.wav": "63920cef756c45ca73a43714e4308d55aff52fc8cd347f211b1c0a4586143e40",
+        "SDV.wav": "26ae82cb1507b45bd92c3815ee11b8c5817adca0f658ec1f853c4e3b05dfbf4d"
+      },
+      "shapes": {
+        "SDI.wav": [
+          44100,
+          2,
+          44100
+        ],
+        "SDV.wav": [
+          44100,
+          2,
+          44100
+        ]
+      },
+      "attribution": null,
+      "k": null
+    }
+  },
+  "filas": [
+    {
+      "motor": "Hardened",
+      "modo": "dry_run",
+      "contenedor": "wav",
+      "exit": 0,
+      "wavs": 0,
+      "report": false,
+      "attribution": null,
+      "k": null,
+      "seconds": 0.382,
+      "container_6g": null,
+      "pcm_sdv": null,
+      "pcm_sdi": null,
+      "geometry": "{}"
+    },
+    {
+      "motor": "Hardened",
+      "modo": "dry_run",
+      "contenedor": "flac",
+      "exit": 0,
+      "wavs": 0,
+      "report": false,
+      "attribution": null,
+      "k": null,
+      "seconds": 0.393,
+      "container_6g": null,
+      "pcm_sdv": null,
+      "pcm_sdi": null,
+      "geometry": "{}"
+    },
+    {
+      "motor": "Hardened",
+      "modo": "analysis_only",
+      "contenedor": "wav",
+      "exit": 2,
+      "wavs": 0,
+      "report": false,
+      "attribution": null,
+      "k": null,
+      "seconds": 0.771,
+      "container_6g": null,
+      "pcm_sdv": null,
+      "pcm_sdi": null,
+      "geometry": "{}"
+    },
+    {
+      "motor": "Hardened",
+      "modo": "analysis_only",
+      "contenedor": "flac",
+      "exit": 2,
+      "wavs": 0,
+      "report": false,
+      "attribution": null,
+      "k": null,
+      "seconds": 0.665,
+      "container_6g": null,
+      "pcm_sdv": null,
+      "pcm_sdi": null,
+      "geometry": "{}"
+    },
+    {
+      "motor": "Hardened",
+      "modo": "single_pair",
+      "contenedor": "wav",
+      "exit": 0,
+      "wavs": 6,
+      "report": false,
+      "attribution": null,
+      "k": null,
+      "seconds": 0.705,
+      "container_6g": "WAV",
+      "pcm_sdv": "3f8cc4bbabb9f1e3c25487587e0cb1287b932fcc6b2393497fb6b9b5308ad14b",
+      "pcm_sdi": "bf7aa2b187306fc65b0bcd22905821869bef9a8d0286b5f53bbfb3f655f8c623",
+      "geometry": "{\"mix SDI.wav\": [44100, 2, 44100], \"mix SDV.wav\": [44100, 2, 44100]}"
+    },
+    {
+      "motor": "Hardened",
+      "modo": "single_pair",
+      "contenedor": "flac",
+      "exit": 0,
+      "wavs": 6,
+      "report": false,
+      "attribution": null,
+      "k": null,
+      "seconds": 0.818,
+      "container_6g": "FLAC",
+      "pcm_sdv": "3f8cc4bbabb9f1e3c25487587e0cb1287b932fcc6b2393497fb6b9b5308ad14b",
+      "pcm_sdi": "bf7aa2b187306fc65b0bcd22905821869bef9a8d0286b5f53bbfb3f655f8c623",
+      "geometry": "{\"mix SDI.wav\": [44100, 2, 44100], \"mix SDV.wav\": [44100, 2, 44100]}"
+    },
+    {
+      "motor": "Hardened",
+      "modo": "full_processing",
+      "contenedor": "wav",
+      "exit": 0,
+      "wavs": 6,
+      "report": false,
+      "attribution": null,
+      "k": null,
+      "seconds": 0.836,
+      "container_6g": "WAV",
+      "pcm_sdv": "3f8cc4bbabb9f1e3c25487587e0cb1287b932fcc6b2393497fb6b9b5308ad14b",
+      "pcm_sdi": "bf7aa2b187306fc65b0bcd22905821869bef9a8d0286b5f53bbfb3f655f8c623",
+      "geometry": "{\"mix SDI.wav\": [44100, 2, 44100], \"mix SDV.wav\": [44100, 2, 44100]}"
+    },
+    {
+      "motor": "Hardened",
+      "modo": "full_processing",
+      "contenedor": "flac",
+      "exit": 0,
+      "wavs": 6,
+      "report": false,
+      "attribution": null,
+      "k": null,
+      "seconds": 0.685,
+      "container_6g": "FLAC",
+      "pcm_sdv": "3f8cc4bbabb9f1e3c25487587e0cb1287b932fcc6b2393497fb6b9b5308ad14b",
+      "pcm_sdi": "bf7aa2b187306fc65b0bcd22905821869bef9a8d0286b5f53bbfb3f655f8c623",
+      "geometry": "{\"mix SDI.wav\": [44100, 2, 44100], \"mix SDV.wav\": [44100, 2, 44100]}"
+    },
+    {
+      "motor": "EVO",
+      "modo": "dry_run",
+      "contenedor": "wav",
+      "exit": 0,
+      "wavs": 0,
+      "report": false,
+      "attribution": null,
+      "k": null,
+      "seconds": 0.394,
+      "container_6g": null,
+      "pcm_sdv": null,
+      "pcm_sdi": null,
+      "geometry": "{}"
+    },
+    {
+      "motor": "EVO",
+      "modo": "dry_run",
+      "contenedor": "flac",
+      "exit": 0,
+      "wavs": 0,
+      "report": false,
+      "attribution": null,
+      "k": null,
+      "seconds": 0.39,
+      "container_6g": null,
+      "pcm_sdv": null,
+      "pcm_sdi": null,
+      "geometry": "{}"
+    },
+    {
+      "motor": "EVO",
+      "modo": "analysis_only",
+      "contenedor": "wav",
+      "exit": 0,
+      "wavs": 0,
+      "report": false,
+      "attribution": null,
+      "k": null,
+      "seconds": 0.778,
+      "container_6g": "WAV",
+      "pcm_sdv": null,
+      "pcm_sdi": null,
+      "geometry": "{}"
+    },
+    {
+      "motor": "EVO",
+      "modo": "analysis_only",
+      "contenedor": "flac",
+      "exit": 0,
+      "wavs": 0,
+      "report": false,
+      "attribution": null,
+      "k": null,
+      "seconds": 0.828,
+      "container_6g": "FLAC",
+      "pcm_sdv": null,
+      "pcm_sdi": null,
+      "geometry": "{}"
+    },
+    {
+      "motor": "EVO",
+      "modo": "single_pair",
+      "contenedor": "wav",
+      "exit": 0,
+      "wavs": 6,
+      "report": false,
+      "attribution": null,
+      "k": null,
+      "seconds": 0.694,
+      "container_6g": "WAV",
+      "pcm_sdv": "3f8cc4bbabb9f1e3c25487587e0cb1287b932fcc6b2393497fb6b9b5308ad14b",
+      "pcm_sdi": "bf7aa2b187306fc65b0bcd22905821869bef9a8d0286b5f53bbfb3f655f8c623",
+      "geometry": "{\"mix SDI.wav\": [44100, 2, 44100], \"mix SDV.wav\": [44100, 2, 44100]}"
+    },
+    {
+      "motor": "EVO",
+      "modo": "single_pair",
+      "contenedor": "flac",
+      "exit": 0,
+      "wavs": 6,
+      "report": false,
+      "attribution": null,
+      "k": null,
+      "seconds": 0.735,
+      "container_6g": "FLAC",
+      "pcm_sdv": "3f8cc4bbabb9f1e3c25487587e0cb1287b932fcc6b2393497fb6b9b5308ad14b",
+      "pcm_sdi": "bf7aa2b187306fc65b0bcd22905821869bef9a8d0286b5f53bbfb3f655f8c623",
+      "geometry": "{\"mix SDI.wav\": [44100, 2, 44100], \"mix SDV.wav\": [44100, 2, 44100]}"
+    },
+    {
+      "motor": "EVO",
+      "modo": "full_processing",
+      "contenedor": "wav",
+      "exit": 0,
+      "wavs": 6,
+      "report": false,
+      "attribution": null,
+      "k": null,
+      "seconds": 0.783,
+      "container_6g": "WAV",
+      "pcm_sdv": "3f8cc4bbabb9f1e3c25487587e0cb1287b932fcc6b2393497fb6b9b5308ad14b",
+      "pcm_sdi": "bf7aa2b187306fc65b0bcd22905821869bef9a8d0286b5f53bbfb3f655f8c623",
+      "geometry": "{\"mix SDI.wav\": [44100, 2, 44100], \"mix SDV.wav\": [44100, 2, 44100]}"
+    },
+    {
+      "motor": "EVO",
+      "modo": "full_processing",
+      "contenedor": "flac",
+      "exit": 0,
+      "wavs": 6,
+      "report": false,
+      "attribution": null,
+      "k": null,
+      "seconds": 0.791,
+      "container_6g": "FLAC",
+      "pcm_sdv": "3f8cc4bbabb9f1e3c25487587e0cb1287b932fcc6b2393497fb6b9b5308ad14b",
+      "pcm_sdi": "bf7aa2b187306fc65b0bcd22905821869bef9a8d0286b5f53bbfb3f655f8c623",
+      "geometry": "{\"mix SDI.wav\": [44100, 2, 44100], \"mix SDV.wav\": [44100, 2, 44100]}"
+    },
+    {
+      "motor": "MQR",
+      "modo": "dry_run",
+      "contenedor": "wav",
+      "exit": 0,
+      "wavs": 0,
+      "report": false,
+      "attribution": null,
+      "k": null,
+      "seconds": 0.395,
+      "container_6g": null,
+      "pcm_sdv": null,
+      "pcm_sdi": null,
+      "geometry": "{}"
+    },
+    {
+      "motor": "MQR",
+      "modo": "dry_run",
+      "contenedor": "flac",
+      "exit": 0,
+      "wavs": 0,
+      "report": false,
+      "attribution": null,
+      "k": null,
+      "seconds": 0.408,
+      "container_6g": null,
+      "pcm_sdv": null,
+      "pcm_sdi": null,
+      "geometry": "{}"
+    },
+    {
+      "motor": "MQR",
+      "modo": "analysis_only",
+      "contenedor": "wav",
+      "exit": 0,
+      "wavs": 0,
+      "report": false,
+      "attribution": null,
+      "k": null,
+      "seconds": 0.97,
+      "container_6g": "WAV",
+      "pcm_sdv": null,
+      "pcm_sdi": null,
+      "geometry": "{}"
+    },
+    {
+      "motor": "MQR",
+      "modo": "analysis_only",
+      "contenedor": "flac",
+      "exit": 0,
+      "wavs": 0,
+      "report": false,
+      "attribution": null,
+      "k": null,
+      "seconds": 0.956,
+      "container_6g": "FLAC",
+      "pcm_sdv": null,
+      "pcm_sdi": null,
+      "geometry": "{}"
+    },
+    {
+      "motor": "MQR",
+      "modo": "single_file",
+      "contenedor": "wav",
+      "exit": 0,
+      "wavs": 0,
+      "report": false,
+      "attribution": null,
+      "k": null,
+      "seconds": 0.834,
+      "container_6g": "WAV",
+      "pcm_sdv": null,
+      "pcm_sdi": null,
+      "geometry": "{}"
+    },
+    {
+      "motor": "MQR",
+      "modo": "single_file",
+      "contenedor": "flac",
+      "exit": 0,
+      "wavs": 0,
+      "report": false,
+      "attribution": null,
+      "k": null,
+      "seconds": 0.92,
+      "container_6g": "FLAC",
+      "pcm_sdv": null,
+      "pcm_sdi": null,
+      "geometry": "{}"
+    },
+    {
+      "motor": "MQR",
+      "modo": "full_processing",
+      "contenedor": "wav",
+      "exit": 0,
+      "wavs": 6,
+      "report": false,
+      "attribution": null,
+      "k": null,
+      "seconds": 0.785,
+      "container_6g": "WAV",
+      "pcm_sdv": "26ae82cb1507b45bd92c3815ee11b8c5817adca0f658ec1f853c4e3b05dfbf4d",
+      "pcm_sdi": "63920cef756c45ca73a43714e4308d55aff52fc8cd347f211b1c0a4586143e40",
+      "geometry": "{\"SDI.wav\": [44100, 2, 44100], \"SDV.wav\": [44100, 2, 44100]}"
+    },
+    {
+      "motor": "MQR",
+      "modo": "full_processing",
+      "contenedor": "flac",
+      "exit": 0,
+      "wavs": 6,
+      "report": false,
+      "attribution": null,
+      "k": null,
+      "seconds": 0.924,
+      "container_6g": "FLAC",
+      "pcm_sdv": "26ae82cb1507b45bd92c3815ee11b8c5817adca0f658ec1f853c4e3b05dfbf4d",
+      "pcm_sdi": "63920cef756c45ca73a43714e4308d55aff52fc8cd347f211b1c0a4586143e40",
+      "geometry": "{\"SDI.wav\": [44100, 2, 44100], \"SDV.wav\": [44100, 2, 44100]}"
+    }
+  ],
+  "resumen": {
+    "combinaciones_identicas": 12,
+    "total": 12,
+    "entrada_decodificada_identica": true,
+    "fixtures_intactos": true
+  }
+}
