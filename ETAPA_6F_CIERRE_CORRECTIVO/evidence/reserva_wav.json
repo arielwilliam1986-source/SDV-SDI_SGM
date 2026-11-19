@@ -1,0 +1,89 @@
+{
+  "casos": {
+    "wav_pcm16_mono": {
+      "expected_valid": true,
+      "size": 8864,
+      "sha256": "e7df68c6a7450cb6261936f070cf159354b5700c3af1eb65fab115144739bd15",
+      "accepted": true,
+      "frames": 4410,
+      "same_descriptor": true,
+      "ok": true
+    },
+    "wav_ext_pcm24_mask3": {
+      "expected_valid": true,
+      "size": 26528,
+      "sha256": "ad54c4a58d5a630ad51f1ce71da868b0051e3aa802ddfbe16e87ecbd468e61b1",
+      "accepted": true,
+      "frames": 4410,
+      "same_descriptor": true,
+      "ok": true
+    },
+    "wav_ext_float_mask3": {
+      "expected_valid": true,
+      "size": 35360,
+      "sha256": "d147f99ded99e6540fcff996c1f6b26f289a409d3d21aa2f3000d5e8d162f343",
+      "accepted": true,
+      "frames": 4410,
+      "same_descriptor": true,
+      "ok": true
+    },
+    "wav_truncado": {
+      "expected_valid": false,
+      "size": 16907,
+      "sha256": "d443ae0234796668e4c4aa8f2e1a4a1caf3ee28857e99083aae0a7dbd51a495c",
+      "accepted": false,
+      "error": "RIFF declara 17684 bytes; el archivo físico tiene 16907",
+      "ok": true
+    },
+    "wav_mask_mala": {
+      "expected_valid": false,
+      "size": 17708,
+      "sha256": "7b3376aa3eae7790c8f6df8b0b2e105d56dc3106e32067bb8e36a2343c44a7ef",
+      "accepted": false,
+      "error": "channel mask con 6 bits para 2 canales",
+      "ok": true
+    },
+    "wav_cbsize_cero": {
+      "expected_valid": false,
+      "size": 17708,
+      "sha256": "4976354d548e533f7e406fcca927488d31dfe31c1cf5c1dfec280b74f8819bf8",
+      "accepted": false,
+      "error": "cbSize inválido en fmt extensible: 0",
+      "ok": true
+    },
+    "wav_guid_alaw": {
+      "expected_valid": false,
+      "size": 17708,
+      "sha256": "bb072ee8269516ab44fbdde91b5327a4eefca59737855739cf6511d2a5109372",
+      "accepted": false,
+      "error": "GUID de subformato no admitido: sólo PCM (01...) o FLOAT (03...)",
+      "ok": true
+    },
+    "wav_data_desborda": {
+      "expected_valid": false,
+      "size": 17684,
+      "sha256": "5281a94bb17ee2554f6b06f01ab95b93cff2e5c0f805cb1ce0f4a9c15069d190",
+      "accepted": false,
+      "error": "Chunk b'data' desborda el RIFF declarado",
+      "ok": true
+    },
+    "wav_rf64": {
+      "expected_valid": false,
+      "size": 17684,
+      "sha256": "14f73efed274729c8711fd73d2090b872e943718ee378f95d477de7907e1e3b9",
+      "accepted": false,
+      "error": "RF64 no admitido en el perfil 6F",
+      "ok": true
+    },
+    "wav_sin_padding": {
+      "expected_valid": false,
+      "size": 17683,
+      "sha256": "06e2f86734f7d687998ba0c35405f814da84e06d97767ab18e13bd475c43f87a",
+      "accepted": false,
+      "error": "Chunk b'data' sin byte de padding dentro del RIFF",
+      "ok": true
+    }
+  },
+  "ok": 10,
+  "total": 10
+}

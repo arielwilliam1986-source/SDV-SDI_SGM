@@ -1,0 +1,50 @@
+conjunto,case,expected_valid,accepted,error,bytes,sha256,verdict
+desarrollo,pcm16,True,True,,17684,9c641ab1cbbf3d5bc0ee7b251e3bcf02a77a03ae480ab54404fe0dcc3117888c,PASS
+desarrollo,pcm24,True,True,,26504,3d27515833ac3fe69c8d64a7ce677b6320280600782d68829b00de2fda11674b,PASS
+desarrollo,pcm32,True,True,,35324,de53f03e31e9721fd6edbb314f5cb9da2962b8a31eda85ee817515356b36d6f7,PASS
+desarrollo,float32,True,True,,35324,b3d868568dcd2f54d5d6db5fc917d776675bd29c9ae0b02facbda5d612a955ee,PASS
+desarrollo,float64,True,True,,70604,e8c902ac8e64a3a94a7f1b6a9f3f1539f866d8c842c0731904688ee6c598c038,PASS
+desarrollo,ext_pcm16_mask3,True,True,,17708,9d9d8290feaf327c65349da0c9e5f35f145ec584018b4349b6fdc4d01f4b6c24,PASS
+desarrollo,ext_float32_mask3,True,True,,35348,36358dc9a35bd3791fab38bda0232e94ca39a91628853a850d55daea17d11396,PASS
+desarrollo,ext_pcm24_vb24_mask3,True,True,,26528,ad54c4a58d5a630ad51f1ce71da868b0051e3aa802ddfbe16e87ecbd468e61b1,PASS
+desarrollo,ext_pcm24_in32_vb24,True,True,,35348,96a1146995e7c1605510dc47b856ffa4b9e968d8c76544058c78d89aa71f3fd1,PASS
+desarrollo,mono_pcm16,True,True,,8864,e7df68c6a7450cb6261936f070cf159354b5700c3af1eb65fab115144739bd15,PASS
+desarrollo,ext_mask_zero,True,True,,17708,263ddbf40dabb2063338b71509c8a67efd5aa32c043d17a03b68bbcbfb925227,PASS
+desarrollo,extra_list,True,True,,17708,fa4a880aee0d2f15529d7869908a3cddf9c5cb9ecd2d1fa810bdca839774a243,PASS
+desarrollo,fact_float,True,True,,35336,4e3525f8f5d360cb96a4e00b9d699445e0084724bd80088ae8286bdf87491f92,PASS
+desarrollo,truncado,False,False,RIFF declara 17684 bytes; el archivo físico tiene 16684,16684,b6914bfb1efb9ceaabfc4388472bf9cbc13b630aa05decdc7a9983e2d1190fb8,PASS
+desarrollo,riff_size_corto,False,False,RIFF declara 17692 bytes; el archivo físico tiene 17684,17684,c18e23dfdf436ea8cea77ce8350fe86688a6f0498b06eb40c71d4350882e6992,PASS
+desarrollo,riff_size_largo,False,False,RIFF declara 16 bytes; el archivo físico tiene 17684,17684,a200e2e94d4d6beb4caf007ac6b2efe55ca46299546d4246ab013f7bd4a8f377,PASS
+desarrollo,data_desborda,False,False,RIFF declara 17684 bytes; el archivo físico tiene 17584,17584,357f232865643063a09bb55ca17cd7844d5f64cb2d525e5fe298a41e26041b4c,PASS
+desarrollo,data_no_multiplo,False,False,Tamaño data 17638 no múltiplo de block align 4,17682,97fb0985e64bac375cb7cdffe73f2897c6bae8898aa5c5430e57f83b78d9cff6,PASS
+desarrollo,sin_padding,False,False,Chunk b'data' sin byte de padding dentro del RIFF,17683,06e2f86734f7d687998ba0c35405f814da84e06d97767ab18e13bd475c43f87a,PASS
+desarrollo,guid_alaw,False,False,GUID de subformato no admitido: sólo PCM (01...) o FLOAT (03...),17708,bb072ee8269516ab44fbdde91b5327a4eefca59737855739cf6511d2a5109372,PASS
+desarrollo,ext_cbsize_corto,False,False,cbSize inválido en fmt extensible: 10,17708,8f7352f258dd7e6bdea59afcbbfa8f98ef0e6758069e2e7f1ad58b1e4f5d27e7,PASS
+desarrollo,valid_bits_mayor,False,False,valid_bits=24 incoherente con bits=16,17708,3bc948c88ba8cd9382152db74298265282884a6cddba6e969fd085277689d940,PASS
+desarrollo,mask_incoherente,False,False,channel mask con 3 bits para 2 canales,17708,32da23c402f3c847d90e8ddb848e5a16da8ce306ab225f5f6b4c8125f1063161,PASS
+desarrollo,align_malo,False,False,block align 6 != canales*ancho (4),17684,3ad78dcc46aa8c067d5da092fc272be8d664040ff81528997e45cf4423642dce,PASS
+desarrollo,byte_rate_malo,False,False,byte rate 12345 != rate*align (176400),17684,e6e1675dc73b4db20516f78959e1bc0de18cfaef63159c086a57eff8e3aa45f4,PASS
+desarrollo,data_duplicado,False,False,Chunk data duplicado,35332,3e6dfd1642a895e4ca3614c465e23d102a6585c2080ac0bf675e9d30288bd85a,PASS
+desarrollo,fmt_despues_data,False,False,data antes de fmt,17684,324c1de842565570df0eba1fa43a4001a0fc6a19ebcb65c27888453432f61ce0,PASS
+desarrollo,sin_fmt,False,False,data antes de fmt,17660,e072eb641e19ab13cbd152984b56c43ab711f988d7ff1ccb17956f974b5b4e85,PASS
+desarrollo,sin_data,False,False,Falta el chunk data,36,5214564ca5ba32915b6e58d73c8a1333386b26659e47086980abc683f14f6d9d,PASS
+desarrollo,data_vacio,False,False,data sin muestras (0 frames),44,991cd2a53281fab26a26b23f2b3d7a020e277b83978ea36796679e0952ae7575,PASS
+desarrollo,rf64,False,False,RF64 no admitido en el perfil 6F,17684,14f73efed274729c8711fd73d2090b872e943718ee378f95d477de7907e1e3b9,PASS
+desarrollo,rifx,False,False,RIFX (big-endian) no admitido en el perfil 6F,17684,385d76d121c3058414ac98669e3d6ca27ab90c39395e25f31e0b5281374b8969,PASS
+desarrollo,alaw,False,False,"Formato 6 no admitido: sólo PCM (1), IEEE float (3) o EXTENSIBLE",17684,162b3b2c86e7da4644e469108b836fac62a9392de603cddb4f2f0acc6cfd0833,PASS
+desarrollo,bits_20,False,False,Bits por muestra no admitidos: 20,17684,62882b487d018b219916f457a83fcac3ecee1395ec16f87c69a87ee4426071e9,PASS
+desarrollo,pcm64,False,False,PCM entero de 64 bits no admitido,17684,a1786dc620fb0d3e41e54fccbd252dc08a335d64cec2803368da382b67a52e7d,PASS
+desarrollo,nan_float,False,False,Muestras no finitas en el payload float,35324,7c8905411ccb3decd13323feaeafb0ff0d518cad4d36a01dea1d3895e6272e64,PASS
+desarrollo,fmt_corto,False,False,fmt demasiado corto,17682,7d7114b5e99989eb9cf599654e51c2a564704d4ccb28dd026b0b7cf0f5d0d2bc,PASS
+desarrollo,fact_malo,False,False,fact declara 4405 frames; data contiene 4410,35336,f37d6a28a60357f470a27747c22161bf5d6a12bbc0b52de90faafaedd4794b25,PASS
+desarrollo,chunk_gigante,False,False,Tamaño de chunk fuera de rango: b'data',44,3e5cb889df72c7519e39f7d18af5deb3c9869fbd58b1c0c59978737b4dad6f72,PASS
+reserva,wav_pcm16_mono,True,True,,8864,e7df68c6a7450cb6261936f070cf159354b5700c3af1eb65fab115144739bd15,PASS
+reserva,wav_ext_pcm24_mask3,True,True,,26528,ad54c4a58d5a630ad51f1ce71da868b0051e3aa802ddfbe16e87ecbd468e61b1,PASS
+reserva,wav_ext_float_mask3,True,True,,35360,d147f99ded99e6540fcff996c1f6b26f289a409d3d21aa2f3000d5e8d162f343,PASS
+reserva,wav_truncado,False,False,RIFF declara 17684 bytes; el archivo físico tiene 16907,16907,d443ae0234796668e4c4aa8f2e1a4a1caf3ee28857e99083aae0a7dbd51a495c,PASS
+reserva,wav_mask_mala,False,False,channel mask con 6 bits para 2 canales,17708,7b3376aa3eae7790c8f6df8b0b2e105d56dc3106e32067bb8e36a2343c44a7ef,PASS
+reserva,wav_cbsize_cero,False,False,cbSize inválido en fmt extensible: 0,17708,4976354d548e533f7e406fcca927488d31dfe31c1cf5c1dfec280b74f8819bf8,PASS
+reserva,wav_guid_alaw,False,False,GUID de subformato no admitido: sólo PCM (01...) o FLOAT (03...),17708,bb072ee8269516ab44fbdde91b5327a4eefca59737855739cf6511d2a5109372,PASS
+reserva,wav_data_desborda,False,False,Chunk b'data' desborda el RIFF declarado,17684,5281a94bb17ee2554f6b06f01ab95b93cff2e5c0f805cb1ce0f4a9c15069d190,PASS
+reserva,wav_rf64,False,False,RF64 no admitido en el perfil 6F,17684,14f73efed274729c8711fd73d2090b872e943718ee378f95d477de7907e1e3b9,PASS
+reserva,wav_sin_padding,False,False,Chunk b'data' sin byte de padding dentro del RIFF,17683,06e2f86734f7d687998ba0c35405f814da84e06d97767ab18e13bd475c43f87a,PASS

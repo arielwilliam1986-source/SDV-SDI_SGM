@@ -1,0 +1,6870 @@
+{
+  "seed": 770315,
+  "cases": {
+    "Hardened": {
+      "res_clean_1s": {
+        "expected": "UNIQUE",
+        "expected_k": 0,
+        "attribution": "UNIQUE",
+        "k": 0,
+        "ok": true,
+        "reason": "MEASURED_AGREEMENT",
+        "channels": {
+          "L": {
+            "attribution": "UNIQUE",
+            "classification": "ALIGNED",
+            "k": 0,
+            "coverage": 1.0,
+            "floor": 0.088755,
+            "rivals": [],
+            "structural": [],
+            "channel_lags": null
+          },
+          "R": {
+            "attribution": "UNIQUE",
+            "classification": "ALIGNED",
+            "k": 0,
+            "coverage": 1.0,
+            "floor": 0.087746,
+            "rivals": [],
+            "structural": [],
+            "channel_lags": null
+          }
+        },
+        "channel_lags": {
+          "L": 0,
+          "R": 0
+        },
+        "channel_states": {
+          "L": "ALIGNED",
+          "R": "ALIGNED"
+        }
+      },
+      "res_clean_2s": {
+        "expected": "UNIQUE",
+        "expected_k": 0,
+        "attribution": "UNIQUE",
+        "k": 0,
+        "ok": true,
+        "reason": "MEASURED_AGREEMENT",
+        "channels": {
+          "L": {
+            "attribution": "UNIQUE",
+            "classification": "ALIGNED",
+            "k": 0,
+            "coverage": 1.0,
+            "floor": 0.076667,
+            "rivals": [],
+            "structural": [],
+            "channel_lags": null
+          },
+          "R": {
+            "attribution": "UNIQUE",
+            "classification": "ALIGNED",
+            "k": 0,
+            "coverage": 1.0,
+            "floor": 0.070647,
+            "rivals": [],
+            "structural": [],
+            "channel_lags": null
+          }
+        },
+        "channel_lags": {
+          "L": 0,
+          "R": 0
+        },
+        "channel_states": {
+          "L": "ALIGNED",
+          "R": "ALIGNED"
+        }
+      },
+      "res_polaridad": {
+        "expected": "UNIQUE",
+        "expected_k": 0,
+        "attribution": "UNIQUE",
+        "k": 0,
+        "ok": true,
+        "reason": "MEASURED_AGREEMENT",
+        "channels": {
+          "L": {
+            "attribution": "UNIQUE",
+            "classification": "ALIGNED",
+            "k": 0,
+            "coverage": 1.0,
+            "floor": 0.076667,
+            "rivals": [],
+            "structural": [],
+            "channel_lags": null
+          },
+          "R": {
+            "attribution": "UNIQUE",
+            "classification": "ALIGNED",
+            "k": 0,
+            "coverage": 1.0,
+            "floor": 0.070647,
+            "rivals": [],
+            "structural": [],
+            "channel_lags": null
+          }
+        },
+        "channel_lags": {
+          "L": 0,
+          "R": 0
+        },
+        "channel_states": {
+          "L": "ALIGNED",
+          "R": "ALIGNED"
+        }
+      },
+      "res_side": {
+        "expected": "UNIQUE",
+        "expected_k": 0,
+        "attribution": "UNIQUE",
+        "k": 0,
+        "ok": true,
+        "reason": "MEASURED_AGREEMENT",
+        "channels": {
+          "L": {
+            "attribution": "UNIQUE",
+            "classification": "ALIGNED",
+            "k": 0,
+            "coverage": 1.0,
+            "floor": 0.076667,
+            "rivals": [],
+            "structural": [],
+            "channel_lags": null
+          },
+          "R": {
+            "attribution": "UNIQUE",
+            "classification": "ALIGNED",
+            "k": 0,
+            "coverage": 1.0,
+            "floor": 0.076667,
+            "rivals": [],
+            "structural": [],
+            "channel_lags": null
+          }
+        },
+        "channel_lags": {
+          "L": 0,
+          "R": 0
+        },
+        "channel_states": {
+          "L": "ALIGNED",
+          "R": "ALIGNED"
+        }
+      },
+      "res_delay_pos_1901": {
+        "expected": "UNIQUE",
+        "expected_k": 1901,
+        "attribution": "UNIQUE",
+        "k": 1901,
+        "ok": true,
+        "reason": "MEASURED_AGREEMENT",
+        "channels": {
+          "L": {
+            "attribution": "UNIQUE",
+            "classification": "MISALIGNED",
+            "k": 1901,
+            "coverage": 1.0,
+            "floor": 0.076667,
+            "rivals": [],
+            "structural": [],
+            "channel_lags": null
+          },
+          "R": {
+            "attribution": "UNIQUE",
+            "classification": "MISALIGNED",
+            "k": 1901,
+            "coverage": 1.0,
+            "floor": 0.070647,
+            "rivals": [],
+            "structural": [],
+            "channel_lags": null
+          }
+        },
+        "channel_lags": {
+          "L": 1901,
+          "R": 1901
+        },
+        "channel_states": {
+          "L": "MISALIGNED",
+          "R": "MISALIGNED"
+        }
+      },
+      "res_delay_neg_1901": {
+        "expected": "UNIQUE",
+        "expected_k": -1901,
+        "attribution": "UNIQUE",
+        "k": -1901,
+        "ok": true,
+        "reason": "MEASURED_AGREEMENT",
+        "channels": {
+          "L": {
+            "attribution": "UNIQUE",
+            "classification": "MISALIGNED",
+            "k": -1901,
+            "coverage": 1.0,
+            "floor": 0.076667,
+            "rivals": [],
+            "structural": [],
+            "channel_lags": null
+          },
+          "R": {
+            "attribution": "UNIQUE",
+            "classification": "MISALIGNED",
+            "k": -1901,
+            "coverage": 1.0,
+            "floor": 0.070647,
+            "rivals": [],
+            "structural": [],
+            "channel_lags": null
+          }
+        },
+        "channel_lags": {
+          "L": -1901,
+          "R": -1901
+        },
+        "channel_states": {
+          "L": "MISALIGNED",
+          "R": "MISALIGNED"
+        }
+      },
+      "res_shift_pad_567": {
+        "expected": "UNIQUE",
+        "expected_k": -567,
+        "attribution": "UNIQUE",
+        "k": -567,
+        "ok": true,
+        "reason": "MEASURED_AGREEMENT",
+        "channels": {
+          "L": {
+            "attribution": "UNIQUE",
+            "classification": "MISALIGNED",
+            "k": -567,
+            "coverage": 1.0,
+            "floor": 0.076331,
+            "rivals": [],
+            "structural": [],
+            "channel_lags": null
+          },
+          "R": {
+            "attribution": "UNIQUE",
+            "classification": "MISALIGNED",
+            "k": -567,
+            "coverage": 1.0,
+            "floor": 0.073133,
+            "rivals": [],
+            "structural": [],
+            "channel_lags": null
+          }
+        },
+        "channel_lags": {
+          "L": -567,
+          "R": -567
+        },
+        "channel_states": {
+          "L": "MISALIGNED",
+          "R": "MISALIGNED"
+        }
+      },
+      "res_right_replica_.125_777": {
+        "expected": "AMBIGUOUS",
+        "expected_k": null,
+        "attribution": "AMBIGUOUS",
+        "k": null,
+        "ok": true,
+        "reason": "MEMBER_AMBIGUITY_OR_CONFLICT",
+        "channels": {
+          "L": {
+            "attribution": "UNIQUE",
+            "classification": "ALIGNED",
+            "k": 0,
+            "coverage": 1.0,
+            "floor": 0.076667,
+            "rivals": [],
+            "structural": [],
+            "channel_lags": null
+          },
+          "R": {
+            "attribution": "AMBIGUOUS",
+            "classification": "AMBIGUOUS",
+            "k": null,
+            "coverage": 0.0,
+            "floor": null,
+            "rivals": [
+              {
+                "lag": 777,
+                "delta": 777,
+                "abs_rho": 0.068068,
+                "kind": "JOINT",
+                "t": 11.621,
+                "z": 5.687,
+                "coefficient": 0.115425,
+                "se": 0.009933,
+                "dof": 10245,
+                "crit_rho": 0.05418,
+                "confirmed": true
+              },
+              {
+                "lag": 777,
+                "delta": 777,
+                "abs_rho": 0.08955,
+                "kind": "JOINT",
+                "t": 12.161,
+                "z": 5.687,
+                "coefficient": 0.120942,
+                "se": 0.009945,
+                "dof": 10245,
+                "crit_rho": 0.053925,
+                "confirmed": true
+              },
+              {
+                "lag": 777,
+                "delta": 777,
+                "abs_rho": 0.084328,
+                "kind": "JOINT",
+                "t": 11.345,
+                "z": 5.687,
+                "coefficient": 0.112859,
+                "se": 0.009948,
+                "dof": 10245,
+                "crit_rho": 0.054056,
+                "confirmed": true
+              },
+              {
+                "lag": 777,
+                "delta": 777,
+                "abs_rho": 0.082282,
+                "kind": "JOINT",
+                "t": 12.715,
+                "z": 5.687,
+                "coefficient": 0.125797,
+                "se": 0.009894,
+                "dof": 10245,
+                "crit_rho": 0.05386,
+                "confirmed": true
+              },
+              {
+                "lag": 777,
+                "delta": 777,
+                "abs_rho": 0.086297,
+                "kind": "JOINT",
+                "t": 12.118,
+                "z": 5.687,
+                "coefficient": 0.120011,
+                "se": 0.009903,
+                "dof": 10245,
+                "crit_rho": 0.053825,
+                "confirmed": true
+              },
+              {
+                "lag": 777,
+                "delta": 777,
+                "abs_rho": 0.089848,
+                "kind": "JOINT",
+                "t": 12.951,
+                "z": 5.687,
+                "coefficient": 0.126963,
+                "se": 0.009804,
+                "dof": 10245,
+                "crit_rho": 0.054518,
+                "confirmed": true
+              },
+              {
+                "lag": 777,
+                "delta": 777,
+                "abs_rho": 0.091161,
+                "kind": "JOINT",
+                "t": 13.916,
+                "z": 5.687,
+                "coefficient": 0.135949,
+                "se": 0.009769,
+                "dof": 10245,
+                "crit_rho": 0.054402,
+                "confirmed": true
+              },
+              {
+                "lag": 777,
+                "delta": 777,
+                "abs_rho": 0.10334,
+                "kind": "JOINT",
+                "t": 14.537,
+                "z": 5.687,
+                "coefficient": 0.143028,
+                "se": 0.009839,
+                "dof": 10245,
+                "crit_rho": 0.054484,
+                "confirmed": true
+              },
+              {
+                "lag": 777,
+                "delta": 777,
+                "abs_rho": 0.102991,
+                "kind": "JOINT",
+                "t": 14.489,
+                "z": 5.687,
+                "coefficient": 0.142326,
+                "se": 0.009823,
+                "dof": 10245,
+                "crit_rho": 0.054313,
+                "confirmed": true
+              },
+              {
+                "lag": 777,
+                "delta": 777,
+                "abs_rho": 0.07631,
+                "kind": "JOINT",
+                "t": 12.237,
+                "z": 5.687,
+                "coefficient": 0.120743,
+                "se": 0.009867,
+                "dof": 10245,
+                "crit_rho": 0.054035,
+                "confirmed": true
+              },
+              {
+                "lag": 777,
+                "delta": 777,
+                "abs_rho": 0.080769,
+                "kind": "JOINT",
+                "t": 13.214,
+                "z": 5.687,
+                "coefficient": 0.129624,
+                "se": 0.009809,
+                "dof": 10245,
+                "crit_rho": 0.054079,
+                "confirmed": true
+              }
+            ],
+            "structural": [],
+            "channel_lags": null
+          }
+        },
+        "channel_lags": {
+          "L": 0
+        },
+        "channel_states": {
+          "L": "ALIGNED",
+          "R": "AMBIGUOUS"
+        }
+      },
+      "res_left_replica_.125_777": {
+        "expected": "AMBIGUOUS",
+        "expected_k": null,
+        "attribution": "AMBIGUOUS",
+        "k": null,
+        "ok": true,
+        "reason": "MEMBER_AMBIGUITY_OR_CONFLICT",
+        "channels": {
+          "L": {
+            "attribution": "AMBIGUOUS",
+            "classification": "AMBIGUOUS",
+            "k": null,
+            "coverage": 0.0,
+            "floor": null,
+            "rivals": [
+              {
+                "lag": 777,
+                "delta": 777,
+                "abs_rho": 0.085055,
+                "kind": "JOINT",
+                "t": 12.329,
+                "z": 5.687,
+                "coefficient": 0.12156,
+                "se": 0.009859,
+                "dof": 10245,
+                "crit_rho": 0.054088,
+                "confirmed": true
+              },
+              {
+                "lag": 777,
+                "delta": 777,
+                "abs_rho": 0.097898,
+                "kind": "JOINT",
+                "t": 13.481,
+                "z": 5.687,
+                "coefficient": 0.132796,
+                "se": 0.00985,
+                "dof": 10245,
+                "crit_rho": 0.054293,
+                "confirmed": true
+              },
+              {
+                "lag": 777,
+                "delta": 777,
+                "abs_rho": 0.100568,
+                "kind": "JOINT",
+                "t": 13.592,
+                "z": 5.687,
+                "coefficient": 0.133437,
+                "se": 0.009817,
+                "dof": 10245,
+                "crit_rho": 0.054182,
+                "confirmed": true
+              },
+              {
+                "lag": 777,
+                "delta": 777,
+                "abs_rho": 0.092922,
+                "kind": "JOINT",
+                "t": 14.117,
+                "z": 5.687,
+                "coefficient": 0.139008,
+                "se": 0.009847,
+                "dof": 10245,
+                "crit_rho": 0.053908,
+                "confirmed": true
+              },
+              {
+                "lag": 777,
+                "delta": 777,
+                "abs_rho": 0.097336,
+                "kind": "JOINT",
+                "t": 13.438,
+                "z": 5.687,
+                "coefficient": 0.131819,
+                "se": 0.00981,
+                "dof": 10245,
+                "crit_rho": 0.05416,
+                "confirmed": true
+              },
+              {
+                "lag": 777,
+                "delta": 777,
+                "abs_rho": 0.070672,
+                "kind": "JOINT",
+                "t": 9.898,
+                "z": 5.687,
+                "coefficient": 0.098518,
+                "se": 0.009953,
+                "dof": 10245,
+                "crit_rho": 0.053734,
+                "confirmed": true
+              },
+              {
+                "lag": 777,
+                "delta": 777,
+                "abs_rho": 0.079948,
+                "kind": "JOINT",
+                "t": 10.015,
+                "z": 5.687,
+                "coefficient": 0.100622,
+                "se": 0.010047,
+                "dof": 10245,
+                "crit_rho": 0.053865,
+                "confirmed": true
+              },
+              {
+                "lag": 777,
+                "delta": 777,
+                "abs_rho": 0.091509,
+                "kind": "JOINT",
+                "t": 13.727,
+                "z": 5.687,
+                "coefficient": 0.137378,
+                "se": 0.010008,
+                "dof": 10245,
+                "crit_rho": 0.05415,
+                "confirmed": true
+              },
+              {
+                "lag": 777,
+                "delta": 777,
+                "abs_rho": 0.089401,
+                "kind": "JOINT",
+                "t": 14.034,
+                "z": 5.687,
+                "coefficient": 0.141744,
+                "se": 0.0101,
+                "dof": 10245,
+                "crit_rho": 0.054228,
+                "confirmed": true
+              },
+              {
+                "lag": 777,
+                "delta": 777,
+                "abs_rho": 0.081279,
+                "kind": "JOINT",
+                "t": 11.996,
+                "z": 5.687,
+                "coefficient": 0.11812,
+                "se": 0.009846,
+                "dof": 10245,
+                "crit_rho": 0.053518,
+                "confirmed": true
+              },
+              {
+                "lag": 777,
+                "delta": 777,
+                "abs_rho": 0.087142,
+                "kind": "JOINT",
+                "t": 12.997,
+                "z": 5.687,
+                "coefficient": 0.128615,
+                "se": 0.009896,
+                "dof": 10245,
+                "crit_rho": 0.053759,
+                "confirmed": true
+              }
+            ],
+            "structural": [],
+            "channel_lags": null
+          },
+          "R": {
+            "attribution": "UNIQUE",
+            "classification": "ALIGNED",
+            "k": 0,
+            "coverage": 1.0,
+            "floor": 0.070647,
+            "rivals": [],
+            "structural": [],
+            "channel_lags": null
+          }
+        },
+        "channel_lags": {
+          "R": 0
+        },
+        "channel_states": {
+          "L": "AMBIGUOUS",
+          "R": "ALIGNED"
+        }
+      },
+      "res_right_replica_.25_-450": {
+        "expected": "AMBIGUOUS",
+        "expected_k": null,
+        "attribution": "AMBIGUOUS",
+        "k": null,
+        "ok": true,
+        "reason": "MEMBER_AMBIGUITY_OR_CONFLICT",
+        "channels": {
+          "L": {
+            "attribution": "UNIQUE",
+            "classification": "ALIGNED",
+            "k": 0,
+            "coverage": 1.0,
+            "floor": 0.076667,
+            "rivals": [],
+            "structural": [],
+            "channel_lags": null
+          },
+          "R": {
+            "attribution": "AMBIGUOUS",
+            "classification": "AMBIGUOUS",
+            "k": null,
+            "coverage": 0.0,
+            "floor": null,
+            "rivals": [
+              {
+                "lag": -450,
+                "delta": 450,
+                "abs_rho": 0.177472,
+                "kind": "JOINT",
+                "t": 25.509,
+                "z": 5.687,
+                "coefficient": 0.248683,
+                "se": 0.009749,
+                "dof": 10572,
+                "crit_rho": 0.053888,
+                "confirmed": true
+              },
+              {
+                "lag": -450,
+                "delta": 450,
+                "abs_rho": 0.18346,
+                "kind": "JOINT",
+                "t": 26.445,
+                "z": 5.687,
+                "coefficient": 0.259379,
+                "se": 0.009808,
+                "dof": 10572,
+                "crit_rho": 0.054145,
+                "confirmed": true
+              },
+              {
+                "lag": -450,
+                "delta": 450,
+                "abs_rho": 0.160339,
+                "kind": "JOINT",
+                "t": 23.165,
+                "z": 5.687,
+                "coefficient": 0.226184,
+                "se": 0.009764,
+                "dof": 10572,
+                "crit_rho": 0.053831,
+                "confirmed": true
+              },
+              {
+                "lag": -450,
+                "delta": 450,
+                "abs_rho": 0.164763,
+                "kind": "JOINT",
+                "t": 24.503,
+                "z": 5.687,
+                "coefficient": 0.238756,
+                "se": 0.009744,
+                "dof": 10572,
+                "crit_rho": 0.053801,
+                "confirmed": true
+              },
+              {
+                "lag": -450,
+                "delta": 450,
+                "abs_rho": 0.16892,
+                "kind": "JOINT",
+                "t": 25.415,
+                "z": 5.687,
+                "coefficient": 0.245906,
+                "se": 0.009676,
+                "dof": 10572,
+                "crit_rho": 0.054343,
+                "confirmed": true
+              },
+              {
+                "lag": -450,
+                "delta": 450,
+                "abs_rho": 0.174423,
+                "kind": "JOINT",
+                "t": 26.48,
+                "z": 5.687,
+                "coefficient": 0.25446,
+                "se": 0.009609,
+                "dof": 10572,
+                "crit_rho": 0.05423,
+                "confirmed": true
+              },
+              {
+                "lag": -450,
+                "delta": 450,
+                "abs_rho": 0.170942,
+                "kind": "JOINT",
+                "t": 25.22,
+                "z": 5.687,
+                "coefficient": 0.24443,
+                "se": 0.009692,
+                "dof": 10572,
+                "crit_rho": 0.054082,
+                "confirmed": true
+              },
+              {
+                "lag": -450,
+                "delta": 450,
+                "abs_rho": 0.178978,
+                "kind": "JOINT",
+                "t": 25.584,
+                "z": 5.687,
+                "coefficient": 0.247301,
+                "se": 0.009666,
+                "dof": 10572,
+                "crit_rho": 0.054327,
+                "confirmed": true
+              },
+              {
+                "lag": -450,
+                "delta": 450,
+                "abs_rho": 0.172192,
+                "kind": "JOINT",
+                "t": 25.017,
+                "z": 5.687,
+                "coefficient": 0.243003,
+                "se": 0.009713,
+                "dof": 10572,
+                "crit_rho": 0.054255,
+                "confirmed": true
+              },
+              {
+                "lag": -450,
+                "delta": 450,
+                "abs_rho": 0.176859,
+                "kind": "JOINT",
+                "t": 26.535,
+                "z": 5.687,
+                "coefficient": 0.25622,
+                "se": 0.009656,
+                "dof": 10572,
+                "crit_rho": 0.054102,
+                "confirmed": true
+              },
+              {
+                "lag": -450,
+                "delta": 450,
+                "abs_rho": 0.170838,
+                "kind": "JOINT",
+                "t": 27.014,
+                "z": 5.687,
+                "coefficient": 0.263069,
+                "se": 0.009738,
+                "dof": 10572,
+                "crit_rho": 0.054134,
+                "confirmed": true
+              }
+            ],
+            "structural": [],
+            "channel_lags": null
+          }
+        },
+        "channel_lags": {
+          "L": 0
+        },
+        "channel_states": {
+          "L": "ALIGNED",
+          "R": "AMBIGUOUS"
+        }
+      },
+      "res_left_replica_.5_1901": {
+        "expected": "AMBIGUOUS",
+        "expected_k": null,
+        "attribution": "AMBIGUOUS",
+        "k": null,
+        "ok": true,
+        "reason": "MEMBER_AMBIGUITY_OR_CONFLICT",
+        "channels": {
+          "L": {
+            "attribution": "AMBIGUOUS",
+            "classification": "AMBIGUOUS",
+            "k": null,
+            "coverage": 0.0,
+            "floor": null,
+            "rivals": [
+              {
+                "lag": 1901,
+                "delta": 1901,
+                "abs_rho": 0.333183,
+                "kind": "JOINT",
+                "t": 48.283,
+                "z": 5.687,
+                "coefficient": 0.504358,
+                "se": 0.010446,
+                "dof": 9121,
+                "crit_rho": 0.053936,
+                "confirmed": true
+              },
+              {
+                "lag": 1901,
+                "delta": 1901,
+                "abs_rho": 0.340159,
+                "kind": "JOINT",
+                "t": 47.408,
+                "z": 5.687,
+                "coefficient": 0.49649,
+                "se": 0.010473,
+                "dof": 9121,
+                "crit_rho": 0.054231,
+                "confirmed": true
+              },
+              {
+                "lag": 1901,
+                "delta": 1901,
+                "abs_rho": 0.341096,
+                "kind": "JOINT",
+                "t": 48.311,
+                "z": 5.687,
+                "coefficient": 0.502987,
+                "se": 0.010411,
+                "dof": 9121,
+                "crit_rho": 0.054042,
+                "confirmed": true
+              },
+              {
+                "lag": 1901,
+                "delta": 1901,
+                "abs_rho": 0.342146,
+                "kind": "JOINT",
+                "t": 47.734,
+                "z": 5.687,
+                "coefficient": 0.50027,
+                "se": 0.01048,
+                "dof": 9121,
+                "crit_rho": 0.054038,
+                "confirmed": true
+              },
+              {
+                "lag": 1901,
+                "delta": 1901,
+                "abs_rho": 0.347523,
+                "kind": "JOINT",
+                "t": 48.043,
+                "z": 5.687,
+                "coefficient": 0.499507,
+                "se": 0.010397,
+                "dof": 9121,
+                "crit_rho": 0.054158,
+                "confirmed": true
+              },
+              {
+                "lag": 1901,
+                "delta": 1901,
+                "abs_rho": 0.318654,
+                "kind": "JOINT",
+                "t": 45.851,
+                "z": 5.687,
+                "coefficient": 0.485952,
+                "se": 0.010598,
+                "dof": 9121,
+                "crit_rho": 0.053675,
+                "confirmed": true
+              },
+              {
+                "lag": 1901,
+                "delta": 1901,
+                "abs_rho": 0.323502,
+                "kind": "JOINT",
+                "t": 45.569,
+                "z": 5.687,
+                "coefficient": 0.484589,
+                "se": 0.010634,
+                "dof": 9121,
+                "crit_rho": 0.054079,
+                "confirmed": true
+              },
+              {
+                "lag": 1901,
+                "delta": 1901,
+                "abs_rho": 0.329343,
+                "kind": "JOINT",
+                "t": 45.76,
+                "z": 5.687,
+                "coefficient": 0.486975,
+                "se": 0.010642,
+                "dof": 9121,
+                "crit_rho": 0.054112,
+                "confirmed": true
+              },
+              {
+                "lag": 1901,
+                "delta": 1901,
+                "abs_rho": 0.322261,
+                "kind": "JOINT",
+                "t": 46.327,
+                "z": 5.687,
+                "coefficient": 0.496171,
+                "se": 0.01071,
+                "dof": 9121,
+                "crit_rho": 0.054075,
+                "confirmed": true
+              },
+              {
+                "lag": 1901,
+                "delta": 1901,
+                "abs_rho": 0.336242,
+                "kind": "JOINT",
+                "t": 47.733,
+                "z": 5.687,
+                "coefficient": 0.498781,
+                "se": 0.010449,
+                "dof": 9121,
+                "crit_rho": 0.053866,
+                "confirmed": true
+              },
+              {
+                "lag": 1901,
+                "delta": 1901,
+                "abs_rho": 0.340264,
+                "kind": "JOINT",
+                "t": 47.913,
+                "z": 5.687,
+                "coefficient": 0.501189,
+                "se": 0.01046,
+                "dof": 9121,
+                "crit_rho": 0.053956,
+                "confirmed": true
+              }
+            ],
+            "structural": [],
+            "channel_lags": null
+          },
+          "R": {
+            "attribution": "UNIQUE",
+            "classification": "ALIGNED",
+            "k": 0,
+            "coverage": 1.0,
+            "floor": 0.070647,
+            "rivals": [],
+            "structural": [],
+            "channel_lags": null
+          }
+        },
+        "channel_lags": {
+          "R": 0
+        },
+        "channel_states": {
+          "L": "AMBIGUOUS",
+          "R": "ALIGNED"
+        }
+      },
+      "res_dos_origenes": {
+        "expected": "AMBIGUOUS",
+        "expected_k": null,
+        "attribution": "AMBIGUOUS",
+        "k": null,
+        "ok": true,
+        "reason": "MEMBER_AMBIGUITY_OR_CONFLICT",
+        "channels": {
+          "L": {
+            "attribution": "AMBIGUOUS",
+            "classification": "AMBIGUOUS",
+            "k": null,
+            "coverage": 0.0,
+            "floor": null,
+            "rivals": [
+              {
+                "lag": 250,
+                "delta": 250,
+                "abs_rho": 0.219525,
+                "kind": "JOINT",
+                "t": 31.458,
+                "z": 5.687,
+                "coefficient": 0.314785,
+                "se": 0.010007,
+                "dof": 10772,
+                "crit_rho": 0.054333,
+                "confirmed": true
+              },
+              {
+                "lag": -900,
+                "delta": 900,
+                "abs_rho": 0.21008,
+                "kind": "JOINT",
+                "t": 29.065,
+                "z": 5.687,
+                "coefficient": 0.301189,
+                "se": 0.010363,
+                "dof": 10122,
+                "crit_rho": 0.0542,
+                "confirmed": true
+              },
+              {
+                "lag": 250,
+                "delta": 250,
+                "abs_rho": 0.208483,
+                "kind": "JOINT",
+                "t": 30.019,
+                "z": 5.687,
+                "coefficient": 0.301276,
+                "se": 0.010036,
+                "dof": 10772,
+                "crit_rho": 0.0542,
+                "confirmed": true
+              },
+              {
+                "lag": -900,
+                "delta": 900,
+                "abs_rho": 0.210557,
+                "kind": "JOINT",
+                "t": 29.335,
+                "z": 5.687,
+                "coefficient": 0.303186,
+                "se": 0.010335,
+                "dof": 10122,
+                "crit_rho": 0.054155,
+                "confirmed": true
+              },
+              {
+                "lag": 250,
+                "delta": 250,
+                "abs_rho": 0.204953,
+                "kind": "JOINT",
+                "t": 29.331,
+                "z": 5.687,
+                "coefficient": 0.294062,
+                "se": 0.010026,
+                "dof": 10772,
+                "crit_rho": 0.054155,
+                "confirmed": true
+              },
+              {
+                "lag": 250,
+                "delta": 250,
+                "abs_rho": 0.196403,
+                "kind": "JOINT",
+                "t": 28.37,
+                "z": 5.687,
+                "coefficient": 0.284985,
+                "se": 0.010045,
+                "dof": 10772,
+                "crit_rho": 0.053669,
+                "confirmed": true
+              },
+              {
+                "lag": -900,
+                "delta": 900,
+                "abs_rho": 0.194424,
+                "kind": "JOINT",
+                "t": 29.568,
+                "z": 5.687,
+                "coefficient": 0.304762,
+                "se": 0.010307,
+                "dof": 10122,
+                "crit_rho": 0.053669,
+                "confirmed": true
+              },
+              {
+                "lag": 250,
+                "delta": 250,
+                "abs_rho": 0.204704,
+                "kind": "JOINT",
+                "t": 29.951,
+                "z": 5.687,
+                "coefficient": 0.299365,
+                "se": 0.009995,
+                "dof": 10772,
+                "crit_rho": 0.054029,
+                "confirmed": true
+              },
+              {
+                "lag": -900,
+                "delta": 900,
+                "abs_rho": 0.203586,
+                "kind": "JOINT",
+                "t": 29.143,
+                "z": 5.687,
+                "coefficient": 0.300769,
+                "se": 0.010321,
+                "dof": 10122,
+                "crit_rho": 0.054029,
+                "confirmed": true
+              },
+              {
+                "lag": 250,
+                "delta": 250,
+                "abs_rho": 0.211754,
+                "kind": "JOINT",
+                "t": 29.539,
+                "z": 5.687,
+                "coefficient": 0.299359,
+                "se": 0.010134,
+                "dof": 10772,
+                "crit_rho": 0.053831,
+                "confirmed": true
+              },
+              {
+                "lag": -900,
+                "delta": 900,
+                "abs_rho": 0.195777,
+                "kind": "JOINT",
+                "t": 29.138,
+                "z": 5.687,
+                "coefficient": 0.303616,
+                "se": 0.01042,
+                "dof": 10122,
+                "crit_rho": 0.053831,
+                "confirmed": true
+              },
+              {
+                "lag": 250,
+                "delta": 250,
+                "abs_rho": 0.217195,
+                "kind": "JOINT",
+                "t": 29.898,
+                "z": 5.687,
+                "coefficient": 0.304848,
+                "se": 0.010196,
+                "dof": 10772,
+                "crit_rho": 0.053722,
+                "confirmed": true
+              },
+              {
+                "lag": -900,
+                "delta": 900,
+                "abs_rho": 0.19654,
+                "kind": "JOINT",
+                "t": 27.777,
+                "z": 5.687,
+                "coefficient": 0.293478,
+                "se": 0.010566,
+                "dof": 10122,
+                "crit_rho": 0.053722,
+                "confirmed": true
+              },
+              {
+                "lag": -900,
+                "delta": 900,
+                "abs_rho": 0.201788,
+                "kind": "JOINT",
+                "t": 28.911,
+                "z": 5.687,
+                "coefficient": 0.303847,
+                "se": 0.01051,
+                "dof": 10122,
+                "crit_rho": 0.054123,
+                "confirmed": true
+              },
+              {
+                "lag": 250,
+                "delta": 250,
+                "abs_rho": 0.193931,
+                "kind": "JOINT",
+                "t": 28.752,
+                "z": 5.687,
+                "coefficient": 0.292558,
+                "se": 0.010175,
+                "dof": 10772,
+                "crit_rho": 0.054123,
+                "confirmed": true
+              },
+              {
+                "lag": -900,
+                "delta": 900,
+                "abs_rho": 0.203272,
+                "kind": "JOINT",
+                "t": 28.195,
+                "z": 5.687,
+                "coefficient": 0.297407,
+                "se": 0.010548,
+                "dof": 10122,
+                "crit_rho": 0.054089,
+                "confirmed": true
+              },
+              {
+                "lag": 250,
+                "delta": 250,
+                "abs_rho": 0.196826,
+                "kind": "JOINT",
+                "t": 28.572,
+                "z": 5.687,
+                "coefficient": 0.292755,
+                "se": 0.010246,
+                "dof": 10772,
+                "crit_rho": 0.054089,
+                "confirmed": true
+              },
+              {
+                "lag": 250,
+                "delta": 250,
+                "abs_rho": 0.211459,
+                "kind": "JOINT",
+                "t": 31.023,
+                "z": 5.687,
+                "coefficient": 0.311688,
+                "se": 0.010047,
+                "dof": 10772,
+                "crit_rho": 0.05378,
+                "confirmed": true
+              },
+              {
+                "lag": -900,
+                "delta": 900,
+                "abs_rho": 0.205486,
+                "kind": "JOINT",
+                "t": 29.825,
+                "z": 5.687,
+                "coefficient": 0.309603,
+                "se": 0.010381,
+                "dof": 10122,
+                "crit_rho": 0.05378,
+                "confirmed": true
+              },
+              {
+                "lag": 250,
+                "delta": 250,
+                "abs_rho": 0.20716,
+                "kind": "JOINT",
+                "t": 30.444,
+                "z": 5.687,
+                "coefficient": 0.306976,
+                "se": 0.010083,
+                "dof": 10772,
+                "crit_rho": 0.053882,
+                "confirmed": true
+              },
+              {
+                "lag": -900,
+                "delta": 900,
+                "abs_rho": 0.202635,
+                "kind": "JOINT",
+                "t": 28.65,
+                "z": 5.687,
+                "coefficient": 0.298829,
+                "se": 0.01043,
+                "dof": 10122,
+                "crit_rho": 0.053882,
+                "confirmed": true
+              },
+              {
+                "lag": -900,
+                "delta": 900,
+                "abs_rho": 0.205925,
+                "kind": "JOINT",
+                "t": 28.044,
+                "z": 5.687,
+                "coefficient": 0.291314,
+                "se": 0.010388,
+                "dof": 10122,
+                "crit_rho": 0.054121,
+                "confirmed": true
+              }
+            ],
+            "structural": [],
+            "channel_lags": null
+          },
+          "R": {
+            "attribution": "AMBIGUOUS",
+            "classification": "AMBIGUOUS",
+            "k": null,
+            "coverage": 0.0,
+            "floor": null,
+            "rivals": [
+              {
+                "lag": 250,
+                "delta": 250,
+                "abs_rho": 0.216825,
+                "kind": "JOINT",
+                "t": 29.812,
+                "z": 5.687,
+                "coefficient": 0.301894,
+                "se": 0.010126,
+                "dof": 10772,
+                "crit_rho": 0.054381,
+                "confirmed": true
+              },
+              {
+                "lag": -900,
+                "delta": 900,
+                "abs_rho": 0.206075,
+                "kind": "JOINT",
+                "t": 29.919,
+                "z": 5.687,
+                "coefficient": 0.309095,
+                "se": 0.010331,
+                "dof": 10122,
+                "crit_rho": 0.054156,
+                "confirmed": true
+              },
+              {
+                "lag": 250,
+                "delta": 250,
+                "abs_rho": 0.188427,
+                "kind": "JOINT",
+                "t": 26.987,
+                "z": 5.687,
+                "coefficient": 0.273517,
+                "se": 0.010135,
+                "dof": 10772,
+                "crit_rho": 0.054156,
+                "confirmed": true
+              },
+              {
+                "lag": -900,
+                "delta": 900,
+                "abs_rho": 0.203802,
+                "kind": "JOINT",
+                "t": 29.563,
+                "z": 5.687,
+                "coefficient": 0.30738,
+                "se": 0.010397,
+                "dof": 10122,
+                "crit_rho": 0.054095,
+                "confirmed": true
+              },
+              {
+                "lag": 250,
+                "delta": 250,
+                "abs_rho": 0.188827,
+                "kind": "JOINT",
+                "t": 27.338,
+                "z": 5.687,
+                "coefficient": 0.277166,
+                "se": 0.010138,
+                "dof": 10772,
+                "crit_rho": 0.054095,
+                "confirmed": true
+              },
+              {
+                "lag": -900,
+                "delta": 900,
+                "abs_rho": 0.20632,
+                "kind": "JOINT",
+                "t": 27.598,
+                "z": 5.687,
+                "coefficient": 0.287621,
+                "se": 0.010422,
+                "dof": 10122,
+                "crit_rho": 0.054088,
+                "confirmed": true
+              },
+              {
+                "lag": 250,
+                "delta": 250,
+                "abs_rho": 0.189958,
+                "kind": "JOINT",
+                "t": 28.609,
+                "z": 5.687,
+                "coefficient": 0.288885,
+                "se": 0.010098,
+                "dof": 10772,
+                "crit_rho": 0.054088,
+                "confirmed": true
+              },
+              {
+                "lag": -900,
+                "delta": 900,
+                "abs_rho": 0.203359,
+                "kind": "JOINT",
+                "t": 28.575,
+                "z": 5.687,
+                "coefficient": 0.295904,
+                "se": 0.010355,
+                "dof": 10122,
+                "crit_rho": 0.05376,
+                "confirmed": true
+              },
+              {
+                "lag": 250,
+                "delta": 250,
+                "abs_rho": 0.185637,
+                "kind": "JOINT",
+                "t": 28.32,
+                "z": 5.687,
+                "coefficient": 0.285149,
+                "se": 0.010069,
+                "dof": 10772,
+                "crit_rho": 0.05376,
+                "confirmed": true
+              },
+              {
+                "lag": 250,
+                "delta": 250,
+                "abs_rho": 0.20189,
+                "kind": "JOINT",
+                "t": 29.267,
+                "z": 5.687,
+                "coefficient": 0.293118,
+                "se": 0.010015,
+                "dof": 10772,
+                "crit_rho": 0.054485,
+                "confirmed": true
+              },
+              {
+                "lag": -900,
+                "delta": 900,
+                "abs_rho": 0.194957,
+                "kind": "JOINT",
+                "t": 28.798,
+                "z": 5.687,
+                "coefficient": 0.297191,
+                "se": 0.01032,
+                "dof": 10122,
+                "crit_rho": 0.054485,
+                "confirmed": true
+              },
+              {
+                "lag": 250,
+                "delta": 250,
+                "abs_rho": 0.204353,
+                "kind": "JOINT",
+                "t": 29.051,
+                "z": 5.687,
+                "coefficient": 0.288224,
+                "se": 0.009921,
+                "dof": 10772,
+                "crit_rho": 0.054139,
+                "confirmed": true
+              },
+              {
+                "lag": -900,
+                "delta": 900,
+                "abs_rho": 0.200466,
+                "kind": "JOINT",
+                "t": 28.521,
+                "z": 5.687,
+                "coefficient": 0.291877,
+                "se": 0.010234,
+                "dof": 10122,
+                "crit_rho": 0.054139,
+                "confirmed": true
+              },
+              {
+                "lag": -900,
+                "delta": 900,
+                "abs_rho": 0.199334,
+                "kind": "JOINT",
+                "t": 29.279,
+                "z": 5.687,
+                "coefficient": 0.30187,
+                "se": 0.01031,
+                "dof": 10122,
+                "crit_rho": 0.054131,
+                "confirmed": true
+              },
+              {
+                "lag": 250,
+                "delta": 250,
+                "abs_rho": 0.190838,
+                "kind": "JOINT",
+                "t": 29.168,
+                "z": 5.687,
+                "coefficient": 0.292042,
+                "se": 0.010012,
+                "dof": 10772,
+                "crit_rho": 0.054131,
+                "confirmed": true
+              },
+              {
+                "lag": -900,
+                "delta": 900,
+                "abs_rho": 0.196278,
+                "kind": "JOINT",
+                "t": 29.374,
+                "z": 5.687,
+                "coefficient": 0.301838,
+                "se": 0.010276,
+                "dof": 10122,
+                "crit_rho": 0.054071,
+                "confirmed": true
+              },
+              {
+                "lag": 250,
+                "delta": 250,
+                "abs_rho": 0.194921,
+                "kind": "JOINT",
+                "t": 29.055,
+                "z": 5.687,
+                "coefficient": 0.290503,
+                "se": 0.009998,
+                "dof": 10772,
+                "crit_rho": 0.054071,
+                "confirmed": true
+              },
+              {
+                "lag": 250,
+                "delta": 250,
+                "abs_rho": 0.213541,
+                "kind": "JOINT",
+                "t": 30.919,
+                "z": 5.687,
+                "coefficient": 0.309742,
+                "se": 0.010018,
+                "dof": 10772,
+                "crit_rho": 0.053891,
+                "confirmed": true
+              },
+              {
+                "lag": -900,
+                "delta": 900,
+                "abs_rho": 0.197993,
+                "kind": "JOINT",
+                "t": 28.312,
+                "z": 5.687,
+                "coefficient": 0.294299,
+                "se": 0.010395,
+                "dof": 10122,
+                "crit_rho": 0.053891,
+                "confirmed": true
+              },
+              {
+                "lag": 250,
+                "delta": 250,
+                "abs_rho": 0.212796,
+                "kind": "JOINT",
+                "t": 30.759,
+                "z": 5.687,
+                "coefficient": 0.30708,
+                "se": 0.009983,
+                "dof": 10772,
+                "crit_rho": 0.054116,
+                "confirmed": true
+              },
+              {
+                "lag": -900,
+                "delta": 900,
+                "abs_rho": 0.20474,
+                "kind": "JOINT",
+                "t": 28.786,
+                "z": 5.687,
+                "coefficient": 0.29679,
+                "se": 0.01031,
+                "dof": 10122,
+                "crit_rho": 0.054116,
+                "confirmed": true
+              },
+              {
+                "lag": -900,
+                "delta": 900,
+                "abs_rho": 0.195727,
+                "kind": "JOINT",
+                "t": 28.841,
+                "z": 5.687,
+                "coefficient": 0.299836,
+                "se": 0.010396,
+                "dof": 10122,
+                "crit_rho": 0.05444,
+                "confirmed": true
+              }
+            ],
+            "structural": [],
+            "channel_lags": null
+          }
+        },
+        "channel_lags": {},
+        "channel_states": {
+          "L": "AMBIGUOUS",
+          "R": "AMBIGUOUS"
+        }
+      },
+      "res_por_tramos": {
+        "expected": "AMBIGUOUS",
+        "expected_k": null,
+        "attribution": "AMBIGUOUS",
+        "k": null,
+        "ok": true,
+        "reason": "MEMBER_AMBIGUITY_OR_CONFLICT",
+        "channels": {
+          "L": {
+            "attribution": "AMBIGUOUS",
+            "classification": "AMBIGUOUS",
+            "k": null,
+            "coverage": 1.0,
+            "floor": null,
+            "rivals": [],
+            "structural": [],
+            "channel_lags": null
+          },
+          "R": {
+            "attribution": "AMBIGUOUS",
+            "classification": "AMBIGUOUS",
+            "k": null,
+            "coverage": 1.0,
+            "floor": null,
+            "rivals": [],
+            "structural": [],
+            "channel_lags": null
+          }
+        },
+        "channel_lags": {},
+        "channel_states": {
+          "L": "AMBIGUOUS",
+          "R": "AMBIGUOUS"
+        }
+      },
+      "res_periodica_64": {
+        "expected": "AMBIGUOUS",
+        "expected_k": null,
+        "attribution": "AMBIGUOUS",
+        "k": null,
+        "ok": true,
+        "reason": "MEMBER_AMBIGUITY_OR_CONFLICT",
+        "channels": {
+          "L": {
+            "attribution": "AMBIGUOUS",
+            "classification": "AMBIGUOUS",
+            "k": null,
+            "coverage": 0.0,
+            "floor": null,
+            "rivals": [],
+            "structural": [
+              {
+                "lag": 58240,
+                "delta": 64,
+                "acf": 0.994219
+              },
+              {
+                "lag": 46720,
+                "delta": 384,
+                "acf": 0.965117
+              },
+              {
+                "lag": 44544,
+                "delta": 384,
+                "acf": 0.965117
+              },
+              {
+                "lag": 33984,
+                "delta": 64,
+                "acf": 0.994219
+              },
+              {
+                "lag": 31296,
+                "delta": 384,
+                "acf": 0.965117
+              },
+              {
+                "lag": 20288,
+                "delta": 384,
+                "acf": 0.965117
+              },
+              {
+                "lag": 18560,
+                "delta": 128,
+                "acf": 0.988372
+              },
+              {
+                "lag": 7040,
+                "delta": 384,
+                "acf": 0.965117
+              },
+              {
+                "lag": 5312,
+                "delta": 64,
+                "acf": 0.994219
+              },
+              {
+                "lag": -5696,
+                "delta": 128,
+                "acf": 0.988372
+              },
+              {
+                "lag": -8384,
+                "delta": 384,
+                "acf": 0.965117
+              },
+              {
+                "lag": -18944,
+                "delta": 64,
+                "acf": 0.994219
+              }
+            ],
+            "channel_lags": null
+          },
+          "R": {
+            "attribution": "AMBIGUOUS",
+            "classification": "AMBIGUOUS",
+            "k": null,
+            "coverage": 0.0,
+            "floor": null,
+            "rivals": [],
+            "structural": [
+              {
+                "lag": 66944,
+                "delta": 1408,
+                "acf": 0.872824
+              },
+              {
+                "lag": 55744,
+                "delta": 64,
+                "acf": 0.994186
+              },
+              {
+                "lag": 53568,
+                "delta": 1920,
+                "acf": 0.825586
+              },
+              {
+                "lag": 42688,
+                "delta": 1408,
+                "acf": 0.872824
+              },
+              {
+                "lag": 40320,
+                "delta": 64,
+                "acf": 0.994186
+              },
+              {
+                "lag": 29312,
+                "delta": 1920,
+                "acf": 0.825586
+              },
+              {
+                "lag": 27072,
+                "delta": 64,
+                "acf": 0.994186
+              },
+              {
+                "lag": 16064,
+                "delta": 64,
+                "acf": 0.994186
+              },
+              {
+                "lag": 14016,
+                "delta": 1408,
+                "acf": 0.872824
+              },
+              {
+                "lag": 2816,
+                "delta": 64,
+                "acf": 0.994186
+              },
+              {
+                "lag": 640,
+                "delta": 64,
+                "acf": 0.994186
+              },
+              {
+                "lag": -10240,
+                "delta": 1408,
+                "acf": 0.872824
+              }
+            ],
+            "channel_lags": null
+          }
+        },
+        "channel_lags": {},
+        "channel_states": {
+          "L": "AMBIGUOUS",
+          "R": "AMBIGUOUS"
+        }
+      },
+      "res_marcas_unicas": {
+        "expected": "UNIQUE",
+        "expected_k": 0,
+        "attribution": "UNIQUE",
+        "k": 0,
+        "ok": true,
+        "reason": "MEASURED_AGREEMENT",
+        "channels": {
+          "L": {
+            "attribution": "UNIQUE",
+            "classification": "ALIGNED",
+            "k": 0,
+            "coverage": 1.0,
+            "floor": 0.087738,
+            "rivals": [],
+            "structural": [],
+            "channel_lags": null
+          },
+          "R": {
+            "attribution": "UNIQUE",
+            "classification": "ALIGNED",
+            "k": 0,
+            "coverage": 1.0,
+            "floor": 0.078456,
+            "rivals": [],
+            "structural": [],
+            "channel_lags": null
+          }
+        },
+        "channel_lags": {
+          "L": 0,
+          "R": 0
+        },
+        "channel_states": {
+          "L": "ALIGNED",
+          "R": "ALIGNED"
+        }
+      },
+      "res_no_relacionada": {
+        "expected": "INSUFFICIENT_SIGNAL",
+        "expected_k": null,
+        "attribution": "INSUFFICIENT_SIGNAL",
+        "k": null,
+        "ok": true,
+        "reason": "INCOMPLETE_CHANNEL_EVIDENCE",
+        "channels": {
+          "L": {
+            "attribution": "INSUFFICIENT_SIGNAL",
+            "classification": "INSUFFICIENT_SIGNAL",
+            "k": null,
+            "coverage": 0.0,
+            "floor": null,
+            "rivals": [],
+            "structural": [],
+            "channel_lags": null
+          },
+          "R": {
+            "attribution": "INSUFFICIENT_SIGNAL",
+            "classification": "INSUFFICIENT_SIGNAL",
+            "k": null,
+            "coverage": 0.0,
+            "floor": null,
+            "rivals": [],
+            "structural": [],
+            "channel_lags": null
+          }
+        },
+        "channel_lags": {},
+        "channel_states": {
+          "L": "INSUFFICIENT_SIGNAL",
+          "R": "INSUFFICIENT_SIGNAL"
+        }
+      },
+      "res_silencio": {
+        "expected": "NON_INFORMATIVE",
+        "expected_k": null,
+        "attribution": "NON_INFORMATIVE",
+        "k": null,
+        "ok": true,
+        "reason": "ALL_CHANNELS_NON_INFORMATIVE",
+        "channels": {
+          "L": {
+            "attribution": "NON_INFORMATIVE",
+            "classification": "NON_INFORMATIVE",
+            "k": null,
+            "coverage": null,
+            "floor": null,
+            "rivals": [],
+            "structural": [],
+            "channel_lags": null
+          },
+          "R": {
+            "attribution": "NON_INFORMATIVE",
+            "classification": "NON_INFORMATIVE",
+            "k": null,
+            "coverage": null,
+            "floor": null,
+            "rivals": [],
+            "structural": [],
+            "channel_lags": null
+          }
+        },
+        "channel_lags": null,
+        "channel_states": null
+      },
+      "res_dc": {
+        "expected": "NON_INFORMATIVE",
+        "expected_k": null,
+        "attribution": "NON_INFORMATIVE",
+        "k": null,
+        "ok": true,
+        "reason": "ALL_CHANNELS_NON_INFORMATIVE",
+        "channels": {
+          "L": {
+            "attribution": "NON_INFORMATIVE",
+            "classification": "NON_INFORMATIVE",
+            "k": null,
+            "coverage": null,
+            "floor": null,
+            "rivals": [],
+            "structural": [],
+            "channel_lags": null
+          },
+          "R": {
+            "attribution": "NON_INFORMATIVE",
+            "classification": "NON_INFORMATIVE",
+            "k": null,
+            "coverage": null,
+            "floor": null,
+            "rivals": [],
+            "structural": [],
+            "channel_lags": null
+          }
+        },
+        "channel_lags": null,
+        "channel_states": null
+      },
+      "res_nan": {
+        "expected": "ERROR",
+        "expected_k": null,
+        "attribution": "ERROR",
+        "k": null,
+        "ok": true,
+        "reason": "READ_OR_FORMAT_ERROR",
+        "channels": {},
+        "channel_lags": null,
+        "channel_states": null
+      },
+      "res_lr_distintos_58": {
+        "expected": "AMBIGUOUS",
+        "expected_k": null,
+        "attribution": "AMBIGUOUS",
+        "k": null,
+        "ok": true,
+        "reason": "CHANNEL_DISAGREEMENT",
+        "channels": {
+          "L": {
+            "attribution": "UNIQUE",
+            "classification": "ALIGNED",
+            "k": 0,
+            "coverage": 1.0,
+            "floor": 0.076667,
+            "rivals": [],
+            "structural": [],
+            "channel_lags": null
+          },
+          "R": {
+            "attribution": "UNIQUE",
+            "classification": "WARNING",
+            "k": 58,
+            "coverage": 1.0,
+            "floor": 0.073882,
+            "rivals": [],
+            "structural": [],
+            "channel_lags": null
+          }
+        },
+        "channel_lags": {
+          "L": 0,
+          "R": 58
+        },
+        "channel_states": {
+          "L": "ALIGNED",
+          "R": "WARNING"
+        }
+      },
+      "res_asimetria_ganancia": {
+        "expected": "UNIQUE",
+        "expected_k": 0,
+        "attribution": "UNIQUE",
+        "k": 0,
+        "ok": true,
+        "reason": "MEASURED_AGREEMENT",
+        "channels": {
+          "L": {
+            "attribution": "UNIQUE",
+            "classification": "ALIGNED",
+            "k": 0,
+            "coverage": 1.0,
+            "floor": 0.076667,
+            "rivals": [],
+            "structural": [],
+            "channel_lags": null
+          },
+          "R": {
+            "attribution": "UNIQUE",
+            "classification": "ALIGNED",
+            "k": 0,
+            "coverage": 1.0,
+            "floor": 0.070647,
+            "rivals": [],
+            "structural": [],
+            "channel_lags": null
+          }
+        },
+        "channel_lags": {
+          "L": 0,
+          "R": 0
+        },
+        "channel_states": {
+          "L": "ALIGNED",
+          "R": "ALIGNED"
+        }
+      },
+      "res_guia_parcial": {
+        "expected": "UNIQUE",
+        "expected_k": 0,
+        "attribution": "UNIQUE",
+        "k": 0,
+        "ok": true,
+        "reason": "MEASURED_AGREEMENT",
+        "channels": {
+          "L": {
+            "attribution": "UNIQUE",
+            "classification": "ALIGNED",
+            "k": 0,
+            "coverage": 1.0,
+            "floor": 0.081402,
+            "rivals": [],
+            "structural": [],
+            "channel_lags": null
+          },
+          "R": {
+            "attribution": "UNIQUE",
+            "classification": "ALIGNED",
+            "k": 0,
+            "coverage": 1.0,
+            "floor": 0.091299,
+            "rivals": [],
+            "structural": [],
+            "channel_lags": null
+          }
+        },
+        "channel_lags": {
+          "L": 0,
+          "R": 0
+        },
+        "channel_states": {
+          "L": "ALIGNED",
+          "R": "ALIGNED"
+        }
+      },
+      "res_retardo_borde_4000": {
+        "expected": "UNIQUE",
+        "expected_k": 4000,
+        "attribution": "UNIQUE",
+        "k": 4000,
+        "ok": true,
+        "reason": "MEASURED_AGREEMENT",
+        "channels": {
+          "L": {
+            "attribution": "UNIQUE",
+            "classification": "MISALIGNED",
+            "k": 4000,
+            "coverage": 1.0,
+            "floor": 0.076667,
+            "rivals": [],
+            "structural": [],
+            "channel_lags": null
+          },
+          "R": {
+            "attribution": "UNIQUE",
+            "classification": "MISALIGNED",
+            "k": 4000,
+            "coverage": 1.0,
+            "floor": 0.070647,
+            "rivals": [],
+            "structural": [],
+            "channel_lags": null
+          }
+        },
+        "channel_lags": {
+          "L": 4000,
+          "R": 4000
+        },
+        "channel_states": {
+          "L": "MISALIGNED",
+          "R": "MISALIGNED"
+        }
+      },
+      "res_nivel_bajo": {
+        "expected": "UNIQUE",
+        "expected_k": 0,
+        "attribution": "UNIQUE",
+        "k": 0,
+        "ok": true,
+        "reason": "MEASURED_AGREEMENT",
+        "channels": {
+          "L": {
+            "attribution": "UNIQUE",
+            "classification": "ALIGNED",
+            "k": 0,
+            "coverage": 1.0,
+            "floor": 0.076667,
+            "rivals": [],
+            "structural": [],
+            "channel_lags": null
+          },
+          "R": {
+            "attribution": "UNIQUE",
+            "classification": "ALIGNED",
+            "k": 0,
+            "coverage": 1.0,
+            "floor": 0.070647,
+            "rivals": [],
+            "structural": [],
+            "channel_lags": null
+          }
+        },
+        "channel_lags": {
+          "L": 0,
+          "R": 0
+        },
+        "channel_states": {
+          "L": "ALIGNED",
+          "R": "ALIGNED"
+        }
+      },
+      "res_guia_debil": {
+        "expected": "UNIQUE",
+        "expected_k": 0,
+        "attribution": "UNIQUE",
+        "k": 0,
+        "ok": true,
+        "reason": "MEASURED_AGREEMENT",
+        "channels": {
+          "L": {
+            "attribution": "UNIQUE",
+            "classification": "ALIGNED",
+            "k": 0,
+            "coverage": 1.0,
+            "floor": 0.076667,
+            "rivals": [],
+            "structural": [],
+            "channel_lags": null
+          },
+          "R": {
+            "attribution": "UNIQUE",
+            "classification": "ALIGNED",
+            "k": 0,
+            "coverage": 1.0,
+            "floor": 0.070647,
+            "rivals": [],
+            "structural": [],
+            "channel_lags": null
+          }
+        },
+        "channel_lags": {
+          "L": 0,
+          "R": 0
+        },
+        "channel_states": {
+          "L": "ALIGNED",
+          "R": "ALIGNED"
+        }
+      },
+      "res_mid_nulo": {
+        "expected": "UNIQUE",
+        "expected_k": 0,
+        "attribution": "UNIQUE",
+        "k": 0,
+        "ok": true,
+        "reason": "MEASURED_AGREEMENT",
+        "channels": {
+          "L": {
+            "attribution": "UNIQUE",
+            "classification": "ALIGNED",
+            "k": 0,
+            "coverage": 1.0,
+            "floor": 0.076667,
+            "rivals": [],
+            "structural": [],
+            "channel_lags": null
+          },
+          "R": {
+            "attribution": "UNIQUE",
+            "classification": "ALIGNED",
+            "k": 0,
+            "coverage": 1.0,
+            "floor": 0.076667,
+            "rivals": [],
+            "structural": [],
+            "channel_lags": null
+          }
+        },
+        "channel_lags": {
+          "L": 0,
+          "R": 0
+        },
+        "channel_states": {
+          "L": "ALIGNED",
+          "R": "ALIGNED"
+        }
+      },
+      "res_amplitud_variable": {
+        "expected": "UNIQUE",
+        "expected_k": 0,
+        "attribution": "UNIQUE",
+        "k": 0,
+        "ok": true,
+        "reason": "MEASURED_AGREEMENT",
+        "channels": {
+          "L": {
+            "attribution": "UNIQUE",
+            "classification": "ALIGNED",
+            "k": 0,
+            "coverage": 1.0,
+            "floor": 0.08631,
+            "rivals": [],
+            "structural": [],
+            "channel_lags": null
+          },
+          "R": {
+            "attribution": "UNIQUE",
+            "classification": "ALIGNED",
+            "k": 0,
+            "coverage": 1.0,
+            "floor": 0.082595,
+            "rivals": [],
+            "structural": [],
+            "channel_lags": null
+          }
+        },
+        "channel_lags": {
+          "L": 0,
+          "R": 0
+        },
+        "channel_states": {
+          "L": "ALIGNED",
+          "R": "ALIGNED"
+        }
+      },
+      "res_replica_bajo_piso": {
+        "expected": "UNIQUE_O_AMBIGUOUS",
+        "expected_k": null,
+        "attribution": "UNIQUE",
+        "k": 0,
+        "ok": true,
+        "reason": "MEASURED_AGREEMENT",
+        "channels": {
+          "L": {
+            "attribution": "UNIQUE",
+            "classification": "ALIGNED",
+            "k": 0,
+            "coverage": 1.0,
+            "floor": 0.076667,
+            "rivals": [],
+            "structural": [],
+            "channel_lags": null
+          },
+          "R": {
+            "attribution": "UNIQUE",
+            "classification": "ALIGNED",
+            "k": 0,
+            "coverage": 1.0,
+            "floor": 0.070688,
+            "rivals": [],
+            "structural": [],
+            "channel_lags": null
+          }
+        },
+        "channel_lags": {
+          "L": 0,
+          "R": 0
+        },
+        "channel_states": {
+          "L": "ALIGNED",
+          "R": "ALIGNED"
+        }
+      }
+    },
+    "EVO": {
+      "res_clean_1s": {
+        "expected": "UNIQUE",
+        "expected_k": 0,
+        "attribution": "UNIQUE",
+        "k": 0,
+        "ok": true,
+        "reason": "MEASURED_AGREEMENT",
+        "channels": {
+          "L": {
+            "attribution": "UNIQUE",
+            "classification": "ALIGNED",
+            "k": 0,
+            "coverage": 1.0,
+            "floor": 0.088755,
+            "rivals": [],
+            "structural": [],
+            "channel_lags": null
+          },
+          "R": {
+            "attribution": "UNIQUE",
+            "classification": "ALIGNED",
+            "k": 0,
+            "coverage": 1.0,
+            "floor": 0.087746,
+            "rivals": [],
+            "structural": [],
+            "channel_lags": null
+          }
+        },
+        "channel_lags": {
+          "L": 0,
+          "R": 0
+        },
+        "channel_states": {
+          "L": "ALIGNED",
+          "R": "ALIGNED"
+        }
+      },
+      "res_clean_2s": {
+        "expected": "UNIQUE",
+        "expected_k": 0,
+        "attribution": "UNIQUE",
+        "k": 0,
+        "ok": true,
+        "reason": "MEASURED_AGREEMENT",
+        "channels": {
+          "L": {
+            "attribution": "UNIQUE",
+            "classification": "ALIGNED",
+            "k": 0,
+            "coverage": 1.0,
+            "floor": 0.076667,
+            "rivals": [],
+            "structural": [],
+            "channel_lags": null
+          },
+          "R": {
+            "attribution": "UNIQUE",
+            "classification": "ALIGNED",
+            "k": 0,
+            "coverage": 1.0,
+            "floor": 0.070647,
+            "rivals": [],
+            "structural": [],
+            "channel_lags": null
+          }
+        },
+        "channel_lags": {
+          "L": 0,
+          "R": 0
+        },
+        "channel_states": {
+          "L": "ALIGNED",
+          "R": "ALIGNED"
+        }
+      },
+      "res_polaridad": {
+        "expected": "UNIQUE",
+        "expected_k": 0,
+        "attribution": "UNIQUE",
+        "k": 0,
+        "ok": true,
+        "reason": "MEASURED_AGREEMENT",
+        "channels": {
+          "L": {
+            "attribution": "UNIQUE",
+            "classification": "ALIGNED",
+            "k": 0,
+            "coverage": 1.0,
+            "floor": 0.076667,
+            "rivals": [],
+            "structural": [],
+            "channel_lags": null
+          },
+          "R": {
+            "attribution": "UNIQUE",
+            "classification": "ALIGNED",
+            "k": 0,
+            "coverage": 1.0,
+            "floor": 0.070647,
+            "rivals": [],
+            "structural": [],
+            "channel_lags": null
+          }
+        },
+        "channel_lags": {
+          "L": 0,
+          "R": 0
+        },
+        "channel_states": {
+          "L": "ALIGNED",
+          "R": "ALIGNED"
+        }
+      },
+      "res_side": {
+        "expected": "UNIQUE",
+        "expected_k": 0,
+        "attribution": "UNIQUE",
+        "k": 0,
+        "ok": true,
+        "reason": "MEASURED_AGREEMENT",
+        "channels": {
+          "L": {
+            "attribution": "UNIQUE",
+            "classification": "ALIGNED",
+            "k": 0,
+            "coverage": 1.0,
+            "floor": 0.076667,
+            "rivals": [],
+            "structural": [],
+            "channel_lags": null
+          },
+          "R": {
+            "attribution": "UNIQUE",
+            "classification": "ALIGNED",
+            "k": 0,
+            "coverage": 1.0,
+            "floor": 0.076667,
+            "rivals": [],
+            "structural": [],
+            "channel_lags": null
+          }
+        },
+        "channel_lags": {
+          "L": 0,
+          "R": 0
+        },
+        "channel_states": {
+          "L": "ALIGNED",
+          "R": "ALIGNED"
+        }
+      },
+      "res_delay_pos_1901": {
+        "expected": "UNIQUE",
+        "expected_k": 1901,
+        "attribution": "UNIQUE",
+        "k": 1901,
+        "ok": true,
+        "reason": "MEASURED_AGREEMENT",
+        "channels": {
+          "L": {
+            "attribution": "UNIQUE",
+            "classification": "MISALIGNED",
+            "k": 1901,
+            "coverage": 1.0,
+            "floor": 0.076667,
+            "rivals": [],
+            "structural": [],
+            "channel_lags": null
+          },
+          "R": {
+            "attribution": "UNIQUE",
+            "classification": "MISALIGNED",
+            "k": 1901,
+            "coverage": 1.0,
+            "floor": 0.070647,
+            "rivals": [],
+            "structural": [],
+            "channel_lags": null
+          }
+        },
+        "channel_lags": {
+          "L": 1901,
+          "R": 1901
+        },
+        "channel_states": {
+          "L": "MISALIGNED",
+          "R": "MISALIGNED"
+        }
+      },
+      "res_delay_neg_1901": {
+        "expected": "UNIQUE",
+        "expected_k": -1901,
+        "attribution": "UNIQUE",
+        "k": -1901,
+        "ok": true,
+        "reason": "MEASURED_AGREEMENT",
+        "channels": {
+          "L": {
+            "attribution": "UNIQUE",
+            "classification": "MISALIGNED",
+            "k": -1901,
+            "coverage": 1.0,
+            "floor": 0.076667,
+            "rivals": [],
+            "structural": [],
+            "channel_lags": null
+          },
+          "R": {
+            "attribution": "UNIQUE",
+            "classification": "MISALIGNED",
+            "k": -1901,
+            "coverage": 1.0,
+            "floor": 0.070647,
+            "rivals": [],
+            "structural": [],
+            "channel_lags": null
+          }
+        },
+        "channel_lags": {
+          "L": -1901,
+          "R": -1901
+        },
+        "channel_states": {
+          "L": "MISALIGNED",
+          "R": "MISALIGNED"
+        }
+      },
+      "res_shift_pad_567": {
+        "expected": "UNIQUE",
+        "expected_k": -567,
+        "attribution": "UNIQUE",
+        "k": -567,
+        "ok": true,
+        "reason": "MEASURED_AGREEMENT",
+        "channels": {
+          "L": {
+            "attribution": "UNIQUE",
+            "classification": "MISALIGNED",
+            "k": -567,
+            "coverage": 1.0,
+            "floor": 0.076331,
+            "rivals": [],
+            "structural": [],
+            "channel_lags": null
+          },
+          "R": {
+            "attribution": "UNIQUE",
+            "classification": "MISALIGNED",
+            "k": -567,
+            "coverage": 1.0,
+            "floor": 0.073133,
+            "rivals": [],
+            "structural": [],
+            "channel_lags": null
+          }
+        },
+        "channel_lags": {
+          "L": -567,
+          "R": -567
+        },
+        "channel_states": {
+          "L": "MISALIGNED",
+          "R": "MISALIGNED"
+        }
+      },
+      "res_right_replica_.125_777": {
+        "expected": "AMBIGUOUS",
+        "expected_k": null,
+        "attribution": "AMBIGUOUS",
+        "k": null,
+        "ok": true,
+        "reason": "MEMBER_AMBIGUITY_OR_CONFLICT",
+        "channels": {
+          "L": {
+            "attribution": "UNIQUE",
+            "classification": "ALIGNED",
+            "k": 0,
+            "coverage": 1.0,
+            "floor": 0.076667,
+            "rivals": [],
+            "structural": [],
+            "channel_lags": null
+          },
+          "R": {
+            "attribution": "AMBIGUOUS",
+            "classification": "AMBIGUOUS",
+            "k": null,
+            "coverage": 0.0,
+            "floor": null,
+            "rivals": [
+              {
+                "lag": 777,
+                "delta": 777,
+                "abs_rho": 0.068068,
+                "kind": "JOINT",
+                "t": 11.621,
+                "z": 5.687,
+                "coefficient": 0.115425,
+                "se": 0.009933,
+                "dof": 10245,
+                "crit_rho": 0.05418,
+                "confirmed": true
+              },
+              {
+                "lag": 777,
+                "delta": 777,
+                "abs_rho": 0.08955,
+                "kind": "JOINT",
+                "t": 12.161,
+                "z": 5.687,
+                "coefficient": 0.120942,
+                "se": 0.009945,
+                "dof": 10245,
+                "crit_rho": 0.053925,
+                "confirmed": true
+              },
+              {
+                "lag": 777,
+                "delta": 777,
+                "abs_rho": 0.084328,
+                "kind": "JOINT",
+                "t": 11.345,
+                "z": 5.687,
+                "coefficient": 0.112859,
+                "se": 0.009948,
+                "dof": 10245,
+                "crit_rho": 0.054056,
+                "confirmed": true
+              },
+              {
+                "lag": 777,
+                "delta": 777,
+                "abs_rho": 0.082282,
+                "kind": "JOINT",
+                "t": 12.715,
+                "z": 5.687,
+                "coefficient": 0.125797,
+                "se": 0.009894,
+                "dof": 10245,
+                "crit_rho": 0.05386,
+                "confirmed": true
+              },
+              {
+                "lag": 777,
+                "delta": 777,
+                "abs_rho": 0.086297,
+                "kind": "JOINT",
+                "t": 12.118,
+                "z": 5.687,
+                "coefficient": 0.120011,
+                "se": 0.009903,
+                "dof": 10245,
+                "crit_rho": 0.053825,
+                "confirmed": true
+              },
+              {
+                "lag": 777,
+                "delta": 777,
+                "abs_rho": 0.089848,
+                "kind": "JOINT",
+                "t": 12.951,
+                "z": 5.687,
+                "coefficient": 0.126963,
+                "se": 0.009804,
+                "dof": 10245,
+                "crit_rho": 0.054518,
+                "confirmed": true
+              },
+              {
+                "lag": 777,
+                "delta": 777,
+                "abs_rho": 0.091161,
+                "kind": "JOINT",
+                "t": 13.916,
+                "z": 5.687,
+                "coefficient": 0.135949,
+                "se": 0.009769,
+                "dof": 10245,
+                "crit_rho": 0.054402,
+                "confirmed": true
+              },
+              {
+                "lag": 777,
+                "delta": 777,
+                "abs_rho": 0.10334,
+                "kind": "JOINT",
+                "t": 14.537,
+                "z": 5.687,
+                "coefficient": 0.143028,
+                "se": 0.009839,
+                "dof": 10245,
+                "crit_rho": 0.054484,
+                "confirmed": true
+              },
+              {
+                "lag": 777,
+                "delta": 777,
+                "abs_rho": 0.102991,
+                "kind": "JOINT",
+                "t": 14.489,
+                "z": 5.687,
+                "coefficient": 0.142326,
+                "se": 0.009823,
+                "dof": 10245,
+                "crit_rho": 0.054313,
+                "confirmed": true
+              },
+              {
+                "lag": 777,
+                "delta": 777,
+                "abs_rho": 0.07631,
+                "kind": "JOINT",
+                "t": 12.237,
+                "z": 5.687,
+                "coefficient": 0.120743,
+                "se": 0.009867,
+                "dof": 10245,
+                "crit_rho": 0.054035,
+                "confirmed": true
+              },
+              {
+                "lag": 777,
+                "delta": 777,
+                "abs_rho": 0.080769,
+                "kind": "JOINT",
+                "t": 13.214,
+                "z": 5.687,
+                "coefficient": 0.129624,
+                "se": 0.009809,
+                "dof": 10245,
+                "crit_rho": 0.054079,
+                "confirmed": true
+              }
+            ],
+            "structural": [],
+            "channel_lags": null
+          }
+        },
+        "channel_lags": {
+          "L": 0
+        },
+        "channel_states": {
+          "L": "ALIGNED",
+          "R": "AMBIGUOUS"
+        }
+      },
+      "res_left_replica_.125_777": {
+        "expected": "AMBIGUOUS",
+        "expected_k": null,
+        "attribution": "AMBIGUOUS",
+        "k": null,
+        "ok": true,
+        "reason": "MEMBER_AMBIGUITY_OR_CONFLICT",
+        "channels": {
+          "L": {
+            "attribution": "AMBIGUOUS",
+            "classification": "AMBIGUOUS",
+            "k": null,
+            "coverage": 0.0,
+            "floor": null,
+            "rivals": [
+              {
+                "lag": 777,
+                "delta": 777,
+                "abs_rho": 0.085055,
+                "kind": "JOINT",
+                "t": 12.329,
+                "z": 5.687,
+                "coefficient": 0.12156,
+                "se": 0.009859,
+                "dof": 10245,
+                "crit_rho": 0.054088,
+                "confirmed": true
+              },
+              {
+                "lag": 777,
+                "delta": 777,
+                "abs_rho": 0.097898,
+                "kind": "JOINT",
+                "t": 13.481,
+                "z": 5.687,
+                "coefficient": 0.132796,
+                "se": 0.00985,
+                "dof": 10245,
+                "crit_rho": 0.054293,
+                "confirmed": true
+              },
+              {
+                "lag": 777,
+                "delta": 777,
+                "abs_rho": 0.100568,
+                "kind": "JOINT",
+                "t": 13.592,
+                "z": 5.687,
+                "coefficient": 0.133437,
+                "se": 0.009817,
+                "dof": 10245,
+                "crit_rho": 0.054182,
+                "confirmed": true
+              },
+              {
+                "lag": 777,
+                "delta": 777,
+                "abs_rho": 0.092922,
+                "kind": "JOINT",
+                "t": 14.117,
+                "z": 5.687,
+                "coefficient": 0.139008,
+                "se": 0.009847,
+                "dof": 10245,
+                "crit_rho": 0.053908,
+                "confirmed": true
+              },
+              {
+                "lag": 777,
+                "delta": 777,
+                "abs_rho": 0.097336,
+                "kind": "JOINT",
+                "t": 13.438,
+                "z": 5.687,
+                "coefficient": 0.131819,
+                "se": 0.00981,
+                "dof": 10245,
+                "crit_rho": 0.05416,
+                "confirmed": true
+              },
+              {
+                "lag": 777,
+                "delta": 777,
+                "abs_rho": 0.070672,
+                "kind": "JOINT",
+                "t": 9.898,
+                "z": 5.687,
+                "coefficient": 0.098518,
+                "se": 0.009953,
+                "dof": 10245,
+                "crit_rho": 0.053734,
+                "confirmed": true
+              },
+              {
+                "lag": 777,
+                "delta": 777,
+                "abs_rho": 0.079948,
+                "kind": "JOINT",
+                "t": 10.015,
+                "z": 5.687,
+                "coefficient": 0.100622,
+                "se": 0.010047,
+                "dof": 10245,
+                "crit_rho": 0.053865,
+                "confirmed": true
+              },
+              {
+                "lag": 777,
+                "delta": 777,
+                "abs_rho": 0.091509,
+                "kind": "JOINT",
+                "t": 13.727,
+                "z": 5.687,
+                "coefficient": 0.137378,
+                "se": 0.010008,
+                "dof": 10245,
+                "crit_rho": 0.05415,
+                "confirmed": true
+              },
+              {
+                "lag": 777,
+                "delta": 777,
+                "abs_rho": 0.089401,
+                "kind": "JOINT",
+                "t": 14.034,
+                "z": 5.687,
+                "coefficient": 0.141744,
+                "se": 0.0101,
+                "dof": 10245,
+                "crit_rho": 0.054228,
+                "confirmed": true
+              },
+              {
+                "lag": 777,
+                "delta": 777,
+                "abs_rho": 0.081279,
+                "kind": "JOINT",
+                "t": 11.996,
+                "z": 5.687,
+                "coefficient": 0.11812,
+                "se": 0.009846,
+                "dof": 10245,
+                "crit_rho": 0.053518,
+                "confirmed": true
+              },
+              {
+                "lag": 777,
+                "delta": 777,
+                "abs_rho": 0.087142,
+                "kind": "JOINT",
+                "t": 12.997,
+                "z": 5.687,
+                "coefficient": 0.128615,
+                "se": 0.009896,
+                "dof": 10245,
+                "crit_rho": 0.053759,
+                "confirmed": true
+              }
+            ],
+            "structural": [],
+            "channel_lags": null
+          },
+          "R": {
+            "attribution": "UNIQUE",
+            "classification": "ALIGNED",
+            "k": 0,
+            "coverage": 1.0,
+            "floor": 0.070647,
+            "rivals": [],
+            "structural": [],
+            "channel_lags": null
+          }
+        },
+        "channel_lags": {
+          "R": 0
+        },
+        "channel_states": {
+          "L": "AMBIGUOUS",
+          "R": "ALIGNED"
+        }
+      },
+      "res_right_replica_.25_-450": {
+        "expected": "AMBIGUOUS",
+        "expected_k": null,
+        "attribution": "AMBIGUOUS",
+        "k": null,
+        "ok": true,
+        "reason": "MEMBER_AMBIGUITY_OR_CONFLICT",
+        "channels": {
+          "L": {
+            "attribution": "UNIQUE",
+            "classification": "ALIGNED",
+            "k": 0,
+            "coverage": 1.0,
+            "floor": 0.076667,
+            "rivals": [],
+            "structural": [],
+            "channel_lags": null
+          },
+          "R": {
+            "attribution": "AMBIGUOUS",
+            "classification": "AMBIGUOUS",
+            "k": null,
+            "coverage": 0.0,
+            "floor": null,
+            "rivals": [
+              {
+                "lag": -450,
+                "delta": 450,
+                "abs_rho": 0.177472,
+                "kind": "JOINT",
+                "t": 25.509,
+                "z": 5.687,
+                "coefficient": 0.248683,
+                "se": 0.009749,
+                "dof": 10572,
+                "crit_rho": 0.053888,
+                "confirmed": true
+              },
+              {
+                "lag": -450,
+                "delta": 450,
+                "abs_rho": 0.18346,
+                "kind": "JOINT",
+                "t": 26.445,
+                "z": 5.687,
+                "coefficient": 0.259379,
+                "se": 0.009808,
+                "dof": 10572,
+                "crit_rho": 0.054145,
+                "confirmed": true
+              },
+              {
+                "lag": -450,
+                "delta": 450,
+                "abs_rho": 0.160339,
+                "kind": "JOINT",
+                "t": 23.165,
+                "z": 5.687,
+                "coefficient": 0.226184,
+                "se": 0.009764,
+                "dof": 10572,
+                "crit_rho": 0.053831,
+                "confirmed": true
+              },
+              {
+                "lag": -450,
+                "delta": 450,
+                "abs_rho": 0.164763,
+                "kind": "JOINT",
+                "t": 24.503,
+                "z": 5.687,
+                "coefficient": 0.238756,
+                "se": 0.009744,
+                "dof": 10572,
+                "crit_rho": 0.053801,
+                "confirmed": true
+              },
+              {
+                "lag": -450,
+                "delta": 450,
+                "abs_rho": 0.16892,
+                "kind": "JOINT",
+                "t": 25.415,
+                "z": 5.687,
+                "coefficient": 0.245906,
+                "se": 0.009676,
+                "dof": 10572,
+                "crit_rho": 0.054343,
+                "confirmed": true
+              },
+              {
+                "lag": -450,
+                "delta": 450,
+                "abs_rho": 0.174423,
+                "kind": "JOINT",
+                "t": 26.48,
+                "z": 5.687,
+                "coefficient": 0.25446,
+                "se": 0.009609,
+                "dof": 10572,
+                "crit_rho": 0.05423,
+                "confirmed": true
+              },
+              {
+                "lag": -450,
+                "delta": 450,
+                "abs_rho": 0.170942,
+                "kind": "JOINT",
+                "t": 25.22,
+                "z": 5.687,
+                "coefficient": 0.24443,
+                "se": 0.009692,
+                "dof": 10572,
+                "crit_rho": 0.054082,
+                "confirmed": true
+              },
+              {
+                "lag": -450,
+                "delta": 450,
+                "abs_rho": 0.178978,
+                "kind": "JOINT",
+                "t": 25.584,
+                "z": 5.687,
+                "coefficient": 0.247301,
+                "se": 0.009666,
+                "dof": 10572,
+                "crit_rho": 0.054327,
+                "confirmed": true
+              },
+              {
+                "lag": -450,
+                "delta": 450,
+                "abs_rho": 0.172192,
+                "kind": "JOINT",
+                "t": 25.017,
+                "z": 5.687,
+                "coefficient": 0.243003,
+                "se": 0.009713,
+                "dof": 10572,
+                "crit_rho": 0.054255,
+                "confirmed": true
+              },
+              {
+                "lag": -450,
+                "delta": 450,
+                "abs_rho": 0.176859,
+                "kind": "JOINT",
+                "t": 26.535,
+                "z": 5.687,
+                "coefficient": 0.25622,
+                "se": 0.009656,
+                "dof": 10572,
+                "crit_rho": 0.054102,
+                "confirmed": true
+              },
+              {
+                "lag": -450,
+                "delta": 450,
+                "abs_rho": 0.170838,
+                "kind": "JOINT",
+                "t": 27.014,
+                "z": 5.687,
+                "coefficient": 0.263069,
+                "se": 0.009738,
+                "dof": 10572,
+                "crit_rho": 0.054134,
+                "confirmed": true
+              }
+            ],
+            "structural": [],
+            "channel_lags": null
+          }
+        },
+        "channel_lags": {
+          "L": 0
+        },
+        "channel_states": {
+          "L": "ALIGNED",
+          "R": "AMBIGUOUS"
+        }
+      },
+      "res_left_replica_.5_1901": {
+        "expected": "AMBIGUOUS",
+        "expected_k": null,
+        "attribution": "AMBIGUOUS",
+        "k": null,
+        "ok": true,
+        "reason": "MEMBER_AMBIGUITY_OR_CONFLICT",
+        "channels": {
+          "L": {
+            "attribution": "AMBIGUOUS",
+            "classification": "AMBIGUOUS",
+            "k": null,
+            "coverage": 0.0,
+            "floor": null,
+            "rivals": [
+              {
+                "lag": 1901,
+                "delta": 1901,
+                "abs_rho": 0.333183,
+                "kind": "JOINT",
+                "t": 48.283,
+                "z": 5.687,
+                "coefficient": 0.504358,
+                "se": 0.010446,
+                "dof": 9121,
+                "crit_rho": 0.053936,
+                "confirmed": true
+              },
+              {
+                "lag": 1901,
+                "delta": 1901,
+                "abs_rho": 0.340159,
+                "kind": "JOINT",
+                "t": 47.408,
+                "z": 5.687,
+                "coefficient": 0.49649,
+                "se": 0.010473,
+                "dof": 9121,
+                "crit_rho": 0.054231,
+                "confirmed": true
+              },
+              {
+                "lag": 1901,
+                "delta": 1901,
+                "abs_rho": 0.341096,
+                "kind": "JOINT",
+                "t": 48.311,
+                "z": 5.687,
+                "coefficient": 0.502987,
+                "se": 0.010411,
+                "dof": 9121,
+                "crit_rho": 0.054042,
+                "confirmed": true
+              },
+              {
+                "lag": 1901,
+                "delta": 1901,
+                "abs_rho": 0.342146,
+                "kind": "JOINT",
+                "t": 47.734,
+                "z": 5.687,
+                "coefficient": 0.50027,
+                "se": 0.01048,
+                "dof": 9121,
+                "crit_rho": 0.054038,
+                "confirmed": true
+              },
+              {
+                "lag": 1901,
+                "delta": 1901,
+                "abs_rho": 0.347523,
+                "kind": "JOINT",
+                "t": 48.043,
+                "z": 5.687,
+                "coefficient": 0.499507,
+                "se": 0.010397,
+                "dof": 9121,
+                "crit_rho": 0.054158,
+                "confirmed": true
+              },
+              {
+                "lag": 1901,
+                "delta": 1901,
+                "abs_rho": 0.318654,
+                "kind": "JOINT",
+                "t": 45.851,
+                "z": 5.687,
+                "coefficient": 0.485952,
+                "se": 0.010598,
+                "dof": 9121,
+                "crit_rho": 0.053675,
+                "confirmed": true
+              },
+              {
+                "lag": 1901,
+                "delta": 1901,
+                "abs_rho": 0.323502,
+                "kind": "JOINT",
+                "t": 45.569,
+                "z": 5.687,
+                "coefficient": 0.484589,
+                "se": 0.010634,
+                "dof": 9121,
+                "crit_rho": 0.054079,
+                "confirmed": true
+              },
+              {
+                "lag": 1901,
+                "delta": 1901,
+                "abs_rho": 0.329343,
+                "kind": "JOINT",
+                "t": 45.76,
+                "z": 5.687,
+                "coefficient": 0.486975,
+                "se": 0.010642,
+                "dof": 9121,
+                "crit_rho": 0.054112,
+                "confirmed": true
+              },
+              {
+                "lag": 1901,
+                "delta": 1901,
+                "abs_rho": 0.322261,
+                "kind": "JOINT",
+                "t": 46.327,
+                "z": 5.687,
+                "coefficient": 0.496171,
+                "se": 0.01071,
+                "dof": 9121,
+                "crit_rho": 0.054075,
+                "confirmed": true
+              },
+              {
+                "lag": 1901,
+                "delta": 1901,
+                "abs_rho": 0.336242,
+                "kind": "JOINT",
+                "t": 47.733,
+                "z": 5.687,
+                "coefficient": 0.498781,
+                "se": 0.010449,
+                "dof": 9121,
+                "crit_rho": 0.053866,
+                "confirmed": true
+              },
+              {
+                "lag": 1901,
+                "delta": 1901,
+                "abs_rho": 0.340264,
+                "kind": "JOINT",
+                "t": 47.913,
+                "z": 5.687,
+                "coefficient": 0.501189,
+                "se": 0.01046,
+                "dof": 9121,
+                "crit_rho": 0.053956,
+                "confirmed": true
+              }
+            ],
+            "structural": [],
+            "channel_lags": null
+          },
+          "R": {
+            "attribution": "UNIQUE",
+            "classification": "ALIGNED",
+            "k": 0,
+            "coverage": 1.0,
+            "floor": 0.070647,
+            "rivals": [],
+            "structural": [],
+            "channel_lags": null
+          }
+        },
+        "channel_lags": {
+          "R": 0
+        },
+        "channel_states": {
+          "L": "AMBIGUOUS",
+          "R": "ALIGNED"
+        }
+      },
+      "res_dos_origenes": {
+        "expected": "AMBIGUOUS",
+        "expected_k": null,
+        "attribution": "AMBIGUOUS",
+        "k": null,
+        "ok": true,
+        "reason": "MEMBER_AMBIGUITY_OR_CONFLICT",
+        "channels": {
+          "L": {
+            "attribution": "AMBIGUOUS",
+            "classification": "AMBIGUOUS",
+            "k": null,
+            "coverage": 0.0,
+            "floor": null,
+            "rivals": [
+              {
+                "lag": 250,
+                "delta": 250,
+                "abs_rho": 0.219525,
+                "kind": "JOINT",
+                "t": 31.458,
+                "z": 5.687,
+                "coefficient": 0.314785,
+                "se": 0.010007,
+                "dof": 10772,
+                "crit_rho": 0.054333,
+                "confirmed": true
+              },
+              {
+                "lag": -900,
+                "delta": 900,
+                "abs_rho": 0.21008,
+                "kind": "JOINT",
+                "t": 29.065,
+                "z": 5.687,
+                "coefficient": 0.301189,
+                "se": 0.010363,
+                "dof": 10122,
+                "crit_rho": 0.0542,
+                "confirmed": true
+              },
+              {
+                "lag": 250,
+                "delta": 250,
+                "abs_rho": 0.208483,
+                "kind": "JOINT",
+                "t": 30.019,
+                "z": 5.687,
+                "coefficient": 0.301276,
+                "se": 0.010036,
+                "dof": 10772,
+                "crit_rho": 0.0542,
+                "confirmed": true
+              },
+              {
+                "lag": -900,
+                "delta": 900,
+                "abs_rho": 0.210557,
+                "kind": "JOINT",
+                "t": 29.335,
+                "z": 5.687,
+                "coefficient": 0.303186,
+                "se": 0.010335,
+                "dof": 10122,
+                "crit_rho": 0.054155,
+                "confirmed": true
+              },
+              {
+                "lag": 250,
+                "delta": 250,
+                "abs_rho": 0.204953,
+                "kind": "JOINT",
+                "t": 29.331,
+                "z": 5.687,
+                "coefficient": 0.294062,
+                "se": 0.010026,
+                "dof": 10772,
+                "crit_rho": 0.054155,
+                "confirmed": true
+              },
+              {
+                "lag": 250,
+                "delta": 250,
+                "abs_rho": 0.196403,
+                "kind": "JOINT",
+                "t": 28.37,
+                "z": 5.687,
+                "coefficient": 0.284985,
+                "se": 0.010045,
+                "dof": 10772,
+                "crit_rho": 0.053669,
+                "confirmed": true
+              },
+              {
+                "lag": -900,
+                "delta": 900,
+                "abs_rho": 0.194424,
+                "kind": "JOINT",
+                "t": 29.568,
+                "z": 5.687,
+                "coefficient": 0.304762,
+                "se": 0.010307,
+                "dof": 10122,
+                "crit_rho": 0.053669,
+                "confirmed": true
+              },
+              {
+                "lag": 250,
+                "delta": 250,
+                "abs_rho": 0.204704,
+                "kind": "JOINT",
+                "t": 29.951,
+                "z": 5.687,
+                "coefficient": 0.299365,
+                "se": 0.009995,
+                "dof": 10772,
+                "crit_rho": 0.054029,
+                "confirmed": true
+              },
+              {
+                "lag": -900,
+                "delta": 900,
+                "abs_rho": 0.203586,
+                "kind": "JOINT",
+                "t": 29.143,
+                "z": 5.687,
+                "coefficient": 0.300769,
+                "se": 0.010321,
+                "dof": 10122,
+                "crit_rho": 0.054029,
+                "confirmed": true
+              },
+              {
+                "lag": 250,
+                "delta": 250,
+                "abs_rho": 0.211754,
+                "kind": "JOINT",
+                "t": 29.539,
+                "z": 5.687,
+                "coefficient": 0.299359,
+                "se": 0.010134,
+                "dof": 10772,
+                "crit_rho": 0.053831,
+                "confirmed": true
+              },
+              {
+                "lag": -900,
+                "delta": 900,
+                "abs_rho": 0.195777,
+                "kind": "JOINT",
+                "t": 29.138,
+                "z": 5.687,
+                "coefficient": 0.303616,
+                "se": 0.01042,
+                "dof": 10122,
+                "crit_rho": 0.053831,
+                "confirmed": true
+              },
+              {
+                "lag": 250,
+                "delta": 250,
+                "abs_rho": 0.217195,
+                "kind": "JOINT",
+                "t": 29.898,
+                "z": 5.687,
+                "coefficient": 0.304848,
+                "se": 0.010196,
+                "dof": 10772,
+                "crit_rho": 0.053722,
+                "confirmed": true
+              },
+              {
+                "lag": -900,
+                "delta": 900,
+                "abs_rho": 0.19654,
+                "kind": "JOINT",
+                "t": 27.777,
+                "z": 5.687,
+                "coefficient": 0.293478,
+                "se": 0.010566,
+                "dof": 10122,
+                "crit_rho": 0.053722,
+                "confirmed": true
+              },
+              {
+                "lag": -900,
+                "delta": 900,
+                "abs_rho": 0.201788,
+                "kind": "JOINT",
+                "t": 28.911,
+                "z": 5.687,
+                "coefficient": 0.303847,
+                "se": 0.01051,
+                "dof": 10122,
+                "crit_rho": 0.054123,
+                "confirmed": true
+              },
+              {
+                "lag": 250,
+                "delta": 250,
+                "abs_rho": 0.193931,
+                "kind": "JOINT",
+                "t": 28.752,
+                "z": 5.687,
+                "coefficient": 0.292558,
+                "se": 0.010175,
+                "dof": 10772,
+                "crit_rho": 0.054123,
+                "confirmed": true
+              },
+              {
+                "lag": -900,
+                "delta": 900,
+                "abs_rho": 0.203272,
+                "kind": "JOINT",
+                "t": 28.195,
+                "z": 5.687,
+                "coefficient": 0.297407,
+                "se": 0.010548,
+                "dof": 10122,
+                "crit_rho": 0.054089,
+                "confirmed": true
+              },
+              {
+                "lag": 250,
+                "delta": 250,
+                "abs_rho": 0.196826,
+                "kind": "JOINT",
+                "t": 28.572,
+                "z": 5.687,
+                "coefficient": 0.292755,
+                "se": 0.010246,
+                "dof": 10772,
+                "crit_rho": 0.054089,
+                "confirmed": true
+              },
+              {
+                "lag": 250,
+                "delta": 250,
+                "abs_rho": 0.211459,
+                "kind": "JOINT",
+                "t": 31.023,
+                "z": 5.687,
+                "coefficient": 0.311688,
+                "se": 0.010047,
+                "dof": 10772,
+                "crit_rho": 0.05378,
+                "confirmed": true
+              },
+              {
+                "lag": -900,
+                "delta": 900,
+                "abs_rho": 0.205486,
+                "kind": "JOINT",
+                "t": 29.825,
+                "z": 5.687,
+                "coefficient": 0.309603,
+                "se": 0.010381,
+                "dof": 10122,
+                "crit_rho": 0.05378,
+                "confirmed": true
+              },
+              {
+                "lag": 250,
+                "delta": 250,
+                "abs_rho": 0.20716,
+                "kind": "JOINT",
+                "t": 30.444,
+                "z": 5.687,
+                "coefficient": 0.306976,
+                "se": 0.010083,
+                "dof": 10772,
+                "crit_rho": 0.053882,
+                "confirmed": true
+              },
+              {
+                "lag": -900,
+                "delta": 900,
+                "abs_rho": 0.202635,
+                "kind": "JOINT",
+                "t": 28.65,
+                "z": 5.687,
+                "coefficient": 0.298829,
+                "se": 0.01043,
+                "dof": 10122,
+                "crit_rho": 0.053882,
+                "confirmed": true
+              },
+              {
+                "lag": -900,
+                "delta": 900,
+                "abs_rho": 0.205925,
+                "kind": "JOINT",
+                "t": 28.044,
+                "z": 5.687,
+                "coefficient": 0.291314,
+                "se": 0.010388,
+                "dof": 10122,
+                "crit_rho": 0.054121,
+                "confirmed": true
+              }
+            ],
+            "structural": [],
+            "channel_lags": null
+          },
+          "R": {
+            "attribution": "AMBIGUOUS",
+            "classification": "AMBIGUOUS",
+            "k": null,
+            "coverage": 0.0,
+            "floor": null,
+            "rivals": [
+              {
+                "lag": 250,
+                "delta": 250,
+                "abs_rho": 0.216825,
+                "kind": "JOINT",
+                "t": 29.812,
+                "z": 5.687,
+                "coefficient": 0.301894,
+                "se": 0.010126,
+                "dof": 10772,
+                "crit_rho": 0.054381,
+                "confirmed": true
+              },
+              {
+                "lag": -900,
+                "delta": 900,
+                "abs_rho": 0.206075,
+                "kind": "JOINT",
+                "t": 29.919,
+                "z": 5.687,
+                "coefficient": 0.309095,
+                "se": 0.010331,
+                "dof": 10122,
+                "crit_rho": 0.054156,
+                "confirmed": true
+              },
+              {
+                "lag": 250,
+                "delta": 250,
+                "abs_rho": 0.188427,
+                "kind": "JOINT",
+                "t": 26.987,
+                "z": 5.687,
+                "coefficient": 0.273517,
+                "se": 0.010135,
+                "dof": 10772,
+                "crit_rho": 0.054156,
+                "confirmed": true
+              },
+              {
+                "lag": -900,
+                "delta": 900,
+                "abs_rho": 0.203802,
+                "kind": "JOINT",
+                "t": 29.563,
+                "z": 5.687,
+                "coefficient": 0.30738,
+                "se": 0.010397,
+                "dof": 10122,
+                "crit_rho": 0.054095,
+                "confirmed": true
+              },
+              {
+                "lag": 250,
+                "delta": 250,
+                "abs_rho": 0.188827,
+                "kind": "JOINT",
+                "t": 27.338,
+                "z": 5.687,
+                "coefficient": 0.277166,
+                "se": 0.010138,
+                "dof": 10772,
+                "crit_rho": 0.054095,
+                "confirmed": true
+              },
+              {
+                "lag": -900,
+                "delta": 900,
+                "abs_rho": 0.20632,
+                "kind": "JOINT",
+                "t": 27.598,
+                "z": 5.687,
+                "coefficient": 0.287621,
+                "se": 0.010422,
+                "dof": 10122,
+                "crit_rho": 0.054088,
+                "confirmed": true
+              },
+              {
+                "lag": 250,
+                "delta": 250,
+                "abs_rho": 0.189958,
+                "kind": "JOINT",
+                "t": 28.609,
+                "z": 5.687,
+                "coefficient": 0.288885,
+                "se": 0.010098,
+                "dof": 10772,
+                "crit_rho": 0.054088,
+                "confirmed": true
+              },
+              {
+                "lag": -900,
+                "delta": 900,
+                "abs_rho": 0.203359,
+                "kind": "JOINT",
+                "t": 28.575,
+                "z": 5.687,
+                "coefficient": 0.295904,
+                "se": 0.010355,
+                "dof": 10122,
+                "crit_rho": 0.05376,
+                "confirmed": true
+              },
+              {
+                "lag": 250,
+                "delta": 250,
+                "abs_rho": 0.185637,
+                "kind": "JOINT",
+                "t": 28.32,
+                "z": 5.687,
+                "coefficient": 0.285149,
+                "se": 0.010069,
+                "dof": 10772,
+                "crit_rho": 0.05376,
+                "confirmed": true
+              },
+              {
+                "lag": 250,
+                "delta": 250,
+                "abs_rho": 0.20189,
+                "kind": "JOINT",
+                "t": 29.267,
+                "z": 5.687,
+                "coefficient": 0.293118,
+                "se": 0.010015,
+                "dof": 10772,
+                "crit_rho": 0.054485,
+                "confirmed": true
+              },
+              {
+                "lag": -900,
+                "delta": 900,
+                "abs_rho": 0.194957,
+                "kind": "JOINT",
+                "t": 28.798,
+                "z": 5.687,
+                "coefficient": 0.297191,
+                "se": 0.01032,
+                "dof": 10122,
+                "crit_rho": 0.054485,
+                "confirmed": true
+              },
+              {
+                "lag": 250,
+                "delta": 250,
+                "abs_rho": 0.204353,
+                "kind": "JOINT",
+                "t": 29.051,
+                "z": 5.687,
+                "coefficient": 0.288224,
+                "se": 0.009921,
+                "dof": 10772,
+                "crit_rho": 0.054139,
+                "confirmed": true
+              },
+              {
+                "lag": -900,
+                "delta": 900,
+                "abs_rho": 0.200466,
+                "kind": "JOINT",
+                "t": 28.521,
+                "z": 5.687,
+                "coefficient": 0.291877,
+                "se": 0.010234,
+                "dof": 10122,
+                "crit_rho": 0.054139,
+                "confirmed": true
+              },
+              {
+                "lag": -900,
+                "delta": 900,
+                "abs_rho": 0.199334,
+                "kind": "JOINT",
+                "t": 29.279,
+                "z": 5.687,
+                "coefficient": 0.30187,
+                "se": 0.01031,
+                "dof": 10122,
+                "crit_rho": 0.054131,
+                "confirmed": true
+              },
+              {
+                "lag": 250,
+                "delta": 250,
+                "abs_rho": 0.190838,
+                "kind": "JOINT",
+                "t": 29.168,
+                "z": 5.687,
+                "coefficient": 0.292042,
+                "se": 0.010012,
+                "dof": 10772,
+                "crit_rho": 0.054131,
+                "confirmed": true
+              },
+              {
+                "lag": -900,
+                "delta": 900,
+                "abs_rho": 0.196278,
+                "kind": "JOINT",
+                "t": 29.374,
+                "z": 5.687,
+                "coefficient": 0.301838,
+                "se": 0.010276,
+                "dof": 10122,
+                "crit_rho": 0.054071,
+                "confirmed": true
+              },
+              {
+                "lag": 250,
+                "delta": 250,
+                "abs_rho": 0.194921,
+                "kind": "JOINT",
+                "t": 29.055,
+                "z": 5.687,
+                "coefficient": 0.290503,
+                "se": 0.009998,
+                "dof": 10772,
+                "crit_rho": 0.054071,
+                "confirmed": true
+              },
+              {
+                "lag": 250,
+                "delta": 250,
+                "abs_rho": 0.213541,
+                "kind": "JOINT",
+                "t": 30.919,
+                "z": 5.687,
+                "coefficient": 0.309742,
+                "se": 0.010018,
+                "dof": 10772,
+                "crit_rho": 0.053891,
+                "confirmed": true
+              },
+              {
+                "lag": -900,
+                "delta": 900,
+                "abs_rho": 0.197993,
+                "kind": "JOINT",
+                "t": 28.312,
+                "z": 5.687,
+                "coefficient": 0.294299,
+                "se": 0.010395,
+                "dof": 10122,
+                "crit_rho": 0.053891,
+                "confirmed": true
+              },
+              {
+                "lag": 250,
+                "delta": 250,
+                "abs_rho": 0.212796,
+                "kind": "JOINT",
+                "t": 30.759,
+                "z": 5.687,
+                "coefficient": 0.30708,
+                "se": 0.009983,
+                "dof": 10772,
+                "crit_rho": 0.054116,
+                "confirmed": true
+              },
+              {
+                "lag": -900,
+                "delta": 900,
+                "abs_rho": 0.20474,
+                "kind": "JOINT",
+                "t": 28.786,
+                "z": 5.687,
+                "coefficient": 0.29679,
+                "se": 0.01031,
+                "dof": 10122,
+                "crit_rho": 0.054116,
+                "confirmed": true
+              },
+              {
+                "lag": -900,
+                "delta": 900,
+                "abs_rho": 0.195727,
+                "kind": "JOINT",
+                "t": 28.841,
+                "z": 5.687,
+                "coefficient": 0.299836,
+                "se": 0.010396,
+                "dof": 10122,
+                "crit_rho": 0.05444,
+                "confirmed": true
+              }
+            ],
+            "structural": [],
+            "channel_lags": null
+          }
+        },
+        "channel_lags": {},
+        "channel_states": {
+          "L": "AMBIGUOUS",
+          "R": "AMBIGUOUS"
+        }
+      },
+      "res_por_tramos": {
+        "expected": "AMBIGUOUS",
+        "expected_k": null,
+        "attribution": "AMBIGUOUS",
+        "k": null,
+        "ok": true,
+        "reason": "MEMBER_AMBIGUITY_OR_CONFLICT",
+        "channels": {
+          "L": {
+            "attribution": "AMBIGUOUS",
+            "classification": "AMBIGUOUS",
+            "k": null,
+            "coverage": 1.0,
+            "floor": null,
+            "rivals": [],
+            "structural": [],
+            "channel_lags": null
+          },
+          "R": {
+            "attribution": "AMBIGUOUS",
+            "classification": "AMBIGUOUS",
+            "k": null,
+            "coverage": 1.0,
+            "floor": null,
+            "rivals": [],
+            "structural": [],
+            "channel_lags": null
+          }
+        },
+        "channel_lags": {},
+        "channel_states": {
+          "L": "AMBIGUOUS",
+          "R": "AMBIGUOUS"
+        }
+      },
+      "res_periodica_64": {
+        "expected": "AMBIGUOUS",
+        "expected_k": null,
+        "attribution": "AMBIGUOUS",
+        "k": null,
+        "ok": true,
+        "reason": "MEMBER_AMBIGUITY_OR_CONFLICT",
+        "channels": {
+          "L": {
+            "attribution": "AMBIGUOUS",
+            "classification": "AMBIGUOUS",
+            "k": null,
+            "coverage": 0.0,
+            "floor": null,
+            "rivals": [],
+            "structural": [
+              {
+                "lag": 58240,
+                "delta": 64,
+                "acf": 0.994219
+              },
+              {
+                "lag": 46720,
+                "delta": 384,
+                "acf": 0.965117
+              },
+              {
+                "lag": 44544,
+                "delta": 384,
+                "acf": 0.965117
+              },
+              {
+                "lag": 33984,
+                "delta": 64,
+                "acf": 0.994219
+              },
+              {
+                "lag": 31296,
+                "delta": 384,
+                "acf": 0.965117
+              },
+              {
+                "lag": 20288,
+                "delta": 384,
+                "acf": 0.965117
+              },
+              {
+                "lag": 18560,
+                "delta": 128,
+                "acf": 0.988372
+              },
+              {
+                "lag": 7040,
+                "delta": 384,
+                "acf": 0.965117
+              },
+              {
+                "lag": 5312,
+                "delta": 64,
+                "acf": 0.994219
+              },
+              {
+                "lag": -5696,
+                "delta": 128,
+                "acf": 0.988372
+              },
+              {
+                "lag": -8384,
+                "delta": 384,
+                "acf": 0.965117
+              },
+              {
+                "lag": -18944,
+                "delta": 64,
+                "acf": 0.994219
+              }
+            ],
+            "channel_lags": null
+          },
+          "R": {
+            "attribution": "AMBIGUOUS",
+            "classification": "AMBIGUOUS",
+            "k": null,
+            "coverage": 0.0,
+            "floor": null,
+            "rivals": [],
+            "structural": [
+              {
+                "lag": 66944,
+                "delta": 1408,
+                "acf": 0.872824
+              },
+              {
+                "lag": 55744,
+                "delta": 64,
+                "acf": 0.994186
+              },
+              {
+                "lag": 53568,
+                "delta": 1920,
+                "acf": 0.825586
+              },
+              {
+                "lag": 42688,
+                "delta": 1408,
+                "acf": 0.872824
+              },
+              {
+                "lag": 40320,
+                "delta": 64,
+                "acf": 0.994186
+              },
+              {
+                "lag": 29312,
+                "delta": 1920,
+                "acf": 0.825586
+              },
+              {
+                "lag": 27072,
+                "delta": 64,
+                "acf": 0.994186
+              },
+              {
+                "lag": 16064,
+                "delta": 64,
+                "acf": 0.994186
+              },
+              {
+                "lag": 14016,
+                "delta": 1408,
+                "acf": 0.872824
+              },
+              {
+                "lag": 2816,
+                "delta": 64,
+                "acf": 0.994186
+              },
+              {
+                "lag": 640,
+                "delta": 64,
+                "acf": 0.994186
+              },
+              {
+                "lag": -10240,
+                "delta": 1408,
+                "acf": 0.872824
+              }
+            ],
+            "channel_lags": null
+          }
+        },
+        "channel_lags": {},
+        "channel_states": {
+          "L": "AMBIGUOUS",
+          "R": "AMBIGUOUS"
+        }
+      },
+      "res_marcas_unicas": {
+        "expected": "UNIQUE",
+        "expected_k": 0,
+        "attribution": "UNIQUE",
+        "k": 0,
+        "ok": true,
+        "reason": "MEASURED_AGREEMENT",
+        "channels": {
+          "L": {
+            "attribution": "UNIQUE",
+            "classification": "ALIGNED",
+            "k": 0,
+            "coverage": 1.0,
+            "floor": 0.087738,
+            "rivals": [],
+            "structural": [],
+            "channel_lags": null
+          },
+          "R": {
+            "attribution": "UNIQUE",
+            "classification": "ALIGNED",
+            "k": 0,
+            "coverage": 1.0,
+            "floor": 0.078456,
+            "rivals": [],
+            "structural": [],
+            "channel_lags": null
+          }
+        },
+        "channel_lags": {
+          "L": 0,
+          "R": 0
+        },
+        "channel_states": {
+          "L": "ALIGNED",
+          "R": "ALIGNED"
+        }
+      },
+      "res_no_relacionada": {
+        "expected": "INSUFFICIENT_SIGNAL",
+        "expected_k": null,
+        "attribution": "INSUFFICIENT_SIGNAL",
+        "k": null,
+        "ok": true,
+        "reason": "INCOMPLETE_CHANNEL_EVIDENCE",
+        "channels": {
+          "L": {
+            "attribution": "INSUFFICIENT_SIGNAL",
+            "classification": "INSUFFICIENT_SIGNAL",
+            "k": null,
+            "coverage": 0.0,
+            "floor": null,
+            "rivals": [],
+            "structural": [],
+            "channel_lags": null
+          },
+          "R": {
+            "attribution": "INSUFFICIENT_SIGNAL",
+            "classification": "INSUFFICIENT_SIGNAL",
+            "k": null,
+            "coverage": 0.0,
+            "floor": null,
+            "rivals": [],
+            "structural": [],
+            "channel_lags": null
+          }
+        },
+        "channel_lags": {},
+        "channel_states": {
+          "L": "INSUFFICIENT_SIGNAL",
+          "R": "INSUFFICIENT_SIGNAL"
+        }
+      },
+      "res_silencio": {
+        "expected": "NON_INFORMATIVE",
+        "expected_k": null,
+        "attribution": "NON_INFORMATIVE",
+        "k": null,
+        "ok": true,
+        "reason": "ALL_CHANNELS_NON_INFORMATIVE",
+        "channels": {
+          "L": {
+            "attribution": "NON_INFORMATIVE",
+            "classification": "NON_INFORMATIVE",
+            "k": null,
+            "coverage": null,
+            "floor": null,
+            "rivals": [],
+            "structural": [],
+            "channel_lags": null
+          },
+          "R": {
+            "attribution": "NON_INFORMATIVE",
+            "classification": "NON_INFORMATIVE",
+            "k": null,
+            "coverage": null,
+            "floor": null,
+            "rivals": [],
+            "structural": [],
+            "channel_lags": null
+          }
+        },
+        "channel_lags": null,
+        "channel_states": null
+      },
+      "res_dc": {
+        "expected": "NON_INFORMATIVE",
+        "expected_k": null,
+        "attribution": "NON_INFORMATIVE",
+        "k": null,
+        "ok": true,
+        "reason": "ALL_CHANNELS_NON_INFORMATIVE",
+        "channels": {
+          "L": {
+            "attribution": "NON_INFORMATIVE",
+            "classification": "NON_INFORMATIVE",
+            "k": null,
+            "coverage": null,
+            "floor": null,
+            "rivals": [],
+            "structural": [],
+            "channel_lags": null
+          },
+          "R": {
+            "attribution": "NON_INFORMATIVE",
+            "classification": "NON_INFORMATIVE",
+            "k": null,
+            "coverage": null,
+            "floor": null,
+            "rivals": [],
+            "structural": [],
+            "channel_lags": null
+          }
+        },
+        "channel_lags": null,
+        "channel_states": null
+      },
+      "res_nan": {
+        "expected": "ERROR",
+        "expected_k": null,
+        "attribution": "ERROR",
+        "k": null,
+        "ok": true,
+        "reason": "READ_OR_FORMAT_ERROR",
+        "channels": {},
+        "channel_lags": null,
+        "channel_states": null
+      },
+      "res_lr_distintos_58": {
+        "expected": "AMBIGUOUS",
+        "expected_k": null,
+        "attribution": "AMBIGUOUS",
+        "k": null,
+        "ok": true,
+        "reason": "CHANNEL_DISAGREEMENT",
+        "channels": {
+          "L": {
+            "attribution": "UNIQUE",
+            "classification": "ALIGNED",
+            "k": 0,
+            "coverage": 1.0,
+            "floor": 0.076667,
+            "rivals": [],
+            "structural": [],
+            "channel_lags": null
+          },
+          "R": {
+            "attribution": "UNIQUE",
+            "classification": "WARNING",
+            "k": 58,
+            "coverage": 1.0,
+            "floor": 0.073882,
+            "rivals": [],
+            "structural": [],
+            "channel_lags": null
+          }
+        },
+        "channel_lags": {
+          "L": 0,
+          "R": 58
+        },
+        "channel_states": {
+          "L": "ALIGNED",
+          "R": "WARNING"
+        }
+      },
+      "res_asimetria_ganancia": {
+        "expected": "UNIQUE",
+        "expected_k": 0,
+        "attribution": "UNIQUE",
+        "k": 0,
+        "ok": true,
+        "reason": "MEASURED_AGREEMENT",
+        "channels": {
+          "L": {
+            "attribution": "UNIQUE",
+            "classification": "ALIGNED",
+            "k": 0,
+            "coverage": 1.0,
+            "floor": 0.076667,
+            "rivals": [],
+            "structural": [],
+            "channel_lags": null
+          },
+          "R": {
+            "attribution": "UNIQUE",
+            "classification": "ALIGNED",
+            "k": 0,
+            "coverage": 1.0,
+            "floor": 0.070647,
+            "rivals": [],
+            "structural": [],
+            "channel_lags": null
+          }
+        },
+        "channel_lags": {
+          "L": 0,
+          "R": 0
+        },
+        "channel_states": {
+          "L": "ALIGNED",
+          "R": "ALIGNED"
+        }
+      },
+      "res_guia_parcial": {
+        "expected": "UNIQUE",
+        "expected_k": 0,
+        "attribution": "UNIQUE",
+        "k": 0,
+        "ok": true,
+        "reason": "MEASURED_AGREEMENT",
+        "channels": {
+          "L": {
+            "attribution": "UNIQUE",
+            "classification": "ALIGNED",
+            "k": 0,
+            "coverage": 1.0,
+            "floor": 0.081402,
+            "rivals": [],
+            "structural": [],
+            "channel_lags": null
+          },
+          "R": {
+            "attribution": "UNIQUE",
+            "classification": "ALIGNED",
+            "k": 0,
+            "coverage": 1.0,
+            "floor": 0.091299,
+            "rivals": [],
+            "structural": [],
+            "channel_lags": null
+          }
+        },
+        "channel_lags": {
+          "L": 0,
+          "R": 0
+        },
+        "channel_states": {
+          "L": "ALIGNED",
+          "R": "ALIGNED"
+        }
+      },
+      "res_retardo_borde_4000": {
+        "expected": "UNIQUE",
+        "expected_k": 4000,
+        "attribution": "UNIQUE",
+        "k": 4000,
+        "ok": true,
+        "reason": "MEASURED_AGREEMENT",
+        "channels": {
+          "L": {
+            "attribution": "UNIQUE",
+            "classification": "MISALIGNED",
+            "k": 4000,
+            "coverage": 1.0,
+            "floor": 0.076667,
+            "rivals": [],
+            "structural": [],
+            "channel_lags": null
+          },
+          "R": {
+            "attribution": "UNIQUE",
+            "classification": "MISALIGNED",
+            "k": 4000,
+            "coverage": 1.0,
+            "floor": 0.070647,
+            "rivals": [],
+            "structural": [],
+            "channel_lags": null
+          }
+        },
+        "channel_lags": {
+          "L": 4000,
+          "R": 4000
+        },
+        "channel_states": {
+          "L": "MISALIGNED",
+          "R": "MISALIGNED"
+        }
+      },
+      "res_nivel_bajo": {
+        "expected": "UNIQUE",
+        "expected_k": 0,
+        "attribution": "UNIQUE",
+        "k": 0,
+        "ok": true,
+        "reason": "MEASURED_AGREEMENT",
+        "channels": {
+          "L": {
+            "attribution": "UNIQUE",
+            "classification": "ALIGNED",
+            "k": 0,
+            "coverage": 1.0,
+            "floor": 0.076667,
+            "rivals": [],
+            "structural": [],
+            "channel_lags": null
+          },
+          "R": {
+            "attribution": "UNIQUE",
+            "classification": "ALIGNED",
+            "k": 0,
+            "coverage": 1.0,
+            "floor": 0.070647,
+            "rivals": [],
+            "structural": [],
+            "channel_lags": null
+          }
+        },
+        "channel_lags": {
+          "L": 0,
+          "R": 0
+        },
+        "channel_states": {
+          "L": "ALIGNED",
+          "R": "ALIGNED"
+        }
+      },
+      "res_guia_debil": {
+        "expected": "UNIQUE",
+        "expected_k": 0,
+        "attribution": "UNIQUE",
+        "k": 0,
+        "ok": true,
+        "reason": "MEASURED_AGREEMENT",
+        "channels": {
+          "L": {
+            "attribution": "UNIQUE",
+            "classification": "ALIGNED",
+            "k": 0,
+            "coverage": 1.0,
+            "floor": 0.076667,
+            "rivals": [],
+            "structural": [],
+            "channel_lags": null
+          },
+          "R": {
+            "attribution": "UNIQUE",
+            "classification": "ALIGNED",
+            "k": 0,
+            "coverage": 1.0,
+            "floor": 0.070647,
+            "rivals": [],
+            "structural": [],
+            "channel_lags": null
+          }
+        },
+        "channel_lags": {
+          "L": 0,
+          "R": 0
+        },
+        "channel_states": {
+          "L": "ALIGNED",
+          "R": "ALIGNED"
+        }
+      },
+      "res_mid_nulo": {
+        "expected": "UNIQUE",
+        "expected_k": 0,
+        "attribution": "UNIQUE",
+        "k": 0,
+        "ok": true,
+        "reason": "MEASURED_AGREEMENT",
+        "channels": {
+          "L": {
+            "attribution": "UNIQUE",
+            "classification": "ALIGNED",
+            "k": 0,
+            "coverage": 1.0,
+            "floor": 0.076667,
+            "rivals": [],
+            "structural": [],
+            "channel_lags": null
+          },
+          "R": {
+            "attribution": "UNIQUE",
+            "classification": "ALIGNED",
+            "k": 0,
+            "coverage": 1.0,
+            "floor": 0.076667,
+            "rivals": [],
+            "structural": [],
+            "channel_lags": null
+          }
+        },
+        "channel_lags": {
+          "L": 0,
+          "R": 0
+        },
+        "channel_states": {
+          "L": "ALIGNED",
+          "R": "ALIGNED"
+        }
+      },
+      "res_amplitud_variable": {
+        "expected": "UNIQUE",
+        "expected_k": 0,
+        "attribution": "UNIQUE",
+        "k": 0,
+        "ok": true,
+        "reason": "MEASURED_AGREEMENT",
+        "channels": {
+          "L": {
+            "attribution": "UNIQUE",
+            "classification": "ALIGNED",
+            "k": 0,
+            "coverage": 1.0,
+            "floor": 0.08631,
+            "rivals": [],
+            "structural": [],
+            "channel_lags": null
+          },
+          "R": {
+            "attribution": "UNIQUE",
+            "classification": "ALIGNED",
+            "k": 0,
+            "coverage": 1.0,
+            "floor": 0.082595,
+            "rivals": [],
+            "structural": [],
+            "channel_lags": null
+          }
+        },
+        "channel_lags": {
+          "L": 0,
+          "R": 0
+        },
+        "channel_states": {
+          "L": "ALIGNED",
+          "R": "ALIGNED"
+        }
+      },
+      "res_replica_bajo_piso": {
+        "expected": "UNIQUE_O_AMBIGUOUS",
+        "expected_k": null,
+        "attribution": "UNIQUE",
+        "k": 0,
+        "ok": true,
+        "reason": "MEASURED_AGREEMENT",
+        "channels": {
+          "L": {
+            "attribution": "UNIQUE",
+            "classification": "ALIGNED",
+            "k": 0,
+            "coverage": 1.0,
+            "floor": 0.076667,
+            "rivals": [],
+            "structural": [],
+            "channel_lags": null
+          },
+          "R": {
+            "attribution": "UNIQUE",
+            "classification": "ALIGNED",
+            "k": 0,
+            "coverage": 1.0,
+            "floor": 0.070688,
+            "rivals": [],
+            "structural": [],
+            "channel_lags": null
+          }
+        },
+        "channel_lags": {
+          "L": 0,
+          "R": 0
+        },
+        "channel_states": {
+          "L": "ALIGNED",
+          "R": "ALIGNED"
+        }
+      }
+    },
+    "MQR": {
+      "res_clean_1s": {
+        "expected": "UNIQUE",
+        "expected_k": 0,
+        "attribution": "UNIQUE",
+        "k": 0,
+        "ok": true,
+        "reason": "MEASURED_AGREEMENT",
+        "channels": {
+          "L": {
+            "attribution": "UNIQUE",
+            "classification": "ALIGNED",
+            "k": 0,
+            "coverage": 1.0,
+            "floor": 0.088755,
+            "rivals": [],
+            "structural": [],
+            "channel_lags": null
+          },
+          "R": {
+            "attribution": "UNIQUE",
+            "classification": "ALIGNED",
+            "k": 0,
+            "coverage": 1.0,
+            "floor": 0.087746,
+            "rivals": [],
+            "structural": [],
+            "channel_lags": null
+          }
+        },
+        "channel_lags": {
+          "L": 0,
+          "R": 0
+        },
+        "channel_states": {
+          "L": "ALIGNED",
+          "R": "ALIGNED"
+        }
+      },
+      "res_clean_2s": {
+        "expected": "UNIQUE",
+        "expected_k": 0,
+        "attribution": "UNIQUE",
+        "k": 0,
+        "ok": true,
+        "reason": "MEASURED_AGREEMENT",
+        "channels": {
+          "L": {
+            "attribution": "UNIQUE",
+            "classification": "ALIGNED",
+            "k": 0,
+            "coverage": 1.0,
+            "floor": 0.076667,
+            "rivals": [],
+            "structural": [],
+            "channel_lags": null
+          },
+          "R": {
+            "attribution": "UNIQUE",
+            "classification": "ALIGNED",
+            "k": 0,
+            "coverage": 1.0,
+            "floor": 0.070647,
+            "rivals": [],
+            "structural": [],
+            "channel_lags": null
+          }
+        },
+        "channel_lags": {
+          "L": 0,
+          "R": 0
+        },
+        "channel_states": {
+          "L": "ALIGNED",
+          "R": "ALIGNED"
+        }
+      },
+      "res_polaridad": {
+        "expected": "UNIQUE",
+        "expected_k": 0,
+        "attribution": "UNIQUE",
+        "k": 0,
+        "ok": true,
+        "reason": "MEASURED_AGREEMENT",
+        "channels": {
+          "L": {
+            "attribution": "UNIQUE",
+            "classification": "ALIGNED",
+            "k": 0,
+            "coverage": 1.0,
+            "floor": 0.076667,
+            "rivals": [],
+            "structural": [],
+            "channel_lags": null
+          },
+          "R": {
+            "attribution": "UNIQUE",
+            "classification": "ALIGNED",
+            "k": 0,
+            "coverage": 1.0,
+            "floor": 0.070647,
+            "rivals": [],
+            "structural": [],
+            "channel_lags": null
+          }
+        },
+        "channel_lags": {
+          "L": 0,
+          "R": 0
+        },
+        "channel_states": {
+          "L": "ALIGNED",
+          "R": "ALIGNED"
+        }
+      },
+      "res_side": {
+        "expected": "UNIQUE",
+        "expected_k": 0,
+        "attribution": "UNIQUE",
+        "k": 0,
+        "ok": true,
+        "reason": "MEASURED_AGREEMENT",
+        "channels": {
+          "L": {
+            "attribution": "UNIQUE",
+            "classification": "ALIGNED",
+            "k": 0,
+            "coverage": 1.0,
+            "floor": 0.076667,
+            "rivals": [],
+            "structural": [],
+            "channel_lags": null
+          },
+          "R": {
+            "attribution": "UNIQUE",
+            "classification": "ALIGNED",
+            "k": 0,
+            "coverage": 1.0,
+            "floor": 0.076667,
+            "rivals": [],
+            "structural": [],
+            "channel_lags": null
+          }
+        },
+        "channel_lags": {
+          "L": 0,
+          "R": 0
+        },
+        "channel_states": {
+          "L": "ALIGNED",
+          "R": "ALIGNED"
+        }
+      },
+      "res_delay_pos_1901": {
+        "expected": "UNIQUE",
+        "expected_k": 1901,
+        "attribution": "UNIQUE",
+        "k": 1901,
+        "ok": true,
+        "reason": "MEASURED_AGREEMENT",
+        "channels": {
+          "L": {
+            "attribution": "UNIQUE",
+            "classification": "MISALIGNED",
+            "k": 1901,
+            "coverage": 1.0,
+            "floor": 0.076667,
+            "rivals": [],
+            "structural": [],
+            "channel_lags": null
+          },
+          "R": {
+            "attribution": "UNIQUE",
+            "classification": "MISALIGNED",
+            "k": 1901,
+            "coverage": 1.0,
+            "floor": 0.070647,
+            "rivals": [],
+            "structural": [],
+            "channel_lags": null
+          }
+        },
+        "channel_lags": {
+          "L": 1901,
+          "R": 1901
+        },
+        "channel_states": {
+          "L": "MISALIGNED",
+          "R": "MISALIGNED"
+        }
+      },
+      "res_delay_neg_1901": {
+        "expected": "UNIQUE",
+        "expected_k": -1901,
+        "attribution": "UNIQUE",
+        "k": -1901,
+        "ok": true,
+        "reason": "MEASURED_AGREEMENT",
+        "channels": {
+          "L": {
+            "attribution": "UNIQUE",
+            "classification": "MISALIGNED",
+            "k": -1901,
+            "coverage": 1.0,
+            "floor": 0.076667,
+            "rivals": [],
+            "structural": [],
+            "channel_lags": null
+          },
+          "R": {
+            "attribution": "UNIQUE",
+            "classification": "MISALIGNED",
+            "k": -1901,
+            "coverage": 1.0,
+            "floor": 0.070647,
+            "rivals": [],
+            "structural": [],
+            "channel_lags": null
+          }
+        },
+        "channel_lags": {
+          "L": -1901,
+          "R": -1901
+        },
+        "channel_states": {
+          "L": "MISALIGNED",
+          "R": "MISALIGNED"
+        }
+      },
+      "res_shift_pad_567": {
+        "expected": "UNIQUE",
+        "expected_k": -567,
+        "attribution": "UNIQUE",
+        "k": -567,
+        "ok": true,
+        "reason": "MEASURED_AGREEMENT",
+        "channels": {
+          "L": {
+            "attribution": "UNIQUE",
+            "classification": "MISALIGNED",
+            "k": -567,
+            "coverage": 1.0,
+            "floor": 0.076331,
+            "rivals": [],
+            "structural": [],
+            "channel_lags": null
+          },
+          "R": {
+            "attribution": "UNIQUE",
+            "classification": "MISALIGNED",
+            "k": -567,
+            "coverage": 1.0,
+            "floor": 0.073133,
+            "rivals": [],
+            "structural": [],
+            "channel_lags": null
+          }
+        },
+        "channel_lags": {
+          "L": -567,
+          "R": -567
+        },
+        "channel_states": {
+          "L": "MISALIGNED",
+          "R": "MISALIGNED"
+        }
+      },
+      "res_right_replica_.125_777": {
+        "expected": "AMBIGUOUS",
+        "expected_k": null,
+        "attribution": "AMBIGUOUS",
+        "k": null,
+        "ok": true,
+        "reason": "MEMBER_AMBIGUITY_OR_CONFLICT",
+        "channels": {
+          "L": {
+            "attribution": "UNIQUE",
+            "classification": "ALIGNED",
+            "k": 0,
+            "coverage": 1.0,
+            "floor": 0.076667,
+            "rivals": [],
+            "structural": [],
+            "channel_lags": null
+          },
+          "R": {
+            "attribution": "AMBIGUOUS",
+            "classification": "AMBIGUOUS",
+            "k": null,
+            "coverage": 0.0,
+            "floor": null,
+            "rivals": [
+              {
+                "lag": 777,
+                "delta": 777,
+                "abs_rho": 0.068068,
+                "kind": "JOINT",
+                "t": 11.621,
+                "z": 5.687,
+                "coefficient": 0.115425,
+                "se": 0.009933,
+                "dof": 10245,
+                "crit_rho": 0.05418,
+                "confirmed": true
+              },
+              {
+                "lag": 777,
+                "delta": 777,
+                "abs_rho": 0.08955,
+                "kind": "JOINT",
+                "t": 12.161,
+                "z": 5.687,
+                "coefficient": 0.120942,
+                "se": 0.009945,
+                "dof": 10245,
+                "crit_rho": 0.053925,
+                "confirmed": true
+              },
+              {
+                "lag": 777,
+                "delta": 777,
+                "abs_rho": 0.084328,
+                "kind": "JOINT",
+                "t": 11.345,
+                "z": 5.687,
+                "coefficient": 0.112859,
+                "se": 0.009948,
+                "dof": 10245,
+                "crit_rho": 0.054056,
+                "confirmed": true
+              },
+              {
+                "lag": 777,
+                "delta": 777,
+                "abs_rho": 0.082282,
+                "kind": "JOINT",
+                "t": 12.715,
+                "z": 5.687,
+                "coefficient": 0.125797,
+                "se": 0.009894,
+                "dof": 10245,
+                "crit_rho": 0.05386,
+                "confirmed": true
+              },
+              {
+                "lag": 777,
+                "delta": 777,
+                "abs_rho": 0.086297,
+                "kind": "JOINT",
+                "t": 12.118,
+                "z": 5.687,
+                "coefficient": 0.120011,
+                "se": 0.009903,
+                "dof": 10245,
+                "crit_rho": 0.053825,
+                "confirmed": true
+              },
+              {
+                "lag": 777,
+                "delta": 777,
+                "abs_rho": 0.089848,
+                "kind": "JOINT",
+                "t": 12.951,
+                "z": 5.687,
+                "coefficient": 0.126963,
+                "se": 0.009804,
+                "dof": 10245,
+                "crit_rho": 0.054518,
+                "confirmed": true
+              },
+              {
+                "lag": 777,
+                "delta": 777,
+                "abs_rho": 0.091161,
+                "kind": "JOINT",
+                "t": 13.916,
+                "z": 5.687,
+                "coefficient": 0.135949,
+                "se": 0.009769,
+                "dof": 10245,
+                "crit_rho": 0.054402,
+                "confirmed": true
+              },
+              {
+                "lag": 777,
+                "delta": 777,
+                "abs_rho": 0.10334,
+                "kind": "JOINT",
+                "t": 14.537,
+                "z": 5.687,
+                "coefficient": 0.143028,
+                "se": 0.009839,
+                "dof": 10245,
+                "crit_rho": 0.054484,
+                "confirmed": true
+              },
+              {
+                "lag": 777,
+                "delta": 777,
+                "abs_rho": 0.102991,
+                "kind": "JOINT",
+                "t": 14.489,
+                "z": 5.687,
+                "coefficient": 0.142326,
+                "se": 0.009823,
+                "dof": 10245,
+                "crit_rho": 0.054313,
+                "confirmed": true
+              },
+              {
+                "lag": 777,
+                "delta": 777,
+                "abs_rho": 0.07631,
+                "kind": "JOINT",
+                "t": 12.237,
+                "z": 5.687,
+                "coefficient": 0.120743,
+                "se": 0.009867,
+                "dof": 10245,
+                "crit_rho": 0.054035,
+                "confirmed": true
+              },
+              {
+                "lag": 777,
+                "delta": 777,
+                "abs_rho": 0.080769,
+                "kind": "JOINT",
+                "t": 13.214,
+                "z": 5.687,
+                "coefficient": 0.129624,
+                "se": 0.009809,
+                "dof": 10245,
+                "crit_rho": 0.054079,
+                "confirmed": true
+              }
+            ],
+            "structural": [],
+            "channel_lags": null
+          }
+        },
+        "channel_lags": {
+          "L": 0
+        },
+        "channel_states": {
+          "L": "ALIGNED",
+          "R": "AMBIGUOUS"
+        }
+      },
+      "res_left_replica_.125_777": {
+        "expected": "AMBIGUOUS",
+        "expected_k": null,
+        "attribution": "AMBIGUOUS",
+        "k": null,
+        "ok": true,
+        "reason": "MEMBER_AMBIGUITY_OR_CONFLICT",
+        "channels": {
+          "L": {
+            "attribution": "AMBIGUOUS",
+            "classification": "AMBIGUOUS",
+            "k": null,
+            "coverage": 0.0,
+            "floor": null,
+            "rivals": [
+              {
+                "lag": 777,
+                "delta": 777,
+                "abs_rho": 0.085055,
+                "kind": "JOINT",
+                "t": 12.329,
+                "z": 5.687,
+                "coefficient": 0.12156,
+                "se": 0.009859,
+                "dof": 10245,
+                "crit_rho": 0.054088,
+                "confirmed": true
+              },
+              {
+                "lag": 777,
+                "delta": 777,
+                "abs_rho": 0.097898,
+                "kind": "JOINT",
+                "t": 13.481,
+                "z": 5.687,
+                "coefficient": 0.132796,
+                "se": 0.00985,
+                "dof": 10245,
+                "crit_rho": 0.054293,
+                "confirmed": true
+              },
+              {
+                "lag": 777,
+                "delta": 777,
+                "abs_rho": 0.100568,
+                "kind": "JOINT",
+                "t": 13.592,
+                "z": 5.687,
+                "coefficient": 0.133437,
+                "se": 0.009817,
+                "dof": 10245,
+                "crit_rho": 0.054182,
+                "confirmed": true
+              },
+              {
+                "lag": 777,
+                "delta": 777,
+                "abs_rho": 0.092922,
+                "kind": "JOINT",
+                "t": 14.117,
+                "z": 5.687,
+                "coefficient": 0.139008,
+                "se": 0.009847,
+                "dof": 10245,
+                "crit_rho": 0.053908,
+                "confirmed": true
+              },
+              {
+                "lag": 777,
+                "delta": 777,
+                "abs_rho": 0.097336,
+                "kind": "JOINT",
+                "t": 13.438,
+                "z": 5.687,
+                "coefficient": 0.131819,
+                "se": 0.00981,
+                "dof": 10245,
+                "crit_rho": 0.05416,
+                "confirmed": true
+              },
+              {
+                "lag": 777,
+                "delta": 777,
+                "abs_rho": 0.070672,
+                "kind": "JOINT",
+                "t": 9.898,
+                "z": 5.687,
+                "coefficient": 0.098518,
+                "se": 0.009953,
+                "dof": 10245,
+                "crit_rho": 0.053734,
+                "confirmed": true
+              },
+              {
+                "lag": 777,
+                "delta": 777,
+                "abs_rho": 0.079948,
+                "kind": "JOINT",
+                "t": 10.015,
+                "z": 5.687,
+                "coefficient": 0.100622,
+                "se": 0.010047,
+                "dof": 10245,
+                "crit_rho": 0.053865,
+                "confirmed": true
+              },
+              {
+                "lag": 777,
+                "delta": 777,
+                "abs_rho": 0.091509,
+                "kind": "JOINT",
+                "t": 13.727,
+                "z": 5.687,
+                "coefficient": 0.137378,
+                "se": 0.010008,
+                "dof": 10245,
+                "crit_rho": 0.05415,
+                "confirmed": true
+              },
+              {
+                "lag": 777,
+                "delta": 777,
+                "abs_rho": 0.089401,
+                "kind": "JOINT",
+                "t": 14.034,
+                "z": 5.687,
+                "coefficient": 0.141744,
+                "se": 0.0101,
+                "dof": 10245,
+                "crit_rho": 0.054228,
+                "confirmed": true
+              },
+              {
+                "lag": 777,
+                "delta": 777,
+                "abs_rho": 0.081279,
+                "kind": "JOINT",
+                "t": 11.996,
+                "z": 5.687,
+                "coefficient": 0.11812,
+                "se": 0.009846,
+                "dof": 10245,
+                "crit_rho": 0.053518,
+                "confirmed": true
+              },
+              {
+                "lag": 777,
+                "delta": 777,
+                "abs_rho": 0.087142,
+                "kind": "JOINT",
+                "t": 12.997,
+                "z": 5.687,
+                "coefficient": 0.128615,
+                "se": 0.009896,
+                "dof": 10245,
+                "crit_rho": 0.053759,
+                "confirmed": true
+              }
+            ],
+            "structural": [],
+            "channel_lags": null
+          },
+          "R": {
+            "attribution": "UNIQUE",
+            "classification": "ALIGNED",
+            "k": 0,
+            "coverage": 1.0,
+            "floor": 0.070647,
+            "rivals": [],
+            "structural": [],
+            "channel_lags": null
+          }
+        },
+        "channel_lags": {
+          "R": 0
+        },
+        "channel_states": {
+          "L": "AMBIGUOUS",
+          "R": "ALIGNED"
+        }
+      },
+      "res_right_replica_.25_-450": {
+        "expected": "AMBIGUOUS",
+        "expected_k": null,
+        "attribution": "AMBIGUOUS",
+        "k": null,
+        "ok": true,
+        "reason": "MEMBER_AMBIGUITY_OR_CONFLICT",
+        "channels": {
+          "L": {
+            "attribution": "UNIQUE",
+            "classification": "ALIGNED",
+            "k": 0,
+            "coverage": 1.0,
+            "floor": 0.076667,
+            "rivals": [],
+            "structural": [],
+            "channel_lags": null
+          },
+          "R": {
+            "attribution": "AMBIGUOUS",
+            "classification": "AMBIGUOUS",
+            "k": null,
+            "coverage": 0.0,
+            "floor": null,
+            "rivals": [
+              {
+                "lag": -450,
+                "delta": 450,
+                "abs_rho": 0.177472,
+                "kind": "JOINT",
+                "t": 25.509,
+                "z": 5.687,
+                "coefficient": 0.248683,
+                "se": 0.009749,
+                "dof": 10572,
+                "crit_rho": 0.053888,
+                "confirmed": true
+              },
+              {
+                "lag": -450,
+                "delta": 450,
+                "abs_rho": 0.18346,
+                "kind": "JOINT",
+                "t": 26.445,
+                "z": 5.687,
+                "coefficient": 0.259379,
+                "se": 0.009808,
+                "dof": 10572,
+                "crit_rho": 0.054145,
+                "confirmed": true
+              },
+              {
+                "lag": -450,
+                "delta": 450,
+                "abs_rho": 0.160339,
+                "kind": "JOINT",
+                "t": 23.165,
+                "z": 5.687,
+                "coefficient": 0.226184,
+                "se": 0.009764,
+                "dof": 10572,
+                "crit_rho": 0.053831,
+                "confirmed": true
+              },
+              {
+                "lag": -450,
+                "delta": 450,
+                "abs_rho": 0.164763,
+                "kind": "JOINT",
+                "t": 24.503,
+                "z": 5.687,
+                "coefficient": 0.238756,
+                "se": 0.009744,
+                "dof": 10572,
+                "crit_rho": 0.053801,
+                "confirmed": true
+              },
+              {
+                "lag": -450,
+                "delta": 450,
+                "abs_rho": 0.16892,
+                "kind": "JOINT",
+                "t": 25.415,
+                "z": 5.687,
+                "coefficient": 0.245906,
+                "se": 0.009676,
+                "dof": 10572,
+                "crit_rho": 0.054343,
+                "confirmed": true
+              },
+              {
+                "lag": -450,
+                "delta": 450,
+                "abs_rho": 0.174423,
+                "kind": "JOINT",
+                "t": 26.48,
+                "z": 5.687,
+                "coefficient": 0.25446,
+                "se": 0.009609,
+                "dof": 10572,
+                "crit_rho": 0.05423,
+                "confirmed": true
+              },
+              {
+                "lag": -450,
+                "delta": 450,
+                "abs_rho": 0.170942,
+                "kind": "JOINT",
+                "t": 25.22,
+                "z": 5.687,
+                "coefficient": 0.24443,
+                "se": 0.009692,
+                "dof": 10572,
+                "crit_rho": 0.054082,
+                "confirmed": true
+              },
+              {
+                "lag": -450,
+                "delta": 450,
+                "abs_rho": 0.178978,
+                "kind": "JOINT",
+                "t": 25.584,
+                "z": 5.687,
+                "coefficient": 0.247301,
+                "se": 0.009666,
+                "dof": 10572,
+                "crit_rho": 0.054327,
+                "confirmed": true
+              },
+              {
+                "lag": -450,
+                "delta": 450,
+                "abs_rho": 0.172192,
+                "kind": "JOINT",
+                "t": 25.017,
+                "z": 5.687,
+                "coefficient": 0.243003,
+                "se": 0.009713,
+                "dof": 10572,
+                "crit_rho": 0.054255,
+                "confirmed": true
+              },
+              {
+                "lag": -450,
+                "delta": 450,
+                "abs_rho": 0.176859,
+                "kind": "JOINT",
+                "t": 26.535,
+                "z": 5.687,
+                "coefficient": 0.25622,
+                "se": 0.009656,
+                "dof": 10572,
+                "crit_rho": 0.054102,
+                "confirmed": true
+              },
+              {
+                "lag": -450,
+                "delta": 450,
+                "abs_rho": 0.170838,
+                "kind": "JOINT",
+                "t": 27.014,
+                "z": 5.687,
+                "coefficient": 0.263069,
+                "se": 0.009738,
+                "dof": 10572,
+                "crit_rho": 0.054134,
+                "confirmed": true
+              }
+            ],
+            "structural": [],
+            "channel_lags": null
+          }
+        },
+        "channel_lags": {
+          "L": 0
+        },
+        "channel_states": {
+          "L": "ALIGNED",
+          "R": "AMBIGUOUS"
+        }
+      },
+      "res_left_replica_.5_1901": {
+        "expected": "AMBIGUOUS",
+        "expected_k": null,
+        "attribution": "AMBIGUOUS",
+        "k": null,
+        "ok": true,
+        "reason": "MEMBER_AMBIGUITY_OR_CONFLICT",
+        "channels": {
+          "L": {
+            "attribution": "AMBIGUOUS",
+            "classification": "AMBIGUOUS",
+            "k": null,
+            "coverage": 0.0,
+            "floor": null,
+            "rivals": [
+              {
+                "lag": 1901,
+                "delta": 1901,
+                "abs_rho": 0.333183,
+                "kind": "JOINT",
+                "t": 48.283,
+                "z": 5.687,
+                "coefficient": 0.504358,
+                "se": 0.010446,
+                "dof": 9121,
+                "crit_rho": 0.053936,
+                "confirmed": true
+              },
+              {
+                "lag": 1901,
+                "delta": 1901,
+                "abs_rho": 0.340159,
+                "kind": "JOINT",
+                "t": 47.408,
+                "z": 5.687,
+                "coefficient": 0.49649,
+                "se": 0.010473,
+                "dof": 9121,
+                "crit_rho": 0.054231,
+                "confirmed": true
+              },
+              {
+                "lag": 1901,
+                "delta": 1901,
+                "abs_rho": 0.341096,
+                "kind": "JOINT",
+                "t": 48.311,
+                "z": 5.687,
+                "coefficient": 0.502987,
+                "se": 0.010411,
+                "dof": 9121,
+                "crit_rho": 0.054042,
+                "confirmed": true
+              },
+              {
+                "lag": 1901,
+                "delta": 1901,
+                "abs_rho": 0.342146,
+                "kind": "JOINT",
+                "t": 47.734,
+                "z": 5.687,
+                "coefficient": 0.50027,
+                "se": 0.01048,
+                "dof": 9121,
+                "crit_rho": 0.054038,
+                "confirmed": true
+              },
+              {
+                "lag": 1901,
+                "delta": 1901,
+                "abs_rho": 0.347523,
+                "kind": "JOINT",
+                "t": 48.043,
+                "z": 5.687,
+                "coefficient": 0.499507,
+                "se": 0.010397,
+                "dof": 9121,
+                "crit_rho": 0.054158,
+                "confirmed": true
+              },
+              {
+                "lag": 1901,
+                "delta": 1901,
+                "abs_rho": 0.318654,
+                "kind": "JOINT",
+                "t": 45.851,
+                "z": 5.687,
+                "coefficient": 0.485952,
+                "se": 0.010598,
+                "dof": 9121,
+                "crit_rho": 0.053675,
+                "confirmed": true
+              },
+              {
+                "lag": 1901,
+                "delta": 1901,
+                "abs_rho": 0.323502,
+                "kind": "JOINT",
+                "t": 45.569,
+                "z": 5.687,
+                "coefficient": 0.484589,
+                "se": 0.010634,
+                "dof": 9121,
+                "crit_rho": 0.054079,
+                "confirmed": true
+              },
+              {
+                "lag": 1901,
+                "delta": 1901,
+                "abs_rho": 0.329343,
+                "kind": "JOINT",
+                "t": 45.76,
+                "z": 5.687,
+                "coefficient": 0.486975,
+                "se": 0.010642,
+                "dof": 9121,
+                "crit_rho": 0.054112,
+                "confirmed": true
+              },
+              {
+                "lag": 1901,
+                "delta": 1901,
+                "abs_rho": 0.322261,
+                "kind": "JOINT",
+                "t": 46.327,
+                "z": 5.687,
+                "coefficient": 0.496171,
+                "se": 0.01071,
+                "dof": 9121,
+                "crit_rho": 0.054075,
+                "confirmed": true
+              },
+              {
+                "lag": 1901,
+                "delta": 1901,
+                "abs_rho": 0.336242,
+                "kind": "JOINT",
+                "t": 47.733,
+                "z": 5.687,
+                "coefficient": 0.498781,
+                "se": 0.010449,
+                "dof": 9121,
+                "crit_rho": 0.053866,
+                "confirmed": true
+              },
+              {
+                "lag": 1901,
+                "delta": 1901,
+                "abs_rho": 0.340264,
+                "kind": "JOINT",
+                "t": 47.913,
+                "z": 5.687,
+                "coefficient": 0.501189,
+                "se": 0.01046,
+                "dof": 9121,
+                "crit_rho": 0.053956,
+                "confirmed": true
+              }
+            ],
+            "structural": [],
+            "channel_lags": null
+          },
+          "R": {
+            "attribution": "UNIQUE",
+            "classification": "ALIGNED",
+            "k": 0,
+            "coverage": 1.0,
+            "floor": 0.070647,
+            "rivals": [],
+            "structural": [],
+            "channel_lags": null
+          }
+        },
+        "channel_lags": {
+          "R": 0
+        },
+        "channel_states": {
+          "L": "AMBIGUOUS",
+          "R": "ALIGNED"
+        }
+      },
+      "res_dos_origenes": {
+        "expected": "AMBIGUOUS",
+        "expected_k": null,
+        "attribution": "AMBIGUOUS",
+        "k": null,
+        "ok": true,
+        "reason": "MEMBER_AMBIGUITY_OR_CONFLICT",
+        "channels": {
+          "L": {
+            "attribution": "AMBIGUOUS",
+            "classification": "AMBIGUOUS",
+            "k": null,
+            "coverage": 0.0,
+            "floor": null,
+            "rivals": [
+              {
+                "lag": 250,
+                "delta": 250,
+                "abs_rho": 0.219525,
+                "kind": "JOINT",
+                "t": 31.458,
+                "z": 5.687,
+                "coefficient": 0.314785,
+                "se": 0.010007,
+                "dof": 10772,
+                "crit_rho": 0.054333,
+                "confirmed": true
+              },
+              {
+                "lag": -900,
+                "delta": 900,
+                "abs_rho": 0.21008,
+                "kind": "JOINT",
+                "t": 29.065,
+                "z": 5.687,
+                "coefficient": 0.301189,
+                "se": 0.010363,
+                "dof": 10122,
+                "crit_rho": 0.0542,
+                "confirmed": true
+              },
+              {
+                "lag": 250,
+                "delta": 250,
+                "abs_rho": 0.208483,
+                "kind": "JOINT",
+                "t": 30.019,
+                "z": 5.687,
+                "coefficient": 0.301276,
+                "se": 0.010036,
+                "dof": 10772,
+                "crit_rho": 0.0542,
+                "confirmed": true
+              },
+              {
+                "lag": -900,
+                "delta": 900,
+                "abs_rho": 0.210557,
+                "kind": "JOINT",
+                "t": 29.335,
+                "z": 5.687,
+                "coefficient": 0.303186,
+                "se": 0.010335,
+                "dof": 10122,
+                "crit_rho": 0.054155,
+                "confirmed": true
+              },
+              {
+                "lag": 250,
+                "delta": 250,
+                "abs_rho": 0.204953,
+                "kind": "JOINT",
+                "t": 29.331,
+                "z": 5.687,
+                "coefficient": 0.294062,
+                "se": 0.010026,
+                "dof": 10772,
+                "crit_rho": 0.054155,
+                "confirmed": true
+              },
+              {
+                "lag": 250,
+                "delta": 250,
+                "abs_rho": 0.196403,
+                "kind": "JOINT",
+                "t": 28.37,
+                "z": 5.687,
+                "coefficient": 0.284985,
+                "se": 0.010045,
+                "dof": 10772,
+                "crit_rho": 0.053669,
+                "confirmed": true
+              },
+              {
+                "lag": -900,
+                "delta": 900,
+                "abs_rho": 0.194424,
+                "kind": "JOINT",
+                "t": 29.568,
+                "z": 5.687,
+                "coefficient": 0.304762,
+                "se": 0.010307,
+                "dof": 10122,
+                "crit_rho": 0.053669,
+                "confirmed": true
+              },
+              {
+                "lag": 250,
+                "delta": 250,
+                "abs_rho": 0.204704,
+                "kind": "JOINT",
+                "t": 29.951,
+                "z": 5.687,
+                "coefficient": 0.299365,
+                "se": 0.009995,
+                "dof": 10772,
+                "crit_rho": 0.054029,
+                "confirmed": true
+              },
+              {
+                "lag": -900,
+                "delta": 900,
+                "abs_rho": 0.203586,
+                "kind": "JOINT",
+                "t": 29.143,
+                "z": 5.687,
+                "coefficient": 0.300769,
+                "se": 0.010321,
+                "dof": 10122,
+                "crit_rho": 0.054029,
+                "confirmed": true
+              },
+              {
+                "lag": 250,
+                "delta": 250,
+                "abs_rho": 0.211754,
+                "kind": "JOINT",
+                "t": 29.539,
+                "z": 5.687,
+                "coefficient": 0.299359,
+                "se": 0.010134,
+                "dof": 10772,
+                "crit_rho": 0.053831,
+                "confirmed": true
+              },
+              {
+                "lag": -900,
+                "delta": 900,
+                "abs_rho": 0.195777,
+                "kind": "JOINT",
+                "t": 29.138,
+                "z": 5.687,
+                "coefficient": 0.303616,
+                "se": 0.01042,
+                "dof": 10122,
+                "crit_rho": 0.053831,
+                "confirmed": true
+              },
+              {
+                "lag": 250,
+                "delta": 250,
+                "abs_rho": 0.217195,
+                "kind": "JOINT",
+                "t": 29.898,
+                "z": 5.687,
+                "coefficient": 0.304848,
+                "se": 0.010196,
+                "dof": 10772,
+                "crit_rho": 0.053722,
+                "confirmed": true
+              },
+              {
+                "lag": -900,
+                "delta": 900,
+                "abs_rho": 0.19654,
+                "kind": "JOINT",
+                "t": 27.777,
+                "z": 5.687,
+                "coefficient": 0.293478,
+                "se": 0.010566,
+                "dof": 10122,
+                "crit_rho": 0.053722,
+                "confirmed": true
+              },
+              {
+                "lag": -900,
+                "delta": 900,
+                "abs_rho": 0.201788,
+                "kind": "JOINT",
+                "t": 28.911,
+                "z": 5.687,
+                "coefficient": 0.303847,
+                "se": 0.01051,
+                "dof": 10122,
+                "crit_rho": 0.054123,
+                "confirmed": true
+              },
+              {
+                "lag": 250,
+                "delta": 250,
+                "abs_rho": 0.193931,
+                "kind": "JOINT",
+                "t": 28.752,
+                "z": 5.687,
+                "coefficient": 0.292558,
+                "se": 0.010175,
+                "dof": 10772,
+                "crit_rho": 0.054123,
+                "confirmed": true
+              },
+              {
+                "lag": -900,
+                "delta": 900,
+                "abs_rho": 0.203272,
+                "kind": "JOINT",
+                "t": 28.195,
+                "z": 5.687,
+                "coefficient": 0.297407,
+                "se": 0.010548,
+                "dof": 10122,
+                "crit_rho": 0.054089,
+                "confirmed": true
+              },
+              {
+                "lag": 250,
+                "delta": 250,
+                "abs_rho": 0.196826,
+                "kind": "JOINT",
+                "t": 28.572,
+                "z": 5.687,
+                "coefficient": 0.292755,
+                "se": 0.010246,
+                "dof": 10772,
+                "crit_rho": 0.054089,
+                "confirmed": true
+              },
+              {
+                "lag": 250,
+                "delta": 250,
+                "abs_rho": 0.211459,
+                "kind": "JOINT",
+                "t": 31.023,
+                "z": 5.687,
+                "coefficient": 0.311688,
+                "se": 0.010047,
+                "dof": 10772,
+                "crit_rho": 0.05378,
+                "confirmed": true
+              },
+              {
+                "lag": -900,
+                "delta": 900,
+                "abs_rho": 0.205486,
+                "kind": "JOINT",
+                "t": 29.825,
+                "z": 5.687,
+                "coefficient": 0.309603,
+                "se": 0.010381,
+                "dof": 10122,
+                "crit_rho": 0.05378,
+                "confirmed": true
+              },
+              {
+                "lag": 250,
+                "delta": 250,
+                "abs_rho": 0.20716,
+                "kind": "JOINT",
+                "t": 30.444,
+                "z": 5.687,
+                "coefficient": 0.306976,
+                "se": 0.010083,
+                "dof": 10772,
+                "crit_rho": 0.053882,
+                "confirmed": true
+              },
+              {
+                "lag": -900,
+                "delta": 900,
+                "abs_rho": 0.202635,
+                "kind": "JOINT",
+                "t": 28.65,
+                "z": 5.687,
+                "coefficient": 0.298829,
+                "se": 0.01043,
+                "dof": 10122,
+                "crit_rho": 0.053882,
+                "confirmed": true
+              },
+              {
+                "lag": -900,
+                "delta": 900,
+                "abs_rho": 0.205925,
+                "kind": "JOINT",
+                "t": 28.044,
+                "z": 5.687,
+                "coefficient": 0.291314,
+                "se": 0.010388,
+                "dof": 10122,
+                "crit_rho": 0.054121,
+                "confirmed": true
+              }
+            ],
+            "structural": [],
+            "channel_lags": null
+          },
+          "R": {
+            "attribution": "AMBIGUOUS",
+            "classification": "AMBIGUOUS",
+            "k": null,
+            "coverage": 0.0,
+            "floor": null,
+            "rivals": [
+              {
+                "lag": 250,
+                "delta": 250,
+                "abs_rho": 0.216825,
+                "kind": "JOINT",
+                "t": 29.812,
+                "z": 5.687,
+                "coefficient": 0.301894,
+                "se": 0.010126,
+                "dof": 10772,
+                "crit_rho": 0.054381,
+                "confirmed": true
+              },
+              {
+                "lag": -900,
+                "delta": 900,
+                "abs_rho": 0.206075,
+                "kind": "JOINT",
+                "t": 29.919,
+                "z": 5.687,
+                "coefficient": 0.309095,
+                "se": 0.010331,
+                "dof": 10122,
+                "crit_rho": 0.054156,
+                "confirmed": true
+              },
+              {
+                "lag": 250,
+                "delta": 250,
+                "abs_rho": 0.188427,
+                "kind": "JOINT",
+                "t": 26.987,
+                "z": 5.687,
+                "coefficient": 0.273517,
+                "se": 0.010135,
+                "dof": 10772,
+                "crit_rho": 0.054156,
+                "confirmed": true
+              },
+              {
+                "lag": -900,
+                "delta": 900,
+                "abs_rho": 0.203802,
+                "kind": "JOINT",
+                "t": 29.563,
+                "z": 5.687,
+                "coefficient": 0.30738,
+                "se": 0.010397,
+                "dof": 10122,
+                "crit_rho": 0.054095,
+                "confirmed": true
+              },
+              {
+                "lag": 250,
+                "delta": 250,
+                "abs_rho": 0.188827,
+                "kind": "JOINT",
+                "t": 27.338,
+                "z": 5.687,
+                "coefficient": 0.277166,
+                "se": 0.010138,
+                "dof": 10772,
+                "crit_rho": 0.054095,
+                "confirmed": true
+              },
+              {
+                "lag": -900,
+                "delta": 900,
+                "abs_rho": 0.20632,
+                "kind": "JOINT",
+                "t": 27.598,
+                "z": 5.687,
+                "coefficient": 0.287621,
+                "se": 0.010422,
+                "dof": 10122,
+                "crit_rho": 0.054088,
+                "confirmed": true
+              },
+              {
+                "lag": 250,
+                "delta": 250,
+                "abs_rho": 0.189958,
+                "kind": "JOINT",
+                "t": 28.609,
+                "z": 5.687,
+                "coefficient": 0.288885,
+                "se": 0.010098,
+                "dof": 10772,
+                "crit_rho": 0.054088,
+                "confirmed": true
+              },
+              {
+                "lag": -900,
+                "delta": 900,
+                "abs_rho": 0.203359,
+                "kind": "JOINT",
+                "t": 28.575,
+                "z": 5.687,
+                "coefficient": 0.295904,
+                "se": 0.010355,
+                "dof": 10122,
+                "crit_rho": 0.05376,
+                "confirmed": true
+              },
+              {
+                "lag": 250,
+                "delta": 250,
+                "abs_rho": 0.185637,
+                "kind": "JOINT",
+                "t": 28.32,
+                "z": 5.687,
+                "coefficient": 0.285149,
+                "se": 0.010069,
+                "dof": 10772,
+                "crit_rho": 0.05376,
+                "confirmed": true
+              },
+              {
+                "lag": 250,
+                "delta": 250,
+                "abs_rho": 0.20189,
+                "kind": "JOINT",
+                "t": 29.267,
+                "z": 5.687,
+                "coefficient": 0.293118,
+                "se": 0.010015,
+                "dof": 10772,
+                "crit_rho": 0.054485,
+                "confirmed": true
+              },
+              {
+                "lag": -900,
+                "delta": 900,
+                "abs_rho": 0.194957,
+                "kind": "JOINT",
+                "t": 28.798,
+                "z": 5.687,
+                "coefficient": 0.297191,
+                "se": 0.01032,
+                "dof": 10122,
+                "crit_rho": 0.054485,
+                "confirmed": true
+              },
+              {
+                "lag": 250,
+                "delta": 250,
+                "abs_rho": 0.204353,
+                "kind": "JOINT",
+                "t": 29.051,
+                "z": 5.687,
+                "coefficient": 0.288224,
+                "se": 0.009921,
+                "dof": 10772,
+                "crit_rho": 0.054139,
+                "confirmed": true
+              },
+              {
+                "lag": -900,
+                "delta": 900,
+                "abs_rho": 0.200466,
+                "kind": "JOINT",
+                "t": 28.521,
+                "z": 5.687,
+                "coefficient": 0.291877,
+                "se": 0.010234,
+                "dof": 10122,
+                "crit_rho": 0.054139,
+                "confirmed": true
+              },
+              {
+                "lag": -900,
+                "delta": 900,
+                "abs_rho": 0.199334,
+                "kind": "JOINT",
+                "t": 29.279,
+                "z": 5.687,
+                "coefficient": 0.30187,
+                "se": 0.01031,
+                "dof": 10122,
+                "crit_rho": 0.054131,
+                "confirmed": true
+              },
+              {
+                "lag": 250,
+                "delta": 250,
+                "abs_rho": 0.190838,
+                "kind": "JOINT",
+                "t": 29.168,
+                "z": 5.687,
+                "coefficient": 0.292042,
+                "se": 0.010012,
+                "dof": 10772,
+                "crit_rho": 0.054131,
+                "confirmed": true
+              },
+              {
+                "lag": -900,
+                "delta": 900,
+                "abs_rho": 0.196278,
+                "kind": "JOINT",
+                "t": 29.374,
+                "z": 5.687,
+                "coefficient": 0.301838,
+                "se": 0.010276,
+                "dof": 10122,
+                "crit_rho": 0.054071,
+                "confirmed": true
+              },
+              {
+                "lag": 250,
+                "delta": 250,
+                "abs_rho": 0.194921,
+                "kind": "JOINT",
+                "t": 29.055,
+                "z": 5.687,
+                "coefficient": 0.290503,
+                "se": 0.009998,
+                "dof": 10772,
+                "crit_rho": 0.054071,
+                "confirmed": true
+              },
+              {
+                "lag": 250,
+                "delta": 250,
+                "abs_rho": 0.213541,
+                "kind": "JOINT",
+                "t": 30.919,
+                "z": 5.687,
+                "coefficient": 0.309742,
+                "se": 0.010018,
+                "dof": 10772,
+                "crit_rho": 0.053891,
+                "confirmed": true
+              },
+              {
+                "lag": -900,
+                "delta": 900,
+                "abs_rho": 0.197993,
+                "kind": "JOINT",
+                "t": 28.312,
+                "z": 5.687,
+                "coefficient": 0.294299,
+                "se": 0.010395,
+                "dof": 10122,
+                "crit_rho": 0.053891,
+                "confirmed": true
+              },
+              {
+                "lag": 250,
+                "delta": 250,
+                "abs_rho": 0.212796,
+                "kind": "JOINT",
+                "t": 30.759,
+                "z": 5.687,
+                "coefficient": 0.30708,
+                "se": 0.009983,
+                "dof": 10772,
+                "crit_rho": 0.054116,
+                "confirmed": true
+              },
+              {
+                "lag": -900,
+                "delta": 900,
+                "abs_rho": 0.20474,
+                "kind": "JOINT",
+                "t": 28.786,
+                "z": 5.687,
+                "coefficient": 0.29679,
+                "se": 0.01031,
+                "dof": 10122,
+                "crit_rho": 0.054116,
+                "confirmed": true
+              },
+              {
+                "lag": -900,
+                "delta": 900,
+                "abs_rho": 0.195727,
+                "kind": "JOINT",
+                "t": 28.841,
+                "z": 5.687,
+                "coefficient": 0.299836,
+                "se": 0.010396,
+                "dof": 10122,
+                "crit_rho": 0.05444,
+                "confirmed": true
+              }
+            ],
+            "structural": [],
+            "channel_lags": null
+          }
+        },
+        "channel_lags": {},
+        "channel_states": {
+          "L": "AMBIGUOUS",
+          "R": "AMBIGUOUS"
+        }
+      },
+      "res_por_tramos": {
+        "expected": "AMBIGUOUS",
+        "expected_k": null,
+        "attribution": "AMBIGUOUS",
+        "k": null,
+        "ok": true,
+        "reason": "MEMBER_AMBIGUITY_OR_CONFLICT",
+        "channels": {
+          "L": {
+            "attribution": "AMBIGUOUS",
+            "classification": "AMBIGUOUS",
+            "k": null,
+            "coverage": 1.0,
+            "floor": null,
+            "rivals": [],
+            "structural": [],
+            "channel_lags": null
+          },
+          "R": {
+            "attribution": "AMBIGUOUS",
+            "classification": "AMBIGUOUS",
+            "k": null,
+            "coverage": 1.0,
+            "floor": null,
+            "rivals": [],
+            "structural": [],
+            "channel_lags": null
+          }
+        },
+        "channel_lags": {},
+        "channel_states": {
+          "L": "AMBIGUOUS",
+          "R": "AMBIGUOUS"
+        }
+      },
+      "res_periodica_64": {
+        "expected": "AMBIGUOUS",
+        "expected_k": null,
+        "attribution": "AMBIGUOUS",
+        "k": null,
+        "ok": true,
+        "reason": "MEMBER_AMBIGUITY_OR_CONFLICT",
+        "channels": {
+          "L": {
+            "attribution": "AMBIGUOUS",
+            "classification": "AMBIGUOUS",
+            "k": null,
+            "coverage": 0.0,
+            "floor": null,
+            "rivals": [],
+            "structural": [
+              {
+                "lag": 58240,
+                "delta": 64,
+                "acf": 0.994219
+              },
+              {
+                "lag": 46720,
+                "delta": 384,
+                "acf": 0.965117
+              },
+              {
+                "lag": 44544,
+                "delta": 384,
+                "acf": 0.965117
+              },
+              {
+                "lag": 33984,
+                "delta": 64,
+                "acf": 0.994219
+              },
+              {
+                "lag": 31296,
+                "delta": 384,
+                "acf": 0.965117
+              },
+              {
+                "lag": 20288,
+                "delta": 384,
+                "acf": 0.965117
+              },
+              {
+                "lag": 18560,
+                "delta": 128,
+                "acf": 0.988372
+              },
+              {
+                "lag": 7040,
+                "delta": 384,
+                "acf": 0.965117
+              },
+              {
+                "lag": 5312,
+                "delta": 64,
+                "acf": 0.994219
+              },
+              {
+                "lag": -5696,
+                "delta": 128,
+                "acf": 0.988372
+              },
+              {
+                "lag": -8384,
+                "delta": 384,
+                "acf": 0.965117
+              },
+              {
+                "lag": -18944,
+                "delta": 64,
+                "acf": 0.994219
+              }
+            ],
+            "channel_lags": null
+          },
+          "R": {
+            "attribution": "AMBIGUOUS",
+            "classification": "AMBIGUOUS",
+            "k": null,
+            "coverage": 0.0,
+            "floor": null,
+            "rivals": [],
+            "structural": [
+              {
+                "lag": 66944,
+                "delta": 1408,
+                "acf": 0.872824
+              },
+              {
+                "lag": 55744,
+                "delta": 64,
+                "acf": 0.994186
+              },
+              {
+                "lag": 53568,
+                "delta": 1920,
+                "acf": 0.825586
+              },
+              {
+                "lag": 42688,
+                "delta": 1408,
+                "acf": 0.872824
+              },
+              {
+                "lag": 40320,
+                "delta": 64,
+                "acf": 0.994186
+              },
+              {
+                "lag": 29312,
+                "delta": 1920,
+                "acf": 0.825586
+              },
+              {
+                "lag": 27072,
+                "delta": 64,
+                "acf": 0.994186
+              },
+              {
+                "lag": 16064,
+                "delta": 64,
+                "acf": 0.994186
+              },
+              {
+                "lag": 14016,
+                "delta": 1408,
+                "acf": 0.872824
+              },
+              {
+                "lag": 2816,
+                "delta": 64,
+                "acf": 0.994186
+              },
+              {
+                "lag": 640,
+                "delta": 64,
+                "acf": 0.994186
+              },
+              {
+                "lag": -10240,
+                "delta": 1408,
+                "acf": 0.872824
+              }
+            ],
+            "channel_lags": null
+          }
+        },
+        "channel_lags": {},
+        "channel_states": {
+          "L": "AMBIGUOUS",
+          "R": "AMBIGUOUS"
+        }
+      },
+      "res_marcas_unicas": {
+        "expected": "UNIQUE",
+        "expected_k": 0,
+        "attribution": "UNIQUE",
+        "k": 0,
+        "ok": true,
+        "reason": "MEASURED_AGREEMENT",
+        "channels": {
+          "L": {
+            "attribution": "UNIQUE",
+            "classification": "ALIGNED",
+            "k": 0,
+            "coverage": 1.0,
+            "floor": 0.087738,
+            "rivals": [],
+            "structural": [],
+            "channel_lags": null
+          },
+          "R": {
+            "attribution": "UNIQUE",
+            "classification": "ALIGNED",
+            "k": 0,
+            "coverage": 1.0,
+            "floor": 0.078456,
+            "rivals": [],
+            "structural": [],
+            "channel_lags": null
+          }
+        },
+        "channel_lags": {
+          "L": 0,
+          "R": 0
+        },
+        "channel_states": {
+          "L": "ALIGNED",
+          "R": "ALIGNED"
+        }
+      },
+      "res_no_relacionada": {
+        "expected": "INSUFFICIENT_SIGNAL",
+        "expected_k": null,
+        "attribution": "INSUFFICIENT_SIGNAL",
+        "k": null,
+        "ok": true,
+        "reason": "INCOMPLETE_CHANNEL_EVIDENCE",
+        "channels": {
+          "L": {
+            "attribution": "INSUFFICIENT_SIGNAL",
+            "classification": "INSUFFICIENT_SIGNAL",
+            "k": null,
+            "coverage": 0.0,
+            "floor": null,
+            "rivals": [],
+            "structural": [],
+            "channel_lags": null
+          },
+          "R": {
+            "attribution": "INSUFFICIENT_SIGNAL",
+            "classification": "INSUFFICIENT_SIGNAL",
+            "k": null,
+            "coverage": 0.0,
+            "floor": null,
+            "rivals": [],
+            "structural": [],
+            "channel_lags": null
+          }
+        },
+        "channel_lags": {},
+        "channel_states": {
+          "L": "INSUFFICIENT_SIGNAL",
+          "R": "INSUFFICIENT_SIGNAL"
+        }
+      },
+      "res_silencio": {
+        "expected": "NON_INFORMATIVE",
+        "expected_k": null,
+        "attribution": "NON_INFORMATIVE",
+        "k": null,
+        "ok": true,
+        "reason": "ALL_CHANNELS_NON_INFORMATIVE",
+        "channels": {
+          "L": {
+            "attribution": "NON_INFORMATIVE",
+            "classification": "NON_INFORMATIVE",
+            "k": null,
+            "coverage": null,
+            "floor": null,
+            "rivals": [],
+            "structural": [],
+            "channel_lags": null
+          },
+          "R": {
+            "attribution": "NON_INFORMATIVE",
+            "classification": "NON_INFORMATIVE",
+            "k": null,
+            "coverage": null,
+            "floor": null,
+            "rivals": [],
+            "structural": [],
+            "channel_lags": null
+          }
+        },
+        "channel_lags": null,
+        "channel_states": null
+      },
+      "res_dc": {
+        "expected": "NON_INFORMATIVE",
+        "expected_k": null,
+        "attribution": "NON_INFORMATIVE",
+        "k": null,
+        "ok": true,
+        "reason": "ALL_CHANNELS_NON_INFORMATIVE",
+        "channels": {
+          "L": {
+            "attribution": "NON_INFORMATIVE",
+            "classification": "NON_INFORMATIVE",
+            "k": null,
+            "coverage": null,
+            "floor": null,
+            "rivals": [],
+            "structural": [],
+            "channel_lags": null
+          },
+          "R": {
+            "attribution": "NON_INFORMATIVE",
+            "classification": "NON_INFORMATIVE",
+            "k": null,
+            "coverage": null,
+            "floor": null,
+            "rivals": [],
+            "structural": [],
+            "channel_lags": null
+          }
+        },
+        "channel_lags": null,
+        "channel_states": null
+      },
+      "res_nan": {
+        "expected": "ERROR",
+        "expected_k": null,
+        "attribution": "ERROR",
+        "k": null,
+        "ok": true,
+        "reason": "READ_OR_FORMAT_ERROR",
+        "channels": {},
+        "channel_lags": null,
+        "channel_states": null
+      },
+      "res_lr_distintos_58": {
+        "expected": "AMBIGUOUS",
+        "expected_k": null,
+        "attribution": "AMBIGUOUS",
+        "k": null,
+        "ok": true,
+        "reason": "CHANNEL_DISAGREEMENT",
+        "channels": {
+          "L": {
+            "attribution": "UNIQUE",
+            "classification": "ALIGNED",
+            "k": 0,
+            "coverage": 1.0,
+            "floor": 0.076667,
+            "rivals": [],
+            "structural": [],
+            "channel_lags": null
+          },
+          "R": {
+            "attribution": "UNIQUE",
+            "classification": "WARNING",
+            "k": 58,
+            "coverage": 1.0,
+            "floor": 0.073882,
+            "rivals": [],
+            "structural": [],
+            "channel_lags": null
+          }
+        },
+        "channel_lags": {
+          "L": 0,
+          "R": 58
+        },
+        "channel_states": {
+          "L": "ALIGNED",
+          "R": "WARNING"
+        }
+      },
+      "res_asimetria_ganancia": {
+        "expected": "UNIQUE",
+        "expected_k": 0,
+        "attribution": "UNIQUE",
+        "k": 0,
+        "ok": true,
+        "reason": "MEASURED_AGREEMENT",
+        "channels": {
+          "L": {
+            "attribution": "UNIQUE",
+            "classification": "ALIGNED",
+            "k": 0,
+            "coverage": 1.0,
+            "floor": 0.076667,
+            "rivals": [],
+            "structural": [],
+            "channel_lags": null
+          },
+          "R": {
+            "attribution": "UNIQUE",
+            "classification": "ALIGNED",
+            "k": 0,
+            "coverage": 1.0,
+            "floor": 0.070647,
+            "rivals": [],
+            "structural": [],
+            "channel_lags": null
+          }
+        },
+        "channel_lags": {
+          "L": 0,
+          "R": 0
+        },
+        "channel_states": {
+          "L": "ALIGNED",
+          "R": "ALIGNED"
+        }
+      },
+      "res_guia_parcial": {
+        "expected": "UNIQUE",
+        "expected_k": 0,
+        "attribution": "UNIQUE",
+        "k": 0,
+        "ok": true,
+        "reason": "MEASURED_AGREEMENT",
+        "channels": {
+          "L": {
+            "attribution": "UNIQUE",
+            "classification": "ALIGNED",
+            "k": 0,
+            "coverage": 1.0,
+            "floor": 0.081402,
+            "rivals": [],
+            "structural": [],
+            "channel_lags": null
+          },
+          "R": {
+            "attribution": "UNIQUE",
+            "classification": "ALIGNED",
+            "k": 0,
+            "coverage": 1.0,
+            "floor": 0.091299,
+            "rivals": [],
+            "structural": [],
+            "channel_lags": null
+          }
+        },
+        "channel_lags": {
+          "L": 0,
+          "R": 0
+        },
+        "channel_states": {
+          "L": "ALIGNED",
+          "R": "ALIGNED"
+        }
+      },
+      "res_retardo_borde_4000": {
+        "expected": "UNIQUE",
+        "expected_k": 4000,
+        "attribution": "UNIQUE",
+        "k": 4000,
+        "ok": true,
+        "reason": "MEASURED_AGREEMENT",
+        "channels": {
+          "L": {
+            "attribution": "UNIQUE",
+            "classification": "MISALIGNED",
+            "k": 4000,
+            "coverage": 1.0,
+            "floor": 0.076667,
+            "rivals": [],
+            "structural": [],
+            "channel_lags": null
+          },
+          "R": {
+            "attribution": "UNIQUE",
+            "classification": "MISALIGNED",
+            "k": 4000,
+            "coverage": 1.0,
+            "floor": 0.070647,
+            "rivals": [],
+            "structural": [],
+            "channel_lags": null
+          }
+        },
+        "channel_lags": {
+          "L": 4000,
+          "R": 4000
+        },
+        "channel_states": {
+          "L": "MISALIGNED",
+          "R": "MISALIGNED"
+        }
+      },
+      "res_nivel_bajo": {
+        "expected": "UNIQUE",
+        "expected_k": 0,
+        "attribution": "UNIQUE",
+        "k": 0,
+        "ok": true,
+        "reason": "MEASURED_AGREEMENT",
+        "channels": {
+          "L": {
+            "attribution": "UNIQUE",
+            "classification": "ALIGNED",
+            "k": 0,
+            "coverage": 1.0,
+            "floor": 0.076667,
+            "rivals": [],
+            "structural": [],
+            "channel_lags": null
+          },
+          "R": {
+            "attribution": "UNIQUE",
+            "classification": "ALIGNED",
+            "k": 0,
+            "coverage": 1.0,
+            "floor": 0.070647,
+            "rivals": [],
+            "structural": [],
+            "channel_lags": null
+          }
+        },
+        "channel_lags": {
+          "L": 0,
+          "R": 0
+        },
+        "channel_states": {
+          "L": "ALIGNED",
+          "R": "ALIGNED"
+        }
+      },
+      "res_guia_debil": {
+        "expected": "UNIQUE",
+        "expected_k": 0,
+        "attribution": "UNIQUE",
+        "k": 0,
+        "ok": true,
+        "reason": "MEASURED_AGREEMENT",
+        "channels": {
+          "L": {
+            "attribution": "UNIQUE",
+            "classification": "ALIGNED",
+            "k": 0,
+            "coverage": 1.0,
+            "floor": 0.076667,
+            "rivals": [],
+            "structural": [],
+            "channel_lags": null
+          },
+          "R": {
+            "attribution": "UNIQUE",
+            "classification": "ALIGNED",
+            "k": 0,
+            "coverage": 1.0,
+            "floor": 0.070647,
+            "rivals": [],
+            "structural": [],
+            "channel_lags": null
+          }
+        },
+        "channel_lags": {
+          "L": 0,
+          "R": 0
+        },
+        "channel_states": {
+          "L": "ALIGNED",
+          "R": "ALIGNED"
+        }
+      },
+      "res_mid_nulo": {
+        "expected": "UNIQUE",
+        "expected_k": 0,
+        "attribution": "UNIQUE",
+        "k": 0,
+        "ok": true,
+        "reason": "MEASURED_AGREEMENT",
+        "channels": {
+          "L": {
+            "attribution": "UNIQUE",
+            "classification": "ALIGNED",
+            "k": 0,
+            "coverage": 1.0,
+            "floor": 0.076667,
+            "rivals": [],
+            "structural": [],
+            "channel_lags": null
+          },
+          "R": {
+            "attribution": "UNIQUE",
+            "classification": "ALIGNED",
+            "k": 0,
+            "coverage": 1.0,
+            "floor": 0.076667,
+            "rivals": [],
+            "structural": [],
+            "channel_lags": null
+          }
+        },
+        "channel_lags": {
+          "L": 0,
+          "R": 0
+        },
+        "channel_states": {
+          "L": "ALIGNED",
+          "R": "ALIGNED"
+        }
+      },
+      "res_amplitud_variable": {
+        "expected": "UNIQUE",
+        "expected_k": 0,
+        "attribution": "UNIQUE",
+        "k": 0,
+        "ok": true,
+        "reason": "MEASURED_AGREEMENT",
+        "channels": {
+          "L": {
+            "attribution": "UNIQUE",
+            "classification": "ALIGNED",
+            "k": 0,
+            "coverage": 1.0,
+            "floor": 0.08631,
+            "rivals": [],
+            "structural": [],
+            "channel_lags": null
+          },
+          "R": {
+            "attribution": "UNIQUE",
+            "classification": "ALIGNED",
+            "k": 0,
+            "coverage": 1.0,
+            "floor": 0.082595,
+            "rivals": [],
+            "structural": [],
+            "channel_lags": null
+          }
+        },
+        "channel_lags": {
+          "L": 0,
+          "R": 0
+        },
+        "channel_states": {
+          "L": "ALIGNED",
+          "R": "ALIGNED"
+        }
+      },
+      "res_replica_bajo_piso": {
+        "expected": "UNIQUE_O_AMBIGUOUS",
+        "expected_k": null,
+        "attribution": "UNIQUE",
+        "k": 0,
+        "ok": true,
+        "reason": "MEASURED_AGREEMENT",
+        "channels": {
+          "L": {
+            "attribution": "UNIQUE",
+            "classification": "ALIGNED",
+            "k": 0,
+            "coverage": 1.0,
+            "floor": 0.076667,
+            "rivals": [],
+            "structural": [],
+            "channel_lags": null
+          },
+          "R": {
+            "attribution": "UNIQUE",
+            "classification": "ALIGNED",
+            "k": 0,
+            "coverage": 1.0,
+            "floor": 0.070688,
+            "rivals": [],
+            "structural": [],
+            "channel_lags": null
+          }
+        },
+        "channel_lags": {
+          "L": 0,
+          "R": 0
+        },
+        "channel_states": {
+          "L": "ALIGNED",
+          "R": "ALIGNED"
+        }
+      }
+    }
+  },
+  "summary": {
+    "Hardened": [
+      28,
+      28
+    ],
+    "EVO": [
+      28,
+      28
+    ],
+    "MQR": [
+      28,
+      28
+    ]
+  },
+  "seconds": 37.12605846700012,
+  "maxrss_kib": 144464
+}

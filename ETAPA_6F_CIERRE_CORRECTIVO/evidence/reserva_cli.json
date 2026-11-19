@@ -1,0 +1,784 @@
+{
+  "rows": {
+    "Hardened_res_clean_1s_0": {
+      "case": "res_clean_1s",
+      "override": false,
+      "expected_exit": 0,
+      "exit": 0,
+      "wavs": 2,
+      "report": true,
+      "pcm": {
+        "res_clean_1s-mix SDI.wav": {
+          "sha256": "5a357b6f394d6b373f7cfaa1c594604962da1d1ec6dbb8369790d9b51f8f3613",
+          "shape": [
+            44100,
+            2
+          ],
+          "finite": true
+        },
+        "res_clean_1s-mix SDV.wav": {
+          "sha256": "c48361c18510029bfc042152612d92e39723a353a54c8860eceb4a07c4ffe7d5",
+          "shape": [
+            44100,
+            2
+          ],
+          "finite": true
+        }
+      },
+      "attribution": "UNIQUE",
+      "k": 0,
+      "gate": "ALIGNED",
+      "permission": null,
+      "ok": true
+    },
+    "Hardened_res_clean_1s_1": {
+      "case": "res_clean_1s",
+      "override": true,
+      "expected_exit": 0,
+      "exit": 0,
+      "wavs": 2,
+      "report": true,
+      "pcm": {
+        "res_clean_1s-mix SDI.wav": {
+          "sha256": "5a357b6f394d6b373f7cfaa1c594604962da1d1ec6dbb8369790d9b51f8f3613",
+          "shape": [
+            44100,
+            2
+          ],
+          "finite": true
+        },
+        "res_clean_1s-mix SDV.wav": {
+          "sha256": "c48361c18510029bfc042152612d92e39723a353a54c8860eceb4a07c4ffe7d5",
+          "shape": [
+            44100,
+            2
+          ],
+          "finite": true
+        }
+      },
+      "attribution": "UNIQUE",
+      "k": 0,
+      "gate": "ALIGNED",
+      "permission": null,
+      "ok": true
+    },
+    "Hardened_res_dos_origenes_0": {
+      "case": "res_dos_origenes",
+      "override": false,
+      "expected_exit": 1,
+      "exit": 1,
+      "wavs": 0,
+      "report": false,
+      "pcm": {},
+      "attribution": null,
+      "k": null,
+      "gate": null,
+      "permission": null,
+      "ok": true
+    },
+    "Hardened_res_dos_origenes_1": {
+      "case": "res_dos_origenes",
+      "override": true,
+      "expected_exit": 0,
+      "exit": 0,
+      "wavs": 2,
+      "report": true,
+      "pcm": {
+        "res_dos_origenes-mix SDI.wav": {
+          "sha256": "263c9a4b26e000ee7dd3f72fcbe5edf53ee4d4cbc66102620b2972aebfdb3ce9",
+          "shape": [
+            88200,
+            2
+          ],
+          "finite": true
+        },
+        "res_dos_origenes-mix SDV.wav": {
+          "sha256": "aaac4ca6ad4ec63faedb76b280a2237becfc108c1907f8d241f17d81a35200dd",
+          "shape": [
+            88200,
+            2
+          ],
+          "finite": true
+        }
+      },
+      "attribution": "AMBIGUOUS",
+      "k": null,
+      "gate": "ALLOWED_EXPLICIT",
+      "permission": "cli_allow_misaligned",
+      "ok": true
+    },
+    "Hardened_res_right_replica_.125_777_0": {
+      "case": "res_right_replica_.125_777",
+      "override": false,
+      "expected_exit": 1,
+      "exit": 1,
+      "wavs": 0,
+      "report": false,
+      "pcm": {},
+      "attribution": null,
+      "k": null,
+      "gate": null,
+      "permission": null,
+      "ok": true
+    },
+    "Hardened_res_right_replica_.125_777_1": {
+      "case": "res_right_replica_.125_777",
+      "override": true,
+      "expected_exit": 0,
+      "exit": 0,
+      "wavs": 2,
+      "report": true,
+      "pcm": {
+        "res_right_replica_.125_777-mix SDI.wav": {
+          "sha256": "d649cbada4d9bb0dad0396a1bf154c27420bc5f068c3b832db7bc5bb4263d46c",
+          "shape": [
+            88200,
+            2
+          ],
+          "finite": true
+        },
+        "res_right_replica_.125_777-mix SDV.wav": {
+          "sha256": "ac687e5bfe858427befd627b5cfdf486991c581c0da0fe86ea585f26ee6fb7da",
+          "shape": [
+            88200,
+            2
+          ],
+          "finite": true
+        }
+      },
+      "attribution": "AMBIGUOUS",
+      "k": null,
+      "gate": "ALLOWED_EXPLICIT",
+      "permission": "cli_allow_misaligned",
+      "ok": true
+    },
+    "Hardened_res_silencio_1": {
+      "case": "res_silencio",
+      "override": true,
+      "expected_exit": 0,
+      "exit": 0,
+      "wavs": 2,
+      "report": true,
+      "pcm": {
+        "res_silencio-mix SDI.wav": {
+          "sha256": "50377f148614d25cc9131720df593c7e86c29b7760d4c67fdac39a4a7f9a75ba",
+          "shape": [
+            88200,
+            2
+          ],
+          "finite": true
+        },
+        "res_silencio-mix SDV.wav": {
+          "sha256": "7a9c38df5318a026bd6fe76ebcb52bc8b125a56579b4b6dd913818b19f920957",
+          "shape": [
+            88200,
+            2
+          ],
+          "finite": true
+        }
+      },
+      "attribution": "NON_INFORMATIVE",
+      "k": null,
+      "gate": "ALLOWED_EXPLICIT",
+      "permission": "cli_allow_misaligned",
+      "ok": true
+    },
+    "Hardened_res_lr_distintos_58_1": {
+      "case": "res_lr_distintos_58",
+      "override": true,
+      "expected_exit": 0,
+      "exit": 0,
+      "wavs": 2,
+      "report": true,
+      "pcm": {
+        "res_lr_distintos_58-mix SDI.wav": {
+          "sha256": "61f4a4d3cf9dbfe131415e84fad23ede0fc1ae933f1b0ede63ff8ae6ac1a0b42",
+          "shape": [
+            88200,
+            2
+          ],
+          "finite": true
+        },
+        "res_lr_distintos_58-mix SDV.wav": {
+          "sha256": "55176ad1b039bf390f6f07697853976aaba2a8f07c91ce58b30ce49b75c63c80",
+          "shape": [
+            88200,
+            2
+          ],
+          "finite": true
+        }
+      },
+      "attribution": "AMBIGUOUS",
+      "k": null,
+      "gate": "ALLOWED_EXPLICIT",
+      "permission": "cli_allow_misaligned",
+      "ok": true
+    },
+    "Hardened_res_nan_1": {
+      "case": "res_nan",
+      "override": true,
+      "expected_exit": 1,
+      "exit": 1,
+      "wavs": 0,
+      "report": false,
+      "pcm": {},
+      "attribution": null,
+      "k": null,
+      "gate": null,
+      "permission": null,
+      "ok": true
+    },
+    "Hardened_res_por_tramos_1": {
+      "case": "res_por_tramos",
+      "override": true,
+      "expected_exit": 0,
+      "exit": 0,
+      "wavs": 2,
+      "report": true,
+      "pcm": {
+        "res_por_tramos-mix SDI.wav": {
+          "sha256": "39f5b843e358df423304ac5afa5f44be491b493c388306512ecface431517d54",
+          "shape": [
+            88200,
+            2
+          ],
+          "finite": true
+        },
+        "res_por_tramos-mix SDV.wav": {
+          "sha256": "0dd4a519cd1ca88009e069db61f79d8a6f8bc74c793dd4068f6059e8e62953a7",
+          "shape": [
+            88200,
+            2
+          ],
+          "finite": true
+        }
+      },
+      "attribution": "AMBIGUOUS",
+      "k": null,
+      "gate": "ALLOWED_EXPLICIT",
+      "permission": "cli_allow_misaligned",
+      "ok": true
+    },
+    "EVO_res_clean_1s_0": {
+      "case": "res_clean_1s",
+      "override": false,
+      "expected_exit": 0,
+      "exit": 0,
+      "wavs": 2,
+      "report": true,
+      "pcm": {
+        "res_clean_1s-mix SDI.wav": {
+          "sha256": "5a357b6f394d6b373f7cfaa1c594604962da1d1ec6dbb8369790d9b51f8f3613",
+          "shape": [
+            44100,
+            2
+          ],
+          "finite": true
+        },
+        "res_clean_1s-mix SDV.wav": {
+          "sha256": "c48361c18510029bfc042152612d92e39723a353a54c8860eceb4a07c4ffe7d5",
+          "shape": [
+            44100,
+            2
+          ],
+          "finite": true
+        }
+      },
+      "attribution": "UNIQUE",
+      "k": 0,
+      "gate": "ALIGNED",
+      "permission": null,
+      "ok": true
+    },
+    "EVO_res_clean_1s_1": {
+      "case": "res_clean_1s",
+      "override": true,
+      "expected_exit": 0,
+      "exit": 0,
+      "wavs": 2,
+      "report": true,
+      "pcm": {
+        "res_clean_1s-mix SDI.wav": {
+          "sha256": "5a357b6f394d6b373f7cfaa1c594604962da1d1ec6dbb8369790d9b51f8f3613",
+          "shape": [
+            44100,
+            2
+          ],
+          "finite": true
+        },
+        "res_clean_1s-mix SDV.wav": {
+          "sha256": "c48361c18510029bfc042152612d92e39723a353a54c8860eceb4a07c4ffe7d5",
+          "shape": [
+            44100,
+            2
+          ],
+          "finite": true
+        }
+      },
+      "attribution": "UNIQUE",
+      "k": 0,
+      "gate": "ALIGNED",
+      "permission": null,
+      "ok": true
+    },
+    "EVO_res_dos_origenes_0": {
+      "case": "res_dos_origenes",
+      "override": false,
+      "expected_exit": 1,
+      "exit": 1,
+      "wavs": 0,
+      "report": false,
+      "pcm": {},
+      "attribution": null,
+      "k": null,
+      "gate": null,
+      "permission": null,
+      "ok": true
+    },
+    "EVO_res_dos_origenes_1": {
+      "case": "res_dos_origenes",
+      "override": true,
+      "expected_exit": 0,
+      "exit": 0,
+      "wavs": 2,
+      "report": true,
+      "pcm": {
+        "res_dos_origenes-mix SDI.wav": {
+          "sha256": "263c9a4b26e000ee7dd3f72fcbe5edf53ee4d4cbc66102620b2972aebfdb3ce9",
+          "shape": [
+            88200,
+            2
+          ],
+          "finite": true
+        },
+        "res_dos_origenes-mix SDV.wav": {
+          "sha256": "aaac4ca6ad4ec63faedb76b280a2237becfc108c1907f8d241f17d81a35200dd",
+          "shape": [
+            88200,
+            2
+          ],
+          "finite": true
+        }
+      },
+      "attribution": "AMBIGUOUS",
+      "k": null,
+      "gate": "ALLOWED_EXPLICIT",
+      "permission": "cli_allow_misaligned",
+      "ok": true
+    },
+    "EVO_res_right_replica_.125_777_0": {
+      "case": "res_right_replica_.125_777",
+      "override": false,
+      "expected_exit": 1,
+      "exit": 1,
+      "wavs": 0,
+      "report": false,
+      "pcm": {},
+      "attribution": null,
+      "k": null,
+      "gate": null,
+      "permission": null,
+      "ok": true
+    },
+    "EVO_res_right_replica_.125_777_1": {
+      "case": "res_right_replica_.125_777",
+      "override": true,
+      "expected_exit": 0,
+      "exit": 0,
+      "wavs": 2,
+      "report": true,
+      "pcm": {
+        "res_right_replica_.125_777-mix SDI.wav": {
+          "sha256": "d649cbada4d9bb0dad0396a1bf154c27420bc5f068c3b832db7bc5bb4263d46c",
+          "shape": [
+            88200,
+            2
+          ],
+          "finite": true
+        },
+        "res_right_replica_.125_777-mix SDV.wav": {
+          "sha256": "ac687e5bfe858427befd627b5cfdf486991c581c0da0fe86ea585f26ee6fb7da",
+          "shape": [
+            88200,
+            2
+          ],
+          "finite": true
+        }
+      },
+      "attribution": "AMBIGUOUS",
+      "k": null,
+      "gate": "ALLOWED_EXPLICIT",
+      "permission": "cli_allow_misaligned",
+      "ok": true
+    },
+    "EVO_res_silencio_1": {
+      "case": "res_silencio",
+      "override": true,
+      "expected_exit": 0,
+      "exit": 0,
+      "wavs": 2,
+      "report": true,
+      "pcm": {
+        "res_silencio-mix SDI.wav": {
+          "sha256": "50377f148614d25cc9131720df593c7e86c29b7760d4c67fdac39a4a7f9a75ba",
+          "shape": [
+            88200,
+            2
+          ],
+          "finite": true
+        },
+        "res_silencio-mix SDV.wav": {
+          "sha256": "7a9c38df5318a026bd6fe76ebcb52bc8b125a56579b4b6dd913818b19f920957",
+          "shape": [
+            88200,
+            2
+          ],
+          "finite": true
+        }
+      },
+      "attribution": "NON_INFORMATIVE",
+      "k": null,
+      "gate": "ALLOWED_EXPLICIT",
+      "permission": "cli_allow_misaligned",
+      "ok": true
+    },
+    "EVO_res_lr_distintos_58_1": {
+      "case": "res_lr_distintos_58",
+      "override": true,
+      "expected_exit": 0,
+      "exit": 0,
+      "wavs": 2,
+      "report": true,
+      "pcm": {
+        "res_lr_distintos_58-mix SDI.wav": {
+          "sha256": "61f4a4d3cf9dbfe131415e84fad23ede0fc1ae933f1b0ede63ff8ae6ac1a0b42",
+          "shape": [
+            88200,
+            2
+          ],
+          "finite": true
+        },
+        "res_lr_distintos_58-mix SDV.wav": {
+          "sha256": "55176ad1b039bf390f6f07697853976aaba2a8f07c91ce58b30ce49b75c63c80",
+          "shape": [
+            88200,
+            2
+          ],
+          "finite": true
+        }
+      },
+      "attribution": "AMBIGUOUS",
+      "k": null,
+      "gate": "ALLOWED_EXPLICIT",
+      "permission": "cli_allow_misaligned",
+      "ok": true
+    },
+    "EVO_res_nan_1": {
+      "case": "res_nan",
+      "override": true,
+      "expected_exit": 1,
+      "exit": 1,
+      "wavs": 0,
+      "report": false,
+      "pcm": {},
+      "attribution": null,
+      "k": null,
+      "gate": null,
+      "permission": null,
+      "ok": true
+    },
+    "EVO_res_por_tramos_1": {
+      "case": "res_por_tramos",
+      "override": true,
+      "expected_exit": 0,
+      "exit": 0,
+      "wavs": 2,
+      "report": true,
+      "pcm": {
+        "res_por_tramos-mix SDI.wav": {
+          "sha256": "39f5b843e358df423304ac5afa5f44be491b493c388306512ecface431517d54",
+          "shape": [
+            88200,
+            2
+          ],
+          "finite": true
+        },
+        "res_por_tramos-mix SDV.wav": {
+          "sha256": "0dd4a519cd1ca88009e069db61f79d8a6f8bc74c793dd4068f6059e8e62953a7",
+          "shape": [
+            88200,
+            2
+          ],
+          "finite": true
+        }
+      },
+      "attribution": "AMBIGUOUS",
+      "k": null,
+      "gate": "ALLOWED_EXPLICIT",
+      "permission": "cli_allow_misaligned",
+      "ok": true
+    },
+    "MQR_res_clean_1s_0": {
+      "case": "res_clean_1s",
+      "override": false,
+      "expected_exit": 0,
+      "exit": 0,
+      "wavs": 2,
+      "report": true,
+      "pcm": {
+        "SDI.wav": {
+          "sha256": "3370d8c8a56e6ec8907609cd13b2eec26fa89601e0adbf7580db2921107d9016",
+          "shape": [
+            44100,
+            2
+          ],
+          "finite": true
+        },
+        "SDV.wav": {
+          "sha256": "433d50bf432a532765b1c48d805c72ff7829e21b3a789cf1fe71ec12783ad36e",
+          "shape": [
+            44100,
+            2
+          ],
+          "finite": true
+        }
+      },
+      "attribution": "UNIQUE",
+      "k": 0,
+      "gate": null,
+      "permission": null,
+      "ok": true
+    },
+    "MQR_res_clean_1s_1": {
+      "case": "res_clean_1s",
+      "override": true,
+      "expected_exit": 0,
+      "exit": 0,
+      "wavs": 2,
+      "report": true,
+      "pcm": {
+        "SDI.wav": {
+          "sha256": "3370d8c8a56e6ec8907609cd13b2eec26fa89601e0adbf7580db2921107d9016",
+          "shape": [
+            44100,
+            2
+          ],
+          "finite": true
+        },
+        "SDV.wav": {
+          "sha256": "433d50bf432a532765b1c48d805c72ff7829e21b3a789cf1fe71ec12783ad36e",
+          "shape": [
+            44100,
+            2
+          ],
+          "finite": true
+        }
+      },
+      "attribution": "UNIQUE",
+      "k": 0,
+      "gate": null,
+      "permission": null,
+      "ok": true
+    },
+    "MQR_res_dos_origenes_0": {
+      "case": "res_dos_origenes",
+      "override": false,
+      "expected_exit": 1,
+      "exit": 1,
+      "wavs": 0,
+      "report": false,
+      "pcm": {},
+      "attribution": null,
+      "k": null,
+      "gate": null,
+      "permission": null,
+      "ok": true
+    },
+    "MQR_res_dos_origenes_1": {
+      "case": "res_dos_origenes",
+      "override": true,
+      "expected_exit": 0,
+      "exit": 0,
+      "wavs": 2,
+      "report": true,
+      "pcm": {
+        "SDI.wav": {
+          "sha256": "75f2c63fa5d2f4e9e0ba8c8dba1aa305b9ecce5e4abdaad96a492e6d5a3dd91e",
+          "shape": [
+            88200,
+            2
+          ],
+          "finite": true
+        },
+        "SDV.wav": {
+          "sha256": "caab7a13613c2b6b7b6b55f0b14ffe573f459de50a03e586afd5b5ba3f48de3f",
+          "shape": [
+            88200,
+            2
+          ],
+          "finite": true
+        }
+      },
+      "attribution": "AMBIGUOUS",
+      "k": null,
+      "gate": null,
+      "permission": "cli_allow_misaligned",
+      "ok": true
+    },
+    "MQR_res_right_replica_.125_777_0": {
+      "case": "res_right_replica_.125_777",
+      "override": false,
+      "expected_exit": 1,
+      "exit": 1,
+      "wavs": 0,
+      "report": false,
+      "pcm": {},
+      "attribution": null,
+      "k": null,
+      "gate": null,
+      "permission": null,
+      "ok": true
+    },
+    "MQR_res_right_replica_.125_777_1": {
+      "case": "res_right_replica_.125_777",
+      "override": true,
+      "expected_exit": 0,
+      "exit": 0,
+      "wavs": 2,
+      "report": true,
+      "pcm": {
+        "SDI.wav": {
+          "sha256": "84ba8a5ff355f6b30fe017baa43d59c1d3f4951e3c94f7b9d3897bcb22616aa5",
+          "shape": [
+            88200,
+            2
+          ],
+          "finite": true
+        },
+        "SDV.wav": {
+          "sha256": "3118ca3b0323712a324faea308465d99acf4f43e75a9acf47df3b276ceaf6713",
+          "shape": [
+            88200,
+            2
+          ],
+          "finite": true
+        }
+      },
+      "attribution": "AMBIGUOUS",
+      "k": null,
+      "gate": null,
+      "permission": "cli_allow_misaligned",
+      "ok": true
+    },
+    "MQR_res_silencio_1": {
+      "case": "res_silencio",
+      "override": true,
+      "expected_exit": 0,
+      "exit": 0,
+      "wavs": 2,
+      "report": true,
+      "pcm": {
+        "SDI.wav": {
+          "sha256": "50377f148614d25cc9131720df593c7e86c29b7760d4c67fdac39a4a7f9a75ba",
+          "shape": [
+            88200,
+            2
+          ],
+          "finite": true
+        },
+        "SDV.wav": {
+          "sha256": "7a9c38df5318a026bd6fe76ebcb52bc8b125a56579b4b6dd913818b19f920957",
+          "shape": [
+            88200,
+            2
+          ],
+          "finite": true
+        }
+      },
+      "attribution": "NON_INFORMATIVE",
+      "k": null,
+      "gate": null,
+      "permission": "cli_allow_misaligned",
+      "ok": true
+    },
+    "MQR_res_lr_distintos_58_1": {
+      "case": "res_lr_distintos_58",
+      "override": true,
+      "expected_exit": 0,
+      "exit": 0,
+      "wavs": 2,
+      "report": true,
+      "pcm": {
+        "SDI.wav": {
+          "sha256": "19d875f8eb89ffb5710ca5027b5954446b24f8c1c4472bf7af12e2680c887735",
+          "shape": [
+            88200,
+            2
+          ],
+          "finite": true
+        },
+        "SDV.wav": {
+          "sha256": "7006ca8fa9ff7087f6ad55307fa0fd13be79fc7a8aedce400ea2a0d8419f08eb",
+          "shape": [
+            88200,
+            2
+          ],
+          "finite": true
+        }
+      },
+      "attribution": "AMBIGUOUS",
+      "k": null,
+      "gate": null,
+      "permission": "cli_allow_misaligned",
+      "ok": true
+    },
+    "MQR_res_nan_1": {
+      "case": "res_nan",
+      "override": true,
+      "expected_exit": 1,
+      "exit": 1,
+      "wavs": 0,
+      "report": false,
+      "pcm": {},
+      "attribution": null,
+      "k": null,
+      "gate": null,
+      "permission": null,
+      "ok": true
+    },
+    "MQR_res_por_tramos_1": {
+      "case": "res_por_tramos",
+      "override": true,
+      "expected_exit": 0,
+      "exit": 0,
+      "wavs": 2,
+      "report": true,
+      "pcm": {
+        "SDI.wav": {
+          "sha256": "1cef22149a702cffeb62132142c650967ca59609badafc6792c02b7f721e1a54",
+          "shape": [
+            88200,
+            2
+          ],
+          "finite": true
+        },
+        "SDV.wav": {
+          "sha256": "419a653260066c7c6726f20577300d484331fc737c3bb716f4bcd53935eb2b73",
+          "shape": [
+            88200,
+            2
+          ],
+          "finite": true
+        }
+      },
+      "attribution": "AMBIGUOUS",
+      "k": null,
+      "gate": null,
+      "permission": "cli_allow_misaligned",
+      "ok": true
+    }
+  },
+  "ok": 30,
+  "total": 30,
+  "child_rss_kib": 176664
+}

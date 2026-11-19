@@ -2841,9 +2841,7 @@
       ],
       "removed": [],
       "changed_constants": [],
-      "dsp_changed": [
-        "run_experiment"
-      ],
+      "dsp_changed": [],
       "unchanged_defs": 58
     },
     "Hardened/6E": {
@@ -2856,9 +2854,7 @@
       "added": [],
       "removed": [],
       "changed_constants": [],
-      "dsp_changed": [
-        "run_experiment"
-      ],
+      "dsp_changed": [],
       "unchanged_defs": 61
     },
     "EVO/6C": {
@@ -2875,9 +2871,7 @@
       ],
       "removed": [],
       "changed_constants": [],
-      "dsp_changed": [
-        "run_experiment"
-      ],
+      "dsp_changed": [],
       "unchanged_defs": 61
     },
     "EVO/6E": {
@@ -2890,9 +2884,7 @@
       "added": [],
       "removed": [],
       "changed_constants": [],
-      "dsp_changed": [
-        "run_experiment"
-      ],
+      "dsp_changed": [],
       "unchanged_defs": 64
     },
     "MQR/6C": {
@@ -2910,9 +2902,7 @@
       ],
       "removed": [],
       "changed_constants": [],
-      "dsp_changed": [
-        "run_experiment"
-      ],
+      "dsp_changed": [],
       "unchanged_defs": 80
     },
     "MQR/6E": {
@@ -2925,13 +2915,11 @@
       "added": [],
       "removed": [],
       "changed_constants": [],
-      "dsp_changed": [
-        "run_experiment"
-      ],
+      "dsp_changed": [],
       "unchanged_defs": 84
     }
   },
-  "seconds": 66.81080861100008,
-  "maxrss_kib": 86756,
-  "child_rss_kib": 253660
+  "seconds": 66.68299769999999,
+  "maxrss_kib": 86876,
+  "child_rss_kib": 253372
 }
