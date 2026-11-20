@@ -1210,19 +1210,58 @@ def base_parent_inspection_error_incomplete(root):
 def base_parent_group_writable_blocked(root):
     # Directorio padre escribible por grupo: no se puede demostrar
     # aislamiento suficiente, se bloquea (A).
+    #
+    # La prueba es determinista e independiente de la configuración
+    # real de grupos del sistema: la composición del grupo se simula
+    # por monkeypatch sobre _group_member_uids (la única dependencia
+    # de la auditoría), no se toca la política de producción
+    # (_parent_risk_blockers / _parent_audit).
+    euid = os.geteuid()
+    target_gid = os.getgid()
+    foreign_uid = euid + 1
     parent = mkdir(root / "grp-parent")
     os.chmod(str(parent), 0o775)
     child = mkdir(parent / "child")
     chain, _ = _walk_anchored_chain(str(child))
     try:
-        rows, blockers, complete = _parent_audit(chain, os.geteuid())
+        # Caso positivo: el grupo simulado contiene al usuario efectivo
+        # y al menos otro UID distinto -> bloqueo por grupo.
+        previous = globals()["_group_member_uids"]
+        globals()["_group_member_uids"] = (
+            lambda gid: {euid, foreign_uid} if gid == target_gid
+            else {euid}
+        )
+        try:
+            rows, blockers, complete = _parent_audit(chain, euid)
+        finally:
+            globals()["_group_member_uids"] = previous
+        require(complete is True, "auditoría incompleta inesperada")
+        parent_label = f"descriptor {chain[-2]}"
+        group_blockers = [b for b in blockers if "grupo" in b]
+        require(group_blockers,
+                "no se bloqueó el padre escribible por grupo")
+        require(any(parent_label in b for b in group_blockers),
+                f"el bloqueo por grupo no corresponde al padre creado: "
+                f"{group_blockers}")
+        # Caso control: con composición simulada de SÓLO el usuario
+        # efectivo, la política de producción NO bloquea por ese padre.
+        # Esto demuestra que la prueba no altera la política y que el
+        # bloqueo depende efectivamente de la composición simulada.
+        previous = globals()["_group_member_uids"]
+        globals()["_group_member_uids"] = lambda gid: {euid}
+        try:
+            _, control_blockers, _ = _parent_audit(chain, euid)
+        finally:
+            globals()["_group_member_uids"] = previous
+        control_group = [b for b in control_blockers
+                         if "grupo" in b and parent_label in b]
+        require(not control_group,
+                f"la política de producción bloqueó con composición "
+                f"confiable: {control_group}")
+        return {"blockers": blockers, "control_clean": True}
     finally:
         for fd in chain:
             os.close(fd)
-    require(complete is True, "auditoría incompleta inesperada")
-    require(any("grupo" in b for b in blockers),
-            "no se bloqueó el padre escribible por grupo")
-    return {"blockers": blockers}
 
 
 @case("base")
@@ -1369,48 +1408,120 @@ def storage_home_inside_private_ok(root):
 def storage_home_outside_private_rejected(root):
     # HOME apuntando a una ubicación ajena: no es evidencia de almacenamiento
     # privado (punto 3).
+    #
+    # Se provee un descriptor base válido y se simula fdinfo/mnt_id y
+    # mountinfo coherentemente (punto de montaje "/tmp", ANCESTRO de la
+    # ruta, dispositivo del descriptor), de modo que el montaje SÍ se
+    # vincule: el rechazo debe venir de que HOME/la ruta no son
+    # evidencia privada, no de un montaje no vinculado. El control
+    # (HOME y ruta dentro del prefijo canónico) se clasifica como
+    # privado, demostrando que la condición verificada decide el resultado.
     previous = {k: os.environ.get(k) for k in ("TERMUX_VERSION", "HOME")}
-    previous_mount = globals()["mount_info"]
-    os.environ["TERMUX_VERSION"] = "test-home-outside"
-    os.environ["HOME"] = "/tmp/fakehome-diag-xyz"
-    globals()["mount_info"] = lambda path: {
-        "mountpoint": "/", "filesystem": "ext4", "device": "none",
-        "source": "/dev/block/dm-0", "mount_options": "rw",
-    }
+    previous_mountinfo = globals()["_read_mountinfo"]
+    previous_fdinfo = globals()["_read_fdinfo"]
+    fd = os.open(str(root), os.O_RDONLY | os.O_DIRECTORY
+                 | feature("O_NOFOLLOW"))
     try:
-        detected, _, _ = _classify_storage("/tmp/fakehome-diag-xyz/diag")
+        dev = _dev_of(fd)
+        os.environ["TERMUX_VERSION"] = "test-home-outside"
+        os.environ["HOME"] = "/tmp/fakehome-diag-xyz"
+        globals()["_read_fdinfo"] = lambda fd_: {"mnt_id": 7010}
+        globals()["_read_mountinfo"] = lambda: [
+            {"mount_id": 7010, "parent_id": 1, "mountpoint": "/tmp",
+             "device": dev, "filesystem": "ext4",
+             "source": "/dev/block/dm-0", "mount_options": "rw"},
+        ]
+        try:
+            detected, mount, caveat = _classify_storage(
+                "/tmp/fakehome-diag-xyz/diag", fd)
+        finally:
+            # Control: HOME y ruta dentro del prefijo canónico privado,
+            # con el mismo descriptor y montaje vinculado.
+            os.environ["HOME"] = "/data/data/com.termux/files/home"
+            globals()["_read_mountinfo"] = lambda: [
+                {"mount_id": 7010, "parent_id": 1, "mountpoint": "/data",
+                 "device": dev, "filesystem": "ext4",
+                 "source": "/dev/block/dm-0", "mount_options": "rw"},
+            ]
+            try:
+                control, _, _ = _classify_storage(
+                    "/data/data/com.termux/files/home/diag-private", fd)
+            finally:
+                globals()["_read_mountinfo"] = previous_mountinfo
+                globals()["_read_fdinfo"] = previous_fdinfo
     finally:
-        globals()["mount_info"] = previous_mount
+        os.close(fd)
         for key, value in previous.items():
             if value is None:
                 os.environ.pop(key, None)
             else:
                 os.environ[key] = value
     require(detected == "other", f"clasificación inesperada: {detected}")
-    return {"detected_class": detected}
+    require(mount is not None,
+            "el montaje debería estar vinculado; el rechazo no es por "
+            "montaje no vinculado")
+    require(control == "termux_private",
+            f"la condición de evidencia privada no decide el resultado: {control}")
+    return {"detected_class": detected, "control_class": control}
 
 
 @case("base")
 def storage_termux_env_without_evidence(root):
     # TERMUX_VERSION presente pero sin evidencia de ubicación privada: no se
     # clasifica como privado (punto 3).
+    #
+    # Se provee un descriptor base válido y se simula fdinfo/mnt_id y
+    # mountinfo coherentemente (punto de montaje "/data", ANCESTRO de la
+    # ruta, dispositivo del descriptor), de modo que el montaje SÍ se
+    # vincule: el rechazo debe venir de que la ruta no está dentro de
+    # la ubicación privada esperada, no de un montaje no vinculado. El
+    # control (ruta dentro del prefijo canónico) se clasifica como
+    # privado, demostrando que la condición verificada decide el resultado.
     previous = os.environ.get("TERMUX_VERSION")
-    previous_mount = globals()["mount_info"]
-    os.environ["TERMUX_VERSION"] = "test-no-evidence"
-    globals()["mount_info"] = lambda path: {
-        "mountpoint": "/", "filesystem": "ext4", "device": "none",
-        "source": "/dev/block/dm-0", "mount_options": "rw",
-    }
+    previous_mountinfo = globals()["_read_mountinfo"]
+    previous_fdinfo = globals()["_read_fdinfo"]
+    fd = os.open(str(root), os.O_RDONLY | os.O_DIRECTORY
+                 | feature("O_NOFOLLOW"))
     try:
-        detected, _, _ = _classify_storage("/data/other-app/diag")
+        dev = _dev_of(fd)
+        os.environ["TERMUX_VERSION"] = "test-no-evidence"
+        globals()["_read_fdinfo"] = lambda fd_: {"mnt_id": 7011}
+        globals()["_read_mountinfo"] = lambda: [
+            {"mount_id": 7011, "parent_id": 1, "mountpoint": "/data",
+             "device": dev, "filesystem": "ext4",
+             "source": "/dev/block/dm-0", "mount_options": "rw"},
+        ]
+        try:
+            detected, mount, caveat = _classify_storage(
+                "/data/other-app/diag", fd)
+        finally:
+            globals()["_read_mountinfo"] = previous_mountinfo
+            globals()["_read_fdinfo"] = previous_fdinfo
+            globals()["_read_fdinfo"] = lambda fd_: {"mnt_id": 7011}
+            globals()["_read_mountinfo"] = lambda: [
+                {"mount_id": 7011, "parent_id": 1, "mountpoint": "/data",
+                 "device": dev, "filesystem": "ext4",
+                 "source": "/dev/block/dm-0", "mount_options": "rw"},
+            ]
+            try:
+                control, _, _ = _classify_storage(
+                    "/data/data/com.termux/files/home/diag-private", fd)
+            finally:
+                globals()["_read_mountinfo"] = previous_mountinfo
+                globals()["_read_fdinfo"] = previous_fdinfo
     finally:
-        globals()["mount_info"] = previous_mount
+        os.close(fd)
         if previous is None:
             os.environ.pop("TERMUX_VERSION", None)
         else:
             os.environ["TERMUX_VERSION"] = previous
     require(detected == "other", f"clasificación inesperada: {detected}")
-    return {"detected_class": detected}
+    require(mount is not None,
+            "el montaje debería estar vinculado; el rechazo no es por "
+            "montaje no vinculado")
+    require(control == "termux_private",
+            f"la condición de evidencia privada no decide el resultado: {control}")
+    return {"detected_class": detected, "control_class": control}
 
 
 @case("base")
@@ -2202,21 +2313,38 @@ def storage_mount_device_mismatch(root):
     # Montaje con dispositivo distinto del del descriptor abierto: la
     # comprobación complementaria de dispositivo falla -> indeterminado
     # (asunto 2).
+    #
+    # El punto de montaje simulado ("/data") es un ANCESTRO real de la
+    # ruta, de modo que la verificación de ancestro NO falla antes de
+    # llegar a la comprobación de dispositivo: el desacuerdo de
+    # dispositivo es la condición que realmente se recorre. El control
+    # (dispositivo coincidente) se clasifica como privado, lo que
+    # demuestra que el resultado depende de esa condición.
     previous_env = os.environ.get("TERMUX_VERSION")
     previous_mountinfo = globals()["_read_mountinfo"]
     previous_fdinfo = globals()["_read_fdinfo"]
     fd = os.open(str(root), os.O_RDONLY | os.O_DIRECTORY
                  | feature("O_NOFOLLOW"))
     try:
+        dev = _dev_of(fd)
         os.environ["TERMUX_VERSION"] = "test-mount-dev"
+
+        def entries(device):
+            return [
+                {"mount_id": 7002, "parent_id": 1, "mountpoint": "/data",
+                 "device": device, "filesystem": "ext4",
+                 "source": "/dev/block/dm-0", "mount_options": "rw"},
+            ]
+
         globals()["_read_fdinfo"] = lambda fd_: {"mnt_id": 7002}
-        globals()["_read_mountinfo"] = lambda: [
-            {"mount_id": 7002, "parent_id": 1, "mountpoint": "/",
-             "device": "0:999", "filesystem": "ext4",
-             "source": "/dev/block/other", "mount_options": "rw"},
-        ]
+        globals()["_read_mountinfo"] = lambda: entries("0:999")
         try:
             detected, mount, caveat = _classify_storage(
+                "/data/data/com.termux/files/home/diag-dev", fd)
+        finally:
+            globals()["_read_mountinfo"] = lambda: entries(dev)
+        try:
+            control, _, _ = _classify_storage(
                 "/data/data/com.termux/files/home/diag-dev", fd)
         finally:
             globals()["_read_mountinfo"] = previous_mountinfo
@@ -2228,7 +2356,10 @@ def storage_mount_device_mismatch(root):
         else:
             os.environ["TERMUX_VERSION"] = previous_env
     require(detected == "other", f"clasificación inesperada: {detected}")
-    return {"detected_class": detected}
+    require(mount is None, "no debe haber vinculación con dispositivo distinto")
+    require(control == "termux_private",
+            f"la condición de dispositivo no decide el resultado: {control}")
+    return {"detected_class": detected, "control_class": control}
 
 
 @case("base")
