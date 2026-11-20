@@ -83,7 +83,7 @@ import struct
 import stat
 from pathlib import Path
 
-SCRIPT_VERSION = "0.2.1"
+SCRIPT_VERSION = "0.2.3"
 SCRIPT_NAME = "audioinput_diag_termux.py"
 
 
@@ -316,21 +316,91 @@ def safe_open_dir_anchored(abs_path):
             type(exc).__name__, str(exc)[:80])
 
 
+def _ensure_parents_anchored(path):
+    """Crea los componentes padre faltantes de forma anclada (C1, v0.2.3).
+
+    Recorre la ruta componente a componente abriendo cada directorio
+    existente con O_PATH|O_NOFOLLOW|O_DIRECTORY relativo al descriptor del
+    padre (dir_fd). Si un componente no existe, se crea con
+    os.mkdir(name, mode=0o700, dir_fd=padre) — nunca por ruta completa.
+    Los symlinks en componentes existentes se rechazan por O_NOFOLLOW.
+
+    Si el recorrido anclado no es viable (O_PATH/O_DIRECTORY ausentes o
+    apertura fallida), lanza OSError: falla de forma conservadora, sin
+    recurrir a operaciones inseguras por ruta.
+
+    Retorna el Path del ultimo directorio asegurado.
+    """
+    p = Path(path)
+    if not p.is_absolute():
+        raise OSError(errno.EINVAL,
+                      "_ensure_parents_anchored requiere path absoluto: {0}".format(p))
+    if not hasattr(os, 'O_PATH') or not hasattr(os, 'O_DIRECTORY'):
+        raise OSError(errno.EOPNOTSUPP,
+                      "O_PATH/O_DIRECTORY no disponibles: recorrido anclado "
+                      "no viable")
+    fd, msg = safe_open_dir_anchored(os.sep)
+    if fd < 0:
+        raise OSError(errno.EIO, "no se pudo abrir '/' de forma anclada: {0}".format(msg))
+    try:
+        for part in p.parts[1:]:
+            if not part:
+                continue
+            try:
+                fd_next = os.open(part, os.O_PATH | os.O_NOFOLLOW
+                                  | os.O_DIRECTORY, dir_fd=fd)
+            except OSError as exc:
+                if exc.errno != errno.ENOENT:
+                    raise OSError(
+                        exc.errno,
+                        "apertura anclada fallo en {0}: {1}".format(
+                            part, os.strerror(exc.errno))) from exc
+                # Componente ausente: crearlo anclado al padre actual.
+                try:
+                    os.mkdir(part, mode=0o700, dir_fd=fd)
+                except OSError as exc2:
+                    raise OSError(
+                        exc2.errno,
+                        "creacion anclada fallo en {0}: {1}".format(
+                            part, os.strerror(exc2.errno))) from exc2
+                fd_next = os.open(part, os.O_PATH | os.O_NOFOLLOW
+                                  | os.O_DIRECTORY, dir_fd=fd)
+            try:
+                os.close(fd)
+            except OSError:
+                pass  # el nuevo descriptor ya esta abierto; no fatal
+            fd = fd_next
+        return p
+    except BaseException:
+        # Cerrar los descriptores abiertos antes de propagar.
+        try:
+            os.close(fd)
+        except OSError:
+            pass
+        raise
+
+
 def safe_makedirs_exclusive_anchored(path):
     """Crea un directorio de forma exclusiva con recorrido anclado (C1.3).
 
     CORRECCION C1.5: No reutiliza directorios de ejecucion preexistentes.
     CORRECCION C1.6: Comprueba permisos del directorio padre existente.
+    CORRECCION C1 (v0.2.3): eliminado el fallback por ruta directa
+    (os.mkdir(str(p))). La creacion del componente final se realiza
+    siempre anclada (os.mkdir con dir_fd); si el recorrido anclado no es
+    viable, la funcion falla de forma conservadora con OSError.
 
     Estrategia:
     1. Verifica que el path sea absoluto.
     2. Si el path completo ya existe (lstat), falla con EEXIST.
-    3. Recorre componentes existentes con dir_fd anclado hasta llegar al padre.
-    4. Crea el componente final con os.mkdir(name, mode=0o700, dir_fd=parent_fd).
-    5. Verifica permisos del padre y del directorio creado.
+    3. Asegura los componentes padre existentes/creables con recorrido
+       anclado (_ensure_parents_anchored) y verifica seguridad del padre.
+    4. Crea el componente final con os.mkdir(name, mode=0o700,
+       dir_fd=parent_fd).
+    5. Verifica por descriptor que el creado es un directorio (no symlink).
 
-    Lanza OSError si no puede garantizarse la propiedad exclusiva.
-    Retorna el Path del directorio creado.
+    Lanza OSError si no puede garantizarse la propiedad exclusiva o si el
+    mecanismo anclado no es viable. Retorna el Path del directorio creado.
     """
     p = Path(path)
     if not p.is_absolute():
@@ -349,143 +419,156 @@ def safe_makedirs_exclusive_anchored(path):
     except FileNotFoundError:
         pass  # OK, no existe, podemos crearlo
 
-    # Paso 2: recorrido anclado hasta el padre
+    # Paso 2: asegurar los padres de forma anclada (C1, v0.2.3)
     parent = p.parent
-    # Crear padres si no existen (idempotente, con verificacion de symlinks)
-    # Para los padres usamos mkdir parents=True exist_ok=True pero verificamos
-    # symlinks con check_no_symlink_in_path antes
     try:
-        check_no_symlink_in_path(parent)
+        _ensure_parents_anchored(parent)
     except OSError as exc:
         raise OSError(exc.errno,
-                      "symlink detectado en path padre: {0}: {1}".format(parent, exc))
+                      "creacion de padres anclada fallo: {0}: {1}".format(parent, exc))
 
-    if not parent.exists():
-        # Crear padres recursivamente
-        parent.mkdir(parents=True, exist_ok=True, mode=0o700)
-    else:
-        # Verificar que el padre existente es seguro (C1.6)
-        ok, msg = check_dir_is_safe(parent, expected_uid=os.geteuid() if hasattr(os, 'geteuid') else None)
-        if not ok:
-            raise OSError(errno.EPERM,
-                          "directorio padre inseguro: {0}: {1}".format(parent, msg))
+    # Verificar que el padre existente es seguro (C1.6)
+    ok, msg = check_dir_is_safe(parent,
+                                expected_uid=os.geteuid() if hasattr(os, 'geteuid') else None)
+    if not ok:
+        raise OSError(errno.EPERM,
+                      "directorio padre inseguro: {0}: {1}".format(parent, msg))
 
-    # Volver a verificar symlinks tras crear/verificar padre
+    # Paso 3: crear el directorio final de forma exclusiva, siempre anclada
+    parent_fd, anchor_msg = safe_open_dir_anchored(str(parent))
+    if parent_fd < 0:
+        # Falla conservadora: no hay fallback por ruta (C1, v0.2.3).
+        raise OSError(errno.EIO,
+                      "apertura anclada del padre fallo: {0} (path: {1})".format(
+                          anchor_msg, parent))
     try:
-        check_no_symlink_in_path(parent)
-    except OSError as exc:
-        raise OSError(exc.errno,
-                      "symlink detectado en padre tras verificacion: {0}: {1}".format(parent, exc))
-
-    # Paso 3: crear el directorio final de forma exclusiva
-    # Intentar con dir_fd anclado; si no es viable, usar path directo con O_NOFOLLOW
-    parent_fd = None
-    try:
-        parent_fd, anchor_msg = safe_open_dir_anchored(str(parent))
-        if parent_fd >= 0:
-            # Apertura anclada exitosa: crear directorio final relativo al parent_fd
-            final_name = p.name
-            try:
-                os.mkdir(final_name, mode=0o700, dir_fd=parent_fd)
-            except OSError as exc:
-                if exc.errno == errno.EEXIST:
-                    raise OSError(errno.EEXIST,
-                                  "directorio de ejecucion preexistente (anclado): {0}".format(p))
-                raise
-        else:
-            # Fallback: crear con path directo + verificacion posterior
-            # No es tan robusto como el anclado, pero sigue siendo exclusivo.
-            try:
-                os.mkdir(str(p), mode=0o700)
-            except FileExistsError:
+        try:
+            os.mkdir(p.name, mode=0o700, dir_fd=parent_fd)
+        except OSError as exc:
+            if exc.errno == errno.EEXIST:
                 raise OSError(errno.EEXIST,
-                              "directorio de ejecucion preexistente (no anclado): {0}".format(p))
-    finally:
-        if parent_fd is not None and parent_fd >= 0:
+                              "directorio de ejecucion preexistente (anclado): {0}".format(p))
+            raise
+        # Paso 4: verificar por descriptor que el creado es un directorio
+        check_fd = os.open(p.name, os.O_PATH | os.O_NOFOLLOW
+                           | os.O_DIRECTORY, dir_fd=parent_fd)
+        try:
+            st_final = os.fstat(check_fd)
+        finally:
             try:
-                os.close(parent_fd)
+                os.close(check_fd)
             except OSError:
                 pass
-
-    # Paso 4: verificar que el directorio creado no es symlink y tiene permisos
-    try:
-        st_final = os.lstat(str(p))
-    except OSError as exc:
-        raise OSError(exc.errno,
-                      "lstat del directorio creado fallo: {0}".format(exc))
-    if stat.S_ISLNK(st_final.st_mode):
-        raise OSError(errno.ELOOP,
-                      "directorio creado resulto ser symlink: {0}".format(p))
-    if not stat.S_ISDIR(st_final.st_mode):
-        raise OSError(errno.ENOTDIR,
-                      "path creado no es directorio: {0}".format(p))
-    perm = stat.S_IMODE(st_final.st_mode)
-    if perm != 0o700:
-        # No es fatal, pero se reporta
-        # En algunos sistemas el umask puede alterar el mode; lo dejamos pasar
-        # pero registramos en el detalle
-        pass
+        if not stat.S_ISDIR(st_final.st_mode):
+            raise OSError(errno.ENOTDIR,
+                          "path creado no es directorio: {0}".format(p))
+    finally:
+        try:
+            os.close(parent_fd)
+        except OSError:
+            pass
     return p
 
 
 def safe_create_file_exclusive_anchored(path, content_bytes):
-    """Crea un archivo de forma exclusiva con verificacion (C1.7 + C7).
+    """Crea un archivo de forma exclusiva con creacion anclada (C1.7 + C7).
 
     CORRECCION C7: escritura completa con manejo de escrituras parciales.
+    CORRECCION C1 (v0.2.3): eliminada la creacion por ruta completa
+    (os.open(str(p))). El archivo se crea siempre anclado: se abre el
+    directorio padre con safe_open_dir_anchored() y se crea el archivo con
+    os.open(name, ..., dir_fd=parent_fd). Si el recorrido anclado no es
+    viable, la funcion falla de forma conservadora (no hay fallback por
+    ruta). La comprobacion previa de symlinks del padre se mantiene como
+    rejection anticipado, no como sustituto del mecanismo anclado.
 
-    - Verifica que el directorio padre no contenga symlinks.
-    - Crea el archivo con O_WRONLY|O_CREAT|O_EXCL|O_NOFOLLOW, mode 0600.
+    - Crea el archivo con O_WRONLY|O_CREAT|O_EXCL|O_NOFOLLOW, mode 0600,
+      relativa al descriptor del padre.
     - Escribe content_bytes en bucle hasta completar o detectar escritura cero.
-    - Cierra el fd y registra errores de cierre.
+    - Cierra el fd y el descriptor del padre, conservando errores de cierre.
     - Si la escritura no se completa, retorna error y el archivo queda
       potencialmente incompleto (no se elimina automaticamente).
 
-    Retorna (ok, error_or_None).
+    Retorna (ok, error_or_None, close_error_or_None).
     """
     p = Path(path)
+    if not p.is_absolute():
+        return False, "safe_create_file_exclusive_anchored requiere path absoluto: {0}".format(p), None
     parent = p.parent
     try:
         check_no_symlink_in_path(parent)
     except OSError as exc:
-        return False, "symlink en padre: {0}".format(exc)
-    try:
-        fd = os.open(str(p), os.O_WRONLY | os.O_CREAT | os.O_EXCL | os.O_NOFOLLOW, 0o600)
-    except OSError as exc:
-        if exc.errno == errno.EEXIST:
-            return False, "archivo ya existe: {0}".format(p)
-        return False, "os.open errno={0}: {1}".format(exc.errno, os.strerror(exc.errno))
+        return False, "symlink en padre: {0}".format(exc), None
+
+    parent_fd, anchor_msg = safe_open_dir_anchored(str(parent))
+    if parent_fd < 0:
+        # Falla conservadora: no hay fallback por ruta (C1, v0.2.3).
+        return False, "apertura anclada del padre fallo: {0} (path: {1})".format(
+            anchor_msg, parent), None
 
     close_error = None
+    parent_close_error = None
+    ok = False
+    err = None
     try:
-        if content_bytes:
-            # C7: escritura completa con manejo de escrituras parciales
-            total = len(content_bytes)
-            written = 0
-            zero_write_count = 0
-            while written < total:
-                try:
-                    n = os.write(fd, content_bytes[written:])
-                except OSError as exc:
-                    return False, "write errno={0}: {1} en offset={2}".format(
-                        exc.errno, os.strerror(exc.errno), written)
-                if n == 0:
-                    zero_write_count += 1
-                    if zero_write_count > 3:
-                        return False, "write devolvio 0 repetidamente en offset={0}".format(written)
-                else:
+        try:
+            fd = os.open(p.name, os.O_WRONLY | os.O_CREAT | os.O_EXCL
+                         | os.O_NOFOLLOW, 0o600, dir_fd=parent_fd)
+        except OSError as exc:
+            if exc.errno == errno.EEXIST:
+                err = "archivo ya existe: {0}".format(p)
+            else:
+                err = "os.open anclado errno={0}: {1}".format(
+                    exc.errno, os.strerror(exc.errno))
+        else:
+            try:
+                if content_bytes:
+                    # C7: escritura completa con manejo de escrituras parciales
+                    total = len(content_bytes)
+                    written = 0
                     zero_write_count = 0
-                written += n
-            if written != total:
-                return False, "escritura incompleta: written={0} total={1}".format(written, total)
-        return True, None
+                    while written < total:
+                        try:
+                            n = os.write(fd, content_bytes[written:])
+                        except OSError as exc:
+                            err = "write errno={0}: {1} en offset={2}".format(
+                                exc.errno, os.strerror(exc.errno), written)
+                            break
+                        if n == 0:
+                            zero_write_count += 1
+                            if zero_write_count > 3:
+                                err = "write devolvio 0 repetidamente en offset={0}".format(written)
+                                break
+                        else:
+                            zero_write_count = 0
+                        written += n
+                    if err is None and written != total:
+                        err = "escritura incompleta: written={0} total={1}".format(written, total)
+                if err is None:
+                    ok = True
+            finally:
+                try:
+                    os.close(fd)
+                except OSError as exc:
+                    close_error = "close errno={0}: {1}".format(exc.errno, os.strerror(exc.errno))
+                    # Si la escritura fue OK pero el cierre fallo, se conserva
+                    # el error de cierre (el archivo no se invalida).
     finally:
         try:
-            os.close(fd)
+            os.close(parent_fd)
         except OSError as exc:
-            close_error = "close errno={0}: {1}".format(exc.errno, os.strerror(exc.errno))
-            # Si la escritura fue OK pero el cierre fallo, reportamos el error de cierre
-            # pero no invalidamos el archivo
-            # El llamador decide si considera el error de cierre como fallo
+            parent_close_error = "parent_fd close errno={0}: {1}".format(
+                exc.errno, os.strerror(exc.errno))
+    close_errors = [e for e in (close_error, parent_close_error) if e]
+    if not ok:
+        if err is None:
+            err = "escritura incompleta"
+        if close_errors:
+            err = err + " | " + " | ".join(close_errors)
+        return False, err, close_errors[0] if close_errors else None
+    if close_errors:
+        return True, None, " | ".join(close_errors)
+    return True, None, None
 
 
 def validate_environments_distinct(private_path, shared_path):
@@ -701,65 +784,183 @@ def sha256_pread_v2(fd, blocksize=1 << 20):
 
 
 # ----------------------------------------------------------------------------
+# C4 (v0.2.3): sink de errores de cierre. Los errores de cierre que se
+# producen mientras una prueba se desenvolve por una excepcion o una
+# interrupcion se acumulan aquí, para que run_environment pueda
+# conservarlos en el resultado (los closers de las pruebas son locales y
+# no son accesibles desde el llamador). Se drena antes de cada prueba y
+# al capturar una excepcion/interrupcion.
+_close_error_sink = []
+
+
+def _record_close_error(entry):
+    _close_error_sink.append(entry)
+
+
+def _drain_close_error_sink():
+    errors = list(_close_error_sink)
+    _close_error_sink.clear()
+    return errors
+
+
 # C4: CloseErrorLogger con registro de errores
 # ----------------------------------------------------------------------------
 
 class CloseErrorLogger:
-    """Acumula errores de cierre de descriptores y SoundFile (C4 — v0.2.1).
+    """Acumula errores de cierre de descriptores y SoundFile (C4 — v0.2.3).
 
     CORRECCION C4.1: eliminados except Exception: pass que silencian fallos.
     CORRECCION C4.2: registra errores de cierre de SoundFile y descriptores.
     CORRECCION C4.3: propaga errores al resultado final de cada prueba.
     CORRECCION C4.6: no intenta cerrar dos veces un descriptor de estado incierto.
+
+    CORRECCION C4 (v0.2.3): el numero entero del descriptor NO se usa como
+    identidad permanente del recurso. Cada descriptor se registra con su
+    identidad actual (st_dev, st_ino), su propietario (label), su estado
+    ("open"/"closed") y el resultado del cierre. Al recibir un descriptor:
+      - si el numero fue cerrado por este logger y la identidad coincide,
+        se registra un aviso de cierre duplicado (no se reintenta);
+      - si el numero fue reutilizado por el sistema para otro recurso
+        (identidad distinta), NO se cierra: se registra un aviso y se evita
+        cerrar accidentalmente un descriptor ajeno;
+      - si no hay registro, se cierra y se registra la identidad para
+        detectar duplicados o reutilizaciones futuras.
+    Los avisos (skips, reutilizaciones) se guardan en `warnings`, distintos
+    de `errors` (fallos reales de cierre).
     """
     def __init__(self):
         self.errors = []
-        self._closed_fds = set()  # Track de fds ya cerrados para evitar dobles cierres
+        self.warnings = []
+        # fd -> {"label", "dev", "ino", "state", "close_result"}
+        self._fds = {}
+        # (id(sfile), sfile) ya cerrados; se guarda la referencia para
+        # evitar que el id sea reutilizado por el recolector.
+        self._closed_sfiles = set()
 
-    def close_fd(self, fd, label):
-        """Cierra un fd de forma segura.
+    @staticmethod
+    def _identity(fd):
+        """Identidad actual del descriptor: (st_dev, st_ino) o None."""
+        try:
+            st = os.fstat(fd)
+            return st.st_dev, st.st_ino
+        except OSError:
+            return None
 
-        - Si fd es None, no hace nada.
-        - Si fd ya fue cerrado por esta instancia, registra warning y no reintenta.
-        - Si el cierre falla, registra el error.
+    def _append_error(self, entry):
+        self.errors.append(entry)
+        _record_close_error(entry)  # sink para errores durante excepciones
 
-        Retorna None si OK o si fd era None/repetido, o el OSError si fallo.
+    def register_fd(self, fd, label):
+        """Registra la propiedad de un descriptor abierto (C4, v0.2.3).
+
+        Se captura la identidad actual (dev, ino) para que un cierre
+        posterior pueda distinguir este recurso de uno que reutilice el
+        numero de descriptor.
         """
         if fd is None:
             return None
-        if fd in self._closed_fds:
-            # Ya cerrado, no intentar de nuevo (C4.6)
-            self.errors.append({"label": label + "_duplicate_skipped",
-                                "errno": None, "strerror": "fd ya cerrado, no se reintenta"})
+        identity = self._identity(fd)
+        if identity is None:
+            exc = OSError(errno.EBADF, "descriptor no valido al registrar")
+            self._append_error({"label": label, "errno": errno.EBADF,
+                                "strerror": "descriptor no valido al registrar"})
+            return exc
+        self._fds[fd] = {"label": label, "dev": identity[0],
+                         "ino": identity[1], "state": "open",
+                         "close_result": None}
+        return None
+
+    def close_fd(self, fd, label):
+        """Cierra un fd de forma segura (C4, v0.2.3).
+
+        - Si fd es None, no hace nada.
+        - La identidad del recurso se verifica por (st_dev, st_ino): un
+          numero reutilizado por el sistema NO se cierra (aviso, no error).
+        - Un cierre duplicado del mismo recurso se registra como aviso.
+        - Si el cierre falla, registra el error y lo propaga.
+
+        Retorna None si OK, si fd era None, si fue un aviso (duplicado o
+        reutilizacion) o si el cierre fue exitoso; el OSError si fallo.
+        """
+        if fd is None:
             return None
+        identity = self._identity(fd)
+        record = self._fds.get(fd)
+        if identity is None:
+            # El descriptor no esta abierto.
+            if record is not None and record["state"] == "closed":
+                self.warnings.append(
+                    {"label": label + "_duplicate_skipped", "errno": None,
+                     "strerror": "descriptor ya cerrado por este logger; "
+                                 "no se reintenta"})
+                return None
+            exc = OSError(errno.EBADF, "descriptor no valido o cerrado")
+            self._append_error({"label": label, "errno": errno.EBADF,
+                                "strerror": "descriptor no valido o cerrado"})
+            return exc
+        if record is not None and record["state"] == "closed":
+            if (record["dev"] == identity[0]
+                    and record["ino"] == identity[1]):
+                # Mismo recurso, ya cerrado: cierre duplicado (aviso).
+                self.warnings.append(
+                    {"label": label + "_duplicate_skipped", "errno": None,
+                     "strerror": "descriptor ya cerrado; no se reintenta"})
+                return None
+            # El numero fue reutilizado por otro recurso: no cerrar ajeno.
+            self.warnings.append(
+                {"label": label + "_number_reused", "errno": None,
+                 "strerror": "numero de descriptor reutilizado por otro "
+                             "recurso; no se cierra (identidad distinta)"})
+            return None
+        if record is not None and record["state"] == "open":
+            if (record["dev"] != identity[0]
+                    or record["ino"] != identity[1]):
+                # Identidad distinta tras el registro: numero reutilizado.
+                self.warnings.append(
+                    {"label": label + "_identity_mismatch", "errno": None,
+                     "strerror": "identidad distinta tras registro; numero "
+                                 "reutilizado; no se cierra"})
+                return None
         try:
             os.close(fd)
-            self._closed_fds.add(fd)
-            return None
         except OSError as exc:
-            self._closed_fds.add(fd)  # Asumimos que ya no es utilizable
-            entry = {"label": label, "errno": exc.errno,
-                     "strerror": os.strerror(exc.errno)}
-            self.errors.append(entry)
+            self._fds[fd] = {"label": label, "dev": identity[0],
+                             "ino": identity[1], "state": "closed",
+                             "close_result": "error:{0}".format(exc.errno)}
+            self._append_error({"label": label, "errno": exc.errno,
+                                "strerror": os.strerror(exc.errno)})
             return exc
+        self._fds[fd] = {"label": label, "dev": identity[0],
+                         "ino": identity[1], "state": "closed",
+                         "close_result": "ok"}
+        return None
 
     def close_soundfile(self, sfile, label):
-        """Cierra un SoundFile de forma segura.
+        """Cierra un SoundFile de forma segura (C4, v0.2.3).
 
         CORRECCION C4.2: registra errores de cierre de SoundFile.
         CORRECCION C4.1: no usa except Exception: pass.
+        CORRECCION C4 (v0.2.3): evita dobles cierres por reutilizacion de
+        id(); los skips son avisos, no errores.
         """
         if sfile is None:
             return None
+        key = (id(sfile), sfile)
+        if key in self._closed_sfiles:
+            self.warnings.append(
+                {"label": label + "_duplicate_skipped", "errno": None,
+                 "strerror": "SoundFile ya cerrado; no se reintenta"})
+            return None
         try:
             sfile.close()
-            return None
         except Exception as exc:
-            # Registrar el error sin silenciarlo
-            entry = {"label": label, "errno": None,
-                     "strerror": "{0}: {1}".format(type(exc).__name__, str(exc)[:80])}
-            self.errors.append(entry)
+            self._closed_sfiles.add(key)
+            self._append_error({"label": label, "errno": None,
+                                "strerror": "{0}: {1}".format(
+                                    type(exc).__name__, str(exc)[:80])})
             return exc
+        self._closed_sfiles.add(key)
+        return None
 
     def summary(self):
         if not self.errors:
@@ -797,12 +998,31 @@ def create_fixture(np, sf, dir_path, fixture_name, subtype, closer):
     """
     out_path = Path(dir_path) / "fixture_{0}.wav".format(fixture_name)
     arr = generate_audio_array(np)
+    # C1 (v0.2.3): creacion anclada del fixture. Se abre el directorio
+    # padre con recorrido anclado y se crea el archivo relativo al
+    # descriptor del padre. Si el mecanismo anclado no es viable, se
+    # falla de forma conservadora (no hay creacion por ruta completa).
     try:
-        fd = os.open(str(out_path), os.O_WRONLY | os.O_CREAT | os.O_EXCL | os.O_NOFOLLOW, 0o600)
+        check_no_symlink_in_path(dir_path)
     except OSError as exc:
-        if exc.errno == errno.EEXIST:
-            return None, "fixture ya existe: {0}".format(out_path)
-        return None, "os.open errno={0}: {1}".format(exc.errno, os.strerror(exc.errno))
+        return None, "symlink en directorio fixture: {0}".format(exc)
+    parent_fd, anchor_msg = safe_open_dir_anchored(str(dir_path))
+    if parent_fd < 0:
+        return None, "apertura anclada del directorio fixture fallo: {0}".format(anchor_msg)
+    try:
+        try:
+            fd = os.open(out_path.name, os.O_WRONLY | os.O_CREAT | os.O_EXCL
+                         | os.O_NOFOLLOW, 0o600, dir_fd=parent_fd)
+        except OSError as exc:
+            if exc.errno == errno.EEXIST:
+                return None, "fixture ya existe: {0}".format(out_path)
+            return None, "os.open anclado errno={0}: {1}".format(
+                exc.errno, os.strerror(exc.errno))
+    finally:
+        try:
+            os.close(parent_fd)
+        except OSError:
+            pass
 
     sfile = None
     try:
@@ -811,7 +1031,8 @@ def create_fixture(np, sf, dir_path, fixture_name, subtype, closer):
         try:
             sfile.write(arr)
         except Exception as exc:
-            return None, "sf.write fallo: {0}: {1}".format(type(exc).__name__, str(exc)[:80])
+            return None, "sf.write fallo: {0}: {1} (archivo parcial queda en disco)".format(
+                type(exc).__name__, str(exc)[:80])
         return out_path, None
     except Exception as exc:
         return None, "SoundFile open fallo: {0}: {1}".format(type(exc).__name__, str(exc)[:80])
@@ -1388,6 +1609,11 @@ def run_environment(np, sf, env_name, env_parent_dir, results, run_id, interrupt
                                 'close_errors': closer.errors})
         else:
             fixtures[fname] = fpath
+            # C4 (v0.2.3): conservar errores de cierre de la creacion del
+            # fixture para que no se pierdan (el closer es local a este
+            # bucle y, sin esto, sus errores quedarian descartados).
+            for entry in closer.errors:
+                _record_close_error(entry)
             print("  fixture creado: {0} ({1} bytes) close_errors={2}".format(
                 fpath.name, fpath.stat().st_size, len(closer.errors)))
 
@@ -1412,11 +1638,13 @@ def run_environment(np, sf, env_name, env_parent_dir, results, run_id, interrupt
                     close_errors = []
             except KeyboardInterrupt:
                 # C5: interrupcion durante esta prueba
+                # C4 (v0.2.3): conservar errores de cierre acumulados,
+                # no devolver close_errors: [] si hubo errores.
                 results.append({'env': env_name, 'test': tid, 'fixture': fname,
                                 'status': Result.ERROR,
                                 'detail': "KeyboardInterrupt: prueba interrumpida, "
                                           "no se declara PASS",
-                                'close_errors': []})
+                                'close_errors': _drain_close_error_sink()})
                 print("  {0}: ERROR - KeyboardInterrupt".format(tid))
                 interrupt_flag[0] = True
                 # No propagar inmediatamente; dejar que el bucle marque las
@@ -1427,7 +1655,7 @@ def run_environment(np, sf, env_name, env_parent_dir, results, run_id, interrupt
                 detail = "{0}: {1}\n{2}".format(
                     type(exc).__name__, str(exc)[:120],
                     traceback.format_exc()[-400:])
-                close_errors = []
+                close_errors = _drain_close_error_sink()
             results.append({'env': env_name, 'test': tid, 'fixture': fname,
                             'status': status, 'detail': detail,
                             'close_errors': close_errors})
@@ -1452,11 +1680,13 @@ def run_environment(np, sf, env_name, env_parent_dir, results, run_id, interrupt
                 status, detail = ret
                 close_errors = []
         except KeyboardInterrupt:
+            # C5: interrupcion durante esta prueba
+            # C4 (v0.2.3): conservar errores de cierre, no [] fijo.
             results.append({'env': env_name, 'test': tid, 'fixture': None,
                             'status': Result.ERROR,
                             'detail': "KeyboardInterrupt: prueba interrumpida, "
                                       "no se declara PASS",
-                            'close_errors': []})
+                            'close_errors': _drain_close_error_sink()})
             print("  {0}: ERROR - KeyboardInterrupt".format(tid))
             interrupt_flag[0] = True
             continue
@@ -1465,7 +1695,7 @@ def run_environment(np, sf, env_name, env_parent_dir, results, run_id, interrupt
             detail = "{0}: {1}\n{2}".format(
                 type(exc).__name__, str(exc)[:120],
                 traceback.format_exc()[-400:])
-            close_errors = []
+            close_errors = _drain_close_error_sink()
         results.append({'env': env_name, 'test': tid, 'fixture': None,
                         'status': status, 'detail': detail,
                         'close_errors': close_errors})
@@ -1542,6 +1772,18 @@ def write_report_json_robust(report_path, report_dict):
     CORRECCION C7.4: si el informe no se completo, devuelve codigo != 0.
     CORRECCION C7.5: no sobrescribe informe preexistente (O_CREAT|O_EXCL).
 
+    CORRECCION C1 (v0.2.3): eliminada la creacion por ruta completa
+    (os.open(str(report_path))). El informe se crea como provisional
+    exclusivo y anclado (os.open con dir_fd sobre el descriptor del
+    directorio padre) y se publica al final por enlace duro, que es
+    atomo y no sobrescribe: si el informe final ya existe, la publicacion
+    falla y se conserva el provisional (sin limpieza automatica).
+
+    CORRECCION C5 (v0.2.3): se verifica fsync + tamano tras la escritura
+    antes de cerrar, se verifica el cierre (identidad del descriptor) y
+    el estado del informe se informa explicitamente: publicado, o
+    provisional/incompleto/no publicado con el motivo.
+
     Retorna (ok, error_or_None, close_error_or_None).
     """
     try:
@@ -1554,58 +1796,114 @@ def write_report_json_robust(report_path, report_dict):
     except Exception as exc:
         return False, "json.dumps fallo: {0}: {1}".format(type(exc).__name__, str(exc)[:80]), None
 
-    try:
-        fd = os.open(str(report_path),
-                     os.O_WRONLY | os.O_CREAT | os.O_EXCL | os.O_NOFOLLOW, 0o600)
-    except OSError as exc:
-        if exc.errno == errno.EEXIST:
-            return False, "informe JSON ya existe: {0}".format(report_path), None
-        return False, "os.open errno={0}: {1}".format(exc.errno, os.strerror(exc.errno)), None
+    # C1 (v0.2.3): apertura anclada del directorio padre del informe.
+    parent_fd, anchor_msg = safe_open_dir_anchored(str(report_path.parent))
+    if parent_fd < 0:
+        return False, "apertura anclada del directorio del informe fallo: {0}".format(anchor_msg), None
 
+    tmp_name = report_path.name + ".tmp"
     close_err = None
     try:
-        # C7.1: bucle de escritura hasta completar
-        total = len(content)
-        written = 0
-        zero_write_count = 0
-        while written < total:
-            try:
-                n = os.write(fd, content[written:])
-            except OSError as exc:
-                # Intentar cerrar antes de salir
-                try:
-                    os.close(fd)
-                except OSError as e2:
-                    close_err = "close errno={0}: {1}".format(e2.errno, os.strerror(e2.errno))
-                return False, "write errno={0}: {1} en offset={2}".format(
-                    exc.errno, os.strerror(exc.errno), written), close_err
-            if n == 0:
-                # C7.2: write devolvio 0 antes de completar
-                zero_write_count += 1
-                if zero_write_count > 3:
-                    try:
-                        os.close(fd)
-                    except OSError as e2:
-                        close_err = "close errno={0}: {1}".format(e2.errno, os.strerror(e2.errno))
-                    return False, "write devolvio 0 repetidamente en offset={0} de {1}".format(
-                        written, total), close_err
-            else:
-                zero_write_count = 0
-            written += n
-        if written != total:
-            try:
-                os.close(fd)
-            except OSError as e2:
-                close_err = "close errno={0}: {1}".format(e2.errno, os.strerror(e2.errno))
-            return False, "escritura incompleta: written={0} total={1}".format(written, total), close_err
-        return True, None, None
-    finally:
-        # C7.3: cerrar el descriptor y conservar errores
         try:
-            os.close(fd)
+            tmp_fd = os.open(tmp_name, os.O_WRONLY | os.O_CREAT | os.O_EXCL
+                             | os.O_NOFOLLOW, 0o600, dir_fd=parent_fd)
         except OSError as exc:
-            if close_err is None:
-                close_err = "close errno={0}: {1}".format(exc.errno, os.strerror(exc.errno))
+            if exc.errno == errno.EEXIST:
+                return False, ("informe provisional ya existe (no se sobrescribe): "
+                               "{0}".format(report_path.parent / tmp_name)), None
+            return False, "os.open anclado errno={0}: {1}".format(
+                exc.errno, os.strerror(exc.errno)), None
+
+        closer = CloseErrorLogger()
+        closer.register_fd(tmp_fd, 'report_tmp_fd')
+        err = None
+        try:
+            # C7.1: bucle de escritura hasta completar
+            total = len(content)
+            written = 0
+            zero_write_count = 0
+            while written < total:
+                try:
+                    n = os.write(tmp_fd, content[written:])
+                except OSError as exc:
+                    err = "write errno={0}: {1} en offset={2}".format(
+                        exc.errno, os.strerror(exc.errno), written)
+                    break
+                if n == 0:
+                    # C7.2: write devolvio 0 antes de completar
+                    zero_write_count += 1
+                    if zero_write_count > 3:
+                        err = "write devolvio 0 repetidamente en offset={0} de {1}".format(
+                            written, total)
+                        break
+                else:
+                    zero_write_count = 0
+                written += n
+            if err is None and written != total:
+                err = "escritura incompleta: written={0} total={1}".format(written, total)
+            if err is None:
+                # C5 (v0.2.3): flush al disco y verificacion del tamano
+                try:
+                    os.fsync(tmp_fd)
+                except OSError as exc:
+                    err = "fsync errno={0}: {1}".format(exc.errno, os.strerror(exc.errno))
+            if err is None:
+                try:
+                    st = os.fstat(tmp_fd)
+                    if st.st_size != total:
+                        err = "verificacion de tamano fallo: st_size={0} != total={1}".format(
+                            st.st_size, total)
+                except OSError as exc:
+                    err = "fstat errno={0}: {1}".format(exc.errno, os.strerror(exc.errno))
+        finally:
+            # C7.3: cerrar el descriptor y conservar errores de cierre
+            exc_close = closer.close_fd(tmp_fd, 'report_tmp_fd')
+            if exc_close is not None:
+                _record_close_error({"label": 'report_tmp_fd', "errno": exc_close.errno,
+                                     "strerror": os.strerror(exc_close.errno)})
+        close_err = closer.summary()
+
+        if err is not None:
+            # C5 (v0.2.3): informe incompleto: no se publica; queda provisional.
+            return False, ("informe incompleto, no publicado; provisional queda en "
+                           "disco: {0} ({1})".format(report_path.parent / tmp_name, err)), close_err
+
+        # C5 (v0.2.3): publicacion sin sobrescritura. Enlace duro atomo:
+        # si el informe final ya existe, os.link falla con EEXIST y no se
+        # sobrescribe; el provisional queda en disco (no hay limpieza).
+        try:
+            os.link(report_path.parent / tmp_name, report_path)
+        except OSError as exc:
+            if exc.errno == errno.EEXIST:
+                return False, ("informe preexistente; no se sobrescribe: {0} "
+                               "(provisional queda en disco)".format(report_path)), close_err
+            if exc.errno in (errno.EOPNOTSUPP, errno.ENOSYS):
+                # Sistema sin enlaces duros: renombrado con comprobacion
+                # previa de existencia (equivalente seguro; no sobrescribe).
+                if os.path.exists(report_path):
+                    return False, ("informe preexistente; no se sobrescribe: {0} "
+                                   "(provisional queda en disco)".format(report_path)), close_err
+                try:
+                    os.rename(report_path.parent / tmp_name, report_path)
+                except OSError as exc2:
+                    return False, ("informe no publicado (rename errno={0}: {1}); "
+                                   "provisional queda en disco".format(
+                                       exc2.errno, os.strerror(exc2.errno))), close_err
+            else:
+                return False, ("informe no publicado (link errno={0}: {1}); "
+                               "provisional queda en disco".format(
+                                   exc.errno, os.strerror(exc.errno))), close_err
+        else:
+            try:
+                os.unlink(report_path.parent / tmp_name)
+            except OSError:
+                pass
+            return True, None, close_err
+    finally:
+        try:
+            os.close(parent_fd)
+        except OSError:
+            pass
 
 
 # ----------------------------------------------------------------------------
@@ -1656,11 +1954,12 @@ def main():
         sys.exit(2)
 
     if not private_parent.exists():
+        # C1 (v0.2.3): creacion de padres anclada (no Path.mkdir por ruta).
         try:
-            private_parent.mkdir(parents=True, exist_ok=False, mode=0o700)
+            _ensure_parents_anchored(private_parent)
         except OSError as exc:
-            print("[FATAL] No se pudo crear directorio padre privado {0}: errno={1}".format(
-                private_parent, exc.errno))
+            print("[FATAL] No se pudo crear directorio padre privado {0}: {1}".format(
+                private_parent, exc))
             sys.exit(2)
     else:
         # C1.6: verificar que el directorio padre existente es seguro
@@ -1679,11 +1978,12 @@ def main():
                 shared_parent, exc.errno))
             sys.exit(2)
         if not shared_parent.exists():
+            # C1 (v0.2.3): creacion de padres anclada (no Path.mkdir por ruta).
             try:
-                shared_parent.mkdir(parents=True, exist_ok=False, mode=0o700)
+                _ensure_parents_anchored(shared_parent)
             except OSError as exc:
-                print("[FATAL] No se pudo crear directorio padre compartido {0}: errno={1}".format(
-                    shared_parent, exc.errno))
+                print("[FATAL] No se pudo crear directorio padre compartido {0}: {1}".format(
+                    shared_parent, exc))
                 sys.exit(2)
         else:
             ok, msg = check_dir_is_safe(shared_parent,
@@ -1801,6 +2101,22 @@ def main():
         print("\n[ERROR FATAL durante ejecucion] {0}".format(interrupt_msg))
         traceback.print_exc()
 
+    # C5 (v0.2.3): coherencia del estado global. Una interrupcion absorbida
+    # a nivel de prueba (run_environment la registra y marca el resto como
+    # NOT_EXECUTED) puede no haber propagado el KeyboardInterrupt al
+    # llamador. El flag mutable es el estado real de la ejecucion: si se
+    # seteio, el resumen y el informe deben reflejar interrupcion, nunca
+    # PASS. Se conservan los resultados previos.
+    if interrupt_flag[0] and not interrupted:
+        interrupted = True
+        interrupt_msg = (interrupt_msg + "; " if interrupt_msg else "") + \
+            "interrupcion detectada via interrupt_flag"
+
+    # C4 (v0.2.3): conservar errores de cierre acumulados a nivel de
+    # entorno (creacion de fixtures, cierres absorbidos) que no tuvieron
+    # un resultado propio, para que no se pierdan y queden en el informe.
+    env_close_errors = _drain_close_error_sink()
+
     finished_at = time.strftime('%Y-%m-%dT%H:%M:%S%z')
 
     # Resumen
@@ -1848,6 +2164,8 @@ def main():
         'shared_parent_dir': str(shared_parent) if shared_parent else None,
         'private_run_dir': str(private_run_dir) if private_run_dir else None,
         'shared_run_dir': str(shared_run_dir) if shared_run_dir else None,
+        # C4 (v0.2.3): errores de cierre acumulados a nivel de entorno
+        'environment_close_errors': env_close_errors,
         'results': results,
         'summary': {
             'total': total,
@@ -1869,12 +2187,20 @@ def main():
             'Los resultados son especificos al dispositivo, entorno y versiones utilizadas.',
             'C1: directorios de ejecucion y archivos creados con O_CREAT|O_EXCL|O_NOFOLLOW.',
             'C1: recorrido anclado por dir_fd + O_DIRECTORY + O_NOFOLLOW cuando es viable.',
+            'C1 (v0.2.3): eliminados fallbacks por ruta; creaciones ancladas por dir_fd; '
+            'si el mecanismo anclado no es viable, se falla conservadoramente.',
             'C2: T14 ejecuta todas las comprobaciones obligatorias antes de declarar PASS; '
             'comprobaciones no realizadas se registran como NOT_DONE.',
             'C3: sha256_pread_v2 clasifica COMPLETE/ZERO_SIZE/EMPTY_UNEXPECTED/PARTIAL/SIZE_CHANGED/SYSTEM_ERROR.',
             'C3: SIZE_CHANGED no es deteccion completa de modificaciones concurrentes; '
             'cambios de contenido sin cambio de tamano pasan inadvertidos.',
             'C4: errores de cierre registrados en cada resultado (campo close_errors).',
+            'C4 (v0.2.3): identidad de descriptor por (st_dev, st_ino), no solo por numero '
+            'de fd; se evita cerrar fds reutilizados y se evitan dobles cierres.',
+            'C4 (v0.2.3): errores de cierre conservados en handlers de excepcion e '
+            'interrupcion; no se devuelve close_errors vacio si hubo errores.',
+            'C5 (v0.2.3): interrupt_flag, el estado global interrupted y el informe JSON '
+            'reflejan el mismo estado; interrupcion nunca se declara PASS.',
             'C5: KeyboardInterrupt y excepciones fatales nunca terminan con codigo 0.',
             'C7: escritura completa del informe con manejo de escrituras parciales.',
         ],
