@@ -9,6 +9,7 @@ import json
 import os
 import platform
 import re
+import signal
 import stat
 import subprocess
 import sys
@@ -35,6 +36,10 @@ class Unavailable(Exception):
 
 class ProcfsUnavailable(Unavailable):
     """procfs no montado o no expone los descriptores de archivo."""
+
+
+class ProcfsAccessDenied(Unavailable):
+    """procfs presente pero no accesible (p.ej. EACCES): capacidad no disponible."""
 
 
 class OperationUnsupported(Unavailable):
@@ -166,8 +171,11 @@ def read_object(ref):
             "procfs no entregó un lector de la referencia (¿no montado?)"
         ) from exc
     except PermissionError as exc:
-        raise InsufficientPermission(
-            "permisos insuficientes para abrir /proc/self/fd/<ref>"
+        # Sin acceso a procfs no se puede obtener el lector de la referencia:
+        # es una capacidad opcional del entorno no disponible -> NOT_EXECUTED
+        # (no un fallo funcional). Se conserva el errno/original en el informe.
+        raise ProcfsAccessDenied(
+            "procfs no accesible para abrir /proc/self/fd/<ref> (permisos)"
         ) from exc
     except OSError as exc:
         if exc.errno in UNSUPPORTED:
@@ -743,50 +751,75 @@ def worker(group, name, path):
 
 
 def _terminate(process, wait):
-    """Terminación controlada de un hijo: SIGTERM, espera acotada y luego SIGKILL.
+    """Terminación controlada del hijo y su grupo de procesos.
 
-    No realiza limpieza de archivos; solo garantiza que el proceso no quede
-    ejecutándose en silencio.
+    El hijo se inicia con start_new_session=True, por lo que es líder de su
+    propio grupo; así os.killpg alcanza también a los procesos descendientes.
+    Estrategia: SIGTERM al grupo -> espera -> SIGKILL al grupo -> espera.
+    Devuelve True SOLO si poll() confirma la terminación; si no, False (no se
+    oculta el estado real).
     """
-    if process.poll() is not None:
-        return
-    process.terminate()  # SIGTERM
-    try:
-        process.wait(timeout=wait)
-    except subprocess.TimeoutExpired:
-        try:
-            process.kill()  # SIGKILL (escalado)
-        except OSError:
-            pass
+    def alive():
+        return process.poll() is None
+    if not alive():
+        return True
+    use_group = hasattr(os, "killpg")
+    pgid = process.pid if use_group else None
+    for stage in ("term", "kill"):
+        sig = signal.SIGTERM if stage == "term" else signal.SIGKILL
+        if use_group:
+            try:
+                os.killpg(pgid, sig)
+            except (OSError, ProcessLookupError):
+                pass
+        else:
+            # Sin grupos de procesos: solo el hijo directo; los descendientes
+            # pueden sobrevivir (se documenta como limitación, no como garantía).
+            try:
+                process.send_signal(sig)
+            except (OSError, ProcessLookupError):
+                pass
         try:
             process.wait(timeout=wait)
+            return True
         except subprocess.TimeoutExpired:
-            pass
+            continue
+    return not alive()
 
 
 def child_output(command, timeout, kill_wait=2.0):
     """Ejecuta el comando en un proceso hijo con terminación controlada.
 
-    - Timeout: se termina al hijo (SIGTERM -> espera -> SIGKILL) y se reporta FAIL.
-    - KeyboardInterrupt durante la prueba: se termina al hijo y se propaga.
+    El hijo se inicia en su propio grupo de procesos (start_new_session=True)
+    para que la terminación alcance también a los descendientes (os.killpg).
+    - Timeout: se termina al grupo (SIGTERM -> espera -> SIGKILL) y se reporta
+      el estado REAL (child_terminated solo si poll() lo confirma).
+    - KeyboardInterrupt durante la prueba: se termina al grupo y se propaga.
     No se limpian archivos ni directorios; los artefactos parciales pueden quedar.
     """
     try:
         p = subprocess.Popen(command, stdout=subprocess.PIPE, stderr=subprocess.PIPE,
-                             text=True, errors="replace")
+                             text=True, errors="replace", start_new_session=True)
     except OSError as exc:
         return "", "", None, {"status": "NOT_EXECUTED", "error": error(exc)}
     try:
         out, err = p.communicate(timeout=timeout)
         return out, err, p.returncode, None
     except subprocess.TimeoutExpired as exc:
-        _terminate(p, kill_wait)
+        terminated = _terminate(p, kill_wait)
         out = exc.stdout.decode("utf-8", "replace") if isinstance(exc.stdout, bytes) else (exc.stdout or "")
         err = exc.stderr.decode("utf-8", "replace") if isinstance(exc.stderr, bytes) else (exc.stderr or "")
-        return out, err, None, {
+        result = {
             "status": "FAIL", "error": error(exc), "timeout_s": timeout,
-            "child_terminated": True,
+            "child_terminated": terminated,
+            "process_group_used": True,
         }
+        if not terminated:
+            # No se pudo confirmar la terminación: estado de error inequívoco.
+            result["termination_error"] = (
+                "no se pudo confirmar la terminación del hijo tras SIGTERM/SIGKILL"
+            )
+        return out, err, None, result
     except KeyboardInterrupt:
         _terminate(p, kill_wait)
         raise
@@ -837,23 +870,30 @@ def analyze_base(base, location_declared=None, probe_writability=False):
     No usa root ni modifica permisos ajenos. Las incertidumbres se registran
     como tales. El sondeo de escritura, si se solicita, crea y elimina únicamente
     sus propios artefactos; no limpia nada del diagnóstico.
+
+    Campos consumidos por approved_base para la aprobación:
+      - status: "OK" | "UNVERIFIABLE" | "REJECTED"
+      - verified_writable: bool (solo si se sondeó) o None
+      - storage_suitable: False si hay incompatibilidad de almacenamiento
     """
     info = {"path": str(base), "location_declared": location_declared}
     try:
         st = base.lstat()
     except OSError as exc:
-        info.update(status="UNVERIFIABLE", error=error(exc))
+        info.update(status="UNVERIFIABLE", verified_writable=None,
+                    storage_suitable=True, error=error(exc))
         return info
     mode = st.st_mode
     if stat.S_ISLNK(mode):
-        info["object_type"] = "symlink"
-        info["status"] = "REJECTED"
-        info["reason"] = "el objetivo es un enlace simbólico, no un directorio real"
+        info.update(status="REJECTED", verified_writable=None,
+                    storage_suitable=True,
+                    object_type="symlink",
+                    reason="el objetivo es un enlace simbólico, no un directorio real")
         return info
     if not stat.S_ISDIR(mode):
-        info["object_type"] = "other"
-        info["status"] = "REJECTED"
-        info["reason"] = "el objetivo no es un directorio"
+        info.update(status="REJECTED", verified_writable=None,
+                    storage_suitable=True,
+                    object_type="other", reason="el objetivo no es un directorio")
         return info
     info["object_type"] = "directory"
     info["status"] = "OK"
@@ -867,14 +907,17 @@ def analyze_base(base, location_declared=None, probe_writability=False):
     info["world_writable"] = bool(perms & 0o002)
     info["group_writable"] = bool(perms & 0o020)
     info["owner_writable"] = bool(perms & 0o200)
+    verified = None
     if probe_writability:
         probe = {"attempted": True}
+        writable = False
         try:
             probe_dir = tempfile.mkdtemp(prefix="base-probe-", dir=base)
             probe_file = Path(probe_dir) / "w"
             probe_file.write_bytes(b"x")
             probe["dir_created"] = True
             probe["file_created"] = True
+            writable = True
             try:
                 probe_file.unlink()
                 os.rmdir(probe_dir)
@@ -887,34 +930,78 @@ def analyze_base(base, location_declared=None, probe_writability=False):
             probe["file_created"] = False
             probe["error"] = error(exc)
         info["writability_probe"] = probe
+        verified = writable
     else:
         info["writability_probe"] = {"attempted": False}
-    # Condiciones de acceso de Android (privado frente a compartido).
-    android = {
-        "termux_version": os.environ.get("TERMUX_VERSION"),
-        "location_declared": location_declared,
-    }
+    info["verified_writable"] = verified
+    # Almacenamiento: distinguir Termux privado frente a Android compartido.
+    termux = os.environ.get("TERMUX_VERSION")
     s = str(base)
-    android["looks_like_shared"] = any(
+    is_termux_private = bool(termux) and (
+        "/data/data/com.termux" in s
+        or os.environ.get("PREFIX", "") in s
+        or str(Path.home()) in s
+    )
+    is_android_shared = any(
         seg in s for seg in ("/sdcard", "/storage/emulated", "/mnt/sdcard")
     )
-    android["looks_like_private"] = "/data/data/" in s or "/data/user/" in s
-    android["caveat"] = (
-        "un directorio compartido (p.ej. /sdcard) NO se considera seguro solo "
-        "por ser escribible: el almacenamiento compartido de Android tiene "
-        "semánticas de acceso distintas (scoped storage, MediaStore)."
-    )
-    info["android"] = android
+    if is_termux_private:
+        detected = "termux_private"
+    elif is_android_shared:
+        detected = "android_shared"
+    else:
+        detected = "other"
+    storage = {
+        "termux_version": termux,
+        "location_declared": location_declared,
+        "detected_class": detected,
+    }
+    if detected == "android_shared":
+        storage["caveat"] = (
+            "almacenamiento compartido de Android: que sea escribible NO demuestra "
+            "que sea apropiado para staging/publicación (scoped storage, MediaStore)."
+        )
+        storage["suitability"] = (
+            "shared_approved_with_caveat" if location_declared == "shared"
+            else "REJECTED_mismatch"
+        )
+    elif detected == "termux_private":
+        storage["caveat"] = "almacenamiento privado de Termux."
+        storage["suitability"] = (
+            "termux_private_approved" if location_declared == "private"
+            else "REJECTED_mismatch"
+        )
+    else:
+        storage["caveat"] = "ubicación genérica; no es almacenamiento Android/Termux."
+        storage["suitability"] = "generic"
+    info["android"] = storage
+    info["storage_suitable"] = (storage["suitability"] != "REJECTED_mismatch")
     return info
 
 
 def approved_base(path, location_declared=None):
-    base = path.expanduser().resolve(strict=True)
+    # 1) Examinar la ruta declarada SIN resolver enlaces simbólicos.
+    raw = Path(path).expanduser()
+    try:
+        raw_st = raw.lstat()
+    except OSError as exc:
+        raise ValueError(f"--base no accesible: {error(exc)}")
+    if stat.S_ISLNK(raw_st.st_mode):
+        # Enlace simbólico en el componente final: se rechaza explícitamente,
+        # sin resolverlo en silencio.
+        raise ValueError("--base es un enlace simbólico; no se resuelve silenciosamente")
+    # 2) Resolver solo tras clasificar el componente final.
+    base = raw.resolve(strict=True)
     if os.geteuid() == 0:
         raise ValueError("--base no debe ejecutarse como root")
-    analysis = analyze_base(base, location_declared, probe_writability=False)
-    if analysis["status"] == "REJECTED":
-        raise ValueError(f"--base rechazado: {analysis['reason']}")
+    # 3) La aprobación depende de condiciones verificadas, no solo de registrar.
+    analysis = analyze_base(base, location_declared, probe_writability=True)
+    if analysis["status"] != "OK":
+        raise ValueError(f"--base rechazado: {analysis.get('reason')}")
+    if analysis.get("verified_writable") is not True:
+        raise ValueError("--base: la capacidad de escritura no pudo verificarse; no se aprueba")
+    if not analysis.get("storage_suitable", True):
+        raise ValueError("--base: la clase de almacenamiento declarada no coincide con la detectada")
     if base == base.parent:
         raise ValueError("--base debe ser un directorio de diagnóstico, no la raíz")
     for parent in (base, *base.parents):
@@ -1003,7 +1090,8 @@ def main():
                    "counts": dict(counts), "cleanup": "none",
                    "android_compatibility_claimed": False,
                    "partial_artifacts_may_remain": True,
-                   "child_process_termination": "controlled_sigterm_then_sigkill"})
+                   "child_process_termination": "controlled_sigterm_then_sigkill_process_group",
+                   "child_process_group": True})
             print(f"REPORT={report}", flush=True)
 
     if not complete:
