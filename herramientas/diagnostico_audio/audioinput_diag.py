@@ -25,7 +25,32 @@ GROUPS = {}
 
 
 class Unavailable(Exception):
+    """Limitación de capacidad del entorno: el caso no puede ejecutarse.
+
+    Se traduce en NOT_EXECUTED. No debe usarse para errores reales del
+    diagnóstico (véase DiagnosticError).
+    """
     pass
+
+
+class ProcfsUnavailable(Unavailable):
+    """procfs no montado o no expone los descriptores de archivo."""
+
+
+class OperationUnsupported(Unavailable):
+    """Operación no soportada por el kernel o el filesystem."""
+
+
+class DiagnosticError(Exception):
+    """Error real del diagnóstico: se conserva como FAIL, no como incompatibilidad."""
+
+
+class InvalidDescriptor(DiagnosticError):
+    """El descriptor de archivo de referencia no es válido."""
+
+
+class InsufficientPermission(DiagnosticError):
+    """Permisos insuficientes para completar la operación."""
 
 
 def require(value, message):
@@ -123,13 +148,33 @@ def ref_open(path, *, dir_fd=None, directory=False):
 
 
 def read_object(ref):
-    before = os.fstat(ref)
+    try:
+        before = os.fstat(ref)
+    except OSError as exc:
+        if exc.errno == errno.EBADF:
+            raise InvalidDescriptor(
+                "el descriptor de referencia no es válido"
+            ) from exc
+        raise
     require(stat.S_ISREG(before.st_mode), "la referencia no es regular")
     try:
-        fd = candidate(os.open, f"/proc/self/fd/{ref}", os.O_RDONLY,
-                       permission=True)
+        fd = os.open(f"/proc/self/fd/{ref}", os.O_RDONLY)
     except FileNotFoundError as exc:
-        raise Unavailable("procfs no entregó un lector de la referencia") from exc
+        # El descriptor es válido (acabamos de hacerle fstat), así que la ruta
+        # /proc no resolvió: procfs no montado o no expone los descriptores.
+        raise ProcfsUnavailable(
+            "procfs no entregó un lector de la referencia (¿no montado?)"
+        ) from exc
+    except PermissionError as exc:
+        raise InsufficientPermission(
+            "permisos insuficientes para abrir /proc/self/fd/<ref>"
+        ) from exc
+    except OSError as exc:
+        if exc.errno in UNSUPPORTED:
+            raise OperationUnsupported(
+                "apertura vía procfs no soportada por el kernel"
+            ) from exc
+        raise  # error real de apertura: se conserva como fallo
     try:
         actual = os.fstat(fd)
         require(stat.S_ISREG(actual.st_mode) and ident(actual) == ident(before),
@@ -430,9 +475,14 @@ def flac_md5(path):
                 "reason": "el verificador sólo cubre PCM16 y PCM24"}
     try:
         np, sf = dependencies("FLAC", f"PCM_{info['bits']}")
-        # MD5 se usa sólo para reproducir el checksum del formato FLAC.
-        md5 = hashlib.md5(usedforsecurity=False)
     except (Unavailable, ValueError, AttributeError, TypeError) as exc:
+        return {"md5_status": "CAPABILITY_UNAVAILABLE",
+                "stored": stored.hex(), "error": error(exc)}
+    # MD5 solo reproduce el checksum del formato FLAC. Algunas plataformas no
+    # admiten usedforsecurity=False: se clasifica como incapacidad, no como fallo.
+    try:
+        md5 = hashlib.md5(usedforsecurity=False)
+    except (ValueError, TypeError, AttributeError) as exc:
         return {"md5_status": "CAPABILITY_UNAVAILABLE",
                 "stored": stored.hex(), "error": error(exc)}
     frames = 0
@@ -456,8 +506,12 @@ def flac_md5(path):
                                     for v in values.ravel(order="C")))
                 frames += len(block)
         require(frames == info["frames"], "conteo PCM incompleto")
+    except AssertionError as exc:
+        # Inconsistencia o fallo de decodificación real, no limitación de formato.
+        return {"md5_status": "DECODE_ERROR", "stored": stored.hex(),
+                "frames_read": frames, "error": error(exc)}
     except Exception as exc:
-        return {"md5_status": "NOT_VERIFIABLE", "stored": stored.hex(),
+        return {"md5_status": "DECODE_ERROR", "stored": stored.hex(),
                 "frames_read": frames, "error": error(exc)}
     return {"md5_status": "MATCH" if md5.digest() == stored else "MISMATCH",
             "stored": stored.hex(), "computed": md5.hexdigest(),
@@ -573,9 +627,13 @@ def truncate_open_flac(root):
 def rename_noreplace(source, target):
     try:
         import ctypes
-        operation = ctypes.CDLL(None, use_errno=True).renameat2
-    except (ImportError, OSError, AttributeError) as exc:
-        raise Unavailable("renameat2 no está accesible en ctypes/libc") from exc
+        libc = ctypes.CDLL(None, use_errno=True)
+        operation = libc.renameat2
+    except AttributeError as exc:
+        # El símbolo renameat2 no existe en esta libc.
+        raise Unavailable("símbolo renameat2 ausente en libc") from exc
+    except (ImportError, OSError) as exc:
+        raise Unavailable("libc inaccesible para cargar renameat2") from exc
     operation.argtypes = [
         ctypes.c_int, ctypes.c_char_p, ctypes.c_int, ctypes.c_char_p, ctypes.c_uint,
     ]
@@ -583,7 +641,15 @@ def rename_noreplace(source, target):
     # ABI Linux/Android: AT_FDCWD=-100, RENAME_NOREPLACE=1.
     if operation(-100, os.fsencode(source), -100, os.fsencode(target), 1):
         code = ctypes.get_errno()
+        if code in (errno.ENOSYS, errno.ENOTSUP, errno.EOPNOTSUPP):
+            # Syscall ausente en el kernel o no soportado por el filesystem:
+            # limitación de capacidad, no un fallo del diagnóstico.
+            raise Unavailable(f"renameat2 no disponible ({os.strerror(code)}, {code})")
+        # EEXIST se propaga como OSError para que el llamador detecte la colisión
+        # (no se sobrescribe el destino). El resto (p.ej. EACCES/EPERM) se conserva
+        # como error operativo real.
         raise OSError(code, os.strerror(code), str(source), None, str(target))
+    return None
 
 
 @case("publish")
@@ -676,19 +742,54 @@ def worker(group, name, path):
          elapsed_s=round(time.monotonic() - start, 6), **result)
 
 
-def child_output(command, timeout):
+def _terminate(process, wait):
+    """Terminación controlada de un hijo: SIGTERM, espera acotada y luego SIGKILL.
+
+    No realiza limpieza de archivos; solo garantiza que el proceso no quede
+    ejecutándose en silencio.
+    """
+    if process.poll() is not None:
+        return
+    process.terminate()  # SIGTERM
     try:
-        p = subprocess.run(command, capture_output=True, text=True,
-                           errors="replace", timeout=timeout)
-        return p.stdout, p.stderr, p.returncode, None
-    except subprocess.TimeoutExpired as exc:
-        def text(value):
-            return value.decode("utf-8", "replace") if isinstance(value, bytes) else value or ""
-        return text(exc.stdout), text(exc.stderr), None, {
-            "status": "FAIL", "error": error(exc), "timeout_s": timeout,
-        }
+        process.wait(timeout=wait)
+    except subprocess.TimeoutExpired:
+        try:
+            process.kill()  # SIGKILL (escalado)
+        except OSError:
+            pass
+        try:
+            process.wait(timeout=wait)
+        except subprocess.TimeoutExpired:
+            pass
+
+
+def child_output(command, timeout, kill_wait=2.0):
+    """Ejecuta el comando en un proceso hijo con terminación controlada.
+
+    - Timeout: se termina al hijo (SIGTERM -> espera -> SIGKILL) y se reporta FAIL.
+    - KeyboardInterrupt durante la prueba: se termina al hijo y se propaga.
+    No se limpian archivos ni directorios; los artefactos parciales pueden quedar.
+    """
+    try:
+        p = subprocess.Popen(command, stdout=subprocess.PIPE, stderr=subprocess.PIPE,
+                             text=True, errors="replace")
     except OSError as exc:
         return "", "", None, {"status": "NOT_EXECUTED", "error": error(exc)}
+    try:
+        out, err = p.communicate(timeout=timeout)
+        return out, err, p.returncode, None
+    except subprocess.TimeoutExpired as exc:
+        _terminate(p, kill_wait)
+        out = exc.stdout.decode("utf-8", "replace") if isinstance(exc.stdout, bytes) else (exc.stdout or "")
+        err = exc.stderr.decode("utf-8", "replace") if isinstance(exc.stderr, bytes) else (exc.stderr or "")
+        return out, err, None, {
+            "status": "FAIL", "error": error(exc), "timeout_s": timeout,
+            "child_terminated": True,
+        }
+    except KeyboardInterrupt:
+        _terminate(p, kill_wait)
+        raise
 
 
 def run_case(group, name, run, timeout, write):
@@ -730,9 +831,91 @@ def run_case(group, name, run, timeout, write):
     return row["status"]
 
 
-def approved_base(path):
+def analyze_base(base, location_declared=None, probe_writability=False):
+    """Evalúa (sin aprobar por defecto) las condiciones del directorio base.
+
+    No usa root ni modifica permisos ajenos. Las incertidumbres se registran
+    como tales. El sondeo de escritura, si se solicita, crea y elimina únicamente
+    sus propios artefactos; no limpia nada del diagnóstico.
+    """
+    info = {"path": str(base), "location_declared": location_declared}
+    try:
+        st = base.lstat()
+    except OSError as exc:
+        info.update(status="UNVERIFIABLE", error=error(exc))
+        return info
+    mode = st.st_mode
+    if stat.S_ISLNK(mode):
+        info["object_type"] = "symlink"
+        info["status"] = "REJECTED"
+        info["reason"] = "el objetivo es un enlace simbólico, no un directorio real"
+        return info
+    if not stat.S_ISDIR(mode):
+        info["object_type"] = "other"
+        info["status"] = "REJECTED"
+        info["reason"] = "el objetivo no es un directorio"
+        return info
+    info["object_type"] = "directory"
+    info["status"] = "OK"
+    info["uid"] = os.getuid()
+    info["gid"] = os.getgid()
+    info["owner_uid"] = st.st_uid
+    info["owner_gid"] = st.st_gid
+    info["owned_by_current_user"] = (st.st_uid == os.getuid())
+    perms = mode & 0o777
+    info["mode"] = oct(perms)
+    info["world_writable"] = bool(perms & 0o002)
+    info["group_writable"] = bool(perms & 0o020)
+    info["owner_writable"] = bool(perms & 0o200)
+    if probe_writability:
+        probe = {"attempted": True}
+        try:
+            probe_dir = tempfile.mkdtemp(prefix="base-probe-", dir=base)
+            probe_file = Path(probe_dir) / "w"
+            probe_file.write_bytes(b"x")
+            probe["dir_created"] = True
+            probe["file_created"] = True
+            try:
+                probe_file.unlink()
+                os.rmdir(probe_dir)
+                probe["self_cleaned"] = True
+            except OSError as exc:
+                probe["self_cleaned"] = False
+                probe["clean_error"] = error(exc)
+        except OSError as exc:
+            probe["dir_created"] = False
+            probe["file_created"] = False
+            probe["error"] = error(exc)
+        info["writability_probe"] = probe
+    else:
+        info["writability_probe"] = {"attempted": False}
+    # Condiciones de acceso de Android (privado frente a compartido).
+    android = {
+        "termux_version": os.environ.get("TERMUX_VERSION"),
+        "location_declared": location_declared,
+    }
+    s = str(base)
+    android["looks_like_shared"] = any(
+        seg in s for seg in ("/sdcard", "/storage/emulated", "/mnt/sdcard")
+    )
+    android["looks_like_private"] = "/data/data/" in s or "/data/user/" in s
+    android["caveat"] = (
+        "un directorio compartido (p.ej. /sdcard) NO se considera seguro solo "
+        "por ser escribible: el almacenamiento compartido de Android tiene "
+        "semánticas de acceso distintas (scoped storage, MediaStore)."
+    )
+    info["android"] = android
+    return info
+
+
+def approved_base(path, location_declared=None):
     base = path.expanduser().resolve(strict=True)
-    if not base.is_dir() or base == base.parent:
+    if os.geteuid() == 0:
+        raise ValueError("--base no debe ejecutarse como root")
+    analysis = analyze_base(base, location_declared, probe_writability=False)
+    if analysis["status"] == "REJECTED":
+        raise ValueError(f"--base rechazado: {analysis['reason']}")
+    if base == base.parent:
         raise ValueError("--base debe ser un directorio de diagnóstico, no la raíz")
     for parent in (base, *base.parents):
         try:
@@ -740,6 +923,7 @@ def approved_base(path):
         except FileNotFoundError:
             continue
         raise ValueError(f"--base está dentro de un árbol Git: {parent}")
+    emit("approved_base", **analysis)
     return base
 
 
@@ -757,7 +941,7 @@ def main():
     try:
         if os.getuid() == 0 or os.geteuid() == 0:
             raise ValueError("ejecutar sólo como usuario normal, sin root")
-        base = approved_base(args.base)
+        base = approved_base(args.base, args.location)
         run = Path(tempfile.mkdtemp(prefix="audioinput-diag-", dir=base))
         print(f"RUN_DIR={run}", flush=True)
         report = run / "report.jsonl"
@@ -794,6 +978,8 @@ def main():
             )},
             "script_sha256": hashlib.sha256(SCRIPT.read_bytes()).hexdigest(),
         })
+        write({"event": "approved_base_analysis",
+               **analyze_base(base, args.location, probe_writability=True)})
         out, stderr, rc, failure = child_output(
             [sys.executable, str(SCRIPT), "--_dependencies"], args.timeout
         )
@@ -811,11 +997,13 @@ def main():
                     counts[run_case(group, name, run, args.timeout, write)] += 1
             complete = True
         except KeyboardInterrupt:
-            write({"event": "interrupted", "message": "se conservan los restos"})
+            write({"event": "interrupted", "message": "se conservan los restos; los procesos hijos se terminan de forma controlada"})
         finally:
             write({"event": "summary", "complete": complete,
                    "counts": dict(counts), "cleanup": "none",
-                   "android_compatibility_claimed": False})
+                   "android_compatibility_claimed": False,
+                   "partial_artifacts_may_remain": True,
+                   "child_process_termination": "controlled_sigterm_then_sigkill"})
             print(f"REPORT={report}", flush=True)
 
     if not complete:
