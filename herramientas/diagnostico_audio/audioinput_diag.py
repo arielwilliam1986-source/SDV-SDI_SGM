@@ -1,5 +1,20 @@
 #!/usr/bin/env python3
-"""Diagnóstico aislado de E/S; sin motores, privilegios ni limpieza automática."""
+"""Diagnóstico aislado de E/S; sin motores, privilegios ni limpieza automática.
+
+Ambito protegido por descriptores (O_NOFOLLOW + dir_fd): el recorrido y la
+inspección de la ruta base, el sondeo de escritura y la creación del
+directorio de ejecución y de los directorios de caso se realizan sobre
+descriptores anclados, sin seguir enlaces simbólicos.
+
+Limitación residual documentada: dentro del directorio de ejecución y de
+cada directorio de caso (creados por este diagnóstico con modo 0700 y
+propiedad del usuario efectivo, no compartidos), las operaciones de
+creación/acceso a artefactos usan rutas relativas normales. Es aceptable
+porque esos directorios son privados del diagnóstico; los enlaces
+simbólicos que las pruebas crean en ellos son propios del fixture y se
+abren siempre con O_NOFOLLOW. No se afirma protección por descriptor sobre
+operaciones fuera de ese ciclo.
+"""
 
 import argparse
 import collections
@@ -134,15 +149,19 @@ def _is_under(path_str, prefix):
 
 
 def _walk_anchored(path):
-    """Recorrido anclado por descriptores con O_NOFOLLOW (correcciones A1/A4).
+    """Recorrido anclado por descriptores con O_NOFOLLOW (correcciones A1/A4/B).
 
     Examina TODOS los componentes de la ruta —incluido el primero de una ruta
     relativa, que se abre frente al anclaje real (el CWD real del proceso)—
     sin resolver enlaces simbólicos ni atravesarlos. Cada apertura se realiza
     con dir_fd del componente anterior y O_NOFOLLOW | O_DIRECTORY, de modo que
     un cambio de componentes entre operaciones (TOCTOU) no puede hacer que se
-    siga un enlace. Devuelve (fd, ruta_resuelta); el fd debe cerrarse por el
-    llamador. Enlaces finales e intermedios se rechazan explícitamente.
+    siga un enlace.
+
+    Los descriptores intermedios se CIERRAN después de abrir correctamente el
+    siguiente componente; se devuelve únicamente el descriptor final, que
+    seguirá perteneciendo al llamador. Los componentes ".." se rechazan
+    explícitamente. Enlaces finales e intermedios se rechazan explícitamente.
     """
     raw = Path(path)
     parts = raw.parts or (".",)
@@ -157,9 +176,12 @@ def _walk_anchored(path):
         resolved = os.path.join(os.getcwd(), *components)
     flags = feature("O_NOFOLLOW") | feature("O_DIRECTORY")
     current = anchor_fd
-    opened = []
     try:
         for index, component in enumerate(components):
+            if component == "..":
+                raise ValueError(
+                    f"componente '..' no admitido en la ruta base: {raw}"
+                )
             kind = "final" if index == len(components) - 1 else "intermedio"
             try:
                 child = os.open(component, flags, dir_fd=current)
@@ -173,15 +195,15 @@ def _walk_anchored(path):
                         f"componente no es un directorio: {component}"
                     ) from exc
                 raise
-            opened.append(current)
-            previous, current = current, child
-        return current, os.path.normpath(resolved)
-    except BaseException:
-        for fd in opened:
+            # Cerrar el descriptor del componente anterior tras abrir el
+            # siguiente: solo el descriptor final queda abierto.
             try:
-                os.close(fd)
+                os.close(current)
             except OSError:
                 pass
+            current = child
+        return current, os.path.normpath(resolved)
+    except BaseException:
         try:
             os.close(current)
         except OSError:
@@ -189,43 +211,91 @@ def _walk_anchored(path):
         raise
 
 
-def _group_membership(pgid):
-    """Inspección de miembros del grupo mediante /proc (correción D2).
+def _group_inspection(pgid):
+    """Inspección de miembros del grupo/sesión mediante /proc (corrección F).
 
-    Distingue: "has_members" (con membresía confirmada), "empty" (grupo
-    vacío verificable), "incomplete" (lectura de /proc incompleta) e
-    "unavailable" (procfs no disponible). La incertidumbre nunca se convierte
-    en confirmación positiva.
+    Lee /proc/<pid>/stat para todo el conjunto de procesos y clasifica cada
+    lectura: desaparecido (el proceso salió durante el recorrido), error de
+    permisos, error de lectura o datos malformados. Devuelve un dict con:
+
+      - state: "has_members" (membresía del grupo confirmada), "empty"
+        (grupo vacío verificable: no hubo errores y ningún miembro),
+        "incomplete" (inspección incompleta: hubo errores de permisos, de
+        lectura o datos malformados) o "unavailable" (procfs no disponible).
+      - group_members / session_members: conteos informativos.
+      - counts: desagregado de lecturas (ok, disappeared, permission, read,
+        malformed, listed).
+
+    Interpretación documentada de /proc/<pid>/stat: después del campo comm
+    (que puede contener espacios y paréntesis, por lo que se parsea desde el
+    último ')'), los campos son: state(3), ppid(4), pgrp(5), session(6).
+    Por tanto pgrp es fields[2] y session es fields[3]. Se vigila la
+    pertenencia al GRUPO (pgrp) como objetivo de terminación (es lo que
+    señaliza killpg). Los conteos de sesión son informativos: se explicita
+    que no se confunden con la pertenencia al grupo original y que NO se
+    afirma detectar procesos que escapen creando otra sesión.
+
+    La incertidumbre nunca se convierte en confirmación positiva: si la
+    inspección es incompleta, el estado es "incomplete", nunca "empty".
     """
+    result = {"pgid": pgid, "state": "incomplete", "group_members": 0,
+              "session_members": 0,
+              "counts": {"listed": 0, "ok": 0, "disappeared": 0,
+                         "permission": 0, "read": 0, "malformed": 0}}
     try:
         pids = [int(name) for name in os.listdir("/proc") if name.isdigit()]
     except OSError:
-        return "unavailable"
-    members = 0
-    readable = 0
+        result["state"] = "unavailable"
+        return result
+    result["counts"]["listed"] = len(pids)
+    errors = 0
     for pid in pids:
         try:
             with open(f"/proc/{pid}/stat", "rb") as handle:
                 data = handle.read()
-        except OSError:
+        except FileNotFoundError:
+            # El proceso desapareció durante el recorrido: no es un error
+            # de inspección, pero impide confirmar vacío sin más contexto.
+            result["counts"]["disappeared"] += 1
+            errors += 1
             continue
-        readable += 1
+        except PermissionError:
+            result["counts"]["permission"] += 1
+            errors += 1
+            continue
+        except OSError:
+            result["counts"]["read"] += 1
+            errors += 1
+            continue
+        result["counts"]["ok"] += 1
         try:
             # El campo comm puede contener espacios/paréntesis: parsear desde
-            # el último ')'. El campo pgrp es el quinto campo del stat.
+            # el último ')'. pgrp = fields[2], session = fields[3].
             rparen = data.rfind(b")")
             if rparen == -1:
+                result["counts"]["malformed"] += 1
+                errors += 1
                 continue
             fields = data[rparen + 2:].split()
-            if len(fields) > 3 and int(fields[3]) == pgid:
-                members += 1
+            if len(fields) < 4:
+                result["counts"]["malformed"] += 1
+                errors += 1
+                continue
+            if int(fields[2]) == pgid:
+                result["group_members"] += 1
+            if int(fields[3]) == pgid:
+                result["session_members"] += 1
         except (ValueError, IndexError):
+            result["counts"]["malformed"] += 1
+            errors += 1
             continue
-    if members:
-        return "has_members"
-    if readable:
-        return "empty"
-    return "incomplete"
+    if result["group_members"]:
+        result["state"] = "has_members"
+    elif errors == 0 and result["counts"]["ok"] > 0:
+        result["state"] = "empty"
+    else:
+        result["state"] = "incomplete"
+    return result
 
 
 @contextmanager
@@ -823,6 +893,297 @@ def fsync_directory(root):
     return sync_case(root, True)
 
 
+def _open_fd_count():
+    try:
+        return len(os.listdir("/proc/self/fd"))
+    except OSError as exc:
+        raise Unavailable(
+            "procfs no disponible para el conteo de descriptores"
+        ) from exc
+
+
+@case("paths")
+def walk_absolute_ok(root):
+    inner = mkdir(root / "a")
+    mid = mkdir(inner / "b")
+    leaf = mkdir(mid / "c")
+    fd, resolved = _walk_anchored(str(leaf))
+    try:
+        st = os.fstat(fd)
+        require(ident(st) == ident(leaf.lstat()),
+                "el descriptor final no corresponde al directorio esperado")
+        require(resolved == str(leaf), "la ruta resuelta no coincide")
+        return {"resolved": resolved, "final_fd_valid": True}
+    finally:
+        os.close(fd)
+
+
+@case("paths")
+def walk_relative_ok(root):
+    # El primer componente de una ruta relativa se examina frente al anclaje
+    # real (el CWD real del proceso).
+    parent = root.parent
+    previous = os.getcwd()
+    try:
+        os.chdir(str(parent))
+        fd, resolved = _walk_anchored(root.name)
+        try:
+            require(os.path.isabs(resolved),
+                    "la ruta resuelta de una ruta relativa no es absoluta")
+            require(ident(os.fstat(fd)) == ident(root.lstat()),
+                    "el descriptor no corresponde al directorio relativo")
+            return {"resolved": resolved, "anchored_to_real_cwd": True}
+        finally:
+            os.close(fd)
+    finally:
+        os.chdir(previous)
+
+
+@case("paths")
+def walk_dotdot_rejected(root):
+    try:
+        _walk_anchored(str(root / ".." / root.name))
+    except ValueError as exc:
+        require(".." in str(exc), "no se mencionó el componente '..'")
+        return {"rejected": True, "reason": str(exc)}
+    raise AssertionError("se acceptó un componente '..' en la ruta base")
+
+
+@case("paths")
+def walk_final_symlink_rejected(root):
+    real = mkdir(root / "real-dir")
+    link = root / "final-link"
+    symlink(link, "real-dir")
+    try:
+        _walk_anchored(str(link))
+    except ValueError as exc:
+        require("simbólico" in str(exc), "no se clasificó como enlace simbólico")
+        return {"rejected": True, "component": "final", "reason": str(exc)}
+    raise AssertionError("se acceptó un enlace simbólico final")
+
+
+@case("paths")
+def walk_intermediate_symlink_rejected(root):
+    outer = mkdir(root / "outer")
+    target = mkdir(root / "target")
+    symlink(outer / "redirect", str(target.name))
+    leaf = mkdir(target / "leaf")
+    try:
+        _walk_anchored(str(outer / "redirect" / "leaf"))
+    except ValueError as exc:
+        require("simbólico" in str(exc), "no se clasificó como enlace simbólico")
+        return {"rejected": True, "component": "intermedio", "reason": str(exc)}
+    raise AssertionError("se acceptó un enlace simbólico intermedio")
+
+
+@case("paths")
+def walk_fd_closed_on_success(root):
+    # Solo el descriptor final queda abierto tras el recorrido (B).
+    inner = mkdir(root / "x")
+    leaf = mkdir(inner / "y")
+    baseline = _open_fd_count()
+    fd, _ = _walk_anchored(str(leaf))
+    try:
+        during = _open_fd_count()
+        require(during == baseline + 1,
+                "se dejaron descriptores intermedios abiertos tras el recorrido")
+    finally:
+        os.close(fd)
+    after = _open_fd_count()
+    require(after == baseline, "no se cerraron todos los descriptores tras cerrar el final")
+    return {"baseline": baseline, "during": during, "after": after}
+
+
+@case("paths")
+def walk_fd_closed_on_rejection(root):
+    # En un rechazo no quedan descriptores abiertos del recorrido (B).
+    real = mkdir(root / "real-dir2")
+    link = root / "rej-link"
+    symlink(link, "real-dir2")
+    baseline = _open_fd_count()
+    try:
+        _walk_anchored(str(link))
+    except ValueError:
+        pass
+    else:
+        raise AssertionError("no se rechazó el enlace simbólico")
+    after = _open_fd_count()
+    require(after == baseline,
+            "quedaron descriptores abiertos tras un recorrido rechazado")
+    return {"baseline": baseline, "after": after}
+
+
+@case("base")
+def base_group_writable_blocked(root):
+    # Un directorio escribible por grupo se rechaza: otros miembros del
+    # grupo podrían modificarlo y no se puede demostrar su aislamiento (C).
+    directory = mkdir(root / "grp-dir")
+    os.chmod(str(directory), 0o770)
+    analysis = analyze_base(directory, "private", probe_writability=True)
+    blockers = _base_blockers(analysis, ([], []))
+    require(any("grupo" in b for b in blockers),
+            "no se detectó el bloqueo por grupo escribible")
+    return {"blockers": blockers}
+
+
+@case("base")
+def base_world_writable_blocked(root):
+    directory = mkdir(root / "world-dir")
+    os.chmod(str(directory), 0o777)
+    analysis = analyze_base(directory, "private", probe_writability=True)
+    blockers = _base_blockers(analysis, ([], []))
+    require(any("globalmente escribible" in b for b in blockers),
+            "no se detectó el bloqueo por directorio globalmente escribible")
+    return {"blockers": blockers}
+
+
+@case("base")
+def base_foreign_owner_blocked(root):
+    # Sin privilegios no se puede crear un directorio de propietario ajeno; se
+    # verifica la decisión sobre una inspección sintética (C).
+    analysis = {"world_writable": False, "group_writable": False,
+                "owned_by_current_user": False, "acl_present": False}
+    blockers = _base_blockers(analysis, ([], []))
+    require(any("propiedad" in b for b in blockers),
+            "no se detectó el bloqueo por propiedad ajena")
+    return {"blockers": blockers,
+            "note": "inspección sintética: el cambio de propietario requiere privilegios"}
+
+
+@case("base")
+def base_storage_shared_classification(root):
+    # Almacenamiento compartido se clasifica como compartido (D).
+    detected, mount, caveat = _classify_storage("/sdcard/diag-cls-test")
+    require(detected == "android_shared",
+            f"la ruta compartida no se clasificó como android_shared: {detected}")
+    return {"detected_class": detected, "caveat": caveat}
+
+
+@case("base")
+def base_storage_shared_precedence(root):
+    # Con TERMUX_VERSION presente, una ruta compartida no se clasifica como
+    # privada por precedencia de condiciones (D).
+    previous = os.environ.get("TERMUX_VERSION")
+    os.environ["TERMUX_VERSION"] = "test-precedence"
+    try:
+        detected, _, _ = _classify_storage("/sdcard/diag-cls-test")
+    finally:
+        if previous is None:
+            os.environ.pop("TERMUX_VERSION", None)
+        else:
+            os.environ["TERMUX_VERSION"] = previous
+    require(detected == "android_shared",
+            f"la precedencia no dejó la ruta compartida como android_shared: {detected}")
+    return {"detected_class": detected}
+
+
+@case("base")
+def base_storage_generic_undetermined(root):
+    # Una ubicación genérica, sin evidencia de montaje privado, queda en
+    # clase indeterminada y no aprobable (D).
+    directory = mkdir(root / "generic-dir")
+    previous = os.environ.pop("TERMUX_VERSION", None)
+    try:
+        detected, _, _ = _classify_storage(str(directory))
+        analysis = analyze_base(directory, "private", probe_writability=True)
+    finally:
+        if previous is not None:
+            os.environ["TERMUX_VERSION"] = previous
+    require(detected == "other", f"clasificación inesperada: {detected}")
+    require(analysis["storage_suitable"] is False,
+            "una ubicación genérica no debe ser aprobable")
+    return {"detected_class": detected, "storage_suitable": False}
+
+
+@case("term")
+def terminate_parent_dies_descendant_holds_pipe(root):
+    # El proceso principal termina, pero un descendiente conserva los pipes
+    # abiertos: no confirmar sin revisar y terminar al grupo (E).
+    code = (
+        "import subprocess, sys\n"
+        "subprocess.Popen([sys.executable, '-c', 'import time; time.sleep(30)'])\n"
+    )
+    out, err, rc, failure = child_output(
+        [sys.executable, "-c", code], 5, kill_wait=2.0
+    )
+    require(failure is not None and failure["status"] == "FAIL",
+            "no se reportó el agotamiento del tiempo de espera")
+    termination = failure["termination_detail"]
+    require(termination["confirmed"] is True,
+            "no se confirmó la terminación del grupo tras SIGKILL: "
+            f"{termination['reason']}")
+    return {"child_terminated": True, "termination": termination}
+
+
+@case("term")
+def terminate_descendant_survives_sigterm(root):
+    # Un descendiente que ignora SIGTERM debe morir por SIGKILL y el grupo
+    # debe quedar verificado vacío (E).
+    code = (
+        "import subprocess, sys\n"
+        "subprocess.Popen([sys.executable, '-c',\n"
+        " 'import signal, time; "
+        "signal.signal(signal.SIGTERM, lambda *a: None); time.sleep(30)'])\n"
+    )
+    out, err, rc, failure = child_output(
+        [sys.executable, "-c", code], 5, kill_wait=2.0
+    )
+    require(failure is not None and failure["status"] == "FAIL",
+            "no se reportó el agotamiento del tiempo de espera")
+    termination = failure["termination_detail"]
+    require(termination["confirmed"] is True,
+            "no se confirmó la terminación tras SIGKILL al grupo: "
+            f"{termination['reason']}")
+    return {"child_terminated": True, "termination": termination}
+
+
+@case("term")
+def proc_inspection_unknown_group_empty(root):
+    # Un grupo que no existe se verifica vacío (cuando /proc es leíble).
+    inspection = _group_inspection(2 ** 22)
+    if inspection["state"] != "empty":
+        raise Unavailable(
+            "inspección de /proc no concluyente en este entorno: "
+            f"{inspection['state']}"
+        )
+    require(inspection["group_members"] == 0,
+            "un grupo inexistente reportó miembros")
+    return {"state": inspection["state"], "counts": inspection["counts"]}
+
+
+@case("term")
+def proc_stat_field_interpretation(root):
+    # Verificación de la interpretación de pgrp (fields[2]) y session
+    # (fields[3]) de /proc/<pid>/stat (F).
+    p = subprocess.Popen([sys.executable, "-c", "import time; time.sleep(30)"],
+                         stdout=subprocess.PIPE, stderr=subprocess.PIPE,
+                         text=True, errors="replace", start_new_session=True)
+    try:
+        with open(f"/proc/{p.pid}/stat", "rb") as handle:
+            data = handle.read()
+        rparen = data.rfind(b")")
+        require(rparen != -1, "campo comm malformado")
+        fields = data[rparen + 2:].split()
+        require(len(fields) >= 4, "stat incompleto")
+        pgrp, session = int(fields[2]), int(fields[3])
+        require(pgrp == p.pid, f"pgrp {pgrp} != pid {p.pid}")
+        require(session == p.pid, f"session {session} != pid {p.pid}")
+        inspection = _group_inspection(p.pid)
+        require(inspection["state"] == "has_members",
+                "la inspección no detectó al líder del grupo")
+        return {"pgrp": pgrp, "session": session,
+                "inspection_state": inspection["state"]}
+    finally:
+        try:
+            os.killpg(p.pid, signal.SIGKILL)
+        except (OSError, ProcessLookupError):
+            pass
+        try:
+            p.wait(timeout=5)
+        except subprocess.TimeoutExpired:
+            pass
+
+
 def command_info(*args):
     try:
         p = subprocess.run(args, capture_output=True, text=True,
@@ -867,30 +1228,74 @@ def worker(group, name, path):
          elapsed_s=round(time.monotonic() - start, 6), **result)
 
 
+def _confirm_group_termination(pgid):
+    """Verifica por /proc que el grupo de procesos está vacío (corrección E).
+
+    Devuelve (confirmed, reason, inspection). La confirmación positiva exige
+    un estado "empty" verificable; "has_members", "incomplete" e
+    "unavailable" se reportan como NO confirmado.
+    """
+    inspection = _group_inspection(pgid)
+    state = inspection["state"]
+    if state == "empty":
+        return True, "grupo confirmado vacío tras la verificación", inspection
+    if state == "has_members":
+        return False, "miembros del grupo aún presentes tras SIGKILL", inspection
+    if state == "incomplete":
+        return False, ("inspección de /proc incompleta: no se puede confirmar "
+                       "la terminación del grupo"), inspection
+    return False, "procfs no disponible: no se puede confirmar la " \
+                  "terminación del grupo", inspection
+
+
 def _terminate(process, wait):
     """Terminación controlada del hijo y su grupo de procesos.
 
     El hijo se inicia con start_new_session=True, por lo que es líder de su
     propio grupo; así os.killpg alcanza también a los procesos descendientes.
     Estrategia: SIGTERM al grupo -> espera -> SIGKILL al grupo -> espera ->
-    inspección de /proc del grupo (correción D1).
+    inspección de /proc del grupo (correcciones D1/E).
 
     NO se devuelve tras el SIGTERM aunque el proceso principal haya terminado:
-    podría haber dejado descendientes vivos. Se completa la secuencia con
-    SIGKILL al grupo y, solo entonces, se confirma la terminación. Devuelve un
-    dict con "confirmed" (bool) y "reason". La confirmación positiva requiere
-    poll() del proceso principal y una inspección de /proc que verifique que
-    el grupo está vacío; cualquier incertidumbre se reporta como NO confirmada
-    (D2). Esperas limitadas; no hay re-escalación ni esperas ilimitadas.
+    podría haber dejado descendientes vivos. Si el proceso principal ya
+    terminó cuando se invoca la terminación (por ejemplo, porque sus
+    descendientes mantuvieron los pipes abiertos), no se devuelve
+    confirmed=True sin comprobar el grupo: se envía SIGKILL al grupo cuando
+    corresponde y se verifica el resultado después. Devuelve un dict con
+    "confirmed" (bool), "reason" e "inspection". La confirmación positiva
+    requiere poll() del proceso principal y una inspección de /proc en estado
+    "empty"; cualquier incertidumbre se reporta como NO confirmada. Esperas
+    limitadas; no hay re-escalación ni esperas ilimitadas.
     """
     def alive():
         return process.poll() is None
 
-    if not alive():
-        return {"confirmed": True,
-                "reason": "el hijo ya había terminado antes de la terminación"}
     use_group = hasattr(os, "killpg")
     pgid = process.pid if use_group else None
+    if not alive():
+        # Caso E: el proceso principal ya terminó, pero sus descendientes
+        # pueden conservar los pipes abiertos. No confirmar sin revisar el
+        # grupo; enviar SIGKILL al grupo cuando corresponda y verificar después.
+        if not use_group:
+            return {"confirmed": False, "inspection": None,
+                    "reason": "sin grupos de procesos: solo se observó la "
+                              "muerte del hijo directo; los descendientes "
+                              "podrían sobrevivir (límite documentado)"}
+        inspection = _group_inspection(pgid)
+        if inspection["state"] in ("has_members", "incomplete"):
+            try:
+                os.killpg(pgid, signal.SIGKILL)
+            except (OSError, ProcessLookupError):
+                pass
+            try:
+                process.wait(timeout=wait)
+            except subprocess.TimeoutExpired:
+                pass
+        confirmed, reason, inspection = _confirm_group_termination(pgid)
+        if confirmed:
+            reason = "el hijo había terminado y el grupo se confirmó vacío"
+        return {"confirmed": confirmed, "reason": reason,
+                "inspection": inspection}
     for stage in ("term", "kill"):
         sig = signal.SIGTERM if stage == "term" else signal.SIGKILL
         if use_group:
@@ -915,25 +1320,14 @@ def _terminate(process, wait):
         if not use_group:
             # Sin killpg no hay evidencia sobre los descendientes: no afirmar
             # su terminación (límite documentado del mecanismo).
-            return {"confirmed": False,
+            return {"confirmed": False, "inspection": None,
                     "reason": "sin grupos de procesos: solo se observó la "
                               "muerte del hijo directo; los descendientes "
                               "podrían sobrevivir (límite documentado)"}
-        membership = _group_membership(pgid)
-        if membership == "empty":
-            return {"confirmed": True,
-                    "reason": "hijo y grupo confirmados terminados"}
-        if membership == "has_members":
-            return {"confirmed": False,
-                    "reason": "miembros del grupo aún presentes tras SIGKILL"}
-        if membership == "incomplete":
-            return {"confirmed": False,
-                    "reason": "inspección de /proc incompleta: no se puede "
-                              "confirmar la terminación del grupo"}
-        return {"confirmed": False,
-                "reason": "procfs no disponible: no se puede confirmar la "
-                          "terminación del grupo"}
-    return {"confirmed": False,
+        confirmed, reason, inspection = _confirm_group_termination(pgid)
+        return {"confirmed": confirmed, "reason": reason,
+                "inspection": inspection}
+    return {"confirmed": False, "inspection": None,
             "reason": "el hijo seguía vivo tras SIGTERM/SIGKILL"}
 
 
@@ -977,13 +1371,25 @@ def child_output(command, timeout, kill_wait=2.0):
         raise InterruptedTermination(termination) from None
 
 
-def run_case(group, name, run, timeout, write, location_declared):
+def run_case(group, name, run, timeout, write, location_declared, run_fd):
     folder = run / name
     key = {"group": group, "test": name}
     try:
-        folder.mkdir(mode=0o700)
+        if run_fd is not None:
+            # Creación relativa a descriptor (B): API estándar os.mkdir con
+            # dir_fd; la inspección del directorio creado también por descriptor.
+            os.mkdir(name, 0o700, dir_fd=run_fd)
+            probe = os.open(name, os.O_RDONLY | feature("O_DIRECTORY")
+                            | feature("O_NOFOLLOW"), dir_fd=run_fd)
+            try:
+                info = record(os.fstat(probe))
+            finally:
+                os.close(probe)
+        else:
+            os.mkdir(str(folder), mode=0o700)
+            info = record(folder.lstat())
         write({"event": "created", "path": str(folder), "kind": "case_directory",
-               **key, **record(folder.lstat())})
+               **key, **info})
     except OSError as exc:
         result = {"status": "NOT_EXECUTED", "error": error(exc)}
     else:
@@ -1020,6 +1426,54 @@ def run_case(group, name, run, timeout, write, location_declared):
     write(row)
     print(f"{row['status']:12} {group}/{name}", flush=True)
     return row["status"]
+
+
+def _classify_storage(base):
+    """Clasifica la clase de almacenamiento contra información real de montaje.
+
+    No se basa exclusivamente en TERMUX_VERSION, HOME o PREFIX: la ruta se
+    contrasta con /proc/self/mountinfo y con la ubicación privada real de la
+    aplicación Termux. La clasificación compartida tiene PRECEDENCIA sobre la
+    privada para evitar que una ruta compartida se clasifique como privada por
+    precedencia de condiciones. Devuelve (detected_class, mount, caveat).
+
+    Se mantiene rechazado el almacenamiento compartido mientras no se demuestre
+    su idoneidad para staging/publicación, y se mantienen rechazadas las
+    ubicaciones genéricas o de clase indeterminada.
+    """
+    s = str(base)
+    termux = os.environ.get("TERMUX_VERSION")
+    private_prefixes = [
+        p for p in ("/data/data/com.termux", os.environ.get("PREFIX") or "",
+                   str(Path.home()))
+        if p and p != os.sep
+    ]
+    shared_prefixes = ("/sdcard", "/storage/emulated", "/mnt/sdcard")
+    # Precedencia: una ruta compartida nunca se clasifica como privada.
+    for prefix in shared_prefixes:
+        if _is_under(s, prefix):
+            return ("android_shared", mount_info(s),
+                    "almacenamiento compartido de Android: que sea escribible "
+                    "NO demuestra que sea apropiado para staging/publicación "
+                    "(scoped storage, MediaStore); no se afirma su seguridad "
+                    "sin evidencia.")
+    mount = mount_info(s)
+    mount_point = (mount or {}).get("mountpoint")
+    mount_ok = bool(mount_point) and _is_under(s, mount_point)
+    if termux and private_prefixes and mount_ok:
+        # Contrastar con la ubicación privada real de la aplicación Termux:
+        # el punto de montaje debe estar anclado en la jerarquía privada y el
+        # montaje no debe ser de clase compartida.
+        mount_source = str((mount or {}).get("source") or "")
+        if any(_is_under(mount_point, p) for p in private_prefixes) and not any(
+            seg in mount_source for seg in ("sdcard", "emulated", "mtp")
+        ):
+            return ("termux_private", mount,
+                    "almacenamiento privado de Termux, confirmado por el "
+                    "montaje.")
+    return ("other", mount,
+            "clase de almacenamiento no determinable con la información de "
+            "montaje disponible; no se aprueba por defecto.")
 
 
 def analyze_base(base, location_declared=None, probe_writability=False,
@@ -1104,17 +1558,18 @@ def analyze_base(base, location_declared=None, probe_writability=False,
         try:
             if base_fd is not None:
                 # Sondeo anclado al descriptor: sin TOCTOU con la ruta.
+                # API estándar os.mkdir con dir_fd (corrección A); los errores
+                # de creación se capturan y quedan registrados en probe["error"].
                 probe_name = "base-probe-" + os.urandom(6).hex()
-                candidate(os.mkdirat, probe_name, 0o700,
-                          permission=True, dir_fd=base_fd)
-                probe_fd = candidate(
-                    os.open, probe_name,
+                os.mkdir(probe_name, 0o700, dir_fd=base_fd)
+                probe_fd = os.open(
+                    probe_name,
                     os.O_RDONLY | feature("O_DIRECTORY") | feature("O_NOFOLLOW"),
-                    permission=True, dir_fd=base_fd,
+                    dir_fd=base_fd,
                 )
-                probe_file_fd = candidate(
-                    os.open, "w", os.O_WRONLY | os.O_CREAT | os.O_EXCL, 0o600,
-                    permission=True, dir_fd=probe_fd,
+                probe_file_fd = os.open(
+                    "w", os.O_WRONLY | os.O_CREAT | os.O_EXCL, 0o600,
+                    dir_fd=probe_fd,
                 )
                 os.write(probe_file_fd, b"x")
                 os.close(probe_file_fd)
@@ -1151,57 +1606,100 @@ def analyze_base(base, location_declared=None, probe_writability=False,
     else:
         info["writability_probe"] = {"attempted": False}
     info["verified_writable"] = verified
-    # A3: almacenamiento compartido y genérico no se aprueban por ser
-    # escribibles. La aprobación depende de una clasificación fundamentada y
-    # de condiciones de seguridad verificables; si no se puede determinar la
-    # adecuación, se rechaza.
-    termux = os.environ.get("TERMUX_VERSION")
-    s = str(base)
-    prefixes = [p for p in (
-        "/data/data/com.termux",
-        os.environ.get("PREFIX") or "",
-        str(Path.home()),
-    ) if p]
-    is_termux_private = bool(termux) and any(_is_under(s, p) for p in prefixes)
-    is_android_shared = any(
-        _is_under(s, p) for p in ("/sdcard", "/storage/emulated", "/mnt/sdcard")
-    )
-    if is_termux_private:
-        detected = "termux_private"
-    elif is_android_shared:
-        detected = "android_shared"
-    else:
-        detected = "other"
+    # A3: clasificación contra información real de montaje (corrección D).
+    # Almacenamiento compartido y genérico no se aprueban por ser escribibles;
+    # si no se puede determinar la adecuación, se rechaza.
+    detected, mount, caveat = _classify_storage(base)
     storage = {
-        "termux_version": termux,
+        "termux_version": os.environ.get("TERMUX_VERSION"),
         "location_declared": location_declared,
         "detected_class": detected,
+        "mount": mount,
+        "caveat": caveat,
     }
     if detected == "android_shared":
-        storage["caveat"] = (
-            "almacenamiento compartido de Android: que sea escribible NO "
-            "demuestra que sea apropiado para staging/publicación "
-            "(scoped storage, MediaStore); no se afirma su seguridad sin "
-            "evidencia."
-        )
         # No se aprueba por ser escribible; no hay condiciones verificables
         # que demuestren adecuación para staging/publicación.
         storage["suitability"] = "REJECTED_shared_not_demonstrated"
     elif detected == "termux_private":
-        storage["caveat"] = "almacenamiento privado de Termux."
         storage["suitability"] = (
             "termux_private_approved" if location_declared == "private"
             else "REJECTED_mismatch"
         )
     else:
-        storage["caveat"] = (
-            "clase de almacenamiento no determinable; no es almacenamiento "
-            "Android/Termux; no se aprueba por defecto."
-        )
         storage["suitability"] = "UNDETERMINED"
     info["android"] = storage
     info["storage_suitable"] = (storage["suitability"] == "termux_private_approved")
     return info
+
+
+def _parent_audit(base):
+    """Auditoría estática de los directorios padre (corrección C).
+
+    Registra el modo de cada padre y devuelve bloqueos para riesgos
+    relevantes: un padre globalmente escribible sin bit sticky permite a
+    terceros renombrar/sustituir la entrada; se registran también los padres
+    escribibles por grupo como riesgo residual documentado. No se modifican
+    permisos ni propietarios ajenos.
+    """
+    rows = []
+    blockers = []
+    for parent in (base, *base.parents):
+        try:
+            st = parent.lstat()
+        except OSError:
+            break
+        if not stat.S_ISDIR(st.st_mode):
+            break
+        perms = st.st_mode & 0o777
+        row = {
+            "path": str(parent), "mode": oct(perms),
+            "world_writable": bool(perms & 0o002),
+            "group_writable": bool(perms & 0o020),
+            "sticky": bool(st.st_mode & 0o1000),
+        }
+        rows.append(row)
+        if row["world_writable"] and not row["sticky"]:
+            blockers.append(
+                f"directorio padre globalmente escribible sin sticky: {parent}"
+            )
+    if rows:
+        return rows, blockers
+    return rows, blockers
+
+
+def _base_blockers(analysis, parents):
+    """Decisión de confianza sobre la ubicación (corrección C).
+
+    No se considera confiable un grupo simplemente por pertenecer a él: un
+    directorio escribible por grupo permite a otros miembros modificarlo, y
+    no se puede demostrar el aislamiento de esos miembros, por lo que se
+    rechaza. También se rechazan directorios que no sean propiedad del
+    usuario efectivo, globalmente escribibles, con ACL presentes (no
+    evaluables por este diagnóstico) y padres con riesgo de sustitución.
+    """
+    blockers = []
+    if analysis.get("world_writable"):
+        blockers.append(
+            "directorio globalmente escribible: riesgo de modificación por terceros"
+        )
+    if analysis.get("group_writable"):
+        blockers.append(
+            "directorio escribible por grupo: otros miembros del grupo "
+            "podrían modificarlo; no se puede demostrar aislamiento suficiente"
+        )
+    if not analysis.get("owned_by_current_user"):
+        blockers.append(
+            "directorio no propiedad del usuario efectivo: no se aprueba "
+            "automáticamente"
+        )
+    if analysis.get("acl_present"):
+        blockers.append(
+            "ACL presentes en el directorio: no evaluables por este "
+            "diagnóstico; no se puede demostrar aislamiento suficiente"
+        )
+    blockers.extend(parents[1])
+    return blockers
 
 
 def approved_base(path, location_declared=None):
@@ -1211,11 +1709,12 @@ def approved_base(path, location_declared=None):
     O_NOFOLLOW examinando todos sus componentes (finales e intermedios,
     incluido el primero de una ruta relativa frente al anclaje real), de modo
     que no se resuelve ni se atraviesa ningún enlace simbólico y no queda una
-    ventana TOCTOU entre inspección y uso (correcciones A1/A4). La aprobación
+    ventana TOCTOU entre inspección y uso (correcciones A1/A4/B). La aprobación
     depende de condiciones verificadas: estado OK, escritura verificada,
     clase de almacenamiento fundamentada (A3) y ausencia de riesgo de
-    modificación por terceros (A2). Devuelve el descriptor anclado para que
-    el llamador realice creaciones sobre él.
+    modificación por terceros (A2). Si cualquier comprobación posterior
+    falla, se cerrara el descriptor anclado antes de rechazar. Devuelve el
+    descriptor anclado para que el llamador realice creaciones sobre él.
     """
     raw = Path(path).expanduser()
     if os.geteuid() == 0:
@@ -1224,44 +1723,50 @@ def approved_base(path, location_declared=None):
     #    enlaces simbólicos. Cualquier enlace final o intermedio se rechaza.
     base_fd, resolved = _walk_anchored(raw)
     base = Path(resolved)
-    # 2) La aprobación depende de condiciones verificadas sobre el descriptor,
-    #    no solo de registrar la ruta.
-    analysis = analyze_base(base, location_declared, probe_writability=True,
-                            base_fd=base_fd)
-    if analysis["status"] != "OK":
-        raise ValueError(f"--base rechazado: {analysis.get('reason')}")
-    if analysis.get("verified_writable") is not True:
-        raise ValueError("--base: la capacidad de escritura no pudo verificarse; no se aprueba")
-    if not analysis.get("storage_suitable", False):
-        raise ValueError(
-            "--base: la clase de almacenamiento no es apropiada o no está "
-            "fundamentada; no se aprueba"
-        )
-    # A2: no aprobar automáticamente directorios globalmente escribibles ni
-    # directorios escribibles por grupos ajenos: la decisión considera
-    # propiedad, permisos y riesgo de modificación por terceros.
-    blockers = []
-    if analysis.get("world_writable"):
-        blockers.append(
-            "directorio globalmente escribible: riesgo de modificación por terceros"
-        )
-    if analysis.get("group_writable") and not analysis.get("group_authorized"):
-        blockers.append(
-            "directorio escribible por un grupo al que no pertenezco: "
-            "riesgo de modificación por terceros"
-        )
-    if blockers:
-        raise ValueError("--base rechazado: " + "; ".join(blockers))
-    if base == base.parent:
-        raise ValueError("--base debe ser un directorio de diagnóstico, no la raíz")
-    for parent in (base, *base.parents):
+    try:
+        # 2) La aprobación depende de condiciones verificadas sobre el
+        #    descriptor, no solo de registrar la ruta.
+        analysis = analyze_base(base, location_declared, probe_writability=True,
+                                base_fd=base_fd)
+        # Detección de ACL (solo lectura; no se modifica nada ajeno).
         try:
-            (parent / ".git").lstat()
-        except FileNotFoundError:
-            continue
-        raise ValueError(f"--base está dentro de un árbol Git: {parent}")
-    emit("approved_base", **analysis)
-    return base, base_fd, analysis
+            xattrs = os.listxattr(str(base), follow_symlinks=False)
+        except (OSError, AttributeError):
+            xattrs = None
+        analysis["acl_present"] = "system.posix_acl" in (xattrs or [])
+        # Auditoría de padres.
+        parents, parent_blockers = _parent_audit(base)
+        analysis["parents"] = parents
+        if analysis["status"] != "OK":
+            raise ValueError(f"--base rechazado: {analysis.get('reason')}")
+        if analysis.get("verified_writable") is not True:
+            raise ValueError("--base: la capacidad de escritura no pudo verificarse; no se aprueba")
+        if not analysis.get("storage_suitable", False):
+            raise ValueError(
+                "--base: la clase de almacenamiento no es apropiada o no está "
+                "fundamentada; no se aprueba"
+            )
+        # A2: decisión de confianza (propiedad, permisos, riesgo de terceros).
+        blockers = _base_blockers(analysis, (parents, parent_blockers))
+        if blockers:
+            raise ValueError("--base rechazado: " + "; ".join(blockers))
+        if base == base.parent:
+            raise ValueError("--base debe ser un directorio de diagnóstico, no la raíz")
+        for parent in (base, *base.parents):
+            try:
+                (parent / ".git").lstat()
+            except FileNotFoundError:
+                continue
+            raise ValueError(f"--base está dentro de un árbol Git: {parent}")
+        emit("approved_base", **analysis)
+        return base, base_fd, analysis
+    except BaseException:
+        # Cerrar el descriptor anclado si cualquier comprobación falla (B).
+        try:
+            os.close(base_fd)
+        except OSError:
+            pass
+        raise
 
 
 def main():
@@ -1276,25 +1781,33 @@ def main():
     if not 0 < args.timeout <= 600:
         parser.error("--timeout debe ser mayor que 0 y como máximo 600")
     base_fd = None
+    run_fd = None
     try:
         if os.getuid() == 0 or os.geteuid() == 0:
             raise ValueError("ejecutar sólo como usuario normal, sin root")
         base, base_fd, base_analysis = approved_base(args.base, args.location)
         # Crear el directorio de ejecución sobre el descriptor anclado
         # (O_NOFOLLOW), sin recurrir a una ruta que podría cambiar entre
-        # comprobaciones (A4).
+        # comprobaciones (A4). API estándar os.mkdir con dir_fd (A).
         run_name = "audioinput-diag-" + os.urandom(6).hex()
-        os.mkdirat(run_name, 0o700, dir_fd=base_fd)
+        os.mkdir(run_name, 0o700, dir_fd=base_fd)
         run = base / run_name
+        # Descriptor del directorio de ejecución para crear artefactos
+        # relativos a descriptores (B).
+        run_fd = os.open(run_name, os.O_DIRECTORY | feature("O_NOFOLLOW"),
+                         dir_fd=base_fd)
         print(f"RUN_DIR={run}", flush=True)
         report = run / "report.jsonl"
-        handle = report.open("x", encoding="utf-8")
+        report_fd = os.open("report.jsonl", os.O_WRONLY | os.O_CREAT | os.O_EXCL,
+                            0o600, dir_fd=run_fd)
+        handle = os.fdopen(report_fd, "w", encoding="utf-8")
     except (OSError, ValueError) as exc:
-        if base_fd is not None:
-            try:
-                os.close(base_fd)
-            except OSError:
-                pass
+        for fd in (run_fd, base_fd):
+            if fd is not None:
+                try:
+                    os.close(fd)
+                except OSError:
+                    pass
         emit("setup", status="NOT_EXECUTED", args=sys.argv[1:], error=error(exc))
         return 2
 
@@ -1307,7 +1820,7 @@ def main():
                 handle.flush()
 
             write({"event": "created", "path": str(run), "kind": "run_directory",
-                   **record(run.lstat())})
+                   **record(os.fstat(run_fd))})
             write({"event": "created", "path": str(report), "kind": "report",
                    **record(os.fstat(handle.fileno()))})
             write({
@@ -1343,7 +1856,7 @@ def main():
                 for group in selected:
                     for name in GROUPS[group]:
                         counts[run_case(group, name, run, args.timeout, write,
-                                        args.location)] += 1
+                                        args.location, run_fd)] += 1
                 complete = True
             except KeyboardInterrupt as exc:
                 # D3: conservar e informar el resultado de terminación, sin
@@ -1368,10 +1881,12 @@ def main():
                        "child_process_group": True})
                 print(f"REPORT={report}", flush=True)
     finally:
-        try:
-            os.close(base_fd)
-        except OSError:
-            pass
+        for fd in (run_fd, base_fd):
+            if fd is not None:
+                try:
+                    os.close(fd)
+                except OSError:
+                    pass
 
     if not complete:
         return 130
