@@ -1042,12 +1042,146 @@ def base_foreign_owner_blocked(root):
     # Sin privilegios no se puede crear un directorio de propietario ajeno; se
     # verifica la decisión sobre una inspección sintética (C).
     analysis = {"world_writable": False, "group_writable": False,
-                "owned_by_current_user": False, "acl_present": False}
-    blockers = _base_blockers(analysis, ([], []))
+                "owned_by_current_user": False, "acl_state": "absent"}
+    blockers = _base_blockers(analysis, ([], [], True))
     require(any("propiedad" in b for b in blockers),
             "no se detectó el bloqueo por propiedad ajena")
     return {"blockers": blockers,
             "note": "inspección sintética: el cambio de propietario requiere privilegios"}
+
+
+@case("base")
+def base_acl_present_blocked(root):
+    # ACL presentes: no evaluables, se bloquea la aprobación (B).
+    analysis = {"world_writable": False, "group_writable": False,
+                "owned_by_current_user": True, "acl_state": "present"}
+    blockers = _base_blockers(analysis, ([], [], True))
+    require(any("ACL" in b for b in blockers),
+            "no se detectó el bloqueo por ACL presentes")
+    return {"blockers": blockers}
+
+
+@case("base")
+def base_acl_unknown_blocked(root):
+    # Estado de ACL desconocido: no se aprueba automáticamente (B).
+    analysis = {"world_writable": False, "group_writable": False,
+                "owned_by_current_user": True, "acl_state": "unknown"}
+    blockers = _base_blockers(analysis, ([], [], True))
+    require(any("desconocido" in b for b in blockers),
+            "no se detectó el bloqueo por ACL desconocida")
+    return {"blockers": blockers}
+
+
+@case("base")
+def base_acl_query_error_unknown(root):
+    # Si la consulta de ACL falla, el estado es unknown: ausencia de
+    # información no es ausencia de ACL (B).
+    state, err = _acl_state(root / "no-existe-acl-xyz")
+    require(state == "unknown", f"estado inesperado: {state}")
+    return {"state": state, "error": err}
+
+
+@case("base")
+def base_parent_inspection_error_incomplete(root):
+    # Si no se puede inspeccionar un padre, la auditoría es incompleta y se
+    # rechaza la ubicación (A).
+    directory = mkdir(root / "audit-dir")
+    target = directory.parent
+    previous = os.lstat
+
+    def fake_lstat(path, *args, **kwargs):
+        if Path(path) == target:
+            raise OSError(errno.EACCES, "simulado: inspección de padre")
+        return previous(path, *args, **kwargs)
+
+    os.lstat = fake_lstat
+    try:
+        rows, blockers, complete = _parent_audit(directory)
+    finally:
+        os.lstat = previous
+    require(complete is False, "la auditoría no se clasificó como incompleta")
+    decision = _base_blockers({"acl_state": "absent"}, (rows, blockers, complete))
+    require(any("incompleta" in b for b in decision),
+            "no se bloqueó por auditoría de padres incompleta")
+    return {"complete": complete, "blockers": decision}
+
+
+@case("base")
+def base_parent_group_writable_blocked(root):
+    # Directorio padre escribible por grupo: no se puede demostrar
+    # aislamiento suficiente, se bloquea (A).
+    parent = mkdir(root / "grp-parent")
+    os.chmod(str(parent), 0o775)
+    child = mkdir(parent / "child")
+    rows, blockers, complete = _parent_audit(child)
+    require(complete is True, "auditoría incompleta inesperada")
+    require(any("grupo" in b for b in blockers),
+            "no se bloqueó el padre escribible por grupo")
+    return {"blockers": blockers}
+
+
+@case("base")
+def probe_partial_failure_fds_closed(root):
+    # Fallo parcial del sondeo: se registra el fallo, se cierran todos los
+    # descriptores y se limpian los artefactos propios (E).
+    directory = mkdir(root / "probe-dir")
+    baseline = _open_fd_count()
+    fd = os.open(str(directory), os.O_RDONLY | os.O_DIRECTORY
+                 | feature("O_NOFOLLOW"))
+    previous_open = os.open
+
+    def fake_open(path, flags, *args, **kwargs):
+        if path == "w":
+            raise OSError(errno.EACCES, "simulado: apertura de sondeo")
+        return previous_open(path, flags, *args, **kwargs)
+
+    os.open = fake_open
+    try:
+        analysis = analyze_base(directory, "private", probe_writability=True,
+                                base_fd=fd)
+    finally:
+        os.open = previous_open
+        os.close(fd)
+    probe = analysis["writability_probe"]
+    require(probe.get("error") is not None, "no se registró el fallo del sondeo")
+    require(probe["dir_created"] is True, "no se registró el directorio creado")
+    require(probe["file_created"] is False,
+            "no se debe registrar el archivo que no se creó")
+    require(analysis["verified_writable"] is False,
+            "no se debe marcar escribible tras un fallo")
+    require(_open_fd_count() == baseline,
+            "quedaron descriptores del sondeo abiertos tras el fallo")
+    require(probe["self_cleaned"] is True, "no se limpió el directorio del sondeo")
+    return probe
+
+
+@case("base")
+def probe_cleanup_failure_registers_residue(root):
+    # Si la limpieza falla, se registra el residuo y su ubicación (E).
+    directory = mkdir(root / "probe-dir2")
+    fd = os.open(str(directory), os.O_RDONLY | os.O_DIRECTORY
+                 | feature("O_NOFOLLOW"))
+    previous_rmdir = os.rmdir
+    captured = {}
+
+    def fake_rmdir(path, *args, **kwargs):
+        captured["path"] = str(path)
+        raise OSError(errno.ENOTEMPTY, "simulado: limpieza")
+
+    try:
+        os.rmdir = fake_rmdir
+        try:
+            analysis = analyze_base(directory, "private",
+                                    probe_writability=True, base_fd=fd)
+        finally:
+            os.rmdir = previous_rmdir
+    finally:
+        os.close(fd)
+    probe = analysis["writability_probe"]
+    require(probe["self_cleaned"] is False, "no se registró la limpieza fallida")
+    require(probe.get("residue"), "no se registró el residuo")
+    require(captured.get("path"), "no se capturó la ubicación del residuo")
+    return {"residue": probe["residue"], "clean_error": probe.get("clean_error")}
 
 
 @case("base")
@@ -1095,6 +1229,32 @@ def base_storage_generic_undetermined(root):
     return {"detected_class": detected, "storage_suitable": False}
 
 
+@case("base")
+def storage_private_mount_point_above(root):
+    # Punto de montaje superior (ancestro) a la ruta privada: compatible, se
+    # clasifica como privado sin exigir que el montaje esté dentro del
+    # directorio privado de Termux (C).
+    previous_env = os.environ.get("TERMUX_VERSION")
+    previous_mount = globals()["mount_info"]
+    os.environ["TERMUX_VERSION"] = "test-mount-above"
+    globals()["mount_info"] = lambda path: {
+        "mountpoint": "/", "filesystem": "ext4", "device": "none",
+        "source": "/dev/block/dm-0", "mount_options": "rw",
+    }
+    try:
+        detected, mount, caveat = _classify_storage(
+            "/data/data/com.termux/files/home/diag-private")
+    finally:
+        globals()["mount_info"] = previous_mount
+        if previous_env is None:
+            os.environ.pop("TERMUX_VERSION", None)
+        else:
+            os.environ["TERMUX_VERSION"] = previous_env
+    require(detected == "termux_private",
+            f"clasificación inesperada: {detected}")
+    return {"detected_class": detected, "mount_point": mount["mountpoint"]}
+
+
 @case("term")
 def terminate_parent_dies_descendant_holds_pipe(root):
     # El proceso principal termina, pero un descendiente conserva los pipes
@@ -1135,6 +1295,70 @@ def terminate_descendant_survives_sigterm(root):
             "no se confirmó la terminación tras SIGKILL al grupo: "
             f"{termination['reason']}")
     return {"child_terminated": True, "termination": termination}
+
+
+@case("term")
+def terminate_procfs_unavailable_descendant_alive(root):
+    # Descendiente vivo y procfs no disponible: se intenta SIGKILL al grupo,
+    # pero el resultado se mantiene NO confirmado (D).
+    code = (
+        "import subprocess, sys\n"
+        "open(sys.argv[1], 'w').write(str(subprocess.Popen(\n"
+        "    [sys.executable, '-c', 'import time; time.sleep(30)']).pid))\n"
+    )
+    marker = root / "grandchild.pid"
+    p = subprocess.Popen([sys.executable, "-c", code, str(marker)],
+                         stdout=subprocess.PIPE, stderr=subprocess.PIPE,
+                         text=True, errors="replace", start_new_session=True)
+    try:
+        try:
+            p.wait(timeout=5)
+        except subprocess.TimeoutExpired:
+            raise AssertionError("el hijo no terminó tras la generación del descendiente")
+        grandchild = int(marker.read_text().strip())
+        require(os.path.exists(f"/proc/{grandchild}"),
+                "el descendiente no quedó vivo para el caso")
+        previous = globals()["_group_inspection"]
+        globals()["_group_inspection"] = lambda pgid: {
+            "pgid": pgid, "state": "unavailable", "group_members": 0,
+            "session_members": 0,
+            "counts": {"listed": 0, "ok": 0, "disappeared": 0,
+                       "permission": 0, "read": 0, "malformed": 0},
+        }
+        try:
+            result = _terminate(p, 2.0)
+        finally:
+            globals()["_group_inspection"] = previous
+        require(result["confirmed"] is False,
+                "no se debe confirmar la terminación sin evidencia")
+        require(result["sigkill_attempted"] is True,
+                "no se intentó SIGKILL al grupo cuando procfs no está disponible")
+        require("procfs" in result["reason"],
+                "no se informó la falta de procfs en la razón")
+        # Observación del efecto real del SIGKILL intentado (intento, no
+        # confirmación por inspección).
+        deadline = time.monotonic() + 2.0
+        descendant_gone = False
+        while time.monotonic() < deadline:
+            try:
+                os.kill(grandchild, 0)
+            except ProcessLookupError:
+                descendant_gone = True
+                break
+            time.sleep(0.05)
+        return {"confirmed": result["confirmed"],
+                "sigkill_attempted": result["sigkill_attempted"],
+                "reason": result["reason"],
+                "descendant_gone_after_sigkill": descendant_gone}
+    finally:
+        try:
+            os.killpg(p.pid, signal.SIGKILL)
+        except (OSError, ProcessLookupError):
+            pass
+        try:
+            p.wait(timeout=5)
+        except subprocess.TimeoutExpired:
+            pass
 
 
 @case("term")
@@ -1275,18 +1499,25 @@ def _terminate(process, wait):
     if not alive():
         # Caso E: el proceso principal ya terminó, pero sus descendientes
         # pueden conservar los pipes abiertos. No confirmar sin revisar el
-        # grupo; enviar SIGKILL al grupo cuando corresponda y verificar después.
+        # grupo; enviar SIGKILL al grupo cuando corresponda (incluido cuando
+        # procfs no está disponible) y verificar después. Una señalización
+        # intentada NO se confunde con terminación confirmada.
         if not use_group:
             return {"confirmed": False, "inspection": None,
+                    "sigkill_attempted": False,
                     "reason": "sin grupos de procesos: solo se observó la "
                               "muerte del hijo directo; los descendientes "
                               "podrían sobrevivir (límite documentado)"}
         inspection = _group_inspection(pgid)
-        if inspection["state"] in ("has_members", "incomplete"):
+        sigkill_attempted = False
+        if inspection["state"] in ("has_members", "incomplete", "unavailable"):
+            # procfs no disponible: intentar SIGKILL al grupo cuando sea
+            # posible (best effort), pero sin afirmar terminación.
             try:
                 os.killpg(pgid, signal.SIGKILL)
+                sigkill_attempted = True
             except (OSError, ProcessLookupError):
-                pass
+                sigkill_attempted = False
             try:
                 process.wait(timeout=wait)
             except subprocess.TimeoutExpired:
@@ -1294,8 +1525,13 @@ def _terminate(process, wait):
         confirmed, reason, inspection = _confirm_group_termination(pgid)
         if confirmed:
             reason = "el hijo había terminado y el grupo se confirmó vacío"
+        elif inspection["state"] == "unavailable" and sigkill_attempted:
+            reason = (
+                "procfs no disponible: se intentó SIGKILL al grupo, pero no "
+                "hay evidencia suficiente para confirmar la terminación"
+            )
         return {"confirmed": confirmed, "reason": reason,
-                "inspection": inspection}
+                "inspection": inspection, "sigkill_attempted": sigkill_attempted}
     for stage in ("term", "kill"):
         sig = signal.SIGTERM if stage == "term" else signal.SIGKILL
         if use_group:
@@ -1321,13 +1557,15 @@ def _terminate(process, wait):
             # Sin killpg no hay evidencia sobre los descendientes: no afirmar
             # su terminación (límite documentado del mecanismo).
             return {"confirmed": False, "inspection": None,
+                    "sigkill_attempted": False,
                     "reason": "sin grupos de procesos: solo se observó la "
                               "muerte del hijo directo; los descendientes "
                               "podrían sobrevivir (límite documentado)"}
         confirmed, reason, inspection = _confirm_group_termination(pgid)
         return {"confirmed": confirmed, "reason": reason,
-                "inspection": inspection}
+                "inspection": inspection, "sigkill_attempted": True}
     return {"confirmed": False, "inspection": None,
+            "sigkill_attempted": use_group,
             "reason": "el hijo seguía vivo tras SIGTERM/SIGKILL"}
 
 
@@ -1437,6 +1675,14 @@ def _classify_storage(base):
     privada para evitar que una ruta compartida se clasifique como privada por
     precedencia de condiciones. Devuelve (detected_class, mount, caveat).
 
+    Para la clasificación privada se verifica que: (1) la ruta solicitada está
+    dentro de la ubicación privada esperada (prefijos de Termux), (2) el
+    punto de montaje es un ANCESTRO compatible de la ruta, y (3) el montaje
+    no es de clase compartida. NO se exige que el propio punto de montaje
+    esté dentro del directorio privado de Termux: un montaje superior (p.ej.
+    el montaje de /data o de la raíz) que cubra la ruta privada es
+    compatible.
+
     Se mantiene rechazado el almacenamiento compartido mientras no se demuestre
     su idoneidad para staging/publicación, y se mantienen rechazadas las
     ubicaciones genéricas o de clase indeterminada.
@@ -1459,18 +1705,18 @@ def _classify_storage(base):
                     "sin evidencia.")
     mount = mount_info(s)
     mount_point = (mount or {}).get("mountpoint")
+    # El punto de montaje debe ser un ancestro compatible de la ruta.
     mount_ok = bool(mount_point) and _is_under(s, mount_point)
     if termux and private_prefixes and mount_ok:
-        # Contrastar con la ubicación privada real de la aplicación Termux:
-        # el punto de montaje debe estar anclado en la jerarquía privada y el
-        # montaje no debe ser de clase compartida.
-        mount_source = str((mount or {}).get("source") or "")
-        if any(_is_under(mount_point, p) for p in private_prefixes) and not any(
-            seg in mount_source for seg in ("sdcard", "emulated", "mtp")
-        ):
-            return ("termux_private", mount,
-                    "almacenamiento privado de Termux, confirmado por el "
-                    "montaje.")
+        # La ruta debe estar dentro de la ubicación privada esperada; NO se
+        # exige que el punto de montaje esté dentro del directorio privado.
+        if any(_is_under(s, p) for p in private_prefixes):
+            mount_source = str((mount or {}).get("source") or "")
+            if not any(seg in mount_source for seg in ("sdcard", "emulated",
+                                                       "mtp")):
+                return ("termux_private", mount,
+                        "almacenamiento privado de Termux, confirmado por el "
+                        "montaje ancestro de la ruta privada.")
     return ("other", mount,
             "clase de almacenamiento no determinable con la información de "
             "montaje disponible; no se aprueba por defecto.")
@@ -1555,6 +1801,12 @@ def analyze_base(base, location_declared=None, probe_writability=False,
         probe = {"attempted": True}
         writable = False
         probe_fd = None
+        probe_file_fd = None
+        probe_name = None
+        probe_dir = None
+        probe_file = None
+        # Artefactos propios creados, registrados para la limpieza (E).
+        created = []
         try:
             if base_fd is not None:
                 # Sondeo anclado al descriptor: sin TOCTOU con la ruta.
@@ -1562,45 +1814,79 @@ def analyze_base(base, location_declared=None, probe_writability=False,
                 # de creación se capturan y quedan registrados en probe["error"].
                 probe_name = "base-probe-" + os.urandom(6).hex()
                 os.mkdir(probe_name, 0o700, dir_fd=base_fd)
+                probe["dir_created"] = True
+                created.append(("dir", probe_name))
                 probe_fd = os.open(
                     probe_name,
                     os.O_RDONLY | feature("O_DIRECTORY") | feature("O_NOFOLLOW"),
                     dir_fd=base_fd,
                 )
+                emit("created", path=str(base / probe_name),
+                     kind="probe_directory", **record(os.fstat(probe_fd)))
                 probe_file_fd = os.open(
                     "w", os.O_WRONLY | os.O_CREAT | os.O_EXCL, 0o600,
                     dir_fd=probe_fd,
                 )
+                created.append(("file", probe_name, "w"))
                 os.write(probe_file_fd, b"x")
                 os.close(probe_file_fd)
+                probe_file_fd = None
+                emit("created", path=str(base / probe_name / "w"),
+                     kind="probe_file")
+                probe["file_created"] = True
+                writable = True
             else:
                 probe_dir = tempfile.mkdtemp(prefix="base-probe-", dir=base)
                 probe_file = Path(probe_dir) / "w"
+                probe["dir_created"] = True
+                created.append(("dir", probe_dir))
                 probe_file.write_bytes(b"x")
-            probe["dir_created"] = True
-            probe["file_created"] = True
-            writable = True
-            try:
-                if base_fd is not None:
-                    os.unlink("w", dir_fd=probe_fd)
-                    os.rmdir(probe_name, dir_fd=base_fd)
-                else:
-                    probe_file.unlink()
-                    os.rmdir(probe_dir)
-                probe["self_cleaned"] = True
-            except OSError as exc:
-                probe["self_cleaned"] = False
-                probe["clean_error"] = error(exc)
+                probe["file_created"] = True
+                created.append(("file", probe_dir, "w"))
+                emit("created", path=str(probe_dir), kind="probe_directory",
+                     **record(probe_dir.lstat()))
+                emit("created", path=str(probe_file), kind="probe_file",
+                     **record(probe_file.lstat()))
+                writable = True
         except OSError as exc:
-            probe["dir_created"] = False
-            probe["file_created"] = False
+            probe["dir_created"] = probe.get("dir_created", False)
+            probe["file_created"] = probe.get("file_created", False)
             probe["error"] = error(exc)
         finally:
-            if probe_fd is not None:
-                try:
-                    os.close(probe_fd)
-                except OSError:
-                    pass
+            # Limpiar SOLO los artefactos propios creados (y cuya propiedad se
+            # acredita por haberlos creado nosotros), incluso si falló una
+            # operación intermedia. Nunca se elimina nada ajeno.
+            residue = []
+            try:
+                if base_fd is not None:
+                    if probe_fd is not None and ("file", probe_name, "w") in created:
+                        os.unlink("w", dir_fd=probe_fd)
+                    if probe_name is not None and ("dir", probe_name) in created:
+                        os.rmdir(probe_name, dir_fd=base_fd)
+                else:
+                    if probe_file is not None:
+                        probe_file.unlink()
+                    if probe_dir is not None:
+                        os.rmdir(probe_dir)
+            except OSError as exc:
+                residue.append({
+                    "path": str(base / probe_name) if probe_name else str(base),
+                    "error": error(exc),
+                })
+            # Garantizar el cierre de TODOS los descriptores del sondeo.
+            for fd in (probe_file_fd, probe_fd):
+                if fd is not None:
+                    try:
+                        os.close(fd)
+                    except OSError:
+                        pass
+            if residue:
+                # Si la limpieza falla, registrar el residuo y su ubicación.
+                probe["self_cleaned"] = False
+                probe["clean_error"] = residue[0]["error"]
+                probe["residue"] = residue
+            else:
+                probe["self_cleaned"] = True
         info["writability_probe"] = probe
         verified = writable
     else:
@@ -1634,26 +1920,38 @@ def analyze_base(base, location_declared=None, probe_writability=False,
 
 
 def _parent_audit(base):
-    """Auditoría estática de los directorios padre (corrección C).
+    """Auditoría estática de los directorios padre (corrección A).
 
-    Registra el modo de cada padre y devuelve bloqueos para riesgos
-    relevantes: un padre globalmente escribible sin bit sticky permite a
-    terceros renombrar/sustituir la entrada; se registran también los padres
-    escribibles por grupo como riesgo residual documentado. No se modifican
-    permisos ni propietarios ajenos.
+    Registra modo, propietario y permisos de cada padre y devuelve
+    (rows, blockers, complete). Se rechazan padres escribibles por grupo
+    cuando no se puede demostrar aislamiento suficiente (otros miembros del
+    grupo podrían sustituir la entrada) y padres globalmente escribibles sin
+    bit sticky. Si un padre no puede inspeccionarse, la auditoría se
+    clasifica como INCOMPLETA (complete=False) y se rechaza la ubicación:
+    la incertidumbre no se convierte en aprobación. Se evalúan los riesgos de
+    sustitución de entradas, propiedad y permisos. No se modifican permisos
+    ni propietarios ajenos.
     """
     rows = []
     blockers = []
+    complete = True
     for parent in (base, *base.parents):
         try:
             st = parent.lstat()
-        except OSError:
+        except OSError as exc:
+            # No se pudo inspeccionar un padre: auditoría incompleta.
+            rows.append({"path": str(parent), "inspection_error": error(exc)})
+            complete = False
             break
         if not stat.S_ISDIR(st.st_mode):
+            rows.append({"path": str(parent),
+                         "inspection_error": "no es un directorio"})
+            complete = False
             break
         perms = st.st_mode & 0o777
         row = {
             "path": str(parent), "mode": oct(perms),
+            "owner_uid": st.st_uid, "owner_gid": st.st_gid,
             "world_writable": bool(perms & 0o002),
             "group_writable": bool(perms & 0o020),
             "sticky": bool(st.st_mode & 0o1000),
@@ -1663,21 +1961,46 @@ def _parent_audit(base):
             blockers.append(
                 f"directorio padre globalmente escribible sin sticky: {parent}"
             )
-    if rows:
-        return rows, blockers
-    return rows, blockers
+        if row["group_writable"]:
+            blockers.append(
+                f"directorio padre escribible por grupo: no se puede "
+                f"demostrar aislamiento suficiente: {parent}"
+            )
+    return rows, blockers, complete
+
+
+def _acl_state(path):
+    """Detecta ACL POSIX por atributos extendidos (corrección B).
+
+    Reconoce system.posix_acl_access y system.posix_acl_default (y cualquier
+    atributo con prefijo system.posix_acl); NO usa comparación exacta con
+    system.posix_acl. Devuelve (state, error): "present" si hay atributos de
+    ACL, "absent" si la consulta fue posible y no hay ACL, "unknown" si la
+    consulta falló o la plataforma no permite verificar. La ausencia de
+    información NO se interpreta como ausencia de ACL: en caso de unknown,
+    se rechaza la aprobación automática.
+    """
+    try:
+        xattrs = os.listxattr(str(path), follow_symlinks=False)
+    except (OSError, AttributeError) as exc:
+        return "unknown", error(exc)
+    if any(str(name).startswith("system.posix_acl") for name in xattrs):
+        return "present", None
+    return "absent", None
 
 
 def _base_blockers(analysis, parents):
-    """Decisión de confianza sobre la ubicación (corrección C).
+    """Decisión de confianza sobre la ubicación (correcciones C/A/B).
 
     No se considera confiable un grupo simplemente por pertenecer a él: un
     directorio escribible por grupo permite a otros miembros modificarlo, y
     no se puede demostrar el aislamiento de esos miembros, por lo que se
     rechaza. También se rechazan directorios que no sean propiedad del
-    usuario efectivo, globalmente escribibles, con ACL presentes (no
-    evaluables por este diagnóstico) y padres con riesgo de sustitución.
+    usuario efectivo, globalmente escribibles, con ACL presentes o con
+    estado de ACL desconocido (no evaluable), y padres con riesgo de
+    sustitución o una auditoría de padres incompleta.
     """
+    rows, parent_blockers, parent_complete = parents
     blockers = []
     if analysis.get("world_writable"):
         blockers.append(
@@ -1693,12 +2016,23 @@ def _base_blockers(analysis, parents):
             "directorio no propiedad del usuario efectivo: no se aprueba "
             "automáticamente"
         )
-    if analysis.get("acl_present"):
+    acl_state = analysis.get("acl_state")
+    if acl_state == "present":
         blockers.append(
             "ACL presentes en el directorio: no evaluables por este "
             "diagnóstico; no se puede demostrar aislamiento suficiente"
         )
-    blockers.extend(parents[1])
+    elif acl_state == "unknown":
+        blockers.append(
+            "estado de ACL desconocido: la plataforma no permite verificar "
+            "las ACL; no se aprueba automáticamente"
+        )
+    if not parent_complete:
+        blockers.append(
+            "auditoría de directorios padre incompleta: no se pudo "
+            "inspeccionar todo el camino hasta la raíz; no se aprueba"
+        )
+    blockers.extend(parent_blockers)
     return blockers
 
 
@@ -1729,14 +2063,13 @@ def approved_base(path, location_declared=None):
         analysis = analyze_base(base, location_declared, probe_writability=True,
                                 base_fd=base_fd)
         # Detección de ACL (solo lectura; no se modifica nada ajeno).
-        try:
-            xattrs = os.listxattr(str(base), follow_symlinks=False)
-        except (OSError, AttributeError):
-            xattrs = None
-        analysis["acl_present"] = "system.posix_acl" in (xattrs or [])
+        acl_state, acl_error = _acl_state(base)
+        analysis["acl_state"] = acl_state
+        analysis["acl_error"] = acl_error
         # Auditoría de padres.
-        parents, parent_blockers = _parent_audit(base)
+        parents, parent_blockers, parent_complete = _parent_audit(base)
         analysis["parents"] = parents
+        analysis["parent_audit_complete"] = parent_complete
         if analysis["status"] != "OK":
             raise ValueError(f"--base rechazado: {analysis.get('reason')}")
         if analysis.get("verified_writable") is not True:
@@ -1746,8 +2079,10 @@ def approved_base(path, location_declared=None):
                 "--base: la clase de almacenamiento no es apropiada o no está "
                 "fundamentada; no se aprueba"
             )
-        # A2: decisión de confianza (propiedad, permisos, riesgo de terceros).
-        blockers = _base_blockers(analysis, (parents, parent_blockers))
+        # A2/C/A/B: decisión de confianza (propiedad, permisos, ACL, riesgo
+        # de terceros y auditoría de padres).
+        blockers = _base_blockers(analysis, (parents, parent_blockers,
+                                             parent_complete))
         if blockers:
             raise ValueError("--base rechazado: " + "; ".join(blockers))
         if base == base.parent:
