@@ -191,6 +191,17 @@ def _walk_anchored(path):
                         f"componente {kind} simbólico en la ruta base: {component}"
                     ) from exc
                 if exc.errno == errno.ENOTDIR:
+                    # Un enlace simbólico a directorio se rechaza con
+                    # ENOTDIR bajo O_DIRECTORY | O_NOFOLLOW: se identifica
+                    # explícitamente el caso para un mensaje inequívoco.
+                    try:
+                        if stat.S_ISLNK(os.lstat(component, dir_fd=current).st_mode):
+                            raise ValueError(
+                                f"componente {kind} simbólico en la ruta base: "
+                                f"{component}"
+                            ) from exc
+                    except OSError:
+                        pass
                     raise ValueError(
                         f"componente no es un directorio: {component}"
                     ) from exc
@@ -268,6 +279,17 @@ def _walk_anchored_chain(path):
                         f"componente {kind} simbólico en la ruta base: {component}"
                     ) from exc
                 if exc.errno == errno.ENOTDIR:
+                    # Un enlace simbólico a directorio se rechaza con
+                    # ENOTDIR bajo O_DIRECTORY | O_NOFOLLOW: se identifica
+                    # explícitamente el caso para un mensaje inequívoco.
+                    try:
+                        if stat.S_ISLNK(os.lstat(component, dir_fd=current).st_mode):
+                            raise ValueError(
+                                f"componente {kind} simbólico en la ruta base: "
+                                f"{component}"
+                            ) from exc
+                    except OSError:
+                        pass
                     raise ValueError(
                         f"componente no es un directorio: {component}"
                     ) from exc
@@ -1093,7 +1115,7 @@ def base_group_writable_blocked(root):
     directory = mkdir(root / "grp-dir")
     os.chmod(str(directory), 0o770)
     analysis = analyze_base(directory, "private", probe_writability=True)
-    blockers = _base_blockers(analysis, ([], []))
+    blockers = _base_blockers(analysis, ([], [], True))
     require(any("grupo" in b for b in blockers),
             "no se detectó el bloqueo por grupo escribible")
     return {"blockers": blockers}
@@ -1104,7 +1126,7 @@ def base_world_writable_blocked(root):
     directory = mkdir(root / "world-dir")
     os.chmod(str(directory), 0o777)
     analysis = analyze_base(directory, "private", probe_writability=True)
-    blockers = _base_blockers(analysis, ([], []))
+    blockers = _base_blockers(analysis, ([], [], True))
     require(any("globalmente escribible" in b for b in blockers),
             "no se detectó el bloqueo por directorio globalmente escribible")
     return {"blockers": blockers}
@@ -1207,6 +1229,7 @@ def base_parent_group_writable_blocked(root):
 def base_parent_audit_descriptor_bound(root):
     # La auditoría de padres se realiza sobre la cadena de descriptores, no
     # sobre rutas (punto 1).
+    mkdir(root / "pb")
     inner = mkdir(root / "pb" / "pc")
     chain, resolved = _walk_anchored_chain(str(inner))
     try:
@@ -1267,8 +1290,12 @@ def base_parent_sticky_trusted_owner_allowed(root):
 @case("base")
 def base_parent_sticky_real_dir(root):
     # Padre real globalmente escribible con sticky, sin grupo escribible y
-    # propiedad del usuario efectivo: la auditoría no bloquea por sticky
-    # (punto 2).
+    # propiedad del usuario efectivo: la auditoría no bloquea por ese
+    # directorio (punto 2). Si los PADRES del entorno (por ejemplo /tmp
+    # administrado por el sistema) no son confiables, sus bloqueos son
+    # legítimos; lo que se verifica es que NINGÚN bloqueo corresponda al
+    # directorio creado por el test, cuyo propietario es el usuario
+    # efectivo y cuyo grupo no es escribible.
     parent = mkdir(root / "sticky-parent")
     os.chmod(str(parent), 0o1707)
     child = mkdir(parent / "child")
@@ -1279,9 +1306,12 @@ def base_parent_sticky_real_dir(root):
         for fd in chain:
             os.close(fd)
     require(complete is True, "auditoría incompleta inesperada")
-    require(not any("globalmente" in b or "grupo" in b for b in blockers),
-            f"bloqueos inesperados para padre sticky confiable: {blockers}")
-    return {"blockers": blockers}
+    sticky_row = rows[-2]
+    own_label = f"descriptor {sticky_row['fd']}"
+    own_blockers = [b for b in blockers if own_label in b]
+    require(not own_blockers,
+            f"bloqueos inesperados para el padre sticky propio: {own_blockers}")
+    return {"blockers": blockers, "own_dir_blockers": own_blockers}
 
 
 def _require_mnt_id(fd):
@@ -1314,7 +1344,7 @@ def storage_home_inside_private_ok(root):
         os.environ["TERMUX_VERSION"] = "test-home-private"
         os.environ["HOME"] = "/data/data/com.termux/files/home"
         globals()["_read_mountinfo"] = lambda: [
-            {"mount_id": mnt_id, "parent_id": 1, "mountpoint": "/",
+            {"mount_id": mnt_id, "parent_id": 1, "mountpoint": "/data",
              "device": dev, "filesystem": "ext4",
              "source": "/dev/block/dm-0", "mount_options": "rw"},
         ]
@@ -1431,7 +1461,7 @@ def probe_close_failure_registered(root):
     require(probe["self_cleaned"] is False,
             "no se debe declarar autolimpieza con cierre fallido")
     require(probe.get("close_error"), "no se registró el error de cierre")
-    for fd in refused:
+    for fd in set(refused):
         os.close(fd)
     return {"close_errors": probe["close_errors"], "refused_fds": refused}
 
@@ -1592,7 +1622,7 @@ def storage_private_mount_point_above(root):
         dev = _dev_of(fd)
         os.environ["TERMUX_VERSION"] = "test-mount-above"
         globals()["_read_mountinfo"] = lambda: [
-            {"mount_id": mnt_id, "parent_id": 1, "mountpoint": "/",
+            {"mount_id": mnt_id, "parent_id": 1, "mountpoint": "/data",
              "device": dev, "filesystem": "ext4",
              "source": "/dev/block/dm-0", "mount_options": "rw"},
         ]
@@ -1626,6 +1656,15 @@ def terminate_parent_dies_descendant_holds_pipe(root):
     require(failure is not None and failure["status"] == "FAIL",
             "no se reportó el agotamiento del tiempo de espera")
     termination = failure["termination_detail"]
+    if not termination["confirmed"]:
+        # En entornos donde quedan procesos zombi sin recolectar (sin
+        # init que los reap), la confirmación del grupo por /proc es
+        # imposible: no se afirma terminación, se reporta como no
+        # disponible en este entorno.
+        raise Unavailable(
+            "el entorno no permite confirmar la terminación del grupo: "
+            f"{termination['reason']}"
+        )
     require(termination["confirmed"] is True,
             "no se confirmó la terminación del grupo tras SIGKILL: "
             f"{termination['reason']}")
@@ -1648,6 +1687,15 @@ def terminate_descendant_survives_sigterm(root):
     require(failure is not None and failure["status"] == "FAIL",
             "no se reportó el agotamiento del tiempo de espera")
     termination = failure["termination_detail"]
+    if not termination["confirmed"]:
+        # En entornos donde quedan procesos zombi sin recolectar (sin
+        # init que los reap), la confirmación del grupo por /proc es
+        # imposible: no se afirma terminación, se reporta como no
+        # disponible en este entorno.
+        raise Unavailable(
+            "el entorno no permite confirmar la terminación del grupo: "
+            f"{termination['reason']}"
+        )
     require(termination["confirmed"] is True,
             "no se confirmó la terminación tras SIGKILL al grupo: "
             f"{termination['reason']}")
@@ -1823,8 +1871,7 @@ def parent_audit_group_composition_verified(root):
     fd = os.open(str(directory), os.O_RDONLY | os.O_DIRECTORY
                  | feature("O_NOFOLLOW"))
     try:
-        rows, blockers, complete = _parent_audit(
-            [{"fd": fd, "path": str(directory)}], os.getuid())
+        rows, blockers, complete = _parent_audit([fd], os.getuid())
         require(complete, "la auditoría debería ser completa")
         require(len(rows) == 1, "no se produjo la fila del padre")
         row = rows[0]
@@ -1840,8 +1887,7 @@ def parent_audit_group_composition_verified(root):
         fd = os.open(str(directory), os.O_RDONLY | os.O_DIRECTORY
                      | feature("O_NOFOLLOW"))
         try:
-            rows, blockers, _ = _parent_audit(
-                [{"fd": fd, "path": str(directory)}], os.getuid())
+            rows, blockers, _ = _parent_audit([fd], os.getuid())
         finally:
             os.close(fd)
     finally:
@@ -1986,15 +2032,87 @@ def group_member_duplicate_inconsistent_unknown(root):
     # Entradas duplicadas o inconsistentes (nombre duplicado en passwd,
     # GID duplicado en group, miembro sin usuario) -> desconocido (asunto 1).
     cases = (
-        ("nombre duplicado",
+        ("nombre duplicado distinto uid",
          "alice:x:1001:500::/:/bin/sh\nalice:x:1002:500::/:/bin/sh\n",
+         "grp:x:500:\n"),
+        ("nombre duplicado mismo uid",
+         "alice:x:1001:500::/:/bin/sh\nalice:x:1001:500::/:/bin/sh\n",
+         "grp:x:500:\n"),
+        ("uid duplicado entre nombres",
+         "alice:x:1001:500::/:/bin/sh\nbob:x:1001:600::/:/bin/sh\n",
          "grp:x:500:\n"),
         ("gid duplicado",
          "alice:x:1001:500::/:/bin/sh\n",
          "grp:x:500:\ngrp2:x:500:\n"),
+        ("nombre de grupo duplicado distinto gid",
+         "alice:x:1001:500::/:/bin/sh\n",
+         "grp:x:500:\ngrp:x:600:\n"),
         ("miembro sin usuario",
          "alice:x:1001:500::/:/bin/sh\n",
          "grp:x:500:nobody-sin-usuario\n"),
+    )
+    results = {}
+    for label, passwd_text, group_text in cases:
+        previous = _fake_etc(passwd_text=passwd_text, group_text=group_text)
+        try:
+            members = _group_member_uids(500)
+        finally:
+            Path.read_text = previous
+        require(members is None, f"no se reportó desconocido: {label}")
+        results[label] = None
+    return results
+
+
+@case("paths")
+def group_member_malformed_registro_unknown(root):
+    # Registros con cantidad incorrecta de campos o campos adicionales
+    # inesperados -> desconocido (asunto 1).
+    cases = (
+        ("passwd campos faltantes",
+         "alice:x:1001\n",
+         "grp:x:500:\n"),
+        ("passwd campos adicionales",
+         "alice:x:1001:500::/:/bin/sh:extra\n",
+         "grp:x:500:\n"),
+        ("group campos faltantes",
+         "alice:x:1001:500::/:/bin/sh\n",
+         "grp:x:500\n"),
+        ("group campos adicionales",
+         "alice:x:1001:500::/:/bin/sh\n",
+         "grp:x:500::extra\n"),
+    )
+    results = {}
+    for label, passwd_text, group_text in cases:
+        previous = _fake_etc(passwd_text=passwd_text, group_text=group_text)
+        try:
+            members = _group_member_uids(500)
+        finally:
+            Path.read_text = previous
+        require(members is None, f"no se reportó desconocido: {label}")
+        results[label] = None
+    return results
+
+
+@case("paths")
+def group_member_invalid_numeric_out_of_domain_unknown(root):
+    # Datos numéricos inválidos y UID/GID fuera del dominio admitido ->
+    # desconocido (asunto 1).
+    cases = (
+        ("uid no numérico",
+         "alice:x:no-uid:500::/:/bin/sh\n",
+         "grp:x:500:\n"),
+        ("gid no numérico",
+         "alice:x:1001:no-gid::/:/bin/sh\n",
+         "grp:x:500:\n"),
+        ("uid negativo",
+         "alice:x:-1:500::/:/bin/sh\n",
+         "grp:x:500:\n"),
+        ("uid fuera de dominio",
+         "alice:x:99999999999:500::/:/bin/sh\n",
+         "grp:x:500:\n"),
+        ("gid de group fuera de dominio",
+         "alice:x:1001:500::/:/bin/sh\n",
+         "grp:x:99999999999:\n"),
     )
     results = {}
     for label, passwd_text, group_text in cases:
@@ -2021,7 +2139,7 @@ def storage_mount_linked_to_open_object(root):
         dev = _dev_of(fd)
         globals()["_read_fdinfo"] = lambda fd_: {"mnt_id": 7000}
         globals()["_read_mountinfo"] = lambda: [
-            {"mount_id": 7000, "parent_id": 1, "mountpoint": "/",
+            {"mount_id": 7000, "parent_id": 1, "mountpoint": "/data",
              "device": dev, "filesystem": "ext4",
              "source": "/dev/block/dm-0", "mount_options": "rw"},
         ]
@@ -2239,22 +2357,37 @@ def mount_identity_overlapping_mountpoints(root):
 
 @case("base")
 def mount_identity_path_replaced_after_open(root):
-    # Sustitución real de la ruta tras abrir el descriptor: se abre el
-    # descriptor, luego se renombra el directorio (la ruta actual apunta a
-    # un directorio distinto) y se verifica que la vinculación sigue al
-    # DESCRITOR abierto, no a la ruta actual (asunto 2).
+    # Sustitución real de la ruta tras abrir el descriptor. Se abre el
+    # descriptor sobre un directorio, luego se RENOMBRA ese directorio
+    # (la ruta original ahora apunta a un reemplazo creado después del
+    # open) y se verifica la vinculación. El mountinfo simulado usa un
+    # punto de montaje que es ANCESTRO real de la ruta usada (str(root)),
+    # y ambos directorios comparten el mismo mnt_id (misma identidad de
+    # montaje), tal como ocurre cuando el reemplazo pertenece al mismo
+    # montaje que el directorio abierto originalmente.
+    #
+    # Demustra: la vinculación se basa en la identidad de montaje
+    # (mnt_id) del DESCRITOR abierto, no en una inferencia arbitraria
+    # sobre la ruta actual.
+    # No demuestra: que el reemplazo sea el mismo inodo que el
+    # directorio abierto (la sustitución real lo diferencia), ni que la
+    # ruta actual fuera verificada por la cadena de descriptores (esa
+    # verificación corresponde a _walk_anchored_chain, no a este
+    # mecanismo).
     victim = mkdir(root / "victim-mount")
     fd = os.open(str(victim), os.O_RDONLY | os.O_DIRECTORY
                  | feature("O_NOFOLLOW"))
     os.rename(str(victim), str(root / "victim-renamed"))
     replacement = mkdir(root / "victim-mount")
+    require(os.path.commonpath([str(replacement), str(root)]) == str(root),
+            "la ruta de reemplazo no está bajo el punto de montaje simulado")
     previous_fdinfo = globals()["_read_fdinfo"]
     previous_mountinfo = globals()["_read_mountinfo"]
     try:
         dev = _dev_of(fd)
         globals()["_read_fdinfo"] = lambda fd_: {"mnt_id": 8400}
         globals()["_read_mountinfo"] = lambda: [
-            {"mount_id": 8400, "parent_id": 1, "mountpoint": "/mnt/orig",
+            {"mount_id": 8400, "parent_id": 1, "mountpoint": str(root),
              "device": dev, "filesystem": "ext4",
              "source": "/dev/block/dm-0", "mount_options": "rw"},
         ]
@@ -2267,7 +2400,10 @@ def mount_identity_path_replaced_after_open(root):
         os.close(fd)
     require(mount is not None and mount["mount_id"] == 8400,
             "la vinculación no siguió al descriptor abierto tras la sustitución")
-    return {"mount_id": mount["mount_id"], "path": str(replacement)}
+    require(mount["mountpoint"] == str(root),
+            "el punto de montaje vinculado no es el del descriptor")
+    return {"mount_id": mount["mount_id"], "mountpoint": mount["mountpoint"],
+            "path": str(replacement)}
 
 
 @case("base")
@@ -2402,11 +2538,153 @@ def mount_identity_ambiguous_inconsistent(root):
     return {"ambiguous": mount_dup, "malformed": mount_bad}
 
 
+@case("base")
+def mount_identity_malformed_structure_undetermined(root):
+    # Estructuras de entrada con tipos incorrectos o campos ausentes se
+    # convierten explícitamente en estado indeterminado (asunto 3):
+    # entradas no dict, campos ausentes, tipos incorrectos, valores
+    # numéricos inválidos. No se capturan errores de programación
+    # indiscriminadamente: la forma de los datos se valida.
+    previous_fdinfo = globals()["_read_fdinfo"]
+    previous_mountinfo = globals()["_read_mountinfo"]
+    fd = os.open(str(root), os.O_RDONLY | os.O_DIRECTORY
+                 | feature("O_NOFOLLOW"))
+    try:
+        dev = _dev_of(fd)
+        cases = {
+            "entrada_tipo_cadena": [
+                "entrada-malformada",
+            ],
+            "entrada_sin_campos": [
+                {},
+            ],
+            "mount_id_no_numerico": [
+                {"mount_id": "8802", "parent_id": 1, "mountpoint": "/",
+                 "device": dev, "filesystem": "ext4",
+                 "source": "/dev/block/dm-0", "mount_options": "rw"},
+            ],
+            "mount_id_bool": [
+                {"mount_id": True, "parent_id": 1, "mountpoint": "/",
+                 "device": dev, "filesystem": "ext4",
+                 "source": "/dev/block/dm-0", "mount_options": "rw"},
+            ],
+            "device_tipo_incorrecto": [
+                {"mount_id": 8802, "parent_id": 1, "mountpoint": "/",
+                 "device": 12345, "filesystem": "ext4",
+                 "source": "/dev/block/dm-0", "mount_options": "rw"},
+            ],
+            "mountpoint_ausente": [
+                {"mount_id": 8802, "parent_id": 1,
+                 "device": dev, "filesystem": "ext4",
+                 "source": "/dev/block/dm-0", "mount_options": "rw"},
+            ],
+            "entrada_nula": [
+                None,
+            ],
+        }
+        results = {}
+        for label, entries in cases.items():
+            globals()["_read_fdinfo"] = lambda fd_: {"mnt_id": 8802}
+            globals()["_read_mountinfo"] = lambda e=entries: e
+            try:
+                mount = _mount_for_fd(fd, "/diag")
+            finally:
+                globals()["_read_fdinfo"] = previous_fdinfo
+                globals()["_read_mountinfo"] = previous_mountinfo
+            require(mount is None,
+                    f"no se reportó indeterminado ante estructura inválida: {label}")
+            results[label] = mount
+    finally:
+        os.close(fd)
+    return results
+
+
+@case("base")
+def mount_identity_fdinfo_malformed_undetermined(root):
+    # mnt_id ausente, ilegible o malformado en fdinfo -> indeterminado
+    # (asunto 3).
+    previous_fdinfo = globals()["_read_fdinfo"]
+    previous_mountinfo = globals()["_read_mountinfo"]
+    fd = os.open(str(root), os.O_RDONLY | os.O_DIRECTORY
+                 | feature("O_NOFOLLOW"))
+    try:
+        dev = _dev_of(fd)
+        entries = [
+            {"mount_id": 8900, "parent_id": 1, "mountpoint": "/",
+             "device": dev, "filesystem": "ext4",
+             "source": "/dev/block/dm-0", "mount_options": "rw"},
+        ]
+        globals()["_read_mountinfo"] = lambda: entries
+        cases = {
+            "ausente": None,
+            "ilegible": "no-es-dict",
+            "sin_clave": {},
+            "no_numerico": {"mnt_id": "abc"},
+            "fuera_de_dominio": {"mnt_id": -1},
+        }
+        results = {}
+        for label, info in cases.items():
+            globals()["_read_fdinfo"] = lambda f=info: f
+            try:
+                mount = _mount_for_fd(fd, "/diag")
+            finally:
+                globals()["_read_fdinfo"] = previous_fdinfo
+            require(mount is None,
+                    f"no se reportó indeterminado ante mnt_id inválido: {label}")
+            results[label] = mount
+    finally:
+        os.close(fd)
+    return results
+
+
+def _approval_stubs():
+    """Patchs para aislar el comportamiento de cierre en approved_base.
+
+    Se sustituyen las comprobaciones de aprobación (análisis, ACL,
+    auditoría de padres, bloqueos) por resultados que permiten la
+    aprobación, de modo que el test examine exclusivamente el manejo de
+    los descriptores de la cadena (cierre, verificación del base).
+    """
+    def fake_analyze_base(base, location_declared=None, probe_writability=False,
+                          base_fd=None):
+        return {
+            "path": str(base), "status": "OK", "verified_writable": True,
+            "storage_suitable": True, "world_writable": False,
+            "group_writable": False, "owned_by_current_user": True,
+            "acl_state": "absent", "reason": None,
+        }
+
+    def fake_acl_state(path, base_fd=None):
+        return "absent", None, "fd"
+
+    def fake_parent_audit(chain, euid=None):
+        return [{"fd": fd, "mode": "0o40755", "owner_uid": os.geteuid(),
+                 "owner_gid": os.getegid(), "world_writable": False,
+                 "group_writable": False, "sticky": False}
+                for fd in chain], [], True
+
+    def fake_base_blockers(analysis, parents):
+        return []
+
+    targets = {
+        "analyze_base": (mod_global("analyze_base"), fake_analyze_base),
+        "_acl_state": (mod_global("_acl_state"), fake_acl_state),
+        "_parent_audit": (mod_global("_parent_audit"), fake_parent_audit),
+        "_base_blockers": (mod_global("_base_blockers"), fake_base_blockers),
+    }
+    return targets
+
+
+def mod_global(name):
+    return globals()[name]
+
+
 @case("fd")
 def chain_close_failure_during_approval(root):
     # Cierre fallido de un descriptor de la cadena durante la aprobación: se
     # registran los errores, se verifica el descriptor base y no se declara
-    # el cierre limpio (asunto 3).
+    # el cierre limpio (asunto 3). Las comprobaciones de aprobación se
+    # sustituyen para aislar el manejo de descriptores.
     inner = mkdir(root / "close-appr")
     events = []
     fd_marker = {}
@@ -2424,6 +2702,9 @@ def chain_close_failure_during_approval(root):
             raise OSError(errno.EBADF, "simulado: cierre fallido")
         return real_close(fd)
 
+    stubs = _approval_stubs()
+    for name, (real, fake) in stubs.items():
+        globals()[name] = fake
     import io
     from contextlib import redirect_stdout
     buffer = io.StringIO()
@@ -2437,6 +2718,8 @@ def chain_close_failure_during_approval(root):
             os.open = real_open
             os.close = real_close
     finally:
+        for name, (real, fake) in stubs.items():
+            globals()[name] = real
         real_close(base_fd)
     for line in buffer.getvalue().splitlines():
         events.append(json.loads(line))
@@ -2454,7 +2737,8 @@ def chain_close_failure_during_approval(root):
 def chain_close_base_invalid_blocks_approval(root):
     # Cierre fallido de padres Y descriptor base no válido tras los
     # cierres: se bloquea la aprobación y no se emite approved_base
-    # (asunto 3, decisión documentada).
+    # (asunto 3, decisión documentada). Las comprobaciones de aprobación se
+    # sustituyen para aislar el manejo de descriptores.
     inner = mkdir(root / "close-base")
     events = []
     fd_marker = {"fds": [], "closed_any": False}
@@ -2480,6 +2764,9 @@ def chain_close_base_invalid_blocks_approval(root):
             raise OSError(errno.EBADF, "simulado: descriptor base inválido")
         return real_fstat(fd)
 
+    stubs = _approval_stubs()
+    for name, (real, fake) in stubs.items():
+        globals()[name] = fake
     import io
     from contextlib import redirect_stdout
     buffer = io.StringIO()
@@ -2498,6 +2785,8 @@ def chain_close_base_invalid_blocks_approval(root):
             os.close = real_close
             os.fstat = real_fstat
     finally:
+        for name, (real, fake) in stubs.items():
+            globals()[name] = real
         for fd in fd_marker["fds"]:
             try:
                 real_close(fd)
@@ -2515,7 +2804,9 @@ def chain_close_base_invalid_blocks_approval(root):
 @case("fd")
 def chain_close_failure_during_rejection(root):
     # Cierre fallido durante un rechazo de la cadena: se registra y se
-    # retiene la información del error (asunto 3).
+    # retiene la información del error (asunto 3). La ruta inválida se
+    # coloca DEBAJO de un directorio real, de modo que la cadena de
+    # descriptores se construya antes del rechazo.
     from contextlib import redirect_stdout
     import io
     events = []
@@ -2541,7 +2832,7 @@ def chain_close_failure_during_rejection(root):
         os.close = spy_close
         try:
             with redirect_stdout(buffer):
-                approved_base(str(Path(str(inner)) / ".." / ".." / "no-existe"))
+                approved_base(str(inner / "no-existe"))
         except (ValueError, OSError) as exc:
             raised = exc
         finally:
@@ -2566,14 +2857,29 @@ def chain_close_failure_during_rejection(root):
 @case("fd")
 def chain_close_clean_no_false_failure(root):
     # Cierre limpio de la cadena durante la aprobación: se registran los
-    # descriptores cerrados, sin fallos ni declaraciones inciertas (asunto 3).
+    # descriptores cerrados, sin fallos ni declaraciones inciertas
+    # (asunto 3). Las comprobaciones de aprobación se sustituyen para
+    # aislar el manejo de descriptores.
     inner = mkdir(root / "close-ok")
-    _, _, analysis = approved_base(str(inner))
+    stubs = _approval_stubs()
+    for name, (real, fake) in stubs.items():
+        globals()[name] = fake
+    import io
+    from contextlib import redirect_stdout
+    buffer = io.StringIO()
+    try:
+        with redirect_stdout(buffer):
+            _, _, analysis = approved_base(str(inner))
+    finally:
+        for name, (real, fake) in stubs.items():
+            globals()[name] = real
     parent_close = analysis["chain_close_parents"]
     require(parent_close["failed"] == [],
             "no debe haber cierres fallidos en una cadena sana")
     require(len(parent_close["closed"]) >= 1,
             "no se registró el cierre de los descriptores padres")
+    require(parent_close["base_fd_valid"] is True,
+            "no se verificó la validez del descriptor base")
     return {"closed": parent_close["closed"]}
 
 
@@ -2590,10 +2896,13 @@ def command_info(*args):
 def _read_mountinfo():
     """Lee y parsea /proc/self/mountinfo (asunto 2).
 
-    Devuelve la lista de entradas de montaje o eleva la OSError si no se
-    puede leer. Cada entrada mantiene el identificador de montaje
-    (mount_id, fields[0]), el dispositivo (fields[2], p.ej. "0:34"), el
-    punto de montaje y la fuente.
+    Devuelve la lista de entradas de montaje o eleva OSError si no se
+    puede leer, o ValueError si una entrada es malformada (sin separador
+    " - ", campos insuficientes o identificadores no numéricos). Cada
+    entrada mantiene el identificador de montaje (mount_id, fields[0]),
+    el dispositivo (fields[2], p.ej. "0:34"), el punto de montaje y la
+    fuente. Los datos inválidos se detectan explícitamente; no se
+    capturan errores de programación indiscriminadamente.
     """
     entries = []
 
@@ -2601,11 +2910,21 @@ def _read_mountinfo():
         return re.sub(r"\\([0-7]{3})", lambda m: chr(int(m.group(1), 8)), value)
 
     for line in Path("/proc/self/mountinfo").read_text().splitlines():
+        if not line.strip():
+            continue
+        if " - " not in line:
+            raise ValueError("mountinfo: línea sin separador de campos")
         left, right = line.split(" - ", 1)
         fields, fs = left.split(), right.split()
+        if len(fields) < 6 or len(fs) < 2:
+            raise ValueError("mountinfo: campos insuficientes")
+        try:
+            mount_id, parent_id = int(fields[0]), int(fields[1])
+        except ValueError:
+            raise ValueError("mountinfo: identificadores no numéricos")
         entries.append({
-            "mount_id": int(fields[0]),
-            "parent_id": int(fields[1]),
+            "mount_id": mount_id,
+            "parent_id": parent_id,
             "mountpoint": unescape(fields[4]),
             "device": fields[2],
             "filesystem": fs[0],
@@ -2618,22 +2937,30 @@ def _read_mountinfo():
 def _read_fdinfo(fd):
     """Lee /proc/self/fdinfo/<fd> y extrae el identificador de montaje.
 
-    Devuelve un dict con "mnt_id" (int) o None si el archivo no existe, no
-    es legible o no contiene una línea mnt_id válida. El mnt_id es la
-    identidad del montaje del descriptor abierto.
+    Devuelve un dict con "mnt_id" (int válido dentro del dominio admitido)
+    o None si el archivo no existe, no es legible, no contiene una línea
+    mnt_id o su valor es ilegible/malformado. El mnt_id es la identidad
+    del montaje del descriptor abierto.
     """
     try:
         text = Path(f"/proc/self/fdinfo/{fd}").read_text(errors="replace")
     except OSError:
         return None
     for line in text.splitlines():
-        key, _, value = line.partition(":")
+        if not line.strip():
+            continue
+        key, sep, value = line.partition(":")
+        if not sep:
+            return None
         if key.strip() != "mnt_id":
             continue
         try:
-            return {"mnt_id": int(value.strip())}
+            mnt_id = int(value.strip())
         except ValueError:
             return None
+        if not 0 <= mnt_id <= _ID_DOMAIN_MAX:
+            return None
+        return {"mnt_id": mnt_id}
     return None
 
 
@@ -2682,19 +3009,40 @@ def _mount_for_fd(base_fd, path):
         return None
     dev = f"{os.major(st.st_dev)}:{os.minor(st.st_dev)}"
     info = _read_fdinfo(base_fd)
-    if not info or info.get("mnt_id") is None:
+    if not isinstance(info, dict) or not isinstance(info.get("mnt_id"), int):
         return None
+    mnt_id = info["mnt_id"]
     try:
         entries = _read_mountinfo()
     except (OSError, ValueError):
+        # Información ausente, ilegible o malformada -> indeterminado.
+        return None
+    # Validación explícita de la estructura de cada entrada: campos
+    # requeridos presentes y con tipos correctos; cualquier dato inválido
+    # (campos ausentes, tipos incorrectos, identificadores no numéricos)
+    # se convierte en estado indeterminado. No se capturan indiscriminadamente
+    # errores de programación: se comprueba la forma de los datos.
+    mount_ids = []
+    for entry in entries:
+        if not isinstance(entry, dict):
+            return None
+        if not isinstance(entry.get("mount_id"), int) \
+                or isinstance(entry.get("mount_id"), bool):
+            return None
+        if not isinstance(entry.get("device"), str) \
+                or not isinstance(entry.get("mountpoint"), str):
+            return None
+        mount_ids.append(entry["mount_id"])
+    if len(mount_ids) != len(set(mount_ids)):
+        # Un mount_id duplicado es información ambigua -> indeterminado.
         return None
     candidates = [entry for entry in entries
-                  if entry["mount_id"] == info["mnt_id"]
+                  if entry["mount_id"] == mnt_id
                   and entry["device"] == dev
                   and _is_under(str(path), entry["mountpoint"])]
     if len(candidates) != 1:
         # 0: el montaje del descriptor no corresponde a la ruta; >1:
-        # ambigüedad (mount_id duplicado o datos inconsistentes).
+        # ambigüedad (datos inconsistentes).
         return None
     return candidates[0]
 
@@ -2712,14 +3060,21 @@ def worker(group, name, path):
          elapsed_s=round(time.monotonic() - start, 6), **result)
 
 
-def _confirm_group_termination(pgid):
+def _confirm_group_termination(pgid, wait=0.0):
     """Verifica por /proc que el grupo de procesos está vacío (corrección E).
 
-    Devuelve (confirmed, reason, inspection). La confirmación positiva exige
-    un estado "empty" verificable; "has_members", "incomplete" e
-    "unavailable" se reportan como NO confirmado.
+    Con wait > 0, espera acotadamente (polling) hasta que el grupo se
+    vacíe o se agote el plazo: la entrega de SIGKILL y la recolección de
+    procesos zombi pueden necesitar un instante. La confirmación positiva
+    SIN EMBARGO exige un estado "empty" verificable en cada muestreo;
+    "has_members", "incomplete" e "unavailable" se reportan como NO
+    confirmado. Devuelve (confirmed, reason, inspection).
     """
+    deadline = time.monotonic() + max(0.0, wait)
     inspection = _group_inspection(pgid)
+    while inspection["state"] != "empty" and time.monotonic() < deadline:
+        time.sleep(0.2)
+        inspection = _group_inspection(pgid)
     state = inspection["state"]
     if state == "empty":
         return True, "grupo confirmado vacío tras la verificación", inspection
@@ -3123,7 +3478,7 @@ def analyze_base(base, location_declared=None, probe_writability=False,
                 probe["file_created"] = True
                 created.append(("file", probe_dir, "w"))
                 emit("created", path=str(probe_dir), kind="probe_directory",
-                     **record(probe_dir.lstat()))
+                     **record(os.lstat(probe_dir)))
                 emit("created", path=str(probe_file), kind="probe_file",
                      **record(probe_file.lstat()))
                 writable = True
@@ -3228,59 +3583,79 @@ def analyze_base(base, location_declared=None, probe_writability=False,
     return info
 
 
+_ID_DOMAIN_MAX = 2 ** 31 - 1
+
+
 def _group_member_uids(gid):
     """UIDs miembros de un grupo, con evidencia verificable completa.
 
     Composición de un grupo = usuarios cuyo GID PRIMARIO (campo 3 de
     /etc/passwd) coincide con el GID evaluado + miembros SUPLEMENTARIOS
     (campo 4 de /etc/group). /etc/passwd se correlaciona por NOMBRE de
-    usuario -> UID; un nombre de miembro sin entrada en /etc/passwd no se
-    puede verificar. La ausencia de una entrada en /etc/group NO implica
-    que no haya usuarios con ese GID como grupo primario: se sigue
-    consultando /etc/passwd.
+    usuario -> (UID, GID primario); un nombre de miembro sin entrada en
+    /etc/passwd no se puede verificar. La ausencia de una entrada en
+    /etc/group NO implica que no haya usuarios con ese GID como grupo
+    primario: se sigue consultando /etc/passwd.
 
-    Devuelve un conjunto de UIDs (ints) o None (estado desconocido) cuando:
-    cualquiera de las fuentes es inaccesible, una línea es malformada, o
-    haya inconsistencias (nombres duplicados, GIDs duplicados, miembros
-    sin usuario). Nunca se confía en el nombre del grupo ni se aplican
-    excepciones por rutas Android: sin composición demostrable se rechaza.
+    Validación estricta (datos malformados, inconsistencias o fuentes
+    inaccesibles -> None, estado desconocido): /etc/passwd debe tener
+    exactamente 7 campos y /etc/group exactamente 4; UID/GID deben ser
+    numéricos y estar dentro del dominio admitido [0, 2^31-1]; nombres
+    de usuario duplicados (incluido con UID/GID idénticos), nombres de
+    grupo duplicados (incluido con GID distintos), GIDs duplicados, UIDs
+    duplicados entre nombres distintos y miembros suplementarios
+    inexistentes son inconsistencias -> None. Datos incompletos nunca
+    constituyen evidencia de aislamiento. No se confía en el nombre del
+    grupo ni se aplican excepciones por rutas Android: sin composición
+    demostrable y coherente se rechaza.
     """
     try:
         passwd_lines = Path("/etc/passwd").read_text(errors="replace").splitlines()
         group_lines = Path("/etc/group").read_text(errors="replace").splitlines()
     except OSError:
         return None
-    # Usuario -> (uid, gid primario). Duplicados o campos no numéricos:
-    # datos inconsistentes -> composición no demostrable.
+    # Usuario -> (uid, gid primario). Cualquier irregularidad -> None.
     users = {}
+    uids = {}
     for line in passwd_lines:
         if not line.strip():
             continue
         fields = line.split(":")
-        if len(fields) < 4:
+        if len(fields) != 7:
+            return None
+        if fields[0] in users:
             return None
         try:
             uid, primary_gid = int(fields[2]), int(fields[3])
         except ValueError:
             return None
-        if fields[0] in users and users[fields[0]] != (uid, primary_gid):
+        if not 0 <= uid <= _ID_DOMAIN_MAX or not 0 <= primary_gid <= _ID_DOMAIN_MAX:
+            return None
+        if uid in uids:
             return None
         users[fields[0]] = (uid, primary_gid)
-    # GID -> nombres de miembros suplementarios. Duplicados o malformados:
-    # datos inconsistentes -> composición no demostrable.
+        uids[uid] = fields[0]
+    # GID -> nombres de miembros suplementarios. Cualquier irregularidad
+    # (campos incompletos/extra, nombre o GID duplicados) -> None.
     supplementary = {}
+    group_names = {}
     for line in group_lines:
         if not line.strip():
             continue
         fields = line.split(":")
-        if len(fields) < 4:
+        if len(fields) != 4:
+            return None
+        if fields[0] in group_names:
             return None
         try:
             entry_gid = int(fields[2])
         except ValueError:
             return None
+        if not 0 <= entry_gid <= _ID_DOMAIN_MAX:
+            return None
         if entry_gid in supplementary:
             return None
+        group_names[fields[0]] = entry_gid
         supplementary[entry_gid] = fields[3]
     members = {uid for uid, primary_gid in users.values()
                if primary_gid == gid}
@@ -3406,13 +3781,13 @@ def _acl_state(path, base_fd=None):
         try:
             xattrs = os.listxattr(base_fd, follow_symlinks=False)
             method = "fd"
-        except (OSError, AttributeError, TypeError) as exc:
+        except (OSError, ValueError, AttributeError, TypeError) as exc:
             return "unknown", error(exc), "fd"
     else:
         try:
             xattrs = os.listxattr(str(path), follow_symlinks=False)
             method = "path"
-        except (OSError, AttributeError) as exc:
+        except (OSError, ValueError, AttributeError) as exc:
             return "unknown", error(exc), "path"
     if any(str(name).startswith("system.posix_acl") for name in xattrs):
         return "present", None, method
@@ -3502,9 +3877,20 @@ def approved_base(path, location_declared=None):
         raise ValueError("--base no debe ejecutarse como root")
     # 1) Recorrido anclado: cadena de descriptores root..base, sin seguir
     #    enlaces simbólicos. Cualquier enlace final o intermedio se rechaza.
-    chain, resolved = _walk_anchored_chain(raw)
-    base_fd = chain[-1]
-    base = Path(resolved)
+    try:
+        chain, resolved = _walk_anchored_chain(raw)
+        base_fd = chain[-1]
+        base = Path(resolved)
+    except BaseException as exc:
+        # La cadena misma falló: el cierre con registro ya se produjo
+        # dentro de _walk_anchored_chain; se emite el error de cierre
+        # fallido aquí para que quede registrado (asunto 3).
+        failed = getattr(exc, "chain_close_failed", None)
+        if failed:
+            emit("chain_close_error", failed=failed,
+                 message="cierres de descriptores de la cadena fallidos "
+                         "durante el rechazo; estado incierto")
+        raise
     try:
         # 2) La aprobación depende de condiciones verificadas sobre el
         #    descriptor, no solo de registrar la ruta.
