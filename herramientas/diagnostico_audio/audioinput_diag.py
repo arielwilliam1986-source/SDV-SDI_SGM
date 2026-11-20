@@ -211,6 +211,25 @@ def _walk_anchored(path):
         raise
 
 
+def _close_chain(chain):
+    """Cierra una cadena de descriptores registrando los errores (asunto 3).
+
+    Devuelve (closed, failed): los descriptores cuyo cierre se confirmó y
+    los cuyos cierres fallaron (con su error). Un descriptor cuyo cierre
+    falló queda en estado INCIERTO: no se reutiliza y no se declara como
+    cerrado.
+    """
+    closed = []
+    failed = []
+    for fd in chain:
+        try:
+            os.close(fd)
+            closed.append(fd)
+        except OSError as exc:
+            failed.append({"fd": fd, "error": error(exc)})
+    return closed, failed
+
+
 def _walk_anchored_chain(path):
     """Recorrido anclado que conserva la CADENA de descriptores (root..final).
 
@@ -256,12 +275,12 @@ def _walk_anchored_chain(path):
             chain.append(child)
             current = child
         return chain, os.path.normpath(resolved)
-    except BaseException:
-        for fd in chain:
-            try:
-                os.close(fd)
-            except OSError:
-                pass
+    except BaseException as exc:
+        # Cierre de la cadena con registro de errores (asunto 3); los
+        # descriptores con cierre fallido quedan en estado incierto.
+        _, failed = _close_chain(chain)
+        if failed:
+            exc.chain_close_failed = failed
         raise
 
 
@@ -1267,21 +1286,28 @@ def base_parent_sticky_real_dir(root):
 
 @case("base")
 def storage_home_inside_private_ok(root):
-    # HOME dentro de la ubicación privada esperada: evidencia suficiente
-    # (punto 3).
+    # HOME dentro de la ubicación privada esperada: evidencia suficiente,
+    # con el montaje vinculado al descriptor abierto (asunto 2).
     previous = {k: os.environ.get(k) for k in ("TERMUX_VERSION", "HOME")}
-    previous_mount = globals()["mount_info"]
-    os.environ["TERMUX_VERSION"] = "test-home-private"
-    os.environ["HOME"] = "/data/data/com.termux/files/home"
-    globals()["mount_info"] = lambda path: {
-        "mountpoint": "/", "filesystem": "ext4", "device": "none",
-        "source": "/dev/block/dm-0", "mount_options": "rw",
-    }
+    previous_mountinfo = globals()["_read_mountinfo"]
+    fd = os.open(str(root), os.O_RDONLY | os.O_DIRECTORY
+                 | feature("O_NOFOLLOW"))
     try:
-        detected, _, _ = _classify_storage(
-            "/data/data/com.termux/files/home/diag-private")
+        st = os.fstat(fd)
+        dev = f"{os.major(st.st_dev)}:{os.minor(st.st_dev)}"
+        os.environ["TERMUX_VERSION"] = "test-home-private"
+        os.environ["HOME"] = "/data/data/com.termux/files/home"
+        globals()["_read_mountinfo"] = lambda: [
+            {"mountpoint": "/", "device": dev, "filesystem": "ext4",
+             "source": "/dev/block/dm-0", "mount_options": "rw"},
+        ]
+        try:
+            detected, _, _ = _classify_storage(
+                "/data/data/com.termux/files/home/diag-private", fd)
+        finally:
+            globals()["_read_mountinfo"] = previous_mountinfo
     finally:
-        globals()["mount_info"] = previous_mount
+        os.close(fd)
         for key, value in previous.items():
             if value is None:
                 os.environ.pop(key, None)
@@ -1538,21 +1564,27 @@ def base_storage_generic_undetermined(root):
 
 @case("base")
 def storage_private_mount_point_above(root):
-    # Punto de montaje superior (ancestro) a la ruta privada: compatible, se
-    # clasifica como privado sin exigir que el montaje esté dentro del
-    # directorio privado de Termux (C).
+    # Punto de montaje superior (ancestro) a la ruta privada, vinculado al
+    # descriptor abierto: compatible (asunto 2).
     previous_env = os.environ.get("TERMUX_VERSION")
-    previous_mount = globals()["mount_info"]
-    os.environ["TERMUX_VERSION"] = "test-mount-above"
-    globals()["mount_info"] = lambda path: {
-        "mountpoint": "/", "filesystem": "ext4", "device": "none",
-        "source": "/dev/block/dm-0", "mount_options": "rw",
-    }
+    previous_mountinfo = globals()["_read_mountinfo"]
+    fd = os.open(str(root), os.O_RDONLY | os.O_DIRECTORY
+                 | feature("O_NOFOLLOW"))
     try:
-        detected, mount, caveat = _classify_storage(
-            "/data/data/com.termux/files/home/diag-private")
+        st = os.fstat(fd)
+        dev = f"{os.major(st.st_dev)}:{os.minor(st.st_dev)}"
+        os.environ["TERMUX_VERSION"] = "test-mount-above"
+        globals()["_read_mountinfo"] = lambda: [
+            {"mountpoint": "/", "device": dev, "filesystem": "ext4",
+             "source": "/dev/block/dm-0", "mount_options": "rw"},
+        ]
+        try:
+            detected, mount, caveat = _classify_storage(
+                "/data/data/com.termux/files/home/diag-private", fd)
+        finally:
+            globals()["_read_mountinfo"] = previous_mountinfo
     finally:
-        globals()["mount_info"] = previous_mount
+        os.close(fd)
         if previous_env is None:
             os.environ.pop("TERMUX_VERSION", None)
         else:
@@ -1715,6 +1747,328 @@ def proc_stat_field_interpretation(root):
             pass
 
 
+@case("paths")
+def parent_group_writable_trusted_group(root):
+    # Grupo escribible con composición verificable: el grupo contiene SOLO al
+    # usuario efectivo -> no se bloquea (asunto 1). No se confía en el nombre
+    # ni el GID: se verifica la composición real.
+    directory = mkdir(root / "grp-trusted")
+    os.chmod(str(directory), 0o770)
+    row = {"path": str(directory), "owner_uid": os.getuid(),
+           "owner_gid": os.getgid(), "world_writable": False,
+           "group_writable": True, "sticky": False}
+    blockers = _parent_risk_blockers(row, os.getuid(),
+                                     group_members={os.getuid()})
+    require(not blockers, f"se bloqueó un grupo confiable: {blockers}")
+    return {"blockers": blockers, "group_composition": "verificada"}
+
+
+@case("paths")
+def parent_group_writable_untrusted_group(root):
+    # Grupo escribible con miembros distintos del usuario efectivo: se
+    # bloquea, aunque el nombre del grupo sugiera confianza (asunto 1).
+    directory = mkdir(root / "grp-untrusted")
+    os.chmod(str(directory), 0o770)
+    foreign_uid = os.getuid() + 1
+    row = {"path": str(directory), "owner_uid": os.getuid(),
+           "owner_gid": os.getgid(), "world_writable": False,
+           "group_writable": True, "sticky": False}
+    blockers = _parent_risk_blockers(row, os.getuid(),
+                                     group_members={os.getuid(), foreign_uid})
+    require(len(blockers) == 1 and "grupo" in blockers[0],
+            "no se bloqueó el grupo con miembros ajenos")
+    return {"blockers": blockers}
+
+
+@case("paths")
+def parent_group_writable_unknown_composition(root):
+    # Composición del grupo que no se puede verificar: estado desconocido ->
+    # se mantiene el rechazo (asunto 1).
+    directory = mkdir(root / "grp-unknown")
+    os.chmod(str(directory), 0o770)
+    row = {"path": str(directory), "owner_uid": os.getuid(),
+           "owner_gid": os.getgid(), "world_writable": False,
+           "group_writable": True, "sticky": False}
+    blockers = _parent_risk_blockers(row, os.getuid(), group_members=None)
+    require(len(blockers) == 1 and "desconocido" in blockers[0],
+            "no se bloqueó la composición desconocida")
+    return {"blockers": blockers}
+
+
+@case("paths")
+def parent_audit_group_composition_verified(root):
+    # _parent_audit verifica la composición del grupo escribible contra
+    # /etc/group y marca la fila; si /etc/group no se puede leer, la
+    # composición es desconocida (asunto 1).
+    directory = mkdir(root / "grp-audit")
+    os.chmod(str(directory), 0o770)
+    fd = os.open(str(directory), os.O_RDONLY | os.O_DIRECTORY
+                 | feature("O_NOFOLLOW"))
+    try:
+        rows, blockers, complete = _parent_audit(
+            [{"fd": fd, "path": str(directory)}], os.getuid())
+        require(complete, "la auditoría debería ser completa")
+        require(len(rows) == 1, "no se produjo la fila del padre")
+        row = rows[0]
+        require("group_members" in row,
+                "no se registró la composición del grupo")
+        require(not blockers or "grupo" in "".join(blockers),
+                f"bloqueo inesperado: {blockers}")
+    finally:
+        os.close(fd)
+    previous = globals()["_group_member_uids"]
+    globals()["_group_member_uids"] = lambda gid: None
+    try:
+        fd = os.open(str(directory), os.O_RDONLY | os.O_DIRECTORY
+                     | feature("O_NOFOLLOW"))
+        try:
+            rows, blockers, _ = _parent_audit(
+                [{"fd": fd, "path": str(directory)}], os.getuid())
+        finally:
+            os.close(fd)
+    finally:
+        globals()["_group_member_uids"] = previous
+    require(rows[0]["group_members"] is None,
+            "no se registró la composición desconocida")
+    require(any("desconocido" in b for b in blockers),
+            "no se bloqueó la composición desconocida en la auditoría")
+    return {"group_members": rows[0]["group_members"],
+            "unknown_blocked": True}
+
+
+@case("base")
+def storage_mount_linked_to_open_object(root):
+    # La información de montaje se vincula al descriptor abierto por
+    # dispositivo + ancestro verificable (asunto 2).
+    previous_env = os.environ.get("TERMUX_VERSION")
+    previous_mountinfo = globals()["_read_mountinfo"]
+    fd = os.open(str(root), os.O_RDONLY | os.O_DIRECTORY
+                 | feature("O_NOFOLLOW"))
+    try:
+        st = os.fstat(fd)
+        dev = f"{os.major(st.st_dev)}:{os.minor(st.st_dev)}"
+        os.environ["TERMUX_VERSION"] = "test-mount-fd"
+        globals()["_read_mountinfo"] = lambda: [
+            {"mountpoint": "/", "device": dev, "filesystem": "ext4",
+             "source": "/dev/block/dm-0", "mount_options": "rw"},
+        ]
+        try:
+            detected, mount, caveat = _classify_storage(
+                "/data/data/com.termux/files/home/diag-linked", fd)
+        finally:
+            globals()["_read_mountinfo"] = previous_mountinfo
+    finally:
+        os.close(fd)
+        if previous_env is None:
+            os.environ.pop("TERMUX_VERSION", None)
+        else:
+            os.environ["TERMUX_VERSION"] = previous_env
+    require(detected == "termux_private", f"clasificación inesperada: {detected}")
+    require(mount and mount["device"] == dev,
+            "el montaje no se vinculó al descriptor")
+    return {"detected_class": detected, "linked_device": mount["device"]}
+
+
+@case("base")
+def storage_mount_path_replaced_after_open(root):
+    # Ruta distinta de la del montaje del descriptor abierto: la vinculación
+    # no puede coincidir con el descriptor -> indeterminado -> rechazo (asunto 2).
+    previous_env = os.environ.get("TERMUX_VERSION")
+    previous_mountinfo = globals()["_read_mountinfo"]
+    fd = os.open(str(root), os.O_RDONLY | os.O_DIRECTORY
+                 | feature("O_NOFOLLOW"))
+    try:
+        st = os.fstat(fd)
+        dev = f"{os.major(st.st_dev)}:{os.minor(st.st_dev)}"
+        os.environ["TERMUX_VERSION"] = "test-mount-other"
+        globals()["_read_mountinfo"] = lambda: [
+            {"mountpoint": "/data/other-app", "device": dev, "filesystem": "ext4",
+             "source": "/dev/block/dm-0", "mount_options": "rw"},
+        ]
+        try:
+            detected, mount, caveat = _classify_storage(
+                "/data/other-app/diag", fd)
+        finally:
+            globals()["_read_mountinfo"] = previous_mountinfo
+    finally:
+        os.close(fd)
+        if previous_env is None:
+            os.environ.pop("TERMUX_VERSION", None)
+        else:
+            os.environ["TERMUX_VERSION"] = previous_env
+    require(detected == "other", f"clasificación inesperada: {detected}")
+    return {"detected_class": detected, "mount": mount}
+
+
+@case("base")
+def storage_mount_device_mismatch(root):
+    # Montaje con dispositivo distinto del del descriptor abierto: no hay
+    # correspondencia verificable -> indeterminado (asunto 2).
+    previous_env = os.environ.get("TERMUX_VERSION")
+    previous_mountinfo = globals()["_read_mountinfo"]
+    fd = os.open(str(root), os.O_RDONLY | os.O_DIRECTORY
+                 | feature("O_NOFOLLOW"))
+    try:
+        os.environ["TERMUX_VERSION"] = "test-mount-dev"
+        globals()["_read_mountinfo"] = lambda: [
+            {"mountpoint": "/", "device": "0:999", "filesystem": "ext4",
+             "source": "/dev/block/other", "mount_options": "rw"},
+        ]
+        try:
+            detected, mount, caveat = _classify_storage(
+                "/data/data/com.termux/files/home/diag-dev", fd)
+        finally:
+            globals()["_read_mountinfo"] = previous_mountinfo
+    finally:
+        os.close(fd)
+        if previous_env is None:
+            os.environ.pop("TERMUX_VERSION", None)
+        else:
+            os.environ["TERMUX_VERSION"] = previous_env
+    require(detected == "other", f"clasificación inesperada: {detected}")
+    return {"detected_class": detected}
+
+
+@case("base")
+def storage_mount_info_inaccessible(root):
+    # Información de montaje incompleta o inaccesible: no se puede vincular ->
+    # indeterminado -> rechazo (asunto 2).
+    previous_env = os.environ.get("TERMUX_VERSION")
+    previous_mountinfo = globals()["_read_mountinfo"]
+    fd = os.open(str(root), os.O_RDONLY | os.O_DIRECTORY
+                 | feature("O_NOFOLLOW"))
+    try:
+        os.environ["TERMUX_VERSION"] = "test-mount-unreadable"
+
+        def inaccessible():
+            raise OSError(errno.EACCES, "simulado: mountinfo no accesible")
+
+        globals()["_read_mountinfo"] = inaccessible
+        try:
+            detected, mount, caveat = _classify_storage(
+                "/data/data/com.termux/files/home/diag-noinfo", fd)
+        finally:
+            globals()["_read_mountinfo"] = previous_mountinfo
+    finally:
+        os.close(fd)
+        if previous_env is None:
+            os.environ.pop("TERMUX_VERSION", None)
+        else:
+            os.environ["TERMUX_VERSION"] = previous_env
+    require(detected == "other", f"clasificación inesperada: {detected}")
+    require(mount is None, "no debe haber montaje sin vinculación")
+    return {"detected_class": detected, "mount": mount}
+
+
+@case("fd")
+def chain_close_failure_during_approval(root):
+    # Cierre fallido de un descriptor de la cadena durante la aprobación: se
+    # registran los errores y no se declara el cierre limpio (asunto 3).
+    inner = mkdir(root / "close-appr")
+    events = []
+    fd_marker = {}
+
+    real_open = os.open
+    real_close = os.close
+
+    def spy_open(path, flags, *args, **kwargs):
+        fd = real_open(path, flags, *args, **kwargs)
+        fd_marker.setdefault("fds", []).append(fd)
+        return fd
+
+    def spy_close(fd):
+        if fd_marker["fds"] and fd != fd_marker["fds"][-1]:
+            raise OSError(errno.EBADF, "simulado: cierre fallido")
+        return real_close(fd)
+
+    import io
+    from contextlib import redirect_stdout
+    buffer = io.StringIO()
+    try:
+        os.open = spy_open
+        os.close = spy_close
+        try:
+            with redirect_stdout(buffer):
+                base, base_fd, analysis = approved_base(str(inner))
+        finally:
+            os.open = real_open
+            os.close = real_close
+    finally:
+        real_close(base_fd)
+    for line in buffer.getvalue().splitlines():
+        events.append(json.loads(line))
+    parent_close = analysis["chain_close_parents"]
+    require(parent_close["failed"], "no se registró el cierre fallido")
+    require(any(e["event"] == "chain_close_warning" for e in events),
+            "no se emitió la advertencia de cierre fallido")
+    return {"failed": parent_close["failed"]}
+
+
+@case("fd")
+def chain_close_failure_during_rejection(root):
+    # Cierre fallido durante un rechazo de la cadena: se registra y se
+    # retiene la información del error (asunto 3).
+    from contextlib import redirect_stdout
+    import io
+    events = []
+    inner = mkdir(root / "close-rej")
+    real_open = os.open
+    real_close = os.close
+    marker = {"fds": []}
+
+    def spy_open(path, flags, *args, **kwargs):
+        fd = real_open(path, flags, *args, **kwargs)
+        marker["fds"].append(fd)
+        return fd
+
+    def spy_close(fd):
+        if marker["fds"] and fd != marker["fds"][-1]:
+            raise OSError(errno.EBADF, "simulado: cierre fallido")
+        return real_close(fd)
+
+    buffer = io.StringIO()
+    raised = None
+    try:
+        os.open = spy_open
+        os.close = spy_close
+        try:
+            with redirect_stdout(buffer):
+                approved_base(str(Path(str(inner)) / ".." / ".." / "no-existe"))
+        except (ValueError, OSError) as exc:
+            raised = exc
+        finally:
+            os.open = real_open
+            os.close = real_close
+    finally:
+        for fd in marker["fds"]:
+            try:
+                real_close(fd)
+            except OSError:
+                pass
+    for line in buffer.getvalue().splitlines():
+        events.append(json.loads(line))
+    require(raised is not None, "no se rechazó la ruta inválida")
+    require(raised.chain_close_failed,
+            "no se retuvo la información del cierre fallido")
+    require(any(e["event"] == "chain_close_error" for e in events),
+            "no se emitió el error de cierre fallido")
+    return {"failed": raised.chain_close_failed}
+
+
+@case("fd")
+def chain_close_clean_no_false_failure(root):
+    # Cierre limpio de la cadena durante la aprobación: se registran los
+    # descriptores cerrados, sin fallos ni declaraciones inciertas (asunto 3).
+    inner = mkdir(root / "close-ok")
+    _, _, analysis = approved_base(str(inner))
+    parent_close = analysis["chain_close_parents"]
+    require(parent_close["failed"] == [],
+            "no debe haber cierres fallidos en una cadena sana")
+    require(len(parent_close["closed"]) >= 1,
+            "no se registró el cierre de los descriptores padres")
+    return {"closed": parent_close["closed"]}
+
+
 def command_info(*args):
     try:
         p = subprocess.run(args, capture_output=True, text=True,
@@ -1723,6 +2077,31 @@ def command_info(*args):
                 "stdout": p.stdout.strip(), "stderr": p.stderr.strip()}
     except (OSError, subprocess.TimeoutExpired) as exc:
         return {"argv": args, "error": error(exc)}
+
+
+def _read_mountinfo():
+    """Lee y parsea /proc/self/mountinfo (asunto 2).
+
+    Devuelve la lista de entradas de montaje o eleva la OSError si no se
+    puede leer. Cada entrada mantiene el dispositivo (fields[2], p.ej.
+    "0:34"), el punto de montaje y la fuente.
+    """
+    entries = []
+
+    def unescape(value):
+        return re.sub(r"\\([0-7]{3})", lambda m: chr(int(m.group(1), 8)), value)
+
+    for line in Path("/proc/self/mountinfo").read_text().splitlines():
+        left, right = line.split(" - ", 1)
+        fields, fs = left.split(), right.split()
+        entries.append({
+            "mountpoint": unescape(fields[4]),
+            "device": fields[2],
+            "filesystem": fs[0],
+            "source": unescape(fs[1]),
+            "mount_options": fields[5],
+        })
+    return entries
 
 
 def mount_info(path):
@@ -1744,6 +2123,36 @@ def mount_info(path):
     if not matches:
         return {"mountpoint": None, "filesystem": None}
     return max(matches, key=lambda item: item[0])[1]
+
+
+def _mount_for_fd(base_fd, path):
+    """Vincula la información de montaje al objeto ABIERTO (asunto 2).
+
+    La correspondencia verificable entre el descriptor y el montaje se
+    compone de: (1) el dispositivo del objeto abierto (st_dev del descriptor
+    convertido a "major:minor", que NO se asume por sí solo como identificador
+    unívoco de montaje), (2) un punto de montaje que sea ANCESTRO de la ruta
+    verificada por la cadena de descriptores, y (3) exactamente un candidato
+    en mountinfo. Si hay cero candidatos, varios ambiguos, o la información
+    de montaje es incompleta/inaccesible, devuelve None (estado indeterminado
+    -> rechazo de la aprobación automática).
+    """
+    try:
+        st = os.fstat(base_fd)
+    except OSError:
+        return None
+    dev = f"{os.major(st.st_dev)}:{os.minor(st.st_dev)}"
+    try:
+        entries = _read_mountinfo()
+    except OSError:
+        return None
+    candidates = [entry for entry in entries
+                  if entry["device"] == dev
+                  and _is_under(str(path), entry["mountpoint"])]
+    if len(candidates) != 1:
+        # 0: el montaje no corresponde al objeto; >1: ambigüedad.
+        return None
+    return candidates[0]
 
 
 def worker(group, name, path):
@@ -1973,7 +2382,7 @@ def run_case(group, name, run, timeout, write, location_declared, run_fd):
     return row["status"]
 
 
-def _classify_storage(base):
+def _classify_storage(base, base_fd=None):
     """Clasifica la clase de almacenamiento contra información real de montaje.
 
     No se basa exclusivamente en TERMUX_VERSION, HOME o PREFIX: la ruta se
@@ -1981,6 +2390,11 @@ def _classify_storage(base):
     aplicación Termux. La clasificación compartida tiene PRECEDENCIA sobre la
     privada para evitar que una ruta compartida se clasifique como privada por
     precedencia de condiciones. Devuelve (detected_class, mount, caveat).
+
+    La información de montaje se VINCULARÁ al objeto abierto mediante
+    _mount_for_fd (dispositivo del descriptor + ancestro verificable +
+    candidatu único). Si no se puede vincular al descriptor, el estado es
+    indeterminado y se rechaza la aprobación automática.
 
     Para la clasificación privada se verifica que: (1) la ruta solicitada está
     dentro de la ubicación privada esperada, (2) el punto de montaje es un
@@ -2019,11 +2433,15 @@ def _classify_storage(base):
                     "NO demuestra que sea apropiado para staging/publicación "
                     "(scoped storage, MediaStore); no se afirma su seguridad "
                     "sin evidencia.")
-    mount = mount_info(s)
-    mount_point = (mount or {}).get("mountpoint")
-    # El punto de montaje debe ser un ancestro compatible de la ruta.
-    mount_ok = bool(mount_point) and _is_under(s, mount_point)
-    if termux and private_prefixes and mount_ok:
+    # Vinculación de la información de montaje al objeto abierto (asunto 2).
+    if base_fd is not None:
+        mount = _mount_for_fd(base_fd, s)
+        mount_linked = mount is not None
+    else:
+        # Sin descriptor no hay vinculación verificable: estado indeterminado.
+        mount = None
+        mount_linked = False
+    if termux and private_prefixes and mount_linked:
         # La ruta debe estar dentro de la ubicación privada esperada; NO se
         # exige que el punto de montaje esté dentro del directorio privado.
         if any(_is_under(s, p) for p in private_prefixes):
@@ -2032,10 +2450,11 @@ def _classify_storage(base):
                                                        "mtp")):
                 return ("termux_private", mount,
                         "almacenamiento privado de Termux, confirmado por el "
-                        "montaje ancestro de la ruta privada.")
+                        "montaje vinculado al descriptor abierto.")
     return ("other", mount,
-            "clase de almacenamiento no determinable con la información de "
-            "montaje disponible; no se aprueba por defecto.")
+            "clase de almacenamiento no determinable: la información de "
+            "montaje no pudo vincularse al objeto abierto o no es suficiente; "
+            "no se aprueba por defecto.")
 
 
 def analyze_base(base, location_declared=None, probe_writability=False,
@@ -2241,7 +2660,7 @@ def analyze_base(base, location_declared=None, probe_writability=False,
     # A3: clasificación contra información real de montaje (corrección D).
     # Almacenamiento compartido y genérico no se aprueban por ser escribibles;
     # si no se puede determinar la adecuación, se rechaza.
-    detected, mount, caveat = _classify_storage(base)
+    detected, mount, caveat = _classify_storage(base, base_fd)
     storage = {
         "termux_version": os.environ.get("TERMUX_VERSION"),
         "location_declared": location_declared,
@@ -2265,21 +2684,66 @@ def analyze_base(base, location_declared=None, probe_writability=False,
     return info
 
 
-def _parent_risk_blockers(row, euid):
-    """Política conservadora de riesgo de padres (punto 2).
+def _group_member_uids(gid):
+    """UIDs miembros de un grupo, leídos de /etc/group (evidencia verificable).
+
+    Devuelve un conjunto de UIDs miembros, o None si /etc/group no se puede
+    leer o el grupo no puede verificarse. No se confía en el nombre o el GID
+    por sí mismos: la confianza exige comprobar la composición real. Si no
+    puede verificarse, el estado es desconocido y se rechaza.
+    """
+    try:
+        lines = Path("/etc/group").read_text(errors="replace").splitlines()
+    except OSError:
+        return None
+    passwd = {}
+    try:
+        for line in Path("/etc/passwd").read_text(errors="replace").splitlines():
+            fields = line.split(":")
+            if len(fields) >= 3:
+                try:
+                    passwd[fields[2]] = int(fields[2])
+                except ValueError:
+                    passwd[fields[2]] = fields[2]
+    except OSError:
+        passwd = {}
+    for line in lines:
+        fields = line.split(":")
+        if len(fields) < 4:
+            continue
+        try:
+            entry_gid = int(fields[2])
+        except ValueError:
+            continue
+        if entry_gid != gid:
+            continue
+        members = set()
+        for member in fields[3].split(","):
+            member = member.strip()
+            if member:
+                members.add(passwd.get(member, member))
+        return members
+    return set()
+
+
+def _parent_risk_blockers(row, euid, group_members=None):
+    """Política conservadora de riesgo de padres (asunto 1).
 
     Evalúa conjuntamente propietario UID, permisos globales y de grupo, bit
-    sticky y riesgo de sustitución de entradas:
+    sticky y riesgo de sustitución de entradas, diferenciando directorios
+    administrados por el sistema de directorios modificables por terceros:
 
     - Padre globalmente escribible SIN sticky: cualquier tercero puede
       renombrar/sustituir entradas -> bloqueo.
     - Padre globalmente escribible CON sticky: el sticky restringe la
       eliminación, pero el PROPIETARIO conserva facultades especiales sobre
-      sus entradas; el sticky no demuestra por sí solo confianza. Se acepta
-      solo si el propietario es el usuario efectivo (propietario confiable);
-      si el propietario no es confiable, se bloquea.
-    - Padre escribible por grupo: otros miembros del grupo podrían
-      modificarlo; no se puede demostrar aislamiento -> bloqueo.
+      sus entradas; se acepta solo si el propietario es el usuario efectivo.
+    - Padre escribible por grupo: se acepta SOLO con evidencia verificable de
+      que el grupo no agrega terceros: la composición del grupo (leída de
+      /etc/group) debe contener únicamente al usuario efectivo. Si la
+      composición no puede verificarse (desconocida) o contiene otros
+      miembros, se bloquea. No se confía en UID/GID ni en nombres, y no
+      hay excepciones generales por ruta (/data, /data/data, etc.).
 
     Devuelve la lista de bloqueos para la fila.
     """
@@ -2298,10 +2762,17 @@ def _parent_risk_blockers(row, euid):
                 f"{euid}): el sticky no demuestra confianza: {label}"
             )
     if row["group_writable"]:
-        blockers.append(
-            f"directorio padre escribible por grupo: no se puede demostrar "
-            f"aislamiento suficiente: {label}"
-        )
+        if group_members is None:
+            blockers.append(
+                f"directorio padre escribible por grupo: no se pudo verificar "
+                f"la composición del grupo (estado desconocido): {label}"
+            )
+        elif group_members != {euid}:
+            blockers.append(
+                f"directorio padre escribible por grupo: el grupo contiene "
+                f"miembros distintos del usuario efectivo; no se puede "
+                f"demostrar aislamiento suficiente: {label}"
+            )
     return blockers
 
 
@@ -2340,7 +2811,14 @@ def _parent_audit(chain, euid=None):
             "sticky": bool(st.st_mode & 0o1000),
         }
         rows.append(row)
-        blockers.extend(_parent_risk_blockers(row, euid))
+        group_members = None
+        if row["group_writable"]:
+            # Evidencia verificable de la composición del grupo; si no se
+            # puede obtener, el estado es desconocido y se rechaza.
+            group_members = _group_member_uids(row["owner_gid"])
+            row["group_members"] = (sorted(map(str, group_members))
+                                    if group_members is not None else None)
+        blockers.extend(_parent_risk_blockers(row, euid, group_members))
     return rows, blockers, complete
 
 
@@ -2491,21 +2969,25 @@ def approved_base(path, location_declared=None):
                     f"{error(exc)}"
                 ) from exc
             raise ValueError(f"--base está dentro de un árbol Git (descriptor {fd})")
+        # Cerrar los descriptores de la cadena excepto el del directorio
+        # base, registrando los errores de cierre (asunto 3).
+        closed, failed = _close_chain(chain[:-1])
+        analysis["chain_close_parents"] = {"closed": closed, "failed": failed}
+        if failed:
+            emit("chain_close_warning", failed=failed,
+                 message="cierres de descriptores de la cadena fallidos; "
+                         "estado de algunos descriptores incierto")
         emit("approved_base", **analysis)
-        # Cerrar los descriptores de la cadena excepto el del directorio base.
-        for fd in chain[:-1]:
-            try:
-                os.close(fd)
-            except OSError:
-                pass
         return base, base_fd, analysis
-    except BaseException:
-        # Cerrar todos los descriptores de la cadena si falla una comprobación.
-        for fd in chain:
-            try:
-                os.close(fd)
-            except OSError:
-                pass
+    except BaseException as exc:
+        # Cerrar todos los descriptores de la cadena si falla una comprobación,
+        # registrando los errores (asunto 3).
+        closed, failed = _close_chain(chain)
+        if failed:
+            emit("chain_close_error", failed=failed,
+                 message="cierres de descriptores de la cadena fallidos "
+                         "durante el rechazo; estado incierto")
+            exc.chain_close_failed = failed
         raise
 
 
