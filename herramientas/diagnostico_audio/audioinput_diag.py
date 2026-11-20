@@ -3363,10 +3363,9 @@ def worker_entry_approval_success_closes_base_fd(root):
 
 @case("fd")
 def run_case_interprets_worker_events(root):
-    # H03 (lado padre): run_case interpreta los eventos del worker.
-    # - Evento "case" válido: se adopta su estado.
-    # - Evento ausente: FAIL ("sin resultado válido"), nunca PASS.
-    # - Evento contradictorio (PASS) junto a fallo del hijo: FAIL.
+    # H03-B (lado padre): run_case valida los eventos terminales del
+    # worker y nunca acepta el último evento sin comprobar. Se verifican
+    # los ocho escenarios exigidos.
     from contextlib import redirect_stdout
     import io
 
@@ -3384,28 +3383,231 @@ def run_case_interprets_worker_events(root):
             globals()["child_output"] = previous
         return status, writes
 
-    # 1) Evento válido con estado NOT_EXECUTED.
-    event = json.dumps({"event": "case", "status": "NOT_EXECUTED",
-                        "error": {"type": "Unavailable", "message": "x"}})
-    status, writes = call_run_case(event + "\n", "", 0, None, "valid")
+    def case_event(status, suffix, group="fd", test=None, **extra):
+        row = {"event": "case", "status": status, "group": group,
+               "test": test or ("run_case_interprets_worker_events_"
+                                + suffix)}
+        row.update(extra)
+        return json.dumps(row)
+
+    # 1) Un único evento válido NOT_EXECUTED: se adopta.
+    status, writes = call_run_case(
+        case_event("NOT_EXECUTED", "valid") + "\n", "", 0, None, "valid")
     require(status == "NOT_EXECUTED",
-            f"el evento válido no se adoptó: {status}")
+            f"un evento válido no se adoptó: {status}")
     require(any(w.get("event") == "case" and w.get("status") == "NOT_EXECUTED"
                 for w in writes), "no se propagó el evento al resultado")
-    # 2) Evento ausente y salida vacía: FAIL, nunca PASS.
+    # 2) Ningún evento: FAIL, nunca PASS.
     status, _ = call_run_case("", "", 0, None, "missing")
     require(status == "FAIL",
-            f"un resultado ausente no debe ser PASS: {status}")
-    # 3) Evento contradictorio (PASS) con fallo del hijo: FAIL.
-    status, _ = call_run_case('{"event": "case", "status": "PASS"}\n', "",
-                              0, {"status": "FAIL", "error": {"type": "X",
-                                                               "message": "y"}},
-                              "contradictory")
+            f"la ausencia de evento no debe ser PASS: {status}")
+    # 3) Dos eventos terminales: FAIL seguido de PASS -> FAIL (duplicado).
+    status, _ = call_run_case(
+        case_event("FAIL", "duplicate_fail_pass") + "\n"
+        + case_event("PASS", "duplicate_fail_pass") + "\n",
+        "", 0, None, "duplicate_fail_pass")
+    require(status == "FAIL",
+            f"eventos terminales duplicados no deben aceptarse: {status}")
+    # 4) Dos eventos terminales: PASS seguido de FAIL -> FAIL.
+    status, _ = call_run_case(
+        case_event("PASS", "duplicate_pass_fail") + "\n"
+        + case_event("FAIL", "duplicate_pass_fail") + "\n",
+        "", 0, None, "duplicate_pass_fail")
+    require(status == "FAIL",
+            f"eventos terminales duplicados no deben aceptarse: {status}")
+    # 5) Identidad incorrecta (grupo distinto): FAIL.
+    status, _ = call_run_case(
+        case_event("PASS", "bad_group", group="paths") + "\n", "", 0, None,
+        "bad_group")
+    require(status == "FAIL",
+            f"un evento con grupo incorrecto no debe aceptarse: {status}")
+    # 6) Identidad incorrecta (prueba distinta): FAIL.
+    status, _ = call_run_case(
+        case_event("PASS", "bad_test", test="otra_prueba") + "\n", "", 0,
+        None, "bad_test")
+    require(status == "FAIL",
+            f"un evento con prueba incorrecta no debe aceptarse: {status}")
+    # 7) Estado desconocido: FAIL.
+    status, _ = call_run_case(
+        case_event("SOMETHING", "unknown_status") + "\n", "", 0, None,
+        "unknown_status")
+    require(status == "FAIL",
+            f"un estado desconocido no debe aceptarse: {status}")
+    # 8) Evento PASS con código de salida no satisfactorio: FAIL.
+    status, _ = call_run_case(
+        case_event("PASS", "pass_bad_rc") + "\n", "", 1, None, "pass_bad_rc")
+    require(status == "FAIL",
+            f"un PASS con código de salida no satisfactorio no debe "
+            f"aceptarse: {status}")
+    # 9) Evento NOT_EXECUTED válido con salida satisfactoria: NOT_EXECUTED.
+    status, _ = call_run_case(
+        case_event("NOT_EXECUTED", "valid_ne") + "\n", "", 0, None,
+        "valid_ne")
+    require(status == "NOT_EXECUTED",
+            f"un NOT_EXECUTED válido no se adoptó: {status}")
+    # 10) Evento PASS válido con salida satisfactoria: PASS.
+    status, _ = call_run_case(
+        case_event("PASS", "valid_pass") + "\n", "", 0, None, "valid_pass")
+    require(status == "PASS", f"un PASS válido no se adoptó: {status}")
+    # 11) Evento PASS junto a fallo del hijo (contradictorio): FAIL.
+    status, _ = call_run_case(
+        case_event("PASS", "contradictory") + "\n", "", 0,
+        {"status": "FAIL", "error": {"type": "X", "message": "y"}},
+        "contradictory")
     require(status == "FAIL",
             f"un evento contradictorio no debe producir PASS: {status}")
-    return {"valid_event_status": "NOT_EXECUTED",
-            "missing_event_status": "FAIL",
-            "contradictory_event_status": "FAIL"}
+    # 12) Evento malformado (JSON inválido) como única línea: FAIL.
+    status, _ = call_run_case("{ no es json\n", "", 0, None, "malformed")
+    require(status == "FAIL",
+            f"un evento malformado no debe aceptarse: {status}")
+    return {"valid_not_executed": "NOT_EXECUTED", "missing": "FAIL",
+            "duplicate_fail_pass": "FAIL", "duplicate_pass_fail": "FAIL",
+            "bad_group": "FAIL", "bad_test": "FAIL",
+            "unknown_status": "FAIL", "pass_bad_rc": "FAIL",
+            "malformed": "FAIL"}
+
+
+@case("fd")
+def worker_entry_keyboard_interrupt_emits_interruption(root):
+    # H03-A: una KeyboardInterrupt durante la ejecución del worker no se
+    # convierte en error operativo ordinario: se emite un evento
+    # "case_interrupted" estructurado, se re-lanza la interrupción y se
+    # conserva el cierre del descriptor base cuando fue adquirido.
+    inner = mkdir(root / "worker-int")
+    base_fd = os.open(str(inner), os.O_RDONLY | feature("O_DIRECTORY"))
+    events = []
+    previous_approved = globals()["approved_base"]
+    previous_worker = globals()["worker"]
+    globals()["approved_base"] = (
+        lambda path, location_declared=None: (inner, base_fd, {"fake": True}))
+
+    def interrupting_worker(group, name, path):
+        raise KeyboardInterrupt()
+
+    globals()["worker"] = interrupting_worker
+    import io
+    from contextlib import redirect_stdout
+    buffer = io.StringIO()
+    raised = None
+    try:
+        with redirect_stdout(buffer):
+            _worker_entry("fd", "worker_entry_keyboard_interrupt"
+                          "_emits_interruption", str(inner), "private")
+    except KeyboardInterrupt as exc:
+        raised = exc
+    finally:
+        globals()["approved_base"] = previous_approved
+        globals()["worker"] = previous_worker
+    for line in buffer.getvalue().splitlines():
+        events.append(json.loads(line))
+    interruptions = [e for e in events if e.get("event") == "case_interrupted"]
+    require(len(interruptions) == 1,
+            f"no se emitió un único evento de interrupción: "
+            f"{len(interruptions)}")
+    require(interruptions[0]["interruption"] == "KeyboardInterrupt",
+            "no se identificó el tipo de interrupción")
+    require(raised is not None,
+            "la interrupción no se re-lanzó (no se confundió con un error "
+            "operativo ordinario)")
+    require(not [e for e in events if e.get("event") == "case"],
+            "una interrupción no debe emitir un evento case de resultado")
+    closed = False
+    try:
+        os.fstat(base_fd)
+    except OSError as exc:
+        require(exc.errno == errno.EBADF,
+                f"descriptor base cerrado con errno distinto: {exc.errno}")
+        closed = True
+    require(closed, "el descriptor base no fue cerrado ante la interrupción")
+    return {"interruption_event": interruptions[0]["interruption"],
+            "re_raised": raised is not None, "base_fd_closed": closed}
+
+
+@case("fd")
+def worker_entry_interruption_during_preparation(root):
+    # H03-A: una SystemExit durante la preparación (approved_base) no se
+    # convierte en error operativo ordinario: evento "case_interrupted",
+    # re-lanzamiento y no se asume que el descriptor fue adquirido.
+    inner = mkdir(root / "worker-int-prep")
+    events = []
+    previous_approved = globals()["approved_base"]
+    previous_worker = globals()["worker"]
+
+    def interrupting_approval(path, location_declared=None):
+        raise SystemExit(3)
+
+    globals()["approved_base"] = interrupting_approval
+    globals()["worker"] = lambda group, name, path: None
+    import io
+    from contextlib import redirect_stdout
+    buffer = io.StringIO()
+    raised = None
+    try:
+        with redirect_stdout(buffer):
+            _worker_entry("fd", "worker_entry_interruption_during"
+                          "_preparation", str(inner), "private")
+    except SystemExit as exc:
+        raised = exc
+    finally:
+        globals()["approved_base"] = previous_approved
+        globals()["worker"] = previous_worker
+    for line in buffer.getvalue().splitlines():
+        events.append(json.loads(line))
+    interruptions = [e for e in events if e.get("event") == "case_interrupted"]
+    require(len(interruptions) == 1,
+            "no se emitió un único evento de interrupción")
+    require(interruptions[0]["interruption"] == "SystemExit",
+            "no se identificó el tipo de interrupción")
+    require(raised is not None and raised.code == 3,
+            "la SystemExit no se re-lanzó con su código")
+    require(not [e for e in events if e.get("event") == "case"],
+            "una interrupción en la preparación no emite evento de resultado")
+    return {"interruption_event": interruptions[0]["interruption"],
+            "re_raised_code": raised.code if raised else None}
+
+
+@case("fd")
+def run_case_interruption_event_never_pass(root):
+    # H03-A/H03-B: el padre interpreta "case_interrupted" correctamente:
+    # nunca lo acepta como resultado de prueba (ni PASS ni NOT_EXECUTED),
+    # ni siquiera si acompaña a un evento case, ni si el código de salida
+    # es 0.
+    from contextlib import redirect_stdout
+    import io
+
+    def call_run_case(out, rc, suffix):
+        previous = globals()["child_output"]
+        globals()["child_output"] = (
+            lambda argv, timeout: (out, "", rc, None))
+        writes = []
+        try:
+            with redirect_stdout(io.StringIO()):
+                status = run_case("fd",
+                                  "run_case_interruption_event_never_pass_"
+                                  + suffix, root, 5.0, writes.append,
+                                  "private", None)
+        finally:
+            globals()["child_output"] = previous
+        return status, writes
+
+    # Sin evento case, con caso interrumpido y salida 0: FAIL.
+    status, _ = call_run_case(
+        '{"event": "case_interrupted", "group": "fd",'
+        ' "test": "run_case_interruption_event_never_pass_only",'
+        ' "interruption": "KeyboardInterrupt"}\n', 0, "only")
+    require(status == "FAIL",
+            f"un evento de interrupción no debe aceptarse: {status}")
+    # Caso interrumpido junto a un evento PASS válido (contradicción):
+    # la interrupción fuerza FAIL, no deja el PASS.
+    status, _ = call_run_case(
+        '{"event": "case", "status": "PASS", "group": "fd",'
+        ' "test": "run_case_interruption_event_never_pass_with_pass"}\n'
+        '{"event": "case_interrupted", "group": "fd",'
+        ' "test": "run_case_interruption_event_never_pass_with_pass",'
+        ' "interruption": "KeyboardInterrupt"}\n', 0, "with_pass")
+    require(status == "FAIL",
+            f"una interrupción no debe dejar un PASS: {status}")
+    return {"interruption_only": "FAIL", "interruption_with_pass": "FAIL"}
 
 
 @case("fd")
@@ -3806,6 +4008,16 @@ def _worker_entry(group, name, base_arg, location):
     Un error de preparación NUNCA se convierte en éxito. base_fd se cierra
     solo si fue adquirido: si la preparación falló antes de asignarlo, no
     se asume que el descriptor existe.
+
+    H03-A: las interrupciones del proceso (KeyboardInterrupt, SystemExit)
+    NO se capturan como errores operativos ordinarios. Se distinguen de
+    las excepciones operativas: se emiten un evento "case_interrupted"
+    estructurado (semántica: el worker fue interrumpido y NO produjo un
+    resultado terminal de prueba; el proceso padre nunca lo acepta como
+    PASS/FAIL/NOT_EXECUTED, sino que lo interpreta como resultado no
+    válido), se conserva el cierre del descriptor cuando fue adquirido y
+    se RE-LANZA la interrupción. Una interrupción nunca se convierte en
+    PASS ni en un resultado satisfactorio fabricado.
     """
     base = None
     base_fd = None
@@ -3816,6 +4028,17 @@ def _worker_entry(group, name, base_arg, location):
              error=error(exc),
              message=f"preparación del base no disponible: {exc}")
         return
+    except (KeyboardInterrupt, SystemExit) as exc:
+        # Interrupción durante la preparación: no es un error operativo.
+        if base_fd is not None:
+            try:
+                os.close(base_fd)
+            except OSError:
+                pass
+        emit("case_interrupted", group=group, test=name,
+             interruption=type(exc).__name__,
+             message=f"interrupción durante la preparación del base: {exc}")
+        raise
     except BaseException as exc:
         emit("case", group=group, test=name, status="FAIL",
              error=error(exc),
@@ -3823,6 +4046,14 @@ def _worker_entry(group, name, base_arg, location):
         return
     try:
         worker(group, name, base)
+    except (KeyboardInterrupt, SystemExit) as exc:
+        # Interrupción durante la ejecución del worker: el descriptor se
+        # cierra en el finally; se emite el evento de interrupción y se
+        # re-lanza (no se convierte en resultado satisfactorio).
+        emit("case_interrupted", group=group, test=name,
+             interruption=type(exc).__name__,
+             message=f"interrupción durante la ejecución del worker: {exc}")
+        raise
     finally:
         if base_fd is not None:
             os.close(base_fd)
@@ -3898,7 +4129,16 @@ def run_case(group, name, run, timeout, write, location_declared, run_fd):
         argv = [sys.executable, str(SCRIPT), "--_worker", group, name,
                 str(folder), location_declared]
         out, stderr, rc, failed = child_output(argv, timeout)
-        terminal = None
+        # H03-B: el proceso padre NO acepta simplemente el último evento
+        # "case". Valida los eventos terminales: debe existir EXACTAMENTE
+        # uno, con la identidad (group/test) solicitada y un estado del
+        # conjunto permitido; eventos duplicados, identidad incorrecta,
+        # estado desconocido o ausencia de evento producen FAIL. Un
+        # código de salida no satisfactorio nunca produce PASS. Un evento
+        # "case_interrupted" (interrupción del worker, H03-A) nunca se
+        # acepta como resultado de prueba.
+        terminals = []
+        interrupted = False
         for line in out.splitlines():
             try:
                 row = json.loads(line)
@@ -3907,18 +4147,39 @@ def run_case(group, name, run, timeout, write, location_declared, run_fd):
             if not isinstance(row, dict):
                 row = {"event": "worker_output", "text": line}
             if row.get("event") == "case":
-                terminal = row
+                terminals.append(row)
             else:
+                if row.get("event") == "case_interrupted":
+                    interrupted = True
                 write({**row, **key})
         if stderr:
             write({"event": "worker_stderr", "text": stderr, **key})
         if failed:
             result = failed
-        elif rc != 0 or terminal is None:
+        elif interrupted:
             result = {"status": "FAIL", "worker_exit": rc,
-                      "message": "proceso hijo sin resultado válido"}
+                      "message": "el worker fue interrumpido; no hay "
+                                 "resultado terminal válido"}
+        elif len(terminals) != 1:
+            result = {"status": "FAIL", "worker_exit": rc,
+                      "case_events": len(terminals),
+                      "message": "proceso hijo sin resultado válido"
+                                 if not terminals else
+                                 "eventos terminales duplicados o "
+                                 "contradictorios"}
+        elif (terminals[0].get("group") != group
+              or terminals[0].get("test") != name):
+            result = {"status": "FAIL", "worker_exit": rc,
+                      "message": "evento terminal con identidad incorrecta"}
+        elif terminals[0].get("status") not in ("PASS", "FAIL",
+                                                "NOT_EXECUTED"):
+            result = {"status": "FAIL", "worker_exit": rc,
+                      "message": "evento terminal con estado desconocido"}
+        elif rc != 0:
+            result = {"status": "FAIL", "worker_exit": rc,
+                      "message": "código de salida no satisfactorio"}
         else:
-            result = terminal
+            result = terminals[0]
     row = {"event": "case", **result, **key}
     write(row)
     print(f"{row['status']:12} {group}/{name}", flush=True)
