@@ -211,6 +211,60 @@ def _walk_anchored(path):
         raise
 
 
+def _walk_anchored_chain(path):
+    """Recorrido anclado que conserva la CADENA de descriptores (root..final).
+
+    Como _walk_anchored, pero en lugar de cerrar los descriptores
+    intermedios los conserva en una lista, de modo que la auditoría de
+    padres pueda inspeccionar cada objeto mediante fstat sobre el propio
+    descriptor (sin rutas, sin TOCTOU). Devuelve (chain_fds, resolved); el
+    último elemento de chain_fds es el descriptor del directorio final y el
+    llamador debe cerrar todos los descriptores de la cadena.
+    """
+    raw = Path(path)
+    parts = raw.parts or (".",)
+    if raw.is_absolute():
+        anchor_fd = os.open(os.sep, os.O_DIRECTORY | feature("O_NOFOLLOW"))
+        components = parts[1:]
+        resolved = os.sep + os.sep.join(components)
+    else:
+        anchor_fd = os.open(".", os.O_DIRECTORY | feature("O_NOFOLLOW"))
+        components = parts
+        resolved = os.path.join(os.getcwd(), *components)
+    flags = feature("O_NOFOLLOW") | feature("O_DIRECTORY")
+    chain = [anchor_fd]
+    current = anchor_fd
+    try:
+        for index, component in enumerate(components):
+            if component == "..":
+                raise ValueError(
+                    f"componente '..' no admitido en la ruta base: {raw}"
+                )
+            kind = "final" if index == len(components) - 1 else "intermedio"
+            try:
+                child = os.open(component, flags, dir_fd=current)
+            except OSError as exc:
+                if exc.errno == errno.ELOOP:
+                    raise ValueError(
+                        f"componente {kind} simbólico en la ruta base: {component}"
+                    ) from exc
+                if exc.errno == errno.ENOTDIR:
+                    raise ValueError(
+                        f"componente no es un directorio: {component}"
+                    ) from exc
+                raise
+            chain.append(child)
+            current = child
+        return chain, os.path.normpath(resolved)
+    except BaseException:
+        for fd in chain:
+            try:
+                os.close(fd)
+            except OSError:
+                pass
+        raise
+
+
 def _group_inspection(pgid):
     """Inspección de miembros del grupo/sesión mediante /proc (corrección F).
 
@@ -1076,29 +1130,34 @@ def base_acl_unknown_blocked(root):
 def base_acl_query_error_unknown(root):
     # Si la consulta de ACL falla, el estado es unknown: ausencia de
     # información no es ausencia de ACL (B).
-    state, err = _acl_state(root / "no-existe-acl-xyz")
+    state, err, method = _acl_state(root / "no-existe-acl-xyz")
     require(state == "unknown", f"estado inesperado: {state}")
-    return {"state": state, "error": err}
+    return {"state": state, "error": err, "method": method}
 
 
 @case("base")
 def base_parent_inspection_error_incomplete(root):
-    # Si no se puede inspeccionar un padre, la auditoría es incompleta y se
-    # rechaza la ubicación (A).
+    # Si no se puede inspeccionar un padre (por descriptor), la auditoría es
+    # incompleta y se rechaza la ubicación (punto 1).
     directory = mkdir(root / "audit-dir")
-    target = directory.parent
-    previous = os.lstat
-
-    def fake_lstat(path, *args, **kwargs):
-        if Path(path) == target:
-            raise OSError(errno.EACCES, "simulado: inspección de padre")
-        return previous(path, *args, **kwargs)
-
-    os.lstat = fake_lstat
+    chain, _ = _walk_anchored_chain(str(directory))
     try:
-        rows, blockers, complete = _parent_audit(directory)
+        target_fd = chain[-2]  # el padre (directorio de caso)
+        previous = os.fstat
+
+        def fake_fstat(fd, *args, **kwargs):
+            if fd == target_fd:
+                raise OSError(errno.EACCES, "simulado: inspección de padre")
+            return previous(fd, *args, **kwargs)
+
+        os.fstat = fake_fstat
+        try:
+            rows, blockers, complete = _parent_audit(chain, os.geteuid())
+        finally:
+            os.fstat = previous
     finally:
-        os.lstat = previous
+        for fd in chain:
+            os.close(fd)
     require(complete is False, "la auditoría no se clasificó como incompleta")
     decision = _base_blockers({"acl_state": "absent"}, (rows, blockers, complete))
     require(any("incompleta" in b for b in decision),
@@ -1113,11 +1172,259 @@ def base_parent_group_writable_blocked(root):
     parent = mkdir(root / "grp-parent")
     os.chmod(str(parent), 0o775)
     child = mkdir(parent / "child")
-    rows, blockers, complete = _parent_audit(child)
+    chain, _ = _walk_anchored_chain(str(child))
+    try:
+        rows, blockers, complete = _parent_audit(chain, os.geteuid())
+    finally:
+        for fd in chain:
+            os.close(fd)
     require(complete is True, "auditoría incompleta inesperada")
     require(any("grupo" in b for b in blockers),
             "no se bloqueó el padre escribible por grupo")
     return {"blockers": blockers}
+
+
+@case("base")
+def base_parent_audit_descriptor_bound(root):
+    # La auditoría de padres se realiza sobre la cadena de descriptores, no
+    # sobre rutas (punto 1).
+    inner = mkdir(root / "pb" / "pc")
+    chain, resolved = _walk_anchored_chain(str(inner))
+    try:
+        rows, blockers, complete = _parent_audit(chain, os.geteuid())
+    finally:
+        for fd in chain:
+            os.close(fd)
+    require(complete is True, "auditoría incompleta inesperada")
+    require(rows, "la auditoría no produjo filas")
+    require(all("fd" in row for row in rows),
+            "la auditoría no fue realizada por descriptores")
+    require(rows[-1]["fd"] == chain[-1],
+            "la fila del directorio base no usa el descriptor final")
+    require(rows[-1]["mode"] == oct(inner.lstat().st_mode & 0o777),
+            "el modo del base por descriptor no coincide con el objeto")
+    return {"rows": len(rows), "resolved": resolved}
+
+
+@case("base")
+def base_acl_state_fd_method(root):
+    # La consulta de ACL se realiza sobre el descriptor cuando la plataforma
+    # lo permite; si no, el estado es unknown (punto 1).
+    directory = mkdir(root / "acl-fd")
+    fd = os.open(str(directory), os.O_RDONLY | os.O_DIRECTORY
+                 | feature("O_NOFOLLOW"))
+    try:
+        state, err, method = _acl_state(directory, fd)
+    finally:
+        os.close(fd)
+    require(method == "fd", f"método inesperado: {method}")
+    require(state in ("absent", "unknown"), f"estado inesperado: {state}")
+    return {"state": state, "method": method, "error": err}
+
+
+@case("base")
+def base_parent_sticky_foreign_owner_blocked(root):
+    # Padre globalmente escribible con sticky pero propietario no confiable:
+    # no se aprueba automáticamente (punto 2).
+    row = {"fd": 99, "world_writable": True, "sticky": True,
+           "group_writable": False, "owner_uid": 123456}
+    blockers = _parent_risk_blockers(row, os.geteuid())
+    require(any("no confiable" in b for b in blockers),
+            "no se bloqueó el padre sticky con propietario ajeno")
+    return {"blockers": blockers}
+
+
+@case("base")
+def base_parent_sticky_trusted_owner_allowed(root):
+    # Padre globalmente escribible con sticky y propietario confiable (el
+    # usuario efectivo): sin bloqueo por esa política (punto 2).
+    row = {"fd": 99, "world_writable": True, "sticky": True,
+           "group_writable": False, "owner_uid": os.geteuid()}
+    blockers = _parent_risk_blockers(row, os.geteuid())
+    require(blockers == [], f"bloqueos inesperados: {blockers}")
+    return {"blockers": blockers}
+
+
+@case("base")
+def base_parent_sticky_real_dir(root):
+    # Padre real globalmente escribible con sticky, sin grupo escribible y
+    # propiedad del usuario efectivo: la auditoría no bloquea por sticky
+    # (punto 2).
+    parent = mkdir(root / "sticky-parent")
+    os.chmod(str(parent), 0o1707)
+    child = mkdir(parent / "child")
+    chain, _ = _walk_anchored_chain(str(child))
+    try:
+        rows, blockers, complete = _parent_audit(chain, os.geteuid())
+    finally:
+        for fd in chain:
+            os.close(fd)
+    require(complete is True, "auditoría incompleta inesperada")
+    require(not any("globalmente" in b or "grupo" in b for b in blockers),
+            f"bloqueos inesperados para padre sticky confiable: {blockers}")
+    return {"blockers": blockers}
+
+
+@case("base")
+def storage_home_inside_private_ok(root):
+    # HOME dentro de la ubicación privada esperada: evidencia suficiente
+    # (punto 3).
+    previous = {k: os.environ.get(k) for k in ("TERMUX_VERSION", "HOME")}
+    previous_mount = globals()["mount_info"]
+    os.environ["TERMUX_VERSION"] = "test-home-private"
+    os.environ["HOME"] = "/data/data/com.termux/files/home"
+    globals()["mount_info"] = lambda path: {
+        "mountpoint": "/", "filesystem": "ext4", "device": "none",
+        "source": "/dev/block/dm-0", "mount_options": "rw",
+    }
+    try:
+        detected, _, _ = _classify_storage(
+            "/data/data/com.termux/files/home/diag-private")
+    finally:
+        globals()["mount_info"] = previous_mount
+        for key, value in previous.items():
+            if value is None:
+                os.environ.pop(key, None)
+            else:
+                os.environ[key] = value
+    require(detected == "termux_private",
+            f"clasificación inesperada: {detected}")
+    return {"detected_class": detected}
+
+
+@case("base")
+def storage_home_outside_private_rejected(root):
+    # HOME apuntando a una ubicación ajena: no es evidencia de almacenamiento
+    # privado (punto 3).
+    previous = {k: os.environ.get(k) for k in ("TERMUX_VERSION", "HOME")}
+    previous_mount = globals()["mount_info"]
+    os.environ["TERMUX_VERSION"] = "test-home-outside"
+    os.environ["HOME"] = "/tmp/fakehome-diag-xyz"
+    globals()["mount_info"] = lambda path: {
+        "mountpoint": "/", "filesystem": "ext4", "device": "none",
+        "source": "/dev/block/dm-0", "mount_options": "rw",
+    }
+    try:
+        detected, _, _ = _classify_storage("/tmp/fakehome-diag-xyz/diag")
+    finally:
+        globals()["mount_info"] = previous_mount
+        for key, value in previous.items():
+            if value is None:
+                os.environ.pop(key, None)
+            else:
+                os.environ[key] = value
+    require(detected == "other", f"clasificación inesperada: {detected}")
+    return {"detected_class": detected}
+
+
+@case("base")
+def storage_termux_env_without_evidence(root):
+    # TERMUX_VERSION presente pero sin evidencia de ubicación privada: no se
+    # clasifica como privado (punto 3).
+    previous = os.environ.get("TERMUX_VERSION")
+    previous_mount = globals()["mount_info"]
+    os.environ["TERMUX_VERSION"] = "test-no-evidence"
+    globals()["mount_info"] = lambda path: {
+        "mountpoint": "/", "filesystem": "ext4", "device": "none",
+        "source": "/dev/block/dm-0", "mount_options": "rw",
+    }
+    try:
+        detected, _, _ = _classify_storage("/data/other-app/diag")
+    finally:
+        globals()["mount_info"] = previous_mount
+        if previous is None:
+            os.environ.pop("TERMUX_VERSION", None)
+        else:
+            os.environ["TERMUX_VERSION"] = previous
+    require(detected == "other", f"clasificación inesperada: {detected}")
+    return {"detected_class": detected}
+
+
+@case("base")
+def storage_shared_precedence_with_altered_home(root):
+    # HOME alterado hacia almacenamiento compartido: la precedencia de
+    # rechazo se mantiene (punto 3).
+    previous = {k: os.environ.get(k) for k in ("TERMUX_VERSION", "HOME")}
+    os.environ["TERMUX_VERSION"] = "test-shared-home"
+    os.environ["HOME"] = "/sdcard/fakehome-diag"
+    try:
+        detected, _, _ = _classify_storage("/sdcard/fakehome-diag/diag")
+    finally:
+        for key, value in previous.items():
+            if value is None:
+                os.environ.pop(key, None)
+            else:
+                os.environ[key] = value
+    require(detected == "android_shared",
+            f"precedencia de rechazo no se mantuvo: {detected}")
+    return {"detected_class": detected}
+
+
+@case("base")
+def probe_close_failure_registered(root):
+    # Fallo de cierre de los descriptores del sondeo: se registra, no se
+    # declara autolimpieza y se conserva la información (punto 4).
+    directory = mkdir(root / "probe-close")
+    base_fd = os.open(str(directory), os.O_RDONLY | os.O_DIRECTORY
+                      | feature("O_NOFOLLOW"))
+    refused = []
+    previous_close = os.close
+
+    def fake_close(fd, *args, **kwargs):
+        if fd == base_fd or fd in (0, 1, 2):
+            return previous_close(fd, *args, **kwargs)
+        refused.append(fd)
+        raise OSError(errno.EIO, "simulado: cierre")
+
+    os.close = fake_close
+    try:
+        analysis = analyze_base(directory, "private", probe_writability=True,
+                                base_fd=base_fd)
+    finally:
+        os.close = previous_close
+        os.close(base_fd)
+    probe = analysis["writability_probe"]
+    require(probe.get("close_errors"), "no se registraron errores de cierre")
+    require(probe["self_cleaned"] is False,
+            "no se debe declarar autolimpieza con cierre fallido")
+    require(probe.get("close_error"), "no se registró el error de cierre")
+    for fd in refused:
+        os.close(fd)
+    return {"close_errors": probe["close_errors"], "refused_fds": refused}
+
+
+@case("base")
+def probe_cleanup_partial_file_residue(root):
+    # Limpieza parcial: si la limpieza del archivo falla, se registra el
+    # residuo con su ubicación y no se declara autolimpieza (punto 4).
+    directory = mkdir(root / "probe-partial")
+    base_fd = os.open(str(directory), os.O_RDONLY | os.O_DIRECTORY
+                      | feature("O_NOFOLLOW"))
+    previous_unlink = os.unlink
+
+    def fake_unlink(path, *args, **kwargs):
+        if path == "w":
+            raise OSError(errno.EPERM, "simulado: unlink")
+        return previous_unlink(path, *args, **kwargs)
+
+    try:
+        os.unlink = fake_unlink
+        try:
+            analysis = analyze_base(directory, "private",
+                                    probe_writability=True, base_fd=base_fd)
+        finally:
+            os.unlink = previous_unlink
+    finally:
+        os.close(base_fd)
+    probe = analysis["writability_probe"]
+    require(probe["self_cleaned"] is False, "no se debe declarar autolimpieza")
+    require(probe.get("residue"), "no se registró el residuo")
+    kinds = [entry["kind"] for entry in probe["residue"]]
+    require("file" in kinds, "no se registró el residuo del archivo")
+    require(all("path" in entry and "error" in entry
+                for entry in probe["residue"]),
+            "el residuo no conserva ubicación y error")
+    return {"residue": probe["residue"]}
 
 
 @case("base")
@@ -1676,12 +1983,19 @@ def _classify_storage(base):
     precedencia de condiciones. Devuelve (detected_class, mount, caveat).
 
     Para la clasificación privada se verifica que: (1) la ruta solicitada está
-    dentro de la ubicación privada esperada (prefijos de Termux), (2) el
-    punto de montaje es un ANCESTRO compatible de la ruta, y (3) el montaje
-    no es de clase compartida. NO se exige que el propio punto de montaje
-    esté dentro del directorio privado de Termux: un montaje superior (p.ej.
-    el montaje de /data o de la raíz) que cubra la ruta privada es
-    compatible.
+    dentro de la ubicación privada esperada, (2) el punto de montaje es un
+    ANCESTRO compatible de la ruta, y (3) el montaje no es de clase
+    compartida. NO se exige que el propio punto de montaje esté dentro del
+    directorio privado de Termux: un montaje superior que cubra la ruta
+    privada es compatible.
+
+    Evidencia de ubicación privada: el prefijo canónico de almacenamiento
+    privado de la aplicación Termux (/data/data/com.termux). PREFIX y HOME
+    NO se aceptan como prueba por sí mismos: solo se incorporan como
+    prefijos adicionales cuando POR SI MISMOS están dentro del prefijo
+    canónico. Un HOME arbitrario o alterado no demuestra almacenamiento
+    privado real; sin evidencia suficiente la clasificación es "other" (no
+    se aprueba).
 
     Se mantiene rechazado el almacenamiento compartido mientras no se demuestre
     su idoneidad para staging/publicación, y se mantienen rechazadas las
@@ -1689,11 +2003,13 @@ def _classify_storage(base):
     """
     s = str(base)
     termux = os.environ.get("TERMUX_VERSION")
-    private_prefixes = [
-        p for p in ("/data/data/com.termux", os.environ.get("PREFIX") or "",
-                   str(Path.home()))
-        if p and p != os.sep
-    ]
+    canonical = "/data/data/com.termux"
+    private_prefixes = [canonical]
+    for candidate in (os.environ.get("PREFIX"), str(Path.home())):
+        # PREFIX/HOME solo constituyen evidencia si están dentro del prefijo
+        # canónico privado; un HOME arbitrario o alterado no se acepta.
+        if candidate and candidate != os.sep and _is_under(candidate, canonical):
+            private_prefixes.append(candidate)
     shared_prefixes = ("/sdcard", "/storage/emulated", "/mnt/sdcard")
     # Precedencia: una ruta compartida nunca se clasifica como privada.
     for prefix in shared_prefixes:
@@ -1855,36 +2171,66 @@ def analyze_base(base, location_declared=None, probe_writability=False,
         finally:
             # Limpiar SOLO los artefactos propios creados (y cuya propiedad se
             # acredita por haberlos creado nosotros), incluso si falló una
-            # operación intermedia. Nunca se elimina nada ajeno.
+            # operación intermedia. Nunca se elimina nada ajeno. Se
+            # diferencia la limpieza de archivos y de directorios.
             residue = []
-            try:
-                if base_fd is not None:
-                    if probe_fd is not None and ("file", probe_name, "w") in created:
+            cleanup_errors = []
+            if base_fd is not None:
+                if probe_fd is not None and ("file", probe_name, "w") in created:
+                    try:
                         os.unlink("w", dir_fd=probe_fd)
-                    if probe_name is not None and ("dir", probe_name) in created:
+                    except OSError as exc:
+                        residue.append({"kind": "file",
+                                        "path": str(base / probe_name / "w"),
+                                        "error": error(exc)})
+                        cleanup_errors.append(error(exc))
+                if probe_name is not None and ("dir", probe_name) in created:
+                    try:
                         os.rmdir(probe_name, dir_fd=base_fd)
-                else:
-                    if probe_file is not None:
+                    except OSError as exc:
+                        residue.append({"kind": "directory",
+                                        "path": str(base / probe_name),
+                                        "error": error(exc)})
+                        cleanup_errors.append(error(exc))
+            else:
+                if probe_file is not None:
+                    try:
                         probe_file.unlink()
-                    if probe_dir is not None:
+                    except OSError as exc:
+                        residue.append({"kind": "file", "path": str(probe_file),
+                                        "error": error(exc)})
+                        cleanup_errors.append(error(exc))
+                if probe_dir is not None:
+                    try:
                         os.rmdir(probe_dir)
-            except OSError as exc:
-                residue.append({
-                    "path": str(base / probe_name) if probe_name else str(base),
-                    "error": error(exc),
-                })
-            # Garantizar el cierre de TODOS los descriptores del sondeo.
-            for fd in (probe_file_fd, probe_fd):
+                    except OSError as exc:
+                        residue.append({"kind": "directory",
+                                        "path": str(probe_dir),
+                                        "error": error(exc)})
+                        cleanup_errors.append(error(exc))
+            # Cierre de descriptores, registrando los errores de cierre.
+            close_errors = []
+            for label, fd in (("probe_file_fd", probe_file_fd),
+                              ("probe_fd", probe_fd)):
                 if fd is not None:
                     try:
                         os.close(fd)
-                    except OSError:
-                        pass
+                    except OSError as exc:
+                        close_errors.append({"descriptor": label,
+                                             "error": error(exc)})
+            if close_errors:
+                probe["close_errors"] = close_errors
             if residue:
                 # Si la limpieza falla, registrar el residuo y su ubicación.
                 probe["self_cleaned"] = False
-                probe["clean_error"] = residue[0]["error"]
+                probe["clean_error"] = (cleanup_errors[0]
+                                        if cleanup_errors else None)
                 probe["residue"] = residue
+            elif close_errors:
+                # El estado de los recursos no puede confirmarse: no se
+                # declara autolimpieza completa.
+                probe["self_cleaned"] = False
+                probe["close_error"] = close_errors[0]["error"]
             else:
                 probe["self_cleaned"] = True
         info["writability_probe"] = probe
@@ -1919,74 +2265,112 @@ def analyze_base(base, location_declared=None, probe_writability=False,
     return info
 
 
-def _parent_audit(base):
-    """Auditoría estática de los directorios padre (corrección A).
+def _parent_risk_blockers(row, euid):
+    """Política conservadora de riesgo de padres (punto 2).
 
-    Registra modo, propietario y permisos de cada padre y devuelve
-    (rows, blockers, complete). Se rechazan padres escribibles por grupo
-    cuando no se puede demostrar aislamiento suficiente (otros miembros del
-    grupo podrían sustituir la entrada) y padres globalmente escribibles sin
-    bit sticky. Si un padre no puede inspeccionarse, la auditoría se
-    clasifica como INCOMPLETA (complete=False) y se rechaza la ubicación:
-    la incertidumbre no se convierte en aprobación. Se evalúan los riesgos de
-    sustitución de entradas, propiedad y permisos. No se modifican permisos
-    ni propietarios ajenos.
+    Evalúa conjuntamente propietario UID, permisos globales y de grupo, bit
+    sticky y riesgo de sustitución de entradas:
+
+    - Padre globalmente escribible SIN sticky: cualquier tercero puede
+      renombrar/sustituir entradas -> bloqueo.
+    - Padre globalmente escribible CON sticky: el sticky restringe la
+      eliminación, pero el PROPIETARIO conserva facultades especiales sobre
+      sus entradas; el sticky no demuestra por sí solo confianza. Se acepta
+      solo si el propietario es el usuario efectivo (propietario confiable);
+      si el propietario no es confiable, se bloquea.
+    - Padre escribible por grupo: otros miembros del grupo podrían
+      modificarlo; no se puede demostrar aislamiento -> bloqueo.
+
+    Devuelve la lista de bloqueos para la fila.
     """
+    blockers = []
+    label = row.get("path") or f"descriptor {row.get('fd')}"
+    if row["world_writable"]:
+        if not row["sticky"]:
+            blockers.append(
+                "directorio padre globalmente escribible sin sticky: "
+                f"riesgo de sustitución de entradas: {label}"
+            )
+        elif row["owner_uid"] != euid:
+            blockers.append(
+                "directorio padre globalmente escribible con sticky, pero "
+                f"propietario no confiable (uid {row['owner_uid']} != "
+                f"{euid}): el sticky no demuestra confianza: {label}"
+            )
+    if row["group_writable"]:
+        blockers.append(
+            f"directorio padre escribible por grupo: no se puede demostrar "
+            f"aislamiento suficiente: {label}"
+        )
+    return blockers
+
+
+def _parent_audit(chain, euid=None):
+    """Auditoría de padres ALIADA AL OBJETO ABIERTO (punto 1).
+
+    Recibe la cadena de descriptores (root..base) producida por
+    _walk_anchored_chain y inspecciona cada objeto mediante os.fstat sobre el
+    propio descriptor: no usa rutas, por lo que no puede examinar un objeto
+    distinto del que representa la cadena (sin TOCTOU). Devuelve
+    (rows, blockers, complete). Si un descriptor no puede inspeccionarse, la
+    auditoría es INCOMPLETA (complete=False) y se rechaza la ubicación.
+    """
+    if euid is None:
+        euid = os.geteuid()
     rows = []
     blockers = []
     complete = True
-    for parent in (base, *base.parents):
+    for fd in chain:
         try:
-            st = parent.lstat()
+            st = os.fstat(fd)
         except OSError as exc:
-            # No se pudo inspeccionar un padre: auditoría incompleta.
-            rows.append({"path": str(parent), "inspection_error": error(exc)})
+            rows.append({"fd": fd, "inspection_error": error(exc)})
             complete = False
             break
         if not stat.S_ISDIR(st.st_mode):
-            rows.append({"path": str(parent),
-                         "inspection_error": "no es un directorio"})
+            rows.append({"fd": fd, "inspection_error": "no es un directorio"})
             complete = False
             break
         perms = st.st_mode & 0o777
         row = {
-            "path": str(parent), "mode": oct(perms),
+            "fd": fd, "mode": oct(perms),
             "owner_uid": st.st_uid, "owner_gid": st.st_gid,
             "world_writable": bool(perms & 0o002),
             "group_writable": bool(perms & 0o020),
             "sticky": bool(st.st_mode & 0o1000),
         }
         rows.append(row)
-        if row["world_writable"] and not row["sticky"]:
-            blockers.append(
-                f"directorio padre globalmente escribible sin sticky: {parent}"
-            )
-        if row["group_writable"]:
-            blockers.append(
-                f"directorio padre escribible por grupo: no se puede "
-                f"demostrar aislamiento suficiente: {parent}"
-            )
+        blockers.extend(_parent_risk_blockers(row, euid))
     return rows, blockers, complete
 
 
-def _acl_state(path):
-    """Detecta ACL POSIX por atributos extendidos (corrección B).
+def _acl_state(path, base_fd=None):
+    """Detecta ACL POSIX, preferentemente sobre el descriptor (punto 1).
 
     Reconoce system.posix_acl_access y system.posix_acl_default (y cualquier
     atributo con prefijo system.posix_acl); NO usa comparación exacta con
-    system.posix_acl. Devuelve (state, error): "present" si hay atributos de
-    ACL, "absent" si la consulta fue posible y no hay ACL, "unknown" si la
-    consulta falló o la plataforma no permite verificar. La ausencia de
-    información NO se interpreta como ausencia de ACL: en caso de unknown,
-    se rechaza la aprobación automática.
+    system.posix_acl. Cuando se provee base_fd, la consulta se realiza sobre
+    el DESCRITOR; si la plataforma o Python no permiten consultar atributos
+    por descriptor, el resultado es "unknown" (no se recurre a una ruta para
+    presentar la comprobación como protegida contra TOCTOU). Devuelve
+    (state, error, method). "unknown" nunca se interpreta como ausencia de
+    ACL y rechaza la aprobación automática.
     """
-    try:
-        xattrs = os.listxattr(str(path), follow_symlinks=False)
-    except (OSError, AttributeError) as exc:
-        return "unknown", error(exc)
+    if base_fd is not None:
+        try:
+            xattrs = os.listxattr(base_fd, follow_symlinks=False)
+            method = "fd"
+        except (OSError, AttributeError, TypeError) as exc:
+            return "unknown", error(exc), "fd"
+    else:
+        try:
+            xattrs = os.listxattr(str(path), follow_symlinks=False)
+            method = "path"
+        except (OSError, AttributeError) as exc:
+            return "unknown", error(exc), "path"
     if any(str(name).startswith("system.posix_acl") for name in xattrs):
-        return "present", None
-    return "absent", None
+        return "present", None, method
+    return "absent", None, method
 
 
 def _base_blockers(analysis, parents):
@@ -2043,31 +2427,39 @@ def approved_base(path, location_declared=None):
     O_NOFOLLOW examinando todos sus componentes (finales e intermedios,
     incluido el primero de una ruta relativa frente al anclaje real), de modo
     que no se resuelve ni se atraviesa ningún enlace simbólico y no queda una
-    ventana TOCTOU entre inspección y uso (correcciones A1/A4/B). La aprobación
-    depende de condiciones verificadas: estado OK, escritura verificada,
-    clase de almacenamiento fundamentada (A3) y ausencia de riesgo de
-    modificación por terceros (A2). Si cualquier comprobación posterior
-    falla, se cerrara el descriptor anclado antes de rechazar. Devuelve el
-    descriptor anclado para que el llamador realice creaciones sobre él.
+    ventana TOCTOU entre inspección y uso. Todas las comprobaciones
+    (inspección del base, ACL, auditoría de padres, detección de .git) se
+    realizan sobre los DESCRITORES de la cadena anclada (fstat/listxattr/
+    stat con dir_fd): ninguna inspecciona un objeto distinto del que
+    representa base_fd por una ruta que podría cambiar. Si una comprobación
+    no está soportada o la identidad de un objeto no puede verificarse, el
+    resultado es desconocido/incompleto y se rechaza la aprobación
+    automática. Si cualquier comprobación falla, se cierran todos los
+    descriptores de la cadena antes de rechazar. Devuelve el descriptor del
+    directorio base para que el llamador realice creaciones sobre él.
     """
     raw = Path(path).expanduser()
     if os.geteuid() == 0:
         raise ValueError("--base no debe ejecutarse como root")
-    # 1) Recorrido anclado: todos los componentes se examinan sin seguir
+    # 1) Recorrido anclado: cadena de descriptores root..base, sin seguir
     #    enlaces simbólicos. Cualquier enlace final o intermedio se rechaza.
-    base_fd, resolved = _walk_anchored(raw)
+    chain, resolved = _walk_anchored_chain(raw)
+    base_fd = chain[-1]
     base = Path(resolved)
     try:
         # 2) La aprobación depende de condiciones verificadas sobre el
         #    descriptor, no solo de registrar la ruta.
         analysis = analyze_base(base, location_declared, probe_writability=True,
                                 base_fd=base_fd)
-        # Detección de ACL (solo lectura; no se modifica nada ajeno).
-        acl_state, acl_error = _acl_state(base)
+        # Detección de ACL sobre el descriptor (solo lectura; no se modifica
+        # nada ajeno). Si la plataforma no lo permite, estado unknown.
+        acl_state, acl_error, acl_method = _acl_state(base, base_fd)
         analysis["acl_state"] = acl_state
         analysis["acl_error"] = acl_error
-        # Auditoría de padres.
-        parents, parent_blockers, parent_complete = _parent_audit(base)
+        analysis["acl_method"] = acl_method
+        # Auditoría de padres sobre la cadena de descriptores (fstat).
+        parents, parent_blockers, parent_complete = _parent_audit(chain,
+                                                                  os.geteuid())
         analysis["parents"] = parents
         analysis["parent_audit_complete"] = parent_complete
         if analysis["status"] != "OK":
@@ -2087,20 +2479,33 @@ def approved_base(path, location_declared=None):
             raise ValueError("--base rechazado: " + "; ".join(blockers))
         if base == base.parent:
             raise ValueError("--base debe ser un directorio de diagnóstico, no la raíz")
-        for parent in (base, *base.parents):
+        # Detección de árbol Git también por descriptores (dir_fd).
+        for fd in chain:
             try:
-                (parent / ".git").lstat()
+                os.stat(".git", dir_fd=fd)
             except FileNotFoundError:
                 continue
-            raise ValueError(f"--base está dentro de un árbol Git: {parent}")
+            except OSError as exc:
+                raise ValueError(
+                    f"--base: no se pudo inspeccionar .git en un componente: "
+                    f"{error(exc)}"
+                ) from exc
+            raise ValueError(f"--base está dentro de un árbol Git (descriptor {fd})")
         emit("approved_base", **analysis)
+        # Cerrar los descriptores de la cadena excepto el del directorio base.
+        for fd in chain[:-1]:
+            try:
+                os.close(fd)
+            except OSError:
+                pass
         return base, base_fd, analysis
     except BaseException:
-        # Cerrar el descriptor anclado si cualquier comprobación falla (B).
-        try:
-            os.close(base_fd)
-        except OSError:
-            pass
+        # Cerrar todos los descriptores de la cadena si falla una comprobación.
+        for fd in chain:
+            try:
+                os.close(fd)
+            except OSError:
+                pass
         raise
 
 
