@@ -1217,12 +1217,13 @@ def base_parent_group_writable_blocked(root):
     # de la auditoría), no se toca la política de producción
     # (_parent_risk_blockers / _parent_audit).
     euid = os.geteuid()
-    target_gid = os.getgid()
     foreign_uid = euid + 1
     parent = mkdir(root / "grp-parent")
     os.chmod(str(parent), 0o775)
     child = mkdir(parent / "child")
     chain, _ = _walk_anchored_chain(str(child))
+    # GID real del directorio padre inspeccionado (descriptor chain[-2]).
+    target_gid = os.fstat(chain[-2]).st_gid
     try:
         # Caso positivo: el grupo simulado contiene al usuario efectivo
         # y al menos otro UID distinto -> bloqueo por grupo.
