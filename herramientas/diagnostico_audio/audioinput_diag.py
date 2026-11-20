@@ -35,7 +35,13 @@ from contextlib import contextmanager
 from pathlib import Path
 
 SCRIPT = Path(__file__).resolve()
-UNSUPPORTED = {errno.ENOSYS, errno.ENOTSUP, errno.EOPNOTSUPP, errno.EINVAL}
+# EINVAL NO forma parte de este conjunto (H01): EINVAL significa "argumento
+# inválido", que es un error real del llamador (fallo), no una capacidad
+# ambiental ausente. La ausencia real de capacidad se signala con ENOSYS /
+# ENOTSUP / EOPNOTSUPP. Se verificó por llamada que ninguna operación de
+# candidate() necesita tratar EINVAL como incompatibilidad ambiental; los
+# errores reales se propagan como fallos sin ocultarse como NOT_EXECUTED.
+UNSUPPORTED = {errno.ENOSYS, errno.ENOTSUP, errno.EOPNOTSUPP}
 ACCESS = {errno.EACCES, errno.EPERM}
 GROUPS = {}
 
@@ -318,6 +324,9 @@ def _group_inspection(pgid):
         "incomplete" (inspección incompleta: hubo errores de permisos, de
         lectura o datos malformados) o "unavailable" (procfs no disponible).
       - group_members / session_members: conteos informativos.
+      - zombie_members: miembros del grupo en estado Z (zombi: el proceso
+         ya salió pero no fue recolectado). Se registra para NO confundir
+         un zombi con un proceso todavía activo (H02).
       - counts: desagregado de lecturas (ok, disappeared, permission, read,
         malformed, listed).
 
@@ -334,7 +343,7 @@ def _group_inspection(pgid):
     inspección es incompleta, el estado es "incomplete", nunca "empty".
     """
     result = {"pgid": pgid, "state": "incomplete", "group_members": 0,
-              "session_members": 0,
+              "session_members": 0, "zombie_members": 0,
               "counts": {"listed": 0, "ok": 0, "disappeared": 0,
                          "permission": 0, "read": 0, "malformed": 0}}
     try:
@@ -378,6 +387,11 @@ def _group_inspection(pgid):
                 continue
             if int(fields[2]) == pgid:
                 result["group_members"] += 1
+                # fields[0] es el estado del proceso en /proc/<pid>/stat:
+                # "Z" = zombi (salió, no recolectado). Se contabiliza para
+                # distinguirlo estructuralmente de un proceso activo (H02).
+                if fields[0] == b"Z" or fields[0] == "Z":
+                    result["zombie_members"] += 1
             if int(fields[3]) == pgid:
                 result["session_members"] += 1
         except (ValueError, IndexError):
@@ -995,6 +1009,64 @@ def _open_fd_count():
         raise Unavailable(
             "procfs no disponible para el conteo de descriptores"
         ) from exc
+
+
+@case("paths")
+def candidate_einval_propagates_as_failure(root):
+    # H01: EINVAL significa argumento inválido -> fallo real, no
+    # incompatibilidad ambiental. Se verifica que candidate() lo propaga
+    # como error real y que la excepción original (tipo, mensaje) se
+    # conserva íntegra.
+    original = OSError(errno.EINVAL, "argumento inválido simulado")
+
+    def fake_fn():
+        raise original
+
+    try:
+        candidate(fake_fn)
+    except Unavailable as exc:
+        raise AssertionError(
+            "EINVAL se clasificó incorrectamente como indisponibilidad "
+            f"ambiental: {exc}"
+        ) from exc
+    except OSError as exc:
+        require(exc is original,
+                "la excepción original no se propagó sin alterar")
+        require(exc.errno == errno.EINVAL,
+                f"errno distinto tras la propagación: {exc.errno}")
+        return {"propagated_as_failure": True, "errno": errno.EINVAL,
+                "type": type(exc).__name__, "message": str(exc)}
+    raise AssertionError("EINVAL no generó ningún error")
+
+
+@case("paths")
+def candidate_unsupported_errno_is_unavailable_with_cause(root):
+    # H01: los errnos de capacidad ausente (ENOSYS/ENOTSUP/EOPNOTSUPP)
+    # mantienen la clasificación ambiental y se conserva la cadena de
+    # causa original.
+    for code in (errno.ENOSYS, errno.ENOTSUP, errno.EOPNOTSUPP):
+        cause = OSError(code, "capacidad ausente simulada")
+
+        def fake_fn(_code=code, _cause=cause):
+            raise _cause
+
+        try:
+            candidate(fake_fn)
+        except Unavailable as exc:
+            require(exc.__cause__ is cause,
+                    f"{code}: la cadena de causa original no se conservó")
+            info = error(exc)
+            require(info["type"] == "Unavailable",
+                    f"{code}: tipo de error distinto de Unavailable")
+            require(info["cause"] is not None
+                    and info["cause"]["errno"] == code,
+                    f"{code}: la causa estructurada no reproduce el errno")
+        else:
+            raise AssertionError(
+                f"{code} no se clasificó como indisponibilidad ambiental"
+            )
+    return {"classified_unavailable": [errno.ENOSYS, errno.ENOTSUP,
+                                       errno.EOPNOTSUPP]}
 
 
 @case("paths")
@@ -1768,19 +1840,26 @@ def terminate_parent_dies_descendant_holds_pipe(root):
     require(failure is not None and failure["status"] == "FAIL",
             "no se reportó el agotamiento del tiempo de espera")
     termination = failure["termination_detail"]
-    if not termination["confirmed"]:
-        # En entornos donde quedan procesos zombi sin recolectar (sin
-        # init que los reap), la confirmación del grupo por /proc es
-        # imposible: no se afirma terminación, se reporta como no
-        # disponible en este entorno.
+    # Clasificación estructurada (H02): un fallo real de terminación
+    # (child_alive / group_alive) se reporta como FAIL; la incertidumbre
+    # ambiental (procfs, inspección incompleta, zombi sin recolectar,
+    # grupo no verificable) se reporta como Unavailable. Nunca se
+    # confirma sin evidencia ni se confunde un zombi con proceso activo.
+    classification = termination.get("classification")
+    if classification == TERMINATION_CONFIRMED:
+        require(termination["confirmed"] is True,
+                "no se confirmó la terminación del grupo tras SIGKILL: "
+                f"{termination['reason']}")
+        return {"child_terminated": True, "termination": termination}
+    if classification in TERMINATION_ENVIRONMENTAL:
         raise Unavailable(
-            "el entorno no permite confirmar la terminación del grupo: "
-            f"{termination['reason']}"
+            "el entorno no permite confirmar la terminación del grupo "
+            f"({classification}): {termination['reason']}"
         )
-    require(termination["confirmed"] is True,
-            "no se confirmó la terminación del grupo tras SIGKILL: "
-            f"{termination['reason']}")
-    return {"child_terminated": True, "termination": termination}
+    raise AssertionError(
+        f"fallo real de terminación ({classification}): "
+        f"{termination['reason']}"
+    )
 
 
 @case("term")
@@ -1799,19 +1878,26 @@ def terminate_descendant_survives_sigterm(root):
     require(failure is not None and failure["status"] == "FAIL",
             "no se reportó el agotamiento del tiempo de espera")
     termination = failure["termination_detail"]
-    if not termination["confirmed"]:
-        # En entornos donde quedan procesos zombi sin recolectar (sin
-        # init que los reap), la confirmación del grupo por /proc es
-        # imposible: no se afirma terminación, se reporta como no
-        # disponible en este entorno.
+    # Clasificación estructurada (H02): un fallo real de terminación
+    # (child_alive / group_alive) se reporta como FAIL; la incertidumbre
+    # ambiental (procfs, inspección incompleta, zombi sin recolectar,
+    # grupo no verificable) se reporta como Unavailable. Nunca se
+    # confirma sin evidencia ni se confunde un zombi con proceso activo.
+    classification = termination.get("classification")
+    if classification == TERMINATION_CONFIRMED:
+        require(termination["confirmed"] is True,
+                "no se confirmó la terminación tras SIGKILL al grupo: "
+                f"{termination['reason']}")
+        return {"child_terminated": True, "termination": termination}
+    if classification in TERMINATION_ENVIRONMENTAL:
         raise Unavailable(
-            "el entorno no permite confirmar la terminación del grupo: "
-            f"{termination['reason']}"
+            "el entorno no permite confirmar la terminación del grupo "
+            f"({classification}): {termination['reason']}"
         )
-    require(termination["confirmed"] is True,
-            "no se confirmó la terminación tras SIGKILL al grupo: "
-            f"{termination['reason']}")
-    return {"child_terminated": True, "termination": termination}
+    raise AssertionError(
+        f"fallo real de terminación ({classification}): "
+        f"{termination['reason']}"
+    )
 
 
 @case("term")
@@ -1850,6 +1936,9 @@ def terminate_procfs_unavailable_descendant_alive(root):
                 "no se debe confirmar la terminación sin evidencia")
         require(result["sigkill_attempted"] is True,
                 "no se intentó SIGKILL al grupo cuando procfs no está disponible")
+        require(result["classification"] == TERMINATION_PROCFS_UNAVAILABLE,
+                "no se clasificó estructuralmente como procfs no disponible: "
+                f"{result.get('classification')}")
         require("procfs" in result["reason"],
                 "no se informó la falta de procfs en la razón")
         # Observación del efecto real del SIGKILL intentado (intento, no
@@ -1874,6 +1963,157 @@ def terminate_procfs_unavailable_descendant_alive(root):
             pass
         try:
             p.wait(timeout=5)
+        except subprocess.TimeoutExpired:
+            pass
+
+
+@case("term")
+def terminate_child_alive_after_sigkill_is_failure(root):
+    # H02: un proceso todavía vivo tras SIGKILL es un fallo real de
+    # terminación, no una limitación ambiental. Se verifica con un proceso
+    # ficticio que nunca termina: la clasificación estructurada debe ser
+    # "child_alive" y NO confirmada.
+    class FakeProcess:
+        pid = 424242
+
+        def poll(self):
+            return None  # siempre vivo
+
+        def wait(self, timeout=None):
+            raise subprocess.TimeoutExpired("fake", timeout)
+
+        def send_signal(self, sig):
+            pass
+
+    previous = globals()["os"].killpg
+    globals()["os"].killpg = lambda pgid, sig: None
+    try:
+        result = _terminate(FakeProcess(), 0.2)
+    finally:
+        globals()["os"].killpg = previous
+    require(result["confirmed"] is False,
+            "no se debe confirmar la terminación de un proceso vivo")
+    require(result["classification"] == TERMINATION_CHILD_ALIVE,
+            f"no se clasificó como fallo real de terminación: "
+            f"{result.get('classification')}")
+    require(TERMINATION_CHILD_ALIVE not in TERMINATION_ENVIRONMENTAL,
+            "un proceso vivo no puede ser una limitación ambiental")
+    return {"classification": result["classification"],
+            "confirmed": result["confirmed"]}
+
+
+@case("term")
+def terminate_group_zombie_vs_alive_classification(root):
+    # H02: la clasificación estructurada distingue, sin coincidencias de
+    # texto, un grupo de zombi (proceso terminado sin recolectar) de un
+    # grupo con miembros vivos (fallo real de terminación).
+    base_inspection = {"pgid": 1, "state": "has_members", "group_members": 2,
+                       "session_members": 0, "zombie_members": 0,
+                       "counts": {"listed": 1, "ok": 1, "disappeared": 0,
+                                  "permission": 0, "read": 0, "malformed": 0}}
+    previous = globals()["_group_inspection"]
+    try:
+        # Todos los miembros son zombi: no es un proceso activo.
+        zombie_inspection = dict(base_inspection, zombie_members=2)
+        globals()["_group_inspection"] = lambda pgid: zombie_inspection
+        confirmed, reason, inspection = _confirm_group_termination(1, 0.0)
+        require(confirmed is False, "un grupo con miembros no se confirma")
+        require(inspection["classification"] == TERMINATION_GROUP_UNREAPED,
+                "un grupo de zombi no debe clasificarse como proceso activo")
+        require(TERMINATION_GROUP_UNREAPED in TERMINATION_ENVIRONMENTAL,
+                "el zombi sin recolectar es incertidumbre ambiental, no fallo")
+        require("zombi" in reason,
+                "la razón no distingue el estado de zombi sin recolectar")
+        # Miembros vivos: fallo real de terminación.
+        alive_inspection = dict(base_inspection, zombie_members=0)
+        globals()["_group_inspection"] = lambda pgid: alive_inspection
+        confirmed, reason, inspection = _confirm_group_termination(1, 0.0)
+        require(confirmed is False, "un grupo con miembros no se confirma")
+        require(inspection["classification"] == TERMINATION_GROUP_ALIVE,
+                "un grupo con miembros vivos no debe clasificarse como zombi")
+        require(TERMINATION_GROUP_ALIVE not in TERMINATION_ENVIRONMENTAL,
+                "un grupo vivo es un fallo real, no ambiental")
+    finally:
+        globals()["_group_inspection"] = previous
+    return {"zombie_classification": TERMINATION_GROUP_UNREAPED,
+            "alive_classification": TERMINATION_GROUP_ALIVE}
+
+
+@case("term")
+def terminate_group_inspection_incomplete_classification(root):
+    # H02: una inspección incompleta (permisos/lectura/datos malformados)
+    # nunca se convierte en confirmación y se clasifica como incertidumbre
+    # ambiental, no como fallo ni como confirmación.
+    incomplete = {"pgid": 1, "state": "incomplete", "group_members": 0,
+                  "session_members": 0, "zombie_members": 0,
+                  "counts": {"listed": 2, "ok": 1, "disappeared": 0,
+                             "permission": 1, "read": 0, "malformed": 0}}
+    previous = globals()["_group_inspection"]
+    globals()["_group_inspection"] = lambda pgid: incomplete
+    try:
+        confirmed, reason, inspection = _confirm_group_termination(1, 0.0)
+    finally:
+        globals()["_group_inspection"] = previous
+    require(confirmed is False,
+            "una inspección incompleta nunca confirma la terminación")
+    require(inspection["classification"] == TERMINATION_INSPECTION_INCOMPLETE,
+            f"clasificación incorrecta para inspección incompleta: "
+            f"{inspection.get('classification')}")
+    require(TERMINATION_INSPECTION_INCOMPLETE in TERMINATION_ENVIRONMENTAL,
+            "la inspección incompleta es incertidumbre ambiental")
+    return {"classification": inspection["classification"],
+            "confirmed": confirmed}
+
+
+@case("term")
+def group_inspection_real_zombie_not_confused_with_alive(root):
+    # H02: con procesos reales, un zombi (SIGKILL sin recolectar) se
+    # contabiliza como miembro zombi y un proceso activo se contabiliza
+    # como miembro vivo: no se confunden entre sí en la inspección
+    # estructurada de /proc.
+    zombie = subprocess.Popen([sys.executable, "-c", "import time; time.sleep(30)"],
+                              stdout=subprocess.PIPE, stderr=subprocess.PIPE,
+                              text=True, errors="replace",
+                              start_new_session=True)
+    live = subprocess.Popen([sys.executable, "-c", "import time; time.sleep(30)"],
+                            stdout=subprocess.PIPE, stderr=subprocess.PIPE,
+                            text=True, errors="replace",
+                            start_new_session=True)
+    try:
+        # Se mata al zombie sin recolectar (queda en estado Z visible en
+        # /proc); el proceso vivo se mantiene activo.
+        os.kill(zombie.pid, signal.SIGKILL)
+        time.sleep(0.3)
+        zombie_inspection = _group_inspection(zombie.pid)
+        live_inspection = _group_inspection(live.pid)
+        require(zombie_inspection["state"] == "has_members",
+                f"el zombi no apareció en la inspección: "
+                f"{zombie_inspection['state']}")
+        require(zombie_inspection["zombie_members"] >= 1,
+                "el proceso zombi no se contabilizó como zombi")
+        require(zombie_inspection["group_members"] >= 1,
+                "el proceso zombi no se contabilizó como miembro")
+        require(live_inspection["state"] == "has_members",
+                "el proceso activo no apareció en la inspección")
+        require(live_inspection["zombie_members"] == 0,
+                "un proceso activo se contabilizó como zombi")
+        return {"zombie": {"group_members": zombie_inspection["group_members"],
+                           "zombie_members": zombie_inspection["zombie_members"]},
+                "live": {"group_members": live_inspection["group_members"],
+                         "zombie_members": live_inspection["zombie_members"]}}
+    finally:
+        # Recolección del zombi (lo reap el propio proceso padre) y
+        # terminación del proceso activo.
+        try:
+            zombie.wait(timeout=5)
+        except subprocess.TimeoutExpired:
+            pass
+        try:
+            os.killpg(live.pid, signal.SIGKILL)
+        except (OSError, ProcessLookupError):
+            pass
+        try:
+            live.wait(timeout=5)
         except subprocess.TimeoutExpired:
             pass
 
@@ -2987,6 +3227,188 @@ def chain_close_failure_during_rejection(root):
 
 
 @case("fd")
+def worker_entry_approval_unavailable_emits_not_executed(root):
+    # H03: si approved_base() falla por una condición ambiental, el worker
+    # emite un evento "case" NOT_EXECUTED estructurado (no un aborto sin
+    # evento), conserva el tipo, mensaje y cadena de causa, y no ejecuta
+    # el worker.
+    inner = mkdir(root / "worker-env")
+    calls = []
+    cause = OSError(errno.ENOENT, "procfs ausente simulado")
+
+    def fake_approved_base(path, location_declared=None):
+        raise Unavailable("capacidad del entorno ausente") from cause
+
+    events = []
+    previous_approved = globals()["approved_base"]
+    previous_worker = globals()["worker"]
+    globals()["approved_base"] = fake_approved_base
+    globals()["worker"] = lambda group, name, path: calls.append(path)
+    import io
+    from contextlib import redirect_stdout
+    buffer = io.StringIO()
+    try:
+        with redirect_stdout(buffer):
+            _worker_entry("fd", "worker_entry_approval_unavailable"
+                          "_emits_not_executed", str(inner), "private")
+    finally:
+        globals()["approved_base"] = previous_approved
+        globals()["worker"] = previous_worker
+    for line in buffer.getvalue().splitlines():
+        events.append(json.loads(line))
+    case_events = [e for e in events if e.get("event") == "case"]
+    require(len(case_events) == 1,
+            f"no se emitió un único evento case: {len(case_events)}")
+    require(case_events[0]["status"] == "NOT_EXECUTED",
+            "una condición ambiental no debe emitir FAIL")
+    require(case_events[0]["error"]["type"] == "Unavailable",
+            "no se conservó el tipo de la excepción")
+    require(case_events[0]["error"]["cause"] is not None
+            and case_events[0]["error"]["cause"]["errno"] == errno.ENOENT,
+            "no se conservó la cadena de causa estructurada")
+    require(not calls, "el worker se ejecutó pese a la preparación fallida")
+    return {"status": case_events[0]["status"],
+            "error_type": case_events[0]["error"]["type"]}
+
+
+@case("fd")
+def worker_entry_approval_real_error_emits_fail(root):
+    # H03: si approved_base() falla por un error real (no ambiental), el
+    # worker emite un evento "case" FAIL estructurado; el error de
+    # preparación nunca se convierte en éxito.
+    inner = mkdir(root / "worker-fail")
+    calls = []
+    real_error = ValueError("--base rechazado: almacenamiento no apropiado")
+
+    def fake_approved_base(path, location_declared=None):
+        raise real_error
+
+    events = []
+    previous_approved = globals()["approved_base"]
+    previous_worker = globals()["worker"]
+    globals()["approved_base"] = fake_approved_base
+    globals()["worker"] = lambda group, name, path: calls.append(path)
+    import io
+    from contextlib import redirect_stdout
+    buffer = io.StringIO()
+    try:
+        with redirect_stdout(buffer):
+            _worker_entry("fd", "worker_entry_approval_real_error_emits"
+                          "_fail", str(inner), "private")
+    finally:
+        globals()["approved_base"] = previous_approved
+        globals()["worker"] = previous_worker
+    for line in buffer.getvalue().splitlines():
+        events.append(json.loads(line))
+    case_events = [e for e in events if e.get("event") == "case"]
+    require(len(case_events) == 1, "no se emitió un único evento case")
+    require(case_events[0]["status"] == "FAIL",
+            f"un error real no debe emitir {case_events[0]['status']}")
+    require(case_events[0]["error"]["type"] == "ValueError",
+            "no se conservó el tipo de la excepción real")
+    require("--base rechazado" in case_events[0]["error"]["message"],
+            "no se conservó el mensaje de la excepción real")
+    require(not calls, "el worker se ejecutó pese al error de preparación")
+    return {"status": case_events[0]["status"],
+            "error_type": case_events[0]["error"]["type"]}
+
+
+@case("fd")
+def worker_entry_approval_success_closes_base_fd(root):
+    # H03: con preparación correcta, el worker se ejecuta con el base y
+    # el descriptor base se cierra al terminar (cuando fue adquirido).
+    inner = mkdir(root / "worker-ok")
+    base_fd = os.open(str(inner), os.O_RDONLY | feature("O_DIRECTORY"))
+    calls = []
+
+    def fake_approved_base(path, location_declared=None):
+        return inner, base_fd, {"fake": True}
+
+    events = []
+    previous_approved = globals()["approved_base"]
+    previous_worker = globals()["worker"]
+    globals()["approved_base"] = fake_approved_base
+
+    def fake_worker(group, name, path):
+        calls.append((group, name, str(path)))
+        emit("case", group=group, test=name, status="PASS")
+
+    globals()["worker"] = fake_worker
+    import io
+    from contextlib import redirect_stdout
+    buffer = io.StringIO()
+    try:
+        with redirect_stdout(buffer):
+            _worker_entry("fd", "worker_entry_approval_success_closes"
+                          "_base_fd", str(inner), "private")
+    finally:
+        globals()["approved_base"] = previous_approved
+        globals()["worker"] = previous_worker
+    for line in buffer.getvalue().splitlines():
+        events.append(json.loads(line))
+    require(len(calls) == 1 and calls[0][2] == str(inner),
+            "el worker no recibió el base aprobado")
+    require(len([e for e in events if e.get("event") == "case"]) == 1,
+            "el worker no emitió el evento case")
+    closed = False
+    try:
+        os.fstat(base_fd)
+    except OSError as exc:
+        require(exc.errno == errno.EBADF,
+                f"descriptor base cerrado con errno distinto: {exc.errno}")
+        closed = True
+    require(closed, "el descriptor base no fue cerrado tras el worker")
+    return {"worker_called": True, "base_fd_closed": True}
+
+
+@case("fd")
+def run_case_interprets_worker_events(root):
+    # H03 (lado padre): run_case interpreta los eventos del worker.
+    # - Evento "case" válido: se adopta su estado.
+    # - Evento ausente: FAIL ("sin resultado válido"), nunca PASS.
+    # - Evento contradictorio (PASS) junto a fallo del hijo: FAIL.
+    from contextlib import redirect_stdout
+    import io
+
+    def call_run_case(out, stderr, rc, failed, suffix):
+        previous = globals()["child_output"]
+        globals()["child_output"] = (
+            lambda argv, timeout: (out, stderr, rc, failed))
+        writes = []
+        try:
+            with redirect_stdout(io.StringIO()):
+                status = run_case("fd",
+                                  "run_case_interprets_worker_events_" + suffix,
+                                  root, 5.0, writes.append, "private", None)
+        finally:
+            globals()["child_output"] = previous
+        return status, writes
+
+    # 1) Evento válido con estado NOT_EXECUTED.
+    event = json.dumps({"event": "case", "status": "NOT_EXECUTED",
+                        "error": {"type": "Unavailable", "message": "x"}})
+    status, writes = call_run_case(event + "\n", "", 0, None, "valid")
+    require(status == "NOT_EXECUTED",
+            f"el evento válido no se adoptó: {status}")
+    require(any(w.get("event") == "case" and w.get("status") == "NOT_EXECUTED"
+                for w in writes), "no se propagó el evento al resultado")
+    # 2) Evento ausente y salida vacía: FAIL, nunca PASS.
+    status, _ = call_run_case("", "", 0, None, "missing")
+    require(status == "FAIL",
+            f"un resultado ausente no debe ser PASS: {status}")
+    # 3) Evento contradictorio (PASS) con fallo del hijo: FAIL.
+    status, _ = call_run_case('{"event": "case", "status": "PASS"}\n', "",
+                              0, {"status": "FAIL", "error": {"type": "X",
+                                                               "message": "y"}},
+                              "contradictory")
+    require(status == "FAIL",
+            f"un evento contradictorio no debe producir PASS: {status}")
+    return {"valid_event_status": "NOT_EXECUTED",
+            "missing_event_status": "FAIL",
+            "contradictory_event_status": "FAIL"}
+
+
+@case("fd")
 def chain_close_clean_no_false_failure(root):
     # Cierre limpio de la cadena durante la aprobación: se registran los
     # descriptores cerrados, sin fallos ni declaraciones inciertas
@@ -3192,6 +3614,49 @@ def worker(group, name, path):
          elapsed_s=round(time.monotonic() - start, 6), **result)
 
 
+# Clases estructuradas de la terminación (H02). La clasificación se
+# deriva DEL ESTADO verificado y de los conteos estructurados de la
+# inspección (state, group_members, zombie_members), nunca de coincidencias
+# de texto sobre el reason. "child_alive" y "group_alive" son fallos reales
+# de terminación; las demás son limitaciones ambientales o incertidumbre
+# que se conservan explícitamente (nunca se convierten en confirmación).
+TERMINATION_CONFIRMED = "confirmed"
+TERMINATION_CHILD_ALIVE = "child_alive"
+TERMINATION_GROUP_ALIVE = "group_alive"
+TERMINATION_GROUP_UNREAPED = "group_unreaped"
+TERMINATION_INSPECTION_INCOMPLETE = "inspection_incomplete"
+TERMINATION_PROCFS_UNAVAILABLE = "procfs_unavailable"
+TERMINATION_GROUP_NOT_VERIFIABLE = "group_not_verifiable"
+# Clases que representan incertidumbre ambiental (NO fallo real): se
+# reportan como Unavailable, nunca como confirmación ni como fallo.
+TERMINATION_ENVIRONMENTAL = {
+    TERMINATION_PROCFS_UNAVAILABLE,
+    TERMINATION_INSPECTION_INCOMPLETE,
+    TERMINATION_GROUP_UNREAPED,
+    TERMINATION_GROUP_NOT_VERIFIABLE,
+}
+
+
+def _classify_group_inspection(inspection):
+    """Clasificación estructurada del estado de inspección del grupo.
+
+    Se basa exclusivamente en el estado verificado y los conteos
+    estructurados. Un grupo con miembros NO vacío se distingue por
+    composició: todos zombi (proceso terminado sin recolectar, no un
+    proceso activo) frente a miembros vivos (fallo real de terminación).
+    """
+    state = inspection["state"]
+    if state == "empty":
+        return TERMINATION_CONFIRMED
+    if state == "has_members":
+        if inspection.get("zombie_members", 0) >= inspection["group_members"]:
+            return TERMINATION_GROUP_UNREAPED
+        return TERMINATION_GROUP_ALIVE
+    if state == "incomplete":
+        return TERMINATION_INSPECTION_INCOMPLETE
+    return TERMINATION_PROCFS_UNAVAILABLE
+
+
 def _confirm_group_termination(pgid, wait=0.0):
     """Verifica por /proc que el grupo de procesos está vacío (corrección E).
 
@@ -3200,7 +3665,8 @@ def _confirm_group_termination(pgid, wait=0.0):
     procesos zombi pueden necesitar un instante. La confirmación positiva
     SIN EMBARGO exige un estado "empty" verificable en cada muestreo;
     "has_members", "incomplete" e "unavailable" se reportan como NO
-    confirmado. Devuelve (confirmed, reason, inspection).
+    confirmado. Devuelve (confirmed, reason, inspection) con la
+    clasificación estructurada adherida a la inspección (H02).
     """
     deadline = time.monotonic() + max(0.0, wait)
     inspection = _group_inspection(pgid)
@@ -3208,10 +3674,17 @@ def _confirm_group_termination(pgid, wait=0.0):
         time.sleep(0.2)
         inspection = _group_inspection(pgid)
     state = inspection["state"]
+    inspection["classification"] = _classify_group_inspection(inspection)
     if state == "empty":
         return True, "grupo confirmado vacío tras la verificación", inspection
     if state == "has_members":
-        return False, "miembros del grupo aún presentes tras SIGKILL", inspection
+        if inspection["classification"] == TERMINATION_GROUP_UNREAPED:
+            return False, ("miembros del grupo son zombi sin recolectar: el "
+                           "proceso ya salió pero no hay init que lo reap; "
+                           "no se confirma y no se confunde con proceso activo"), \
+                    inspection
+        return False, "miembros del grupo aún presentes tras SIGKILL", \
+            inspection
     if state == "incomplete":
         return False, ("inspección de /proc incompleta: no se puede confirmar "
                        "la terminación del grupo"), inspection
@@ -3252,6 +3725,7 @@ def _terminate(process, wait):
         if not use_group:
             return {"confirmed": False, "inspection": None,
                     "sigkill_attempted": False,
+                    "classification": TERMINATION_GROUP_NOT_VERIFIABLE,
                     "reason": "sin grupos de procesos: solo se observó la "
                               "muerte del hijo directo; los descendientes "
                               "podrían sobrevivir (límite documentado)"}
@@ -3278,7 +3752,8 @@ def _terminate(process, wait):
                 "hay evidencia suficiente para confirmar la terminación"
             )
         return {"confirmed": confirmed, "reason": reason,
-                "inspection": inspection, "sigkill_attempted": sigkill_attempted}
+                "inspection": inspection, "sigkill_attempted": sigkill_attempted,
+                "classification": inspection.get("classification")}
     for stage in ("term", "kill"):
         sig = signal.SIGTERM if stage == "term" else signal.SIGKILL
         if use_group:
@@ -3305,15 +3780,52 @@ def _terminate(process, wait):
             # su terminación (límite documentado del mecanismo).
             return {"confirmed": False, "inspection": None,
                     "sigkill_attempted": False,
+                    "classification": TERMINATION_GROUP_NOT_VERIFIABLE,
                     "reason": "sin grupos de procesos: solo se observó la "
                               "muerte del hijo directo; los descendientes "
                               "podrían sobrevivir (límite documentado)"}
         confirmed, reason, inspection = _confirm_group_termination(pgid)
         return {"confirmed": confirmed, "reason": reason,
-                "inspection": inspection, "sigkill_attempted": True}
+                "inspection": inspection, "sigkill_attempted": True,
+                "classification": inspection.get("classification")}
     return {"confirmed": False, "inspection": None,
             "sigkill_attempted": use_group,
+            "classification": TERMINATION_CHILD_ALIVE,
             "reason": "el hijo seguía vivo tras SIGTERM/SIGKILL"}
+
+
+def _worker_entry(group, name, base_arg, location):
+    """Prepara el base y ejecuta el worker con manejo de errores (H03).
+
+    approved_base() se evalúa DENTRO del manejo de errores, antes de entrar
+    al bloque que protege la ejecución del worker. Si la preparación falla,
+    se emite un evento "case" estructurado que el proceso padre puede
+    interpretar: NOT_EXECUTED para condiciones ambientales (Unavailable) y
+    FAIL para errores reales. Se conservan el tipo, el mensaje y la cadena
+    de causa (error(exc) incluye la causa en la posibilidad de que haya).
+    Un error de preparación NUNCA se convierte en éxito. base_fd se cierra
+    solo si fue adquirido: si la preparación falló antes de asignarlo, no
+    se asume que el descriptor existe.
+    """
+    base = None
+    base_fd = None
+    try:
+        base, base_fd, _ = approved_base(Path(base_arg), location)
+    except Unavailable as exc:
+        emit("case", group=group, test=name, status="NOT_EXECUTED",
+             error=error(exc),
+             message=f"preparación del base no disponible: {exc}")
+        return
+    except BaseException as exc:
+        emit("case", group=group, test=name, status="FAIL",
+             error=error(exc),
+             message=f"error en la preparación del base: {exc}")
+        return
+    try:
+        worker(group, name, base)
+    finally:
+        if base_fd is not None:
+            os.close(base_fd)
 
 
 def child_output(command, timeout, kill_wait=2.0):
@@ -4238,10 +4750,9 @@ if __name__ == "__main__":
     elif len(sys.argv) == 6 and sys.argv[1] == "--_worker":
         # El trabajador recibe la ubicación declarada para evaluar el
         # directorio con los mismos criterios que el proceso principal.
-        base, base_fd, _ = approved_base(Path(sys.argv[4]), sys.argv[5])
-        try:
-            worker(sys.argv[2], sys.argv[3], base)
-        finally:
-            os.close(base_fd)
+        # La preparación (approved_base) se maneja con errores estructurados
+        # que el proceso padre puede interpretar (H03): un error de
+        # preparación nunca se convierte en éxito ni queda sin evento.
+        _worker_entry(sys.argv[2], sys.argv[3], sys.argv[4], sys.argv[5])
     else:
         sys.exit(main())
