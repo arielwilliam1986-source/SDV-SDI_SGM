@@ -20,11 +20,14 @@
 | Blob SHA-1 del instrumento v0.2.11 (base) | `5a5a052a9d0ea062afd25f690fcdb6d222bff240` |
 | SHA-256 del instrumento v0.2.11 (base) | `172a17fbd15620e82af25a07cda952cef9b034b61945e4c14cef9f5d094b4938` |
 | Commit final (código v0.2.12) | `acd1d26` — `acd1d26c528b4c21d065e8fcfadfec82040c20be` |
-| Blob SHA-1 del instrumento v0.2.12 | `d8006f69e80b95e95d317bb5b6bde6f471a263c7` |
-| SHA-256 del instrumento v0.2.12 | `e8e93a178e4dc077a183f61180659d7e1e0fe3bb1f6b28a153aad23929ec62bc` |
-| Tamaño exacto (bytes) | **155.512** |
+| Commit de corrección documental (instrumento) | `7afdff3` — `7afdff3d80eee51a1ce55c6ea5739960add4d7cc` |
+| Blob SHA-1 del instrumento v0.2.12 (revisión documental) | `9abecd18770236e7e5c269ba0e4336f98bdafc27` |
+| SHA-256 del instrumento v0.2.12 (revisión documental) | `de69863bafb2a7cb17540b15c59bc41d3165730246983ceeb22fd0a2987060b6` |
+| Tamaño exacto (bytes) | **155.558** |
 | Número de líneas | **3.181** |
-| Diferencia vs v0.2.11 | +154 / −75 líneas efectivas (diff de 284 líneas; v0.2.11: 150.510 B, 3.101 L) |
+| Diferencia del instrumento vs v0.2.11 | **+155 / −75** (230 líneas cambiadas; numstat real `656d3c0 → d2efc30`), además de **2+/2−** documentales (`d2efc30 → 7afdff3`, nota JSON). El archivo `DIFF_v0_2_11_A_v0_2_12.patch` tiene **284 líneas** (estadística del patch, no del instrumento). v0.2.11: 150.510 B, 3.101 L |
+
+> **Nota estadística (corrección documental)**: la primera edición de este informe declaraba "+154/−75" — conteo propio con el patrón `grep -c "^+[^+]"`, que **no cuenta las líneas añadidas vacías** (una línea añadida vacía se renderiza como `+` suelto y no casa con el patrón). El `numstat` real de git y GitHub registran **+155/−75** para el instrumento entre `656d3c0` y `d2efc30`.
 
 Archivo: `herramientas/diagnostico_audio/etapa2/audioinput_diag_termux.py`
 
@@ -116,7 +119,7 @@ Dos manifestaciones confirmadas con escenarios fabricados sobre la función v0.2
 | @944–968 | `_publication_state_after_interrupt` | reemplazo completo del cuerpo: anclaje C1 + lstat + regularidad + INDETERMINADO (C5-C) |
 | @3027 | `notes` del informe JSON | nota C5 v0.2.12 (documentación) |
 
-Total: **154+/75−** (284 líneas de diff). Todos los hunks dentro del alcance autorizado (C5-A y C5-C) más la nota de versión.
+Total: **+155/−75** (230 líneas cambiadas del instrumento; el archivo patch `DIFF_v0_2_11_A_v0_2_12.patch` tiene 284 líneas — estadística del patch, no del instrumento). Todos los hunks dentro del alcance autorizado (C5-A y C5-C) más la nota de versión.
 
 ---
 
@@ -196,7 +199,7 @@ El instrumento no fue modificado durante la depuración del harness salvo por el
 
 ## 9. Reversibilidad del diff
 
-`DIFF_v0_2_11_A_v0_2_12.patch` (284 líneas, 154+/75−) generado con `git diff 392c485 -- <instrumento>`. Verificación ejecutada: aplicación inversa (`patch -R`) sobre el instrumento v0.2.12 →
+`DIFF_v0_2_11_A_v0_2_12.patch` (284 líneas; estadísticas reales del instrumento entre `392c485` y `d2efc30`: **+155/−75**) generado con `git diff 392c485 -- <instrumento>`. Verificación ejecutada: aplicación inversa (`patch -R`) sobre el instrumento v0.2.12 (revisión `acd1d26`) →
 
 ```
 sha256 = 172a17fbd15620e82af25a07cda952cef9b034b61945e4c14cef9f5d094b4938
@@ -226,7 +229,34 @@ que es **exactamente** el SHA-256 del instrumento v0.2.11 (blob `5a5a052a…`, 1
 
 ---
 
-## 12. Cadena de commits de la sesión (rama `arena/441a4bf8-sdv-sdi-sgm`)
+## 12. Corrección documental final (2026-11-21)
+
+Autorizada y limitada a dos puntos documentales; **sin ninguna modificación funcional**:
+
+1. **Estadísticas reales del instrumento**: el informe declaraba "+154/−75" (conteo propio defectuoso; el patrón `grep -c "^+[^+]"` omite las líneas añadidas vacías). Estadísticas reales (`git diff --numstat` entre `656d3c0` y `d2efc30`, coincidentes con GitHub): **+155/−75** (230 líneas cambiadas del instrumento). Actualizado en §1 y §5; la cifra "284 líneas" se mantiene como estadística **del archivo patch** (no del instrumento). Causa de la discrepancia documentada para el auditor.
+2. **Frase restaurada en la nota C5 v0.2.11 de `notes` (JSON del instrumento)**: la primera edición del empalme v0.2.12 corrigió el *ancla* del patrón de inserción de la nota v0.2.12 pero no el *texto de reemplazo*, que eliminó el fragmento `limitacion explicitamente y sale con codigo ` y dejó la cadena concatenada incoherente: "...una KI durante la reconstruccion del informe registra la no nulo.". Corrección aplicada **únicamente a la cadena documental** (diff completo: **2+/2−**, hunk único dentro de `notes`):
+
+```
+-                'falsa); una KI durante la reconstruccion del informe registra la '
+-                'no nulo.',
++                'falsa); una KI durante la reconstruccion del informe se '
++                'documenta explicitamente y produce un codigo de salida no nulo.',
+```
+
+   Significado restaurado (equivalente al original): una interrupción durante la reconstrucción del informe **se documenta explícitamente y produce un código de salida no nulo**. El flujo, las condiciones, los bloques `try/except/finally` y toda la lógica de `_finalize_report()` quedan **intactos** (verificado por el diff: el único cambio está dentro de la lista `notes`).
+
+**Verificación final (puntual, sin repetir la batería completa según la autorización)**:
+- `py_compile` OK; `--help` rc=0.
+- Diff completo del cambio: solo las 2 líneas documentales indicadas (evidencia de no-funcionalidad).
+- Re-verificación **puntual** del comportamiento C5-A y C5-C ya auditado: `pruebas_unitarias_C5_v0_2_12.py` → **15/15 PASS** (no se repitieron el resto de harnesses).
+- C1, C4-A, C4-B, `_reconcile_pending_tests()` y la lógica de `_finalize_report()` sin modificación alguna.
+- `main()` (función) intacta; sin PR, sin merge, sin publicación en la rama `main`; sin Android/Termux ni audio real.
+
+**Identidad del instrumento tras la corrección documental**: blob `9abecd18770236e7e5c269ba0e4336f98bdafc27` · SHA-256 `de69863bafb2a7cb17540b15c59bc41d3165730246983ceeb22fd0a2987060b6` · **155.558 B** · **3.181 L** (antes: blob `d8006f69…`, SHA-256 `e8e93a17…`, 155.512 B — mismo número de líneas: el cambio solo afecta el contenido de 2 líneas de la cadena). El archivo `DIFF_v0_2_11_A_v0_2_12.patch` (blob `648e515d…`) **no se regeneró**: permanece como el registro fiel de la corrección de código en el commit `acd1d26`; la corrección documental (commit `7afdff3`) es posterior y puramente de cadena.
+
+---
+
+## 13. Cadena de commits de la sesión (rama `arena/441a4bf8-sdv-sdi-sgm`)
 
 ```
 50bae98  (base)      v0.2.4
@@ -237,7 +267,9 @@ ba77e6d  → 25e1302   v0.2.8 (código + informe)
 2456195  → 0cc9dea   v0.2.9 (código + informe)
 045af46  → 2a134f2   v0.2.10 (código + informe)
 392c485  → 656d3c0   v0.2.11 (código + informe) ← BASE de v0.2.12
-acd1d26              v0.2.12 (código: instrumento + harness C5 v0.2.12 + DIFF) ← este informe
+acd1d26              v0.2.12 (código: instrumento + harness C5 v0.2.12 + DIFF)
+d2efc30              informe de corrección puntual C5 (v0.2.12)
+7afdff3              corrección documental final: nota C5 v0.2.11 restaurada en notes (2+/2−, sin cambios funcionales) ← este informe
 ```
 
 Todos los artefactos previos permanecen intactos (blobs verificados tras el commit: informes y harnesses v0.2.1–v0.2.11, DIFFs v0.2.3–v0.2.11 con sus SHA-1 sin cambios).
