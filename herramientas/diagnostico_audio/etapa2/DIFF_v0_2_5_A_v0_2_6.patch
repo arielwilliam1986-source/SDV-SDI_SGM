@@ -1,0 +1,423 @@
+--- /tmp/diag_v025_recovery.py
++++ herramientas/diagnostico_audio/etapa2/audioinput_diag_termux.py
+@@ -83,7 +83,7 @@
+ import stat
+ from pathlib import Path
+ 
+-SCRIPT_VERSION = "0.2.5"
++SCRIPT_VERSION = "0.2.6"
+ SCRIPT_NAME = "audioinput_diag_termux.py"
+ 
+ 
+@@ -842,40 +842,140 @@
+         return exc
+ 
+ 
+-# C4: CloseErrorLogger con registro de errores
++# C4-A (v0.2.6): modelo de propiedad por recurso con ciclo de vida explicito.
+ # ----------------------------------------------------------------------------
+ 
++class OwnedFdResource(object):
++    """Recurso de propiedad: UNA apertura concreta de un descriptor (C4-A v0.2.6).
++
++    Encapsula el numero de descriptor y su estado. La identidad de la
++    apertura es el objeto recurso creado en el registro, NO un predicado
++    observable del numero de fd: Python no expone una identidad portatil
++    del open-file-description (OFD) del kernel, y fstat() no permite
++    distinguir la reapertura del mismo archivo con el mismo numero de fd
++    (limitacion documentada del contrato de propiedad).
++
++    CONTRATO DE PROPIEDAD: el descriptor de un recurso SOLO se cierra a
++    traves de su recurso, una unica vez. Ningun otro componente debe
++    invocar os.close() sobre el numero ni cerrarlo por via externa. Si el
++    contrato se viola, el estado se considera incierto
++    (CLOSE_FAILED_UNCERTAIN) y no se reintenta ningun cierre con ese
++    numero a traves del token.
++
++    ESTADOS Y TRANSICIONES:
++      OPEN                    apertura registrada; propiedad vigente.
++      CLOSING                 cierre iniciado (transitorio; solo se alcanza
++                              desde OPEN y una unica vez).
++      CLOSED                  cierre confirmado: os.close() retorno sin
++                              error para el recurso del propietario.
++      CLOSE_FAILED_UNCERTAIN  el resultado no permite garantizar que el
++                              numero de fd siga perteneciendo al recurso
++                              original: EBADF en la guardia previa (cierre
++                              externo o numero reutilizado y re-cerrado),
++                              identidad distinta en la guardia previa, o
++                              error de os.close(). Estado terminal: el
++                              cierre NUNCA se reintenta.
++
++        OPEN --cierre unico--> CLOSING --os.close OK--> CLOSED
++                                      |-- guardia EBADF / identidad
++                                      |   distinta / error de os.close
++                                      v
++                           CLOSE_FAILED_UNCERTAIN
++
++    Guardia previa al cierre (defensiva, NO prueba de identidad): la
++    comparacion (st_dev, st_ino) contra la registrada detecta la
++    reutilizacion del numero por OTRO archivo. NO detecta la reutilizacion
++    por el MISMO archivo (mismo dev, ino): ese caso es indetectable de
++    forma portatil y queda cubierto solo por el contrato de propiedad
++    (limitacion documentada; no se presenta como deteccion).
++
++    Acceso por clave (compatibilidad con harness v0.2.4/v0.2.5): las
++    claves 'token', 'fd', 'label', 'dev', 'ino', 'state' y 'close_result'
++    leen los atributos homonimos.
++    """
++    STATE_OPEN = 'open'
++    STATE_CLOSING = 'closing'
++    STATE_CLOSED = 'closed'
++    STATE_UNCERTAIN = 'close_failed_uncertain'
++
++    _COMPAT_KEYS = ('token', 'fd', 'label', 'dev', 'ino', 'state',
++                    'close_result')
++
++    __slots__ = ('token', 'fd', 'label', 'dev', 'ino', 'state',
++                 'close_result')
++
++    def __init__(self, token, fd, label, dev, ino):
++        self.token = token
++        self.fd = fd
++        self.label = label
++        self.dev = dev
++        self.ino = ino
++        self.state = self.STATE_OPEN
++        self.close_result = None
++
++    def __getitem__(self, key):
++        if key in self._COMPAT_KEYS:
++            return getattr(self, key)
++        raise KeyError(key)
++
++    def __contains__(self, key):
++        return key in self._COMPAT_KEYS
++
++    def __repr__(self):
++        return ("OwnedFdResource(token={0}, fd={1}, label={2}, state={3}, "
++                "close_result={4})".format(self.token, self.fd, self.label,
++                                           self.state, self.close_result))
++
++
+ class CloseErrorLogger:
+-    """Acumula errores de cierre de descriptores y SoundFile (C4 — v0.2.4).
++    """Acumula errores de cierre de descriptores y SoundFile (C4).
+ 
+     CORRECCION C4.1: eliminados except Exception: pass que silencian fallos.
+     CORRECCION C4.2: registra errores de cierre de SoundFile y descriptores.
+     CORRECCION C4.3: propaga errores al resultado final de cada prueba.
+     CORRECCION C4.6: no intenta cerrar dos veces un descriptor de estado incierto.
+ 
+-    CORRECCION C4 (v0.2.4): modelo explícito de propiedad por apertura.
+-    Ninguna identidad compuesta — ni el número de fd (reutilizable) ni
+-    (st_dev, st_ino) (no distingue dos aperturas independientes del mismo
+-    archivo) — se considera suficiente por sí sola. Cada apertura se
+-    registra con register_fd() y recibe un **token único de apertura**; el
+-    cierre se asocia al token, no al número de fd:
+-      - un token obsoleto (ya cerrado o desconocido) no cierra nada;
+-      - un descriptor cuyo número fue reutilizado por otra apertura
+-        (registrada o no) no se cierra a través de un registro antiguo:
+-        se registra un aviso y se evita cerrar un recurso ajeno;
+-      - si no hay ninguna apertura registrada como 'open' para el fd, no
+-        se cierra (aviso: doble cierre o número reutilizado);
+-      - tras un error de cierre, no se reintenta os.close() automaticamente.
+-    Los avisos (skips, reutilizaciones, tokens obsoletos) se guardan en
+-    `warnings`, distintos de `errors` (fallos reales de cierre). Los errores
+-    de cierre se conservan como resultados verificables (self.errors y el
+-    sink global).
++    CORRECCION C4 (v0.2.4): propiedad por apertura con token unico.
++
++    CORRECCION C4-A (v0.2.6): modelo de propiedad por RECURSO con ciclo de
++    vida explicito (OwnedFdResource). Cada apertura registrada crea un
++    recurso que encapsula el numero de descriptor y su estado; el token es
++    el identificador externo del recurso. La identidad de la apertura es el
++    objeto recurso creado en el registro, NO un predicado observable: ni el
++    numero de fd (reutilizable) ni (st_dev, st_ino) (que no distingue dos
++    aperturas del mismo archivo) prueban identidad. fstat() se usa solo
++    como GUARDIA defensiva previa al cierre (detecta reutilizacion por
++    otro archivo y detecta cierre externo por EBADF); NO como prueba de
++    identidad (limitacion documentada; no se presenta como solucion).
++
++    CONTRATO DE PROPIEDAD (C4-A): el descriptor registrado SOLO se cierra
++    a traves de su recurso, una unica vez. Dentro del instrumento, ningun
++    otro componente invoca os.close() sobre un descriptor registrado y
++    SoundFile opera con closefd=False por contrato, de modo que el
++    propietario conserva la responsabilidad del cierre. Si el contrato se
++    viola por via externa y la violacion es observable (EBADF, identidad
++    distinta), el recurso pasa a CLOSE_FAILED_UNCERTAIN y ningun cierre
++    posterior se intenta con ese numero a traves del token. La violacion
++    indetectable (cierre externo + reutilizacion del MISMO numero para el
++    MISMO archivo) no es detectable de forma portatil: limitacion
++    documentada, no una deteccion.
++
++    REGLAS (C4-A):
++      - un recurso solo puede iniciar un cierre una vez (OPEN -> CLOSING);
++      - un token obsoleto (CLOSED, CLOSE_FAILED_UNCERTAIN o desconocido)
++        nunca inicia un segundo cierre (aviso, no operacion);
++      - un cierre incierto nunca se reintenta automaticamente;
++      - un descriptor no registrado no se cierra mediante el logger (aviso);
++      - los errores de cierre se conservan en self.errors y en el sink
++        global para su posterior propagacion (la propagacion completa ante
++        KeyboardInterrupt corresponde a C4-B, fuera de esta etapa).
++
++    Los avisos van a `warnings`; los fallos reales a `errors`.
+     """
+     def __init__(self):
+         self.errors = []
+         self.warnings = []
+-        # token -> {"token", "fd", "label", "dev", "ino", "state",
+-        #           "close_result"}
++        # token -> OwnedFdResource (C4-A v0.2.6; acceso tipo dict compatible)
+         self._entries = {}
+         self._by_fd = {}  # fd -> set(tokens)
+         self._next_token = 0
+@@ -885,7 +985,14 @@
+ 
+     @staticmethod
+     def _identity(fd):
+-        """Identidad actual del descriptor: (st_dev, st_ino) o None."""
++        """Guardia de identidad observable: (st_dev, st_ino) o None.
++
++        NOTA C4-A: NO es una prueba de identidad de la apertura (no
++        distingue dos aperturas del mismo archivo ni la reapertura con el
++        mismo numero). Solo sirve para la guardia previa al cierre
++        (reutilizacion por otro archivo) y para detectar cierres externos
++        (EBADF).
++        """
+         try:
+             st = os.fstat(fd)
+             return st.st_dev, st.st_ino
+@@ -896,16 +1003,20 @@
+         self.errors.append(entry)
+         _record_close_error(entry)  # sink para errores durante excepciones
+ 
++    def get_resource(self, token):
++        """Retorna el OwnedFdResource del token, o None (C4-A v0.2.6)."""
++        return self._entries.get(token)
++
+     def register_fd(self, fd, label):
+         """Registra la propiedad de una apertura concreta (C4, v0.2.4).
+ 
+-        Devuelve un token único que identifica esta apertura, independiente
+-        del número de fd (reutilizable) y de (dev, ino) (que no distingue
+-        dos aperturas del mismo archivo). El token debe usarse en el
+-        cierre asociado para que un registro obsoleto no pueda cerrar un
+-        descriptor reutilizado.
++        C4-A (v0.2.6): crea un OwnedFdResource que encapsula el numero de
++        descriptor y su estado (OPEN inicial). El token retornado es el
++        identificador externo del recurso; el cierre debe solicitarse
++        asociado al token. La identidad de la apertura es el objeto recurso
++        creado aqui (no un predicado observable del numero de fd).
+ 
+-        Retorna el token, o None si fd es None o inválido (error registrado).
++        Retorna el token, o None si fd es None o invalido (error registrado).
+         """
+         if fd is None:
+             return None
+@@ -916,95 +1027,144 @@
+             return None
+         self._next_token += 1
+         token = self._next_token
+-        self._entries[token] = {"token": token, "fd": fd, "label": label,
+-                                "dev": identity[0], "ino": identity[1],
+-                                "state": "open", "close_result": None}
++        self._entries[token] = OwnedFdResource(token, fd, label,
++                                               identity[0], identity[1])
+         self._by_fd.setdefault(fd, set()).add(token)
+         return token
+ 
+     def close_fd(self, fd, label, token=None):
+-        """Cierra un descriptor asociado a una apertura registrada (C4, v0.2.4).
++        """Solicita el cierre de un recurso de propiedad (C4-A v0.2.6).
++
++        - Con token: resuelve el recurso registrado.
++            OPEN: unico camino de cierre (una sola vez): guardias previas
++              y os.close(); termina en CLOSED o CLOSE_FAILED_UNCERTAIN.
++            CLOSING: aviso (cierre ya iniciado); no se duplica.
++            CLOSED: aviso (token obsoleto); no se reintenta.
++            CLOSE_FAILED_UNCERTAIN: aviso (resultado incierto previo);
++              NUNCA se reintenta.
++          Token desconocido: aviso; no se cierra nada.
++        - Sin token: busca un recurso OPEN registrado para ese numero. Si
++          no lo hay, NO se cierra (aviso: doble cierre, numero reutilizado
++          o descriptor no registrado). Si hay varios, aviso y se cierra el
++          primero (compatibilidad).
++        - Guardias previas al os.close (defensivas, NO prueba de identidad):
++            EBADF en fstat: cierre externo (contrato violado) o numero
++              reutilizado y re-cerrado -> CLOSE_FAILED_UNCERTAIN, error
++              conservado, os.close NO se invoca, no se reintenta.
++            (st_dev, st_ino) distinto del registrado: el numero fue
++              reutilizado por otro archivo -> NO se cierra el recurso
++              ajeno -> CLOSE_FAILED_UNCERTAIN, anomalia conservada.
++            Coincidencia: NO prueba que sea la misma apertura (limite
++              documentado); el cierre procede bajo el contrato de
++              propiedad.
++        - Un error de os.close() deja el recurso en CLOSE_FAILED_UNCERTAIN
++          (no se reintenta) y el error se conserva y se devuelve.
+ 
+-        - Con token: se cierra solo la apertura identificada por el token.
+-          Un token obsoleto (ya cerrado o desconocido) no cierra nada.
+-        - Sin token: se busca una apertura registrada como 'open' para este
+-          fd. Si no hay ninguna, no se cierra (aviso: doble cierre o número
+-          reutilizado por una apertura no registrada).
+-        - Antes de cerrar se verifica la identidad actual (dev, ino)
+-          contra la registrada: una identidad distinta evita cerrar un
+-          recurso ajeno (aviso, no error).
+-        - Si el cierre falla, se registra el error y se devuelve; no se
+-          reintenta os.close() automáticamente.
+-
+-        Retorna None si OK, si hubo un aviso (token obsoleto, fd no
+-        registrado, identidad distinta) o si el cierre fue exitoso; el
+-        OSError si fallo el cierre.
++        Retorna None si OK o si hubo aviso (no operacion); el OSError si
++        fallo el cierre.
+         """
+         if token is None and fd is None:
+             return None
+-        entry = None
++        resource = None
+         if token is not None:
+-            entry = self._entries.get(token)
+-            if entry is None:
++            resource = self._entries.get(token)
++            if resource is None:
+                 self.warnings.append(
+                     {"label": label, "errno": None,
+                      "strerror": "token de apertura desconocido; no se cierra nada"})
+                 return None
+-            if entry["state"] == "closed":
++            if resource.state == resource.STATE_CLOSED:
+                 self.warnings.append(
+                     {"label": label, "errno": None,
+                      "strerror": "apertura ya cerrada (token obsoleto); no se reintenta"})
+                 return None
+-            fd = entry["fd"]
++            if resource.state == resource.STATE_UNCERTAIN:
++                self.warnings.append(
++                    {"label": label, "errno": None,
++                     "strerror": "cierre previo de resultado incierto; "
++                                 "no se reintenta (contrato de propiedad)"})
++                return None
++            if resource.state == resource.STATE_CLOSING:
++                self.warnings.append(
++                    {"label": label, "errno": None,
++                     "strerror": "cierre ya iniciado para este recurso; no se duplica"})
++                return None
++            fd = resource.fd
+         else:
+             open_tokens = [t for t in self._by_fd.get(fd, set())
+-                           if self._entries[t]["state"] == "open"]
++                           if self._entries[t].state
++                           == OwnedFdResource.STATE_OPEN]
+             if not open_tokens:
+-                # No hay apertura registrada como abierta: puede ser un
+-                # doble cierre o un numero reutilizado por otra apertura
+-                # (registrada o no). En ambos casos no se cierra.
++                # Sin recurso OPEN para este numero: doble cierre, numero
++                # reutilizado o descriptor no registrado. No se cierra.
+                 self.warnings.append(
+                     {"label": label, "errno": None,
+                      "strerror": "no hay apertura registrada como abierta para "
+-                                 "este fd; no se cierra (doble cierre o numero "
+-                                 "reutilizado)"})
++                                 "este fd; no se cierra (doble cierre, numero "
++                                 "reutilizado o descriptor no registrado)"})
+                 return None
+             if len(open_tokens) > 1:
+                 self.warnings.append(
+                     {"label": label, "errno": None,
+                      "strerror": "multiples aperturas registradas para el mismo "
+                                  "fd; se cierra la primera"})
+-            token = open_tokens[0]
+-            entry = self._entries[token]
++            resource = self._entries[open_tokens[0]]
++            fd = resource.fd
+ 
+-        identity = self._identity(fd)
+-        if identity is None:
+-            # El descriptor no esta abierto (cerrado externamente).
+-            entry["state"] = "closed"
+-            entry["close_result"] = "error:EBADF"
+-            exc = OSError(errno.EBADF, "descriptor no valido o cerrado")
+-            self._append_error({"label": label, "errno": errno.EBADF,
+-                                "strerror": "descriptor no valido o cerrado"})
+-            return exc
+-        if (entry["dev"] != identity[0]
+-                or entry["ino"] != identity[1]):
+-            # Identidad distinta tras el registro: el numero fue reutilizado
+-            # por otro recurso. No cerrar ajeno.
++        # Unico camino de cierre: OPEN -> CLOSING (una sola vez).
++        resource.state = resource.STATE_CLOSING
++
++        # Guardia 1 (defensiva; NO prueba de identidad): el numero sigue
++        # abierto. EBADF => cierre externo (contrato violado) o numero
++        # reutilizado y vuelto a cerrar. Estado incierto; os.close NO se
++        # invoca; no se reintenta.
++        try:
++            st = os.fstat(fd)
++        except OSError as exc:
++            resource.state = resource.STATE_UNCERTAIN
++            resource.close_result = "uncertain:cerrado_externamente_o_reutilizado"
++            self._append_error({"label": label, "errno": exc.errno,
++                                "strerror": "descriptor cerrado externamente "
++                                            "(contrato de propiedad violado) o "
++                                            "numero reutilizado; cierre no "
++                                            "realizado (estado incierto)"})
++            return OSError(errno.EBADF, "descriptor no valido o cerrado")
++
++        # Guardia 2 (defensiva; NO prueba de identidad): identidad del
++        # archivo distinta a la registrada => el numero fue reutilizado por
++        # otro archivo. No cerrar ajeno; estado incierto.
++        if (st.st_dev != resource.dev) or (st.st_ino != resource.ino):
++            resource.state = resource.STATE_UNCERTAIN
++            resource.close_result = "uncertain:identidad_distinta"
+             self.warnings.append(
+                 {"label": label, "errno": None,
+                  "strerror": "identidad distinta tras registro; numero de "
+-                             "descriptor reutilizado; no se cierra"})
++                             "descriptor reutilizado por otro archivo; no se "
++                             "cierra"})
++            self._append_error({"label": label, "errno": None,
++                                "strerror": "contrato de propiedad violado: "
++                                            "numero reutilizado por otro "
++                                            "archivo; cierre no realizado "
++                                            "(estado incierto)"})
+             return None
++
++        # Intento unico de cierre del propietario.
++        # LIMITE DOCUMENTADO (C4-A): si el contrato fue violado de forma
++        # indetectable (cierre externo + reutilizacion del MISMO numero para
++        # el MISMO archivo), esta operacion cerraria el recurso ajeno; la
++        # coincidencia (dev, ino) NO es prueba de identidad. El diseno
++        # depende del contrato de propiedad: dentro del instrumento,
++        # ningun otro componente cierra descriptores registrados.
+         try:
+             os.close(fd)
+         except OSError as exc:
+-            entry["state"] = "closed"
+-            entry["close_result"] = "error:{0}".format(exc.errno)
++            resource.state = resource.STATE_UNCERTAIN
++            resource.close_result = "uncertain:close_errno={0}".format(exc.errno)
+             self._append_error({"label": label, "errno": exc.errno,
+                                 "strerror": os.strerror(exc.errno)})
+             return exc
+-        entry["state"] = "closed"
+-        entry["close_result"] = "ok"
++        resource.state = resource.STATE_CLOSED
++        resource.close_result = "ok"
+         return None
+ 
+     def close_soundfile(self, sfile, label):
+@@ -2407,6 +2567,12 @@
+                 'publicacion deja el provisional en disco y sale con rc 130; la creacion '
+                 'anclada del directorio de ejecucion interrumpida registra el entorno '
+                 'NOT_EXECUTED.',
++                'C4-A (v0.2.6): modelo de propiedad por recurso (OwnedFdResource) '
++                'con estados OPEN/CLOSING/CLOSED/CLOSE_FAILED_UNCERTAIN; un '
++                'recurso inicia a lo sumo un cierre; tokens obsoletos y resultados '
++                'inciertos no reintentan; la reutilizacion del numero por el mismo '
++                'archivo no es detectable por fstat (limite documentado del '
++                'contrato de propiedad).',
+                 'C5: KeyboardInterrupt y excepciones fatales nunca terminan con codigo 0.',
+                 'C7: escritura completa del informe con manejo de escrituras parciales.',
+             ],
