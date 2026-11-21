@@ -303,7 +303,9 @@ from audio_integridad_6g import (container_of as _container_6g,
 from lectura_segura_6g1 import (MixCambiado as _MixCambiado_6g1,
                                  abrir_mix as _abrir_mix_6g1,
                                  abortar_6g1 as _abortar_6g1,
-                                 registrar_propio_6g1 as _registrar_propio_6g1)
+                                 registrar_propio_6g1 as _registrar_propio_6g1,
+                                 reiniciar_registro_6g1 as _reiniciar_registro_6g1,
+                                 publicar_dir_6g1 as _publicar_dir_6g1)
 
 from atribucion_6f import (measure, verify_wave, alignment_gate,
                         analyze_files as _analyze_files_6f,
@@ -1321,11 +1323,28 @@ class CandidateRunner:
 # ============================================================================
 
 def create_run_dir(out_base: str) -> tuple:
-    stamp = datetime.now().strftime("%Y%m%d_%H%M%S")
-    final_dir = os.path.join(out_base, f"motorA_run_{stamp}")
-    partial_dir = final_dir + "_partial"
-    os.makedirs(partial_dir, exist_ok=True)
-    return partial_dir, final_dir
+    # [6G.1-R/F] Directorio provisional EXCLUSIVO: nunca reutilizar un
+    # _partial preexistente (los writers abren en modo 'w' y truncarian
+    # contenido ajeno antes de poder registrar propiedad). mkdir exclusivo;
+    # si el nombre existe se genera otro identificador SIN tocar su contenido.
+    # El registro de propiedad se reinicia: aislado por corrida; los archivos
+    # preexistentes no son propios por el mero hecho de estar en el directorio.
+    _reiniciar_registro_6g1()
+    os.makedirs(out_base, exist_ok=True)
+    intento = 0
+    while True:
+        stamp = datetime.now().strftime("%Y%m%d_%H%M%S")
+        sufijo = "" if intento == 0 else "_%03d" % intento
+        final_dir = os.path.join(out_base, f"motorA_run_{stamp}{sufijo}")
+        partial_dir = final_dir + "_partial"
+        try:
+            os.mkdir(partial_dir)
+            return partial_dir, final_dir
+        except FileExistsError:
+            intento += 1
+            if intento > 999:
+                raise RuntimeError("[6G.1-R/F] no se pudo crear un directorio "
+                                   "provisional exclusivo en %s" % out_base)
 
 def _open_memmap(path: str, shape: tuple):
     mm = np.lib.format.open_memmap(path, mode="w+", dtype=MASK_SAVE_DTYPE, shape=shape)
@@ -1943,11 +1962,17 @@ def run_experiment(mix_path: str, pairs: list, mode: str, opt: argparse.Namespac
                     except Exception:
                         pass
             return EXIT_PROCESSING, None
-        # [6G.1-R/B] Publicación por renombrado sólo tras guarda superada
-        if os.path.exists(run_dir_final):
-            stamp = datetime.now().strftime("%H%M%S")
-            run_dir_final = run_dir_final + f"_{stamp}"
-        os.rename(run_dir, run_dir_final)
+        # [6G.1-R/G] Publicación con no-reemplazo atómico (renameat2
+        # RENAME_NOREPLACE): nunca sustituye un destino existente; ante
+        # colisión elige otro identificador sin tocarlo; si el entorno no
+        # garantiza la operación, NO publica (fail-closed) y conserva el
+        # provisional.
+        try:
+            run_dir_final = _publicar_dir_6g1(run_dir, run_dir_final)
+        except Exception as _exc_pub:
+            log("[FATAL] publicacion segura no garantizada (%s); sin publicar; "
+                "corrida conservada en: %s" % (_exc_pub, run_dir))
+            return EXIT_PROCESSING, None
         log(f"Corrida finalizada exitosamente en: {run_dir_final}")
         return EXIT_OK, run_dir_final
 

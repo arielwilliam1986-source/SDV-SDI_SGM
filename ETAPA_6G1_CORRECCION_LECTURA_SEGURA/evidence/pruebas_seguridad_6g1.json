@@ -1,0 +1,414 @@
+{
+  "schema": "pruebas-seguridad-6g1/1",
+  "filas": [
+    {
+      "prueba": "E1",
+      "motor": "lectura_segura_6g1",
+      "alcance": "unidad: analysis.json simbólico; externo intacto",
+      "veredicto": "PASS",
+      "checks_ok": 6,
+      "checks_total": 6,
+      "detalle": "todos los checks OK"
+    },
+    {
+      "prueba": "E2",
+      "motor": "lectura_segura_6g1",
+      "alcance": "unidad: ABORT_6G1.json simbólico; sin sobrescribir",
+      "veredicto": "PASS",
+      "checks_ok": 4,
+      "checks_total": 4,
+      "detalle": "todos los checks OK"
+    },
+    {
+      "prueba": "E3",
+      "motor": "lectura_segura_6g1",
+      "alcance": "unidad: analysis.json ajeno ordinario; intacto",
+      "veredicto": "PASS",
+      "checks_ok": 5,
+      "checks_total": 5,
+      "detalle": "todos los checks OK"
+    },
+    {
+      "prueba": "E7",
+      "motor": "lectura_segura_6g1",
+      "alcance": "unidad: aislamiento del registro entre corridas",
+      "veredicto": "PASS",
+      "checks_ok": 5,
+      "checks_total": 5,
+      "detalle": "todos los checks OK"
+    },
+    {
+      "prueba": "E6",
+      "motor": "lectura_segura_6g1",
+      "alcance": "unidad: publicación con no-reemplazo (destino con centinela y destino vacío)",
+      "veredicto": "PASS",
+      "checks_ok": 5,
+      "checks_total": 5,
+      "detalle": "todos los checks OK"
+    },
+    {
+      "prueba": "E1",
+      "motor": "Hardened",
+      "alcance": "end-to-end: analysis.json simbólico al abortar",
+      "veredicto": "PASS",
+      "checks_ok": 6,
+      "checks_total": 6,
+      "detalle": "todos los checks OK"
+    },
+    {
+      "prueba": "E2",
+      "motor": "Hardened",
+      "alcance": "end-to-end: ABORT_6G1.json simbólico al abortar",
+      "veredicto": "PASS",
+      "checks_ok": 6,
+      "checks_total": 6,
+      "detalle": "todos los checks OK"
+    },
+    {
+      "prueba": "E3",
+      "motor": "Hardened",
+      "alcance": "end-to-end: analysis.json ajeno ordinario",
+      "veredicto": "PASS",
+      "checks_ok": 6,
+      "checks_total": 6,
+      "detalle": "todos los checks OK"
+    },
+    {
+      "prueba": "E4",
+      "motor": "Hardened",
+      "alcance": "_partial preexistente: no reutilizado, centinelas intactos (marca forzada)",
+      "veredicto": "PASS",
+      "checks_ok": 6,
+      "checks_total": 6,
+      "detalle": "todos los checks OK"
+    },
+    {
+      "prueba": "E5",
+      "motor": "Hardened",
+      "alcance": "dos solicitudes con el mismo identificador temporal (reloj congelado)",
+      "veredicto": "PASS",
+      "checks_ok": 5,
+      "checks_total": 5,
+      "detalle": "todos los checks OK"
+    },
+    {
+      "prueba": "E6",
+      "motor": "Hardened",
+      "alcance": "estático: publicación y creación de corrida por la vía segura",
+      "veredicto": "PASS",
+      "checks_ok": 3,
+      "checks_total": 3,
+      "detalle": "todos los checks OK"
+    },
+    {
+      "prueba": "sanidad",
+      "motor": "Hardened",
+      "alcance": "corrida feliz tras E–G (no repite la batería de 34)",
+      "veredicto": "PASS",
+      "checks_ok": 4,
+      "checks_total": 4,
+      "detalle": "todos los checks OK"
+    },
+    {
+      "prueba": "E1",
+      "motor": "EVO",
+      "alcance": "end-to-end: analysis.json simbólico al abortar",
+      "veredicto": "PASS",
+      "checks_ok": 6,
+      "checks_total": 6,
+      "detalle": "todos los checks OK"
+    },
+    {
+      "prueba": "E2",
+      "motor": "EVO",
+      "alcance": "end-to-end: ABORT_6G1.json simbólico al abortar",
+      "veredicto": "PASS",
+      "checks_ok": 6,
+      "checks_total": 6,
+      "detalle": "todos los checks OK"
+    },
+    {
+      "prueba": "E3",
+      "motor": "EVO",
+      "alcance": "end-to-end: analysis.json ajeno ordinario",
+      "veredicto": "PASS",
+      "checks_ok": 6,
+      "checks_total": 6,
+      "detalle": "todos los checks OK"
+    },
+    {
+      "prueba": "E4",
+      "motor": "EVO",
+      "alcance": "_partial preexistente: no reutilizado, centinelas intactos (marca forzada)",
+      "veredicto": "PASS",
+      "checks_ok": 6,
+      "checks_total": 6,
+      "detalle": "todos los checks OK"
+    },
+    {
+      "prueba": "E5",
+      "motor": "EVO",
+      "alcance": "dos solicitudes con el mismo identificador temporal (reloj congelado)",
+      "veredicto": "PASS",
+      "checks_ok": 5,
+      "checks_total": 5,
+      "detalle": "todos los checks OK"
+    },
+    {
+      "prueba": "E6",
+      "motor": "EVO",
+      "alcance": "estático: publicación y creación de corrida por la vía segura",
+      "veredicto": "PASS",
+      "checks_ok": 3,
+      "checks_total": 3,
+      "detalle": "todos los checks OK"
+    },
+    {
+      "prueba": "sanidad",
+      "motor": "EVO",
+      "alcance": "corrida feliz tras E–G (no repite la batería de 34)",
+      "veredicto": "PASS",
+      "checks_ok": 4,
+      "checks_total": 4,
+      "detalle": "todos los checks OK"
+    },
+    {
+      "prueba": "E1",
+      "motor": "MQR",
+      "alcance": "end-to-end: analysis.json simbólico al abortar",
+      "veredicto": "PASS",
+      "checks_ok": 6,
+      "checks_total": 6,
+      "detalle": "todos los checks OK"
+    },
+    {
+      "prueba": "E2",
+      "motor": "MQR",
+      "alcance": "end-to-end: ABORT_6G1.json simbólico al abortar",
+      "veredicto": "PASS",
+      "checks_ok": 6,
+      "checks_total": 6,
+      "detalle": "todos los checks OK"
+    },
+    {
+      "prueba": "E3",
+      "motor": "MQR",
+      "alcance": "end-to-end: analysis.json ajeno ordinario",
+      "veredicto": "PASS",
+      "checks_ok": 6,
+      "checks_total": 6,
+      "detalle": "todos los checks OK"
+    },
+    {
+      "prueba": "E4",
+      "motor": "MQR",
+      "alcance": "_partial preexistente: no reutilizado, centinelas intactos (marca forzada)",
+      "veredicto": "PASS",
+      "checks_ok": 6,
+      "checks_total": 6,
+      "detalle": "todos los checks OK"
+    },
+    {
+      "prueba": "E5",
+      "motor": "MQR",
+      "alcance": "dos solicitudes con el mismo identificador temporal (reloj congelado)",
+      "veredicto": "PASS",
+      "checks_ok": 5,
+      "checks_total": 5,
+      "detalle": "todos los checks OK"
+    },
+    {
+      "prueba": "E6",
+      "motor": "MQR",
+      "alcance": "estático: publicación y creación de corrida por la vía segura",
+      "veredicto": "PASS",
+      "checks_ok": 3,
+      "checks_total": 3,
+      "detalle": "todos los checks OK"
+    },
+    {
+      "prueba": "sanidad",
+      "motor": "MQR",
+      "alcance": "corrida feliz tras E–G (no repite la batería de 34)",
+      "veredicto": "PASS",
+      "checks_ok": 4,
+      "checks_total": 4,
+      "detalle": "todos los checks OK"
+    }
+  ],
+  "detalles": {
+    "unidad": {
+      "E1": {
+        "abort": {
+          "schema": "abort-6g1/2",
+          "motivo": "PRUEBA_E1",
+          "detalle": null,
+          "salidas_invalidadas": [
+            "propio.wav"
+          ],
+          "conservados": [
+            "analysis.json"
+          ],
+          "motivos_propiedad": {
+            "analysis.json": "enlace_simbolico_conservado (sin seguir)",
+            "analysis.json (actualizacion)": "actualizacion omitida: apertura segura fallo ([Errno 40] Too many levels of symbolic links: 'analysis.json')"
+          },
+          "politica": "propiedad_acreditada_o_conserva; sin borrado por patrón de nombre ni por ubicación; sin escritura a través de enlaces simbólicos"
+        }
+      },
+      "E2": {
+        "abort": {
+          "schema": "abort-6g1/2",
+          "motivo": "PRUEBA_E2",
+          "detalle": null,
+          "salidas_invalidadas": [
+            "propio.wav"
+          ],
+          "conservados": [
+            "ABORT_6G1.json"
+          ],
+          "motivos_propiedad": {
+            "ABORT_6G1.json": "colision: ABORT_6G1.json preexistente (o enlace); sin sobrescribir"
+          },
+          "politica": "propiedad_acreditada_o_conserva; sin borrado por patrón de nombre ni por ubicación; sin escritura a través de enlaces simbólicos"
+        }
+      },
+      "E3": {
+        "abort": {
+          "schema": "abort-6g1/2",
+          "motivo": "PRUEBA_E3",
+          "detalle": null,
+          "salidas_invalidadas": [
+            "propio.wav"
+          ],
+          "conservados": [
+            "analysis.json"
+          ],
+          "motivos_propiedad": {
+            "analysis.json": "registro_interno_conservado",
+            "analysis.json (actualizacion)": "actualizacion omitida: propiedad no acreditada (ajeno_no_registrado)"
+          },
+          "politica": "propiedad_acreditada_o_conserva; sin borrado por patrón de nombre ni por ubicación; sin escritura a través de enlaces simbólicos"
+        }
+      },
+      "E7": {
+        "motivo_a1": "ajeno_no_registrado",
+        "info1": {
+          "schema": "abort-6g1/2",
+          "motivo": "PRUEBA_E7_corrida1",
+          "detalle": null,
+          "salidas_invalidadas": [],
+          "conservados": [
+            "salida_corrida1.wav"
+          ],
+          "motivos_propiedad": {
+            "salida_corrida1.wav": "ajeno_no_registrado"
+          },
+          "politica": "propiedad_acreditada_o_conserva; sin borrado por patrón de nombre ni por ubicación; sin escritura a través de enlaces simbólicos"
+        },
+        "info2": {
+          "schema": "abort-6g1/2",
+          "motivo": "PRUEBA_E7_corrida2",
+          "detalle": null,
+          "salidas_invalidadas": [
+            "salida_corrida2.wav"
+          ],
+          "conservados": [],
+          "motivos_propiedad": {},
+          "politica": "propiedad_acreditada_o_conserva; sin borrado por patrón de nombre ni por ubicación; sin escritura a través de enlaces simbólicos"
+        }
+      },
+      "E6": {
+        "publicado": "/tmp/f6g1seg/U/E6/corrida_final_r001",
+        "publicado2": "/tmp/f6g1seg/U/E6/destino_vacio_r001"
+      }
+    },
+    "Hardened": {
+      "E1": {
+        "exit": 2
+      },
+      "E2": {
+        "exit": 2
+      },
+      "E3": {
+        "exit": 2
+      },
+      "E4": {
+        "p1": "/tmp/f6g1seg/Hardened/E4/motorA_run_20991231_235959_008_partial",
+        "p2": "/tmp/f6g1seg/Hardened/E4/motorA_run_20991231_235959_010_partial"
+      },
+      "E5": {
+        "r1": "/tmp/f6g1seg/Hardened/E5/motorA_run_20991231_235959_004_partial",
+        "r2": "/tmp/f6g1seg/Hardened/E5/motorA_run_20991231_235959_005_partial"
+      },
+      "E6": {
+        "estatico": true
+      },
+      "sanidad": {
+        "exit": 0,
+        "pcm": {
+          "mix SDI.wav": "368d3ecbc3a07d053a67e2fb1157a66eb290d8f0a7a31087a5a3060a81574f85",
+          "mix SDV.wav": "a347838da989c3645115f9d08dd296a9902a2b8ac0372fde5002e40f1d420bc0"
+        }
+      }
+    },
+    "EVO": {
+      "E1": {
+        "exit": 2
+      },
+      "E2": {
+        "exit": 2
+      },
+      "E3": {
+        "exit": 2
+      },
+      "E4": {
+        "p1": "/tmp/f6g1seg/EVO/E4/motorA_run_20991231_235959_008_partial",
+        "p2": "/tmp/f6g1seg/EVO/E4/motorA_run_20991231_235959_010_partial"
+      },
+      "E5": {
+        "r1": "/tmp/f6g1seg/EVO/E5/motorA_run_20991231_235959_004_partial",
+        "r2": "/tmp/f6g1seg/EVO/E5/motorA_run_20991231_235959_005_partial"
+      },
+      "E6": {
+        "estatico": true
+      },
+      "sanidad": {
+        "exit": 0,
+        "pcm": {
+          "mix SDI.wav": "368d3ecbc3a07d053a67e2fb1157a66eb290d8f0a7a31087a5a3060a81574f85",
+          "mix SDV.wav": "a347838da989c3645115f9d08dd296a9902a2b8ac0372fde5002e40f1d420bc0"
+        }
+      }
+    },
+    "MQR": {
+      "E1": {
+        "exit": 2
+      },
+      "E2": {
+        "exit": 2
+      },
+      "E3": {
+        "exit": 2
+      },
+      "E4": {
+        "p1": "/tmp/f6g1seg/MQR/E4/mqr_run_20991231_235959_008_partial",
+        "p2": "/tmp/f6g1seg/MQR/E4/mqr_run_20991231_235959_010_partial"
+      },
+      "E5": {
+        "r1": "/tmp/f6g1seg/MQR/E5/mqr_run_20991231_235959_004_partial",
+        "r2": "/tmp/f6g1seg/MQR/E5/mqr_run_20991231_235959_005_partial"
+      },
+      "E6": {
+        "estatico": true
+      },
+      "sanidad": {
+        "exit": 0,
+        "pcm": {
+          "SDI.wav": "565bc8b6adbf2e489723a2dd11471f05a181608359163d0dbf44b509083754d3",
+          "SDV.wav": "8fb3578a2b56b062d6bcb9b9d72b2657106efcd1aa838cc5de8f8a42fe6f9af8"
+        }
+      }
+    }
+  }
+}

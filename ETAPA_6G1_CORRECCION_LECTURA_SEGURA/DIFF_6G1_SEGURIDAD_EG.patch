@@ -1,0 +1,1598 @@
+diff --git a/ETAPA_6G1_CORRECCION_LECTURA_SEGURA/evidence/matriz_seguridad_6g1.csv b/ETAPA_6G1_CORRECCION_LECTURA_SEGURA/evidence/matriz_seguridad_6g1.csv
+new file mode 100644
+index 0000000..b7d44ea
+--- /dev/null
++++ b/ETAPA_6G1_CORRECCION_LECTURA_SEGURA/evidence/matriz_seguridad_6g1.csv
+@@ -0,0 +1,27 @@
++prueba,motor,alcance,veredicto,checks_ok,checks_total,detalle
++E1,lectura_segura_6g1,unidad: analysis.json simbólico; externo intacto,PASS,6,6,todos los checks OK
++E2,lectura_segura_6g1,unidad: ABORT_6G1.json simbólico; sin sobrescribir,PASS,4,4,todos los checks OK
++E3,lectura_segura_6g1,unidad: analysis.json ajeno ordinario; intacto,PASS,5,5,todos los checks OK
++E7,lectura_segura_6g1,unidad: aislamiento del registro entre corridas,PASS,5,5,todos los checks OK
++E6,lectura_segura_6g1,unidad: publicación con no-reemplazo (destino con centinela y destino vacío),PASS,5,5,todos los checks OK
++E1,Hardened,end-to-end: analysis.json simbólico al abortar,PASS,6,6,todos los checks OK
++E2,Hardened,end-to-end: ABORT_6G1.json simbólico al abortar,PASS,6,6,todos los checks OK
++E3,Hardened,end-to-end: analysis.json ajeno ordinario,PASS,6,6,todos los checks OK
++E4,Hardened,"_partial preexistente: no reutilizado, centinelas intactos (marca forzada)",PASS,6,6,todos los checks OK
++E5,Hardened,dos solicitudes con el mismo identificador temporal (reloj congelado),PASS,5,5,todos los checks OK
++E6,Hardened,estático: publicación y creación de corrida por la vía segura,PASS,3,3,todos los checks OK
++sanidad,Hardened,corrida feliz tras E–G (no repite la batería de 34),PASS,4,4,todos los checks OK
++E1,EVO,end-to-end: analysis.json simbólico al abortar,PASS,6,6,todos los checks OK
++E2,EVO,end-to-end: ABORT_6G1.json simbólico al abortar,PASS,6,6,todos los checks OK
++E3,EVO,end-to-end: analysis.json ajeno ordinario,PASS,6,6,todos los checks OK
++E4,EVO,"_partial preexistente: no reutilizado, centinelas intactos (marca forzada)",PASS,6,6,todos los checks OK
++E5,EVO,dos solicitudes con el mismo identificador temporal (reloj congelado),PASS,5,5,todos los checks OK
++E6,EVO,estático: publicación y creación de corrida por la vía segura,PASS,3,3,todos los checks OK
++sanidad,EVO,corrida feliz tras E–G (no repite la batería de 34),PASS,4,4,todos los checks OK
++E1,MQR,end-to-end: analysis.json simbólico al abortar,PASS,6,6,todos los checks OK
++E2,MQR,end-to-end: ABORT_6G1.json simbólico al abortar,PASS,6,6,todos los checks OK
++E3,MQR,end-to-end: analysis.json ajeno ordinario,PASS,6,6,todos los checks OK
++E4,MQR,"_partial preexistente: no reutilizado, centinelas intactos (marca forzada)",PASS,6,6,todos los checks OK
++E5,MQR,dos solicitudes con el mismo identificador temporal (reloj congelado),PASS,5,5,todos los checks OK
++E6,MQR,estático: publicación y creación de corrida por la vía segura,PASS,3,3,todos los checks OK
++sanidad,MQR,corrida feliz tras E–G (no repite la batería de 34),PASS,4,4,todos los checks OK
+diff --git a/ETAPA_6G1_CORRECCION_LECTURA_SEGURA/evidence/pruebas_seguridad_6g1.json b/ETAPA_6G1_CORRECCION_LECTURA_SEGURA/evidence/pruebas_seguridad_6g1.json
+new file mode 100644
+index 0000000..07f123e
+--- /dev/null
++++ b/ETAPA_6G1_CORRECCION_LECTURA_SEGURA/evidence/pruebas_seguridad_6g1.json
+@@ -0,0 +1,414 @@
++{
++  "schema": "pruebas-seguridad-6g1/1",
++  "filas": [
++    {
++      "prueba": "E1",
++      "motor": "lectura_segura_6g1",
++      "alcance": "unidad: analysis.json simbólico; externo intacto",
++      "veredicto": "PASS",
++      "checks_ok": 6,
++      "checks_total": 6,
++      "detalle": "todos los checks OK"
++    },
++    {
++      "prueba": "E2",
++      "motor": "lectura_segura_6g1",
++      "alcance": "unidad: ABORT_6G1.json simbólico; sin sobrescribir",
++      "veredicto": "PASS",
++      "checks_ok": 4,
++      "checks_total": 4,
++      "detalle": "todos los checks OK"
++    },
++    {
++      "prueba": "E3",
++      "motor": "lectura_segura_6g1",
++      "alcance": "unidad: analysis.json ajeno ordinario; intacto",
++      "veredicto": "PASS",
++      "checks_ok": 5,
++      "checks_total": 5,
++      "detalle": "todos los checks OK"
++    },
++    {
++      "prueba": "E7",
++      "motor": "lectura_segura_6g1",
++      "alcance": "unidad: aislamiento del registro entre corridas",
++      "veredicto": "PASS",
++      "checks_ok": 5,
++      "checks_total": 5,
++      "detalle": "todos los checks OK"
++    },
++    {
++      "prueba": "E6",
++      "motor": "lectura_segura_6g1",
++      "alcance": "unidad: publicación con no-reemplazo (destino con centinela y destino vacío)",
++      "veredicto": "PASS",
++      "checks_ok": 5,
++      "checks_total": 5,
++      "detalle": "todos los checks OK"
++    },
++    {
++      "prueba": "E1",
++      "motor": "Hardened",
++      "alcance": "end-to-end: analysis.json simbólico al abortar",
++      "veredicto": "PASS",
++      "checks_ok": 6,
++      "checks_total": 6,
++      "detalle": "todos los checks OK"
++    },
++    {
++      "prueba": "E2",
++      "motor": "Hardened",
++      "alcance": "end-to-end: ABORT_6G1.json simbólico al abortar",
++      "veredicto": "PASS",
++      "checks_ok": 6,
++      "checks_total": 6,
++      "detalle": "todos los checks OK"
++    },
++    {
++      "prueba": "E3",
++      "motor": "Hardened",
++      "alcance": "end-to-end: analysis.json ajeno ordinario",
++      "veredicto": "PASS",
++      "checks_ok": 6,
++      "checks_total": 6,
++      "detalle": "todos los checks OK"
++    },
++    {
++      "prueba": "E4",
++      "motor": "Hardened",
++      "alcance": "_partial preexistente: no reutilizado, centinelas intactos (marca forzada)",
++      "veredicto": "PASS",
++      "checks_ok": 6,
++      "checks_total": 6,
++      "detalle": "todos los checks OK"
++    },
++    {
++      "prueba": "E5",
++      "motor": "Hardened",
++      "alcance": "dos solicitudes con el mismo identificador temporal (reloj congelado)",
++      "veredicto": "PASS",
++      "checks_ok": 5,
++      "checks_total": 5,
++      "detalle": "todos los checks OK"
++    },
++    {
++      "prueba": "E6",
++      "motor": "Hardened",
++      "alcance": "estático: publicación y creación de corrida por la vía segura",
++      "veredicto": "PASS",
++      "checks_ok": 3,
++      "checks_total": 3,
++      "detalle": "todos los checks OK"
++    },
++    {
++      "prueba": "sanidad",
++      "motor": "Hardened",
++      "alcance": "corrida feliz tras E–G (no repite la batería de 34)",
++      "veredicto": "PASS",
++      "checks_ok": 4,
++      "checks_total": 4,
++      "detalle": "todos los checks OK"
++    },
++    {
++      "prueba": "E1",
++      "motor": "EVO",
++      "alcance": "end-to-end: analysis.json simbólico al abortar",
++      "veredicto": "PASS",
++      "checks_ok": 6,
++      "checks_total": 6,
++      "detalle": "todos los checks OK"
++    },
++    {
++      "prueba": "E2",
++      "motor": "EVO",
++      "alcance": "end-to-end: ABORT_6G1.json simbólico al abortar",
++      "veredicto": "PASS",
++      "checks_ok": 6,
++      "checks_total": 6,
++      "detalle": "todos los checks OK"
++    },
++    {
++      "prueba": "E3",
++      "motor": "EVO",
++      "alcance": "end-to-end: analysis.json ajeno ordinario",
++      "veredicto": "PASS",
++      "checks_ok": 6,
++      "checks_total": 6,
++      "detalle": "todos los checks OK"
++    },
++    {
++      "prueba": "E4",
++      "motor": "EVO",
++      "alcance": "_partial preexistente: no reutilizado, centinelas intactos (marca forzada)",
++      "veredicto": "PASS",
++      "checks_ok": 6,
++      "checks_total": 6,
++      "detalle": "todos los checks OK"
++    },
++    {
++      "prueba": "E5",
++      "motor": "EVO",
++      "alcance": "dos solicitudes con el mismo identificador temporal (reloj congelado)",
++      "veredicto": "PASS",
++      "checks_ok": 5,
++      "checks_total": 5,
++      "detalle": "todos los checks OK"
++    },
++    {
++      "prueba": "E6",
++      "motor": "EVO",
++      "alcance": "estático: publicación y creación de corrida por la vía segura",
++      "veredicto": "PASS",
++      "checks_ok": 3,
++      "checks_total": 3,
++      "detalle": "todos los checks OK"
++    },
++    {
++      "prueba": "sanidad",
++      "motor": "EVO",
++      "alcance": "corrida feliz tras E–G (no repite la batería de 34)",
++      "veredicto": "PASS",
++      "checks_ok": 4,
++      "checks_total": 4,
++      "detalle": "todos los checks OK"
++    },
++    {
++      "prueba": "E1",
++      "motor": "MQR",
++      "alcance": "end-to-end: analysis.json simbólico al abortar",
++      "veredicto": "PASS",
++      "checks_ok": 6,
++      "checks_total": 6,
++      "detalle": "todos los checks OK"
++    },
++    {
++      "prueba": "E2",
++      "motor": "MQR",
++      "alcance": "end-to-end: ABORT_6G1.json simbólico al abortar",
++      "veredicto": "PASS",
++      "checks_ok": 6,
++      "checks_total": 6,
++      "detalle": "todos los checks OK"
++    },
++    {
++      "prueba": "E3",
++      "motor": "MQR",
++      "alcance": "end-to-end: analysis.json ajeno ordinario",
++      "veredicto": "PASS",
++      "checks_ok": 6,
++      "checks_total": 6,
++      "detalle": "todos los checks OK"
++    },
++    {
++      "prueba": "E4",
++      "motor": "MQR",
++      "alcance": "_partial preexistente: no reutilizado, centinelas intactos (marca forzada)",
++      "veredicto": "PASS",
++      "checks_ok": 6,
++      "checks_total": 6,
++      "detalle": "todos los checks OK"
++    },
++    {
++      "prueba": "E5",
++      "motor": "MQR",
++      "alcance": "dos solicitudes con el mismo identificador temporal (reloj congelado)",
++      "veredicto": "PASS",
++      "checks_ok": 5,
++      "checks_total": 5,
++      "detalle": "todos los checks OK"
++    },
++    {
++      "prueba": "E6",
++      "motor": "MQR",
++      "alcance": "estático: publicación y creación de corrida por la vía segura",
++      "veredicto": "PASS",
++      "checks_ok": 3,
++      "checks_total": 3,
++      "detalle": "todos los checks OK"
++    },
++    {
++      "prueba": "sanidad",
++      "motor": "MQR",
++      "alcance": "corrida feliz tras E–G (no repite la batería de 34)",
++      "veredicto": "PASS",
++      "checks_ok": 4,
++      "checks_total": 4,
++      "detalle": "todos los checks OK"
++    }
++  ],
++  "detalles": {
++    "unidad": {
++      "E1": {
++        "abort": {
++          "schema": "abort-6g1/2",
++          "motivo": "PRUEBA_E1",
++          "detalle": null,
++          "salidas_invalidadas": [
++            "propio.wav"
++          ],
++          "conservados": [
++            "analysis.json"
++          ],
++          "motivos_propiedad": {
++            "analysis.json": "enlace_simbolico_conservado (sin seguir)",
++            "analysis.json (actualizacion)": "actualizacion omitida: apertura segura fallo ([Errno 40] Too many levels of symbolic links: 'analysis.json')"
++          },
++          "politica": "propiedad_acreditada_o_conserva; sin borrado por patrón de nombre ni por ubicación; sin escritura a través de enlaces simbólicos"
++        }
++      },
++      "E2": {
++        "abort": {
++          "schema": "abort-6g1/2",
++          "motivo": "PRUEBA_E2",
++          "detalle": null,
++          "salidas_invalidadas": [
++            "propio.wav"
++          ],
++          "conservados": [
++            "ABORT_6G1.json"
++          ],
++          "motivos_propiedad": {
++            "ABORT_6G1.json": "colision: ABORT_6G1.json preexistente (o enlace); sin sobrescribir"
++          },
++          "politica": "propiedad_acreditada_o_conserva; sin borrado por patrón de nombre ni por ubicación; sin escritura a través de enlaces simbólicos"
++        }
++      },
++      "E3": {
++        "abort": {
++          "schema": "abort-6g1/2",
++          "motivo": "PRUEBA_E3",
++          "detalle": null,
++          "salidas_invalidadas": [
++            "propio.wav"
++          ],
++          "conservados": [
++            "analysis.json"
++          ],
++          "motivos_propiedad": {
++            "analysis.json": "registro_interno_conservado",
++            "analysis.json (actualizacion)": "actualizacion omitida: propiedad no acreditada (ajeno_no_registrado)"
++          },
++          "politica": "propiedad_acreditada_o_conserva; sin borrado por patrón de nombre ni por ubicación; sin escritura a través de enlaces simbólicos"
++        }
++      },
++      "E7": {
++        "motivo_a1": "ajeno_no_registrado",
++        "info1": {
++          "schema": "abort-6g1/2",
++          "motivo": "PRUEBA_E7_corrida1",
++          "detalle": null,
++          "salidas_invalidadas": [],
++          "conservados": [
++            "salida_corrida1.wav"
++          ],
++          "motivos_propiedad": {
++            "salida_corrida1.wav": "ajeno_no_registrado"
++          },
++          "politica": "propiedad_acreditada_o_conserva; sin borrado por patrón de nombre ni por ubicación; sin escritura a través de enlaces simbólicos"
++        },
++        "info2": {
++          "schema": "abort-6g1/2",
++          "motivo": "PRUEBA_E7_corrida2",
++          "detalle": null,
++          "salidas_invalidadas": [
++            "salida_corrida2.wav"
++          ],
++          "conservados": [],
++          "motivos_propiedad": {},
++          "politica": "propiedad_acreditada_o_conserva; sin borrado por patrón de nombre ni por ubicación; sin escritura a través de enlaces simbólicos"
++        }
++      },
++      "E6": {
++        "publicado": "/tmp/f6g1seg/U/E6/corrida_final_r001",
++        "publicado2": "/tmp/f6g1seg/U/E6/destino_vacio_r001"
++      }
++    },
++    "Hardened": {
++      "E1": {
++        "exit": 2
++      },
++      "E2": {
++        "exit": 2
++      },
++      "E3": {
++        "exit": 2
++      },
++      "E4": {
++        "p1": "/tmp/f6g1seg/Hardened/E4/motorA_run_20991231_235959_008_partial",
++        "p2": "/tmp/f6g1seg/Hardened/E4/motorA_run_20991231_235959_010_partial"
++      },
++      "E5": {
++        "r1": "/tmp/f6g1seg/Hardened/E5/motorA_run_20991231_235959_004_partial",
++        "r2": "/tmp/f6g1seg/Hardened/E5/motorA_run_20991231_235959_005_partial"
++      },
++      "E6": {
++        "estatico": true
++      },
++      "sanidad": {
++        "exit": 0,
++        "pcm": {
++          "mix SDI.wav": "368d3ecbc3a07d053a67e2fb1157a66eb290d8f0a7a31087a5a3060a81574f85",
++          "mix SDV.wav": "a347838da989c3645115f9d08dd296a9902a2b8ac0372fde5002e40f1d420bc0"
++        }
++      }
++    },
++    "EVO": {
++      "E1": {
++        "exit": 2
++      },
++      "E2": {
++        "exit": 2
++      },
++      "E3": {
++        "exit": 2
++      },
++      "E4": {
++        "p1": "/tmp/f6g1seg/EVO/E4/motorA_run_20991231_235959_008_partial",
++        "p2": "/tmp/f6g1seg/EVO/E4/motorA_run_20991231_235959_010_partial"
++      },
++      "E5": {
++        "r1": "/tmp/f6g1seg/EVO/E5/motorA_run_20991231_235959_004_partial",
++        "r2": "/tmp/f6g1seg/EVO/E5/motorA_run_20991231_235959_005_partial"
++      },
++      "E6": {
++        "estatico": true
++      },
++      "sanidad": {
++        "exit": 0,
++        "pcm": {
++          "mix SDI.wav": "368d3ecbc3a07d053a67e2fb1157a66eb290d8f0a7a31087a5a3060a81574f85",
++          "mix SDV.wav": "a347838da989c3645115f9d08dd296a9902a2b8ac0372fde5002e40f1d420bc0"
++        }
++      }
++    },
++    "MQR": {
++      "E1": {
++        "exit": 2
++      },
++      "E2": {
++        "exit": 2
++      },
++      "E3": {
++        "exit": 2
++      },
++      "E4": {
++        "p1": "/tmp/f6g1seg/MQR/E4/mqr_run_20991231_235959_008_partial",
++        "p2": "/tmp/f6g1seg/MQR/E4/mqr_run_20991231_235959_010_partial"
++      },
++      "E5": {
++        "r1": "/tmp/f6g1seg/MQR/E5/mqr_run_20991231_235959_004_partial",
++        "r2": "/tmp/f6g1seg/MQR/E5/mqr_run_20991231_235959_005_partial"
++      },
++      "E6": {
++        "estatico": true
++      },
++      "sanidad": {
++        "exit": 0,
++        "pcm": {
++          "SDI.wav": "565bc8b6adbf2e489723a2dd11471f05a181608359163d0dbf44b509083754d3",
++          "SDV.wav": "8fb3578a2b56b062d6bcb9b9d72b2657106efcd1aa838cc5de8f8a42fe6f9af8"
++        }
++      }
++    }
++  }
++}
+diff --git a/ETAPA_6G1_CORRECCION_LECTURA_SEGURA/motores/MOTOR_SEP_SDV-SDI_EVO.py b/ETAPA_6G1_CORRECCION_LECTURA_SEGURA/motores/MOTOR_SEP_SDV-SDI_EVO.py
+index d31a5d3..332e2b0 100644
+--- a/ETAPA_6G1_CORRECCION_LECTURA_SEGURA/motores/MOTOR_SEP_SDV-SDI_EVO.py
++++ b/ETAPA_6G1_CORRECCION_LECTURA_SEGURA/motores/MOTOR_SEP_SDV-SDI_EVO.py
+@@ -303,7 +303,9 @@ from audio_integridad_6g import (container_of as _container_6g,
+ from lectura_segura_6g1 import (MixCambiado as _MixCambiado_6g1,
+                                  abrir_mix as _abrir_mix_6g1,
+                                  abortar_6g1 as _abortar_6g1,
+-                                 registrar_propio_6g1 as _registrar_propio_6g1)
++                                 registrar_propio_6g1 as _registrar_propio_6g1,
++                                 reiniciar_registro_6g1 as _reiniciar_registro_6g1,
++                                 publicar_dir_6g1 as _publicar_dir_6g1)
+ 
+ from atribucion_6f import (measure, verify_wave, alignment_gate,
+                         analyze_files as _analyze_files_6f,
+@@ -1321,11 +1323,28 @@ class CandidateRunner:
+ # ============================================================================
+ 
+ def create_run_dir(out_base: str) -> tuple:
+-    stamp = datetime.now().strftime("%Y%m%d_%H%M%S")
+-    final_dir = os.path.join(out_base, f"motorA_run_{stamp}")
+-    partial_dir = final_dir + "_partial"
+-    os.makedirs(partial_dir, exist_ok=True)
+-    return partial_dir, final_dir
++    # [6G.1-R/F] Directorio provisional EXCLUSIVO: nunca reutilizar un
++    # _partial preexistente (los writers abren en modo 'w' y truncarian
++    # contenido ajeno antes de poder registrar propiedad). mkdir exclusivo;
++    # si el nombre existe se genera otro identificador SIN tocar su contenido.
++    # El registro de propiedad se reinicia: aislado por corrida; los archivos
++    # preexistentes no son propios por el mero hecho de estar en el directorio.
++    _reiniciar_registro_6g1()
++    os.makedirs(out_base, exist_ok=True)
++    intento = 0
++    while True:
++        stamp = datetime.now().strftime("%Y%m%d_%H%M%S")
++        sufijo = "" if intento == 0 else "_%03d" % intento
++        final_dir = os.path.join(out_base, f"motorA_run_{stamp}{sufijo}")
++        partial_dir = final_dir + "_partial"
++        try:
++            os.mkdir(partial_dir)
++            return partial_dir, final_dir
++        except FileExistsError:
++            intento += 1
++            if intento > 999:
++                raise RuntimeError("[6G.1-R/F] no se pudo crear un directorio "
++                                   "provisional exclusivo en %s" % out_base)
+ 
+ def _open_memmap(path: str, shape: tuple):
+     mm = np.lib.format.open_memmap(path, mode="w+", dtype=MASK_SAVE_DTYPE, shape=shape)
+@@ -1943,11 +1962,17 @@ def run_experiment(mix_path: str, pairs: list, mode: str, opt: argparse.Namespac
+                     except Exception:
+                         pass
+             return EXIT_PROCESSING, None
+-        # [6G.1-R/B] Publicación por renombrado sólo tras guarda superada
+-        if os.path.exists(run_dir_final):
+-            stamp = datetime.now().strftime("%H%M%S")
+-            run_dir_final = run_dir_final + f"_{stamp}"
+-        os.rename(run_dir, run_dir_final)
++        # [6G.1-R/G] Publicación con no-reemplazo atómico (renameat2
++        # RENAME_NOREPLACE): nunca sustituye un destino existente; ante
++        # colisión elige otro identificador sin tocarlo; si el entorno no
++        # garantiza la operación, NO publica (fail-closed) y conserva el
++        # provisional.
++        try:
++            run_dir_final = _publicar_dir_6g1(run_dir, run_dir_final)
++        except Exception as _exc_pub:
++            log("[FATAL] publicacion segura no garantizada (%s); sin publicar; "
++                "corrida conservada en: %s" % (_exc_pub, run_dir))
++            return EXIT_PROCESSING, None
+         log(f"Corrida finalizada exitosamente en: {run_dir_final}")
+         return EXIT_OK, run_dir_final
+ 
+diff --git a/ETAPA_6G1_CORRECCION_LECTURA_SEGURA/motores/MOTOR_SEP_SDV-SDI_v3.1.1_Hardened_Final.py b/ETAPA_6G1_CORRECCION_LECTURA_SEGURA/motores/MOTOR_SEP_SDV-SDI_v3.1.1_Hardened_Final.py
+index be19cd3..646b3c9 100644
+--- a/ETAPA_6G1_CORRECCION_LECTURA_SEGURA/motores/MOTOR_SEP_SDV-SDI_v3.1.1_Hardened_Final.py
++++ b/ETAPA_6G1_CORRECCION_LECTURA_SEGURA/motores/MOTOR_SEP_SDV-SDI_v3.1.1_Hardened_Final.py
+@@ -298,7 +298,9 @@ from audio_integridad_6g import (container_of as _container_6g,
+ from lectura_segura_6g1 import (MixCambiado as _MixCambiado_6g1,
+                                  abrir_mix as _abrir_mix_6g1,
+                                  abortar_6g1 as _abortar_6g1,
+-                                 registrar_propio_6g1 as _registrar_propio_6g1)
++                                 registrar_propio_6g1 as _registrar_propio_6g1,
++                                 reiniciar_registro_6g1 as _reiniciar_registro_6g1,
++                                 publicar_dir_6g1 as _publicar_dir_6g1)
+ 
+ from atribucion_6f import (measure, verify_wave, alignment_gate,
+                         analyze_files as _analyze_files_6f,
+@@ -1321,11 +1323,28 @@ class CandidateRunner:
+ # ============================================================================
+ 
+ def create_run_dir(out_base: str) -> tuple:
+-    stamp = datetime.now().strftime("%Y%m%d_%H%M%S")
+-    final_dir = os.path.join(out_base, f"motorA_run_{stamp}")
+-    partial_dir = final_dir + "_partial"
+-    os.makedirs(partial_dir, exist_ok=True)
+-    return partial_dir, final_dir
++    # [6G.1-R/F] Directorio provisional EXCLUSIVO: nunca reutilizar un
++    # _partial preexistente (los writers abren en modo 'w' y truncarian
++    # contenido ajeno antes de poder registrar propiedad). mkdir exclusivo;
++    # si el nombre existe se genera otro identificador SIN tocar su contenido.
++    # El registro de propiedad se reinicia: aislado por corrida; los archivos
++    # preexistentes no son propios por el mero hecho de estar en el directorio.
++    _reiniciar_registro_6g1()
++    os.makedirs(out_base, exist_ok=True)
++    intento = 0
++    while True:
++        stamp = datetime.now().strftime("%Y%m%d_%H%M%S")
++        sufijo = "" if intento == 0 else "_%03d" % intento
++        final_dir = os.path.join(out_base, f"motorA_run_{stamp}{sufijo}")
++        partial_dir = final_dir + "_partial"
++        try:
++            os.mkdir(partial_dir)
++            return partial_dir, final_dir
++        except FileExistsError:
++            intento += 1
++            if intento > 999:
++                raise RuntimeError("[6G.1-R/F] no se pudo crear un directorio "
++                                   "provisional exclusivo en %s" % out_base)
+ 
+ def _open_memmap(path: str, shape: tuple):
+     mm = np.lib.format.open_memmap(path, mode="w+", dtype=MASK_SAVE_DTYPE, shape=shape)
+@@ -1832,11 +1851,17 @@ def run_experiment(mix_path: str, pairs: list, mode: str, opt: argparse.Namespac
+                     except Exception:
+                         pass
+             return EXIT_PROCESSING, None
+-        # [6G.1-R/B] Publicación por renombrado sólo tras guarda superada
+-        if os.path.exists(run_dir_final):
+-            stamp = datetime.now().strftime("%H%M%S")
+-            run_dir_final = run_dir_final + f"_{stamp}"
+-        os.rename(run_dir, run_dir_final)
++        # [6G.1-R/G] Publicación con no-reemplazo atómico (renameat2
++        # RENAME_NOREPLACE): nunca sustituye un destino existente; ante
++        # colisión elige otro identificador sin tocarlo; si el entorno no
++        # garantiza la operación, NO publica (fail-closed) y conserva el
++        # provisional.
++        try:
++            run_dir_final = _publicar_dir_6g1(run_dir, run_dir_final)
++        except Exception as _exc_pub:
++            log("[FATAL] publicacion segura no garantizada (%s); sin publicar; "
++                "corrida conservada en: %s" % (_exc_pub, run_dir))
++            return EXIT_PROCESSING, None
+         log(f"Corrida finalizada exitosamente en: {run_dir_final}")
+         return EXIT_OK, run_dir_final
+ 
+diff --git a/ETAPA_6G1_CORRECCION_LECTURA_SEGURA/motores/lectura_segura_6g1.py b/ETAPA_6G1_CORRECCION_LECTURA_SEGURA/motores/lectura_segura_6g1.py
+index 97daa7b..1c9aa51 100644
+--- a/ETAPA_6G1_CORRECCION_LECTURA_SEGURA/motores/lectura_segura_6g1.py
++++ b/ETAPA_6G1_CORRECCION_LECTURA_SEGURA/motores/lectura_segura_6g1.py
+@@ -14,6 +14,7 @@ o archivo registrado cuya identidad actual no coincide con la registrada),
+ el archivo **se conserva** y se lista con el motivo. Ninguna decisión de borrado
+ se toma por patrón de nombre ni por ubicación (`candidates/` incluido).
+ """
++import errno
+ import hashlib
+ import json
+ import os
+@@ -197,9 +198,13 @@ def propiedad_de_6g1(path):
+     if reg is None:
+         return False, 'ajeno_no_registrado'
+     try:
+-        st = os.stat(p)
++        # [6G.1-R/E] lstat: sin seguir enlaces; un enlace nunca puede acreditar
++        # la identidad de un archivo regular registrado.
++        st = os.lstat(p)
+     except OSError as exc:
+         return False, 'no_accesible: %s' % exc
++    if stat.S_ISLNK(st.st_mode):
++        return False, 'enlace_simbolico_no_propio'
+     if (st.st_dev, st.st_ino) != (reg['device'], reg['inode']):
+         return False, 'identidad_distinta (sustituido o reemplazado tras el registro)'
+     if reg['estable']:
+@@ -210,6 +215,25 @@ def propiedad_de_6g1(path):
+     return True, 'propiedad_acreditada'
+ 
+ 
++def _propiedad_fd_acreditada(run_dir, rel, st, datos):
++    """[6G.1-R/E] Acreditación de propiedad de un archivo ya ABIERTO por
++    descriptor (sin rutas): identidad del descriptor contra el registro de la
++    corrida (entrada estable sellada por tamaño/mtime/SHA-256). Fail-closed."""
++    p = os.path.abspath(os.path.join(str(run_dir), rel))
++    reg = _PROPIOS_6G1.get(p)
++    if reg is None:
++        return False, 'ajeno_no_registrado'
++    if not reg.get('estable'):
++        return False, 'registro no sellado'
++    if (st.st_dev, st.st_ino) != (reg['device'], reg['inode']):
++        return False, 'identidad_distinta'
++    if st.st_size != reg['size'] or st.st_mtime_ns != reg['mtime_ns']:
++        return False, 'tamaño/mtime distintos de los registrados'
++    if hashlib.sha256(datos).hexdigest() != reg['sha256']:
++        return False, 'contenido modificado tras el registro'
++    return True, 'propiedad_acreditada'
++
++
+ def _es_registro_interno(nombre):
+     """Archivos de registro forense que el aborto conserva siempre."""
+     return nombre in ('ABORT_6G1.json', 'engine_log.txt',
+@@ -217,24 +241,41 @@ def _es_registro_interno(nombre):
+ 
+ 
+ def abortar_6g1(run_dir, motivo, detalle=None):
+-    """Invalida las salidas de la corrida y registra el aborto (corrección C).
++    """Invalida las salidas de la corrida y registra el aborto (C + E).
+ 
+     Sólo borra archivos con **propiedad acreditada** por el registro de la
+-    corrida (ruta + identidad verificada). Un archivo ajeno —incluido uno que
+-    coincida con un nombre de salida del motor o que esté dentro de
+-    `candidates/`— y un archivo registrado cuya identidad actual no coincida
+-    con la registrada (sustituido tras su creación) se **conservan** y se
+-    listan con el motivo. Los archivos de registro forense
+-    (`ABORT_6G1.json`, `engine_log.txt`, `analysis.json`,
+-    `input_integrity_6g.json`) se conservan.
++    corrida (ruta + identidad verificada con `lstat`, sin seguir enlaces).
++    Un archivo ajeno —incluido uno que coincida con un nombre de salida del
++    motor o que esté dentro de `candidates/`— y un archivo registrado cuya
++    identidad actual no coincida se **conservan** con el motivo.
++
++    [6G.1-R/E] Seguridad frente a enlaces simbólicos en los archivos internos:
++    - el inventario usa `lstat` (los enlaces se conservan, nunca se siguen);
++    - `ABORT_6G1.json` se crea de forma **exclusiva y no-follow** anclada al
++      descriptor del directorio (`O_CREAT|O_EXCL|O_NOFOLLOW` + `dir_fd`): no
++      sobrescribe preexistente ni simbólico y nunca escribe fuera del
++      directorio de corrida;
++    - `analysis.json` se lee/actualiza sólo si es un **regular no-simbólico**
++      cuya identidad y sello (tamaño/mtime/SHA-256) están **acreditados** en
++      el registro de la corrida, vía descriptor con `O_NOFOLLOW` anclado al
++      directorio; si la propiedad no puede demostrarse, se conserva con el
++      motivo (fail-closed).
+     """
+     run_dir = Path(run_dir)
+     eliminados, conservados, motivos = [], [], {}
+     if run_dir.exists():
+         for p in sorted(run_dir.rglob('*')):
+-            if not p.is_file():
+-                continue
+             rel = str(p.relative_to(run_dir))
++            try:
++                st = os.lstat(p)
++            except OSError:
++                continue
++            if stat.S_ISLNK(st.st_mode):
++                conservados.append(rel)
++                motivos[rel] = 'enlace_simbolico_conservado (sin seguir)'
++                continue
++            if not stat.S_ISREG(st.st_mode):
++                continue
+             if _es_registro_interno(p.name):
+                 conservados.append(rel)
+                 motivos[rel] = 'registro_interno_conservado'
+@@ -242,7 +283,7 @@ def abortar_6g1(run_dir, motivo, detalle=None):
+             propia, motivo_p = propiedad_de_6g1(p)
+             if propia:
+                 try:
+-                    p.unlink()
++                    os.unlink(p)
+                     eliminados.append(rel)
+                 except OSError as exc:
+                     conservados.append(rel)
+@@ -254,19 +295,136 @@ def abortar_6g1(run_dir, motivo, detalle=None):
+                 salidas_invalidadas=eliminados, conservados=conservados,
+                 motivos_propiedad=motivos,
+                 politica='propiedad_acreditada_o_conserva; sin borrado por '
+-                         'patrón de nombre ni por ubicación')
++                         'patrón de nombre ni por ubicación; sin escritura a '
++                         'través de enlaces simbólicos')
+     if run_dir.exists():
+-        objetivo = run_dir / 'ABORT_6G1.json'
+-        objetivo.write_text(json.dumps(info, indent=2, ensure_ascii=False, default=str),
+-                            encoding='utf-8')
+-        analisis = run_dir / 'analysis.json'
+-        if analisis.exists():
++        # --- ABORT_6G1.json: creación exclusiva y no-follow anclada al dirfd
++        try:
++            dirfd = os.open(str(run_dir), os.O_RDONLY | os.O_DIRECTORY)
+             try:
+-                data = json.loads(analisis.read_text(encoding='utf-8'))
+-                data['abort_6g1'] = info
+-                analisis.write_text(json.dumps(data, indent=2, ensure_ascii=False,
+-                                               allow_nan=True, default=str),
+-                                    encoding='utf-8')
+-            except Exception:
+-                pass
++                fd = os.open('ABORT_6G1.json',
++                             os.O_WRONLY | os.O_CREAT | os.O_EXCL | os.O_NOFOLLOW,
++                             0o644, dir_fd=dirfd)
++                with os.fdopen(fd, 'w', encoding='utf-8') as f:
++                    f.write(json.dumps(info, indent=2, ensure_ascii=False,
++                                       default=str))
++            finally:
++                os.close(dirfd)
++        except FileExistsError:
++            motivos['ABORT_6G1.json'] = ('colision: ABORT_6G1.json preexistente '
++                                         '(o enlace); sin sobrescribir')
++        except OSError as exc:
++            motivos['ABORT_6G1.json'] = ('no escribible de forma segura: %s' % exc)
++        # --- analysis.json: sólo con propiedad e identidad acreditadas
++        try:
++            dirfd = os.open(str(run_dir), os.O_RDONLY | os.O_DIRECTORY)
++            try:
++                try:
++                    fd = os.open('analysis.json', os.O_RDONLY | os.O_NOFOLLOW,
++                                 dir_fd=dirfd)
++                except OSError as exc:
++                    if exc.errno == errno.ENOENT:
++                        fd = None                    # no existe: nada que hacer
++                    else:                            # ELOOP (enlace) u otro
++                        fd = None
++                        motivos['analysis.json (actualizacion)'] = ('actualizacion omitida: '
++                                                    'apertura segura fallo (%s)'
++                                                    % exc)
++                if fd is not None:
++                    with os.fdopen(fd, 'rb') as f:
++                        st = os.fstat(f.fileno())
++                        datos = f.read()
++                    if not stat.S_ISREG(st.st_mode):
++                        raise OSError('analysis.json no es un archivo regular')
++                    acredita, motivo_a = _propiedad_fd_acreditada(
++                        run_dir, 'analysis.json', st, datos)
++                    if not acredita:
++                        motivos['analysis.json (actualizacion)'] = ('actualizacion omitida: '
++                                                    'propiedad no acreditada (%s)'
++                                                    % motivo_a)
++                    else:
++                        data = json.loads(datos.decode('utf-8'))
++                        if not isinstance(data, dict):
++                            raise ValueError('analysis.json no es un objeto JSON')
++                        data['abort_6g1'] = info
++                        nuevo = json.dumps(data, indent=2, ensure_ascii=False,
++                                           allow_nan=True, default=str)
++                        fd2 = os.open('analysis.json',
++                                      os.O_WRONLY | os.O_TRUNC | os.O_NOFOLLOW,
++                                      dir_fd=dirfd)
++                        with os.fdopen(fd2, 'w', encoding='utf-8') as f2:
++                            f2.write(nuevo)
++                        motivos['analysis.json (actualizacion)'] = ('actualizado con abort_6g1 '
++                                                    '(identidad acreditada)')
++            finally:
++                os.close(dirfd)
++        except Exception as exc:
++            motivos.setdefault('analysis.json',
++                               'actualizacion omitida (fallo seguro): %s' % exc)
+     return info
++
++
++# ---------------------------------------------------------------------------
++# Publicación con no-reemplazo atómico (corrección G, rectificación 6G.1)
++# ---------------------------------------------------------------------------
++
++_AT_FDCWD = -100
++_RENAME_NOREPLACE = 1
++_NR_RENAMEAT2 = {'x86_64': 316, 'aarch64': 276, 'armv7l': 382, 'armv8l': 382,
++                 'ppc64le': 357, 's390x': 347, 'riscv64': 276}
++
++
++def _renameat2_noreplace(origen, destino):
++    """[6G.1-R/G] renameat2(..., RENAME_NOREPLACE): operación atómica de
++    no-reemplazo. Falla con EEXIST si `destino` existe; nunca lo reemplaza.
++    Eleva OSError si el entorno no puede garantizar la operación (el llamador
++    NO debe publicar en ese caso: fail-closed, sin degradación silenciosa)."""
++    import ctypes
++    libc = ctypes.CDLL(None, use_errno=True)
++    fn = None
++    if hasattr(libc, 'renameat2'):
++        fn = libc.renameat2
++        fn.restype = ctypes.c_int
++        fn.argtypes = [ctypes.c_int, ctypes.c_char_p, ctypes.c_int,
++                       ctypes.c_char_p, ctypes.c_uint]
++        r = fn(_AT_FDCWD, os.fsencode(origen), _AT_FDCWD,
++               os.fsencode(destino), _RENAME_NOREPLACE)
++    elif os.uname().machine in _NR_RENAMEAT2:
++        sysc = libc.syscall
++        sysc.restype = ctypes.c_long
++        sysc.argtypes = [ctypes.c_long, ctypes.c_int, ctypes.c_char_p,
++                         ctypes.c_int, ctypes.c_char_p, ctypes.c_uint]
++        r = sysc(_NR_RENAMEAT2[os.uname().machine], _AT_FDCWD,
++                 os.fsencode(origen), _AT_FDCWD, os.fsencode(destino),
++                 _RENAME_NOREPLACE)
++    else:
++        raise OSError('renameat2 indisponible: la publicación no puede '
++                      'garantizarse sin reemplazo')
++    if r != 0:
++        e = ctypes.get_errno()
++        if e == errno.EEXIST:
++            raise FileExistsError(e, 'destino existente', destino)
++        raise OSError(e, 'renameat2 RENAME_NOREPLACE: %s' % os.strerror(e),
++                      origen, None, destino)
++
++
++def publicar_dir_6g1(origen, destino, max_intentos=64):
++    """[6G.1-R/G] Publica `origen` renombrándolo a `destino` SIN reemplazo.
++
++    Devuelve la ruta definitiva publicada. Si `destino` existe (colisión o
++    carrera), prueba con sufijos incrementales — jamás toca el contenido del
++    destino existente. Si el entorno no garantiza el no-reemplazo, eleva
++    OSError: el motor NO publica y conserva el provisional (fail-closed).
++    """
++    origen = os.path.abspath(origen)
++    destino = os.path.abspath(destino)
++    ultimo = None
++    for i in range(max_intentos):
++        candidato = destino if i == 0 else '%s_r%03d' % (destino, i)
++        try:
++            _renameat2_noreplace(origen, candidato)
++            return candidato
++        except FileExistsError as exc:
++            ultimo = exc
++            continue
++    raise ultimo or OSError('agotados los intentos de publicación segura')
+diff --git a/ETAPA_6G1_CORRECCION_LECTURA_SEGURA/motores/sdv_sdi_mqr_engine.py b/ETAPA_6G1_CORRECCION_LECTURA_SEGURA/motores/sdv_sdi_mqr_engine.py
+index 72a0e57..51556ed 100644
+--- a/ETAPA_6G1_CORRECCION_LECTURA_SEGURA/motores/sdv_sdi_mqr_engine.py
++++ b/ETAPA_6G1_CORRECCION_LECTURA_SEGURA/motores/sdv_sdi_mqr_engine.py
+@@ -492,7 +492,9 @@ from lectura_segura_6g1 import (MixCambiado as _MixCambiado_6g1,
+                                  abrir_mix as _abrir_mix_6g1,
+                                  abortar_6g1 as _abortar_6g1,
+                                  VerificacionFallida6G1 as _VerifFallida_6g1,
+-                                 registrar_propio_6g1 as _registrar_propio_6g1)
++                                 registrar_propio_6g1 as _registrar_propio_6g1,
++                                 reiniciar_registro_6g1 as _reiniciar_registro_6g1,
++                                 publicar_dir_6g1 as _publicar_dir_6g1)
+ 
+ from atribucion_6f import (measure, verify_wave, alignment_gate,
+                         analyze_files as _analyze_files_6f,
+@@ -2055,12 +2057,30 @@ class CandidateRunner:
+ def create_run_dir(out_base):
+     """Directorio de corrida en dos fases: *_partial -> final al exito.
+     Si el motor falla, el parcial se conserva como *_aborted (evidencia
+-    cientifica; nunca se destruye trabajo parcial silenciosamente)."""
+-    stamp = datetime.now().strftime("%Y%m%d_%H%M%S")
+-    final = os.path.join(out_base, "mqr_run_%s" % stamp)
+-    partial = final + "_partial"
+-    os.makedirs(partial, exist_ok=True)
+-    return partial, final
++    cientifica; nunca se destruye trabajo parcial silenciosamente).
++
++    [6G.1-R/F] Provisional EXCLUSIVO: nunca reutilizar un _partial
++    preexistente (los writers abren en modo 'w' y truncarian contenido ajeno
++    antes de poder registrar propiedad). mkdir exclusivo; si el nombre existe
++    se genera otro identificador SIN tocar su contenido. El registro de
++    propiedad se reinicia: aislado por corrida; los archivos preexistentes no
++    son propios por el mero hecho de estar en el directorio."""
++    _reiniciar_registro_6g1()
++    os.makedirs(out_base, exist_ok=True)
++    intento = 0
++    while True:
++        stamp = datetime.now().strftime("%Y%m%d_%H%M%S")
++        sufijo = "" if intento == 0 else "_%03d" % intento
++        final = os.path.join(out_base, "mqr_run_%s%s" % (stamp, sufijo))
++        partial = final + "_partial"
++        try:
++            os.mkdir(partial)
++            return partial, final
++        except FileExistsError:
++            intento += 1
++            if intento > 999:
++                raise RuntimeError("[6G.1-R/F] no se pudo crear un directorio "
++                                   "provisional exclusivo en %s" % out_base)
+ 
+ 
+ def _open_memmap(path, shape):
+@@ -2622,11 +2642,16 @@ def _run_core(mix_info, pairs, mode, opt, plan, freqs, band_masks,
+         log("[FATAL] Mix cambiado o verificacion incierta antes de publicar: "
+             "salidas propias invalidadas: %s" % _info6g1["salidas_invalidadas"])
+         raise _VerifFallida_6g1("guarda final no superada; no se publica")
+-    # [6G.1-R/B] Publicación por renombrado sólo tras guarda superada
+-    if os.path.exists(run_dir_final):
+-        stamp = datetime.now().strftime("%H%M%S")
+-        run_dir_final = run_dir_final + "_%s" % stamp
+-    os.rename(run_dir, run_dir_final)
++    # [6G.1-R/G] Publicación con no-reemplazo atómico (renameat2
++    # RENAME_NOREPLACE): nunca sustituye un destino existente; ante colisión
++    # elige otro identificador sin tocarlo; si el entorno no garantiza la
++    # operación, NO publica (fail-closed) y conserva el provisional.
++    try:
++        run_dir_final = _publicar_dir_6g1(run_dir, run_dir_final)
++    except Exception as _exc_pub:
++        log("[FATAL] publicacion segura no garantizada (%s); sin publicar; "
++            "corrida conservada en: %s" % (_exc_pub, run_dir))
++        raise _VerifFallida_6g1("publicacion no garantizada; no se publica")
+     log("Directorio final: %s" % run_dir_final)
+     log("Duracion total: %.1f s" % (time.monotonic() - t_start))
+     return run_dir_final
+diff --git a/ETAPA_6G1_CORRECCION_LECTURA_SEGURA/scripts/inyeccion_6g1/sitecustomize.py b/ETAPA_6G1_CORRECCION_LECTURA_SEGURA/scripts/inyeccion_6g1/sitecustomize.py
+index 3724e1a..3884d88 100644
+--- a/ETAPA_6G1_CORRECCION_LECTURA_SEGURA/scripts/inyeccion_6g1/sitecustomize.py
++++ b/ETAPA_6G1_CORRECCION_LECTURA_SEGURA/scripts/inyeccion_6g1/sitecustomize.py
+@@ -17,6 +17,37 @@ import sys
+ 
+ _inj = os.environ.get('SDVSDI_6G1_INJECT', '')
+ _dir = os.environ.get('SDVSDI_6G1_MOTORES', '')
++_out = os.environ.get('SDVSDI_6G1_OUT', '')
++_plantar = os.environ.get('SDVSDI_6G1_PLANTAR', '')
++
++
++def _plantar_6g1():
++    """[E1/E2/E3 end-to-end] Siembra determinista en el instante de la guarda:
++    crea enlaces simbólicos o reemplaza archivos dentro del *_partial de la
++    corrida (simula el estado atacado justo antes del aborto, sin tocar el
++    código del motor). Formato: modo:nombre@ruta, separado por ';'.
++    modos: enlace (symlink hacia @ruta) | archivo (copia regular de @ruta)."""
++    import glob as _glob
++    parciales = sorted(_glob.glob(os.path.join(_out, '*_partial')))
++    if not parciales:
++        return
++    base = parciales[0]
++    for spec in [x for x in _plantar.split(';') if x]:
++        modo, resto = spec.split(':', 1)
++        nombre, ruta = resto.split('@', 1)
++        if modo == 'enlace':
++            tmp = base + '.__lnk__'
++            if os.path.lexists(tmp):
++                os.unlink(tmp)
++            os.symlink(ruta, tmp)
++            os.replace(tmp, os.path.join(base, nombre))
++        elif modo == 'archivo':
++            tmp = base + '.__cop__'
++            with open(ruta, 'rb') as fsrc, open(tmp, 'wb') as fdst:
++                fdst.write(fsrc.read())
++            os.replace(tmp, os.path.join(base, nombre))
++
++
+ if _inj and _dir:
+     if _dir not in sys.path:
+         sys.path.insert(0, _dir)
+@@ -24,6 +55,8 @@ if _inj and _dir:
+ 
+     if _inj == 'verificar_raise':
+         def _verificar_rota(self, *a, **k):
++            if _plantar:
++                _plantar_6g1()
+             raise RuntimeError('inyeccion de prueba T1: verificar() fallo')
+         _L.MixHandle.verificar = _verificar_rota
+     elif _inj == 'ruta_raise':
+diff --git a/ETAPA_6G1_CORRECCION_LECTURA_SEGURA/scripts/pruebas_seguridad_6g1.py b/ETAPA_6G1_CORRECCION_LECTURA_SEGURA/scripts/pruebas_seguridad_6g1.py
+new file mode 100644
+index 0000000..ba0495f
+--- /dev/null
++++ b/ETAPA_6G1_CORRECCION_LECTURA_SEGURA/scripts/pruebas_seguridad_6g1.py
+@@ -0,0 +1,606 @@
++"""Pruebas de seguridad E1–E7 (rectificación 6G.1 — hallazgos E, F y G).
++
++Ejecuta ÚNICAMENTE las pruebas nuevas de la corrección puntual final; no repite
++la batería de 34 pruebas ya reportada. Cada prueba comprueba contenido, hash,
++identidad y estado final de los archivos involucrados, no sólo el código de
++salida. Veredictos: PASS / FAIL / NOT_EXECUTED con motivo.
++
++  E1  analysis.json simbólico -> archivo externo intacto byte a byte
++      (unidad del módulo compartido + end-to-end en los tres motores: el
++      plantado determinista ocurre en el instante de la guarda, dentro del
++      inyector de pruebas, sin modificar el código del motor)
++  E2  ABORT_6G1.json simbólico -> archivo externo intacto byte a byte
++      (unidad + end-to-end en los tres motores)
++  E3  analysis.json ajeno ordinario -> sin sobrescribir
++      (unidad + end-to-end en los tres motores)
++  E4  _partial preexistente con centinelas -> el motor se niega a reutilizarlo
++      y conserva todos sus archivos (dos procesos con la misma marca temporal
++      forzada; los tres motores)
++  E5  dos solicitudes con el mismo identificador temporal -> no comparten ni
++      sobrescriben el provisional (un proceso, reloj congelado; los tres)
++  E6  destino definitivo preexistente -> la publicación no lo reemplaza
++      (unidad de publicar_dir_6g1, incluido destino vacío; verificación
++      estática de que los tres motores publican por la vía segura)
++  E7  registro de propiedad aislado entre dos corridas consecutivas
++      (unidad; y verificación dinámica del reinicio por corrida en E4/E5)
++
++Evidencia: evidence/pruebas_seguridad_6g1.json + evidence/matriz_seguridad_6g1.csv
++"""
++import csv
++import json
++import os
++import shutil
++import subprocess
++import sys
++import time
++from pathlib import Path
++
++RAIZ = Path(__file__).resolve().parent.parent
++sys.path.insert(0, str(RAIZ / 'scripts'))
++sys.path.insert(0, str(RAIZ / 'motores'))
++from comun_6g1 import FIX, MOT, MOTORES, escribir_manifest, recolectar, sha_file, dump
++
++EV = RAIZ / 'evidence'
++INJ = RAIZ / 'scripts' / 'inyeccion_6g1'
++TRABAJO = Path('/tmp/f6g1seg')
++
++SALIDAS = {'Hardened': ('mix SDV.wav', 'mix SDI.wav'),
++           'EVO': ('mix SDV.wav', 'mix SDI.wav'),
++           'MQR': ('SDV.wav', 'SDI.wav')}
++PREFIJO = {'Hardened': 'motorA_run_', 'EVO': 'motorA_run_', 'MQR': 'mqr_run_'}
++FAKE = '20991231_235959'
++
++
++def dirs_definitivos(out, motor):
++    pref = PREFIJO[motor]
++    if not Path(out).exists():
++        return []
++    return [d.name for d in Path(out).iterdir()
++            if d.is_dir() and d.name.startswith(pref)
++            and not d.name.endswith('_partial')
++            and not d.name.endswith('_aborted')]
++
++
++def fila(prueba, motor, alcance, checks, motivo_ne=None):
++    if motivo_ne is not None:
++        return dict(prueba=prueba, motor=motor, alcance=alcance,
++                    veredicto='NOT_EXECUTED', checks_ok=0, checks_total=0,
++                    detalle=motivo_ne)
++    ok = [c for c in checks if c[1]]
++    detalle = '; '.join('%s=FALLO: %s' % (c[0], c[2]) for c in checks
++                        if not c[1]) or 'todos los checks OK'
++    return dict(prueba=prueba, motor=motor, alcance=alcance,
++                veredicto='PASS' if len(ok) == len(checks) else 'FAIL',
++                checks_ok=len(ok), checks_total=len(checks), detalle=detalle)
++
++
++def correr(motor, mixdict, work, inject=None, plantar=None):
++    """Corre un motor; `plantar` (lista 'modo:nombre@ruta') se ejecuta dentro
++    del proceso del motor en el instante de la guarda (inyector), de modo que
++    el estado atacado existe de forma determinista antes del aborto."""
++    work = Path(work)
++    shutil.rmtree(work, ignore_errors=True)
++    work.mkdir(parents=True)
++    man = work / 'manifest.json'
++    escribir_manifest(man, mixdict)
++    out = work / 'out'
++    cmd = [sys.executable, '-B', str(MOT / MOTORES[motor]),
++           '--manifest', str(man), '--out', str(out),
++           '--mode', 'full_processing']
++    env = dict(os.environ, PYTHONPATH=str(INJ),
++               SDVSDI_6G1_OUT=str(out))
++    if inject:
++        env['SDVSDI_6G1_INJECT'] = inject
++        env['SDVSDI_6G1_MOTORES'] = str(MOT)
++    if plantar:
++        env['SDVSDI_6G1_PLANTAR'] = ';'.join(plantar)
++    proc = subprocess.Popen(cmd, cwd=str(MOT), stdout=subprocess.PIPE,
++                            stderr=subprocess.STDOUT, text=True, env=env)
++    salida = proc.communicate(timeout=900)[0] or ''
++    datos = recolectar(out)
++    datos.update(exit=proc.returncode, stdout_tail=salida[-4000:], out=str(out))
++    return datos
++
++
++def checks_aborto(r, motor):
++    propios = SALIDAS[motor]
++    out = Path(r['out'])
++    nom = sorted(p.name for p in out.rglob('*.wav')) if out.exists() else []
++    faltan = [s for s in propios if s in nom]
++    return [('exit_2', r['exit'] == 2, 'exit=%s' % r['exit']),
++            ('sin_dir_definitivo', not dirs_definitivos(r['out'], motor),
++             'definitivos=%s' % dirs_definitivos(r['out'], motor)),
++            ('salidas_propias_eliminadas', not faltan, 'presentes=%s' % faltan)]
++
++
++def pcm_auditado(motor, cont='WAV'):
++    d = json.loads((EV / 'contenedores_6g1.json').read_text())
++    return d['casos']['%s/%s/full_processing' % (motor, cont)]['pcm']
++
++
++# ------------------------------------------------- unidad (módulo compartido)
++def unidad():
++    filas, detalles = [], {}
++    import lectura_segura_6g1 as L
++
++    # E1: analysis.json simbólico -> externo intacto
++    try:
++        run = TRABAJO / 'U' / 'E1'
++        shutil.rmtree(run, ignore_errors=True)
++        run.mkdir(parents=True)
++        externo = TRABAJO / 'U' / 'externo_E1.json'
++        externo.write_bytes(b'{"externo": true, "dato": "no debe tocarse"}\n')
++        sha_ext = sha_file(externo)
++        os.symlink(str(externo), run / 'analysis.json')
++        L.reiniciar_registro_6g1()
++        propio = run / 'propio.wav'
++        propio.write_bytes(b'salida propia\n')
++        L.registrar_propio_6g1(propio, estable=True)
++        info = L.abortar_6g1(run, 'PRUEBA_E1')
++        checks = [
++            ('externo_byte_a_byte', sha_file(externo) == sha_ext, sha_file(externo)[:16]),
++            ('analysis_sigue_enlace', os.path.islink(run / 'analysis.json'), ''),
++            ('motivo_enlace_inventario',
++             info['motivos_propiedad'].get('analysis.json')
++             == 'enlace_simbolico_conservado (sin seguir)',
++             str(info['motivos_propiedad'].get('analysis.json'))),
++            ('motivo_actualizacion_omitida',
++             'apertura segura fallo' in str(info['motivos_propiedad']
++                                            .get('analysis.json (actualizacion)', '')),
++             str(info['motivos_propiedad'].get('analysis.json (actualizacion)'))),
++            ('abort_regular_creado', (run / 'ABORT_6G1.json').is_file()
++             and not os.path.islink(run / 'ABORT_6G1.json'), ''),
++            ('propio_eliminado', 'propio.wav' in info['salidas_invalidadas'],
++             str(info['salidas_invalidadas'])),
++        ]
++        filas.append(fila('E1', 'lectura_segura_6g1',
++                          'unidad: analysis.json simbólico; externo intacto',
++                          checks))
++        detalles['E1'] = dict(abort=info)
++    except Exception as exc:
++        filas.append(fila('E1', 'lectura_segura_6g1', 'unidad', None,
++                          motivo_ne='entorno de ensayo: %r' % exc))
++        detalles['E1'] = dict(error=repr(exc))
++
++    # E2: ABORT_6G1.json simbólico -> externo intacto, sin sobrescribir
++    try:
++        run = TRABAJO / 'U' / 'E2'
++        shutil.rmtree(run, ignore_errors=True)
++        run.mkdir(parents=True)
++        externo = TRABAJO / 'U' / 'externo_E2.json'
++        externo.write_bytes(b'{"externo": "registro ajeno preexistente"}\n')
++        sha_ext = sha_file(externo)
++        os.symlink(str(externo), run / 'ABORT_6G1.json')
++        L.reiniciar_registro_6g1()
++        propio = run / 'propio.wav'
++        propio.write_bytes(b'salida propia\n')
++        L.registrar_propio_6g1(propio, estable=True)
++        info = L.abortar_6g1(run, 'PRUEBA_E2')
++        checks = [
++            ('externo_byte_a_byte', sha_file(externo) == sha_ext, sha_file(externo)[:16]),
++            ('abort_sigue_enlace', os.path.islink(run / 'ABORT_6G1.json'), ''),
++            ('motivo_colision', 'colision' in str(info['motivos_propiedad']
++                                                  .get('ABORT_6G1.json', '')),
++             str(info['motivos_propiedad'].get('ABORT_6G1.json'))),
++            ('propio_eliminado', 'propio.wav' in info['salidas_invalidadas'],
++             str(info['salidas_invalidadas'])),
++        ]
++        filas.append(fila('E2', 'lectura_segura_6g1',
++                          'unidad: ABORT_6G1.json simbólico; sin sobrescribir',
++                          checks))
++        detalles['E2'] = dict(abort=info)
++    except Exception as exc:
++        filas.append(fila('E2', 'lectura_segura_6g1', 'unidad', None,
++                          motivo_ne='entorno de ensayo: %r' % exc))
++        detalles['E2'] = dict(error=repr(exc))
++
++    # E3: analysis.json ajeno ordinario -> sin sobrescribir
++    try:
++        run = TRABAJO / 'U' / 'E3'
++        shutil.rmtree(run, ignore_errors=True)
++        run.mkdir(parents=True)
++        contenido = b'{"nota": "analysis ajeno ordinario; no debe actualizarse"}\n'
++        (run / 'analysis.json').write_bytes(contenido)
++        L.reiniciar_registro_6g1()
++        propio = run / 'propio.wav'
++        propio.write_bytes(b'salida propia\n')
++        L.registrar_propio_6g1(propio, estable=True)
++        info = L.abortar_6g1(run, 'PRUEBA_E3')
++        tras = (run / 'analysis.json').read_bytes()
++        checks = [
++            ('ajeno_byte_a_byte', tras == contenido, tras[:40]),
++            ('sin_abort_6g1_embedded',
++             'abort_6g1' not in json.loads(tras.decode('utf-8')), ''),
++            ('motivo_sin_actualizar',
++             'propiedad no acreditada' in str(info['motivos_propiedad']
++                                              .get('analysis.json (actualizacion)', '')),
++             str(info['motivos_propiedad'].get('analysis.json (actualizacion)'))),
++            ('abort_regular_creado', (run / 'ABORT_6G1.json').is_file(), ''),
++            ('propio_eliminado', 'propio.wav' in info['salidas_invalidadas'],
++             str(info['salidas_invalidadas'])),
++        ]
++        filas.append(fila('E3', 'lectura_segura_6g1',
++                          'unidad: analysis.json ajeno ordinario; intacto',
++                          checks))
++        detalles['E3'] = dict(abort=info)
++    except Exception as exc:
++        filas.append(fila('E3', 'lectura_segura_6g1', 'unidad', None,
++                          motivo_ne='entorno de ensayo: %r' % exc))
++        detalles['E3'] = dict(error=repr(exc))
++
++    # E7: registro de propiedad aislado entre dos corridas consecutivas
++    try:
++        run1 = TRABAJO / 'U' / 'E7_corrida1'
++        run2 = TRABAJO / 'U' / 'E7_corrida2'
++        shutil.rmtree(run1, ignore_errors=True)
++        shutil.rmtree(run2, ignore_errors=True)
++        run1.mkdir(parents=True)
++        run2.mkdir(parents=True)
++        L.reiniciar_registro_6g1()                 # corrida 1
++        a1 = run1 / 'salida_corrida1.wav'
++        a1.write_bytes(b'contenido corrida 1\n')
++        L.registrar_propio_6g1(a1, estable=True)
++        L.reiniciar_registro_6g1()                 # corrida 2 (aislada)
++        b1 = run2 / 'salida_corrida2.wav'
++        b1.write_bytes(b'contenido corrida 2\n')
++        L.registrar_propio_6g1(b1, estable=True)
++        propia_a1, motivo_a1 = L.propiedad_de_6g1(a1)
++        info1 = L.abortar_6g1(run1, 'PRUEBA_E7_corrida1')
++        info2 = L.abortar_6g1(run2, 'PRUEBA_E7_corrida2')
++        checks = [
++            ('corrida1_no_acreditada_en_corrida2',
++             propia_a1 is False and motivo_a1 == 'ajeno_no_registrado', motivo_a1),
++            ('a1_conservado_en_su_corrida1',
++             info1['motivos_propiedad'].get('salida_corrida1.wav')
++             == 'ajeno_no_registrado'
++             and 'salida_corrida1.wav' in info1['conservados'],
++             str(info1['motivos_propiedad'].get('salida_corrida1.wav'))),
++            ('a1_byte_a_byte_tras_ambos_abortos',
++             a1.exists() and a1.read_bytes() == b'contenido corrida 1\n', ''),
++            ('b1_eliminado_por_su_corrida',
++             'salida_corrida2.wav' in info2['salidas_invalidadas'],
++             str(info2['salidas_invalidadas'])),
++            ('abort_corrida2_no_toca_archivos_de_corrida1',
++             not any('salida_corrida1' in c for c in info2['conservados']),
++             str(info2['conservados'])),
++        ]
++        filas.append(fila('E7', 'lectura_segura_6g1',
++                          'unidad: aislamiento del registro entre corridas',
++                          checks))
++        detalles['E7'] = dict(motivo_a1=motivo_a1, info1=info1, info2=info2)
++    except Exception as exc:
++        filas.append(fila('E7', 'lectura_segura_6g1', 'unidad', None,
++                          motivo_ne='entorno de ensayo: %r' % exc))
++        detalles['E7'] = dict(error=repr(exc))
++
++    # E6 (unidad): publicar_dir_6g1 nunca reemplaza destino preexistente
++    try:
++        base = TRABAJO / 'U' / 'E6'
++        shutil.rmtree(base, ignore_errors=True)
++        base.mkdir(parents=True)
++        import lectura_segura_6g1 as L2
++        destino = base / 'corrida_final'
++        destino.mkdir()
++        centinela = destino / 'centinela_ajeno.txt'
++        centinela.write_bytes(b'destino ajeno preexistente; no debe tocarse\n')
++        sha_cen = sha_file(centinela)
++        origen = base / 'corrida_nueva'
++        origen.mkdir()
++        arte = origen / 'salida.wav'
++        arte.write_bytes(b'artefacto de la corrida nueva\n')
++        publicado = L2.publicar_dir_6g1(origen, destino)
++        vacio = base / 'destino_vacio'
++        vacio.mkdir()
++        origen2 = base / 'corrida_nueva2'
++        origen2.mkdir()
++        publicado2 = L2.publicar_dir_6g1(origen2, vacio)
++        checks = [
++            ('centinela_intacto', centinela.exists()
++             and sha_file(centinela) == sha_cen, sha_file(centinela)[:16]),
++            ('destino_preexistente_sigue_aqui',
++             destino.is_dir() and publicado != str(destino), publicado),
++            ('origen_publicado_con_sufijo',
++             Path(publicado).is_dir() and (Path(publicado) / 'salida.wav').is_file(),
++             publicado),
++            ('destino_vacio_no_reemplazado',
++             vacio.is_dir() and publicado2 != str(vacio)
++             and not any(vacio.iterdir()), str(sorted(p.name for p in vacio.iterdir()))),
++            ('publicacion2_con_sufijo', Path(publicado2).is_dir(), publicado2),
++        ]
++        filas.append(fila('E6', 'lectura_segura_6g1',
++                          'unidad: publicación con no-reemplazo (destino con '
++                          'centinela y destino vacío)', checks))
++        detalles['E6'] = dict(publicado=publicado, publicado2=publicado2)
++    except Exception as exc:
++        filas.append(fila('E6', 'lectura_segura_6g1', 'unidad', None,
++                          motivo_ne='entorno de ensayo: %r' % exc))
++        detalles['E6'] = dict(error=repr(exc))
++
++    return filas, detalles
++
++
++RUNNER = r'''
++import importlib.util, json, os, sys
++engine, out_base, fake = sys.argv[1], sys.argv[2], (sys.argv[3] if len(sys.argv) > 3 else '')
++sys.path.insert(0, os.path.dirname(engine))
++spec = importlib.util.spec_from_file_location('eng_6g1', engine)
++m = importlib.util.module_from_spec(spec)
++spec.loader.exec_module(m)
++if fake:
++    import datetime as _dt
++    class _DT:
++        @staticmethod
++        def now():
++            return _dt.datetime.strptime(fake, '%Y%m%d_%H%M%S')
++    m.datetime = _DT
++r1 = m.create_run_dir(out_base)
++open(os.path.join(r1[0], 'marcador_corrida_1.txt'), 'w').write('corrida 1\n')
++r2 = m.create_run_dir(out_base)
++import lectura_segura_6g1 as L
++print(json.dumps({'r1': list(r1), 'r2': list(r2),
++                  'registro_vacio': len(L._PROPIOS_6G1) == 0}))
++'''
++
++
++def _runner(motor, out_base, fake):
++    r = subprocess.run([sys.executable, '-c', RUNNER,
++                        str(MOT / MOTORES[motor]), str(out_base), fake],
++                       capture_output=True, text=True, timeout=300)
++    if r.returncode != 0:
++        raise RuntimeError('runner fallo: %s' % r.stderr[-800:])
++    return json.loads(r.stdout.strip().splitlines()[-1])
++
++
++def motores_eg():
++    filas, detalles = [], {}
++    for motor in MOTORES:
++        # ---- E1 end-to-end (los tres; plantado determinista en la guarda)
++        try:
++            externo = TRABAJO / motor / 'E1_externo.json'
++            externo.parent.mkdir(parents=True, exist_ok=True)
++            externo.write_bytes(b'{"externo": true, "corrida": "E1"}\n')
++            sha_ext = sha_file(externo)
++            r = correr(motor, dict(mix=str(FIX / 'mix.wav'),
++                                   vocal=str(FIX / 'vocal_mix.wav'),
++                                   instrumental=str(FIX / 'instrumental_mix.wav')),
++                       TRABAJO / motor / 'E1', inject='verificar_raise',
++                       plantar=['enlace:analysis.json@%s' % externo])
++            out = Path(r['out'])
++            parcial = sorted(out.glob('*_partial'))[0]
++            checks = checks_aborto(r, motor)
++            checks += [
++                ('externo_byte_a_byte', sha_file(externo) == sha_ext,
++                 sha_file(externo)[:16]),
++                ('analysis_sigue_enlace',
++                 os.path.islink(parcial / 'analysis.json'), str(parcial)),
++                ('abort_regular_creado',
++                 (parcial / 'ABORT_6G1.json').is_file()
++                 and not os.path.islink(parcial / 'ABORT_6G1.json'), ''),
++            ]
++            filas.append(fila('E1', motor,
++                              'end-to-end: analysis.json simbólico al abortar',
++                              checks))
++            detalles.setdefault(motor, {})['E1'] = dict(exit=r['exit'])
++        except Exception as exc:
++            filas.append(fila('E1', motor, 'end-to-end', None,
++                              motivo_ne='entorno de ensayo: %r' % exc))
++            detalles.setdefault(motor, {})['E1'] = dict(error=repr(exc))
++        # ---- E2 end-to-end (los tres)
++        try:
++            externo = TRABAJO / motor / 'E2_externo.json'
++            externo.parent.mkdir(parents=True, exist_ok=True)
++            externo.write_bytes(b'{"externo": "registro ajeno preexistente"}\n')
++            sha_ext = sha_file(externo)
++            r = correr(motor, dict(mix=str(FIX / 'mix.wav'),
++                                   vocal=str(FIX / 'vocal_mix.wav'),
++                                   instrumental=str(FIX / 'instrumental_mix.wav')),
++                       TRABAJO / motor / 'E2', inject='verificar_raise',
++                       plantar=['enlace:ABORT_6G1.json@%s' % externo])
++            out = Path(r['out'])
++            parcial = sorted(out.glob('*_partial'))[0]
++            checks = checks_aborto(r, motor)
++            checks += [
++                ('externo_byte_a_byte', sha_file(externo) == sha_ext,
++                 sha_file(externo)[:16]),
++                ('abort_sigue_enlace', os.path.islink(parcial / 'ABORT_6G1.json'),
++                 str(parcial)),
++            ]
++            if (parcial / 'analysis.json').is_file() \
++                    and not os.path.islink(parcial / 'analysis.json'):
++                try:
++                    data = json.loads((parcial / 'analysis.json').read_text())
++                    mot_col = str(data.get('abort_6g1', {}).get(
++                        'motivos_propiedad', {}).get('ABORT_6G1.json', ''))
++                    checks.append(('motivo_colision_registrado',
++                                   'colision' in mot_col, mot_col[:80]))
++                except Exception as exc:
++                    checks.append(('motivo_colision_registrado', False, repr(exc)))
++            filas.append(fila('E2', motor,
++                              'end-to-end: ABORT_6G1.json simbólico al abortar',
++                              checks))
++            detalles.setdefault(motor, {})['E2'] = dict(exit=r['exit'])
++        except Exception as exc:
++            filas.append(fila('E2', motor, 'end-to-end', None,
++                              motivo_ne='entorno de ensayo: %r' % exc))
++            detalles.setdefault(motor, {})['E2'] = dict(error=repr(exc))
++        # ---- E3 end-to-end (los tres)
++        try:
++            ajeno = TRABAJO / motor / 'E3_ajeno.json'
++            ajeno.parent.mkdir(parents=True, exist_ok=True)
++            ajeno.write_bytes(b'{"nota": "analysis ajeno ordinario; '
++                              b'no debe actualizarse"}\n')
++            r = correr(motor, dict(mix=str(FIX / 'mix.wav'),
++                                   vocal=str(FIX / 'vocal_mix.wav'),
++                                   instrumental=str(FIX / 'instrumental_mix.wav')),
++                       TRABAJO / motor / 'E3', inject='verificar_raise',
++                       plantar=['archivo:analysis.json@%s' % ajeno])
++            out = Path(r['out'])
++            parcial = sorted(out.glob('*_partial'))[0]
++            contenido = (parcial / 'analysis.json').read_bytes()
++            data = json.loads(contenido.decode('utf-8'))
++            checks = checks_aborto(r, motor)
++            checks += [
++                ('ajeno_sin_actualizar', 'abort_6g1' not in data, ''),
++                ('ajeno_byte_a_byte', contenido == ajeno.read_bytes(),
++                 contenido[:40]),
++                ('abort_regular_creado',
++                 (parcial / 'ABORT_6G1.json').is_file()
++                 and not os.path.islink(parcial / 'ABORT_6G1.json'), ''),
++            ]
++            filas.append(fila('E3', motor,
++                              'end-to-end: analysis.json ajeno ordinario',
++                              checks))
++            detalles.setdefault(motor, {})['E3'] = dict(exit=r['exit'])
++        except Exception as exc:
++            filas.append(fila('E3', motor, 'end-to-end', None,
++                              motivo_ne='entorno de ensayo: %r' % exc))
++            detalles.setdefault(motor, {})['E3'] = dict(error=repr(exc))
++        # ---- E4: _partial preexistente con centinelas (dos procesos, misma marca)
++        try:
++            base = TRABAJO / motor / 'E4'
++            o1 = _runner(motor, base, FAKE)
++            p1 = Path(o1['r1'][0])
++            (p1 / 'centinela_a.txt').write_bytes(b'centinela A\n')
++            (p1 / 'centinela_b.dat').write_bytes(b'centinela B\n')
++            hashes = {p.name: sha_file(p) for p in p1.iterdir() if p.is_file()}
++            o2 = _runner(motor, base, FAKE)
++            p2 = Path(o2['r1'][0])
++            checks = [
++                ('no_reutilizado', p1 != p2, '%s vs %s' % (p1.name, p2.name)),
++                ('p1_existe_con_contenido', p1.is_dir() and len(hashes) >= 3,
++                 str(sorted(p.name for p in p1.iterdir()))),
++                ('centinelas_intactos',
++                 all(sha_file(p) == hashes[p.name]
++                     for p in p1.iterdir() if p.is_file()), ''),
++                ('p2_nuevo_y_vacio_del_motor',
++                 p2.is_dir() and sorted(p.name for p in p2.iterdir())
++                 == ['marcador_corrida_1.txt'],
++                 str(sorted(p.name for p in p2.iterdir()))),
++                ('registro_reiniciado_por_corrida',
++                 o1['registro_vacio'] and o2['registro_vacio'],
++                 str([o1['registro_vacio'], o2['registro_vacio']])),
++                ('marca_forzada_igual', FAKE in p1.name and FAKE in p2.name,
++                 '%s | %s' % (p1.name, p2.name)),
++            ]
++            filas.append(fila('E4', motor,
++                              '_partial preexistente: no reutilizado, '
++                              'centinelas intactos (marca forzada)', checks))
++            detalles.setdefault(motor, {})['E4'] = dict(p1=str(p1), p2=str(p2))
++        except Exception as exc:
++            filas.append(fila('E4', motor, '_partial preexistente', None,
++                              motivo_ne='entorno de ensayo: %r' % exc))
++            detalles.setdefault(motor, {})['E4'] = dict(error=repr(exc))
++        # ---- E5: dos solicitudes, mismo identificador temporal (un proceso)
++        try:
++            base = TRABAJO / motor / 'E5'
++            o = _runner(motor, base, FAKE)
++            p1, p2 = Path(o['r1'][0]), Path(o['r2'][0])
++            marcador = p1 / 'marcador_corrida_1.txt'
++            checks = [
++                ('no_comparten_directorio', p1 != p2,
++                 '%s vs %s' % (p1.name, p2.name)),
++                ('marcador_corrida1_intacto',
++                 marcador.is_file() and marcador.read_bytes() == b'corrida 1\n', ''),
++                ('ambos_existen', p1.is_dir() and p2.is_dir(), ''),
++                ('registro_reiniciado_por_solicitud', o['registro_vacio'], ''),
++                ('marca_forzada_igual', FAKE in p1.name and FAKE in p2.name,
++                 '%s | %s' % (p1.name, p2.name)),
++            ]
++            filas.append(fila('E5', motor,
++                              'dos solicitudes con el mismo identificador '
++                              'temporal (reloj congelado)', checks))
++            detalles.setdefault(motor, {})['E5'] = dict(r1=str(p1), r2=str(p2))
++        except Exception as exc:
++            filas.append(fila('E5', motor, 'misma marca temporal', None,
++                              motivo_ne='entorno de ensayo: %r' % exc))
++            detalles.setdefault(motor, {})['E5'] = dict(error=repr(exc))
++        # ---- E6 (estático por motor): publicación por la vía segura
++        try:
++            src = (MOT / MOTORES[motor]).read_text(encoding='utf-8')
++            checks = [
++                ('publica_via_publicar_dir_6g1', '_publicar_dir_6g1(' in src, ''),
++                ('sin_rename_publicacion', 'os.rename(run_dir, run_dir_final)'
++                 not in src, ''),
++                ('registro_reiniciado_en_create_run_dir',
++                 '_reiniciar_registro_6g1()' in src, ''),
++            ]
++            filas.append(fila('E6', motor,
++                              'estático: publicación y creación de corrida '
++                              'por la vía segura', checks))
++            detalles.setdefault(motor, {})['E6'] = dict(estatico=True)
++        except Exception as exc:
++            filas.append(fila('E6', motor, 'estático', None,
++                              motivo_ne='entorno de ensayo: %r' % exc))
++            detalles.setdefault(motor, {})['E6'] = dict(error=repr(exc))
++        # ---- sanidad: corrida feliz tras E–G (no es la batería de 34)
++        try:
++            r = correr(motor, dict(mix=str(FIX / 'mix.wav'),
++                                   vocal=str(FIX / 'vocal_mix.wav'),
++                                   instrumental=str(FIX / 'instrumental_mix.wav')),
++                       TRABAJO / motor / 'sanidad')
++            pcm = {p['name']: p['pcm_sha256'] for p in r['pcm']
++                   if 'pcm_sha256' in p}
++            esperado = pcm_auditado(motor)
++            integ = r['integrity']
++            defs = dirs_definitivos(r['out'], motor)
++            checks = [
++                ('exit_0', r['exit'] == 0, 'exit=%s' % r['exit']),
++                ('dir_definitivo_unico_publicado', len(defs) == 1, 'defs=%s' % defs),
++                ('integridad_after_ruta_true',
++                 integ.get('after', {}).get('unchanged') is True
++                 and integ.get('ruta_actual', {}).get('unchanged') is True,
++                 'after=%s ruta=%s' % (integ.get('after', {}).get('unchanged'),
++                                       integ.get('ruta_actual', {}).get('unchanged'))),
++                ('pcm_identico_a_campana_auditada', pcm == esperado,
++                 'diff=%s' % {k: pcm.get(k, '')[:12] for k in
++                              set(pcm) | set(esperado)
++                              if pcm.get(k) != esperado.get(k)}),
++            ]
++            filas.append(fila('sanidad', motor,
++                              'corrida feliz tras E–G (no repite la batería de 34)',
++                              checks))
++            detalles.setdefault(motor, {})['sanidad'] = dict(exit=r['exit'],
++                                                             pcm=pcm)
++        except Exception as exc:
++            filas.append(fila('sanidad', motor, 'corrida feliz', None,
++                              motivo_ne='entorno de ensayo: %r' % exc))
++            detalles.setdefault(motor, {})['sanidad'] = dict(error=repr(exc))
++    return filas, detalles
++
++
++def main():
++    EV.mkdir(parents=True, exist_ok=True)
++    TRABAJO.mkdir(parents=True, exist_ok=True)
++    todas, detalle_todo = [], {}
++    print('== Unidad (módulo compartido) ==')
++    fu, du = unidad()
++    todas.extend(fu)
++    detalle_todo['unidad'] = du
++    for f in fu:
++        print('  %-14s %-28s %s' % (f['veredicto'], f['prueba'], f['detalle'][:80]))
++    print('== Motores (E–G + sanidad) ==')
++    fm, dm = motores_eg()
++    todas.extend(fm)
++    detalle_todo.update(dm)
++    for f in fm:
++        print('  %-14s %-6s %-28s %s' % (f['veredicto'], f['motor'],
++                                         f['prueba'], f['detalle'][:80]))
++    dump(EV / 'pruebas_seguridad_6g1.json',
++         dict(schema='pruebas-seguridad-6g1/1',
++              filas=todas, detalles=detalle_todo))
++    with (EV / 'matriz_seguridad_6g1.csv').open('w', newline='',
++                                                encoding='utf-8') as fh:
++        w = csv.DictWriter(fh, fieldnames=('prueba', 'motor', 'alcance',
++                                           'veredicto', 'checks_ok',
++                                           'checks_total', 'detalle'),
++                           lineterminator='\n')
++        w.writeheader()
++        w.writerows(todas)
++    n = {v: sum(1 for f in todas if f['veredicto'] == v)
++         for v in ('PASS', 'FAIL', 'NOT_EXECUTED')}
++    print('RESUMEN: %d PASS, %d FAIL, %d NOT_EXECUTED de %d filas'
++          % (n['PASS'], n['FAIL'], n['NOT_EXECUTED'], len(todas)))
++
++
++if __name__ == '__main__':
++    main()

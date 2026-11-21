@@ -492,7 +492,9 @@ from lectura_segura_6g1 import (MixCambiado as _MixCambiado_6g1,
                                  abrir_mix as _abrir_mix_6g1,
                                  abortar_6g1 as _abortar_6g1,
                                  VerificacionFallida6G1 as _VerifFallida_6g1,
-                                 registrar_propio_6g1 as _registrar_propio_6g1)
+                                 registrar_propio_6g1 as _registrar_propio_6g1,
+                                 reiniciar_registro_6g1 as _reiniciar_registro_6g1,
+                                 publicar_dir_6g1 as _publicar_dir_6g1)
 
 from atribucion_6f import (measure, verify_wave, alignment_gate,
                         analyze_files as _analyze_files_6f,
@@ -2055,12 +2057,30 @@ class CandidateRunner:
 def create_run_dir(out_base):
     """Directorio de corrida en dos fases: *_partial -> final al exito.
     Si el motor falla, el parcial se conserva como *_aborted (evidencia
-    cientifica; nunca se destruye trabajo parcial silenciosamente)."""
-    stamp = datetime.now().strftime("%Y%m%d_%H%M%S")
-    final = os.path.join(out_base, "mqr_run_%s" % stamp)
-    partial = final + "_partial"
-    os.makedirs(partial, exist_ok=True)
-    return partial, final
+    cientifica; nunca se destruye trabajo parcial silenciosamente).
+
+    [6G.1-R/F] Provisional EXCLUSIVO: nunca reutilizar un _partial
+    preexistente (los writers abren en modo 'w' y truncarian contenido ajeno
+    antes de poder registrar propiedad). mkdir exclusivo; si el nombre existe
+    se genera otro identificador SIN tocar su contenido. El registro de
+    propiedad se reinicia: aislado por corrida; los archivos preexistentes no
+    son propios por el mero hecho de estar en el directorio."""
+    _reiniciar_registro_6g1()
+    os.makedirs(out_base, exist_ok=True)
+    intento = 0
+    while True:
+        stamp = datetime.now().strftime("%Y%m%d_%H%M%S")
+        sufijo = "" if intento == 0 else "_%03d" % intento
+        final = os.path.join(out_base, "mqr_run_%s%s" % (stamp, sufijo))
+        partial = final + "_partial"
+        try:
+            os.mkdir(partial)
+            return partial, final
+        except FileExistsError:
+            intento += 1
+            if intento > 999:
+                raise RuntimeError("[6G.1-R/F] no se pudo crear un directorio "
+                                   "provisional exclusivo en %s" % out_base)
 
 
 def _open_memmap(path, shape):
@@ -2622,11 +2642,16 @@ def _run_core(mix_info, pairs, mode, opt, plan, freqs, band_masks,
         log("[FATAL] Mix cambiado o verificacion incierta antes de publicar: "
             "salidas propias invalidadas: %s" % _info6g1["salidas_invalidadas"])
         raise _VerifFallida_6g1("guarda final no superada; no se publica")
-    # [6G.1-R/B] Publicación por renombrado sólo tras guarda superada
-    if os.path.exists(run_dir_final):
-        stamp = datetime.now().strftime("%H%M%S")
-        run_dir_final = run_dir_final + "_%s" % stamp
-    os.rename(run_dir, run_dir_final)
+    # [6G.1-R/G] Publicación con no-reemplazo atómico (renameat2
+    # RENAME_NOREPLACE): nunca sustituye un destino existente; ante colisión
+    # elige otro identificador sin tocarlo; si el entorno no garantiza la
+    # operación, NO publica (fail-closed) y conserva el provisional.
+    try:
+        run_dir_final = _publicar_dir_6g1(run_dir, run_dir_final)
+    except Exception as _exc_pub:
+        log("[FATAL] publicacion segura no garantizada (%s); sin publicar; "
+            "corrida conservada en: %s" % (_exc_pub, run_dir))
+        raise _VerifFallida_6g1("publicacion no garantizada; no se publica")
     log("Directorio final: %s" % run_dir_final)
     log("Duracion total: %.1f s" % (time.monotonic() - t_start))
     return run_dir_final

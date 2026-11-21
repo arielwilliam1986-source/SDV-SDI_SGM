@@ -17,6 +17,37 @@ import sys
 
 _inj = os.environ.get('SDVSDI_6G1_INJECT', '')
 _dir = os.environ.get('SDVSDI_6G1_MOTORES', '')
+_out = os.environ.get('SDVSDI_6G1_OUT', '')
+_plantar = os.environ.get('SDVSDI_6G1_PLANTAR', '')
+
+
+def _plantar_6g1():
+    """[E1/E2/E3 end-to-end] Siembra determinista en el instante de la guarda:
+    crea enlaces simbólicos o reemplaza archivos dentro del *_partial de la
+    corrida (simula el estado atacado justo antes del aborto, sin tocar el
+    código del motor). Formato: modo:nombre@ruta, separado por ';'.
+    modos: enlace (symlink hacia @ruta) | archivo (copia regular de @ruta)."""
+    import glob as _glob
+    parciales = sorted(_glob.glob(os.path.join(_out, '*_partial')))
+    if not parciales:
+        return
+    base = parciales[0]
+    for spec in [x for x in _plantar.split(';') if x]:
+        modo, resto = spec.split(':', 1)
+        nombre, ruta = resto.split('@', 1)
+        if modo == 'enlace':
+            tmp = base + '.__lnk__'
+            if os.path.lexists(tmp):
+                os.unlink(tmp)
+            os.symlink(ruta, tmp)
+            os.replace(tmp, os.path.join(base, nombre))
+        elif modo == 'archivo':
+            tmp = base + '.__cop__'
+            with open(ruta, 'rb') as fsrc, open(tmp, 'wb') as fdst:
+                fdst.write(fsrc.read())
+            os.replace(tmp, os.path.join(base, nombre))
+
+
 if _inj and _dir:
     if _dir not in sys.path:
         sys.path.insert(0, _dir)
@@ -24,6 +55,8 @@ if _inj and _dir:
 
     if _inj == 'verificar_raise':
         def _verificar_rota(self, *a, **k):
+            if _plantar:
+                _plantar_6g1()
             raise RuntimeError('inyeccion de prueba T1: verificar() fallo')
         _L.MixHandle.verificar = _verificar_rota
     elif _inj == 'ruta_raise':
