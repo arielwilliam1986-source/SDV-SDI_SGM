@@ -1,0 +1,688 @@
+--- /tmp/diag_v023_recovery.py	2026-11-21 00:10:45.770102522 +0000
++++ herramientas/diagnostico_audio/etapa2/audioinput_diag_termux.py	2026-11-21 00:20:44.673127512 +0000
+@@ -83,7 +83,7 @@
+ import stat
+ from pathlib import Path
+ 
+-SCRIPT_VERSION = "0.2.3"
++SCRIPT_VERSION = "0.2.4"
+ SCRIPT_NAME = "audioinput_diag_termux.py"
+ 
+ 
+@@ -298,20 +298,16 @@
+                 return -1, "fallo abrir {0}: errno={1} ({2})".format(
+                     part, exc.errno, os.strerror(exc.errno))
+             chain.append(fd_next)
+-            # Cerrar el descriptor anterior y avanzar
+-            try:
+-                os.close(fd)
+-            except OSError:
+-                pass  # No fatal, pero registrado
++            # Cerrar el descriptor anterior y avanzar.
++            # C4 (v0.2.4): no se silencia el error de cierre.
++            _close_fd_tracked(fd, 'anchored_chain_parent')
+             fd = fd_next
+         return fd, "anchored chain length={0}".format(len(chain))
+     except Exception as exc:
+-        # Cerrar todos los descriptores abiertos en caso de error
++        # Cerrar todos los descriptores abiertos en caso de error.
++        # C4 (v0.2.4): los errores de cierre se conservan, no se silencian.
+         for open_fd in reversed(chain):
+-            try:
+-                os.close(open_fd)
+-            except OSError:
+-                pass
++            _close_fd_tracked(open_fd, 'anchored_chain_cleanup')
+         return -1, "excepcion durante recorrido anclado: {0}: {1}".format(
+             type(exc).__name__, str(exc)[:80])
+ 
+@@ -365,18 +361,14 @@
+                             part, os.strerror(exc2.errno))) from exc2
+                 fd_next = os.open(part, os.O_PATH | os.O_NOFOLLOW
+                                   | os.O_DIRECTORY, dir_fd=fd)
+-            try:
+-                os.close(fd)
+-            except OSError:
+-                pass  # el nuevo descriptor ya esta abierto; no fatal
++            # C4 (v0.2.4): no se silencia el error de cierre del padre.
++            _close_fd_tracked(fd, 'ensure_parents_chain_parent')
+             fd = fd_next
+         return p
+     except BaseException:
+         # Cerrar los descriptores abiertos antes de propagar.
+-        try:
+-            os.close(fd)
+-        except OSError:
+-            pass
++        # C4 (v0.2.4): los errores de cierre se conservan, no se silencian.
++        _close_fd_tracked(fd, 'ensure_parents_chain_cleanup')
+         raise
+ 
+ 
+@@ -455,18 +447,14 @@
+         try:
+             st_final = os.fstat(check_fd)
+         finally:
+-            try:
+-                os.close(check_fd)
+-            except OSError:
+-                pass
++            # C4 (v0.2.4): error de cierre del descriptor de verificacion conservado.
++            _close_fd_tracked(check_fd, 'makedirs_verify_fd')
+         if not stat.S_ISDIR(st_final.st_mode):
+             raise OSError(errno.ENOTDIR,
+                           "path creado no es directorio: {0}".format(p))
+     finally:
+-        try:
+-            os.close(parent_fd)
+-        except OSError:
+-            pass
++        # C4 (v0.2.4): error de cierre del descriptor del padre conservado.
++        _close_fd_tracked(parent_fd, 'makedirs_parent_fd')
+     return p
+ 
+ 
+@@ -803,36 +791,82 @@
+     return errors
+ 
+ 
++def _reconcile_interrupted(interrupt_flag, interrupted, interrupt_msg):
++    """Reconcilia el estado global de interrupcion (C5 — v0.2.4).
++
++    Una interrupcion absorbida a nivel de prueba o de entorno puede no
++    haber propagado el KeyboardInterrupt al llamador, pero el flag mutable
++    es el estado real de la ejecucion. Si el flag esta seteado y
++    `interrupted` no, se fija y se registra el motivo, de modo que el
++    resumen, el informe JSON y el codigo de salida reflejen la
++    interrupcion real (nunca PASS).
++
++    Retorna (interrupted, interrupt_msg).
++    """
++    if interrupt_flag and interrupt_flag[0] and not interrupted:
++        interrupted = True
++        interrupt_msg = (interrupt_msg + "; " if interrupt_msg else "") + \
++            "interrupcion detectada via interrupt_flag"
++    return interrupted, interrupt_msg
++
++
++def _close_fd_tracked(fd, label):
++    """Cierra un descriptor conservando el error (C4 — v0.2.4).
++
++    Sustituye los `except OSError: pass`: todo error de cierre se
++    conserva en el sink y se devuelve, nunca se silencia.
++
++    Retorna None si el cierre fue OK (o fd es None/invalido sin cierre
++    posible), o el OSError si fallo.
++    """
++    if fd is None or fd < 0:
++        return None
++    try:
++        os.close(fd)
++        return None
++    except OSError as exc:
++        _record_close_error({"label": label, "errno": exc.errno,
++                             "strerror": os.strerror(exc.errno)})
++        return exc
++
++
+ # C4: CloseErrorLogger con registro de errores
+ # ----------------------------------------------------------------------------
+ 
+ class CloseErrorLogger:
+-    """Acumula errores de cierre de descriptores y SoundFile (C4 — v0.2.3).
++    """Acumula errores de cierre de descriptores y SoundFile (C4 — v0.2.4).
+ 
+     CORRECCION C4.1: eliminados except Exception: pass que silencian fallos.
+     CORRECCION C4.2: registra errores de cierre de SoundFile y descriptores.
+     CORRECCION C4.3: propaga errores al resultado final de cada prueba.
+     CORRECCION C4.6: no intenta cerrar dos veces un descriptor de estado incierto.
+ 
+-    CORRECCION C4 (v0.2.3): el numero entero del descriptor NO se usa como
+-    identidad permanente del recurso. Cada descriptor se registra con su
+-    identidad actual (st_dev, st_ino), su propietario (label), su estado
+-    ("open"/"closed") y el resultado del cierre. Al recibir un descriptor:
+-      - si el numero fue cerrado por este logger y la identidad coincide,
+-        se registra un aviso de cierre duplicado (no se reintenta);
+-      - si el numero fue reutilizado por el sistema para otro recurso
+-        (identidad distinta), NO se cierra: se registra un aviso y se evita
+-        cerrar accidentalmente un descriptor ajeno;
+-      - si no hay registro, se cierra y se registra la identidad para
+-        detectar duplicados o reutilizaciones futuras.
+-    Los avisos (skips, reutilizaciones) se guardan en `warnings`, distintos
+-    de `errors` (fallos reales de cierre).
++    CORRECCION C4 (v0.2.4): modelo explícito de propiedad por apertura.
++    Ninguna identidad compuesta — ni el número de fd (reutilizable) ni
++    (st_dev, st_ino) (no distingue dos aperturas independientes del mismo
++    archivo) — se considera suficiente por sí sola. Cada apertura se
++    registra con register_fd() y recibe un **token único de apertura**; el
++    cierre se asocia al token, no al número de fd:
++      - un token obsoleto (ya cerrado o desconocido) no cierra nada;
++      - un descriptor cuyo número fue reutilizado por otra apertura
++        (registrada o no) no se cierra a través de un registro antiguo:
++        se registra un aviso y se evita cerrar un recurso ajeno;
++      - si no hay ninguna apertura registrada como 'open' para el fd, no
++        se cierra (aviso: doble cierre o número reutilizado);
++      - tras un error de cierre, no se reintenta os.close() automaticamente.
++    Los avisos (skips, reutilizaciones, tokens obsoletos) se guardan en
++    `warnings`, distintos de `errors` (fallos reales de cierre). Los errores
++    de cierre se conservan como resultados verificables (self.errors y el
++    sink global).
+     """
+     def __init__(self):
+         self.errors = []
+         self.warnings = []
+-        # fd -> {"label", "dev", "ino", "state", "close_result"}
+-        self._fds = {}
++        # token -> {"token", "fd", "label", "dev", "ino", "state",
++        #           "close_result"}
++        self._entries = {}
++        self._by_fd = {}  # fd -> set(tokens)
++        self._next_token = 0
+         # (id(sfile), sfile) ya cerrados; se guarda la referencia para
+         # evitar que el id sea reutilizado por el recolector.
+         self._closed_sfiles = set()
+@@ -851,96 +885,122 @@
+         _record_close_error(entry)  # sink para errores durante excepciones
+ 
+     def register_fd(self, fd, label):
+-        """Registra la propiedad de un descriptor abierto (C4, v0.2.3).
++        """Registra la propiedad de una apertura concreta (C4, v0.2.4).
++
++        Devuelve un token único que identifica esta apertura, independiente
++        del número de fd (reutilizable) y de (dev, ino) (que no distingue
++        dos aperturas del mismo archivo). El token debe usarse en el
++        cierre asociado para que un registro obsoleto no pueda cerrar un
++        descriptor reutilizado.
+ 
+-        Se captura la identidad actual (dev, ino) para que un cierre
+-        posterior pueda distinguir este recurso de uno que reutilice el
+-        numero de descriptor.
++        Retorna el token, o None si fd es None o inválido (error registrado).
+         """
+         if fd is None:
+             return None
+         identity = self._identity(fd)
+         if identity is None:
+-            exc = OSError(errno.EBADF, "descriptor no valido al registrar")
+             self._append_error({"label": label, "errno": errno.EBADF,
+                                 "strerror": "descriptor no valido al registrar"})
+-            return exc
+-        self._fds[fd] = {"label": label, "dev": identity[0],
+-                         "ino": identity[1], "state": "open",
+-                         "close_result": None}
+-        return None
+-
+-    def close_fd(self, fd, label):
+-        """Cierra un fd de forma segura (C4, v0.2.3).
+-
+-        - Si fd es None, no hace nada.
+-        - La identidad del recurso se verifica por (st_dev, st_ino): un
+-          numero reutilizado por el sistema NO se cierra (aviso, no error).
+-        - Un cierre duplicado del mismo recurso se registra como aviso.
+-        - Si el cierre falla, registra el error y lo propaga.
+-
+-        Retorna None si OK, si fd era None, si fue un aviso (duplicado o
+-        reutilizacion) o si el cierre fue exitoso; el OSError si fallo.
++            return None
++        self._next_token += 1
++        token = self._next_token
++        self._entries[token] = {"token": token, "fd": fd, "label": label,
++                                "dev": identity[0], "ino": identity[1],
++                                "state": "open", "close_result": None}
++        self._by_fd.setdefault(fd, set()).add(token)
++        return token
++
++    def close_fd(self, fd, label, token=None):
++        """Cierra un descriptor asociado a una apertura registrada (C4, v0.2.4).
++
++        - Con token: se cierra solo la apertura identificada por el token.
++          Un token obsoleto (ya cerrado o desconocido) no cierra nada.
++        - Sin token: se busca una apertura registrada como 'open' para este
++          fd. Si no hay ninguna, no se cierra (aviso: doble cierre o número
++          reutilizado por una apertura no registrada).
++        - Antes de cerrar se verifica la identidad actual (dev, ino)
++          contra la registrada: una identidad distinta evita cerrar un
++          recurso ajeno (aviso, no error).
++        - Si el cierre falla, se registra el error y se devuelve; no se
++          reintenta os.close() automáticamente.
++
++        Retorna None si OK, si hubo un aviso (token obsoleto, fd no
++        registrado, identidad distinta) o si el cierre fue exitoso; el
++        OSError si fallo el cierre.
+         """
+-        if fd is None:
++        if token is None and fd is None:
+             return None
+-        identity = self._identity(fd)
+-        record = self._fds.get(fd)
+-        if identity is None:
+-            # El descriptor no esta abierto.
+-            if record is not None and record["state"] == "closed":
++        entry = None
++        if token is not None:
++            entry = self._entries.get(token)
++            if entry is None:
++                self.warnings.append(
++                    {"label": label, "errno": None,
++                     "strerror": "token de apertura desconocido; no se cierra nada"})
++                return None
++            if entry["state"] == "closed":
++                self.warnings.append(
++                    {"label": label, "errno": None,
++                     "strerror": "apertura ya cerrada (token obsoleto); no se reintenta"})
++                return None
++            fd = entry["fd"]
++        else:
++            open_tokens = [t for t in self._by_fd.get(fd, set())
++                           if self._entries[t]["state"] == "open"]
++            if not open_tokens:
++                # No hay apertura registrada como abierta: puede ser un
++                # doble cierre o un numero reutilizado por otra apertura
++                # (registrada o no). En ambos casos no se cierra.
+                 self.warnings.append(
+-                    {"label": label + "_duplicate_skipped", "errno": None,
+-                     "strerror": "descriptor ya cerrado por este logger; "
+-                                 "no se reintenta"})
++                    {"label": label, "errno": None,
++                     "strerror": "no hay apertura registrada como abierta para "
++                                 "este fd; no se cierra (doble cierre o numero "
++                                 "reutilizado)"})
+                 return None
++            if len(open_tokens) > 1:
++                self.warnings.append(
++                    {"label": label, "errno": None,
++                     "strerror": "multiples aperturas registradas para el mismo "
++                                 "fd; se cierra la primera"})
++            token = open_tokens[0]
++            entry = self._entries[token]
++
++        identity = self._identity(fd)
++        if identity is None:
++            # El descriptor no esta abierto (cerrado externamente).
++            entry["state"] = "closed"
++            entry["close_result"] = "error:EBADF"
+             exc = OSError(errno.EBADF, "descriptor no valido o cerrado")
+             self._append_error({"label": label, "errno": errno.EBADF,
+                                 "strerror": "descriptor no valido o cerrado"})
+             return exc
+-        if record is not None and record["state"] == "closed":
+-            if (record["dev"] == identity[0]
+-                    and record["ino"] == identity[1]):
+-                # Mismo recurso, ya cerrado: cierre duplicado (aviso).
+-                self.warnings.append(
+-                    {"label": label + "_duplicate_skipped", "errno": None,
+-                     "strerror": "descriptor ya cerrado; no se reintenta"})
+-                return None
+-            # El numero fue reutilizado por otro recurso: no cerrar ajeno.
++        if (entry["dev"] != identity[0]
++                or entry["ino"] != identity[1]):
++            # Identidad distinta tras el registro: el numero fue reutilizado
++            # por otro recurso. No cerrar ajeno.
+             self.warnings.append(
+-                {"label": label + "_number_reused", "errno": None,
+-                 "strerror": "numero de descriptor reutilizado por otro "
+-                             "recurso; no se cierra (identidad distinta)"})
++                {"label": label, "errno": None,
++                 "strerror": "identidad distinta tras registro; numero de "
++                             "descriptor reutilizado; no se cierra"})
+             return None
+-        if record is not None and record["state"] == "open":
+-            if (record["dev"] != identity[0]
+-                    or record["ino"] != identity[1]):
+-                # Identidad distinta tras el registro: numero reutilizado.
+-                self.warnings.append(
+-                    {"label": label + "_identity_mismatch", "errno": None,
+-                     "strerror": "identidad distinta tras registro; numero "
+-                                 "reutilizado; no se cierra"})
+-                return None
+         try:
+             os.close(fd)
+         except OSError as exc:
+-            self._fds[fd] = {"label": label, "dev": identity[0],
+-                             "ino": identity[1], "state": "closed",
+-                             "close_result": "error:{0}".format(exc.errno)}
++            entry["state"] = "closed"
++            entry["close_result"] = "error:{0}".format(exc.errno)
+             self._append_error({"label": label, "errno": exc.errno,
+                                 "strerror": os.strerror(exc.errno)})
+             return exc
+-        self._fds[fd] = {"label": label, "dev": identity[0],
+-                         "ino": identity[1], "state": "closed",
+-                         "close_result": "ok"}
++        entry["state"] = "closed"
++        entry["close_result"] = "ok"
+         return None
+ 
+     def close_soundfile(self, sfile, label):
+-        """Cierra un SoundFile de forma segura (C4, v0.2.3).
++        """Cierra un SoundFile de forma segura (C4, v0.2.4).
+ 
+         CORRECCION C4.2: registra errores de cierre de SoundFile.
+         CORRECCION C4.1: no usa except Exception: pass.
+-        CORRECCION C4 (v0.2.3): evita dobles cierres por reutilizacion de
++        CORRECCION C4 (v0.2.4): evita dobles cierres por reutilizacion de
+         id(); los skips son avisos, no errores.
+         """
+         if sfile is None:
+@@ -1018,11 +1078,13 @@
+                 return None, "fixture ya existe: {0}".format(out_path)
+             return None, "os.open anclado errno={0}: {1}".format(
+                 exc.errno, os.strerror(exc.errno))
++        # C4 (v0.2.4): registro de propiedad por apertura (token) para el
++        # descriptor del fixture, de modo que el cierre se asocie a esta
++        # apertura concreta y no a un numero de fd reutilizable.
++        fd_token = closer.register_fd(fd, 'fixture_fd_' + fixture_name)
+     finally:
+-        try:
+-            os.close(parent_fd)
+-        except OSError:
+-            pass
++        # C4 (v0.2.4): error de cierre del descriptor del padre conservado.
++        _close_fd_tracked(parent_fd, 'fixture_parent_fd_' + fixture_name)
+ 
+     sfile = None
+     try:
+@@ -1037,10 +1099,11 @@
+     except Exception as exc:
+         return None, "SoundFile open fallo: {0}: {1}".format(type(exc).__name__, str(exc)[:80])
+     finally:
+-        # C4: registrar errores de cierre de SoundFile y del fd
++        # C4 (v0.2.4): registrar errores de cierre de SoundFile y del fd.
++        # El cierre del fd se asocia al token de apertura registrado.
+         if sfile is not None:
+             closer.close_soundfile(sfile, 'fixture_writer_' + fixture_name)
+-        closer.close_fd(fd, 'fixture_fd_' + fixture_name)
++        closer.close_fd(fd, 'fixture_fd_' + fixture_name, token=fd_token)
+ 
+ 
+ # ----------------------------------------------------------------------------
+@@ -1597,9 +1660,46 @@
+ 
+     # Generar fixtures
+     fixtures = {}
+-    for fname, subtype in FIXTURE_SPECS:
++    for idx, (fname, subtype) in enumerate(FIXTURE_SPECS):
++        # C5 (v0.2.4): interrupcion previa: el fixture no se crea y las
++        # pruebas asociadas quedan NOT_EXECUTED (no se inventan resultados).
++        if interrupt_flag and interrupt_flag[0]:
++            for rest_fname, _ in FIXTURE_SPECS[idx:]:
++                for tid in ['T11', 'T12', 'T13', 'T14']:
++                    results.append({'env': env_name, 'test': tid, 'fixture': rest_fname,
++                                    'status': Result.NOT_EXECUTED,
++                                    'detail': "interrupcion previa; fixture no creado; prueba no ejecutada",
++                                    'close_errors': []})
++            print("  fixture {0}: NOT_EXECUTED - interrupcion previa".format(fname))
++            break
+         closer = CloseErrorLogger()  # Closer dedicado para fixture creation
+-        fpath, ferr = create_fixture(np, sf, run_dir, fname, subtype, closer)
++        try:
++            fpath, ferr = create_fixture(np, sf, run_dir, fname, subtype, closer)
++        except KeyboardInterrupt:
++            # C5 (v0.2.4): interrupcion durante la creacion del fixture.
++            # Se propaga al estado global (interrupt_flag), se registra
++            # ERROR (nunca PASS), se conservan los errores de cierre y las
++            # pruebas asociadas posteriores quedan NOT_EXECUTED.
++            for entry in _drain_close_error_sink():
++                closer.errors.append(entry)
++            interrupt_flag[0] = True
++            print("  fixture {0}: ERROR - KeyboardInterrupt durante creacion".format(fname))
++            results.append({'env': env_name, 'test': 'T11', 'fixture': fname,
++                            'status': Result.ERROR,
++                            'detail': "KeyboardInterrupt durante creacion de fixture; no se declara PASS",
++                            'close_errors': closer.errors})
++            for tid in ['T12', 'T13', 'T14']:
++                results.append({'env': env_name, 'test': tid, 'fixture': fname,
++                                'status': Result.NOT_EXECUTED,
++                                'detail': "interrupcion durante creacion de fixture; prueba no ejecutada",
++                                'close_errors': []})
++            for rest_fname, _ in FIXTURE_SPECS[idx + 1:]:
++                for tid in ['T11', 'T12', 'T13', 'T14']:
++                    results.append({'env': env_name, 'test': tid, 'fixture': rest_fname,
++                                    'status': Result.NOT_EXECUTED,
++                                    'detail': "interrupcion durante creacion de fixture anterior; prueba no ejecutada",
++                                    'close_errors': []})
++            break
+         if fpath is None:
+             print("  ERROR creando fixture {0}: {1}".format(fname, ferr))
+             for tid in ['T11', 'T12', 'T13', 'T14']:
+@@ -1775,14 +1875,22 @@
+     CORRECCION C1 (v0.2.3): eliminada la creacion por ruta completa
+     (os.open(str(report_path))). El informe se crea como provisional
+     exclusivo y anclado (os.open con dir_fd sobre el descriptor del
+-    directorio padre) y se publica al final por enlace duro, que es
+-    atomo y no sobrescribe: si el informe final ya existe, la publicacion
+-    falla y se conserva el provisional (sin limpieza automatica).
+-
+-    CORRECCION C5 (v0.2.3): se verifica fsync + tamano tras la escritura
+-    antes de cerrar, se verifica el cierre (identidad del descriptor) y
+-    el estado del informe se informa explicitamente: publicado, o
+-    provisional/incompleto/no publicado con el motivo.
++    directorio padre).
++
++    CORRECCION C1 (v0.2.4): la publicacion se realiza con os.link usando
++    nombres RELATIVOS a los descriptores del directorio (src_dir_fd /
++    dst_dir_fd), que es atómica y no sobrescribe: si el destino ya
++    existe, falla con EEXIST y no se sobrescribe. Se elimina el
++    comprobacion previa de existencia + rename (carrera TOCTOU). Si el
++    mecanismo anclado no esta disponible (NotImplementedError u otro
++    error), se conserva el provisional y se reporta explicitamente que
++    el informe no pudo publicarse. Los errores de cierre del descriptor
++    del directorio se conservan y se reportan.
++
++    CORRECCION C5 (v0.2.3/v0.2.4): se verifica fsync + tamano tras la
++    escritura antes de cerrar, se verifica el cierre (identidad del
++    descriptor) y el estado del informe se informa explicitamente:
++    publicado, o provisional/incompleto/no publicado con el motivo.
+ 
+     Retorna (ok, error_or_None, close_error_or_None).
+     """
+@@ -1803,6 +1911,7 @@
+ 
+     tmp_name = report_path.name + ".tmp"
+     close_err = None
++    result = None  # resultado final; se fija antes de retornar (C4, v0.2.4)
+     try:
+         try:
+             tmp_fd = os.open(tmp_name, os.O_WRONLY | os.O_CREAT | os.O_EXCL
+@@ -1815,7 +1924,7 @@
+                 exc.errno, os.strerror(exc.errno)), None
+ 
+         closer = CloseErrorLogger()
+-        closer.register_fd(tmp_fd, 'report_tmp_fd')
++        tmp_token = closer.register_fd(tmp_fd, 'report_tmp_fd')
+         err = None
+         try:
+             # C7.1: bucle de escritura hasta completar
+@@ -1857,53 +1966,75 @@
+                     err = "fstat errno={0}: {1}".format(exc.errno, os.strerror(exc.errno))
+         finally:
+             # C7.3: cerrar el descriptor y conservar errores de cierre
+-            exc_close = closer.close_fd(tmp_fd, 'report_tmp_fd')
++            exc_close = closer.close_fd(tmp_fd, 'report_tmp_fd', token=tmp_token)
+             if exc_close is not None:
+                 _record_close_error({"label": 'report_tmp_fd', "errno": exc_close.errno,
+                                      "strerror": os.strerror(exc_close.errno)})
+         close_err = closer.summary()
+ 
++        result = None
+         if err is not None:
+-            # C5 (v0.2.3): informe incompleto: no se publica; queda provisional.
+-            return False, ("informe incompleto, no publicado; provisional queda en "
+-                           "disco: {0} ({1})".format(report_path.parent / tmp_name, err)), close_err
+-
+-        # C5 (v0.2.3): publicacion sin sobrescritura. Enlace duro atomo:
+-        # si el informe final ya existe, os.link falla con EEXIST y no se
+-        # sobrescribe; el provisional queda en disco (no hay limpieza).
+-        try:
+-            os.link(report_path.parent / tmp_name, report_path)
+-        except OSError as exc:
+-            if exc.errno == errno.EEXIST:
+-                return False, ("informe preexistente; no se sobrescribe: {0} "
+-                               "(provisional queda en disco)".format(report_path)), close_err
+-            if exc.errno in (errno.EOPNOTSUPP, errno.ENOSYS):
+-                # Sistema sin enlaces duros: renombrado con comprobacion
+-                # previa de existencia (equivalente seguro; no sobrescribe).
+-                if os.path.exists(report_path):
+-                    return False, ("informe preexistente; no se sobrescribe: {0} "
+-                                   "(provisional queda en disco)".format(report_path)), close_err
+-                try:
+-                    os.rename(report_path.parent / tmp_name, report_path)
+-                except OSError as exc2:
+-                    return False, ("informe no publicado (rename errno={0}: {1}); "
+-                                   "provisional queda en disco".format(
+-                                       exc2.errno, os.strerror(exc2.errno))), close_err
+-            else:
+-                return False, ("informe no publicado (link errno={0}: {1}); "
+-                               "provisional queda en disco".format(
+-                                   exc.errno, os.strerror(exc.errno))), close_err
++            # C5 (v0.2.4): informe incompleto: no se publica; queda provisional.
++            result = (False, ("informe incompleto, no publicado; provisional queda en "
++                              "disco: {0} ({1})".format(report_path.parent / tmp_name, err)),
++                      close_err)
+         else:
++            # C1 (v0.2.4): publicacion atómica sin sobrescritura. Se usa
++            # os.link con nombres RELATIVOS a los descriptores del directorio
++            # (src_dir_fd/dst_dir_fd): la operacion es atoma y falla con
++            # EEXIST si el destino ya existe. NO hay comprobacion previa de
++            # existencia ni rename (carrera TOCTOU). Si el mecanismo no
++            # esta disponible, se conserva el provisional y se reporta
++            # explicitamente que el informe no pudo publicarse.
+             try:
+-                os.unlink(report_path.parent / tmp_name)
+-            except OSError:
+-                pass
+-            return True, None, close_err
++                os.link(tmp_name, report_path.name,
++                        src_dir_fd=parent_fd, dst_dir_fd=parent_fd)
++            except OSError as exc:
++                if exc.errno == errno.EEXIST:
++                    result = (False, ("informe preexistente; no se sobrescribe: {0} "
++                                      "(provisional queda en disco)".format(report_path)),
++                              close_err)
++                else:
++                    result = (False, ("informe no publicado (link errno={0}: {1}); "
++                                      "provisional queda en disco".format(
++                                          exc.errno, os.strerror(exc.errno))),
++                              close_err)
++            except NotImplementedError:
++                result = (False, ("informe no publicado: enlace duro anclado no "
++                                  "disponible en este sistema; provisional queda en "
++                                  "disco: {0}").format(report_path.parent / tmp_name),
++                          close_err)
++            else:
++                # Se elimina solo el provisional creado por este proceso
++                # (origen acreditado: O_CREAT|O_EXCL anclado en esta llamada)
++                # tras la publicacion exitosa. Un fallo del unlink no
++                # invalida la publicacion, pero se conserva para trazabilidad.
++                try:
++                    os.unlink(tmp_name, dir_fd=parent_fd)
++                except OSError as exc:
++                    _record_close_error({"label": 'report_tmp_unlink',
++                                         "errno": exc.errno,
++                                         "strerror": os.strerror(exc.errno)})
++                result = (True, None, close_err)
+     finally:
+-        try:
+-            os.close(parent_fd)
+-        except OSError:
+-            pass
++        # C4 (v0.2.4): error de cierre del descriptor del directorio
++        # conservado y reportado en el resultado del informe.
++        exc_parent = _close_fd_tracked(parent_fd, 'report_parent_fd')
++        if exc_parent is not None:
++            _record_close_error({"label": 'report_parent_fd', "errno": exc_parent.errno,
++                                 "strerror": os.strerror(exc_parent.errno)})
++            parent_close_err = "parent_fd close errno={0}: {1}".format(
++                exc_parent.errno, os.strerror(exc_parent.errno))
++            if result is not None:
++                ok, rerr, rcerr = result
++                if rcerr:
++                    rcerr = rcerr + " | " + parent_close_err
++                else:
++                    rcerr = parent_close_err
++                result = (ok, rerr, rcerr)
++        if result is None:
++            result = (False, "informe no publicado (excepcion inesperada)", None)
++    return result
+ 
+ 
+ # ----------------------------------------------------------------------------
+@@ -2086,8 +2217,11 @@
+                                 'close_errors': []})
+ 
+     except KeyboardInterrupt as exc:
+-        # C5: interrupcion durante la ejecucion
++        # C5 (v0.2.4): interrupcion durante la ejecucion. El estado global
++        # y el flag mutable se fijan de forma coherente, para que el
++        # segundo entorno no se inicie y el informe refleje la interrupcion.
+         interrupted = True
++        interrupt_flag[0] = True
+         interrupt_msg = "KeyboardInterrupt: el usuario interrumpio la ejecucion"
+         print("\n[{0}]".format(interrupt_msg))
+         print("Conservando {0} resultados ya obtenidos.".format(len(results)))
+@@ -2096,21 +2230,20 @@
+     except Exception as exc:
+         # C5.1: excepcion fatal durante la ejecucion
+         interrupted = True
++        interrupt_flag[0] = True
+         fatal_exception = exc
+         interrupt_msg = "{0}: {1}".format(type(exc).__name__, str(exc)[:120])
+         print("\n[ERROR FATAL durante ejecucion] {0}".format(interrupt_msg))
+         traceback.print_exc()
+ 
+-    # C5 (v0.2.3): coherencia del estado global. Una interrupcion absorbida
+-    # a nivel de prueba (run_environment la registra y marca el resto como
+-    # NOT_EXECUTED) puede no haber propagado el KeyboardInterrupt al
+-    # llamador. El flag mutable es el estado real de la ejecucion: si se
+-    # seteio, el resumen y el informe deben reflejar interrupcion, nunca
+-    # PASS. Se conservan los resultados previos.
+-    if interrupt_flag[0] and not interrupted:
+-        interrupted = True
+-        interrupt_msg = (interrupt_msg + "; " if interrupt_msg else "") + \
+-            "interrupcion detectada via interrupt_flag"
++    # C5 (v0.2.4): coherencia del estado global. Una interrupcion absorbida
++    # a nivel de prueba o de entorno (creacion de fixtures, escritura del
++    # informe) puede no haber propagado el KeyboardInterrupt al llamador.
++    # El flag mutable es el estado real de la ejecucion: si se seteio, el
++    # resumen y el informe deben reflejar interrupcion, nunca PASS. Se
++    # conservan los resultados previos.
++    interrupted, interrupt_msg = _reconcile_interrupted(
++        interrupt_flag, interrupted, interrupt_msg)
+ 
+     # C4 (v0.2.3): conservar errores de cierre acumulados a nivel de
+     # entorno (creacion de fixtures, cierres absorbidos) que no tuvieron
+@@ -2187,20 +2320,26 @@
+             'Los resultados son especificos al dispositivo, entorno y versiones utilizadas.',
+             'C1: directorios de ejecucion y archivos creados con O_CREAT|O_EXCL|O_NOFOLLOW.',
+             'C1: recorrido anclado por dir_fd + O_DIRECTORY + O_NOFOLLOW cuando es viable.',
+-            'C1 (v0.2.3): eliminados fallbacks por ruta; creaciones ancladas por dir_fd; '
+-            'si el mecanismo anclado no es viable, se falla conservadoramente.',
++            'C1 (v0.2.4): eliminados fallbacks por ruta; creaciones ancladas por dir_fd; '
++            'publicacion del informe por os.link anclado (nombres relativos), atomica y '
++            'sin sobrescritura; si el mecanismo no es viable, se conserva el provisional '
++            'y se reporta explicitamente.',
+             'C2: T14 ejecuta todas las comprobaciones obligatorias antes de declarar PASS; '
+             'comprobaciones no realizadas se registran como NOT_DONE.',
+             'C3: sha256_pread_v2 clasifica COMPLETE/ZERO_SIZE/EMPTY_UNEXPECTED/PARTIAL/SIZE_CHANGED/SYSTEM_ERROR.',
+             'C3: SIZE_CHANGED no es deteccion completa de modificaciones concurrentes; '
+             'cambios de contenido sin cambio de tamano pasan inadvertidos.',
+             'C4: errores de cierre registrados en cada resultado (campo close_errors).',
+-            'C4 (v0.2.3): identidad de descriptor por (st_dev, st_ino), no solo por numero '
+-            'de fd; se evita cerrar fds reutilizados y se evitan dobles cierres.',
+-            'C4 (v0.2.3): errores de cierre conservados en handlers de excepcion e '
+-            'interrupcion; no se devuelve close_errors vacio si hubo errores.',
+-            'C5 (v0.2.3): interrupt_flag, el estado global interrupted y el informe JSON '
+-            'reflejan el mismo estado; interrupcion nunca se declara PASS.',
++            'C4 (v0.2.4): modelo de propiedad por apertura: cada descriptor se registra '
++            'con un token único de apertura; el numero de fd y (st_dev, st_ino) no se '
++            'consideran identidad suficiente; no se cierra un recurso ajeno por '
++            'reutilizacion del numero de fd y no hay silencio de errores de cierre.',
++            'C4 (v0.2.4): errores de cierre conservados en todos los cierres revisados '
++            '(no hay except OSError: pass); se distingue el error primario del '
++            'secundario de cierre.',
++            'C5 (v0.2.4): toda interrupcion (prueba, creacion de fixture, escritura del '
++            'informe) se refleja en el estado global; interrupcion nunca PASS; pruebas '
++            'posteriores NOT_EXECUTED; rc no nulo; segundo entorno no iniciado.',
+             'C5: KeyboardInterrupt y excepciones fatales nunca terminan con codigo 0.',
+             'C7: escritura completa del informe con manejo de escrituras parciales.',
+         ],
