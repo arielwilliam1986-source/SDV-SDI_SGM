@@ -83,7 +83,7 @@ import struct
 import stat
 from pathlib import Path
 
-SCRIPT_VERSION = "0.2.8"
+SCRIPT_VERSION = "0.2.9"
 SCRIPT_NAME = "audioinput_diag_termux.py"
 
 
@@ -791,16 +791,76 @@ def sha256_pread_v2(fd, blocksize=1 << 20):
 # no son accesibles desde el llamador). Se drena antes de cada prueba y
 # al capturar una excepcion/interrupcion.
 _close_error_sink = []
+# C4-B (v0.2.9): acumulador PERSISTENTE por ejecucion. Cada error de cierre se
+# incorpora aqui en el momento del registro (con identificador unico), ANTES de
+# cualquier drenaje, de modo que una reconstruccion del informe no pierda los
+# errores ya recogidos y ningun drenaje provoque perdida irreversible.
+_close_error_ledger = []
+_close_error_seq = [0]
+# Identificadores de errores ya incorporados a una estructura persistente
+# (resultado de prueba u operacion): no se repiten en environment_close_errors.
+_attributed_close_error_ids = set()
+
+
+def _reset_close_error_accounting():
+    """C4-B (v0.2.9): reinicia la contabilidad de errores de cierre de la
+    ejecucion (se invoca al inicio de main). No altera la propiedad ni el
+    ciclo de vida de los recursos (C4-A congelado)."""
+    del _close_error_sink[:]
+    del _close_error_ledger[:]
+    _attributed_close_error_ids.clear()
+    _close_error_seq[0] = 0
 
 
 def _record_close_error(entry):
+    """Registra un error de cierre: cola pendiente + acumulador persistente.
+
+    C4-B (v0.2.9): cada entrada recibe un identificador unico al registrarse;
+    la incorporacion al acumulador persistente ocurre en el registro, por lo
+    que ningun drenaje posterior puede provocar perdida irreversible.
+    """
+    if isinstance(entry, dict) and '_close_err_id' not in entry:
+        _close_error_seq[0] += 1
+        entry['_close_err_id'] = _close_error_seq[0]
     _close_error_sink.append(entry)
+    _close_error_ledger.append(entry)
 
 
 def _drain_close_error_sink():
+    """Extrae la cola pendiente de errores de cierre (compatibilidad v0.2.3+).
+
+    C4-B (v0.2.9): el drenaje NO provoca perdida: todas las entradas ya fueron
+    incorporadas al acumulador persistente en el registro y quedan disponibles
+    para reconstrucciones del informe aunque la cola quede vacia.
+    """
     errors = list(_close_error_sink)
     _close_error_sink.clear()
     return errors
+
+
+def _mark_close_errors_attributed(errors):
+    """C4-B (v0.2.9): marca errores como incorporados a una estructura
+    persistente (resultado de prueba u operacion) para que no se dupliquen
+    en environment_close_errors. No convierte advertencias en errores ni
+    viceversa: solo marca atribucion por identificador."""
+    for e in errors or []:
+        if isinstance(e, dict) and '_close_err_id' in e:
+            _attributed_close_error_ids.add(e['_close_err_id'])
+
+
+def _close_errors_unattributed():
+    """C4-B (v0.2.9): errores de cierre NO atribuidos a resultados concretos.
+
+    Incorpora primero cualquier pendiente de la cola (no se asume que este
+    vacia por drenajes anteriores) y retorna las entradas del acumulador
+    persistente sin identificador de atribucion. Lectura NO destructiva:
+    llamadas sucesivas no pierden ni duplican entradas.
+    """
+    if _close_error_sink:
+        _close_error_sink.clear()  # ya estan en el acumulador persistente
+    return [e for e in _close_error_ledger
+            if isinstance(e, dict)
+            and e.get('_close_err_id') not in _attributed_close_error_ids]
 
 
 def _reconcile_interrupted(interrupt_flag, interrupted, interrupt_msg):
@@ -1946,6 +2006,9 @@ def run_environment(np, sf, env_name, env_parent_dir, results, run_id, interrupt
             results.append({'env': env_name, 'test': tid, 'fixture': None,
                             'status': Result.NOT_EXECUTED, 'detail': msg,
                             'close_errors': []})
+        # C4-B (v0.2.9): los errores conservados quedan atribuidos a la
+        # primera entrada; no se duplican en environment_close_errors.
+        _mark_close_errors_attributed(close_errs)
         print("  [NOT_EXECUTED] {0}".format(msg))
         return None  # Sin run_dir creado
     except OSError as exc:
@@ -1985,6 +2048,8 @@ def run_environment(np, sf, env_name, env_parent_dir, results, run_id, interrupt
             # Se propaga al estado global (interrupt_flag), se registra
             # ERROR (nunca PASS), se conservan los errores de cierre y las
             # pruebas asociadas posteriores quedan NOT_EXECUTED.
+            # C4-B (v0.2.9): los errores drenados ya estan en el acumulador
+            # persistente (incorporados al registrarse); no se pierden.
             for entry in _drain_close_error_sink():
                 closer.errors.append(entry)
             interrupt_flag[0] = True
@@ -1993,6 +2058,7 @@ def run_environment(np, sf, env_name, env_parent_dir, results, run_id, interrupt
                             'status': Result.ERROR,
                             'detail': "KeyboardInterrupt durante creacion de fixture; no se declara PASS",
                             'close_errors': closer.errors})
+            _mark_close_errors_attributed(closer.errors)  # C4-B (v0.2.9)
             for tid in ['T12', 'T13', 'T14']:
                 results.append({'env': env_name, 'test': tid, 'fixture': fname,
                                 'status': Result.NOT_EXECUTED,
@@ -2012,13 +2078,14 @@ def run_environment(np, sf, env_name, env_parent_dir, results, run_id, interrupt
                                 'status': Result.ERROR,
                                 'detail': "fixture creation failed: {0}".format(ferr),
                                 'close_errors': closer.errors})
+            _mark_close_errors_attributed(closer.errors)  # C4-B (v0.2.9)
         else:
             fixtures[fname] = fpath
-            # C4 (v0.2.3): conservar errores de cierre de la creacion del
-            # fixture para que no se pierdan (el closer es local a este
-            # bucle y, sin esto, sus errores quedarian descartados).
-            for entry in closer.errors:
-                _record_close_error(entry)
+            # C4-B (v0.2.9): los errores de cierre de la creacion del fixture
+            # ya estan conservados en el acumulador persistente (incorporados
+            # al registrarse via _append_error -> _record_close_error) y se
+            # reportan al nivel de entorno; re-registrarlos aqui duplicaria
+            # entradas en el acumulador y en el informe.
             print("  fixture creado: {0} ({1} bytes) close_errors={2}".format(
                 fpath.name, fpath.stat().st_size, len(closer.errors)))
 
@@ -2045,11 +2112,15 @@ def run_environment(np, sf, env_name, env_parent_dir, results, run_id, interrupt
                 # C5: interrupcion durante esta prueba
                 # C4 (v0.2.3): conservar errores de cierre acumulados,
                 # no devolver close_errors: [] si hubo errores.
+                # C4-B (v0.2.9): el drenaje no pierde (acumulador persistente)
+                # y los errores se atribuyen al resultado (sin duplicar).
+                ki_close_errors = _drain_close_error_sink()
                 results.append({'env': env_name, 'test': tid, 'fixture': fname,
                                 'status': Result.ERROR,
                                 'detail': "KeyboardInterrupt: prueba interrumpida, "
                                           "no se declara PASS",
-                                'close_errors': _drain_close_error_sink()})
+                                'close_errors': ki_close_errors})
+                _mark_close_errors_attributed(ki_close_errors)
                 print("  {0}: ERROR - KeyboardInterrupt".format(tid))
                 interrupt_flag[0] = True
                 # No propagar inmediatamente; dejar que el bucle marque las
@@ -2064,6 +2135,7 @@ def run_environment(np, sf, env_name, env_parent_dir, results, run_id, interrupt
             results.append({'env': env_name, 'test': tid, 'fixture': fname,
                             'status': status, 'detail': detail,
                             'close_errors': close_errors})
+            _mark_close_errors_attributed(close_errors)  # C4-B (v0.2.9)
             print("  {0}: {1} - {2}".format(tid, status, str(detail)[:70]))
 
     # Ejecutar T15 y T16 (usan directorio, no fixture)
@@ -2087,11 +2159,14 @@ def run_environment(np, sf, env_name, env_parent_dir, results, run_id, interrupt
         except KeyboardInterrupt:
             # C5: interrupcion durante esta prueba
             # C4 (v0.2.3): conservar errores de cierre, no [] fijo.
+            # C4-B (v0.2.9): el drenaje no pierde y se atribuye al resultado.
+            ki_close_errors = _drain_close_error_sink()
             results.append({'env': env_name, 'test': tid, 'fixture': None,
                             'status': Result.ERROR,
                             'detail': "KeyboardInterrupt: prueba interrumpida, "
                                       "no se declara PASS",
-                            'close_errors': _drain_close_error_sink()})
+                            'close_errors': ki_close_errors})
+            _mark_close_errors_attributed(ki_close_errors)
             print("  {0}: ERROR - KeyboardInterrupt".format(tid))
             interrupt_flag[0] = True
             continue
@@ -2104,6 +2179,7 @@ def run_environment(np, sf, env_name, env_parent_dir, results, run_id, interrupt
         results.append({'env': env_name, 'test': tid, 'fixture': None,
                         'status': status, 'detail': detail,
                         'close_errors': close_errors})
+        _mark_close_errors_attributed(close_errors)  # C4-B (v0.2.9)
         print("  {0}: {1} - {2}".format(tid, status, str(detail)[:70]))
 
     return run_dir
@@ -2369,6 +2445,10 @@ def main():
     # Generar run_id unico por ejecucion (C1)
     run_id = make_run_id()
 
+    # C4-B (v0.2.9): reinicia la contabilidad de errores de cierre de esta
+    # ejecucion (cola pendiente, acumulador persistente y atribuciones).
+    _reset_close_error_accounting()
+
     # C1: validar que privado y compartido no son el mismo directorio
     shared_parent = Path(args.shared) if args.shared else None
     if shared_parent is not None:
@@ -2559,8 +2639,21 @@ def main():
 
         Retorna (env_close_errors, finished_at, counts, total, report).
         """
-        env_close_errors_local = _drain_close_error_sink()
-        finished_at_local = time.strftime('%Y-%m-%dT%H:%M:%S%z')
+        # C4-B (v0.2.9): lectura NO destructiva de los errores de cierre no
+        # atribuidos desde el acumulador persistente: una reconstruccion del
+        # informe no pierde los errores ya recogidos ni los duplica. Los
+        # errores atribuidos a resultados de pruebas no se repiten aqui.
+        env_close_errors_local = _close_errors_unattributed()
+
+        # C4-B (v0.2.9): un fallo que no sea interrupcion en la fecha de
+        # finalizacion no debe impedir construir el informe ni borrar errores
+        # de cierre (KeyboardInterrupt sigue propagando: gestion C5 congelada;
+        # except Exception no captura KeyboardInterrupt).
+        try:
+            finished_at_local = time.strftime('%Y-%m-%dT%H:%M:%S%z')
+        except Exception as exc:
+            finished_at_local = "DESCONOCIDO ({0}: {1})".format(
+                type(exc).__name__, str(exc)[:60])
         counts_local = {'PASS': 0, 'FAIL': 0, 'NOT_EXECUTED': 0, 'ERROR': 0}
         for r in results:
             counts_local[r['status']] = counts_local.get(r['status'], 0) + 1
@@ -2641,6 +2734,13 @@ def main():
                 'recurso interno; la reutilizacion del numero por el mismo archivo '
                 'tras un cierre externo no es detectable por fstat (EXPECTED_LIMITATION '
                 'documentada, no una proteccion conseguida).',
+                'C4-B (v0.2.9): propagacion completa de errores de cierre: acumulador '
+                'persistente por ejecucion con identificadores unicos y atribucion por '
+                'resultado (sin perdida en reconstrucciones del informe, sin duplicacion '
+                'prueba/entorno, errores posteriores a la construccion del informe '
+                'visibles en la salida de diagnostico); un fallo que no sea interrupcion '
+                'en la fecha de finalizacion no impide construir el informe ni borrar '
+                'errores de cierre.',
                 'C5: KeyboardInterrupt y excepciones fatales nunca terminan con codigo 0.',
                 'C7: escritura completa del informe con manejo de escrituras parciales.',
             ],
@@ -2712,6 +2812,14 @@ def main():
         print("\n[ERROR] No se pudo escribir el reporte JSON: {0}".format(write_err))
         if close_err:
             print("  Adicionalmente, error de cierre: {0}".format(close_err))
+
+    # C4-B (v0.2.9): los errores de cierre producidos durante la escritura o
+    # publicacion del informe quedan en el acumulador persistente y se
+    # muestran en la salida de diagnostico: no se pierden aunque el informe
+    # no se publique (no se afirma publicacion si no ocurrio).
+    for entry in _drain_close_error_sink():
+        print("  [cierre pendiente] {0}: {1}".format(
+            entry.get('label', '?'), entry.get('strerror', '')))
 
     # C5: codigo de salida
     # - Si interrumpido o fatal: nunca 0
