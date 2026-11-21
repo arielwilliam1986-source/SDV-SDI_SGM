@@ -83,7 +83,7 @@ import struct
 import stat
 from pathlib import Path
 
-SCRIPT_VERSION = "0.2.10"
+SCRIPT_VERSION = "0.2.11"
 SCRIPT_NAME = "audioinput_diag_termux.py"
 
 
@@ -863,6 +863,151 @@ def _close_errors_unattributed():
             and e.get('_close_err_id') not in _attributed_close_error_ids]
 
 
+# ----------------------------------------------------------------------------
+# C5 (v0.2.11): coherencia de interrupciones, finalizacion e informe.
+# ----------------------------------------------------------------------------
+
+def _close_pair_conserving_interrupt(closer, sfile, sfile_label,
+                                     fd, fd_label, fd_token):
+    """Limpieza conservadora ante interrupcion (C5 — v0.2.11).
+
+    Intenta cerrar el SoundFile (si aplica) y DESPUES el descriptor
+    propietario (si aplica), de modo que una KeyboardInterrupt durante el
+    cierre de SoundFile NO impida intentar el cierre independiente del
+    descriptor propietario.
+
+    Contratos intactos:
+    - C4-A: los cierres se solicitan por el canal del propietario
+      (close_fd con token / close_soundfile); el estado del recurso
+      (CLOSING/CLOSED/UNCERTAIN) impide reintentos y cierres duplicados
+      por diseno; aqui no se emite ninguna declaracion de exito.
+    - C4-B: los errores de limpieza siguen registrandose en el acumulador
+      persistente via _append_error/_record_close_error.
+
+    Retorna True si se absorbio una KeyboardInterrupt durante la limpieza
+    (el llamador debe propagarla tras los intentos), False en caso
+    contrario.
+    """
+    ki_absorbida = False
+    if sfile is not None:
+        try:
+            closer.close_soundfile(sfile, sfile_label)
+        except KeyboardInterrupt:
+            # Resultado del cierre incierto: NO se reintenta; la
+            # interrupcion se propaga tras los intentos de limpieza.
+            ki_absorbida = True
+    if fd is not None:
+        try:
+            closer.close_fd(fd, fd_label, token=fd_token)
+        except KeyboardInterrupt:
+            # Cierre con resultado incierto (el recurso queda en estado
+            # CLOSING): NO se reintenta (contrato C4-A); la interrupcion
+            # se propaga tras los intentos de limpieza.
+            ki_absorbida = True
+    return ki_absorbida
+
+
+def _reconcile_pending_tests(results, env_names, detail):
+    """Reconciliacion idempotente de pruebas planificadas (C5 — v0.2.11).
+
+    Registra NOT_EXECUTED para toda prueba planificada (por entorno:
+    T11-T14 por fixture y T15/T16 sin fixture) que carezca de registro en
+    results (por ejemplo, una interrupcion fuera de los bloques protegidos
+    o una excepcion fatal durante la fase de entornos). Idempotente:
+    llamadas sucesivas no anaden ni modifican registros; los resultados
+    ya obtenidos se conservan intactos.
+
+    Retorna el numero de registros anadidos (0 en una segunda llamada).
+    """
+    existing = set()
+    for r in results:
+        existing.add((r.get('env'), r.get('test'), r.get('fixture')))
+    anadidos = 0
+    for env in env_names:
+        for fname, _subtype in FIXTURE_SPECS:
+            for tid in ['T11', 'T12', 'T13', 'T14']:
+                if (env, tid, fname) not in existing:
+                    results.append({'env': env, 'test': tid, 'fixture': fname,
+                                    'status': Result.NOT_EXECUTED,
+                                    'detail': detail,
+                                    'close_errors': []})
+                    anadidos += 1
+        for tid in ['T15', 'T16']:
+            if (env, tid, None) not in existing:
+                results.append({'env': env, 'test': tid, 'fixture': None,
+                                'status': Result.NOT_EXECUTED,
+                                'detail': detail,
+                                'close_errors': []})
+                anadidos += 1
+    return anadidos
+
+
+def _publication_state_after_interrupt(report_path):
+    """Determina el estado real de publicacion del informe tras una
+    KeyboardInterrupt (C5 — v0.2.11).
+
+    Verificacion de SOLO LECTURA (ninguna escritura, ningun reintento de
+    publicacion, ninguna limpieza): compara la identidad (st_dev, st_ino)
+    del informe final con la del provisional creado por esta ejecucion
+    (el enlace duro de C1 comparte inode; un archivo ajeno preexistente
+    con el mismo nombre NO lo comparte y no se confunde).
+
+    Retorna (estado, detalle) con estado en:
+      'PUBLICADO'     — el informe final existe y es el enlace de esta
+                        ejecucion (o el provisional fue eliminado tras un
+                        enlace exitoso: la unica ruta del flujo que lo
+                        elimina).
+      'NO_PUBLICADO'  — el provisional de esta ejecucion sigue en disco y
+                        el informe final no existe, o existe un archivo
+                        ajeno con identidad distinta.
+      'INDETERMINADO' — el estado no pudo verificarse (error de acceso
+                        distinto de inexistencia).
+    """
+    ruta_final = str(report_path)
+    ruta_prov = ruta_final + '.tmp'
+    st_final = None
+    st_prov = None
+    try:
+        st_final = os.stat(ruta_final)
+    except FileNotFoundError:
+        st_final = None
+    except OSError as exc:
+        return ('INDETERMINADO',
+                'no se pudo verificar el informe final (errno={0})'.format(
+                    exc.errno))
+    try:
+        st_prov = os.stat(ruta_prov)
+    except FileNotFoundError:
+        st_prov = None
+    except OSError as exc:
+        return ('INDETERMINADO',
+                'no se pudo verificar el provisional (errno={0})'.format(
+                    exc.errno))
+    if st_final is not None and st_prov is not None:
+        if ((st_final.st_dev, st_final.st_ino)
+                == (st_prov.st_dev, st_prov.st_ino)):
+            return ('PUBLICADO',
+                    'el informe comparte identidad (st_dev, st_ino) con el '
+                    'provisional de esta ejecucion: el enlace se completo; '
+                    'el provisional se conserva (sin limpieza automatica)')
+        return ('NO_PUBLICADO',
+                'el informe no se publica: existe un archivo con el nombre '
+                'del informe pero su identidad no coincide con el '
+                'provisional de esta ejecucion (archivo ajeno preexistente); '
+                'provisional conservado')
+    if st_final is not None and st_prov is None:
+        return ('PUBLICADO',
+                'provisional ausente: la unica ruta del flujo que lo '
+                'elimina es la eliminacion posterior a un enlace exitoso')
+    if st_final is None and st_prov is not None:
+        return ('NO_PUBLICADO',
+                'el informe no se publica: provisional de esta ejecucion en '
+                'disco; informe final inexistente; sin segunda publicacion')
+    return ('NO_PUBLICADO',
+            'el informe no se publica: ni el informe final ni el provisional '
+            'existen')
+
+
 def _reconcile_interrupted(interrupt_flag, interrupted, interrupt_msg):
     """Reconcilia el estado global de interrupcion (C5 — v0.2.4).
 
@@ -1399,9 +1544,15 @@ def create_fixture(np, sf, dir_path, fixture_name, subtype, closer):
     finally:
         # C4 (v0.2.4): registrar errores de cierre de SoundFile y del fd.
         # El cierre del fd se asocia al token de apertura registrado.
-        if sfile is not None:
-            closer.close_soundfile(sfile, 'fixture_writer_' + fixture_name)
-        closer.close_fd(fd, 'fixture_fd_' + fixture_name, token=fd_token)
+        # C5 (v0.2.11): una KI durante el cierre de SoundFile no impide
+        # intentar el cierre independiente del descriptor propietario; la
+        # KI se propaga despues de los intentos de limpieza posibles. Sin
+        # reintentos de cierres inciertos ni cierres duplicados (estado
+        # C4-A); errores secundarios conservados (C4-B).
+        if _close_pair_conserving_interrupt(
+                closer, sfile, 'fixture_writer_' + fixture_name,
+                fd, 'fixture_fd_' + fixture_name, fd_token):
+            raise KeyboardInterrupt()
 
 
 # ----------------------------------------------------------------------------
@@ -1456,7 +1607,15 @@ def test_t11_soundfile_fd_closefd_false(np, sf, fixture_path):
             pass
 
         # Cerrar sfile y verificar que fd sigue abierto
-        closer.close_soundfile(sfile, 'sfile')
+        # C5 (v0.2.11): si la KI cae durante este cierre, el resultado es
+        # incierto y NO se reintenta en el finally (sfile=None); el cierre
+        # del descriptor se intenta en el finally y la interrupcion se
+        # propaga tras los intentos de limpieza.
+        try:
+            closer.close_soundfile(sfile, 'sfile')
+        except KeyboardInterrupt:
+            sfile = None
+            raise
         sfile = None
         try:
             os.fstat(fd)
@@ -1486,10 +1645,12 @@ def test_t11_soundfile_fd_closefd_false(np, sf, fixture_path):
     finally:
         # C5/C4: intento de cierre conservador ante excepcion o interrupcion
         # C4 (v0.2.5): el cierre conservador tambien se asocia al token.
-        if sfile is not None:
-            closer.close_soundfile(sfile, 'sfile_finally')
-        if fd is not None:
-            closer.close_fd(fd, 'fd_finally', token=fd_token)
+        # C5 (v0.2.11): la KI durante el cierre de SoundFile no impide
+        # intentar el cierre del descriptor propietario; se propaga tras
+        # los intentos de limpieza.
+        if _close_pair_conserving_interrupt(closer, sfile, 'sfile_finally',
+                                            fd, 'fd_finally', fd_token):
+            raise KeyboardInterrupt()
 
 
 def test_t12_pread_works(np, sf, fixture_path):
@@ -1777,7 +1938,14 @@ def test_t14_pread_coexists_with_soundfile(np, sf, fixture_path):
             return (Result.FAIL, format_checks(checks_status), closer.errors)
 
         # 9. Cierre explicito de SoundFile
-        close_sf_err = closer.close_soundfile(sfile, 'sfile')
+        # C5 (v0.2.11): KI durante este cierre => resultado incierto, sin
+        # reintento (sfile=None); el cierre del fd se intenta en el finally
+        # y la interrupcion se propaga tras la limpieza.
+        try:
+            close_sf_err = closer.close_soundfile(sfile, 'sfile')
+        except KeyboardInterrupt:
+            sfile = None
+            raise
         sfile = None
         if close_sf_err is None:
             record_check('09_soundfile_close', 'OK', "cierre OK")
@@ -1824,10 +1992,12 @@ def test_t14_pread_coexists_with_soundfile(np, sf, fixture_path):
     finally:
         # C2.4 / C5 / C4: intento de cierre conservador ante excepcion o interrupcion
         # C4 (v0.2.5): el cierre conservador tambien se asocia al token.
-        if sfile is not None:
-            closer.close_soundfile(sfile, 'sfile_finally')
-        if fd is not None:
-            closer.close_fd(fd, 'fd_finally', token=fd_token)
+        # C5 (v0.2.11): la KI durante el cierre de SoundFile no impide
+        # intentar el cierre del descriptor propietario; se propaga tras
+        # los intentos de limpieza.
+        if _close_pair_conserving_interrupt(closer, sfile, 'sfile_finally',
+                                            fd, 'fd_finally', fd_token):
+            raise KeyboardInterrupt()
 
 
 def format_checks(checks_status):
@@ -1858,8 +2028,15 @@ def test_t15_libsndfile_error_raised(np, sf, fixture_dir):
         try:
             sfile = sf.SoundFile(dir_fd, mode='r', closefd=False)
             # Si llegamos aqui, no fallo como esperabamos
-            closer.close_soundfile(sfile, 'sfile_unexpected')
-            closer.close_fd(dir_fd, 'dir_fd', token=dir_fd_token)
+            # C5 (v0.2.11): la KI durante el cierre de SoundFile no impide
+            # intentar el cierre del fd de directorio; se propaga tras la
+            # limpieza (el finally conserva el intento por token).
+            if _close_pair_conserving_interrupt(
+                    closer, sfile, 'sfile_unexpected',
+                    dir_fd, 'dir_fd', dir_fd_token):
+                dir_fd = None
+                dir_fd_token = None
+                raise KeyboardInterrupt()
             dir_fd = None
             dir_fd_token = None
             return (Result.FAIL, "SoundFile acepto fd de directorio (no esperado)",
@@ -1911,8 +2088,15 @@ def test_t16_fd_survives_closefd_false_failure(np, sf, fixture_dir):
         try:
             sfile = sf.SoundFile(dir_fd, mode='r', closefd=False)
             # Si llegamos aqui, no fallo como esperabamos
-            closer.close_soundfile(sfile, 'sfile_unexpected')
-            closer.close_fd(dir_fd, 'dir_fd', token=dir_fd_token)
+            # C5 (v0.2.11): la KI durante el cierre de SoundFile no impide
+            # intentar el cierre del fd de directorio; se propaga tras la
+            # limpieza (el finally conserva el intento por token).
+            if _close_pair_conserving_interrupt(
+                    closer, sfile, 'sfile_unexpected',
+                    dir_fd, 'dir_fd', dir_fd_token):
+                dir_fd = None
+                dir_fd_token = None
+                raise KeyboardInterrupt()
             dir_fd = None
             dir_fd_token = None
             return (Result.FAIL, "SoundFile acepto fd de directorio (no esperado)",
@@ -2634,6 +2818,21 @@ def main():
     interrupted, interrupt_msg = _reconcile_interrupted(
         interrupt_flag, interrupted, interrupt_msg)
 
+    # C5 (v0.2.11): reconciliacion idempotente de las pruebas planificadas:
+    # toda prueba que no llego a ejecutarse (interrupcion fuera de los
+    # bloques protegidos, excepcion fatal u omision) queda registrada como
+    # NOT_EXECUTED, sin duplicados y sin alterar resultados anteriores.
+    envs_planificadas = ['A_private']
+    if shared_parent is not None:
+        envs_planificadas.append('B_shared')
+    pendientes = _reconcile_pending_tests(
+        results, envs_planificadas,
+        "prueba planificada no ejecutada (reconciliacion C5 tras "
+        "interrupcion o fin anticipado)")
+    if pendientes:
+        print("\n[Reconciliacion C5: {0} pruebas planificadas sin registro "
+              "quedaron NOT_EXECUTED]".format(pendientes))
+
     # C5 (v0.2.5): la construccion del informe se realiza en una funcion
     # auxiliar para poder reconstruirlo de forma consistente si una
     # interrupcion cae en la fase de resumen. El contenido del informe
@@ -2750,6 +2949,15 @@ def main():
                 'del temporal ni del directorio padre) y errores de cierre informados '
                 'tambien ante interrupcion durante la escritura/publicacion (codigo 130 '
                 'conservado, provisional sin borrar, sin segunda publicacion).',
+                'C5 (v0.2.11): coherencia de interrupciones: la KI durante el cierre '
+                'de SoundFile no impide intentar el cierre del descriptor propietario '
+                '(se propaga tras la limpieza, sin reintentos ni duplicados); las '
+                'pruebas planificadas sin registro quedan NOT_EXECUTED por '
+                'reconciliacion idempotente; el estado real de publicacion tras una '
+                'KI se verifica por identidad (st_dev, st_ino) frente al provisional '
+                '(PUBLICADO / NO_PUBLICADO / INDETERMINADO, nunca una afirmacion '
+                'falsa); una KI durante la reconstruccion del informe registra la '
+                'limitacion explicitamente y sale con codigo no nulo.',
                 'C5: KeyboardInterrupt y excepciones fatales nunca terminan con codigo 0.',
                 'C7: escritura completa del informe con manejo de escrituras parciales.',
             ],
@@ -2802,8 +3010,21 @@ def main():
             interrupt_flag, interrupted, interrupt_msg)
         print("\n[KI durante la preparacion del informe: resultados "
               "conservados; informe con interrupted=true]")
-        env_close_errors, finished_at, counts, total, report = _finalize_report(
-            interrupted, interrupt_msg)
+        try:
+            env_close_errors, finished_at, counts, total, report = \
+                _finalize_report(interrupted, interrupt_msg)
+        except KeyboardInterrupt:
+            # C5 (v0.2.11): la reconstruccion del informe fue interrumpida:
+            # no puede completarse ni publicarse. Se registra explicitamente
+            # la limitacion y se sale con codigo no nulo (130); no se
+            # declara terminacion normal ni publicacion, y no se intenta
+            # una tercera construccion.
+            print("\n[LIMITACION] La reconstruccion del informe fue "
+                  "interrumpida (KeyboardInterrupt): el informe no pudo "
+                  "completarse ni publicarse; los {0} resultados obtenidos "
+                  "se conservaron en memoria pero no se escriben en un "
+                  "informe.".format(len(results)))
+            sys.exit(130)
 
     # C5/C7: escribir reporte JSON de forma robusta
     # C5 (v0.2.5): una KI durante la publicacion no publica el informe
@@ -2812,14 +3033,22 @@ def main():
     try:
         ok_write, write_err, close_err = write_report_json_robust(report_path, report)
     except KeyboardInterrupt:
+        # C5 (v0.2.11): la KI puede caer despues de que os.link completo la
+        # publicacion (o durante/despues de la eliminacion del provisional).
+        # Se verifica el estado real por identidad (st_dev, st_ino) del
+        # informe frente al provisional de esta ejecucion: nunca se afirma
+        # falsamente que se publico o que no se publico; si el estado no
+        # puede determinarse se declara INDETERMINADO. Sin segunda
+        # publicacion, sin sobrescritura, sin limpieza automatica; codigo
+        # de salida 130 (C5 intacto).
+        estado_pub, detalle_pub = _publication_state_after_interrupt(report_path)
         print("\n[INTERRUMPIDO] KeyboardInterrupt durante la publicacion del "
-              "informe; no se publica; el provisional queda en disco")
+              "informe.")
+        print("[ESTADO DE PUBLICACION: {0}] {1}".format(estado_pub, detalle_pub))
         # C4-B (v0.2.10): los errores de cierre producidos durante la
         # escritura/publicacion interrumpida se informan ANTES de finalizar
         # con 130: conservados en el acumulador persistente y en la salida
-        # de diagnostico. C5 intacto: mismo codigo de salida, no se publica,
-        # no se borra el provisional, no hay segunda publicacion ni nuevos
-        # fallbacks de escritura.
+        # de diagnostico.
         for entry in _drain_close_error_sink():
             print("  [cierre pendiente] {0}: {1}".format(
                 entry.get('label', '?'), entry.get('strerror', '')))
