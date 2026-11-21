@@ -316,24 +316,39 @@ def abortar_6g1(run_dir, motivo, detalle=None):
         except OSError as exc:
             motivos['ABORT_6G1.json'] = ('no escribible de forma segura: %s' % exc)
         # --- analysis.json: sólo con propiedad e identidad acreditadas
+        # [6G.1-R/E-R1] Sin ventana TOCTOU: el archivo se abre UNA sola vez con
+        # un descriptor de lectura/escritura (O_RDWR | O_NOFOLLOW, anclado al
+        # dirfd); fstat, lectura, acreditación (identidad/sello/SHA-256) y
+        # actualización (ftruncate + escritura) ocurren sobre EL MISMO
+        # descriptor, ya verificado. No hay cierre ni reapertura por nombre
+        # entre la verificación y la escritura: una sustitución del nombre por
+        # otro archivo regular durante la operación no puede recibir la
+        # escritura (ésta sólo alcanza al objeto cuyo descriptor fue
+        # acreditado). Fail-closed: si la acreditación falla, el archivo se
+        # conserva sin modificar y se registra el motivo.
         try:
             dirfd = os.open(str(run_dir), os.O_RDONLY | os.O_DIRECTORY)
+            fd = None
             try:
                 try:
-                    fd = os.open('analysis.json', os.O_RDONLY | os.O_NOFOLLOW,
-                                 dir_fd=dirfd)
+                    fd = os.open('analysis.json',
+                                 os.O_RDWR | os.O_NOFOLLOW, dir_fd=dirfd)
                 except OSError as exc:
                     if exc.errno == errno.ENOENT:
                         fd = None                    # no existe: nada que hacer
-                    else:                            # ELOOP (enlace) u otro
+                    else:                            # ELOOP (enlace), EACCES, etc.
                         fd = None
                         motivos['analysis.json (actualizacion)'] = ('actualizacion omitida: '
                                                     'apertura segura fallo (%s)'
                                                     % exc)
                 if fd is not None:
-                    with os.fdopen(fd, 'rb') as f:
-                        st = os.fstat(f.fileno())
-                        datos = f.read()
+                    st = os.fstat(fd)
+                    datos = b''
+                    while True:
+                        bloque = os.read(fd, 1 << 20)
+                        if not bloque:
+                            break
+                        datos += bloque
                     if not stat.S_ISREG(st.st_mode):
                         raise OSError('analysis.json no es un archivo regular')
                     acredita, motivo_a = _propiedad_fd_acreditada(
@@ -349,14 +364,23 @@ def abortar_6g1(run_dir, motivo, detalle=None):
                         data['abort_6g1'] = info
                         nuevo = json.dumps(data, indent=2, ensure_ascii=False,
                                            allow_nan=True, default=str)
-                        fd2 = os.open('analysis.json',
-                                      os.O_WRONLY | os.O_TRUNC | os.O_NOFOLLOW,
-                                      dir_fd=dirfd)
-                        with os.fdopen(fd2, 'w', encoding='utf-8') as f2:
-                            f2.write(nuevo)
+                        os.ftruncate(fd, 0)
+                        os.lseek(fd, 0, os.SEEK_SET)
+                        nb = nuevo.encode('utf-8')
+                        escrito = 0
+                        while escrito < len(nb):
+                            escrito += os.write(fd, nb[escrito:])
+                        os.fsync(fd)
                         motivos['analysis.json (actualizacion)'] = ('actualizado con abort_6g1 '
-                                                    '(identidad acreditada)')
+                                                    '(identidad acreditada; mismo '
+                                                    'descriptor verificado, sin '
+                                                    'reapertura por nombre)')
             finally:
+                if fd is not None:
+                    try:
+                        os.close(fd)
+                    except OSError:
+                        pass
                 os.close(dirfd)
         except Exception as exc:
             motivos.setdefault('analysis.json',

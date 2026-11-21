@@ -1,0 +1,291 @@
+{
+  "schema": "pruebas-e-r1-g-r1-6g1/1",
+  "filas": [
+    {
+      "prueba": "E-R1a",
+      "motor": "lectura_segura_6g1",
+      "alcance": "sustitución de analysis.json entre acreditación y escritura: el sustituto no recibe la escritura",
+      "veredicto": "PASS",
+      "checks_ok": 6,
+      "checks_total": 6,
+      "detalle": "todos los checks OK"
+    },
+    {
+      "prueba": "E-R1b",
+      "motor": "lectura_segura_6g1",
+      "alcance": "acreditación imposible: conservado sin modificar (fail-closed)",
+      "veredicto": "PASS",
+      "checks_ok": 4,
+      "checks_total": 4,
+      "detalle": "todos los checks OK"
+    },
+    {
+      "prueba": "G-R1a",
+      "motor": "Hardened",
+      "alcance": "destino _aborted preexistente (con archivos y centinelas)",
+      "veredicto": "PASS",
+      "checks_ok": 8,
+      "checks_total": 8,
+      "detalle": "todos los checks OK"
+    },
+    {
+      "prueba": "G-R1b",
+      "motor": "Hardened",
+      "alcance": "destino _aborted preexistente (directorio vacío)",
+      "veredicto": "PASS",
+      "checks_ok": 6,
+      "checks_total": 6,
+      "detalle": "todos los checks OK"
+    },
+    {
+      "prueba": "G-R1c",
+      "motor": "Hardened",
+      "alcance": "destino _aborted preexistente (enlace simbólico)",
+      "veredicto": "PASS",
+      "checks_ok": 7,
+      "checks_total": 7,
+      "detalle": "todos los checks OK"
+    },
+    {
+      "prueba": "G-R1-estatico",
+      "motor": "Hardened",
+      "alcance": "traslado de aborto por la vía segura",
+      "veredicto": "PASS",
+      "checks_ok": 2,
+      "checks_total": 2,
+      "detalle": "todos los checks OK"
+    },
+    {
+      "prueba": "sanidad",
+      "motor": "Hardened",
+      "alcance": "corrida feliz tras E-R1/G-R1",
+      "veredicto": "PASS",
+      "checks_ok": 4,
+      "checks_total": 4,
+      "detalle": "todos los checks OK"
+    },
+    {
+      "prueba": "G-R1a",
+      "motor": "EVO",
+      "alcance": "destino _aborted preexistente (con archivos y centinelas)",
+      "veredicto": "PASS",
+      "checks_ok": 8,
+      "checks_total": 8,
+      "detalle": "todos los checks OK"
+    },
+    {
+      "prueba": "G-R1b",
+      "motor": "EVO",
+      "alcance": "destino _aborted preexistente (directorio vacío)",
+      "veredicto": "PASS",
+      "checks_ok": 6,
+      "checks_total": 6,
+      "detalle": "todos los checks OK"
+    },
+    {
+      "prueba": "G-R1c",
+      "motor": "EVO",
+      "alcance": "destino _aborted preexistente (enlace simbólico)",
+      "veredicto": "PASS",
+      "checks_ok": 7,
+      "checks_total": 7,
+      "detalle": "todos los checks OK"
+    },
+    {
+      "prueba": "G-R1-estatico",
+      "motor": "EVO",
+      "alcance": "traslado de aborto por la vía segura",
+      "veredicto": "PASS",
+      "checks_ok": 2,
+      "checks_total": 2,
+      "detalle": "todos los checks OK"
+    },
+    {
+      "prueba": "sanidad",
+      "motor": "EVO",
+      "alcance": "corrida feliz tras E-R1/G-R1",
+      "veredicto": "PASS",
+      "checks_ok": 4,
+      "checks_total": 4,
+      "detalle": "todos los checks OK"
+    },
+    {
+      "prueba": "G-R1a",
+      "motor": "MQR",
+      "alcance": "destino _aborted preexistente (con archivos y centinelas)",
+      "veredicto": "PASS",
+      "checks_ok": 8,
+      "checks_total": 8,
+      "detalle": "todos los checks OK"
+    },
+    {
+      "prueba": "G-R1b",
+      "motor": "MQR",
+      "alcance": "destino _aborted preexistente (directorio vacío)",
+      "veredicto": "PASS",
+      "checks_ok": 6,
+      "checks_total": 6,
+      "detalle": "todos los checks OK"
+    },
+    {
+      "prueba": "G-R1c",
+      "motor": "MQR",
+      "alcance": "destino _aborted preexistente (enlace simbólico)",
+      "veredicto": "PASS",
+      "checks_ok": 7,
+      "checks_total": 7,
+      "detalle": "todos los checks OK"
+    },
+    {
+      "prueba": "G-R1-estatico",
+      "motor": "MQR",
+      "alcance": "traslado de aborto por la vía segura",
+      "veredicto": "PASS",
+      "checks_ok": 2,
+      "checks_total": 2,
+      "detalle": "todos los checks OK"
+    },
+    {
+      "prueba": "sanidad",
+      "motor": "MQR",
+      "alcance": "corrida feliz tras E-R1/G-R1",
+      "veredicto": "PASS",
+      "checks_ok": 4,
+      "checks_total": 4,
+      "detalle": "todos los checks OK"
+    }
+  ],
+  "detalles": {
+    "E-R1": {
+      "E-R1a": {
+        "motivos": {
+          "analysis.json": "registro_interno_conservado",
+          "analysis.json (actualizacion)": "actualizado con abort_6g1 (identidad acreditada; mismo descriptor verificado, sin reapertura por nombre)"
+        },
+        "salidas_invalidadas": [
+          "propio.wav"
+        ]
+      },
+      "E-R1b": {
+        "motivos": {
+          "analysis.json": "registro_interno_conservado",
+          "analysis.json (actualizacion)": "actualizacion omitida: propiedad no acreditada (tamaño/mtime distintos de los registrados)"
+        }
+      }
+    },
+    "Hardened": {
+      "G-R1a": {
+        "exit": 130,
+        "suceso": {
+          "destino_preparado": true,
+          "sigint_enviado": true,
+          "destino": "/tmp/f6g1er1gr1/Hardened/G-R1a/out/motorA_run_20261121_225357_aborted"
+        },
+        "conservado": false,
+        "trasladado": "/tmp/f6g1er1gr1/Hardened/G-R1a/out/motorA_run_20261121_225357_aborted_r001"
+      },
+      "G-R1b": {
+        "exit": 130,
+        "suceso": {
+          "destino_preparado": true,
+          "sigint_enviado": true,
+          "destino": "/tmp/f6g1er1gr1/Hardened/G-R1b/out/motorA_run_20261121_225402_aborted"
+        },
+        "conservado": false,
+        "trasladado": "/tmp/f6g1er1gr1/Hardened/G-R1b/out/motorA_run_20261121_225402_aborted_r001"
+      },
+      "G-R1c": {
+        "exit": 130,
+        "suceso": {
+          "destino_preparado": true,
+          "sigint_enviado": true,
+          "destino": "/tmp/f6g1er1gr1/Hardened/G-R1c/out/motorA_run_20261121_225407_aborted"
+        },
+        "conservado": false,
+        "trasladado": "/tmp/f6g1er1gr1/Hardened/G-R1c/out/motorA_run_20261121_225407_aborted_r001"
+      },
+      "G-R1-estatico": {
+        "estatico": true
+      },
+      "sanidad": {
+        "exit": 0
+      }
+    },
+    "EVO": {
+      "G-R1a": {
+        "exit": 130,
+        "suceso": {
+          "destino_preparado": true,
+          "sigint_enviado": true,
+          "destino": "/tmp/f6g1er1gr1/EVO/G-R1a/out/motorA_run_20261121_225414_aborted"
+        },
+        "conservado": false,
+        "trasladado": "/tmp/f6g1er1gr1/EVO/G-R1a/out/motorA_run_20261121_225414_aborted_r001"
+      },
+      "G-R1b": {
+        "exit": 130,
+        "suceso": {
+          "destino_preparado": true,
+          "sigint_enviado": true,
+          "destino": "/tmp/f6g1er1gr1/EVO/G-R1b/out/motorA_run_20261121_225419_aborted"
+        },
+        "conservado": false,
+        "trasladado": "/tmp/f6g1er1gr1/EVO/G-R1b/out/motorA_run_20261121_225419_aborted_r001"
+      },
+      "G-R1c": {
+        "exit": 130,
+        "suceso": {
+          "destino_preparado": true,
+          "sigint_enviado": true,
+          "destino": "/tmp/f6g1er1gr1/EVO/G-R1c/out/motorA_run_20261121_225425_aborted"
+        },
+        "conservado": false,
+        "trasladado": "/tmp/f6g1er1gr1/EVO/G-R1c/out/motorA_run_20261121_225425_aborted_r001"
+      },
+      "G-R1-estatico": {
+        "estatico": true
+      },
+      "sanidad": {
+        "exit": 0
+      }
+    },
+    "MQR": {
+      "G-R1a": {
+        "exit": 130,
+        "suceso": {
+          "destino_preparado": true,
+          "sigint_enviado": true,
+          "destino": "/tmp/f6g1er1gr1/MQR/G-R1a/out/mqr_run_20261121_225432_aborted"
+        },
+        "conservado": false,
+        "trasladado": "/tmp/f6g1er1gr1/MQR/G-R1a/out/mqr_run_20261121_225432_aborted_r001"
+      },
+      "G-R1b": {
+        "exit": 130,
+        "suceso": {
+          "destino_preparado": true,
+          "sigint_enviado": true,
+          "destino": "/tmp/f6g1er1gr1/MQR/G-R1b/out/mqr_run_20261121_225440_aborted"
+        },
+        "conservado": false,
+        "trasladado": "/tmp/f6g1er1gr1/MQR/G-R1b/out/mqr_run_20261121_225440_aborted_r001"
+      },
+      "G-R1c": {
+        "exit": 130,
+        "suceso": {
+          "destino_preparado": true,
+          "sigint_enviado": true,
+          "destino": "/tmp/f6g1er1gr1/MQR/G-R1c/out/mqr_run_20261121_225448_aborted"
+        },
+        "conservado": false,
+        "trasladado": "/tmp/f6g1er1gr1/MQR/G-R1c/out/mqr_run_20261121_225448_aborted_r001"
+      },
+      "G-R1-estatico": {
+        "estatico": true
+      },
+      "sanidad": {
+        "exit": 0
+      }
+    }
+  }
+}

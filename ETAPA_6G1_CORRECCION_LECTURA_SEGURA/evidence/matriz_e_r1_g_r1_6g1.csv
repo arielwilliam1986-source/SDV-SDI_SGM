@@ -1,0 +1,18 @@
+prueba,motor,alcance,veredicto,checks_ok,checks_total,detalle
+E-R1a,lectura_segura_6g1,sustitución de analysis.json entre acreditación y escritura: el sustituto no recibe la escritura,PASS,6,6,todos los checks OK
+E-R1b,lectura_segura_6g1,acreditación imposible: conservado sin modificar (fail-closed),PASS,4,4,todos los checks OK
+G-R1a,Hardened,destino _aborted preexistente (con archivos y centinelas),PASS,8,8,todos los checks OK
+G-R1b,Hardened,destino _aborted preexistente (directorio vacío),PASS,6,6,todos los checks OK
+G-R1c,Hardened,destino _aborted preexistente (enlace simbólico),PASS,7,7,todos los checks OK
+G-R1-estatico,Hardened,traslado de aborto por la vía segura,PASS,2,2,todos los checks OK
+sanidad,Hardened,corrida feliz tras E-R1/G-R1,PASS,4,4,todos los checks OK
+G-R1a,EVO,destino _aborted preexistente (con archivos y centinelas),PASS,8,8,todos los checks OK
+G-R1b,EVO,destino _aborted preexistente (directorio vacío),PASS,6,6,todos los checks OK
+G-R1c,EVO,destino _aborted preexistente (enlace simbólico),PASS,7,7,todos los checks OK
+G-R1-estatico,EVO,traslado de aborto por la vía segura,PASS,2,2,todos los checks OK
+sanidad,EVO,corrida feliz tras E-R1/G-R1,PASS,4,4,todos los checks OK
+G-R1a,MQR,destino _aborted preexistente (con archivos y centinelas),PASS,8,8,todos los checks OK
+G-R1b,MQR,destino _aborted preexistente (directorio vacío),PASS,6,6,todos los checks OK
+G-R1c,MQR,destino _aborted preexistente (enlace simbólico),PASS,7,7,todos los checks OK
+G-R1-estatico,MQR,traslado de aborto por la vía segura,PASS,2,2,todos los checks OK
+sanidad,MQR,corrida feliz tras E-R1/G-R1,PASS,4,4,todos los checks OK

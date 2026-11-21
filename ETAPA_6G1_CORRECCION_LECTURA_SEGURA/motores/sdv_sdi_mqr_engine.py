@@ -2250,10 +2250,17 @@ def run_experiment(mix_path, pairs, mode, opt):
                                   masks_dir, ctx, t_start)
     except KeyboardInterrupt:
         aborted = run_dir_final + "_aborted"
+        # [6G.1-R/G-R1] Traslado al destino de aborto con no-reemplazo atómico
+        # (renameat2 RENAME_NOREPLACE): nunca reemplaza un destino preexistente
+        # (ni vacío, ni enlace simbólico); ante colisión elige un sufijo libre;
+        # si el entorno no garantiza la operación, conserva el provisional en su
+        # ubicación original. Sin degradación a os.rename.
         try:
-            os.rename(run_dir, aborted)
-        except OSError:
+            aborted = _publicar_dir_6g1(run_dir, aborted)
+        except Exception as _exc_ab:
             aborted = run_dir
+            log("[ABORT] traslado seguro no garantizado (%s); provisional "
+                "conservado en: %s" % (_exc_ab, run_dir))
         log("[ABORT] interrupcion del usuario; corrida en %s" % aborted)
         close_tee()
         return EXIT_ABORTED, None
@@ -2265,10 +2272,17 @@ def run_experiment(mix_path, pairs, mode, opt):
         return EXIT_PROCESSING, None
     except Exception:
         aborted = run_dir_final + "_aborted"
+        # [6G.1-R/G-R1] Traslado al destino de aborto con no-reemplazo atómico
+        # (renameat2 RENAME_NOREPLACE): nunca reemplaza un destino preexistente
+        # (ni vacío, ni enlace simbólico); ante colisión elige un sufijo libre;
+        # si el entorno no garantiza la operación, conserva el provisional en su
+        # ubicación original. Sin degradación a os.rename.
         try:
-            os.rename(run_dir, aborted)
-        except OSError:
+            aborted = _publicar_dir_6g1(run_dir, aborted)
+        except Exception as _exc_ab:
             aborted = run_dir
+            log("[ABORT] traslado seguro no garantizado (%s); provisional "
+                "conservado en: %s" % (_exc_ab, run_dir))
         log("[FATAL] excepcion en el pipeline; corrida preservada en %s"
             % aborted)
         traceback.print_exc()
