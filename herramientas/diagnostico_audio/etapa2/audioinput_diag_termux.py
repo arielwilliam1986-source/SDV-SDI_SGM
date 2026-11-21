@@ -3026,8 +3026,8 @@ def main():
                 'reconciliacion idempotente; el estado real de publicacion tras una '
                 'KI se verifica por identidad (st_dev, st_ino) frente al provisional '
                 '(PUBLICADO / NO_PUBLICADO / INDETERMINADO, nunca una afirmacion '
-                'falsa); una KI durante la reconstruccion del informe registra la '
-                'no nulo.',
+                'falsa); una KI durante la reconstruccion del informe se '
+                'documenta explicitamente y produce un codigo de salida no nulo.',
                 'C5 (v0.2.12): el intento de cierre del descriptor propietario '
                 'queda garantizado por un finally que abarca el cierre de '
                 'SoundFile (metodos del propietario pre-vinculados; sin ventana '
