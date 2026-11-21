@@ -1,0 +1,1484 @@
+{
+  "schema": "pruebas-correccion-6g1/1",
+  "entorno": {
+    "python": "3.11.2"
+  },
+  "filas": [
+    {
+      "prueba": "UC1",
+      "motor": "lectura_segura_6g1",
+      "alcance": "ajeno dentro de candidates/",
+      "veredicto": "PASS",
+      "checks_ok": 4,
+      "checks_total": 4,
+      "detalle": "todos los checks OK"
+    },
+    {
+      "prueba": "UC2",
+      "motor": "lectura_segura_6g1",
+      "alcance": "ajeno llamado SDV.wav",
+      "veredicto": "PASS",
+      "checks_ok": 4,
+      "checks_total": 4,
+      "detalle": "todos los checks OK"
+    },
+    {
+      "prueba": "UC3",
+      "motor": "lectura_segura_6g1",
+      "alcance": "ajeno con nombre exacto de salida del motor",
+      "veredicto": "PASS",
+      "checks_ok": 4,
+      "checks_total": 4,
+      "detalle": "todos los checks OK"
+    },
+    {
+      "prueba": "UC4",
+      "motor": "lectura_segura_6g1",
+      "alcance": "propio acreditado (sellado) debe eliminarse",
+      "veredicto": "PASS",
+      "checks_ok": 2,
+      "checks_total": 2,
+      "detalle": "todos los checks OK"
+    },
+    {
+      "prueba": "UC5",
+      "motor": "lectura_segura_6g1",
+      "alcance": "propio sustituido tras su creación se conserva",
+      "veredicto": "PASS",
+      "checks_ok": 4,
+      "checks_total": 4,
+      "detalle": "todos los checks OK"
+    },
+    {
+      "prueba": "UC6",
+      "motor": "lectura_segura_6g1",
+      "alcance": "propio en curso (inodo continuo) debe eliminarse",
+      "veredicto": "PASS",
+      "checks_ok": 2,
+      "checks_total": 2,
+      "detalle": "todos los checks OK"
+    },
+    {
+      "prueba": "UC7",
+      "motor": "lectura_segura_6g1",
+      "alcance": "propio sellado modificado in situ se conserva",
+      "veredicto": "PASS",
+      "checks_ok": 4,
+      "checks_total": 4,
+      "detalle": "todos los checks OK"
+    },
+    {
+      "prueba": "T1",
+      "motor": "Hardened",
+      "alcance": "excepción de hmix.verificar()",
+      "veredicto": "PASS",
+      "checks_ok": 8,
+      "checks_total": 8,
+      "detalle": "todos los checks OK"
+    },
+    {
+      "prueba": "T2",
+      "motor": "Hardened",
+      "alcance": "excepción de comprobación de ruta",
+      "veredicto": "PASS",
+      "checks_ok": 8,
+      "checks_total": 8,
+      "detalle": "todos los checks OK"
+    },
+    {
+      "prueba": "T4",
+      "motor": "Hardened",
+      "alcance": "verificación fallida sin excepción",
+      "veredicto": "PASS",
+      "checks_ok": 8,
+      "checks_total": 8,
+      "detalle": "todos los checks OK"
+    },
+    {
+      "prueba": "T3",
+      "motor": "Hardened",
+      "alcance": "sustitución del Mix tras abrir el descriptor (DSP)",
+      "veredicto": "PASS",
+      "checks_ok": 9,
+      "checks_total": 9,
+      "detalle": "todos los checks OK"
+    },
+    {
+      "prueba": "T5",
+      "motor": "Hardened",
+      "alcance": "ausencia de directorio definitivo tras los abortos",
+      "veredicto": "PASS",
+      "checks_ok": 1,
+      "checks_total": 1,
+      "detalle": "todos los checks OK"
+    },
+    {
+      "prueba": "T6",
+      "motor": "Hardened",
+      "alcance": "colisiones de nombre, candidates/ y sustitución de salida propia en aborto",
+      "veredicto": "PASS",
+      "checks_ok": 18,
+      "checks_total": 18,
+      "detalle": "todos los checks OK"
+    },
+    {
+      "prueba": "T7",
+      "motor": "Hardened",
+      "alcance": "eliminación de salidas propias acreditadas",
+      "veredicto": "PASS",
+      "checks_ok": 2,
+      "checks_total": 2,
+      "detalle": "todos los checks OK"
+    },
+    {
+      "prueba": "T8",
+      "motor": "Hardened",
+      "alcance": "procesamiento normal + PCM vs campaña auditada (WAV)",
+      "veredicto": "PASS",
+      "checks_ok": 8,
+      "checks_total": 8,
+      "detalle": "todos los checks OK"
+    },
+    {
+      "prueba": "T8",
+      "motor": "Hardened",
+      "alcance": "procesamiento normal + PCM vs campaña auditada (FLAC)",
+      "veredicto": "PASS",
+      "checks_ok": 8,
+      "checks_total": 8,
+      "detalle": "todos los checks OK"
+    },
+    {
+      "prueba": "T1",
+      "motor": "EVO",
+      "alcance": "excepción de hmix.verificar()",
+      "veredicto": "PASS",
+      "checks_ok": 8,
+      "checks_total": 8,
+      "detalle": "todos los checks OK"
+    },
+    {
+      "prueba": "T2",
+      "motor": "EVO",
+      "alcance": "excepción de comprobación de ruta",
+      "veredicto": "PASS",
+      "checks_ok": 8,
+      "checks_total": 8,
+      "detalle": "todos los checks OK"
+    },
+    {
+      "prueba": "T4",
+      "motor": "EVO",
+      "alcance": "verificación fallida sin excepción",
+      "veredicto": "PASS",
+      "checks_ok": 8,
+      "checks_total": 8,
+      "detalle": "todos los checks OK"
+    },
+    {
+      "prueba": "T3",
+      "motor": "EVO",
+      "alcance": "sustitución del Mix tras abrir el descriptor (DSP)",
+      "veredicto": "PASS",
+      "checks_ok": 9,
+      "checks_total": 9,
+      "detalle": "todos los checks OK"
+    },
+    {
+      "prueba": "T5",
+      "motor": "EVO",
+      "alcance": "ausencia de directorio definitivo tras los abortos",
+      "veredicto": "PASS",
+      "checks_ok": 1,
+      "checks_total": 1,
+      "detalle": "todos los checks OK"
+    },
+    {
+      "prueba": "T6",
+      "motor": "EVO",
+      "alcance": "colisiones de nombre, candidates/ y sustitución de salida propia en aborto",
+      "veredicto": "PASS",
+      "checks_ok": 18,
+      "checks_total": 18,
+      "detalle": "todos los checks OK"
+    },
+    {
+      "prueba": "T7",
+      "motor": "EVO",
+      "alcance": "eliminación de salidas propias acreditadas",
+      "veredicto": "PASS",
+      "checks_ok": 2,
+      "checks_total": 2,
+      "detalle": "todos los checks OK"
+    },
+    {
+      "prueba": "T8",
+      "motor": "EVO",
+      "alcance": "procesamiento normal + PCM vs campaña auditada (WAV)",
+      "veredicto": "PASS",
+      "checks_ok": 8,
+      "checks_total": 8,
+      "detalle": "todos los checks OK"
+    },
+    {
+      "prueba": "T8",
+      "motor": "EVO",
+      "alcance": "procesamiento normal + PCM vs campaña auditada (FLAC)",
+      "veredicto": "PASS",
+      "checks_ok": 8,
+      "checks_total": 8,
+      "detalle": "todos los checks OK"
+    },
+    {
+      "prueba": "T1",
+      "motor": "MQR",
+      "alcance": "excepción de hmix.verificar()",
+      "veredicto": "PASS",
+      "checks_ok": 8,
+      "checks_total": 8,
+      "detalle": "todos los checks OK"
+    },
+    {
+      "prueba": "T2",
+      "motor": "MQR",
+      "alcance": "excepción de comprobación de ruta",
+      "veredicto": "PASS",
+      "checks_ok": 8,
+      "checks_total": 8,
+      "detalle": "todos los checks OK"
+    },
+    {
+      "prueba": "T4",
+      "motor": "MQR",
+      "alcance": "verificación fallida sin excepción",
+      "veredicto": "PASS",
+      "checks_ok": 8,
+      "checks_total": 8,
+      "detalle": "todos los checks OK"
+    },
+    {
+      "prueba": "T3",
+      "motor": "MQR",
+      "alcance": "sustitución del Mix tras abrir el descriptor (DSP)",
+      "veredicto": "PASS",
+      "checks_ok": 9,
+      "checks_total": 9,
+      "detalle": "todos los checks OK"
+    },
+    {
+      "prueba": "T5",
+      "motor": "MQR",
+      "alcance": "ausencia de directorio definitivo tras los abortos",
+      "veredicto": "PASS",
+      "checks_ok": 1,
+      "checks_total": 1,
+      "detalle": "todos los checks OK"
+    },
+    {
+      "prueba": "T6",
+      "motor": "MQR",
+      "alcance": "colisiones de nombre, candidates/ y sustitución de salida propia en aborto",
+      "veredicto": "PASS",
+      "checks_ok": 18,
+      "checks_total": 18,
+      "detalle": "todos los checks OK"
+    },
+    {
+      "prueba": "T7",
+      "motor": "MQR",
+      "alcance": "eliminación de salidas propias acreditadas",
+      "veredicto": "PASS",
+      "checks_ok": 2,
+      "checks_total": 2,
+      "detalle": "todos los checks OK"
+    },
+    {
+      "prueba": "T8",
+      "motor": "MQR",
+      "alcance": "procesamiento normal + PCM vs campaña auditada (WAV)",
+      "veredicto": "PASS",
+      "checks_ok": 8,
+      "checks_total": 8,
+      "detalle": "todos los checks OK"
+    },
+    {
+      "prueba": "T8",
+      "motor": "MQR",
+      "alcance": "procesamiento normal + PCM vs campaña auditada (FLAC)",
+      "veredicto": "PASS",
+      "checks_ok": 8,
+      "checks_total": 8,
+      "detalle": "todos los checks OK"
+    }
+  ],
+  "detalles": {
+    "unidad": {
+      "UC1": {
+        "descripcion": "ajeno dentro de candidates/",
+        "rel": "candidates/ajeno_cand.wav",
+        "clase": "ajeno",
+        "abort": {
+          "schema": "abort-6g1/2",
+          "motivo": "PRUEBA_UC1",
+          "detalle": null,
+          "salidas_invalidadas": [],
+          "conservados": [
+            "candidates/ajeno_cand.wav"
+          ],
+          "motivos_propiedad": {
+            "candidates/ajeno_cand.wav": "ajeno_no_registrado"
+          },
+          "politica": "propiedad_acreditada_o_conserva; sin borrado por patrón de nombre ni por ubicación"
+        }
+      },
+      "UC2": {
+        "descripcion": "ajeno llamado SDV.wav",
+        "rel": "SDV.wav",
+        "clase": "ajeno",
+        "abort": {
+          "schema": "abort-6g1/2",
+          "motivo": "PRUEBA_UC2",
+          "detalle": null,
+          "salidas_invalidadas": [],
+          "conservados": [
+            "SDV.wav"
+          ],
+          "motivos_propiedad": {
+            "SDV.wav": "ajeno_no_registrado"
+          },
+          "politica": "propiedad_acreditada_o_conserva; sin borrado por patrón de nombre ni por ubicación"
+        }
+      },
+      "UC3": {
+        "descripcion": "ajeno con nombre exacto de salida del motor",
+        "rel": "mix SDV.wav",
+        "clase": "ajeno",
+        "abort": {
+          "schema": "abort-6g1/2",
+          "motivo": "PRUEBA_UC3",
+          "detalle": null,
+          "salidas_invalidadas": [],
+          "conservados": [
+            "mix SDV.wav"
+          ],
+          "motivos_propiedad": {
+            "mix SDV.wav": "ajeno_no_registrado"
+          },
+          "politica": "propiedad_acreditada_o_conserva; sin borrado por patrón de nombre ni por ubicación"
+        }
+      },
+      "UC4": {
+        "descripcion": "propio acreditado (sellado) debe eliminarse",
+        "rel": "propio.wav",
+        "clase": "propio_estable",
+        "abort": {
+          "schema": "abort-6g1/2",
+          "motivo": "PRUEBA_UC4",
+          "detalle": null,
+          "salidas_invalidadas": [
+            "propio.wav"
+          ],
+          "conservados": [],
+          "motivos_propiedad": {},
+          "politica": "propiedad_acreditada_o_conserva; sin borrado por patrón de nombre ni por ubicación"
+        }
+      },
+      "UC5": {
+        "descripcion": "propio sustituido tras su creación se conserva",
+        "rel": "sustituido.wav",
+        "clase": "propio_sustituido",
+        "abort": {
+          "schema": "abort-6g1/2",
+          "motivo": "PRUEBA_UC5",
+          "detalle": null,
+          "salidas_invalidadas": [],
+          "conservados": [
+            "sustituido.wav"
+          ],
+          "motivos_propiedad": {
+            "sustituido.wav": "identidad_distinta (sustituido o reemplazado tras el registro)"
+          },
+          "politica": "propiedad_acreditada_o_conserva; sin borrado por patrón de nombre ni por ubicación"
+        }
+      },
+      "UC6": {
+        "descripcion": "propio en curso (inodo continuo) debe eliminarse",
+        "rel": "en_curso.wav",
+        "clase": "propio_curso",
+        "abort": {
+          "schema": "abort-6g1/2",
+          "motivo": "PRUEBA_UC6",
+          "detalle": null,
+          "salidas_invalidadas": [
+            "en_curso.wav"
+          ],
+          "conservados": [],
+          "motivos_propiedad": {},
+          "politica": "propiedad_acreditada_o_conserva; sin borrado por patrón de nombre ni por ubicación"
+        }
+      },
+      "UC7": {
+        "descripcion": "propio sellado modificado in situ se conserva",
+        "rel": "sellado.json",
+        "clase": "propio_modificado",
+        "abort": {
+          "schema": "abort-6g1/2",
+          "motivo": "PRUEBA_UC7",
+          "detalle": null,
+          "salidas_invalidadas": [],
+          "conservados": [
+            "sellado.json"
+          ],
+          "motivos_propiedad": {
+            "sellado.json": "tamaño/mtime distintos de los registrados"
+          },
+          "politica": "propiedad_acreditada_o_conserva; sin borrado por patrón de nombre ni por ubicación"
+        }
+      }
+    },
+    "Hardened": {
+      "T1": {
+        "descripcion": "excepción de hmix.verificar()",
+        "abort": {
+          "schema": "abort-6g1/2",
+          "motivo": "MIX_CAMBIADO_DURANTE_EL_PROCESAMIENTO",
+          "detalle": {
+            "mix_path": "/home/user/SDV-SDI_SGM/ETAPA_6G1_CORRECCION_LECTURA_SEGURA/fixtures/mix.wav",
+            "container": "WAV",
+            "format": "WAV",
+            "subtype": "PCM_16",
+            "probe_sha256": "060d6c89b1aabe5d0c449eefa696dc23efe6c77e00d2669dea7a6dfaebfe9627",
+            "after": {
+              "unchanged": false,
+              "reason": "excepcion: inyeccion de prueba T1: verificar() fallo"
+            },
+            "policy": "detect_only_no_conversion",
+            "ruta_actual": {
+              "unchanged": false,
+              "reason": "excepcion: inyeccion de prueba T1: verificar() fallo"
+            }
+          },
+          "salidas_invalidadas": [
+            "analysis.txt",
+            "mix SDI.wav",
+            "mix SDV.wav"
+          ],
+          "conservados": [
+            "analysis.json",
+            "engine_log.txt",
+            "input_integrity_6g.json"
+          ],
+          "motivos_propiedad": {
+            "analysis.json": "registro_interno_conservado",
+            "engine_log.txt": "registro_interno_conservado",
+            "input_integrity_6g.json": "registro_interno_conservado"
+          },
+          "politica": "propiedad_acreditada_o_conserva; sin borrado por patrón de nombre ni por ubicación"
+        },
+        "exit": 2,
+        "wavs": [],
+        "dirs_definitivos": []
+      },
+      "T2": {
+        "descripcion": "excepción de comprobación de ruta",
+        "abort": {
+          "schema": "abort-6g1/2",
+          "motivo": "MIX_CAMBIADO_DURANTE_EL_PROCESAMIENTO",
+          "detalle": {
+            "mix_path": "/home/user/SDV-SDI_SGM/ETAPA_6G1_CORRECCION_LECTURA_SEGURA/fixtures/mix.wav",
+            "container": "WAV",
+            "format": "WAV",
+            "subtype": "PCM_16",
+            "probe_sha256": "060d6c89b1aabe5d0c449eefa696dc23efe6c77e00d2669dea7a6dfaebfe9627",
+            "after": {
+              "unchanged": false,
+              "reason": "excepcion: inyeccion de prueba T2: ruta_apunta_al_mismo_objeto() fallo"
+            },
+            "policy": "detect_only_no_conversion",
+            "ruta_actual": {
+              "unchanged": false,
+              "reason": "excepcion: inyeccion de prueba T2: ruta_apunta_al_mismo_objeto() fallo"
+            }
+          },
+          "salidas_invalidadas": [
+            "analysis.txt",
+            "mix SDI.wav",
+            "mix SDV.wav"
+          ],
+          "conservados": [
+            "analysis.json",
+            "engine_log.txt",
+            "input_integrity_6g.json"
+          ],
+          "motivos_propiedad": {
+            "analysis.json": "registro_interno_conservado",
+            "engine_log.txt": "registro_interno_conservado",
+            "input_integrity_6g.json": "registro_interno_conservado"
+          },
+          "politica": "propiedad_acreditada_o_conserva; sin borrado por patrón de nombre ni por ubicación"
+        },
+        "exit": 2,
+        "wavs": [],
+        "dirs_definitivos": []
+      },
+      "T4": {
+        "descripcion": "verificación fallida sin excepción",
+        "abort": {
+          "schema": "abort-6g1/2",
+          "motivo": "MIX_CAMBIADO_DURANTE_EL_PROCESAMIENTO",
+          "detalle": {
+            "mix_path": "/home/user/SDV-SDI_SGM/ETAPA_6G1_CORRECCION_LECTURA_SEGURA/fixtures/mix.wav",
+            "container": "WAV",
+            "format": "WAV",
+            "subtype": "PCM_16",
+            "probe_sha256": "060d6c89b1aabe5d0c449eefa696dc23efe6c77e00d2669dea7a6dfaebfe9627",
+            "after": {
+              "unchanged": false,
+              "reason": "inyeccion de prueba T4: verificacion no satisfactoria"
+            },
+            "policy": "detect_only_no_conversion",
+            "ruta_actual": {
+              "unchanged": true,
+              "reason": "ruta e inodo de apertura coinciden",
+              "identity": {
+                "device": 65024,
+                "inode": 534660,
+                "size": 352844,
+                "mtime_ns": 1795290612307410868,
+                "mode": "0o100644"
+              },
+              "identity_expected": {
+                "device": 65024,
+                "inode": 534660,
+                "size": 352844,
+                "mtime_ns": 1795290612307410868,
+                "mode": "0o100644"
+              }
+            }
+          },
+          "salidas_invalidadas": [
+            "analysis.txt",
+            "mix SDI.wav",
+            "mix SDV.wav"
+          ],
+          "conservados": [
+            "analysis.json",
+            "engine_log.txt",
+            "input_integrity_6g.json"
+          ],
+          "motivos_propiedad": {
+            "analysis.json": "registro_interno_conservado",
+            "engine_log.txt": "registro_interno_conservado",
+            "input_integrity_6g.json": "registro_interno_conservado"
+          },
+          "politica": "propiedad_acreditada_o_conserva; sin borrado por patrón de nombre ni por ubicación"
+        },
+        "exit": 2,
+        "wavs": [],
+        "dirs_definitivos": []
+      },
+      "T3": {
+        "descripcion": "sustitución durante el DSP",
+        "abort": {
+          "schema": "abort-6g1/2",
+          "motivo": "MIX_CAMBIADO_DURANTE_EL_PROCESAMIENTO",
+          "detalle": {
+            "mix_path": "/tmp/f6g1corr/mezclas/T3_Hardened_mix_12s.flac",
+            "container": "FLAC",
+            "format": "FLAC",
+            "subtype": "PCM_16",
+            "probe_sha256": "fb1882e2d0995de82bd61a2413d355f7876a8b7408b99ed8b454034c9bfc39ed",
+            "after": {
+              "unchanged": true,
+              "reason": "sha256 e identidad revalidados",
+              "sha256": "fb1882e2d0995de82bd61a2413d355f7876a8b7408b99ed8b454034c9bfc39ed",
+              "expected": "fb1882e2d0995de82bd61a2413d355f7876a8b7408b99ed8b454034c9bfc39ed",
+              "identity": {
+                "device": 65024,
+                "inode": 534993,
+                "size": 1594827,
+                "mtime_ns": 1795291924550038803,
+                "mode": "0o100644"
+              },
+              "identity_expected": {
+                "device": 65024,
+                "inode": 534993,
+                "size": 1594827,
+                "mtime_ns": 1795291924550038803,
+                "mode": "0o100644"
+              }
+            },
+            "policy": "detect_only_no_conversion",
+            "ruta_actual": {
+              "unchanged": false,
+              "reason": "la ruta ya no apunta al inodo validado",
+              "identity": {
+                "device": 65024,
+                "inode": 534822,
+                "size": 276611,
+                "mtime_ns": 1795291924554038824,
+                "mode": "0o100644"
+              },
+              "identity_expected": {
+                "device": 65024,
+                "inode": 534993,
+                "size": 1594827,
+                "mtime_ns": 1795291924550038803,
+                "mode": "0o100644"
+              }
+            }
+          },
+          "salidas_invalidadas": [
+            "T3_Hardened_mix_12s SDI.wav",
+            "T3_Hardened_mix_12s SDV.wav",
+            "analysis.txt"
+          ],
+          "conservados": [
+            "analysis.json",
+            "engine_log.txt",
+            "input_integrity_6g.json"
+          ],
+          "motivos_propiedad": {
+            "analysis.json": "registro_interno_conservado",
+            "engine_log.txt": "registro_interno_conservado",
+            "input_integrity_6g.json": "registro_interno_conservado"
+          },
+          "politica": "propiedad_acreditada_o_conserva; sin borrado por patrón de nombre ni por ubicación"
+        },
+        "exit": 2,
+        "evento": {
+          "sembrados": [],
+          "sustitucion_aplicada": true,
+          "reemplazados": [],
+          "sha_mix_tras_sustitucion": "636fc4f96b55040fb6d78bfb96a8c53fcf988329d54c32ff9996c2b51a967b40",
+          "disparo": "sustitucion",
+          "segundos": 3.871
+        }
+      },
+      "T5": {
+        "descripcion": "agregado sobre T1–T4",
+        "definitivos": []
+      },
+      "T6": {
+        "descripcion": "sembrados=('SDV.wav', 'candidates/ajeno_cand.wav', 'otro_ajeno.txt') reemplazados=('mix SDV.wav',)",
+        "abort": {
+          "schema": "abort-6g1/2",
+          "motivo": "MIX_CAMBIADO_DURANTE_EL_PROCESAMIENTO",
+          "detalle": {
+            "mix_path": "/home/user/SDV-SDI_SGM/ETAPA_6G1_CORRECCION_LECTURA_SEGURA/fixtures/mix.wav",
+            "container": "WAV",
+            "format": "WAV",
+            "subtype": "PCM_16",
+            "probe_sha256": "060d6c89b1aabe5d0c449eefa696dc23efe6c77e00d2669dea7a6dfaebfe9627",
+            "after": {
+              "unchanged": false,
+              "reason": "excepcion: inyeccion de prueba T1: verificar() fallo"
+            },
+            "policy": "detect_only_no_conversion",
+            "ruta_actual": {
+              "unchanged": false,
+              "reason": "excepcion: inyeccion de prueba T1: verificar() fallo"
+            }
+          },
+          "salidas_invalidadas": [
+            "analysis.txt",
+            "mix SDI.wav"
+          ],
+          "conservados": [
+            "SDV.wav",
+            "analysis.json",
+            "candidates/ajeno_cand.wav",
+            "engine_log.txt",
+            "input_integrity_6g.json",
+            "mix SDV.wav",
+            "otro_ajeno.txt"
+          ],
+          "motivos_propiedad": {
+            "SDV.wav": "ajeno_no_registrado",
+            "analysis.json": "registro_interno_conservado",
+            "candidates/ajeno_cand.wav": "ajeno_no_registrado",
+            "engine_log.txt": "registro_interno_conservado",
+            "input_integrity_6g.json": "registro_interno_conservado",
+            "mix SDV.wav": "identidad_distinta (sustituido o reemplazado tras el registro)",
+            "otro_ajeno.txt": "ajeno_no_registrado"
+          },
+          "politica": "propiedad_acreditada_o_conserva; sin borrado por patrón de nombre ni por ubicación"
+        },
+        "evento": {
+          "sembrados": [
+            "SDV.wav",
+            "candidates/ajeno_cand.wav",
+            "otro_ajeno.txt"
+          ],
+          "sustitucion_aplicada": false,
+          "reemplazados": [
+            "mix SDV.wav"
+          ],
+          "disparo": "siembra",
+          "segundos": 0.884
+        }
+      },
+      "T7": {
+        "descripcion": "derivado de T1 (mismo ensayo, aserciones específicas de propiedad)",
+        "salidas_invalidadas": [
+          "analysis.txt",
+          "mix SDI.wav",
+          "mix SDV.wav"
+        ],
+        "motivos_propiedad": {}
+      },
+      "T8 (WAV)": {
+        "descripcion": "full_processing WAV",
+        "exit": 0,
+        "pcm": {
+          "mix SDI.wav": "368d3ecbc3a07d053a67e2fb1157a66eb290d8f0a7a31087a5a3060a81574f85",
+          "mix SDV.wav": "a347838da989c3645115f9d08dd296a9902a2b8ac0372fde5002e40f1d420bc0"
+        },
+        "esperado": {
+          "mix SDI.wav": "368d3ecbc3a07d053a67e2fb1157a66eb290d8f0a7a31087a5a3060a81574f85",
+          "mix SDV.wav": "a347838da989c3645115f9d08dd296a9902a2b8ac0372fde5002e40f1d420bc0"
+        },
+        "run_dirs": [
+          "/tmp/f6g1corr/Hardened/T8_WAV/out/motorA_run_20261121_201210"
+        ],
+        "dirs_definitivos": [
+          "motorA_run_20261121_201210"
+        ]
+      },
+      "T8 (FLAC)": {
+        "descripcion": "full_processing FLAC",
+        "exit": 0,
+        "pcm": {
+          "mix SDI.wav": "368d3ecbc3a07d053a67e2fb1157a66eb290d8f0a7a31087a5a3060a81574f85",
+          "mix SDV.wav": "a347838da989c3645115f9d08dd296a9902a2b8ac0372fde5002e40f1d420bc0"
+        },
+        "esperado": {
+          "mix SDI.wav": "368d3ecbc3a07d053a67e2fb1157a66eb290d8f0a7a31087a5a3060a81574f85",
+          "mix SDV.wav": "a347838da989c3645115f9d08dd296a9902a2b8ac0372fde5002e40f1d420bc0"
+        },
+        "run_dirs": [
+          "/tmp/f6g1corr/Hardened/T8_FLAC/out/motorA_run_20261121_201211"
+        ],
+        "dirs_definitivos": [
+          "motorA_run_20261121_201211"
+        ]
+      }
+    },
+    "EVO": {
+      "T1": {
+        "descripcion": "excepción de hmix.verificar()",
+        "abort": {
+          "schema": "abort-6g1/2",
+          "motivo": "MIX_CAMBIADO_DURANTE_EL_PROCESAMIENTO",
+          "detalle": {
+            "mix_path": "/home/user/SDV-SDI_SGM/ETAPA_6G1_CORRECCION_LECTURA_SEGURA/fixtures/mix.wav",
+            "container": "WAV",
+            "format": "WAV",
+            "subtype": "PCM_16",
+            "probe_sha256": "060d6c89b1aabe5d0c449eefa696dc23efe6c77e00d2669dea7a6dfaebfe9627",
+            "after": {
+              "unchanged": false,
+              "reason": "excepcion: inyeccion de prueba T1: verificar() fallo"
+            },
+            "policy": "detect_only_no_conversion",
+            "ruta_actual": {
+              "unchanged": false,
+              "reason": "excepcion: inyeccion de prueba T1: verificar() fallo"
+            }
+          },
+          "salidas_invalidadas": [
+            "analysis.txt",
+            "mix SDI.wav",
+            "mix SDV.wav"
+          ],
+          "conservados": [
+            "analysis.json",
+            "engine_log.txt",
+            "input_integrity_6g.json"
+          ],
+          "motivos_propiedad": {
+            "analysis.json": "registro_interno_conservado",
+            "engine_log.txt": "registro_interno_conservado",
+            "input_integrity_6g.json": "registro_interno_conservado"
+          },
+          "politica": "propiedad_acreditada_o_conserva; sin borrado por patrón de nombre ni por ubicación"
+        },
+        "exit": 2,
+        "wavs": [],
+        "dirs_definitivos": []
+      },
+      "T2": {
+        "descripcion": "excepción de comprobación de ruta",
+        "abort": {
+          "schema": "abort-6g1/2",
+          "motivo": "MIX_CAMBIADO_DURANTE_EL_PROCESAMIENTO",
+          "detalle": {
+            "mix_path": "/home/user/SDV-SDI_SGM/ETAPA_6G1_CORRECCION_LECTURA_SEGURA/fixtures/mix.wav",
+            "container": "WAV",
+            "format": "WAV",
+            "subtype": "PCM_16",
+            "probe_sha256": "060d6c89b1aabe5d0c449eefa696dc23efe6c77e00d2669dea7a6dfaebfe9627",
+            "after": {
+              "unchanged": false,
+              "reason": "excepcion: inyeccion de prueba T2: ruta_apunta_al_mismo_objeto() fallo"
+            },
+            "policy": "detect_only_no_conversion",
+            "ruta_actual": {
+              "unchanged": false,
+              "reason": "excepcion: inyeccion de prueba T2: ruta_apunta_al_mismo_objeto() fallo"
+            }
+          },
+          "salidas_invalidadas": [
+            "analysis.txt",
+            "mix SDI.wav",
+            "mix SDV.wav"
+          ],
+          "conservados": [
+            "analysis.json",
+            "engine_log.txt",
+            "input_integrity_6g.json"
+          ],
+          "motivos_propiedad": {
+            "analysis.json": "registro_interno_conservado",
+            "engine_log.txt": "registro_interno_conservado",
+            "input_integrity_6g.json": "registro_interno_conservado"
+          },
+          "politica": "propiedad_acreditada_o_conserva; sin borrado por patrón de nombre ni por ubicación"
+        },
+        "exit": 2,
+        "wavs": [],
+        "dirs_definitivos": []
+      },
+      "T4": {
+        "descripcion": "verificación fallida sin excepción",
+        "abort": {
+          "schema": "abort-6g1/2",
+          "motivo": "MIX_CAMBIADO_DURANTE_EL_PROCESAMIENTO",
+          "detalle": {
+            "mix_path": "/home/user/SDV-SDI_SGM/ETAPA_6G1_CORRECCION_LECTURA_SEGURA/fixtures/mix.wav",
+            "container": "WAV",
+            "format": "WAV",
+            "subtype": "PCM_16",
+            "probe_sha256": "060d6c89b1aabe5d0c449eefa696dc23efe6c77e00d2669dea7a6dfaebfe9627",
+            "after": {
+              "unchanged": false,
+              "reason": "inyeccion de prueba T4: verificacion no satisfactoria"
+            },
+            "policy": "detect_only_no_conversion",
+            "ruta_actual": {
+              "unchanged": true,
+              "reason": "ruta e inodo de apertura coinciden",
+              "identity": {
+                "device": 65024,
+                "inode": 534660,
+                "size": 352844,
+                "mtime_ns": 1795290612307410868,
+                "mode": "0o100644"
+              },
+              "identity_expected": {
+                "device": 65024,
+                "inode": 534660,
+                "size": 352844,
+                "mtime_ns": 1795290612307410868,
+                "mode": "0o100644"
+              }
+            }
+          },
+          "salidas_invalidadas": [
+            "analysis.txt",
+            "mix SDI.wav",
+            "mix SDV.wav"
+          ],
+          "conservados": [
+            "analysis.json",
+            "engine_log.txt",
+            "input_integrity_6g.json"
+          ],
+          "motivos_propiedad": {
+            "analysis.json": "registro_interno_conservado",
+            "engine_log.txt": "registro_interno_conservado",
+            "input_integrity_6g.json": "registro_interno_conservado"
+          },
+          "politica": "propiedad_acreditada_o_conserva; sin borrado por patrón de nombre ni por ubicación"
+        },
+        "exit": 2,
+        "wavs": [],
+        "dirs_definitivos": []
+      },
+      "T3": {
+        "descripcion": "sustitución durante el DSP",
+        "abort": {
+          "schema": "abort-6g1/2",
+          "motivo": "MIX_CAMBIADO_DURANTE_EL_PROCESAMIENTO",
+          "detalle": {
+            "mix_path": "/tmp/f6g1corr/mezclas/T3_EVO_mix_12s.flac",
+            "container": "FLAC",
+            "format": "FLAC",
+            "subtype": "PCM_16",
+            "probe_sha256": "fb1882e2d0995de82bd61a2413d355f7876a8b7408b99ed8b454034c9bfc39ed",
+            "after": {
+              "unchanged": true,
+              "reason": "sha256 e identidad revalidados",
+              "sha256": "fb1882e2d0995de82bd61a2413d355f7876a8b7408b99ed8b454034c9bfc39ed",
+              "expected": "fb1882e2d0995de82bd61a2413d355f7876a8b7408b99ed8b454034c9bfc39ed",
+              "identity": {
+                "device": 65024,
+                "inode": 535004,
+                "size": 1594827,
+                "mtime_ns": 1795291934690090018,
+                "mode": "0o100644"
+              },
+              "identity_expected": {
+                "device": 65024,
+                "inode": 535004,
+                "size": 1594827,
+                "mtime_ns": 1795291934690090018,
+                "mode": "0o100644"
+              }
+            },
+            "policy": "detect_only_no_conversion",
+            "ruta_actual": {
+              "unchanged": false,
+              "reason": "la ruta ya no apunta al inodo validado",
+              "identity": {
+                "device": 65024,
+                "inode": 534880,
+                "size": 276611,
+                "mtime_ns": 1795291934690090018,
+                "mode": "0o100644"
+              },
+              "identity_expected": {
+                "device": 65024,
+                "inode": 535004,
+                "size": 1594827,
+                "mtime_ns": 1795291934690090018,
+                "mode": "0o100644"
+              }
+            }
+          },
+          "salidas_invalidadas": [
+            "T3_EVO_mix_12s SDI.wav",
+            "T3_EVO_mix_12s SDV.wav",
+            "analysis.txt"
+          ],
+          "conservados": [
+            "analysis.json",
+            "engine_log.txt",
+            "input_integrity_6g.json"
+          ],
+          "motivos_propiedad": {
+            "analysis.json": "registro_interno_conservado",
+            "engine_log.txt": "registro_interno_conservado",
+            "input_integrity_6g.json": "registro_interno_conservado"
+          },
+          "politica": "propiedad_acreditada_o_conserva; sin borrado por patrón de nombre ni por ubicación"
+        },
+        "exit": 2,
+        "evento": {
+          "sembrados": [],
+          "sustitucion_aplicada": true,
+          "reemplazados": [],
+          "sha_mix_tras_sustitucion": "636fc4f96b55040fb6d78bfb96a8c53fcf988329d54c32ff9996c2b51a967b40",
+          "disparo": "sustitucion",
+          "segundos": 3.71
+        }
+      },
+      "T5": {
+        "descripcion": "agregado sobre T1–T4",
+        "definitivos": []
+      },
+      "T6": {
+        "descripcion": "sembrados=('SDV.wav', 'candidates/ajeno_cand.wav', 'otro_ajeno.txt') reemplazados=('mix SDV.wav',)",
+        "abort": {
+          "schema": "abort-6g1/2",
+          "motivo": "MIX_CAMBIADO_DURANTE_EL_PROCESAMIENTO",
+          "detalle": {
+            "mix_path": "/home/user/SDV-SDI_SGM/ETAPA_6G1_CORRECCION_LECTURA_SEGURA/fixtures/mix.wav",
+            "container": "WAV",
+            "format": "WAV",
+            "subtype": "PCM_16",
+            "probe_sha256": "060d6c89b1aabe5d0c449eefa696dc23efe6c77e00d2669dea7a6dfaebfe9627",
+            "after": {
+              "unchanged": false,
+              "reason": "excepcion: inyeccion de prueba T1: verificar() fallo"
+            },
+            "policy": "detect_only_no_conversion",
+            "ruta_actual": {
+              "unchanged": false,
+              "reason": "excepcion: inyeccion de prueba T1: verificar() fallo"
+            }
+          },
+          "salidas_invalidadas": [
+            "analysis.txt",
+            "mix SDI.wav"
+          ],
+          "conservados": [
+            "SDV.wav",
+            "analysis.json",
+            "candidates/ajeno_cand.wav",
+            "engine_log.txt",
+            "input_integrity_6g.json",
+            "mix SDV.wav",
+            "otro_ajeno.txt"
+          ],
+          "motivos_propiedad": {
+            "SDV.wav": "ajeno_no_registrado",
+            "analysis.json": "registro_interno_conservado",
+            "candidates/ajeno_cand.wav": "ajeno_no_registrado",
+            "engine_log.txt": "registro_interno_conservado",
+            "input_integrity_6g.json": "registro_interno_conservado",
+            "mix SDV.wav": "identidad_distinta (sustituido o reemplazado tras el registro)",
+            "otro_ajeno.txt": "ajeno_no_registrado"
+          },
+          "politica": "propiedad_acreditada_o_conserva; sin borrado por patrón de nombre ni por ubicación"
+        },
+        "evento": {
+          "sembrados": [
+            "SDV.wav",
+            "candidates/ajeno_cand.wav",
+            "otro_ajeno.txt"
+          ],
+          "sustitucion_aplicada": false,
+          "reemplazados": [
+            "mix SDV.wav"
+          ],
+          "disparo": "siembra",
+          "segundos": 0.939
+        }
+      },
+      "T7": {
+        "descripcion": "derivado de T1 (mismo ensayo, aserciones específicas de propiedad)",
+        "salidas_invalidadas": [
+          "analysis.txt",
+          "mix SDI.wav",
+          "mix SDV.wav"
+        ],
+        "motivos_propiedad": {}
+      },
+      "T8 (WAV)": {
+        "descripcion": "full_processing WAV",
+        "exit": 0,
+        "pcm": {
+          "mix SDI.wav": "368d3ecbc3a07d053a67e2fb1157a66eb290d8f0a7a31087a5a3060a81574f85",
+          "mix SDV.wav": "a347838da989c3645115f9d08dd296a9902a2b8ac0372fde5002e40f1d420bc0"
+        },
+        "esperado": {
+          "mix SDI.wav": "368d3ecbc3a07d053a67e2fb1157a66eb290d8f0a7a31087a5a3060a81574f85",
+          "mix SDV.wav": "a347838da989c3645115f9d08dd296a9902a2b8ac0372fde5002e40f1d420bc0"
+        },
+        "run_dirs": [
+          "/tmp/f6g1corr/EVO/T8_WAV/out/motorA_run_20261121_201220"
+        ],
+        "dirs_definitivos": [
+          "motorA_run_20261121_201220"
+        ]
+      },
+      "T8 (FLAC)": {
+        "descripcion": "full_processing FLAC",
+        "exit": 0,
+        "pcm": {
+          "mix SDI.wav": "368d3ecbc3a07d053a67e2fb1157a66eb290d8f0a7a31087a5a3060a81574f85",
+          "mix SDV.wav": "a347838da989c3645115f9d08dd296a9902a2b8ac0372fde5002e40f1d420bc0"
+        },
+        "esperado": {
+          "mix SDI.wav": "368d3ecbc3a07d053a67e2fb1157a66eb290d8f0a7a31087a5a3060a81574f85",
+          "mix SDV.wav": "a347838da989c3645115f9d08dd296a9902a2b8ac0372fde5002e40f1d420bc0"
+        },
+        "run_dirs": [
+          "/tmp/f6g1corr/EVO/T8_FLAC/out/motorA_run_20261121_201221"
+        ],
+        "dirs_definitivos": [
+          "motorA_run_20261121_201221"
+        ]
+      }
+    },
+    "MQR": {
+      "T1": {
+        "descripcion": "excepción de hmix.verificar()",
+        "abort": {
+          "schema": "abort-6g1/2",
+          "motivo": "MIX_CAMBIADO_DURANTE_EL_PROCESAMIENTO",
+          "detalle": {
+            "mix_path": "/home/user/SDV-SDI_SGM/ETAPA_6G1_CORRECCION_LECTURA_SEGURA/fixtures/mix.wav",
+            "container": "WAV",
+            "format": "WAV",
+            "subtype": "PCM_16",
+            "probe_sha256": "060d6c89b1aabe5d0c449eefa696dc23efe6c77e00d2669dea7a6dfaebfe9627",
+            "after": {
+              "unchanged": false,
+              "reason": "excepcion: inyeccion de prueba T1: verificar() fallo"
+            },
+            "policy": "detect_only_no_conversion",
+            "ruta_actual": {
+              "unchanged": false,
+              "reason": "excepcion: inyeccion de prueba T1: verificar() fallo"
+            }
+          },
+          "salidas_invalidadas": [
+            "SDI.wav",
+            "SDV.wav",
+            "analysis.txt",
+            "masks/confidence_map.npy",
+            "masks/consensus_instrumental_confidence_weighted_mean.npy",
+            "masks/consensus_instrumental_median.npy",
+            "masks/consensus_instrumental_weighted_mean.npy",
+            "masks/consensus_vocal_confidence_weighted_mean.npy",
+            "masks/consensus_vocal_median.npy",
+            "masks/consensus_vocal_weighted_mean.npy",
+            "masks/mask_P01_instrumental.npy",
+            "masks/mask_P01_vocal.npy",
+            "masks/model_disagreement_map.npy"
+          ],
+          "conservados": [
+            "analysis.json",
+            "engine_log.txt",
+            "input_integrity_6g.json"
+          ],
+          "motivos_propiedad": {
+            "analysis.json": "registro_interno_conservado",
+            "engine_log.txt": "registro_interno_conservado",
+            "input_integrity_6g.json": "registro_interno_conservado"
+          },
+          "politica": "propiedad_acreditada_o_conserva; sin borrado por patrón de nombre ni por ubicación"
+        },
+        "exit": 2,
+        "wavs": [],
+        "dirs_definitivos": []
+      },
+      "T2": {
+        "descripcion": "excepción de comprobación de ruta",
+        "abort": {
+          "schema": "abort-6g1/2",
+          "motivo": "MIX_CAMBIADO_DURANTE_EL_PROCESAMIENTO",
+          "detalle": {
+            "mix_path": "/home/user/SDV-SDI_SGM/ETAPA_6G1_CORRECCION_LECTURA_SEGURA/fixtures/mix.wav",
+            "container": "WAV",
+            "format": "WAV",
+            "subtype": "PCM_16",
+            "probe_sha256": "060d6c89b1aabe5d0c449eefa696dc23efe6c77e00d2669dea7a6dfaebfe9627",
+            "after": {
+              "unchanged": false,
+              "reason": "excepcion: inyeccion de prueba T2: ruta_apunta_al_mismo_objeto() fallo"
+            },
+            "policy": "detect_only_no_conversion",
+            "ruta_actual": {
+              "unchanged": false,
+              "reason": "excepcion: inyeccion de prueba T2: ruta_apunta_al_mismo_objeto() fallo"
+            }
+          },
+          "salidas_invalidadas": [
+            "SDI.wav",
+            "SDV.wav",
+            "analysis.txt",
+            "masks/confidence_map.npy",
+            "masks/consensus_instrumental_confidence_weighted_mean.npy",
+            "masks/consensus_instrumental_median.npy",
+            "masks/consensus_instrumental_weighted_mean.npy",
+            "masks/consensus_vocal_confidence_weighted_mean.npy",
+            "masks/consensus_vocal_median.npy",
+            "masks/consensus_vocal_weighted_mean.npy",
+            "masks/mask_P01_instrumental.npy",
+            "masks/mask_P01_vocal.npy",
+            "masks/model_disagreement_map.npy"
+          ],
+          "conservados": [
+            "analysis.json",
+            "engine_log.txt",
+            "input_integrity_6g.json"
+          ],
+          "motivos_propiedad": {
+            "analysis.json": "registro_interno_conservado",
+            "engine_log.txt": "registro_interno_conservado",
+            "input_integrity_6g.json": "registro_interno_conservado"
+          },
+          "politica": "propiedad_acreditada_o_conserva; sin borrado por patrón de nombre ni por ubicación"
+        },
+        "exit": 2,
+        "wavs": [],
+        "dirs_definitivos": []
+      },
+      "T4": {
+        "descripcion": "verificación fallida sin excepción",
+        "abort": {
+          "schema": "abort-6g1/2",
+          "motivo": "MIX_CAMBIADO_DURANTE_EL_PROCESAMIENTO",
+          "detalle": {
+            "mix_path": "/home/user/SDV-SDI_SGM/ETAPA_6G1_CORRECCION_LECTURA_SEGURA/fixtures/mix.wav",
+            "container": "WAV",
+            "format": "WAV",
+            "subtype": "PCM_16",
+            "probe_sha256": "060d6c89b1aabe5d0c449eefa696dc23efe6c77e00d2669dea7a6dfaebfe9627",
+            "after": {
+              "unchanged": false,
+              "reason": "inyeccion de prueba T4: verificacion no satisfactoria"
+            },
+            "policy": "detect_only_no_conversion",
+            "ruta_actual": {
+              "unchanged": true,
+              "reason": "ruta e inodo de apertura coinciden",
+              "identity": {
+                "device": 65024,
+                "inode": 534660,
+                "size": 352844,
+                "mtime_ns": 1795290612307410868,
+                "mode": "0o100644"
+              },
+              "identity_expected": {
+                "device": 65024,
+                "inode": 534660,
+                "size": 352844,
+                "mtime_ns": 1795290612307410868,
+                "mode": "0o100644"
+              }
+            }
+          },
+          "salidas_invalidadas": [
+            "SDI.wav",
+            "SDV.wav",
+            "analysis.txt",
+            "masks/confidence_map.npy",
+            "masks/consensus_instrumental_confidence_weighted_mean.npy",
+            "masks/consensus_instrumental_median.npy",
+            "masks/consensus_instrumental_weighted_mean.npy",
+            "masks/consensus_vocal_confidence_weighted_mean.npy",
+            "masks/consensus_vocal_median.npy",
+            "masks/consensus_vocal_weighted_mean.npy",
+            "masks/mask_P01_instrumental.npy",
+            "masks/mask_P01_vocal.npy",
+            "masks/model_disagreement_map.npy"
+          ],
+          "conservados": [
+            "analysis.json",
+            "engine_log.txt",
+            "input_integrity_6g.json"
+          ],
+          "motivos_propiedad": {
+            "analysis.json": "registro_interno_conservado",
+            "engine_log.txt": "registro_interno_conservado",
+            "input_integrity_6g.json": "registro_interno_conservado"
+          },
+          "politica": "propiedad_acreditada_o_conserva; sin borrado por patrón de nombre ni por ubicación"
+        },
+        "exit": 2,
+        "wavs": [],
+        "dirs_definitivos": []
+      },
+      "T3": {
+        "descripcion": "sustitución durante el DSP",
+        "abort": {
+          "schema": "abort-6g1/2",
+          "motivo": "MIX_CAMBIADO_DURANTE_EL_PROCESAMIENTO",
+          "detalle": {
+            "mix_path": "/tmp/f6g1corr/mezclas/T3_MQR_mix_12s.flac",
+            "container": "FLAC",
+            "format": "FLAC",
+            "subtype": "PCM_16",
+            "probe_sha256": "fb1882e2d0995de82bd61a2413d355f7876a8b7408b99ed8b454034c9bfc39ed",
+            "after": {
+              "unchanged": true,
+              "reason": "sha256 e identidad revalidados",
+              "sha256": "fb1882e2d0995de82bd61a2413d355f7876a8b7408b99ed8b454034c9bfc39ed",
+              "expected": "fb1882e2d0995de82bd61a2413d355f7876a8b7408b99ed8b454034c9bfc39ed",
+              "identity": {
+                "device": 65024,
+                "inode": 535012,
+                "size": 1594827,
+                "mtime_ns": 1795291945150142850,
+                "mode": "0o100644"
+              },
+              "identity_expected": {
+                "device": 65024,
+                "inode": 535012,
+                "size": 1594827,
+                "mtime_ns": 1795291945150142850,
+                "mode": "0o100644"
+              }
+            },
+            "policy": "detect_only_no_conversion",
+            "ruta_actual": {
+              "unchanged": false,
+              "reason": "la ruta ya no apunta al inodo validado",
+              "identity": {
+                "device": 65024,
+                "inode": 535008,
+                "size": 276611,
+                "mtime_ns": 1795291945154142870,
+                "mode": "0o100644"
+              },
+              "identity_expected": {
+                "device": 65024,
+                "inode": 535012,
+                "size": 1594827,
+                "mtime_ns": 1795291945150142850,
+                "mode": "0o100644"
+              }
+            }
+          },
+          "salidas_invalidadas": [
+            "SDI.wav",
+            "SDV.wav",
+            "analysis.txt",
+            "masks/confidence_map.npy",
+            "masks/consensus_instrumental_confidence_weighted_mean.npy",
+            "masks/consensus_instrumental_median.npy",
+            "masks/consensus_instrumental_weighted_mean.npy",
+            "masks/consensus_vocal_confidence_weighted_mean.npy",
+            "masks/consensus_vocal_median.npy",
+            "masks/consensus_vocal_weighted_mean.npy",
+            "masks/mask_P01_instrumental.npy",
+            "masks/mask_P01_vocal.npy",
+            "masks/model_disagreement_map.npy"
+          ],
+          "conservados": [
+            "analysis.json",
+            "engine_log.txt",
+            "input_integrity_6g.json"
+          ],
+          "motivos_propiedad": {
+            "analysis.json": "registro_interno_conservado",
+            "engine_log.txt": "registro_interno_conservado",
+            "input_integrity_6g.json": "registro_interno_conservado"
+          },
+          "politica": "propiedad_acreditada_o_conserva; sin borrado por patrón de nombre ni por ubicación"
+        },
+        "exit": 2,
+        "evento": {
+          "sembrados": [],
+          "sustitucion_aplicada": true,
+          "reemplazados": [],
+          "sha_mix_tras_sustitucion": "636fc4f96b55040fb6d78bfb96a8c53fcf988329d54c32ff9996c2b51a967b40",
+          "disparo": "sustitucion",
+          "segundos": 4.954
+        }
+      },
+      "T5": {
+        "descripcion": "agregado sobre T1–T4",
+        "definitivos": []
+      },
+      "T6": {
+        "descripcion": "sembrados=('mix SDV.wav', 'candidates/ajeno_cand.wav', 'otro_ajeno.txt') reemplazados=('SDV.wav',)",
+        "abort": {
+          "schema": "abort-6g1/2",
+          "motivo": "MIX_CAMBIADO_DURANTE_EL_PROCESAMIENTO",
+          "detalle": {
+            "mix_path": "/home/user/SDV-SDI_SGM/ETAPA_6G1_CORRECCION_LECTURA_SEGURA/fixtures/mix.wav",
+            "container": "WAV",
+            "format": "WAV",
+            "subtype": "PCM_16",
+            "probe_sha256": "060d6c89b1aabe5d0c449eefa696dc23efe6c77e00d2669dea7a6dfaebfe9627",
+            "after": {
+              "unchanged": false,
+              "reason": "excepcion: inyeccion de prueba T1: verificar() fallo"
+            },
+            "policy": "detect_only_no_conversion",
+            "ruta_actual": {
+              "unchanged": false,
+              "reason": "excepcion: inyeccion de prueba T1: verificar() fallo"
+            }
+          },
+          "salidas_invalidadas": [
+            "SDI.wav",
+            "analysis.txt",
+            "masks/confidence_map.npy",
+            "masks/consensus_instrumental_confidence_weighted_mean.npy",
+            "masks/consensus_instrumental_median.npy",
+            "masks/consensus_instrumental_weighted_mean.npy",
+            "masks/consensus_vocal_confidence_weighted_mean.npy",
+            "masks/consensus_vocal_median.npy",
+            "masks/consensus_vocal_weighted_mean.npy",
+            "masks/mask_P01_instrumental.npy",
+            "masks/mask_P01_vocal.npy",
+            "masks/model_disagreement_map.npy"
+          ],
+          "conservados": [
+            "SDV.wav",
+            "analysis.json",
+            "candidates/ajeno_cand.wav",
+            "engine_log.txt",
+            "input_integrity_6g.json",
+            "mix SDV.wav",
+            "otro_ajeno.txt"
+          ],
+          "motivos_propiedad": {
+            "SDV.wav": "identidad_distinta (sustituido o reemplazado tras el registro)",
+            "analysis.json": "registro_interno_conservado",
+            "candidates/ajeno_cand.wav": "ajeno_no_registrado",
+            "engine_log.txt": "registro_interno_conservado",
+            "input_integrity_6g.json": "registro_interno_conservado",
+            "mix SDV.wav": "ajeno_no_registrado",
+            "otro_ajeno.txt": "ajeno_no_registrado"
+          },
+          "politica": "propiedad_acreditada_o_conserva; sin borrado por patrón de nombre ni por ubicación"
+        },
+        "evento": {
+          "sembrados": [
+            "mix SDV.wav",
+            "candidates/ajeno_cand.wav",
+            "otro_ajeno.txt"
+          ],
+          "sustitucion_aplicada": false,
+          "reemplazados": [
+            "SDV.wav"
+          ],
+          "disparo": "siembra",
+          "segundos": 1.106
+        }
+      },
+      "T7": {
+        "descripcion": "derivado de T1 (mismo ensayo, aserciones específicas de propiedad)",
+        "salidas_invalidadas": [
+          "SDI.wav",
+          "SDV.wav",
+          "analysis.txt",
+          "masks/confidence_map.npy",
+          "masks/consensus_instrumental_confidence_weighted_mean.npy",
+          "masks/consensus_instrumental_median.npy",
+          "masks/consensus_instrumental_weighted_mean.npy",
+          "masks/consensus_vocal_confidence_weighted_mean.npy",
+          "masks/consensus_vocal_median.npy",
+          "masks/consensus_vocal_weighted_mean.npy",
+          "masks/mask_P01_instrumental.npy",
+          "masks/mask_P01_vocal.npy",
+          "masks/model_disagreement_map.npy"
+        ],
+        "motivos_propiedad": {}
+      },
+      "T8 (WAV)": {
+        "descripcion": "full_processing WAV",
+        "exit": 0,
+        "pcm": {
+          "SDI.wav": "565bc8b6adbf2e489723a2dd11471f05a181608359163d0dbf44b509083754d3",
+          "SDV.wav": "8fb3578a2b56b062d6bcb9b9d72b2657106efcd1aa838cc5de8f8a42fe6f9af8"
+        },
+        "esperado": {
+          "SDI.wav": "565bc8b6adbf2e489723a2dd11471f05a181608359163d0dbf44b509083754d3",
+          "SDV.wav": "8fb3578a2b56b062d6bcb9b9d72b2657106efcd1aa838cc5de8f8a42fe6f9af8"
+        },
+        "run_dirs": [
+          "/tmp/f6g1corr/MQR/T8_WAV/out/mqr_run_20261121_201232"
+        ],
+        "dirs_definitivos": [
+          "mqr_run_20261121_201232"
+        ]
+      },
+      "T8 (FLAC)": {
+        "descripcion": "full_processing FLAC",
+        "exit": 0,
+        "pcm": {
+          "SDI.wav": "565bc8b6adbf2e489723a2dd11471f05a181608359163d0dbf44b509083754d3",
+          "SDV.wav": "8fb3578a2b56b062d6bcb9b9d72b2657106efcd1aa838cc5de8f8a42fe6f9af8"
+        },
+        "esperado": {
+          "SDI.wav": "565bc8b6adbf2e489723a2dd11471f05a181608359163d0dbf44b509083754d3",
+          "SDV.wav": "8fb3578a2b56b062d6bcb9b9d72b2657106efcd1aa838cc5de8f8a42fe6f9af8"
+        },
+        "run_dirs": [
+          "/tmp/f6g1corr/MQR/T8_FLAC/out/mqr_run_20261121_201233"
+        ],
+        "dirs_definitivos": [
+          "mqr_run_20261121_201233"
+        ]
+      }
+    }
+  }
+}

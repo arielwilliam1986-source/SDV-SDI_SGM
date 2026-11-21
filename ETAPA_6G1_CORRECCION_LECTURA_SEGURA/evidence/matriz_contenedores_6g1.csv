@@ -1,0 +1,43 @@
+prueba,motor,contenedor,escenario,veredicto,detalle,salida,pcm,ruta_sha256
+1,Hardened,WAV,validez/dry_run,ACCEPTED,exit=0 validación de entradas y plan aceptados (sin PCM por diseño),wavs=0,validos=0,060d6c89b1aabe5d0c449eefa696dc23efe6c77e00d2669dea7a6dfaebfe9627
+2,Hardened,FLAC,validez/dry_run,ACCEPTED,exit=0 validación de entradas y plan aceptados (sin PCM por diseño),wavs=0,validos=0,2f550ce2cb3a6ec124bc1bc0373adc00a609f32ccf6c4fd9f73cfafafac945fa
+1,Hardened,WAV,validez/analysis_only,NOT_EXECUTED,"defecto preexistente 6G/6F: write_reports usa ctx[""post_wav_validation""] nulo cuando full_mode es False (AttributeError); reproducido igual en la copia 6G",,,060d6c89b1aabe5d0c449eefa696dc23efe6c77e00d2669dea7a6dfaebfe9627
+2,Hardened,FLAC,validez/analysis_only,NOT_EXECUTED,"defecto preexistente 6G/6F: write_reports usa ctx[""post_wav_validation""] nulo cuando full_mode es False (AttributeError); reproducido igual en la copia 6G",,,2f550ce2cb3a6ec124bc1bc0373adc00a609f32ccf6c4fd9f73cfafafac945fa
+1,Hardened,WAV,validez/full_processing,ACCEPTED,exit=0 informe leído after=True ruta_actual=True,wavs=2,validos=2,060d6c89b1aabe5d0c449eefa696dc23efe6c77e00d2669dea7a6dfaebfe9627
+8,Hardened,WAV,hash_pcm/full_processing,ACCEPTED,archivos=2 estables=True pcm_sha256=OK,mix SDI.wav;mix SDV.wav,368d3ecbc3a07d05;a347838da989c364,060d6c89b1aabe5d0c449eefa696dc23efe6c77e00d2669dea7a6dfaebfe9627
+2,Hardened,FLAC,validez/full_processing,ACCEPTED,exit=0 informe leído after=True ruta_actual=True,wavs=2,validos=2,2f550ce2cb3a6ec124bc1bc0373adc00a609f32ccf6c4fd9f73cfafafac945fa
+8,Hardened,FLAC,hash_pcm/full_processing,ACCEPTED,archivos=2 estables=True pcm_sha256=OK,mix SDI.wav;mix SDV.wav,368d3ecbc3a07d05;a347838da989c364,2f550ce2cb3a6ec124bc1bc0373adc00a609f32ccf6c4fd9f73cfafafac945fa
+3,Hardened,WAV/FLAC,equivalencia/dry_run,NOT_APPLICABLE,el modo no produce salidas PCM,,,
+9,Hardened,WAV/FLAC,analisis/dry_run,NOT_APPLICABLE,informe_wav_igual_flac=False pcm=NOT_APPLICABLE roles_sdv_sdi_iguales=True,,,
+3,Hardened,WAV/FLAC,equivalencia/analysis_only,NOT_EXECUTED,"defecto preexistente 6G/6F: write_reports usa ctx[""post_wav_validation""] nulo cuando full_mode es False (AttributeError); reproducido igual en la copia 6G",,,
+9,Hardened,WAV/FLAC,analisis/analysis_only,NOT_EXECUTED,"defecto preexistente 6G/6F: write_reports usa ctx[""post_wav_validation""] nulo cuando full_mode es False (AttributeError); reproducido igual en la copia 6G",,,
+3,Hardened,WAV/FLAC,equivalencia/full_processing,PCM_IDENTICAL,"roles=['SDI', 'SDV'] WAV=['mix SDI.wav', 'mix SDV.wav'] FLAC=['mix SDI.wav', 'mix SDV.wav'] validos=True/True",,,
+9,Hardened,WAV/FLAC,analisis/full_processing,PCM_IDENTICAL,informe_wav_igual_flac=True pcm=PCM_IDENTICAL roles_sdv_sdi_iguales=True,,,
+1,EVO,WAV,validez/dry_run,ACCEPTED,exit=0 validación de entradas y plan aceptados (sin PCM por diseño),wavs=0,validos=0,060d6c89b1aabe5d0c449eefa696dc23efe6c77e00d2669dea7a6dfaebfe9627
+2,EVO,FLAC,validez/dry_run,ACCEPTED,exit=0 validación de entradas y plan aceptados (sin PCM por diseño),wavs=0,validos=0,2f550ce2cb3a6ec124bc1bc0373adc00a609f32ccf6c4fd9f73cfafafac945fa
+1,EVO,WAV,validez/analysis_only,ACCEPTED,exit=0 informe leído after=True ruta_actual=True,wavs=0,validos=0,060d6c89b1aabe5d0c449eefa696dc23efe6c77e00d2669dea7a6dfaebfe9627
+2,EVO,FLAC,validez/analysis_only,ACCEPTED,exit=0 informe leído after=True ruta_actual=True,wavs=0,validos=0,2f550ce2cb3a6ec124bc1bc0373adc00a609f32ccf6c4fd9f73cfafafac945fa
+1,EVO,WAV,validez/full_processing,ACCEPTED,exit=0 informe leído after=True ruta_actual=True,wavs=2,validos=2,060d6c89b1aabe5d0c449eefa696dc23efe6c77e00d2669dea7a6dfaebfe9627
+8,EVO,WAV,hash_pcm/full_processing,ACCEPTED,archivos=2 estables=True pcm_sha256=OK,mix SDI.wav;mix SDV.wav,368d3ecbc3a07d05;a347838da989c364,060d6c89b1aabe5d0c449eefa696dc23efe6c77e00d2669dea7a6dfaebfe9627
+2,EVO,FLAC,validez/full_processing,ACCEPTED,exit=0 informe leído after=True ruta_actual=True,wavs=2,validos=2,2f550ce2cb3a6ec124bc1bc0373adc00a609f32ccf6c4fd9f73cfafafac945fa
+8,EVO,FLAC,hash_pcm/full_processing,ACCEPTED,archivos=2 estables=True pcm_sha256=OK,mix SDI.wav;mix SDV.wav,368d3ecbc3a07d05;a347838da989c364,2f550ce2cb3a6ec124bc1bc0373adc00a609f32ccf6c4fd9f73cfafafac945fa
+3,EVO,WAV/FLAC,equivalencia/dry_run,NOT_APPLICABLE,el modo no produce salidas PCM,,,
+9,EVO,WAV/FLAC,analisis/dry_run,NOT_APPLICABLE,informe_wav_igual_flac=False pcm=NOT_APPLICABLE roles_sdv_sdi_iguales=True,,,
+3,EVO,WAV/FLAC,equivalencia/analysis_only,NOT_APPLICABLE,el modo no produce salidas PCM,,,
+9,EVO,WAV/FLAC,analisis/analysis_only,ACCEPTED,informe_wav_igual_flac=True pcm=NOT_APPLICABLE roles_sdv_sdi_iguales=True,,,
+3,EVO,WAV/FLAC,equivalencia/full_processing,PCM_IDENTICAL,"roles=['SDI', 'SDV'] WAV=['mix SDI.wav', 'mix SDV.wav'] FLAC=['mix SDI.wav', 'mix SDV.wav'] validos=True/True",,,
+9,EVO,WAV/FLAC,analisis/full_processing,PCM_IDENTICAL,informe_wav_igual_flac=True pcm=PCM_IDENTICAL roles_sdv_sdi_iguales=True,,,
+1,MQR,WAV,validez/dry_run,ACCEPTED,exit=0 validación de entradas y plan aceptados (sin PCM por diseño),wavs=0,validos=0,060d6c89b1aabe5d0c449eefa696dc23efe6c77e00d2669dea7a6dfaebfe9627
+2,MQR,FLAC,validez/dry_run,ACCEPTED,exit=0 validación de entradas y plan aceptados (sin PCM por diseño),wavs=0,validos=0,2f550ce2cb3a6ec124bc1bc0373adc00a609f32ccf6c4fd9f73cfafafac945fa
+1,MQR,WAV,validez/analysis_only,ACCEPTED,exit=0 informe leído after=True ruta_actual=True,wavs=0,validos=0,060d6c89b1aabe5d0c449eefa696dc23efe6c77e00d2669dea7a6dfaebfe9627
+2,MQR,FLAC,validez/analysis_only,ACCEPTED,exit=0 informe leído after=True ruta_actual=True,wavs=0,validos=0,2f550ce2cb3a6ec124bc1bc0373adc00a609f32ccf6c4fd9f73cfafafac945fa
+1,MQR,WAV,validez/full_processing,ACCEPTED,exit=0 informe leído after=True ruta_actual=True,wavs=2,validos=2,060d6c89b1aabe5d0c449eefa696dc23efe6c77e00d2669dea7a6dfaebfe9627
+8,MQR,WAV,hash_pcm/full_processing,ACCEPTED,archivos=2 estables=True pcm_sha256=OK,SDI.wav;SDV.wav,565bc8b6adbf2e48;8fb3578a2b56b062,060d6c89b1aabe5d0c449eefa696dc23efe6c77e00d2669dea7a6dfaebfe9627
+2,MQR,FLAC,validez/full_processing,ACCEPTED,exit=0 informe leído after=True ruta_actual=True,wavs=2,validos=2,2f550ce2cb3a6ec124bc1bc0373adc00a609f32ccf6c4fd9f73cfafafac945fa
+8,MQR,FLAC,hash_pcm/full_processing,ACCEPTED,archivos=2 estables=True pcm_sha256=OK,SDI.wav;SDV.wav,565bc8b6adbf2e48;8fb3578a2b56b062,2f550ce2cb3a6ec124bc1bc0373adc00a609f32ccf6c4fd9f73cfafafac945fa
+3,MQR,WAV/FLAC,equivalencia/dry_run,NOT_APPLICABLE,el modo no produce salidas PCM,,,
+9,MQR,WAV/FLAC,analisis/dry_run,NOT_APPLICABLE,informe_wav_igual_flac=False pcm=NOT_APPLICABLE roles_sdv_sdi_iguales=True,,,
+3,MQR,WAV/FLAC,equivalencia/analysis_only,NOT_APPLICABLE,el modo no produce salidas PCM,,,
+9,MQR,WAV/FLAC,analisis/analysis_only,ACCEPTED,informe_wav_igual_flac=True pcm=NOT_APPLICABLE roles_sdv_sdi_iguales=True,,,
+3,MQR,WAV/FLAC,equivalencia/full_processing,PCM_IDENTICAL,"roles=['SDI', 'SDV'] WAV=['SDI.wav', 'SDV.wav'] FLAC=['SDI.wav', 'SDV.wav'] validos=True/True",,,
+9,MQR,WAV/FLAC,analisis/full_processing,PCM_IDENTICAL,informe_wav_igual_flac=True pcm=PCM_IDENTICAL roles_sdv_sdi_iguales=True,,,

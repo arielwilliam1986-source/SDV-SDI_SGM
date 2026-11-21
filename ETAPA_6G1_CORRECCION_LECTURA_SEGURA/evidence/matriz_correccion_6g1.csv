@@ -1,0 +1,35 @@
+prueba,motor,alcance,veredicto,checks_ok,checks_total,detalle
+UC1,lectura_segura_6g1,ajeno dentro de candidates/,PASS,4,4,todos los checks OK
+UC2,lectura_segura_6g1,ajeno llamado SDV.wav,PASS,4,4,todos los checks OK
+UC3,lectura_segura_6g1,ajeno con nombre exacto de salida del motor,PASS,4,4,todos los checks OK
+UC4,lectura_segura_6g1,propio acreditado (sellado) debe eliminarse,PASS,2,2,todos los checks OK
+UC5,lectura_segura_6g1,propio sustituido tras su creación se conserva,PASS,4,4,todos los checks OK
+UC6,lectura_segura_6g1,propio en curso (inodo continuo) debe eliminarse,PASS,2,2,todos los checks OK
+UC7,lectura_segura_6g1,propio sellado modificado in situ se conserva,PASS,4,4,todos los checks OK
+T1,Hardened,excepción de hmix.verificar(),PASS,8,8,todos los checks OK
+T2,Hardened,excepción de comprobación de ruta,PASS,8,8,todos los checks OK
+T4,Hardened,verificación fallida sin excepción,PASS,8,8,todos los checks OK
+T3,Hardened,sustitución del Mix tras abrir el descriptor (DSP),PASS,9,9,todos los checks OK
+T5,Hardened,ausencia de directorio definitivo tras los abortos,PASS,1,1,todos los checks OK
+T6,Hardened,"colisiones de nombre, candidates/ y sustitución de salida propia en aborto",PASS,18,18,todos los checks OK
+T7,Hardened,eliminación de salidas propias acreditadas,PASS,2,2,todos los checks OK
+T8,Hardened,procesamiento normal + PCM vs campaña auditada (WAV),PASS,8,8,todos los checks OK
+T8,Hardened,procesamiento normal + PCM vs campaña auditada (FLAC),PASS,8,8,todos los checks OK
+T1,EVO,excepción de hmix.verificar(),PASS,8,8,todos los checks OK
+T2,EVO,excepción de comprobación de ruta,PASS,8,8,todos los checks OK
+T4,EVO,verificación fallida sin excepción,PASS,8,8,todos los checks OK
+T3,EVO,sustitución del Mix tras abrir el descriptor (DSP),PASS,9,9,todos los checks OK
+T5,EVO,ausencia de directorio definitivo tras los abortos,PASS,1,1,todos los checks OK
+T6,EVO,"colisiones de nombre, candidates/ y sustitución de salida propia en aborto",PASS,18,18,todos los checks OK
+T7,EVO,eliminación de salidas propias acreditadas,PASS,2,2,todos los checks OK
+T8,EVO,procesamiento normal + PCM vs campaña auditada (WAV),PASS,8,8,todos los checks OK
+T8,EVO,procesamiento normal + PCM vs campaña auditada (FLAC),PASS,8,8,todos los checks OK
+T1,MQR,excepción de hmix.verificar(),PASS,8,8,todos los checks OK
+T2,MQR,excepción de comprobación de ruta,PASS,8,8,todos los checks OK
+T4,MQR,verificación fallida sin excepción,PASS,8,8,todos los checks OK
+T3,MQR,sustitución del Mix tras abrir el descriptor (DSP),PASS,9,9,todos los checks OK
+T5,MQR,ausencia de directorio definitivo tras los abortos,PASS,1,1,todos los checks OK
+T6,MQR,"colisiones de nombre, candidates/ y sustitución de salida propia en aborto",PASS,18,18,todos los checks OK
+T7,MQR,eliminación de salidas propias acreditadas,PASS,2,2,todos los checks OK
+T8,MQR,procesamiento normal + PCM vs campaña auditada (WAV),PASS,8,8,todos los checks OK
+T8,MQR,procesamiento normal + PCM vs campaña auditada (FLAC),PASS,8,8,todos los checks OK

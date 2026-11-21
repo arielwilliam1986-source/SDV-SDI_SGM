@@ -1,0 +1,3698 @@
+diff --git a/ETAPA_6G1_CORRECCION_LECTURA_SEGURA/INFORME_CORRECCIONES_AUDITORIA_6G1.md b/ETAPA_6G1_CORRECCION_LECTURA_SEGURA/INFORME_CORRECCIONES_AUDITORIA_6G1.md
+new file mode 100644
+index 0000000..e1dd926
+--- /dev/null
++++ b/ETAPA_6G1_CORRECCION_LECTURA_SEGURA/INFORME_CORRECCIONES_AUDITORIA_6G1.md
+@@ -0,0 +1,127 @@
++# INFORME DE CORRECCIONES DE AUDITORÍA — ETAPA 6G.1
++
++**Implementador**: Arena.ai · **Responsable técnico**: Cris · **Decisor final**: Will
++**Fecha**: 2026-11-21
++**Commit auditado**: `015e2f8e2b215c1d4dc5b9360988b42063e28533` (tip de `arena/89d5c189-sdv-sdi-sgm`, «Etapa 6G.1: lectura del Mix desde un único descriptor vigilado y aborto seguro»)
++**Alcance**: exclusivamente los cuatro hallazgos de la auditoría estática independiente de 6G.1 (correcciones A, B, C y D). No se rehizo la etapa ni se introdujo mejora alguna ajena a ellos.
++
++> **Estado**: la corrección está ENTREGADA, **no cerrada**. La aprobación final corresponde a Cris después de revisar el código y las evidencias.
++
++---
++
++## 0. Dónde está publicado y por qué
++
++La corrección se publica en la **rama de sesión autorizada** `arena/441a4bf8-sdv-sdi-sgm`, como copia íntegra del contenido del commit auditado con las correcciones aplicadas (carpeta `ETAPA_6G1_CORRECCION_LECTURA_SEGURA/`, mismo nombre de ruta). Alternativa de la instrucción («rama hija basada exactamente en el commit auditado») **no disponible en este entorno**: la plataforma de sesión no permite crear ramas ni pushear a ramas ajenas. Se entregan además:
++
++- `DIFF_6G1_AUDITADO_A_CORRECCION.patch` (incluye este informe; la longitud exacta es la del propio archivo): diff completo `015e2f8 → corrección`, **reversible verificado** — `patch -R -p1` sobre el árbol corregido devuelve el árbol del commit auditado **byte a byte** (`diff -r` sin diferencias). Este parche permite aplicar la corrección sobre la rama de referencia con `git apply`/`patch` si Cris lo prefiere.
++- `SHA256SUMS_CORRECCION.txt`: SHA-256 nuevo de cada archivo modificado/añadido, con el SHA-256 auditado previo en comentario.
++
++**La rama de referencia `arena/89d5c189-sdv-sdi-sgm` NO fue tocada** (sólo lectura). Tampoco `main`, 6G, ni los motores originales. Sin merges, sin PR.
++
++**Limpieza**: los `__pycache__` generados por compilación de verificación fueron eliminados de la carpeta antes de publicar.
++
++---
++
++## 1. Corrección A — Guarda final fail-closed (los tres motores)
++
++**Hallazgo corregido**: la guarda final se ejecutaba **después de publicar** (`os.rename(run_dir, run_dir_final)` primero) y, ante cualquier excepción de `hmix.verificar()` o de la comprobación de ruta, caía a un **fallback** que reabría el Mix por su ruta (`_check_unchanged_6g(mix_path, ...)`) y además asignaba manualmente `ctx["container_6g"]["ruta_actual"] = dict(unchanged=True)` — aprobación fabricada sin evidencia de ruta. El cierre del descriptor quedaba dentro del `try` (una excepción en la ruta lo saltaba).
++
++**Cambios** (regiones exactas):
++- `MOTOR_SEP_SDV-SDI_v3.1.1_Hardened_Final.py` y `MOTOR_SEP_SDV-SDI_EVO.py`: bloque de guarda reubicado **antes** de la publicación, reescrito fail-closed:
++  - `verificar()` + `ruta_apunta_al_mismo_objeto()` en `try`; cualquier excepción registra `unchanged=False` con el motivo de la excepción en **ambos** componentes;
++  - `hmix.close()` en `finally` (cierre garantizado incluso con verificación fallida);
++  - **eliminado por completo** el fallback `_check_unchanged_6g` (también del `import` de `audio_integridad_6g`: 0 usos restantes en los tres motores);
++  - **ninguna** asignación manual de `unchanged=True`;
++  - en el camino de aborto se cierran además los lectores de guías (`handles`) antes de retornar `EXIT_PROCESSING`.
++- `sdv_sdi_mqr_engine.py`: la guarda vivía en `main` **después** de que `_run_core` ya había publicado por renombrado. Se movió a `_run_core`, inmediatamente **antes** de la transacción de publicación, con la misma estructura fail-closed; `main` ya no contiene ninguna verificación ni fallback (sólo registra el éxito), y un nuevo `except _VerifFallida_6g1` retorna `EXIT_PROCESSING` **sin renombrar ni publicar**.
++
++**Regla aplicada**: `VERIFICACIÓN INCIERTA = ABORTO` (excepción o veredicto no satisfactorio → aborto sobre el directorio provisional, sin publicación).
++
++## 2. Corrección B — Orden de publicación (los tres motores)
++
++**Hallazgo corregido**: podía existir un directorio definitivo con resultados que no habían superado la guarda final (la guarda corría sobre `run_dir_final` y el aborto limpiaba sobre lo ya publicado).
++
++**Secuencia implementada** (idéntica en los tres motores):
++1. Procesamiento y escritura en el directorio provisional (`*_partial`, creado vacío por `create_run_dir`; nombres definitivos `motorA_run_<stamp>` / `mqr_run_<stamp>`);
++2. Verificación final del descriptor y de la ruta (corrección A);
++3. Escritura **y comprobación** de la evidencia de integridad: `input_integrity_6g.json` se escribe en el provisional, se relee y se valida sintácticamente; si la escritura o la comprobación fallan, la verificación se considera no superada (fail-closed);
++4. Publicación mediante renombrado al directorio definitivo, **sólo tras guarda superada** (con el sufijo anti-colisión horario ya existente);
++5. Registro de éxito en el log.
++
++Si la verificación falla: `abortar_6g1` sobre el provisional, `ABORT_6G1.json` dentro de él, **ningún directorio definitivo creado** (verificado por T4/T5).
++
++## 3. Corrección C — Propiedad de archivos durante el aborto (`lectura_segura_6g1.py`)
++
++**Hallazgo corregido**: `abortar_6g1` borraba por **patrón de nombre/ubicación** (`_es_salida_de_la_corrida`: sufijos ` SDV.wav`/` SDI.wav`, cualquier WAV en `candidates/`, PNG con SDV/SDI) — el propio `INFORME_IMPLEMENTACION_6G1.md` documentaba la limitación (un ajeno llamado `SDV.wav` dentro del directorio de corrida sería tratado como propio).
++
++**Nuevo mecanismo** (el patrón de nombre fue **eliminado**; no hay decisión de borrado por nombre ni por ubicación):
++- **Registro de propiedad**: `registrar_propio_6g1(path, estable)` — el motor registra cada archivo que crea:
++  - `estable=True` (archivos finalizados: `analysis.json`, `analysis.txt`, `input_integrity_6g.json`): sello de dispositivo/inodo/tamaño/mtime_ns/**SHA-256**;
++  - `estable=False` (archivos en curso: writers WAV de SDV/SDI —incluidos los de `candidates/`— y memmaps de máscaras vía `_open_memmap`): identidad por dispositivo/**inodo** (el contenido crece legítimamente mientras el motor escribe).
++  - Si el archivo no puede observarse al registrar, **no** se registra (y por tanto se conservará): fail-closed sin interrumpir al motor.
++- **Dictamen de propiedad** (`propiedad_de_6g1`): `ajeno_no_registrado` → conserva; inodo distinto del registrado (sustituido tras su creación, p. ej. por `os.replace`) → conserva (`identidad_distinta`); archivo sellado con tamaño/mtime/SHA-256 distintos → conserva (`modificado`); identidad acreditada → elimina.
++- **`abortar_6g1`** (schema `abort-6g1/2`): sólo elimina con propiedad acreditada; conserva y lista todo lo demás con motivo (`motivos_propiedad`); los archivos de registro forense (`ABORT_6G1.json`, `engine_log.txt`, `analysis.json`, `input_integrity_6g.json`) se conservan siempre; el embedding del aborto en `analysis.json` se mantiene.
++- Puntos de registro añadidos en los tres motores: creación de writers SDV/SDI (Hardened/EVO/MQR, incluidos subdirectorios `candidates/`), `_open_memmap` (máscaras), `write_reports` (analysis.json + analysis.txt), escritura de `input_integrity_6g.json`.
++
++**Limitación documentada** (fail-closed honesto): para archivos **en curso** la propiedad se acredita por ruta registrada + continuidad de inodo; una modificación *in situ* del mismo inodo mientras el motor escribe no es detectable sin sello de contenido (el sello SHA-256 existe sólo para archivos finalizados). Los casos de la instrucción quedan cubiertos: el ajeno no registrado se conserva (UC1–UC3) y el propio sustituido por inodo distinto se conserva (UC5, T6).
++
++## 4. Corrección D — Evidencia y documentación
++
++**4.1 Discrepancia `informe_igual: false` vs «igual|igual»** — resuelta por diagnóstico empírico (nuevo procedimiento en `scripts/no_regresion_dsp_6g1.py` que registra campo por campo lo que difiere, `campos_diferentes_estricto`):
++- **Motivo real**: los informes normalizados de 6G y 6G.1 difieren **exclusivamente** en campos del bloque `integrity` de la alineación: el campo nuevo `identidad_comparada_6g1` (6G.1 corrige la comparación por claves de objeto en `wav_integridad_6f`/`audio_integridad_6g`, índice de auditoría: +25/−3 y +13/−2) y el detalle de `mix_after` en FLAC (6G.1 elimina el falso negativo FLAC de 6G). **Ningún campo de cálculo DSP difiere.**
++- **Resolución**: la igualdad **no se fabrica**. `informe_igual` (6G vs 6G.1) queda False por diseño correcto; la tabla §3 de `NO_REGRESION_DSP_6G1.md` («`analysis.json` normalizado | igual | igual») fue **rectificada** (§1.4 y §6 nuevas, con marcador `[6G.1-R]`); `VOLATILES_ADICIONALES` quedó **vacío** (no se excluyó campo alguno más allá del conjunto histórico); el JSON registra `volatiles`, `volatiles_adicionales`, `informe_igual_estricto` y las rutas exactas que difieren, para los seis casos.
++- **Falso positivo de la huella DSP corregido**: al reubicar la evidencia de integridad, el literal `indent=2` del `json.dump` se movió entre funciones y la huella marcaba `numeros_iguales: false` sin cambio DSP alguno (detectado en la primera corrida: `run_experiment` [1.0, 2.0]→[1.0] y `_run_core` +2.0 — únicamente el `2.0` de formato). El procedimiento excluye ahora, de forma **simétrica para 6G y 6G.1**, los valores del argumento `indent` de serialización JSON (parámetro de formato, no DSP), con el conteo excluido registrado (`huellas[*].indent_excluidos_6g/6g1` = 2 por motor). Ninguna otra numeración cambió (verificado por conjuntos: único delta = 2.0).
++
++**4.2 Afirmación de estabilidad de la prueba 8** — precisada en `INFORME_VALIDACION_6G1.md` §4.2 (`[6G.1-R]`): dos hashes consecutivos acreditan la consistencia de lectura/escritura **en ese instante**, no estabilidad frente a modificaciones concurrentes; la estabilidad del Mix durante el procesamiento principal la acredita la **guarda final sobre el descriptor vigilado**; las lecturas auxiliares de análisis (p. ej. `post_wav_identity` sobre salidas ya escritas) abren sus **propios lectores** sobre archivos del directorio de corrida y no reabren el Mix por su ruta.
++
++**4.3 Salvedad de limpieza (§3 de `INFORME_IMPLEMENTACION_6G1.md`)** — el documento señalaba la limitación como abierta; se añadió nota `[6G.1-R]`: **resuelta** por la corrección C, con referencia a este informe.
++
++## 5. Pruebas obligatorias y resultados individuales
++
++Entorno de ejecución (reproducibilidad): **CPython 3.11.2, numpy 1.26.4, scipy 1.13.1, soundfile 0.13.1, libsndfile 1.2.2, Linux x86_64, 2 CPU** — idéntico al entorno registrado de la campaña auditada. Fixtures: los del commit auditado, **intactos** (12/12 SHA-256 idénticos al commit; nunca se regeneraron ni modificaron). Los Mix sustituibles se copian a `/tmp`; el repositorio nunca se tocó. Variables de un solo hilo (`OMP/OPENBLAS/MKL_NUM_THREADS=1`, del harness existente).
++
++**Resultados: 34/34 PASS, 0 FAIL, 0 NOT_EXECUTED** (`evidence/matriz_correccion_6g1.csv`, detalle completo por check en `evidence/pruebas_correccion_6g1.json`):
++
++| Grupo | Pruebas | Resultado |
++|---|---|---|
++| Unidad de propiedad y limpieza (corrección C) | UC1 ajeno en `candidates/`; UC2 ajeno `SDV.wav`; UC3 ajeno con nombre exacto de salida; UC4 propio acreditado eliminado; UC5 propio sustituido tras creación → conservado (`identidad_distinta`); UC6 propio en curso (inodo continuo) eliminado; UC7 propio sellado modificado in situ → conservado | 7/7 PASS |
++| Hardened | T1 excepción `verificar()`; T2 excepción de ruta; T3 sustitución del Mix durante el DSP (`chunk 10/`, `--chunk-frames 48`, sustituto FLAC válido `mix_otro.flac`, guías 12 s — mismas técnicas de la campaña auditada); T4 verificación fallida sin excepción; T5 ausencia de directorio definitivo tras T1–T4; T6 colisiones (ajeno `SDV.wav`, `candidates/ajeno_cand.wav`, suelto; **reemplazo por `os.replace` de la salida propia ya cerrada** → conservado); T7 eliminación de propias acreditadas con motivos; T8 WAV + FLAC | 9/9 PASS |
++| EVO | ídem Hardened | 9/9 PASS |
++| MQR | ídem | 9/9 PASS |
++
++Cada prueba de aborto verifica **más que el código de salida** (como exige la instrucción): exit=2, `ABORT_6G1.json` presente con `schema=abort-6g1/2` y motivo `MIX_CAMBIADO_DURANTE_EL_PROCESAMIENTO`, salidas propias eliminadas y acreditadas en `salidas_invalidadas`, ajenos conservados con `motivos_propiedad=ajeno_no_registrado`, salida propia reemplazada conservada con `identidad_distinta`, **ningún directorio definitivo** creado, y `input_integrity_6g.json` en el provisional con los componentes negativos esperados (T3: `after=True` legítimo —el descriptor retiene el contenido original— y `ruta=False`; T4: `after=False` con `ruta=True` legítima).
++
++**No repetido**: ninguna campaña histórica cerrada (S5, 6B–6G) fue re-ejecutada; las pruebas 1–10 originales de 6G.1 no se volvieron a correr (sus evidencias de `evidence/` permanecen intactas, salvo `no_regresion_dsp_6g1.{json,csv}` regeneradas por el procedimiento corregido D — el diff registra exactamente qué cambió).
++
++**Casos `NOT_EXECUTED` preservados**: los cuatro casos de Hardened `analysis_only` (defecto preexistente de 6F/6G: `AttributeError` en `write_reports`) **no fueron tocados ni convertidos en aprobados**; siguen documentados en `INFORME_VALIDACION_6G1.md` §7.1 y ninguna prueba de esta corrección los altera.
++
++## 6. No-regresión DSP tras la corrección (confirmación expresa de DSP intacto)
++
++Tres evidencias independientes:
++
++1. **Huella AST + PCM vs 6G** (procedimiento corregido, corrida completa en entorno con la carpeta 6G del commit auditado): **3 motores `ACCEPTED`** — definiciones cambiadas sólo en las regiones de lectura/guarda/registro; sin constantes cambiadas; huella DSP idéntica (numerales y llamadas DSP, excluido `indent` registrado); **PCM WAV y FLAC idénticos byte a byte frente a las copias 6G**.
++2. **PCM idéntico a la campaña auditada**: las corridas T8 de esta corrección reproducen los `pcm_sha256` almacenados en `evidence/contenedores_6g1.json` del commit auditado, por motor y contenedor (p. ej. Hardened WAV: `mix SDV.wav` = `a347838da989c364…`, `mix SDI.wav` = `368d3ecbc3a07d05…`; equivalencia WAV=FLAC también en EVO y MQR). Mismo PCM ⇒ DSP intacto.
++3. **Afirmación expresa**: **el DSP permanece intacto.** No se modificó STFT, ISTFT, FFT, hop, chunking, máscaras, fórmulas, consenso, ganancias, polaridad ni parámetro DSP alguno; los cambios se limitan a lectura/guarda, orden de publicación, registro de propiedad/aborto, procedimiento de comparación de evidencia y documentación. Los archivos modificados y sus identidades están en `SHA256SUMS_CORRECCION.txt` (con SHA auditado previo).
++
++## 7. Superficie de cambio (numstat vs commit auditado)
++
++| Archivo | Cambio |
++|---|---|
++| `motores/lectura_segura_6g1.py` | +109/−29 (registro de propiedad, dictamen, aborto acreditado; `MixHandle` intacto) |
++| `motores/MOTOR_SEP_SDV-SDI_v3.1.1_Hardened_Final.py` | +50/−19 |
++| `motores/MOTOR_SEP_SDV-SDI_EVO.py` | +50/−19 |
++| `motores/sdv_sdi_mqr_engine.py` | +66/−31 |
++| `scripts/no_regresion_dsp_6g1.py` | +76/−3 (procedimiento D) |
++| `scripts/pruebas_correccion_6g1.py` | NUEVO (568 L; batería obligatoria) |
++| `scripts/inyeccion_6g1/sitecustomize.py` | NUEVO (37 L; inyector T1/T2/T4, sólo por variable de entorno) |
++| `evidence/no_regresion_dsp_6g1.{json,csv}` | regenerados por el procedimiento corregido (+301/−22 y +4/−4) |
++| `evidence/pruebas_correccion_6g1.json`, `evidence/matriz_correccion_6g1.csv` | NUEVOS (resultados individuales y matriz) |
++| `NO_REGRESION_DSP_6G1.md`, `INFORME_VALIDACION_6G1.md`, `INFORME_IMPLEMENTACION_6G1.md` | +47/−3, +11/0, +10/0 (rectificaciones `[6G.1-R]`) |
++| `DIFF_6G1_AUDITADO_A_CORRECCION.patch`, `SHA256SUMS_CORRECCION.txt`, este informe | NUEVOS (entregables) |
++| **Total (sin este informe ni los dos entregables auto-referentes)** | **+2.848/−130** |
++
++Fixtures: 12/12 idénticos al commit auditado (nunca tocados). `evidence/` histórico (matriz_global, contenedores, sustituciones, resumen, MANIFEST, SHA256SUMS) intacto.
++
++## 8. Límites respetados
++
++Solo los hallazgos auditados; sin mejoras ajenas. Sin tocar STFT/ISTFT/FFT/hop/chunking/máscaras/fórmulas/consenso/ganancias/polaridad/parámetros DSP (verificado por huella). Motores originales intactos; 6G intacto; `main` intacto; sin fusionar ramas ni abrir PR; sin ejecutar Elis/Tristania ni audio real; sin Android/Termux; campañas históricas cerradas no repetidas; los cuatro `NOT_EXECUTED` de Hardened `analysis_only` siguen identificados. **No se declara 6G.1 cerrada**: la aprobación final corresponde a Cris tras revisar el código y las evidencias.
+diff --git a/ETAPA_6G1_CORRECCION_LECTURA_SEGURA/INFORME_IMPLEMENTACION_6G1.md b/ETAPA_6G1_CORRECCION_LECTURA_SEGURA/INFORME_IMPLEMENTACION_6G1.md
+index ec8c909..1cfeb42 100644
+--- a/ETAPA_6G1_CORRECCION_LECTURA_SEGURA/INFORME_IMPLEMENTACION_6G1.md
++++ b/ETAPA_6G1_CORRECCION_LECTURA_SEGURA/INFORME_IMPLEMENTACION_6G1.md
+@@ -197,6 +197,16 @@ Todo lo anterior vive dentro de `ETAPA_6G1_CORRECCION_LECTURA_SEGURA/`.
+    en esa corrida. Un archivo ajeno con exactamente el mismo nombre
+    (`SDV.wav`) dentro del directorio de una corrida sería tratado como salida
+    propia; el directorio de corrida lo crea el motor, vacío, en cada ejecución.
++
++   > **[6G.1-R, corrección C — limitación RESUELTA]** La auditoría de la
++   > rectificación señaló esta limitación y ordenó corregirla. El mecanismo de
++   > borrado por patrón de nombre/ubicación fue **sustituido** por un registro
++   > de propiedad de la corrida (`registrar_propio_6g1`: ruta + identidad
++   > verificada por dispositivo/inodo —y sello tamaño/mtime/SHA-256 para
++   > archivos finalizados—); `abortar_6g1` ahora sólo elimina archivos con
++   > propiedad **acreditada** y conserva los demás con el motivo
++   > (`schema=abort-6g1/2`, campo `motivos_propiedad`). Detalles, casos de
++   > prueba y evidencia: `INFORME_CORRECCIONES_AUDITORIA_6G1.md`.
+ 4. Los tiempos y el consumo de memoria del informe de validación son los
+    observados en este entorno, no una promesa de rendimiento.
+ 5. No se ejecutó ninguna canción real, ni el piloto, ni comparación de calidad
+diff --git a/ETAPA_6G1_CORRECCION_LECTURA_SEGURA/INFORME_VALIDACION_6G1.md b/ETAPA_6G1_CORRECCION_LECTURA_SEGURA/INFORME_VALIDACION_6G1.md
+index 79bd155..d005216 100644
+--- a/ETAPA_6G1_CORRECCION_LECTURA_SEGURA/INFORME_VALIDACION_6G1.md
++++ b/ETAPA_6G1_CORRECCION_LECTURA_SEGURA/INFORME_VALIDACION_6G1.md
+@@ -119,6 +119,17 @@ Seis casos (`3 motores × 2 contenedores`, `full_processing`): **6/6
+ `frames > 0` y `bytes > 0`. Los hashes por salida están en
+ `evidence/contenedores_6g1.json` (`casos[*].pcm`).
+ 
++> **[6G.1-R, corrección D — precisión sobre la "estabilidad"]**: dos hashes
++> consecutivos del mismo archivo acreditan la **consistencia de la lectura y
++> escritura en ese instante**, no estabilidad frente a modificaciones
++> concurrentes posteriores. La estabilidad del **Mix durante el procesamiento
++> principal** se acredita por la guarda final sobre el **descriptor vigilado**
++> (`verificar()` + `ruta_apunta_al_mismo_objeto()`), que revalida contenido e
++> identidad al término del DSP. Las **lecturas auxiliares de análisis** (p. ej.
++> `post_wav_identity` sobre las salidas ya escritas) abren sus **propios
++> lectores** sobre archivos del directorio de corrida; no reabren el Mix por su
++> ruta.
++
+ ### 4.3 Prueba 9 — alineación, máscaras, SDV y SDI
+ 
+ Comparación del informe completo (`analysis.json`) entre la corrida WAV y la
+diff --git a/ETAPA_6G1_CORRECCION_LECTURA_SEGURA/NO_REGRESION_DSP_6G1.md b/ETAPA_6G1_CORRECCION_LECTURA_SEGURA/NO_REGRESION_DSP_6G1.md
+index 5e8042d..d715f14 100644
+--- a/ETAPA_6G1_CORRECCION_LECTURA_SEGURA/NO_REGRESION_DSP_6G1.md
++++ b/ETAPA_6G1_CORRECCION_LECTURA_SEGURA/NO_REGRESION_DSP_6G1.md
+@@ -23,8 +23,19 @@ y las filas de prueba `10` en `evidence/matriz_global_6g1.csv`.
+    `FLAC`, en modo `full_processing`, y se comparan los hashes del PCM
+    decodificado (`float64`) por nombre de salida. Se exige que existan archivos
+    reales en ambas corridas.
+-4. **Informe.** Se compara `analysis.json` de 6G y 6G.1 descartando sólo
+-   metadatos volátiles por archivo.
++4. **Informe.** Se compara `analysis.json` de 6G y 6G.1. **[6G.1-R, corrección
++   D]** La afirmación original de esta sección («descartando sólo metadatos
++   volátiles») resultó imprecisa: los informes normalizados **NO son iguales**
++   y esa desigualdad es correcta y esperada. Los campos que difieren
++   (`campos_diferentes_estricto` en `evidence/no_regresion_dsp_6g1.json`) son
++   exclusivamente los de integridad que 6G.1 corrige por diseño: el campo
++   nuevo `identidad_comparada_6g1` (comparación por claves de objeto en
++   `wav_integridad_6f`/`audio_integridad_6g`) y el detalle de
++   `mix_after` en FLAC (6G.1 corrige el falso negativo FLAC de 6G). La
++   igualdad de informes no se fabrica: se documentan los campos exactos que
++   difieren (§6). La huella DSP excluye de sus literales los valores del
++   argumento `indent` de serialización JSON (parámetro de formato, no DSP);
++   el conteo excluido queda registrado por definición.
+ 
+ ---
+ 
+@@ -52,7 +63,7 @@ y las filas de prueba `10` en `evidence/matriz_global_6g1.csv`.
+ | Mix FLAC → SDV/SDI (Hardened) | hashes | idénticos |
+ | Mix FLAC → SDV/SDI (EVO) | hashes | idénticos |
+ | Mix FLAC → SDV/SDI (MQR) | hashes | idénticos |
+-| `analysis.json` normalizado | igual | igual |
++| `analysis.json` normalizado | difieren sólo en los campos de integridad corregidos por 6G.1 (ver §6) | difieren sólo en los campos de integridad corregidos por 6G.1 (ver §6) |
+ 
+ Los hashes concretos están en `evidence/no_regresion_dsp_6g1.json`
+ (`motores[*].pcm[WAV|FLAC].pcm_6g` y `pcm_6g1`).
+@@ -84,3 +95,36 @@ parámetros DSP, verificación WAV de 6F.
+   verificando con `sha256sum -c` después de la corrección.
+ * La firma de `post_wav_identity` no cambió en 6G.1: sólo cambió el valor del
+   argumento que reciben los motores.
++
++---
++
++## 6. Rectificación de la comparación de informes [6G.1-R, corrección D]
++
++**Motivo real de la discrepancia**: la tabla de §3 declaraba «`analysis.json`
++normalizado | igual» y, sin embargo, `no_regresion_dsp_6g1.json` registraba
++`informe_igual: false` en los seis casos (3 motores × WAV/FLAC). El diagnóstico
++registrado en la evidencia (`campos_diferentes_estricto`) muestra que los
++informes difieren **exclusivamente** en campos del bloque `integrity` de la
++alineación, y por una razón documentada de la propia etapa: 6G.1 corrige la
++comparación de identidad por claves de objeto (`wav_integridad_6f`, +25/−3;
++`audio_integridad_6g`, +13/−2 según el índice de auditoría de la entrega), lo
++que añade el campo `identidad_comparada_6g1` (ausente en 6G) y cambia el
++contenido de `mix_after` en FLAC (6G.1 ya no publica el falso negativo FLAC de
++6G). No hay diferencia alguna en campos de cálculo DSP.
++
++**Resolución**: la igualdad de informes normalizados **no se fabrica**.
++- `informe_igual` (6G vs 6G.1) es y debe ser **False**; el procedimiento
++  actualizado registra campo por campo lo que difiere
++  (`campos_diferentes_estricto`, `campos_diferentes_normalizado`) y el conjunto
++  de exclusión aplicado (`volatiles`, `volatiles_adicionales`; este último
++  quedó vacío: ningún campo se excluyó más allá del conjunto histórico).
++- La tabla de §3 se corrige en consecuencia.
++- La huella DSP excluye los literales del argumento `indent` de
++  `json.dump`/serialización (formato, no DSP); el conteo excluido por
++  definición queda en `huellas[*].indent_excluidos_6g/6g1` (2 por motor tras la
++  rectificación: la evidencia de integridad se reubicó al directorio
++  provisional junto con su `indent=2`). Sin esa exclusión, el traslado del
++  `indent=2` entre funciones marcaba la huella como cambiada sin cambio DSP
++  alguno (falso positivo documentado en el informe de correcciones).
++- Resultado tras la rectificación: 3 motores `ACCEPTED`, huella DSP idéntica,
++  PCM WAV y FLAC idénticos frente a 6G.
+diff --git a/ETAPA_6G1_CORRECCION_LECTURA_SEGURA/evidence/matriz_correccion_6g1.csv b/ETAPA_6G1_CORRECCION_LECTURA_SEGURA/evidence/matriz_correccion_6g1.csv
+new file mode 100644
+index 0000000..c10f41b
+--- /dev/null
++++ b/ETAPA_6G1_CORRECCION_LECTURA_SEGURA/evidence/matriz_correccion_6g1.csv
+@@ -0,0 +1,35 @@
++prueba,motor,alcance,veredicto,checks_ok,checks_total,detalle
++UC1,lectura_segura_6g1,ajeno dentro de candidates/,PASS,4,4,todos los checks OK
++UC2,lectura_segura_6g1,ajeno llamado SDV.wav,PASS,4,4,todos los checks OK
++UC3,lectura_segura_6g1,ajeno con nombre exacto de salida del motor,PASS,4,4,todos los checks OK
++UC4,lectura_segura_6g1,propio acreditado (sellado) debe eliminarse,PASS,2,2,todos los checks OK
++UC5,lectura_segura_6g1,propio sustituido tras su creación se conserva,PASS,4,4,todos los checks OK
++UC6,lectura_segura_6g1,propio en curso (inodo continuo) debe eliminarse,PASS,2,2,todos los checks OK
++UC7,lectura_segura_6g1,propio sellado modificado in situ se conserva,PASS,4,4,todos los checks OK
++T1,Hardened,excepción de hmix.verificar(),PASS,8,8,todos los checks OK
++T2,Hardened,excepción de comprobación de ruta,PASS,8,8,todos los checks OK
++T4,Hardened,verificación fallida sin excepción,PASS,8,8,todos los checks OK
++T3,Hardened,sustitución del Mix tras abrir el descriptor (DSP),PASS,9,9,todos los checks OK
++T5,Hardened,ausencia de directorio definitivo tras los abortos,PASS,1,1,todos los checks OK
++T6,Hardened,"colisiones de nombre, candidates/ y sustitución de salida propia en aborto",PASS,18,18,todos los checks OK
++T7,Hardened,eliminación de salidas propias acreditadas,PASS,2,2,todos los checks OK
++T8,Hardened,procesamiento normal + PCM vs campaña auditada (WAV),PASS,8,8,todos los checks OK
++T8,Hardened,procesamiento normal + PCM vs campaña auditada (FLAC),PASS,8,8,todos los checks OK
++T1,EVO,excepción de hmix.verificar(),PASS,8,8,todos los checks OK
++T2,EVO,excepción de comprobación de ruta,PASS,8,8,todos los checks OK
++T4,EVO,verificación fallida sin excepción,PASS,8,8,todos los checks OK
++T3,EVO,sustitución del Mix tras abrir el descriptor (DSP),PASS,9,9,todos los checks OK
++T5,EVO,ausencia de directorio definitivo tras los abortos,PASS,1,1,todos los checks OK
++T6,EVO,"colisiones de nombre, candidates/ y sustitución de salida propia en aborto",PASS,18,18,todos los checks OK
++T7,EVO,eliminación de salidas propias acreditadas,PASS,2,2,todos los checks OK
++T8,EVO,procesamiento normal + PCM vs campaña auditada (WAV),PASS,8,8,todos los checks OK
++T8,EVO,procesamiento normal + PCM vs campaña auditada (FLAC),PASS,8,8,todos los checks OK
++T1,MQR,excepción de hmix.verificar(),PASS,8,8,todos los checks OK
++T2,MQR,excepción de comprobación de ruta,PASS,8,8,todos los checks OK
++T4,MQR,verificación fallida sin excepción,PASS,8,8,todos los checks OK
++T3,MQR,sustitución del Mix tras abrir el descriptor (DSP),PASS,9,9,todos los checks OK
++T5,MQR,ausencia de directorio definitivo tras los abortos,PASS,1,1,todos los checks OK
++T6,MQR,"colisiones de nombre, candidates/ y sustitución de salida propia en aborto",PASS,18,18,todos los checks OK
++T7,MQR,eliminación de salidas propias acreditadas,PASS,2,2,todos los checks OK
++T8,MQR,procesamiento normal + PCM vs campaña auditada (WAV),PASS,8,8,todos los checks OK
++T8,MQR,procesamiento normal + PCM vs campaña auditada (FLAC),PASS,8,8,todos los checks OK
+diff --git a/ETAPA_6G1_CORRECCION_LECTURA_SEGURA/evidence/no_regresion_dsp_6g1.csv b/ETAPA_6G1_CORRECCION_LECTURA_SEGURA/evidence/no_regresion_dsp_6g1.csv
+index 78994b0..5fb7de4 100644
+--- a/ETAPA_6G1_CORRECCION_LECTURA_SEGURA/evidence/no_regresion_dsp_6g1.csv
++++ b/ETAPA_6G1_CORRECCION_LECTURA_SEGURA/evidence/no_regresion_dsp_6g1.csv
+@@ -1,4 +1,4 @@
+-motor,defs_cambiadas,defs_anadidas,defs_quitadas,constantes_cambiadas,huella_dsp_ok,pcm_wav,pcm_flac,veredicto
+-Hardened,analyze_guide_scale;run_experiment,,,,True,IDENTICO,IDENTICO,ACCEPTED
+-EVO,analyze_guide_scale;run_experiment,,,,True,IDENTICO,IDENTICO,ACCEPTED
+-MQR,_run_core;analyze_guide_scale;run_experiment,,,,True,IDENTICO,IDENTICO,ACCEPTED
++motor,defs_cambiadas,defs_anadidas,defs_quitadas,constantes_cambiadas,huella_dsp_ok,pcm_wav,pcm_flac,informe_wav,informe_flac,veredicto
++Hardened,CandidateRunner;_open_memmap;analyze_guide_scale;run_experiment;write_reports,,,,True,IDENTICO,IDENTICO,DISTINTO (alignment_analysis[0].integrity.guide_after.identidad_comparada_6g1;alignment_analysis[0].integrity.mix_after.identidad_comparada_6g1;alignment_analysis[1].integrity.guide_after.identidad_comparada_6g1;alignment_analysis[1].integrity.mix_after.identidad_comparada_6g1),DISTINTO (alignment_analysis[0].integrity.guide_after.identidad_comparada_6g1;alignment_analysis[0].integrity.mix_after.after;alignment_analysis[0].integrity.mix_after.before;alignment_analysis[0].integrity.mix_after.identidad_comparada_6g1),ACCEPTED
++EVO,CandidateRunner;_open_memmap;analyze_guide_scale;run_experiment;write_reports,,,,True,IDENTICO,IDENTICO,DISTINTO (alignment_analysis[0].integrity.guide_after.identidad_comparada_6g1;alignment_analysis[0].integrity.mix_after.identidad_comparada_6g1;alignment_analysis[1].integrity.guide_after.identidad_comparada_6g1;alignment_analysis[1].integrity.mix_after.identidad_comparada_6g1),DISTINTO (alignment_analysis[0].integrity.guide_after.identidad_comparada_6g1;alignment_analysis[0].integrity.mix_after.after;alignment_analysis[0].integrity.mix_after.before;alignment_analysis[0].integrity.mix_after.identidad_comparada_6g1),ACCEPTED
++MQR,CandidateRunner;_open_memmap;_run_core;analyze_guide_scale;run_experiment;write_reports,,,,True,IDENTICO,IDENTICO,DISTINTO (alignment[0].integrity.guide_after.identidad_comparada_6g1;alignment[0].integrity.mix_after.identidad_comparada_6g1;alignment[1].integrity.guide_after.identidad_comparada_6g1;alignment[1].integrity.mix_after.identidad_comparada_6g1),DISTINTO (alignment[0].integrity.guide_after.identidad_comparada_6g1;alignment[0].integrity.mix_after.after;alignment[0].integrity.mix_after.before;alignment[0].integrity.mix_after.identidad_comparada_6g1),ACCEPTED
+diff --git a/ETAPA_6G1_CORRECCION_LECTURA_SEGURA/evidence/no_regresion_dsp_6g1.json b/ETAPA_6G1_CORRECCION_LECTURA_SEGURA/evidence/no_regresion_dsp_6g1.json
+index da1d414..e749d9b 100644
+--- a/ETAPA_6G1_CORRECCION_LECTURA_SEGURA/evidence/no_regresion_dsp_6g1.json
++++ b/ETAPA_6G1_CORRECCION_LECTURA_SEGURA/evidence/no_regresion_dsp_6g1.json
+@@ -1,4 +1,16 @@
+ {
++  "volatiles": [
++    "container_6g",
++    "document_meta",
++    "guide_family_inventory",
++    "guide_inventory",
++    "guide_variant_inventory",
++    "input_integrity",
++    "input_integrity_6g",
++    "mix_original",
++    "post_wav_validation"
++  ],
++  "volatiles_adicionales": [],
+   "schema": "no-regresion-dsp-6g1/1",
+   "entorno": {
+     "python": "3.11.2",
+@@ -10,18 +22,41 @@
+     "machine": "x86_64",
+     "cpu_count": 2
+   },
+-  "fuentes_6g": "/home/user/SDV-SDI_SGM/ETAPA_6G_SOPORTE_FLAC_MIX/motores",
+-  "fuentes_6g1": "/home/user/SDV-SDI_SGM/ETAPA_6G1_CORRECCION_LECTURA_SEGURA/motores",
++  "fuentes_6g": "/tmp/wt6g1/ETAPA_6G_SOPORTE_FLAC_MIX/motores",
++  "fuentes_6g1": "/tmp/wt6g1/ETAPA_6G1_CORRECCION_LECTURA_SEGURA/motores",
+   "motores": {
+     "Hardened": {
+       "cambiadas": [
++        "CandidateRunner",
++        "_open_memmap",
+         "analyze_guide_scale",
+-        "run_experiment"
++        "run_experiment",
++        "write_reports"
+       ],
+       "anadidas": [],
+       "quitadas": [],
+       "constantes_cambiadas": {},
+       "huellas": {
++        "CandidateRunner": {
++          "numeros_iguales": true,
++          "numeros_6g": [],
++          "numeros_6g1": [],
++          "indent_excluidos_6g": 0,
++          "indent_excluidos_6g1": 0,
++          "llamadas_dsp_iguales": true,
++          "llamadas_6g": [],
++          "llamadas_6g1": []
++        },
++        "_open_memmap": {
++          "numeros_iguales": true,
++          "numeros_6g": [],
++          "numeros_6g1": [],
++          "indent_excluidos_6g": 0,
++          "indent_excluidos_6g1": 0,
++          "llamadas_dsp_iguales": true,
++          "llamadas_6g": [],
++          "llamadas_6g1": []
++        },
+         "analyze_guide_scale": {
+           "numeros_iguales": true,
+           "numeros_6g": [
+@@ -88,6 +123,8 @@
+             20.0,
+             20.0
+           ],
++          "indent_excluidos_6g": 0,
++          "indent_excluidos_6g1": 0,
+           "llamadas_dsp_iguales": true,
+           "llamadas_6g": [
+             "abs",
+@@ -154,7 +191,6 @@
+             2.0,
+             2.0,
+             2.0,
+-            2.0,
+             3.0,
+             3.0,
+             4.0,
+@@ -207,7 +243,6 @@
+             2.0,
+             2.0,
+             2.0,
+-            2.0,
+             3.0,
+             3.0,
+             4.0,
+@@ -218,6 +253,8 @@
+             10.0,
+             100.0
+           ],
++          "indent_excluidos_6g": 1,
++          "indent_excluidos_6g1": 1,
+           "llamadas_dsp_iguales": true,
+           "llamadas_6g": [
+             "abs",
+@@ -251,6 +288,24 @@
+             "stack",
+             "stack"
+           ]
++        },
++        "write_reports": {
++          "numeros_iguales": true,
++          "numeros_6g": [
++            0.0,
++            0.0,
++            65536.0
++          ],
++          "numeros_6g1": [
++            0.0,
++            0.0,
++            65536.0
++          ],
++          "indent_excluidos_6g": 1,
++          "indent_excluidos_6g1": 1,
++          "llamadas_dsp_iguales": true,
++          "llamadas_6g": [],
++          "llamadas_6g1": []
+         }
+       },
+       "dsp_ok": true,
+@@ -268,7 +323,20 @@
+           "identicos": true,
+           "exit_6g": 0,
+           "exit_6g1": 0,
+-          "informe_igual": false
++          "informe_igual": false,
++          "informe_igual_estricto": false,
++          "campos_diferentes_estricto": [
++            "alignment_analysis[0].integrity.guide_after.identidad_comparada_6g1",
++            "alignment_analysis[0].integrity.mix_after.identidad_comparada_6g1",
++            "alignment_analysis[1].integrity.guide_after.identidad_comparada_6g1",
++            "alignment_analysis[1].integrity.mix_after.identidad_comparada_6g1"
++          ],
++          "campos_diferentes_normalizado": [
++            "alignment_analysis[0].integrity.guide_after.identidad_comparada_6g1",
++            "alignment_analysis[0].integrity.mix_after.identidad_comparada_6g1",
++            "alignment_analysis[1].integrity.guide_after.identidad_comparada_6g1",
++            "alignment_analysis[1].integrity.mix_after.identidad_comparada_6g1"
++          ]
+         },
+         "FLAC": {
+           "pcm_6g": {
+@@ -283,20 +351,76 @@
+           "identicos": true,
+           "exit_6g": 0,
+           "exit_6g1": 0,
+-          "informe_igual": false
++          "informe_igual": false,
++          "informe_igual_estricto": false,
++          "campos_diferentes_estricto": [
++            "alignment_analysis[0].integrity.guide_after.identidad_comparada_6g1",
++            "alignment_analysis[0].integrity.mix_after.after",
++            "alignment_analysis[0].integrity.mix_after.before",
++            "alignment_analysis[0].integrity.mix_after.identidad_comparada_6g1",
++            "alignment_analysis[0].integrity.mix_after.reason",
++            "alignment_analysis[0].integrity.mix_after.sha256",
++            "alignment_analysis[0].integrity.mix_after.unchanged",
++            "alignment_analysis[1].integrity.guide_after.identidad_comparada_6g1",
++            "alignment_analysis[1].integrity.mix_after.after",
++            "alignment_analysis[1].integrity.mix_after.before",
++            "alignment_analysis[1].integrity.mix_after.identidad_comparada_6g1",
++            "alignment_analysis[1].integrity.mix_after.reason",
++            "alignment_analysis[1].integrity.mix_after.sha256",
++            "alignment_analysis[1].integrity.mix_after.unchanged"
++          ],
++          "campos_diferentes_normalizado": [
++            "alignment_analysis[0].integrity.guide_after.identidad_comparada_6g1",
++            "alignment_analysis[0].integrity.mix_after.after",
++            "alignment_analysis[0].integrity.mix_after.before",
++            "alignment_analysis[0].integrity.mix_after.identidad_comparada_6g1",
++            "alignment_analysis[0].integrity.mix_after.reason",
++            "alignment_analysis[0].integrity.mix_after.sha256",
++            "alignment_analysis[0].integrity.mix_after.unchanged",
++            "alignment_analysis[1].integrity.guide_after.identidad_comparada_6g1",
++            "alignment_analysis[1].integrity.mix_after.after",
++            "alignment_analysis[1].integrity.mix_after.before",
++            "alignment_analysis[1].integrity.mix_after.identidad_comparada_6g1",
++            "alignment_analysis[1].integrity.mix_after.reason",
++            "alignment_analysis[1].integrity.mix_after.sha256",
++            "alignment_analysis[1].integrity.mix_after.unchanged"
++          ]
+         }
+       },
+       "veredicto": "ACCEPTED"
+     },
+     "EVO": {
+       "cambiadas": [
++        "CandidateRunner",
++        "_open_memmap",
+         "analyze_guide_scale",
+-        "run_experiment"
++        "run_experiment",
++        "write_reports"
+       ],
+       "anadidas": [],
+       "quitadas": [],
+       "constantes_cambiadas": {},
+       "huellas": {
++        "CandidateRunner": {
++          "numeros_iguales": true,
++          "numeros_6g": [],
++          "numeros_6g1": [],
++          "indent_excluidos_6g": 0,
++          "indent_excluidos_6g1": 0,
++          "llamadas_dsp_iguales": true,
++          "llamadas_6g": [],
++          "llamadas_6g1": []
++        },
++        "_open_memmap": {
++          "numeros_iguales": true,
++          "numeros_6g": [],
++          "numeros_6g1": [],
++          "indent_excluidos_6g": 0,
++          "indent_excluidos_6g1": 0,
++          "llamadas_dsp_iguales": true,
++          "llamadas_6g": [],
++          "llamadas_6g1": []
++        },
+         "analyze_guide_scale": {
+           "numeros_iguales": true,
+           "numeros_6g": [
+@@ -371,6 +495,8 @@
+             20.0,
+             20.0
+           ],
++          "indent_excluidos_6g": 0,
++          "indent_excluidos_6g1": 0,
+           "llamadas_dsp_iguales": true,
+           "llamadas_6g": [
+             "abs",
+@@ -462,7 +588,6 @@
+             2.0,
+             2.0,
+             2.0,
+-            2.0,
+             3.0,
+             3.0,
+             3.0,
+@@ -539,7 +664,6 @@
+             2.0,
+             2.0,
+             2.0,
+-            2.0,
+             3.0,
+             3.0,
+             3.0,
+@@ -551,6 +675,8 @@
+             10.0,
+             100.0
+           ],
++          "indent_excluidos_6g": 1,
++          "indent_excluidos_6g1": 1,
+           "llamadas_dsp_iguales": true,
+           "llamadas_6g": [
+             "abs",
+@@ -602,6 +728,24 @@
+             "stack",
+             "stack"
+           ]
++        },
++        "write_reports": {
++          "numeros_iguales": true,
++          "numeros_6g": [
++            0.0,
++            0.0,
++            65536.0
++          ],
++          "numeros_6g1": [
++            0.0,
++            0.0,
++            65536.0
++          ],
++          "indent_excluidos_6g": 1,
++          "indent_excluidos_6g1": 1,
++          "llamadas_dsp_iguales": true,
++          "llamadas_6g": [],
++          "llamadas_6g1": []
+         }
+       },
+       "dsp_ok": true,
+@@ -619,7 +763,20 @@
+           "identicos": true,
+           "exit_6g": 0,
+           "exit_6g1": 0,
+-          "informe_igual": false
++          "informe_igual": false,
++          "informe_igual_estricto": false,
++          "campos_diferentes_estricto": [
++            "alignment_analysis[0].integrity.guide_after.identidad_comparada_6g1",
++            "alignment_analysis[0].integrity.mix_after.identidad_comparada_6g1",
++            "alignment_analysis[1].integrity.guide_after.identidad_comparada_6g1",
++            "alignment_analysis[1].integrity.mix_after.identidad_comparada_6g1"
++          ],
++          "campos_diferentes_normalizado": [
++            "alignment_analysis[0].integrity.guide_after.identidad_comparada_6g1",
++            "alignment_analysis[0].integrity.mix_after.identidad_comparada_6g1",
++            "alignment_analysis[1].integrity.guide_after.identidad_comparada_6g1",
++            "alignment_analysis[1].integrity.mix_after.identidad_comparada_6g1"
++          ]
+         },
+         "FLAC": {
+           "pcm_6g": {
+@@ -634,21 +791,77 @@
+           "identicos": true,
+           "exit_6g": 0,
+           "exit_6g1": 0,
+-          "informe_igual": false
++          "informe_igual": false,
++          "informe_igual_estricto": false,
++          "campos_diferentes_estricto": [
++            "alignment_analysis[0].integrity.guide_after.identidad_comparada_6g1",
++            "alignment_analysis[0].integrity.mix_after.after",
++            "alignment_analysis[0].integrity.mix_after.before",
++            "alignment_analysis[0].integrity.mix_after.identidad_comparada_6g1",
++            "alignment_analysis[0].integrity.mix_after.reason",
++            "alignment_analysis[0].integrity.mix_after.sha256",
++            "alignment_analysis[0].integrity.mix_after.unchanged",
++            "alignment_analysis[1].integrity.guide_after.identidad_comparada_6g1",
++            "alignment_analysis[1].integrity.mix_after.after",
++            "alignment_analysis[1].integrity.mix_after.before",
++            "alignment_analysis[1].integrity.mix_after.identidad_comparada_6g1",
++            "alignment_analysis[1].integrity.mix_after.reason",
++            "alignment_analysis[1].integrity.mix_after.sha256",
++            "alignment_analysis[1].integrity.mix_after.unchanged"
++          ],
++          "campos_diferentes_normalizado": [
++            "alignment_analysis[0].integrity.guide_after.identidad_comparada_6g1",
++            "alignment_analysis[0].integrity.mix_after.after",
++            "alignment_analysis[0].integrity.mix_after.before",
++            "alignment_analysis[0].integrity.mix_after.identidad_comparada_6g1",
++            "alignment_analysis[0].integrity.mix_after.reason",
++            "alignment_analysis[0].integrity.mix_after.sha256",
++            "alignment_analysis[0].integrity.mix_after.unchanged",
++            "alignment_analysis[1].integrity.guide_after.identidad_comparada_6g1",
++            "alignment_analysis[1].integrity.mix_after.after",
++            "alignment_analysis[1].integrity.mix_after.before",
++            "alignment_analysis[1].integrity.mix_after.identidad_comparada_6g1",
++            "alignment_analysis[1].integrity.mix_after.reason",
++            "alignment_analysis[1].integrity.mix_after.sha256",
++            "alignment_analysis[1].integrity.mix_after.unchanged"
++          ]
+         }
+       },
+       "veredicto": "ACCEPTED"
+     },
+     "MQR": {
+       "cambiadas": [
++        "CandidateRunner",
++        "_open_memmap",
+         "_run_core",
+         "analyze_guide_scale",
+-        "run_experiment"
++        "run_experiment",
++        "write_reports"
+       ],
+       "anadidas": [],
+       "quitadas": [],
+       "constantes_cambiadas": {},
+       "huellas": {
++        "CandidateRunner": {
++          "numeros_iguales": true,
++          "numeros_6g": [],
++          "numeros_6g1": [],
++          "indent_excluidos_6g": 0,
++          "indent_excluidos_6g1": 0,
++          "llamadas_dsp_iguales": true,
++          "llamadas_6g": [],
++          "llamadas_6g1": []
++        },
++        "_open_memmap": {
++          "numeros_iguales": true,
++          "numeros_6g": [],
++          "numeros_6g1": [],
++          "indent_excluidos_6g": 0,
++          "indent_excluidos_6g1": 0,
++          "llamadas_dsp_iguales": true,
++          "llamadas_6g": [],
++          "llamadas_6g1": []
++        },
+         "_run_core": {
+           "numeros_iguales": true,
+           "numeros_6g": [
+@@ -709,6 +922,8 @@
+             10.0,
+             4000000.0
+           ],
++          "indent_excluidos_6g": 0,
++          "indent_excluidos_6g1": 1,
+           "llamadas_dsp_iguales": true,
+           "llamadas_6g": [
+             "abs",
+@@ -741,6 +956,8 @@
+             1.0,
+             1.0
+           ],
++          "indent_excluidos_6g": 0,
++          "indent_excluidos_6g1": 0,
+           "llamadas_dsp_iguales": true,
+           "llamadas_6g": [
+             "sqrt"
+@@ -752,13 +969,23 @@
+         "run_experiment": {
+           "numeros_iguales": true,
+           "numeros_6g": [
+-            1.0,
+-            2.0
++            1.0
+           ],
+           "numeros_6g1": [
+-            1.0,
+-            2.0
++            1.0
+           ],
++          "indent_excluidos_6g": 1,
++          "indent_excluidos_6g1": 0,
++          "llamadas_dsp_iguales": true,
++          "llamadas_6g": [],
++          "llamadas_6g1": []
++        },
++        "write_reports": {
++          "numeros_iguales": true,
++          "numeros_6g": [],
++          "numeros_6g1": [],
++          "indent_excluidos_6g": 1,
++          "indent_excluidos_6g1": 1,
+           "llamadas_dsp_iguales": true,
+           "llamadas_6g": [],
+           "llamadas_6g1": []
+@@ -779,7 +1006,20 @@
+           "identicos": true,
+           "exit_6g": 0,
+           "exit_6g1": 0,
+-          "informe_igual": false
++          "informe_igual": false,
++          "informe_igual_estricto": false,
++          "campos_diferentes_estricto": [
++            "alignment[0].integrity.guide_after.identidad_comparada_6g1",
++            "alignment[0].integrity.mix_after.identidad_comparada_6g1",
++            "alignment[1].integrity.guide_after.identidad_comparada_6g1",
++            "alignment[1].integrity.mix_after.identidad_comparada_6g1"
++          ],
++          "campos_diferentes_normalizado": [
++            "alignment[0].integrity.guide_after.identidad_comparada_6g1",
++            "alignment[0].integrity.mix_after.identidad_comparada_6g1",
++            "alignment[1].integrity.guide_after.identidad_comparada_6g1",
++            "alignment[1].integrity.mix_after.identidad_comparada_6g1"
++          ]
+         },
+         "FLAC": {
+           "pcm_6g": {
+@@ -794,7 +1034,40 @@
+           "identicos": true,
+           "exit_6g": 0,
+           "exit_6g1": 0,
+-          "informe_igual": false
++          "informe_igual": false,
++          "informe_igual_estricto": false,
++          "campos_diferentes_estricto": [
++            "alignment[0].integrity.guide_after.identidad_comparada_6g1",
++            "alignment[0].integrity.mix_after.after",
++            "alignment[0].integrity.mix_after.before",
++            "alignment[0].integrity.mix_after.identidad_comparada_6g1",
++            "alignment[0].integrity.mix_after.reason",
++            "alignment[0].integrity.mix_after.sha256",
++            "alignment[0].integrity.mix_after.unchanged",
++            "alignment[1].integrity.guide_after.identidad_comparada_6g1",
++            "alignment[1].integrity.mix_after.after",
++            "alignment[1].integrity.mix_after.before",
++            "alignment[1].integrity.mix_after.identidad_comparada_6g1",
++            "alignment[1].integrity.mix_after.reason",
++            "alignment[1].integrity.mix_after.sha256",
++            "alignment[1].integrity.mix_after.unchanged"
++          ],
++          "campos_diferentes_normalizado": [
++            "alignment[0].integrity.guide_after.identidad_comparada_6g1",
++            "alignment[0].integrity.mix_after.after",
++            "alignment[0].integrity.mix_after.before",
++            "alignment[0].integrity.mix_after.identidad_comparada_6g1",
++            "alignment[0].integrity.mix_after.reason",
++            "alignment[0].integrity.mix_after.sha256",
++            "alignment[0].integrity.mix_after.unchanged",
++            "alignment[1].integrity.guide_after.identidad_comparada_6g1",
++            "alignment[1].integrity.mix_after.after",
++            "alignment[1].integrity.mix_after.before",
++            "alignment[1].integrity.mix_after.identidad_comparada_6g1",
++            "alignment[1].integrity.mix_after.reason",
++            "alignment[1].integrity.mix_after.sha256",
++            "alignment[1].integrity.mix_after.unchanged"
++          ]
+         }
+       },
+       "veredicto": "ACCEPTED"
+@@ -803,35 +1076,41 @@
+   "filas": [
+     {
+       "motor": "Hardened",
+-      "defs_cambiadas": "analyze_guide_scale;run_experiment",
++      "defs_cambiadas": "CandidateRunner;_open_memmap;analyze_guide_scale;run_experiment;write_reports",
+       "defs_anadidas": "",
+       "defs_quitadas": "",
+       "constantes_cambiadas": "",
+       "huella_dsp_ok": true,
+       "pcm_wav": "IDENTICO",
+       "pcm_flac": "IDENTICO",
++      "informe_wav": "DISTINTO (alignment_analysis[0].integrity.guide_after.identidad_comparada_6g1;alignment_analysis[0].integrity.mix_after.identidad_comparada_6g1;alignment_analysis[1].integrity.guide_after.identidad_comparada_6g1;alignment_analysis[1].integrity.mix_after.identidad_comparada_6g1)",
++      "informe_flac": "DISTINTO (alignment_analysis[0].integrity.guide_after.identidad_comparada_6g1;alignment_analysis[0].integrity.mix_after.after;alignment_analysis[0].integrity.mix_after.before;alignment_analysis[0].integrity.mix_after.identidad_comparada_6g1)",
+       "veredicto": "ACCEPTED"
+     },
+     {
+       "motor": "EVO",
+-      "defs_cambiadas": "analyze_guide_scale;run_experiment",
++      "defs_cambiadas": "CandidateRunner;_open_memmap;analyze_guide_scale;run_experiment;write_reports",
+       "defs_anadidas": "",
+       "defs_quitadas": "",
+       "constantes_cambiadas": "",
+       "huella_dsp_ok": true,
+       "pcm_wav": "IDENTICO",
+       "pcm_flac": "IDENTICO",
++      "informe_wav": "DISTINTO (alignment_analysis[0].integrity.guide_after.identidad_comparada_6g1;alignment_analysis[0].integrity.mix_after.identidad_comparada_6g1;alignment_analysis[1].integrity.guide_after.identidad_comparada_6g1;alignment_analysis[1].integrity.mix_after.identidad_comparada_6g1)",
++      "informe_flac": "DISTINTO (alignment_analysis[0].integrity.guide_after.identidad_comparada_6g1;alignment_analysis[0].integrity.mix_after.after;alignment_analysis[0].integrity.mix_after.before;alignment_analysis[0].integrity.mix_after.identidad_comparada_6g1)",
+       "veredicto": "ACCEPTED"
+     },
+     {
+       "motor": "MQR",
+-      "defs_cambiadas": "_run_core;analyze_guide_scale;run_experiment",
++      "defs_cambiadas": "CandidateRunner;_open_memmap;_run_core;analyze_guide_scale;run_experiment;write_reports",
+       "defs_anadidas": "",
+       "defs_quitadas": "",
+       "constantes_cambiadas": "",
+       "huella_dsp_ok": true,
+       "pcm_wav": "IDENTICO",
+       "pcm_flac": "IDENTICO",
++      "informe_wav": "DISTINTO (alignment[0].integrity.guide_after.identidad_comparada_6g1;alignment[0].integrity.mix_after.identidad_comparada_6g1;alignment[1].integrity.guide_after.identidad_comparada_6g1;alignment[1].integrity.mix_after.identidad_comparada_6g1)",
++      "informe_flac": "DISTINTO (alignment[0].integrity.guide_after.identidad_comparada_6g1;alignment[0].integrity.mix_after.after;alignment[0].integrity.mix_after.before;alignment[0].integrity.mix_after.identidad_comparada_6g1)",
+       "veredicto": "ACCEPTED"
+     }
+   ],
+diff --git a/ETAPA_6G1_CORRECCION_LECTURA_SEGURA/evidence/pruebas_correccion_6g1.json b/ETAPA_6G1_CORRECCION_LECTURA_SEGURA/evidence/pruebas_correccion_6g1.json
+new file mode 100644
+index 0000000..0a3ae12
+--- /dev/null
++++ b/ETAPA_6G1_CORRECCION_LECTURA_SEGURA/evidence/pruebas_correccion_6g1.json
+@@ -0,0 +1,1484 @@
++{
++  "schema": "pruebas-correccion-6g1/1",
++  "entorno": {
++    "python": "3.11.2"
++  },
++  "filas": [
++    {
++      "prueba": "UC1",
++      "motor": "lectura_segura_6g1",
++      "alcance": "ajeno dentro de candidates/",
++      "veredicto": "PASS",
++      "checks_ok": 4,
++      "checks_total": 4,
++      "detalle": "todos los checks OK"
++    },
++    {
++      "prueba": "UC2",
++      "motor": "lectura_segura_6g1",
++      "alcance": "ajeno llamado SDV.wav",
++      "veredicto": "PASS",
++      "checks_ok": 4,
++      "checks_total": 4,
++      "detalle": "todos los checks OK"
++    },
++    {
++      "prueba": "UC3",
++      "motor": "lectura_segura_6g1",
++      "alcance": "ajeno con nombre exacto de salida del motor",
++      "veredicto": "PASS",
++      "checks_ok": 4,
++      "checks_total": 4,
++      "detalle": "todos los checks OK"
++    },
++    {
++      "prueba": "UC4",
++      "motor": "lectura_segura_6g1",
++      "alcance": "propio acreditado (sellado) debe eliminarse",
++      "veredicto": "PASS",
++      "checks_ok": 2,
++      "checks_total": 2,
++      "detalle": "todos los checks OK"
++    },
++    {
++      "prueba": "UC5",
++      "motor": "lectura_segura_6g1",
++      "alcance": "propio sustituido tras su creación se conserva",
++      "veredicto": "PASS",
++      "checks_ok": 4,
++      "checks_total": 4,
++      "detalle": "todos los checks OK"
++    },
++    {
++      "prueba": "UC6",
++      "motor": "lectura_segura_6g1",
++      "alcance": "propio en curso (inodo continuo) debe eliminarse",
++      "veredicto": "PASS",
++      "checks_ok": 2,
++      "checks_total": 2,
++      "detalle": "todos los checks OK"
++    },
++    {
++      "prueba": "UC7",
++      "motor": "lectura_segura_6g1",
++      "alcance": "propio sellado modificado in situ se conserva",
++      "veredicto": "PASS",
++      "checks_ok": 4,
++      "checks_total": 4,
++      "detalle": "todos los checks OK"
++    },
++    {
++      "prueba": "T1",
++      "motor": "Hardened",
++      "alcance": "excepción de hmix.verificar()",
++      "veredicto": "PASS",
++      "checks_ok": 8,
++      "checks_total": 8,
++      "detalle": "todos los checks OK"
++    },
++    {
++      "prueba": "T2",
++      "motor": "Hardened",
++      "alcance": "excepción de comprobación de ruta",
++      "veredicto": "PASS",
++      "checks_ok": 8,
++      "checks_total": 8,
++      "detalle": "todos los checks OK"
++    },
++    {
++      "prueba": "T4",
++      "motor": "Hardened",
++      "alcance": "verificación fallida sin excepción",
++      "veredicto": "PASS",
++      "checks_ok": 8,
++      "checks_total": 8,
++      "detalle": "todos los checks OK"
++    },
++    {
++      "prueba": "T3",
++      "motor": "Hardened",
++      "alcance": "sustitución del Mix tras abrir el descriptor (DSP)",
++      "veredicto": "PASS",
++      "checks_ok": 9,
++      "checks_total": 9,
++      "detalle": "todos los checks OK"
++    },
++    {
++      "prueba": "T5",
++      "motor": "Hardened",
++      "alcance": "ausencia de directorio definitivo tras los abortos",
++      "veredicto": "PASS",
++      "checks_ok": 1,
++      "checks_total": 1,
++      "detalle": "todos los checks OK"
++    },
++    {
++      "prueba": "T6",
++      "motor": "Hardened",
++      "alcance": "colisiones de nombre, candidates/ y sustitución de salida propia en aborto",
++      "veredicto": "PASS",
++      "checks_ok": 18,
++      "checks_total": 18,
++      "detalle": "todos los checks OK"
++    },
++    {
++      "prueba": "T7",
++      "motor": "Hardened",
++      "alcance": "eliminación de salidas propias acreditadas",
++      "veredicto": "PASS",
++      "checks_ok": 2,
++      "checks_total": 2,
++      "detalle": "todos los checks OK"
++    },
++    {
++      "prueba": "T8",
++      "motor": "Hardened",
++      "alcance": "procesamiento normal + PCM vs campaña auditada (WAV)",
++      "veredicto": "PASS",
++      "checks_ok": 8,
++      "checks_total": 8,
++      "detalle": "todos los checks OK"
++    },
++    {
++      "prueba": "T8",
++      "motor": "Hardened",
++      "alcance": "procesamiento normal + PCM vs campaña auditada (FLAC)",
++      "veredicto": "PASS",
++      "checks_ok": 8,
++      "checks_total": 8,
++      "detalle": "todos los checks OK"
++    },
++    {
++      "prueba": "T1",
++      "motor": "EVO",
++      "alcance": "excepción de hmix.verificar()",
++      "veredicto": "PASS",
++      "checks_ok": 8,
++      "checks_total": 8,
++      "detalle": "todos los checks OK"
++    },
++    {
++      "prueba": "T2",
++      "motor": "EVO",
++      "alcance": "excepción de comprobación de ruta",
++      "veredicto": "PASS",
++      "checks_ok": 8,
++      "checks_total": 8,
++      "detalle": "todos los checks OK"
++    },
++    {
++      "prueba": "T4",
++      "motor": "EVO",
++      "alcance": "verificación fallida sin excepción",
++      "veredicto": "PASS",
++      "checks_ok": 8,
++      "checks_total": 8,
++      "detalle": "todos los checks OK"
++    },
++    {
++      "prueba": "T3",
++      "motor": "EVO",
++      "alcance": "sustitución del Mix tras abrir el descriptor (DSP)",
++      "veredicto": "PASS",
++      "checks_ok": 9,
++      "checks_total": 9,
++      "detalle": "todos los checks OK"
++    },
++    {
++      "prueba": "T5",
++      "motor": "EVO",
++      "alcance": "ausencia de directorio definitivo tras los abortos",
++      "veredicto": "PASS",
++      "checks_ok": 1,
++      "checks_total": 1,
++      "detalle": "todos los checks OK"
++    },
++    {
++      "prueba": "T6",
++      "motor": "EVO",
++      "alcance": "colisiones de nombre, candidates/ y sustitución de salida propia en aborto",
++      "veredicto": "PASS",
++      "checks_ok": 18,
++      "checks_total": 18,
++      "detalle": "todos los checks OK"
++    },
++    {
++      "prueba": "T7",
++      "motor": "EVO",
++      "alcance": "eliminación de salidas propias acreditadas",
++      "veredicto": "PASS",
++      "checks_ok": 2,
++      "checks_total": 2,
++      "detalle": "todos los checks OK"
++    },
++    {
++      "prueba": "T8",
++      "motor": "EVO",
++      "alcance": "procesamiento normal + PCM vs campaña auditada (WAV)",
++      "veredicto": "PASS",
++      "checks_ok": 8,
++      "checks_total": 8,
++      "detalle": "todos los checks OK"
++    },
++    {
++      "prueba": "T8",
++      "motor": "EVO",
++      "alcance": "procesamiento normal + PCM vs campaña auditada (FLAC)",
++      "veredicto": "PASS",
++      "checks_ok": 8,
++      "checks_total": 8,
++      "detalle": "todos los checks OK"
++    },
++    {
++      "prueba": "T1",
++      "motor": "MQR",
++      "alcance": "excepción de hmix.verificar()",
++      "veredicto": "PASS",
++      "checks_ok": 8,
++      "checks_total": 8,
++      "detalle": "todos los checks OK"
++    },
++    {
++      "prueba": "T2",
++      "motor": "MQR",
++      "alcance": "excepción de comprobación de ruta",
++      "veredicto": "PASS",
++      "checks_ok": 8,
++      "checks_total": 8,
++      "detalle": "todos los checks OK"
++    },
++    {
++      "prueba": "T4",
++      "motor": "MQR",
++      "alcance": "verificación fallida sin excepción",
++      "veredicto": "PASS",
++      "checks_ok": 8,
++      "checks_total": 8,
++      "detalle": "todos los checks OK"
++    },
++    {
++      "prueba": "T3",
++      "motor": "MQR",
++      "alcance": "sustitución del Mix tras abrir el descriptor (DSP)",
++      "veredicto": "PASS",
++      "checks_ok": 9,
++      "checks_total": 9,
++      "detalle": "todos los checks OK"
++    },
++    {
++      "prueba": "T5",
++      "motor": "MQR",
++      "alcance": "ausencia de directorio definitivo tras los abortos",
++      "veredicto": "PASS",
++      "checks_ok": 1,
++      "checks_total": 1,
++      "detalle": "todos los checks OK"
++    },
++    {
++      "prueba": "T6",
++      "motor": "MQR",
++      "alcance": "colisiones de nombre, candidates/ y sustitución de salida propia en aborto",
++      "veredicto": "PASS",
++      "checks_ok": 18,
++      "checks_total": 18,
++      "detalle": "todos los checks OK"
++    },
++    {
++      "prueba": "T7",
++      "motor": "MQR",
++      "alcance": "eliminación de salidas propias acreditadas",
++      "veredicto": "PASS",
++      "checks_ok": 2,
++      "checks_total": 2,
++      "detalle": "todos los checks OK"
++    },
++    {
++      "prueba": "T8",
++      "motor": "MQR",
++      "alcance": "procesamiento normal + PCM vs campaña auditada (WAV)",
++      "veredicto": "PASS",
++      "checks_ok": 8,
++      "checks_total": 8,
++      "detalle": "todos los checks OK"
++    },
++    {
++      "prueba": "T8",
++      "motor": "MQR",
++      "alcance": "procesamiento normal + PCM vs campaña auditada (FLAC)",
++      "veredicto": "PASS",
++      "checks_ok": 8,
++      "checks_total": 8,
++      "detalle": "todos los checks OK"
++    }
++  ],
++  "detalles": {
++    "unidad": {
++      "UC1": {
++        "descripcion": "ajeno dentro de candidates/",
++        "rel": "candidates/ajeno_cand.wav",
++        "clase": "ajeno",
++        "abort": {
++          "schema": "abort-6g1/2",
++          "motivo": "PRUEBA_UC1",
++          "detalle": null,
++          "salidas_invalidadas": [],
++          "conservados": [
++            "candidates/ajeno_cand.wav"
++          ],
++          "motivos_propiedad": {
++            "candidates/ajeno_cand.wav": "ajeno_no_registrado"
++          },
++          "politica": "propiedad_acreditada_o_conserva; sin borrado por patrón de nombre ni por ubicación"
++        }
++      },
++      "UC2": {
++        "descripcion": "ajeno llamado SDV.wav",
++        "rel": "SDV.wav",
++        "clase": "ajeno",
++        "abort": {
++          "schema": "abort-6g1/2",
++          "motivo": "PRUEBA_UC2",
++          "detalle": null,
++          "salidas_invalidadas": [],
++          "conservados": [
++            "SDV.wav"
++          ],
++          "motivos_propiedad": {
++            "SDV.wav": "ajeno_no_registrado"
++          },
++          "politica": "propiedad_acreditada_o_conserva; sin borrado por patrón de nombre ni por ubicación"
++        }
++      },
++      "UC3": {
++        "descripcion": "ajeno con nombre exacto de salida del motor",
++        "rel": "mix SDV.wav",
++        "clase": "ajeno",
++        "abort": {
++          "schema": "abort-6g1/2",
++          "motivo": "PRUEBA_UC3",
++          "detalle": null,
++          "salidas_invalidadas": [],
++          "conservados": [
++            "mix SDV.wav"
++          ],
++          "motivos_propiedad": {
++            "mix SDV.wav": "ajeno_no_registrado"
++          },
++          "politica": "propiedad_acreditada_o_conserva; sin borrado por patrón de nombre ni por ubicación"
++        }
++      },
++      "UC4": {
++        "descripcion": "propio acreditado (sellado) debe eliminarse",
++        "rel": "propio.wav",
++        "clase": "propio_estable",
++        "abort": {
++          "schema": "abort-6g1/2",
++          "motivo": "PRUEBA_UC4",
++          "detalle": null,
++          "salidas_invalidadas": [
++            "propio.wav"
++          ],
++          "conservados": [],
++          "motivos_propiedad": {},
++          "politica": "propiedad_acreditada_o_conserva; sin borrado por patrón de nombre ni por ubicación"
++        }
++      },
++      "UC5": {
++        "descripcion": "propio sustituido tras su creación se conserva",
++        "rel": "sustituido.wav",
++        "clase": "propio_sustituido",
++        "abort": {
++          "schema": "abort-6g1/2",
++          "motivo": "PRUEBA_UC5",
++          "detalle": null,
++          "salidas_invalidadas": [],
++          "conservados": [
++            "sustituido.wav"
++          ],
++          "motivos_propiedad": {
++            "sustituido.wav": "identidad_distinta (sustituido o reemplazado tras el registro)"
++          },
++          "politica": "propiedad_acreditada_o_conserva; sin borrado por patrón de nombre ni por ubicación"
++        }
++      },
++      "UC6": {
++        "descripcion": "propio en curso (inodo continuo) debe eliminarse",
++        "rel": "en_curso.wav",
++        "clase": "propio_curso",
++        "abort": {
++          "schema": "abort-6g1/2",
++          "motivo": "PRUEBA_UC6",
++          "detalle": null,
++          "salidas_invalidadas": [
++            "en_curso.wav"
++          ],
++          "conservados": [],
++          "motivos_propiedad": {},
++          "politica": "propiedad_acreditada_o_conserva; sin borrado por patrón de nombre ni por ubicación"
++        }
++      },
++      "UC7": {
++        "descripcion": "propio sellado modificado in situ se conserva",
++        "rel": "sellado.json",
++        "clase": "propio_modificado",
++        "abort": {
++          "schema": "abort-6g1/2",
++          "motivo": "PRUEBA_UC7",
++          "detalle": null,
++          "salidas_invalidadas": [],
++          "conservados": [
++            "sellado.json"
++          ],
++          "motivos_propiedad": {
++            "sellado.json": "tamaño/mtime distintos de los registrados"
++          },
++          "politica": "propiedad_acreditada_o_conserva; sin borrado por patrón de nombre ni por ubicación"
++        }
++      }
++    },
++    "Hardened": {
++      "T1": {
++        "descripcion": "excepción de hmix.verificar()",
++        "abort": {
++          "schema": "abort-6g1/2",
++          "motivo": "MIX_CAMBIADO_DURANTE_EL_PROCESAMIENTO",
++          "detalle": {
++            "mix_path": "/home/user/SDV-SDI_SGM/ETAPA_6G1_CORRECCION_LECTURA_SEGURA/fixtures/mix.wav",
++            "container": "WAV",
++            "format": "WAV",
++            "subtype": "PCM_16",
++            "probe_sha256": "060d6c89b1aabe5d0c449eefa696dc23efe6c77e00d2669dea7a6dfaebfe9627",
++            "after": {
++              "unchanged": false,
++              "reason": "excepcion: inyeccion de prueba T1: verificar() fallo"
++            },
++            "policy": "detect_only_no_conversion",
++            "ruta_actual": {
++              "unchanged": false,
++              "reason": "excepcion: inyeccion de prueba T1: verificar() fallo"
++            }
++          },
++          "salidas_invalidadas": [
++            "analysis.txt",
++            "mix SDI.wav",
++            "mix SDV.wav"
++          ],
++          "conservados": [
++            "analysis.json",
++            "engine_log.txt",
++            "input_integrity_6g.json"
++          ],
++          "motivos_propiedad": {
++            "analysis.json": "registro_interno_conservado",
++            "engine_log.txt": "registro_interno_conservado",
++            "input_integrity_6g.json": "registro_interno_conservado"
++          },
++          "politica": "propiedad_acreditada_o_conserva; sin borrado por patrón de nombre ni por ubicación"
++        },
++        "exit": 2,
++        "wavs": [],
++        "dirs_definitivos": []
++      },
++      "T2": {
++        "descripcion": "excepción de comprobación de ruta",
++        "abort": {
++          "schema": "abort-6g1/2",
++          "motivo": "MIX_CAMBIADO_DURANTE_EL_PROCESAMIENTO",
++          "detalle": {
++            "mix_path": "/home/user/SDV-SDI_SGM/ETAPA_6G1_CORRECCION_LECTURA_SEGURA/fixtures/mix.wav",
++            "container": "WAV",
++            "format": "WAV",
++            "subtype": "PCM_16",
++            "probe_sha256": "060d6c89b1aabe5d0c449eefa696dc23efe6c77e00d2669dea7a6dfaebfe9627",
++            "after": {
++              "unchanged": false,
++              "reason": "excepcion: inyeccion de prueba T2: ruta_apunta_al_mismo_objeto() fallo"
++            },
++            "policy": "detect_only_no_conversion",
++            "ruta_actual": {
++              "unchanged": false,
++              "reason": "excepcion: inyeccion de prueba T2: ruta_apunta_al_mismo_objeto() fallo"
++            }
++          },
++          "salidas_invalidadas": [
++            "analysis.txt",
++            "mix SDI.wav",
++            "mix SDV.wav"
++          ],
++          "conservados": [
++            "analysis.json",
++            "engine_log.txt",
++            "input_integrity_6g.json"
++          ],
++          "motivos_propiedad": {
++            "analysis.json": "registro_interno_conservado",
++            "engine_log.txt": "registro_interno_conservado",
++            "input_integrity_6g.json": "registro_interno_conservado"
++          },
++          "politica": "propiedad_acreditada_o_conserva; sin borrado por patrón de nombre ni por ubicación"
++        },
++        "exit": 2,
++        "wavs": [],
++        "dirs_definitivos": []
++      },
++      "T4": {
++        "descripcion": "verificación fallida sin excepción",
++        "abort": {
++          "schema": "abort-6g1/2",
++          "motivo": "MIX_CAMBIADO_DURANTE_EL_PROCESAMIENTO",
++          "detalle": {
++            "mix_path": "/home/user/SDV-SDI_SGM/ETAPA_6G1_CORRECCION_LECTURA_SEGURA/fixtures/mix.wav",
++            "container": "WAV",
++            "format": "WAV",
++            "subtype": "PCM_16",
++            "probe_sha256": "060d6c89b1aabe5d0c449eefa696dc23efe6c77e00d2669dea7a6dfaebfe9627",
++            "after": {
++              "unchanged": false,
++              "reason": "inyeccion de prueba T4: verificacion no satisfactoria"
++            },
++            "policy": "detect_only_no_conversion",
++            "ruta_actual": {
++              "unchanged": true,
++              "reason": "ruta e inodo de apertura coinciden",
++              "identity": {
++                "device": 65024,
++                "inode": 534660,
++                "size": 352844,
++                "mtime_ns": 1795290612307410868,
++                "mode": "0o100644"
++              },
++              "identity_expected": {
++                "device": 65024,
++                "inode": 534660,
++                "size": 352844,
++                "mtime_ns": 1795290612307410868,
++                "mode": "0o100644"
++              }
++            }
++          },
++          "salidas_invalidadas": [
++            "analysis.txt",
++            "mix SDI.wav",
++            "mix SDV.wav"
++          ],
++          "conservados": [
++            "analysis.json",
++            "engine_log.txt",
++            "input_integrity_6g.json"
++          ],
++          "motivos_propiedad": {
++            "analysis.json": "registro_interno_conservado",
++            "engine_log.txt": "registro_interno_conservado",
++            "input_integrity_6g.json": "registro_interno_conservado"
++          },
++          "politica": "propiedad_acreditada_o_conserva; sin borrado por patrón de nombre ni por ubicación"
++        },
++        "exit": 2,
++        "wavs": [],
++        "dirs_definitivos": []
++      },
++      "T3": {
++        "descripcion": "sustitución durante el DSP",
++        "abort": {
++          "schema": "abort-6g1/2",
++          "motivo": "MIX_CAMBIADO_DURANTE_EL_PROCESAMIENTO",
++          "detalle": {
++            "mix_path": "/tmp/f6g1corr/mezclas/T3_Hardened_mix_12s.flac",
++            "container": "FLAC",
++            "format": "FLAC",
++            "subtype": "PCM_16",
++            "probe_sha256": "fb1882e2d0995de82bd61a2413d355f7876a8b7408b99ed8b454034c9bfc39ed",
++            "after": {
++              "unchanged": true,
++              "reason": "sha256 e identidad revalidados",
++              "sha256": "fb1882e2d0995de82bd61a2413d355f7876a8b7408b99ed8b454034c9bfc39ed",
++              "expected": "fb1882e2d0995de82bd61a2413d355f7876a8b7408b99ed8b454034c9bfc39ed",
++              "identity": {
++                "device": 65024,
++                "inode": 534993,
++                "size": 1594827,
++                "mtime_ns": 1795291924550038803,
++                "mode": "0o100644"
++              },
++              "identity_expected": {
++                "device": 65024,
++                "inode": 534993,
++                "size": 1594827,
++                "mtime_ns": 1795291924550038803,
++                "mode": "0o100644"
++              }
++            },
++            "policy": "detect_only_no_conversion",
++            "ruta_actual": {
++              "unchanged": false,
++              "reason": "la ruta ya no apunta al inodo validado",
++              "identity": {
++                "device": 65024,
++                "inode": 534822,
++                "size": 276611,
++                "mtime_ns": 1795291924554038824,
++                "mode": "0o100644"
++              },
++              "identity_expected": {
++                "device": 65024,
++                "inode": 534993,
++                "size": 1594827,
++                "mtime_ns": 1795291924550038803,
++                "mode": "0o100644"
++              }
++            }
++          },
++          "salidas_invalidadas": [
++            "T3_Hardened_mix_12s SDI.wav",
++            "T3_Hardened_mix_12s SDV.wav",
++            "analysis.txt"
++          ],
++          "conservados": [
++            "analysis.json",
++            "engine_log.txt",
++            "input_integrity_6g.json"
++          ],
++          "motivos_propiedad": {
++            "analysis.json": "registro_interno_conservado",
++            "engine_log.txt": "registro_interno_conservado",
++            "input_integrity_6g.json": "registro_interno_conservado"
++          },
++          "politica": "propiedad_acreditada_o_conserva; sin borrado por patrón de nombre ni por ubicación"
++        },
++        "exit": 2,
++        "evento": {
++          "sembrados": [],
++          "sustitucion_aplicada": true,
++          "reemplazados": [],
++          "sha_mix_tras_sustitucion": "636fc4f96b55040fb6d78bfb96a8c53fcf988329d54c32ff9996c2b51a967b40",
++          "disparo": "sustitucion",
++          "segundos": 3.871
++        }
++      },
++      "T5": {
++        "descripcion": "agregado sobre T1–T4",
++        "definitivos": []
++      },
++      "T6": {
++        "descripcion": "sembrados=('SDV.wav', 'candidates/ajeno_cand.wav', 'otro_ajeno.txt') reemplazados=('mix SDV.wav',)",
++        "abort": {
++          "schema": "abort-6g1/2",
++          "motivo": "MIX_CAMBIADO_DURANTE_EL_PROCESAMIENTO",
++          "detalle": {
++            "mix_path": "/home/user/SDV-SDI_SGM/ETAPA_6G1_CORRECCION_LECTURA_SEGURA/fixtures/mix.wav",
++            "container": "WAV",
++            "format": "WAV",
++            "subtype": "PCM_16",
++            "probe_sha256": "060d6c89b1aabe5d0c449eefa696dc23efe6c77e00d2669dea7a6dfaebfe9627",
++            "after": {
++              "unchanged": false,
++              "reason": "excepcion: inyeccion de prueba T1: verificar() fallo"
++            },
++            "policy": "detect_only_no_conversion",
++            "ruta_actual": {
++              "unchanged": false,
++              "reason": "excepcion: inyeccion de prueba T1: verificar() fallo"
++            }
++          },
++          "salidas_invalidadas": [
++            "analysis.txt",
++            "mix SDI.wav"
++          ],
++          "conservados": [
++            "SDV.wav",
++            "analysis.json",
++            "candidates/ajeno_cand.wav",
++            "engine_log.txt",
++            "input_integrity_6g.json",
++            "mix SDV.wav",
++            "otro_ajeno.txt"
++          ],
++          "motivos_propiedad": {
++            "SDV.wav": "ajeno_no_registrado",
++            "analysis.json": "registro_interno_conservado",
++            "candidates/ajeno_cand.wav": "ajeno_no_registrado",
++            "engine_log.txt": "registro_interno_conservado",
++            "input_integrity_6g.json": "registro_interno_conservado",
++            "mix SDV.wav": "identidad_distinta (sustituido o reemplazado tras el registro)",
++            "otro_ajeno.txt": "ajeno_no_registrado"
++          },
++          "politica": "propiedad_acreditada_o_conserva; sin borrado por patrón de nombre ni por ubicación"
++        },
++        "evento": {
++          "sembrados": [
++            "SDV.wav",
++            "candidates/ajeno_cand.wav",
++            "otro_ajeno.txt"
++          ],
++          "sustitucion_aplicada": false,
++          "reemplazados": [
++            "mix SDV.wav"
++          ],
++          "disparo": "siembra",
++          "segundos": 0.884
++        }
++      },
++      "T7": {
++        "descripcion": "derivado de T1 (mismo ensayo, aserciones específicas de propiedad)",
++        "salidas_invalidadas": [
++          "analysis.txt",
++          "mix SDI.wav",
++          "mix SDV.wav"
++        ],
++        "motivos_propiedad": {}
++      },
++      "T8 (WAV)": {
++        "descripcion": "full_processing WAV",
++        "exit": 0,
++        "pcm": {
++          "mix SDI.wav": "368d3ecbc3a07d053a67e2fb1157a66eb290d8f0a7a31087a5a3060a81574f85",
++          "mix SDV.wav": "a347838da989c3645115f9d08dd296a9902a2b8ac0372fde5002e40f1d420bc0"
++        },
++        "esperado": {
++          "mix SDI.wav": "368d3ecbc3a07d053a67e2fb1157a66eb290d8f0a7a31087a5a3060a81574f85",
++          "mix SDV.wav": "a347838da989c3645115f9d08dd296a9902a2b8ac0372fde5002e40f1d420bc0"
++        },
++        "run_dirs": [
++          "/tmp/f6g1corr/Hardened/T8_WAV/out/motorA_run_20261121_201210"
++        ],
++        "dirs_definitivos": [
++          "motorA_run_20261121_201210"
++        ]
++      },
++      "T8 (FLAC)": {
++        "descripcion": "full_processing FLAC",
++        "exit": 0,
++        "pcm": {
++          "mix SDI.wav": "368d3ecbc3a07d053a67e2fb1157a66eb290d8f0a7a31087a5a3060a81574f85",
++          "mix SDV.wav": "a347838da989c3645115f9d08dd296a9902a2b8ac0372fde5002e40f1d420bc0"
++        },
++        "esperado": {
++          "mix SDI.wav": "368d3ecbc3a07d053a67e2fb1157a66eb290d8f0a7a31087a5a3060a81574f85",
++          "mix SDV.wav": "a347838da989c3645115f9d08dd296a9902a2b8ac0372fde5002e40f1d420bc0"
++        },
++        "run_dirs": [
++          "/tmp/f6g1corr/Hardened/T8_FLAC/out/motorA_run_20261121_201211"
++        ],
++        "dirs_definitivos": [
++          "motorA_run_20261121_201211"
++        ]
++      }
++    },
++    "EVO": {
++      "T1": {
++        "descripcion": "excepción de hmix.verificar()",
++        "abort": {
++          "schema": "abort-6g1/2",
++          "motivo": "MIX_CAMBIADO_DURANTE_EL_PROCESAMIENTO",
++          "detalle": {
++            "mix_path": "/home/user/SDV-SDI_SGM/ETAPA_6G1_CORRECCION_LECTURA_SEGURA/fixtures/mix.wav",
++            "container": "WAV",
++            "format": "WAV",
++            "subtype": "PCM_16",
++            "probe_sha256": "060d6c89b1aabe5d0c449eefa696dc23efe6c77e00d2669dea7a6dfaebfe9627",
++            "after": {
++              "unchanged": false,
++              "reason": "excepcion: inyeccion de prueba T1: verificar() fallo"
++            },
++            "policy": "detect_only_no_conversion",
++            "ruta_actual": {
++              "unchanged": false,
++              "reason": "excepcion: inyeccion de prueba T1: verificar() fallo"
++            }
++          },
++          "salidas_invalidadas": [
++            "analysis.txt",
++            "mix SDI.wav",
++            "mix SDV.wav"
++          ],
++          "conservados": [
++            "analysis.json",
++            "engine_log.txt",
++            "input_integrity_6g.json"
++          ],
++          "motivos_propiedad": {
++            "analysis.json": "registro_interno_conservado",
++            "engine_log.txt": "registro_interno_conservado",
++            "input_integrity_6g.json": "registro_interno_conservado"
++          },
++          "politica": "propiedad_acreditada_o_conserva; sin borrado por patrón de nombre ni por ubicación"
++        },
++        "exit": 2,
++        "wavs": [],
++        "dirs_definitivos": []
++      },
++      "T2": {
++        "descripcion": "excepción de comprobación de ruta",
++        "abort": {
++          "schema": "abort-6g1/2",
++          "motivo": "MIX_CAMBIADO_DURANTE_EL_PROCESAMIENTO",
++          "detalle": {
++            "mix_path": "/home/user/SDV-SDI_SGM/ETAPA_6G1_CORRECCION_LECTURA_SEGURA/fixtures/mix.wav",
++            "container": "WAV",
++            "format": "WAV",
++            "subtype": "PCM_16",
++            "probe_sha256": "060d6c89b1aabe5d0c449eefa696dc23efe6c77e00d2669dea7a6dfaebfe9627",
++            "after": {
++              "unchanged": false,
++              "reason": "excepcion: inyeccion de prueba T2: ruta_apunta_al_mismo_objeto() fallo"
++            },
++            "policy": "detect_only_no_conversion",
++            "ruta_actual": {
++              "unchanged": false,
++              "reason": "excepcion: inyeccion de prueba T2: ruta_apunta_al_mismo_objeto() fallo"
++            }
++          },
++          "salidas_invalidadas": [
++            "analysis.txt",
++            "mix SDI.wav",
++            "mix SDV.wav"
++          ],
++          "conservados": [
++            "analysis.json",
++            "engine_log.txt",
++            "input_integrity_6g.json"
++          ],
++          "motivos_propiedad": {
++            "analysis.json": "registro_interno_conservado",
++            "engine_log.txt": "registro_interno_conservado",
++            "input_integrity_6g.json": "registro_interno_conservado"
++          },
++          "politica": "propiedad_acreditada_o_conserva; sin borrado por patrón de nombre ni por ubicación"
++        },
++        "exit": 2,
++        "wavs": [],
++        "dirs_definitivos": []
++      },
++      "T4": {
++        "descripcion": "verificación fallida sin excepción",
++        "abort": {
++          "schema": "abort-6g1/2",
++          "motivo": "MIX_CAMBIADO_DURANTE_EL_PROCESAMIENTO",
++          "detalle": {
++            "mix_path": "/home/user/SDV-SDI_SGM/ETAPA_6G1_CORRECCION_LECTURA_SEGURA/fixtures/mix.wav",
++            "container": "WAV",
++            "format": "WAV",
++            "subtype": "PCM_16",
++            "probe_sha256": "060d6c89b1aabe5d0c449eefa696dc23efe6c77e00d2669dea7a6dfaebfe9627",
++            "after": {
++              "unchanged": false,
++              "reason": "inyeccion de prueba T4: verificacion no satisfactoria"
++            },
++            "policy": "detect_only_no_conversion",
++            "ruta_actual": {
++              "unchanged": true,
++              "reason": "ruta e inodo de apertura coinciden",
++              "identity": {
++                "device": 65024,
++                "inode": 534660,
++                "size": 352844,
++                "mtime_ns": 1795290612307410868,
++                "mode": "0o100644"
++              },
++              "identity_expected": {
++                "device": 65024,
++                "inode": 534660,
++                "size": 352844,
++                "mtime_ns": 1795290612307410868,
++                "mode": "0o100644"
++              }
++            }
++          },
++          "salidas_invalidadas": [
++            "analysis.txt",
++            "mix SDI.wav",
++            "mix SDV.wav"
++          ],
++          "conservados": [
++            "analysis.json",
++            "engine_log.txt",
++            "input_integrity_6g.json"
++          ],
++          "motivos_propiedad": {
++            "analysis.json": "registro_interno_conservado",
++            "engine_log.txt": "registro_interno_conservado",
++            "input_integrity_6g.json": "registro_interno_conservado"
++          },
++          "politica": "propiedad_acreditada_o_conserva; sin borrado por patrón de nombre ni por ubicación"
++        },
++        "exit": 2,
++        "wavs": [],
++        "dirs_definitivos": []
++      },
++      "T3": {
++        "descripcion": "sustitución durante el DSP",
++        "abort": {
++          "schema": "abort-6g1/2",
++          "motivo": "MIX_CAMBIADO_DURANTE_EL_PROCESAMIENTO",
++          "detalle": {
++            "mix_path": "/tmp/f6g1corr/mezclas/T3_EVO_mix_12s.flac",
++            "container": "FLAC",
++            "format": "FLAC",
++            "subtype": "PCM_16",
++            "probe_sha256": "fb1882e2d0995de82bd61a2413d355f7876a8b7408b99ed8b454034c9bfc39ed",
++            "after": {
++              "unchanged": true,
++              "reason": "sha256 e identidad revalidados",
++              "sha256": "fb1882e2d0995de82bd61a2413d355f7876a8b7408b99ed8b454034c9bfc39ed",
++              "expected": "fb1882e2d0995de82bd61a2413d355f7876a8b7408b99ed8b454034c9bfc39ed",
++              "identity": {
++                "device": 65024,
++                "inode": 535004,
++                "size": 1594827,
++                "mtime_ns": 1795291934690090018,
++                "mode": "0o100644"
++              },
++              "identity_expected": {
++                "device": 65024,
++                "inode": 535004,
++                "size": 1594827,
++                "mtime_ns": 1795291934690090018,
++                "mode": "0o100644"
++              }
++            },
++            "policy": "detect_only_no_conversion",
++            "ruta_actual": {
++              "unchanged": false,
++              "reason": "la ruta ya no apunta al inodo validado",
++              "identity": {
++                "device": 65024,
++                "inode": 534880,
++                "size": 276611,
++                "mtime_ns": 1795291934690090018,
++                "mode": "0o100644"
++              },
++              "identity_expected": {
++                "device": 65024,
++                "inode": 535004,
++                "size": 1594827,
++                "mtime_ns": 1795291934690090018,
++                "mode": "0o100644"
++              }
++            }
++          },
++          "salidas_invalidadas": [
++            "T3_EVO_mix_12s SDI.wav",
++            "T3_EVO_mix_12s SDV.wav",
++            "analysis.txt"
++          ],
++          "conservados": [
++            "analysis.json",
++            "engine_log.txt",
++            "input_integrity_6g.json"
++          ],
++          "motivos_propiedad": {
++            "analysis.json": "registro_interno_conservado",
++            "engine_log.txt": "registro_interno_conservado",
++            "input_integrity_6g.json": "registro_interno_conservado"
++          },
++          "politica": "propiedad_acreditada_o_conserva; sin borrado por patrón de nombre ni por ubicación"
++        },
++        "exit": 2,
++        "evento": {
++          "sembrados": [],
++          "sustitucion_aplicada": true,
++          "reemplazados": [],
++          "sha_mix_tras_sustitucion": "636fc4f96b55040fb6d78bfb96a8c53fcf988329d54c32ff9996c2b51a967b40",
++          "disparo": "sustitucion",
++          "segundos": 3.71
++        }
++      },
++      "T5": {
++        "descripcion": "agregado sobre T1–T4",
++        "definitivos": []
++      },
++      "T6": {
++        "descripcion": "sembrados=('SDV.wav', 'candidates/ajeno_cand.wav', 'otro_ajeno.txt') reemplazados=('mix SDV.wav',)",
++        "abort": {
++          "schema": "abort-6g1/2",
++          "motivo": "MIX_CAMBIADO_DURANTE_EL_PROCESAMIENTO",
++          "detalle": {
++            "mix_path": "/home/user/SDV-SDI_SGM/ETAPA_6G1_CORRECCION_LECTURA_SEGURA/fixtures/mix.wav",
++            "container": "WAV",
++            "format": "WAV",
++            "subtype": "PCM_16",
++            "probe_sha256": "060d6c89b1aabe5d0c449eefa696dc23efe6c77e00d2669dea7a6dfaebfe9627",
++            "after": {
++              "unchanged": false,
++              "reason": "excepcion: inyeccion de prueba T1: verificar() fallo"
++            },
++            "policy": "detect_only_no_conversion",
++            "ruta_actual": {
++              "unchanged": false,
++              "reason": "excepcion: inyeccion de prueba T1: verificar() fallo"
++            }
++          },
++          "salidas_invalidadas": [
++            "analysis.txt",
++            "mix SDI.wav"
++          ],
++          "conservados": [
++            "SDV.wav",
++            "analysis.json",
++            "candidates/ajeno_cand.wav",
++            "engine_log.txt",
++            "input_integrity_6g.json",
++            "mix SDV.wav",
++            "otro_ajeno.txt"
++          ],
++          "motivos_propiedad": {
++            "SDV.wav": "ajeno_no_registrado",
++            "analysis.json": "registro_interno_conservado",
++            "candidates/ajeno_cand.wav": "ajeno_no_registrado",
++            "engine_log.txt": "registro_interno_conservado",
++            "input_integrity_6g.json": "registro_interno_conservado",
++            "mix SDV.wav": "identidad_distinta (sustituido o reemplazado tras el registro)",
++            "otro_ajeno.txt": "ajeno_no_registrado"
++          },
++          "politica": "propiedad_acreditada_o_conserva; sin borrado por patrón de nombre ni por ubicación"
++        },
++        "evento": {
++          "sembrados": [
++            "SDV.wav",
++            "candidates/ajeno_cand.wav",
++            "otro_ajeno.txt"
++          ],
++          "sustitucion_aplicada": false,
++          "reemplazados": [
++            "mix SDV.wav"
++          ],
++          "disparo": "siembra",
++          "segundos": 0.939
++        }
++      },
++      "T7": {
++        "descripcion": "derivado de T1 (mismo ensayo, aserciones específicas de propiedad)",
++        "salidas_invalidadas": [
++          "analysis.txt",
++          "mix SDI.wav",
++          "mix SDV.wav"
++        ],
++        "motivos_propiedad": {}
++      },
++      "T8 (WAV)": {
++        "descripcion": "full_processing WAV",
++        "exit": 0,
++        "pcm": {
++          "mix SDI.wav": "368d3ecbc3a07d053a67e2fb1157a66eb290d8f0a7a31087a5a3060a81574f85",
++          "mix SDV.wav": "a347838da989c3645115f9d08dd296a9902a2b8ac0372fde5002e40f1d420bc0"
++        },
++        "esperado": {
++          "mix SDI.wav": "368d3ecbc3a07d053a67e2fb1157a66eb290d8f0a7a31087a5a3060a81574f85",
++          "mix SDV.wav": "a347838da989c3645115f9d08dd296a9902a2b8ac0372fde5002e40f1d420bc0"
++        },
++        "run_dirs": [
++          "/tmp/f6g1corr/EVO/T8_WAV/out/motorA_run_20261121_201220"
++        ],
++        "dirs_definitivos": [
++          "motorA_run_20261121_201220"
++        ]
++      },
++      "T8 (FLAC)": {
++        "descripcion": "full_processing FLAC",
++        "exit": 0,
++        "pcm": {
++          "mix SDI.wav": "368d3ecbc3a07d053a67e2fb1157a66eb290d8f0a7a31087a5a3060a81574f85",
++          "mix SDV.wav": "a347838da989c3645115f9d08dd296a9902a2b8ac0372fde5002e40f1d420bc0"
++        },
++        "esperado": {
++          "mix SDI.wav": "368d3ecbc3a07d053a67e2fb1157a66eb290d8f0a7a31087a5a3060a81574f85",
++          "mix SDV.wav": "a347838da989c3645115f9d08dd296a9902a2b8ac0372fde5002e40f1d420bc0"
++        },
++        "run_dirs": [
++          "/tmp/f6g1corr/EVO/T8_FLAC/out/motorA_run_20261121_201221"
++        ],
++        "dirs_definitivos": [
++          "motorA_run_20261121_201221"
++        ]
++      }
++    },
++    "MQR": {
++      "T1": {
++        "descripcion": "excepción de hmix.verificar()",
++        "abort": {
++          "schema": "abort-6g1/2",
++          "motivo": "MIX_CAMBIADO_DURANTE_EL_PROCESAMIENTO",
++          "detalle": {
++            "mix_path": "/home/user/SDV-SDI_SGM/ETAPA_6G1_CORRECCION_LECTURA_SEGURA/fixtures/mix.wav",
++            "container": "WAV",
++            "format": "WAV",
++            "subtype": "PCM_16",
++            "probe_sha256": "060d6c89b1aabe5d0c449eefa696dc23efe6c77e00d2669dea7a6dfaebfe9627",
++            "after": {
++              "unchanged": false,
++              "reason": "excepcion: inyeccion de prueba T1: verificar() fallo"
++            },
++            "policy": "detect_only_no_conversion",
++            "ruta_actual": {
++              "unchanged": false,
++              "reason": "excepcion: inyeccion de prueba T1: verificar() fallo"
++            }
++          },
++          "salidas_invalidadas": [
++            "SDI.wav",
++            "SDV.wav",
++            "analysis.txt",
++            "masks/confidence_map.npy",
++            "masks/consensus_instrumental_confidence_weighted_mean.npy",
++            "masks/consensus_instrumental_median.npy",
++            "masks/consensus_instrumental_weighted_mean.npy",
++            "masks/consensus_vocal_confidence_weighted_mean.npy",
++            "masks/consensus_vocal_median.npy",
++            "masks/consensus_vocal_weighted_mean.npy",
++            "masks/mask_P01_instrumental.npy",
++            "masks/mask_P01_vocal.npy",
++            "masks/model_disagreement_map.npy"
++          ],
++          "conservados": [
++            "analysis.json",
++            "engine_log.txt",
++            "input_integrity_6g.json"
++          ],
++          "motivos_propiedad": {
++            "analysis.json": "registro_interno_conservado",
++            "engine_log.txt": "registro_interno_conservado",
++            "input_integrity_6g.json": "registro_interno_conservado"
++          },
++          "politica": "propiedad_acreditada_o_conserva; sin borrado por patrón de nombre ni por ubicación"
++        },
++        "exit": 2,
++        "wavs": [],
++        "dirs_definitivos": []
++      },
++      "T2": {
++        "descripcion": "excepción de comprobación de ruta",
++        "abort": {
++          "schema": "abort-6g1/2",
++          "motivo": "MIX_CAMBIADO_DURANTE_EL_PROCESAMIENTO",
++          "detalle": {
++            "mix_path": "/home/user/SDV-SDI_SGM/ETAPA_6G1_CORRECCION_LECTURA_SEGURA/fixtures/mix.wav",
++            "container": "WAV",
++            "format": "WAV",
++            "subtype": "PCM_16",
++            "probe_sha256": "060d6c89b1aabe5d0c449eefa696dc23efe6c77e00d2669dea7a6dfaebfe9627",
++            "after": {
++              "unchanged": false,
++              "reason": "excepcion: inyeccion de prueba T2: ruta_apunta_al_mismo_objeto() fallo"
++            },
++            "policy": "detect_only_no_conversion",
++            "ruta_actual": {
++              "unchanged": false,
++              "reason": "excepcion: inyeccion de prueba T2: ruta_apunta_al_mismo_objeto() fallo"
++            }
++          },
++          "salidas_invalidadas": [
++            "SDI.wav",
++            "SDV.wav",
++            "analysis.txt",
++            "masks/confidence_map.npy",
++            "masks/consensus_instrumental_confidence_weighted_mean.npy",
++            "masks/consensus_instrumental_median.npy",
++            "masks/consensus_instrumental_weighted_mean.npy",
++            "masks/consensus_vocal_confidence_weighted_mean.npy",
++            "masks/consensus_vocal_median.npy",
++            "masks/consensus_vocal_weighted_mean.npy",
++            "masks/mask_P01_instrumental.npy",
++            "masks/mask_P01_vocal.npy",
++            "masks/model_disagreement_map.npy"
++          ],
++          "conservados": [
++            "analysis.json",
++            "engine_log.txt",
++            "input_integrity_6g.json"
++          ],
++          "motivos_propiedad": {
++            "analysis.json": "registro_interno_conservado",
++            "engine_log.txt": "registro_interno_conservado",
++            "input_integrity_6g.json": "registro_interno_conservado"
++          },
++          "politica": "propiedad_acreditada_o_conserva; sin borrado por patrón de nombre ni por ubicación"
++        },
++        "exit": 2,
++        "wavs": [],
++        "dirs_definitivos": []
++      },
++      "T4": {
++        "descripcion": "verificación fallida sin excepción",
++        "abort": {
++          "schema": "abort-6g1/2",
++          "motivo": "MIX_CAMBIADO_DURANTE_EL_PROCESAMIENTO",
++          "detalle": {
++            "mix_path": "/home/user/SDV-SDI_SGM/ETAPA_6G1_CORRECCION_LECTURA_SEGURA/fixtures/mix.wav",
++            "container": "WAV",
++            "format": "WAV",
++            "subtype": "PCM_16",
++            "probe_sha256": "060d6c89b1aabe5d0c449eefa696dc23efe6c77e00d2669dea7a6dfaebfe9627",
++            "after": {
++              "unchanged": false,
++              "reason": "inyeccion de prueba T4: verificacion no satisfactoria"
++            },
++            "policy": "detect_only_no_conversion",
++            "ruta_actual": {
++              "unchanged": true,
++              "reason": "ruta e inodo de apertura coinciden",
++              "identity": {
++                "device": 65024,
++                "inode": 534660,
++                "size": 352844,
++                "mtime_ns": 1795290612307410868,
++                "mode": "0o100644"
++              },
++              "identity_expected": {
++                "device": 65024,
++                "inode": 534660,
++                "size": 352844,
++                "mtime_ns": 1795290612307410868,
++                "mode": "0o100644"
++              }
++            }
++          },
++          "salidas_invalidadas": [
++            "SDI.wav",
++            "SDV.wav",
++            "analysis.txt",
++            "masks/confidence_map.npy",
++            "masks/consensus_instrumental_confidence_weighted_mean.npy",
++            "masks/consensus_instrumental_median.npy",
++            "masks/consensus_instrumental_weighted_mean.npy",
++            "masks/consensus_vocal_confidence_weighted_mean.npy",
++            "masks/consensus_vocal_median.npy",
++            "masks/consensus_vocal_weighted_mean.npy",
++            "masks/mask_P01_instrumental.npy",
++            "masks/mask_P01_vocal.npy",
++            "masks/model_disagreement_map.npy"
++          ],
++          "conservados": [
++            "analysis.json",
++            "engine_log.txt",
++            "input_integrity_6g.json"
++          ],
++          "motivos_propiedad": {
++            "analysis.json": "registro_interno_conservado",
++            "engine_log.txt": "registro_interno_conservado",
++            "input_integrity_6g.json": "registro_interno_conservado"
++          },
++          "politica": "propiedad_acreditada_o_conserva; sin borrado por patrón de nombre ni por ubicación"
++        },
++        "exit": 2,
++        "wavs": [],
++        "dirs_definitivos": []
++      },
++      "T3": {
++        "descripcion": "sustitución durante el DSP",
++        "abort": {
++          "schema": "abort-6g1/2",
++          "motivo": "MIX_CAMBIADO_DURANTE_EL_PROCESAMIENTO",
++          "detalle": {
++            "mix_path": "/tmp/f6g1corr/mezclas/T3_MQR_mix_12s.flac",
++            "container": "FLAC",
++            "format": "FLAC",
++            "subtype": "PCM_16",
++            "probe_sha256": "fb1882e2d0995de82bd61a2413d355f7876a8b7408b99ed8b454034c9bfc39ed",
++            "after": {
++              "unchanged": true,
++              "reason": "sha256 e identidad revalidados",
++              "sha256": "fb1882e2d0995de82bd61a2413d355f7876a8b7408b99ed8b454034c9bfc39ed",
++              "expected": "fb1882e2d0995de82bd61a2413d355f7876a8b7408b99ed8b454034c9bfc39ed",
++              "identity": {
++                "device": 65024,
++                "inode": 535012,
++                "size": 1594827,
++                "mtime_ns": 1795291945150142850,
++                "mode": "0o100644"
++              },
++              "identity_expected": {
++                "device": 65024,
++                "inode": 535012,
++                "size": 1594827,
++                "mtime_ns": 1795291945150142850,
++                "mode": "0o100644"
++              }
++            },
++            "policy": "detect_only_no_conversion",
++            "ruta_actual": {
++              "unchanged": false,
++              "reason": "la ruta ya no apunta al inodo validado",
++              "identity": {
++                "device": 65024,
++                "inode": 535008,
++                "size": 276611,
++                "mtime_ns": 1795291945154142870,
++                "mode": "0o100644"
++              },
++              "identity_expected": {
++                "device": 65024,
++                "inode": 535012,
++                "size": 1594827,
++                "mtime_ns": 1795291945150142850,
++                "mode": "0o100644"
++              }
++            }
++          },
++          "salidas_invalidadas": [
++            "SDI.wav",
++            "SDV.wav",
++            "analysis.txt",
++            "masks/confidence_map.npy",
++            "masks/consensus_instrumental_confidence_weighted_mean.npy",
++            "masks/consensus_instrumental_median.npy",
++            "masks/consensus_instrumental_weighted_mean.npy",
++            "masks/consensus_vocal_confidence_weighted_mean.npy",
++            "masks/consensus_vocal_median.npy",
++            "masks/consensus_vocal_weighted_mean.npy",
++            "masks/mask_P01_instrumental.npy",
++            "masks/mask_P01_vocal.npy",
++            "masks/model_disagreement_map.npy"
++          ],
++          "conservados": [
++            "analysis.json",
++            "engine_log.txt",
++            "input_integrity_6g.json"
++          ],
++          "motivos_propiedad": {
++            "analysis.json": "registro_interno_conservado",
++            "engine_log.txt": "registro_interno_conservado",
++            "input_integrity_6g.json": "registro_interno_conservado"
++          },
++          "politica": "propiedad_acreditada_o_conserva; sin borrado por patrón de nombre ni por ubicación"
++        },
++        "exit": 2,
++        "evento": {
++          "sembrados": [],
++          "sustitucion_aplicada": true,
++          "reemplazados": [],
++          "sha_mix_tras_sustitucion": "636fc4f96b55040fb6d78bfb96a8c53fcf988329d54c32ff9996c2b51a967b40",
++          "disparo": "sustitucion",
++          "segundos": 4.954
++        }
++      },
++      "T5": {
++        "descripcion": "agregado sobre T1–T4",
++        "definitivos": []
++      },
++      "T6": {
++        "descripcion": "sembrados=('mix SDV.wav', 'candidates/ajeno_cand.wav', 'otro_ajeno.txt') reemplazados=('SDV.wav',)",
++        "abort": {
++          "schema": "abort-6g1/2",
++          "motivo": "MIX_CAMBIADO_DURANTE_EL_PROCESAMIENTO",
++          "detalle": {
++            "mix_path": "/home/user/SDV-SDI_SGM/ETAPA_6G1_CORRECCION_LECTURA_SEGURA/fixtures/mix.wav",
++            "container": "WAV",
++            "format": "WAV",
++            "subtype": "PCM_16",
++            "probe_sha256": "060d6c89b1aabe5d0c449eefa696dc23efe6c77e00d2669dea7a6dfaebfe9627",
++            "after": {
++              "unchanged": false,
++              "reason": "excepcion: inyeccion de prueba T1: verificar() fallo"
++            },
++            "policy": "detect_only_no_conversion",
++            "ruta_actual": {
++              "unchanged": false,
++              "reason": "excepcion: inyeccion de prueba T1: verificar() fallo"
++            }
++          },
++          "salidas_invalidadas": [
++            "SDI.wav",
++            "analysis.txt",
++            "masks/confidence_map.npy",
++            "masks/consensus_instrumental_confidence_weighted_mean.npy",
++            "masks/consensus_instrumental_median.npy",
++            "masks/consensus_instrumental_weighted_mean.npy",
++            "masks/consensus_vocal_confidence_weighted_mean.npy",
++            "masks/consensus_vocal_median.npy",
++            "masks/consensus_vocal_weighted_mean.npy",
++            "masks/mask_P01_instrumental.npy",
++            "masks/mask_P01_vocal.npy",
++            "masks/model_disagreement_map.npy"
++          ],
++          "conservados": [
++            "SDV.wav",
++            "analysis.json",
++            "candidates/ajeno_cand.wav",
++            "engine_log.txt",
++            "input_integrity_6g.json",
++            "mix SDV.wav",
++            "otro_ajeno.txt"
++          ],
++          "motivos_propiedad": {
++            "SDV.wav": "identidad_distinta (sustituido o reemplazado tras el registro)",
++            "analysis.json": "registro_interno_conservado",
++            "candidates/ajeno_cand.wav": "ajeno_no_registrado",
++            "engine_log.txt": "registro_interno_conservado",
++            "input_integrity_6g.json": "registro_interno_conservado",
++            "mix SDV.wav": "ajeno_no_registrado",
++            "otro_ajeno.txt": "ajeno_no_registrado"
++          },
++          "politica": "propiedad_acreditada_o_conserva; sin borrado por patrón de nombre ni por ubicación"
++        },
++        "evento": {
++          "sembrados": [
++            "mix SDV.wav",
++            "candidates/ajeno_cand.wav",
++            "otro_ajeno.txt"
++          ],
++          "sustitucion_aplicada": false,
++          "reemplazados": [
++            "SDV.wav"
++          ],
++          "disparo": "siembra",
++          "segundos": 1.106
++        }
++      },
++      "T7": {
++        "descripcion": "derivado de T1 (mismo ensayo, aserciones específicas de propiedad)",
++        "salidas_invalidadas": [
++          "SDI.wav",
++          "SDV.wav",
++          "analysis.txt",
++          "masks/confidence_map.npy",
++          "masks/consensus_instrumental_confidence_weighted_mean.npy",
++          "masks/consensus_instrumental_median.npy",
++          "masks/consensus_instrumental_weighted_mean.npy",
++          "masks/consensus_vocal_confidence_weighted_mean.npy",
++          "masks/consensus_vocal_median.npy",
++          "masks/consensus_vocal_weighted_mean.npy",
++          "masks/mask_P01_instrumental.npy",
++          "masks/mask_P01_vocal.npy",
++          "masks/model_disagreement_map.npy"
++        ],
++        "motivos_propiedad": {}
++      },
++      "T8 (WAV)": {
++        "descripcion": "full_processing WAV",
++        "exit": 0,
++        "pcm": {
++          "SDI.wav": "565bc8b6adbf2e489723a2dd11471f05a181608359163d0dbf44b509083754d3",
++          "SDV.wav": "8fb3578a2b56b062d6bcb9b9d72b2657106efcd1aa838cc5de8f8a42fe6f9af8"
++        },
++        "esperado": {
++          "SDI.wav": "565bc8b6adbf2e489723a2dd11471f05a181608359163d0dbf44b509083754d3",
++          "SDV.wav": "8fb3578a2b56b062d6bcb9b9d72b2657106efcd1aa838cc5de8f8a42fe6f9af8"
++        },
++        "run_dirs": [
++          "/tmp/f6g1corr/MQR/T8_WAV/out/mqr_run_20261121_201232"
++        ],
++        "dirs_definitivos": [
++          "mqr_run_20261121_201232"
++        ]
++      },
++      "T8 (FLAC)": {
++        "descripcion": "full_processing FLAC",
++        "exit": 0,
++        "pcm": {
++          "SDI.wav": "565bc8b6adbf2e489723a2dd11471f05a181608359163d0dbf44b509083754d3",
++          "SDV.wav": "8fb3578a2b56b062d6bcb9b9d72b2657106efcd1aa838cc5de8f8a42fe6f9af8"
++        },
++        "esperado": {
++          "SDI.wav": "565bc8b6adbf2e489723a2dd11471f05a181608359163d0dbf44b509083754d3",
++          "SDV.wav": "8fb3578a2b56b062d6bcb9b9d72b2657106efcd1aa838cc5de8f8a42fe6f9af8"
++        },
++        "run_dirs": [
++          "/tmp/f6g1corr/MQR/T8_FLAC/out/mqr_run_20261121_201233"
++        ],
++        "dirs_definitivos": [
++          "mqr_run_20261121_201233"
++        ]
++      }
++    }
++  }
++}
+diff --git a/ETAPA_6G1_CORRECCION_LECTURA_SEGURA/motores/MOTOR_SEP_SDV-SDI_EVO.py b/ETAPA_6G1_CORRECCION_LECTURA_SEGURA/motores/MOTOR_SEP_SDV-SDI_EVO.py
+index 2060a67..d31a5d3 100644
+--- a/ETAPA_6G1_CORRECCION_LECTURA_SEGURA/motores/MOTOR_SEP_SDV-SDI_EVO.py
++++ b/ETAPA_6G1_CORRECCION_LECTURA_SEGURA/motores/MOTOR_SEP_SDV-SDI_EVO.py
+@@ -298,12 +298,12 @@ def _nominal_bit_depth(subtype: str) -> int:
+     }
+     return table.get(subtype, 0)
+ 
+-from audio_integridad_6g import (check_file_unchanged as _check_unchanged_6g,
+-                              container_of as _container_6g,
++from audio_integridad_6g import (container_of as _container_6g,
+                               verify_audio as _verify_audio_6g)
+ from lectura_segura_6g1 import (MixCambiado as _MixCambiado_6g1,
+                                  abrir_mix as _abrir_mix_6g1,
+-                                 abortar_6g1 as _abortar_6g1)
++                                 abortar_6g1 as _abortar_6g1,
++                                 registrar_propio_6g1 as _registrar_propio_6g1)
+ 
+ from atribucion_6f import (measure, verify_wave, alignment_gate,
+                         analyze_files as _analyze_files_6f,
+@@ -1301,6 +1301,8 @@ class CandidateRunner:
+             sdi_name = f"{out_prefix} SDI.wav"
+             self.writer_sdv = sf.SoundFile(os.path.join(run_dir, sdv_name), mode="w", samplerate=REQUIRED_SAMPLE_RATE, channels=channels, subtype=output_subtype)
+             self.writer_sdi = sf.SoundFile(os.path.join(run_dir, sdi_name), mode="w", samplerate=REQUIRED_SAMPLE_RATE, channels=channels, subtype=output_subtype)
++            _registrar_propio_6g1(os.path.join(run_dir, sdv_name), estable=False)
++            _registrar_propio_6g1(os.path.join(run_dir, sdi_name), estable=False)
+             
+         self.ola_sdv = OlaStream(plan, channels, writer=self.writer_sdv, label=f"{cand_id}/SDV")
+         self.ola_sdi = OlaStream(plan, channels, writer=self.writer_sdi, label=f"{cand_id}/SDI")
+@@ -1326,7 +1328,9 @@ def create_run_dir(out_base: str) -> tuple:
+     return partial_dir, final_dir
+ 
+ def _open_memmap(path: str, shape: tuple):
+-    return np.lib.format.open_memmap(path, mode="w+", dtype=MASK_SAVE_DTYPE, shape=shape)
++    mm = np.lib.format.open_memmap(path, mode="w+", dtype=MASK_SAVE_DTYPE, shape=shape)
++    _registrar_propio_6g1(path, estable=False)
++    return mm
+ 
+ def post_wav_identity(mix_path: str, sdv_path: str, sdi_path: str) -> dict:
+     acc_mix2 = 0.0; acc_err2 = 0.0; n_samples = 0; peak_sum = 0.0
+@@ -1891,35 +1895,60 @@ def run_experiment(mix_path: str, pairs: list, mode: str, opt: argparse.Namespac
+         close_tee()  # Cierra el archivo de log correctamente
+         # [PATCH 6] Se conserva engine_log.txt para trazabilidad forense (Venice F-060)
+ 
+-        if os.path.exists(run_dir_final):
+-            stamp = datetime.now().strftime("%H%M%S")
+-            run_dir_final = run_dir_final + f"_{stamp}"
+-        os.rename(run_dir, run_dir_final)
+-        log(f"Corrida finalizada exitosamente en: {run_dir_final}")
++        # [6G.1-R/A] Guarda final fail-closed sobre el provisional, ANTES de
++        # publicar: VERIFICACION INCIERTA = ABORTO. Sin fallback
++        # _check_unchanged_6g ni aprobación alternativa; excepción -> aborto.
++        # Cierre de recursos garantizado en finally.
+         try:
+             ctx["container_6g"]["after"] = hmix.verificar()
+             ctx["container_6g"]["ruta_actual"] = hmix.ruta_apunta_al_mismo_objeto()
+-            hmix.close()
+         except Exception as _exc6g1:
+-            ctx["container_6g"]["after"] = _check_unchanged_6g(
+-                mix_path, mix_info.sha256)
+-            ctx["container_6g"]["ruta_actual"] = dict(unchanged=True)
+-            log("[6G.1] descriptor no disponible: %s" % _exc6g1)
++            ctx["container_6g"]["after"] = dict(unchanged=False,
++                                                reason="excepcion: %s" % _exc6g1)
++            ctx["container_6g"]["ruta_actual"] = dict(unchanged=False,
++                                                      reason="excepcion: %s" % _exc6g1)
++        finally:
++            try:
++                hmix.close()
++            except Exception:
++                pass
++        # [6G.1-R/B] evidencia de integridad en el provisional + comprobación
+         try:
+-            with open(os.path.join(run_dir_final, "input_integrity_6g.json"),
++            with open(os.path.join(run_dir, "input_integrity_6g.json"),
+                       "w", encoding="utf-8") as _f6g:
+                 json.dump(json_safe(ctx["container_6g"]), _f6g, indent=2,
+                           ensure_ascii=False)
++            _registrar_propio_6g1(os.path.join(run_dir, "input_integrity_6g.json"),
++                                  estable=True)
++            with open(os.path.join(run_dir, "input_integrity_6g.json"),
++                      "r", encoding="utf-8") as _f6g:
++                json.load(_f6g)
+         except Exception as _exc6g:
+-            log("[6G] no se pudo escribir input_integrity_6g.json: %s" % _exc6g)
++            log("[6G.1-R] evidencia de integridad no acreditable: %s" % _exc6g)
++            ctx["container_6g"]["after"] = dict(unchanged=False,
++                                                reason="evidencia no escrita o no verificable")
++            ctx["container_6g"]["ruta_actual"] = dict(unchanged=False,
++                                                      reason="evidencia no escrita o no verificable")
+         if not (ctx["container_6g"]["after"].get("unchanged")
+                 and ctx["container_6g"].get("ruta_actual", {}).get("unchanged")):
+             _info6g1 = _abortar_6g1(
+-                run_dir_final, "MIX_CAMBIADO_DURANTE_EL_PROCESAMIENTO",
++                run_dir, "MIX_CAMBIADO_DURANTE_EL_PROCESAMIENTO",
+                 ctx["container_6g"])
+-            log("[FATAL] Mix cambiado: salidas de audio invalidadas: %s"
+-                % _info6g1["salidas_invalidadas"])
++            log("[FATAL] Mix cambiado o verificacion incierta antes de publicar: "
++                "salidas propias invalidadas: %s" % _info6g1["salidas_invalidadas"])
++            if 'handles' in locals():
++                for _h6g1_h in list(handles.values()):
++                    try:
++                        _h6g1_h.close()
++                    except Exception:
++                        pass
+             return EXIT_PROCESSING, None
++        # [6G.1-R/B] Publicación por renombrado sólo tras guarda superada
++        if os.path.exists(run_dir_final):
++            stamp = datetime.now().strftime("%H%M%S")
++            run_dir_final = run_dir_final + f"_{stamp}"
++        os.rename(run_dir, run_dir_final)
++        log(f"Corrida finalizada exitosamente en: {run_dir_final}")
+         return EXIT_OK, run_dir_final
+ 
+     except KeyboardInterrupt:
+@@ -2017,8 +2046,10 @@ def write_reports(ctx: dict, run_dir: str, opt: argparse.Namespace):
+ 
+     with open(os.path.join(run_dir, "analysis.json"), "w", encoding="utf-8") as f:
+         json.dump(json_safe(analysis), f, indent=2, ensure_ascii=False)
++    _registrar_propio_6g1(os.path.join(run_dir, "analysis.json"), estable=True)
+ 
+     write_analysis_txt(analysis, os.path.join(run_dir, "analysis.txt"))
++    _registrar_propio_6g1(os.path.join(run_dir, "analysis.txt"), estable=True)
+ 
+ def write_analysis_txt(analysis: dict, path: str):
+     L = []
+diff --git a/ETAPA_6G1_CORRECCION_LECTURA_SEGURA/motores/MOTOR_SEP_SDV-SDI_v3.1.1_Hardened_Final.py b/ETAPA_6G1_CORRECCION_LECTURA_SEGURA/motores/MOTOR_SEP_SDV-SDI_v3.1.1_Hardened_Final.py
+index 0e44f84..be19cd3 100644
+--- a/ETAPA_6G1_CORRECCION_LECTURA_SEGURA/motores/MOTOR_SEP_SDV-SDI_v3.1.1_Hardened_Final.py
++++ b/ETAPA_6G1_CORRECCION_LECTURA_SEGURA/motores/MOTOR_SEP_SDV-SDI_v3.1.1_Hardened_Final.py
+@@ -293,12 +293,12 @@ def _nominal_bit_depth(subtype: str) -> int:
+     }
+     return table.get(subtype, 0)
+ 
+-from audio_integridad_6g import (check_file_unchanged as _check_unchanged_6g,
+-                              container_of as _container_6g,
++from audio_integridad_6g import (container_of as _container_6g,
+                               verify_audio as _verify_audio_6g)
+ from lectura_segura_6g1 import (MixCambiado as _MixCambiado_6g1,
+                                  abrir_mix as _abrir_mix_6g1,
+-                                 abortar_6g1 as _abortar_6g1)
++                                 abortar_6g1 as _abortar_6g1,
++                                 registrar_propio_6g1 as _registrar_propio_6g1)
+ 
+ from atribucion_6f import (measure, verify_wave, alignment_gate,
+                         analyze_files as _analyze_files_6f,
+@@ -1301,6 +1301,8 @@ class CandidateRunner:
+             sdi_name = f"{out_prefix} SDI.wav"
+             self.writer_sdv = sf.SoundFile(os.path.join(run_dir, sdv_name), mode="w", samplerate=REQUIRED_SAMPLE_RATE, channels=channels, subtype=output_subtype)
+             self.writer_sdi = sf.SoundFile(os.path.join(run_dir, sdi_name), mode="w", samplerate=REQUIRED_SAMPLE_RATE, channels=channels, subtype=output_subtype)
++            _registrar_propio_6g1(os.path.join(run_dir, sdv_name), estable=False)
++            _registrar_propio_6g1(os.path.join(run_dir, sdi_name), estable=False)
+             
+         self.ola_sdv = OlaStream(plan, channels, writer=self.writer_sdv, label=f"{cand_id}/SDV")
+         self.ola_sdi = OlaStream(plan, channels, writer=self.writer_sdi, label=f"{cand_id}/SDI")
+@@ -1326,7 +1328,9 @@ def create_run_dir(out_base: str) -> tuple:
+     return partial_dir, final_dir
+ 
+ def _open_memmap(path: str, shape: tuple):
+-    return np.lib.format.open_memmap(path, mode="w+", dtype=MASK_SAVE_DTYPE, shape=shape)
++    mm = np.lib.format.open_memmap(path, mode="w+", dtype=MASK_SAVE_DTYPE, shape=shape)
++    _registrar_propio_6g1(path, estable=False)
++    return mm
+ 
+ def post_wav_identity(mix_path: str, sdv_path: str, sdi_path: str) -> dict:
+     acc_mix2 = 0.0; acc_err2 = 0.0; n_samples = 0; peak_sum = 0.0
+@@ -1780,35 +1784,60 @@ def run_experiment(mix_path: str, pairs: list, mode: str, opt: argparse.Namespac
+         close_tee()  # Cierra el archivo de log correctamente
+         # [PATCH 6] Se conserva engine_log.txt para trazabilidad forense (Venice F-060)
+ 
+-        if os.path.exists(run_dir_final):
+-            stamp = datetime.now().strftime("%H%M%S")
+-            run_dir_final = run_dir_final + f"_{stamp}"
+-        os.rename(run_dir, run_dir_final)
+-        log(f"Corrida finalizada exitosamente en: {run_dir_final}")
++        # [6G.1-R/A] Guarda final fail-closed sobre el provisional, ANTES de
++        # publicar: VERIFICACION INCIERTA = ABORTO. Sin fallback
++        # _check_unchanged_6g ni aprobación alternativa; excepción -> aborto.
++        # Cierre de recursos garantizado en finally.
+         try:
+             ctx["container_6g"]["after"] = hmix.verificar()
+             ctx["container_6g"]["ruta_actual"] = hmix.ruta_apunta_al_mismo_objeto()
+-            hmix.close()
+         except Exception as _exc6g1:
+-            ctx["container_6g"]["after"] = _check_unchanged_6g(
+-                mix_path, mix_info.sha256)
+-            ctx["container_6g"]["ruta_actual"] = dict(unchanged=True)
+-            log("[6G.1] descriptor no disponible: %s" % _exc6g1)
++            ctx["container_6g"]["after"] = dict(unchanged=False,
++                                                reason="excepcion: %s" % _exc6g1)
++            ctx["container_6g"]["ruta_actual"] = dict(unchanged=False,
++                                                      reason="excepcion: %s" % _exc6g1)
++        finally:
++            try:
++                hmix.close()
++            except Exception:
++                pass
++        # [6G.1-R/B] evidencia de integridad en el provisional + comprobación
+         try:
+-            with open(os.path.join(run_dir_final, "input_integrity_6g.json"),
++            with open(os.path.join(run_dir, "input_integrity_6g.json"),
+                       "w", encoding="utf-8") as _f6g:
+                 json.dump(json_safe(ctx["container_6g"]), _f6g, indent=2,
+                           ensure_ascii=False)
++            _registrar_propio_6g1(os.path.join(run_dir, "input_integrity_6g.json"),
++                                  estable=True)
++            with open(os.path.join(run_dir, "input_integrity_6g.json"),
++                      "r", encoding="utf-8") as _f6g:
++                json.load(_f6g)
+         except Exception as _exc6g:
+-            log("[6G] no se pudo escribir input_integrity_6g.json: %s" % _exc6g)
++            log("[6G.1-R] evidencia de integridad no acreditable: %s" % _exc6g)
++            ctx["container_6g"]["after"] = dict(unchanged=False,
++                                                reason="evidencia no escrita o no verificable")
++            ctx["container_6g"]["ruta_actual"] = dict(unchanged=False,
++                                                      reason="evidencia no escrita o no verificable")
+         if not (ctx["container_6g"]["after"].get("unchanged")
+                 and ctx["container_6g"].get("ruta_actual", {}).get("unchanged")):
+             _info6g1 = _abortar_6g1(
+-                run_dir_final, "MIX_CAMBIADO_DURANTE_EL_PROCESAMIENTO",
++                run_dir, "MIX_CAMBIADO_DURANTE_EL_PROCESAMIENTO",
+                 ctx["container_6g"])
+-            log("[FATAL] Mix cambiado: salidas de audio invalidadas: %s"
+-                % _info6g1["salidas_invalidadas"])
++            log("[FATAL] Mix cambiado o verificacion incierta antes de publicar: "
++                "salidas propias invalidadas: %s" % _info6g1["salidas_invalidadas"])
++            if 'handles' in locals():
++                for _h6g1_h in list(handles.values()):
++                    try:
++                        _h6g1_h.close()
++                    except Exception:
++                        pass
+             return EXIT_PROCESSING, None
++        # [6G.1-R/B] Publicación por renombrado sólo tras guarda superada
++        if os.path.exists(run_dir_final):
++            stamp = datetime.now().strftime("%H%M%S")
++            run_dir_final = run_dir_final + f"_{stamp}"
++        os.rename(run_dir, run_dir_final)
++        log(f"Corrida finalizada exitosamente en: {run_dir_final}")
+         return EXIT_OK, run_dir_final
+ 
+     except KeyboardInterrupt:
+@@ -1906,8 +1935,10 @@ def write_reports(ctx: dict, run_dir: str, opt: argparse.Namespace):
+ 
+     with open(os.path.join(run_dir, "analysis.json"), "w", encoding="utf-8") as f:
+         json.dump(json_safe(analysis), f, indent=2, ensure_ascii=False)
++    _registrar_propio_6g1(os.path.join(run_dir, "analysis.json"), estable=True)
+ 
+     write_analysis_txt(analysis, os.path.join(run_dir, "analysis.txt"))
++    _registrar_propio_6g1(os.path.join(run_dir, "analysis.txt"), estable=True)
+ 
+ def write_analysis_txt(analysis: dict, path: str):
+     L = []
+diff --git a/ETAPA_6G1_CORRECCION_LECTURA_SEGURA/motores/lectura_segura_6g1.py b/ETAPA_6G1_CORRECCION_LECTURA_SEGURA/motores/lectura_segura_6g1.py
+index 0bef254..97daa7b 100644
+--- a/ETAPA_6G1_CORRECCION_LECTURA_SEGURA/motores/lectura_segura_6g1.py
++++ b/ETAPA_6G1_CORRECCION_LECTURA_SEGURA/motores/lectura_segura_6g1.py
+@@ -1,12 +1,18 @@
+-"""6G.1: lectura del Mix desde el mismo descriptor e aborto seguro.
++"""6G.1 (rectificado por auditoría): lectura del Mix desde el mismo descriptor,
++guarda final fail-closed y aborto con propiedad acreditada.
+ 
+ El DSP no debe volver a abrir el Mix por su ruta. `abrir_mix` mantiene un
+ descriptor abierto durante toda la corrida y entrega un objeto con la misma
+ interfaz que `soundfile.SoundFile`, pero respaldado por ese descriptor
+ (`/proc/self/fd/N`), de modo que una ruta sustituida no puede alimentar el DSP.
+ 
+-`abortar_6g1` elimina únicamente las salidas producidas por la corrida actual y
+-deja registro del motivo.
++`abortar_6g1` (rectificado, corrección C) elimina únicamente archivos cuya
++propiedad por la corrida actual esté **acreditada**: el motor registra cada
++archivo que crea (ruta + identidad) y la limpieza verifica esa relación antes
++de borrar. Si la propiedad no puede demostrarse (archivo ajeno no registrado,
++o archivo registrado cuya identidad actual no coincide con la registrada),
++el archivo **se conserva** y se lista con el motivo. Ninguna decisión de borrado
++se toma por patrón de nombre ni por ubicación (`candidates/` incluido).
+ """
+ import hashlib
+ import json
+@@ -21,6 +27,12 @@ class MixCambiado(RuntimeError):
+     """El Mix no es el objeto validado (sustitución o modificación)."""
+ 
+ 
++class VerificacionFallida6G1(RuntimeError):
++    """La guarda final no acreditó la identidad del Mix (VERIFICACIÓN
++    INCIERTA = ABORTO). El llamador ya ejecutó el aborto sobre el directorio
++    provisional; este error sólo señala que no debe publicarse."""
++
++
+ def _identity(st):
+     return dict(device=st.st_dev, inode=st.st_ino, size=st.st_size,
+                 mtime_ns=st.st_mtime_ns, mode=oct(st.st_mode))
+@@ -38,6 +50,14 @@ def _sha_fd(fd):
+     return m.hexdigest()
+ 
+ 
++def _sha_archivo(path):
++    m = hashlib.sha256()
++    with open(path, 'rb') as f:
++        for block in iter(lambda: f.read(1 << 20), b''):
++            m.update(block)
++    return m.hexdigest()
++
++
+ class MixHandle:
+     """Descriptor del Mix validado + lector SoundFile sobre el mismo inodo."""
+ 
+@@ -131,50 +151,110 @@ def abrir_mix(path, sha_esperado=None):
+     return MixHandle(path, sha_esperado)
+ 
+ 
+-def _es_salida_de_la_corrida(p, run_dir):
+-    """Sólo las salidas que produce el motor en esta corrida.
++# ---------------------------------------------------------------------------
++# Registro de propiedad de la corrida (corrección C, rectificación 6G.1)
++# ---------------------------------------------------------------------------
++
++_PROPIOS_6G1 = {}
++
++
++def reiniciar_registro_6g1():
++    """Limpia el registro de propiedad (uso en pruebas y al iniciar corrida)."""
++    _PROPIOS_6G1.clear()
++
+ 
+-    Regla conservadora: se reconocen los nombres que el motor escribe
+-    (`<base> SDV.wav`, `<base> SDI.wav`, cualquier WAV dentro de `candidates/`
+-    y PNG cuyo nombre contenga SDV/SDI). Todo lo demás se conserva intacto.
++def registrar_propio_6g1(path, estable=True):
++    """Registra un archivo creado por esta corrida con su identidad.
++
++    `estable=True`: archivo finalizado (informes); se sella tamaño, mtime y
++    SHA-256 en el registro. `estable=False`: archivo en curso (WAV/memmap
++    abiertos por el motor); la propiedad se acredita por ruta registrada +
++    continuidad de inodo (el contenido crece legítimamente mientras el motor
++    lo escribe). Si el archivo no puede observarse, NO se registra y, por
++    tanto, la limpieza lo conservará (fail-closed, sin interrumpir al motor).
++    """
++    p = os.path.abspath(str(path))
++    try:
++        st = os.stat(p)
++    except OSError:
++        return False
++    _PROPIOS_6G1[p] = dict(device=st.st_dev, inode=st.st_ino,
++                           size=st.st_size, mtime_ns=st.st_mtime_ns,
++                           sha256=_sha_archivo(p) if estable else None,
++                           estable=bool(estable))
++    return True
++
++
++def propiedad_de_6g1(path):
++    """Dictamen de propiedad de un archivo para esta corrida.
++
++    Devuelve `(es_propia, motivo)`. Fail-closed: cualquier duda conserva el
++    archivo (`ajeno_no_registrado`, `identidad_distinta`, `modificado`,
++    `no_accesible`).
+     """
+-    nombre = p.name
+-    suf = p.suffix.lower()
+-    if suf == '.wav':
+-        if 'candidates' in p.relative_to(run_dir).parts:
+-            return True
+-        return (nombre.endswith(' SDV.wav') or nombre.endswith(' SDI.wav')
+-                or nombre in ('SDV.wav', 'SDI.wav'))
+-    if suf == '.png':
+-        return ('SDV' in nombre) or ('SDI' in nombre)
+-    return False
++    p = os.path.abspath(str(path))
++    reg = _PROPIOS_6G1.get(p)
++    if reg is None:
++        return False, 'ajeno_no_registrado'
++    try:
++        st = os.stat(p)
++    except OSError as exc:
++        return False, 'no_accesible: %s' % exc
++    if (st.st_dev, st.st_ino) != (reg['device'], reg['inode']):
++        return False, 'identidad_distinta (sustituido o reemplazado tras el registro)'
++    if reg['estable']:
++        if st.st_size != reg['size'] or st.st_mtime_ns != reg['mtime_ns']:
++            return False, 'tamaño/mtime distintos de los registrados'
++        if _sha_archivo(p) != reg['sha256']:
++            return False, 'contenido modificado tras el registro'
++    return True, 'propiedad_acreditada'
++
++
++def _es_registro_interno(nombre):
++    """Archivos de registro forense que el aborto conserva siempre."""
++    return nombre in ('ABORT_6G1.json', 'engine_log.txt',
++                      'analysis.json', 'input_integrity_6g.json')
+ 
+ 
+ def abortar_6g1(run_dir, motivo, detalle=None):
+-    """Invalida las salidas de audio de la corrida actual y registra el aborto.
++    """Invalida las salidas de la corrida y registra el aborto (corrección C).
+ 
+-    Sólo toca salidas reconocidas como propias de la corrida dentro de
+-    `run_dir`; cualquier archivo preexistente o ajeno se conserva y se lista.
++    Sólo borra archivos con **propiedad acreditada** por el registro de la
++    corrida (ruta + identidad verificada). Un archivo ajeno —incluido uno que
++    coincida con un nombre de salida del motor o que esté dentro de
++    `candidates/`— y un archivo registrado cuya identidad actual no coincida
++    con la registrada (sustituido tras su creación) se **conservan** y se
++    listan con el motivo. Los archivos de registro forense
++    (`ABORT_6G1.json`, `engine_log.txt`, `analysis.json`,
++    `input_integrity_6g.json`) se conservan.
+     """
+     run_dir = Path(run_dir)
+-    eliminados, conservados = [], []
++    eliminados, conservados, motivos = [], [], {}
+     if run_dir.exists():
+         for p in sorted(run_dir.rglob('*')):
+             if not p.is_file():
+                 continue
+-            if p.name in ('ABORT_6G1.json', 'analysis.json', 'engine_log.txt'):
++            rel = str(p.relative_to(run_dir))
++            if _es_registro_interno(p.name):
++                conservados.append(rel)
++                motivos[rel] = 'registro_interno_conservado'
+                 continue
+-            if _es_salida_de_la_corrida(p, run_dir):
++            propia, motivo_p = propiedad_de_6g1(p)
++            if propia:
+                 try:
+                     p.unlink()
+-                    eliminados.append(str(p.relative_to(run_dir)))
++                    eliminados.append(rel)
+                 except OSError as exc:
+-                    conservados.append(f'ERROR {p.name}: {exc}')
++                    conservados.append(rel)
++                    motivos[rel] = 'ERROR al eliminar: %s' % exc
+             else:
+-                conservados.append(str(p.relative_to(run_dir)))
+-    info = dict(schema='abort-6g1/1', motivo=motivo, detalle=detalle,
++                conservados.append(rel)
++                motivos[rel] = motivo_p
++    info = dict(schema='abort-6g1/2', motivo=motivo, detalle=detalle,
+                 salidas_invalidadas=eliminados, conservados=conservados,
+-                politica='sin_salidas_parciales; no se borran archivos ajenos')
++                motivos_propiedad=motivos,
++                politica='propiedad_acreditada_o_conserva; sin borrado por '
++                         'patrón de nombre ni por ubicación')
+     if run_dir.exists():
+         objetivo = run_dir / 'ABORT_6G1.json'
+         objetivo.write_text(json.dumps(info, indent=2, ensure_ascii=False, default=str),
+diff --git a/ETAPA_6G1_CORRECCION_LECTURA_SEGURA/motores/sdv_sdi_mqr_engine.py b/ETAPA_6G1_CORRECCION_LECTURA_SEGURA/motores/sdv_sdi_mqr_engine.py
+index 7fbed85..72a0e57 100644
+--- a/ETAPA_6G1_CORRECCION_LECTURA_SEGURA/motores/sdv_sdi_mqr_engine.py
++++ b/ETAPA_6G1_CORRECCION_LECTURA_SEGURA/motores/sdv_sdi_mqr_engine.py
+@@ -486,12 +486,13 @@ def _nominal_bit_depth(subtype):
+     return table.get(subtype, 0)
+ 
+ 
+-from audio_integridad_6g import (check_file_unchanged as _check_unchanged_6g,
+-                              container_of as _container_6g,
++from audio_integridad_6g import (container_of as _container_6g,
+                               verify_audio as _verify_audio_6g)
+ from lectura_segura_6g1 import (MixCambiado as _MixCambiado_6g1,
+                                  abrir_mix as _abrir_mix_6g1,
+-                                 abortar_6g1 as _abortar_6g1)
++                                 abortar_6g1 as _abortar_6g1,
++                                 VerificacionFallida6G1 as _VerifFallida_6g1,
++                                 registrar_propio_6g1 as _registrar_propio_6g1)
+ 
+ from atribucion_6f import (measure, verify_wave, alignment_gate,
+                         analyze_files as _analyze_files_6f,
+@@ -2026,6 +2027,8 @@ class CandidateRunner:
+                 os.path.join(run_dir, "SDI.wav"), mode="w",
+                 samplerate=REQUIRED_SAMPLE_RATE, channels=channels,
+                 subtype=output_subtype)
++            _registrar_propio_6g1(os.path.join(run_dir, "SDV.wav"), estable=False)
++            _registrar_propio_6g1(os.path.join(run_dir, "SDI.wav"), estable=False)
+         self.ola_sdv = OlaStream(plan, channels, writer=self.writer_sdv,
+                                  label="%s/SDV" % cand_id)
+         self.ola_sdi = OlaStream(plan, channels, writer=self.writer_sdi,
+@@ -2061,8 +2064,10 @@ def create_run_dir(out_base):
+ 
+ 
+ def _open_memmap(path, shape):
+-    return np.lib.format.open_memmap(path, mode="w+", dtype=MASK_SAVE_DTYPE,
+-                                     shape=shape)
++    mm = np.lib.format.open_memmap(path, mode="w+", dtype=MASK_SAVE_DTYPE,
++                                   shape=shape)
++    _registrar_propio_6g1(path, estable=False)
++    return mm
+ 
+ 
+ def _confirm_interactive(question):
+@@ -2232,6 +2237,12 @@ def run_experiment(mix_path, pairs, mode, opt):
+         log("[ABORT] interrupcion del usuario; corrida en %s" % aborted)
+         close_tee()
+         return EXIT_ABORTED, None
++    except _VerifFallida_6g1 as _exc6g1:
++        # [6G.1-R/A] La guarda final ya abortó sobre el provisional y no hay
++        # publicación; no se renombra ni se publica nada.
++        log("[FATAL] guarda final no superada (fail-closed): %s" % _exc6g1)
++        close_tee()
++        return EXIT_PROCESSING, None
+     except Exception:
+         aborted = run_dir_final + "_aborted"
+         try:
+@@ -2246,31 +2257,10 @@ def run_experiment(mix_path, pairs, mode, opt):
+ 
+     close_tee()
+     log("Corrida COMPLETA: %s" % run_dir_final)
+-    _h6g1 = ctx.get("_mix_handle_6g1")
+-    try:
+-        ctx["container_6g"]["after"] = _h6g1.verificar()
+-        ctx["container_6g"]["ruta_actual"] = _h6g1.ruta_apunta_al_mismo_objeto()
+-        _h6g1.close()
+-    except Exception as _exc6g1:
+-        ctx["container_6g"]["after"] = _check_unchanged_6g(
+-            mix_path, mix_info.sha256)
+-        ctx["container_6g"]["ruta_actual"] = dict(unchanged=True)
+-        log("[6G.1] descriptor no disponible: %s" % _exc6g1)
+-    try:
+-        with open(os.path.join(run_dir_final, "input_integrity_6g.json"),
+-                  "w", encoding="utf-8") as _f6g:
+-            json.dump(json_safe(ctx["container_6g"]), _f6g, indent=2,
+-                      ensure_ascii=False)
+-    except Exception as _exc6g:
+-        log("[6G] no se pudo escribir input_integrity_6g.json: %s" % _exc6g)
+-    if not (ctx["container_6g"]["after"].get("unchanged")
+-            and ctx["container_6g"].get("ruta_actual", {}).get("unchanged")):
+-        _info6g1 = _abortar_6g1(
+-            run_dir_final, "MIX_CAMBIADO_DURANTE_EL_PROCESAMIENTO",
+-            ctx["container_6g"])
+-        log("[FATAL] Mix cambiado: salidas de audio invalidadas: %s"
+-            % _info6g1["salidas_invalidadas"])
+-        return EXIT_PROCESSING, None
++    # [6G.1-R/A+B] La guarda final fail-closed, la evidencia de integridad y la
++    # publicación por renombrado viven ahora en _run_core (verificación ANTES de
++    # publicar; aborto sobre el provisional). Aquí sólo se registra el éxito:
++    # ninguna verificación alternativa ni fallback.
+     return EXIT_OK, run_dir_final
+ 
+ 
+@@ -2589,7 +2579,50 @@ def _run_core(mix_info, pairs, mode, opt, plan, freqs, band_masks,
+     if opt.png:
+         write_pngs(ctx, masks_dir, run_dir, opt)
+ 
+-    # transaccion: parcial -> final
++    # [6G.1-R/A] Guarda final fail-closed sobre el provisional, ANTES de
++    # publicar: VERIFICACION INCIERTA = ABORTO. Sin fallback
++    # _check_unchanged_6g ni aprobación alternativa; excepción -> aborto.
++    # Cierre de recursos garantizado en finally.
++    _h6g1 = ctx.get("_mix_handle_6g1")
++    try:
++        ctx["container_6g"]["after"] = _h6g1.verificar()
++        ctx["container_6g"]["ruta_actual"] = _h6g1.ruta_apunta_al_mismo_objeto()
++    except Exception as _exc6g1:
++        ctx["container_6g"]["after"] = dict(unchanged=False,
++                                            reason="excepcion: %s" % _exc6g1)
++        ctx["container_6g"]["ruta_actual"] = dict(unchanged=False,
++                                                  reason="excepcion: %s" % _exc6g1)
++    finally:
++        try:
++            _h6g1.close()
++        except Exception:
++            pass
++    # [6G.1-R/B] evidencia de integridad en el provisional + comprobación
++    try:
++        with open(os.path.join(run_dir, "input_integrity_6g.json"),
++                  "w", encoding="utf-8") as _f6g:
++            json.dump(json_safe(ctx["container_6g"]), _f6g, indent=2,
++                      ensure_ascii=False)
++        _registrar_propio_6g1(os.path.join(run_dir, "input_integrity_6g.json"),
++                              estable=True)
++        with open(os.path.join(run_dir, "input_integrity_6g.json"),
++                  "r", encoding="utf-8") as _f6g:
++            json.load(_f6g)
++    except Exception as _exc6g:
++        log("[6G.1-R] evidencia de integridad no acreditable: %s" % _exc6g)
++        ctx["container_6g"]["after"] = dict(unchanged=False,
++                                            reason="evidencia no escrita o no verificable")
++        ctx["container_6g"]["ruta_actual"] = dict(unchanged=False,
++                                                  reason="evidencia no escrita o no verificable")
++    if not (ctx["container_6g"]["after"].get("unchanged")
++            and ctx["container_6g"].get("ruta_actual", {}).get("unchanged")):
++        _info6g1 = _abortar_6g1(
++            run_dir, "MIX_CAMBIADO_DURANTE_EL_PROCESAMIENTO",
++            ctx["container_6g"])
++        log("[FATAL] Mix cambiado o verificacion incierta antes de publicar: "
++            "salidas propias invalidadas: %s" % _info6g1["salidas_invalidadas"])
++        raise _VerifFallida_6g1("guarda final no superada; no se publica")
++    # [6G.1-R/B] Publicación por renombrado sólo tras guarda superada
+     if os.path.exists(run_dir_final):
+         stamp = datetime.now().strftime("%H%M%S")
+         run_dir_final = run_dir_final + "_%s" % stamp
+@@ -2944,7 +2977,9 @@ def write_reports(ctx, run_dir, opt):
+               encoding="utf-8") as f:
+         json.dump(json_safe(analysis), f, indent=2, ensure_ascii=False,
+                   allow_nan=False)
++    _registrar_propio_6g1(os.path.join(run_dir, "analysis.json"), estable=True)
+     write_analysis_txt(analysis, os.path.join(run_dir, "analysis.txt"))
++    _registrar_propio_6g1(os.path.join(run_dir, "analysis.txt"), estable=True)
+ 
+ 
+ def build_validation_status(ctx, opt):
+diff --git a/ETAPA_6G1_CORRECCION_LECTURA_SEGURA/scripts/inyeccion_6g1/sitecustomize.py b/ETAPA_6G1_CORRECCION_LECTURA_SEGURA/scripts/inyeccion_6g1/sitecustomize.py
+new file mode 100644
+index 0000000..3724e1a
+--- /dev/null
++++ b/ETAPA_6G1_CORRECCION_LECTURA_SEGURA/scripts/inyeccion_6g1/sitecustomize.py
+@@ -0,0 +1,37 @@
++"""Inyector de fallos para las pruebas T1/T2/T4 de la rectificación 6G.1.
++
++Se activa sólo si el entorno define SDVSDI_6G1_INJECT (y SDVSDI_6G1_MOTORES).
++Carga el MISMO módulo lectura_segura_6g1 que importará el motor (queda en
++sys.modules) y sustituye el método indicado de MixHandle:
++
++- verificar_raise : verificar() lanza excepción (T1: excepción de verificación).
++- ruta_raise      : ruta_apunta_al_mismo_objeto() lanza excepción (T2).
++- verificar_false : verificar() devuelve un dict no satisfactorio (T4:
++                    verificación fallida sin excepción).
++
++La guarda final fail-closed debe tratar los tres casos igual: aborto, sin
++publicación. No se modifica ningún archivo del motor ni del módulo.
++"""
++import os
++import sys
++
++_inj = os.environ.get('SDVSDI_6G1_INJECT', '')
++_dir = os.environ.get('SDVSDI_6G1_MOTORES', '')
++if _inj and _dir:
++    if _dir not in sys.path:
++        sys.path.insert(0, _dir)
++    import lectura_segura_6g1 as _L
++
++    if _inj == 'verificar_raise':
++        def _verificar_rota(self, *a, **k):
++            raise RuntimeError('inyeccion de prueba T1: verificar() fallo')
++        _L.MixHandle.verificar = _verificar_rota
++    elif _inj == 'ruta_raise':
++        def _ruta_rota(self, *a, **k):
++            raise RuntimeError('inyeccion de prueba T2: ruta_apunta_al_mismo_objeto() fallo')
++        _L.MixHandle.ruta_apunta_al_mismo_objeto = _ruta_rota
++    elif _inj == 'verificar_false':
++        def _verificar_falso(self, *a, **k):
++            return dict(unchanged=False,
++                        reason='inyeccion de prueba T4: verificacion no satisfactoria')
++        _L.MixHandle.verificar = _verificar_falso
+diff --git a/ETAPA_6G1_CORRECCION_LECTURA_SEGURA/scripts/no_regresion_dsp_6g1.py b/ETAPA_6G1_CORRECCION_LECTURA_SEGURA/scripts/no_regresion_dsp_6g1.py
+index 387d3b5..9d93bea 100644
+--- a/ETAPA_6G1_CORRECCION_LECTURA_SEGURA/scripts/no_regresion_dsp_6g1.py
++++ b/ETAPA_6G1_CORRECCION_LECTURA_SEGURA/scripts/no_regresion_dsp_6g1.py
+@@ -20,6 +20,15 @@ VOLATILES = {'document_meta', 'mix_original', 'guide_inventory',
+              'input_integrity', 'input_integrity_6g', 'post_wav_validation',
+              'container_6g'}
+ 
++# Rectificación 6G.1 (corrección D): campos adicionales excluidos de la
++# comparación de informes, cada uno justificado por el diagnóstico registrado
++# en el propio JSON (campos_diferentes_estricto): difieren entre dos corridas
++# legítimas del MISMO motor sin cambio de DSP porque derivan del tiempo de
++# reloj, de la longitud del log o del nombre de directorio de corrida, no del
++# procesamiento. Ningún campo con contenido de cálculo se excluye; si un campo
++# no justificable difiere, informe_igual es False y el campo queda listado.
++VOLATILES_ADICIONALES = set()
++
+ DSP = {'fft', 'ifft', 'rfft', 'irfft', 'hann', 'hanning', 'stft', 'istft',
+        'sqrt', 'exp', 'log', 'log1p', 'abs', 'angle', 'power', 'maximum',
+        'minimum', 'where', 'clip', 'sum', 'mean', 'median', 'convolve',
+@@ -48,8 +57,23 @@ def _defs(path):
+ 
+ 
+ def _numeros(nodo):
++    """(numeros, indent_excluidos): literales numéricos y cuántos `indent`
++    de serialización JSON se excluyeron de ellos."""
++    # Rectificación 6G.1 (corrección D): el valor del argumento `indent` de la
++    # serialización JSON es formato, no DSP; se excluye de la huella de forma
++    # simétrica para 6G y 6G.1 y el conteo excluido queda registrado.
++    indent_vals = set()
++    for n in ast.walk(nodo):
++        if isinstance(n, ast.Call):
++            for kw in n.keywords:
++                if kw.arg == 'indent' and isinstance(kw.value, ast.Constant) \
++                        and isinstance(kw.value.value, (int, float)) \
++                        and not isinstance(kw.value.value, bool):
++                    indent_vals.add(id(kw.value))
+     vals = []
+     for n in ast.walk(nodo):
++        if id(n) in indent_vals:
++            continue
+         if isinstance(n, ast.Constant) and isinstance(n.value, (int, float)) \
+                 and not isinstance(n.value, bool):
+             vals.append(round(float(n.value), 12))
+@@ -57,7 +81,7 @@ def _numeros(nodo):
+                 and isinstance(n.operand, ast.Constant) \
+                 and isinstance(n.operand.value, (int, float)):
+             vals.append(round(-float(n.operand.value), 12))
+-    return sorted(vals)
++    return sorted(vals), len(indent_vals)
+ 
+ 
+ def _llamadas_dsp(nodo):
+@@ -81,6 +105,35 @@ def normalizar(obj):
+     return obj
+ 
+ 
++def normalizar_con(obj, excluidos):
++    if isinstance(obj, dict):
++        return {k: normalizar_con(v, excluidos) for k, v in obj.items()
++                if k not in excluidos}
++    if isinstance(obj, list):
++        return [normalizar_con(v, excluidos) for v in obj]
++    return obj
++
++
++def campos_diferentes(a, b, prefijo=''):
++    """Rutas de los campos que difieren (diagnóstico; sin fabricar igualdad)."""
++    if isinstance(a, dict) and isinstance(b, dict):
++        dif = []
++        for k in sorted(set(a) | set(b)):
++            dif.extend(campos_diferentes(a.get(k), b.get(k),
++                                         '%s.%s' % (prefijo, k) if prefijo else str(k)))
++        return dif
++    if isinstance(a, list) and isinstance(b, list):
++        if len(a) != len(b):
++            return ['%s (longitud %d vs %d)' % (prefijo, len(a), len(b))]
++        dif = []
++        for i, (x, y) in enumerate(zip(a, b)):
++            dif.extend(campos_diferentes(x, y, '%s[%d]' % (prefijo, i)))
++        return dif
++    if a != b:
++        return [prefijo or '(raiz)']
++    return []
++
++
+ def main():
+     trabajos = Path('/tmp/f6g1/noreg')
+     filas, detalles = [], {}
+@@ -95,10 +148,12 @@ def main():
+                            if k in c6g1 and c6g[k] != c6g1[k]}
+         huellas = {}
+         for k in cambiadas:
+-            num_a, num_b = _numeros(d6g[k]), _numeros(d6g1[k])
++            num_a, num_a_i = _numeros(d6g[k])
++            num_b, num_b_i = _numeros(d6g1[k])
+             dsp_a, dsp_b = _llamadas_dsp(d6g[k]), _llamadas_dsp(d6g1[k])
+             huellas[k] = dict(numeros_iguales=num_a == num_b,
+                               numeros_6g=num_a, numeros_6g1=num_b,
++                              indent_excluidos_6g=num_a_i, indent_excluidos_6g1=num_b_i,
+                               llamadas_dsp_iguales=dsp_a == dsp_b,
+                               llamadas_6g=dsp_a, llamadas_6g1=dsp_b)
+         dsp_ok = (not const_cambiadas and not quitadas
+@@ -119,11 +174,21 @@ def main():
+             p6g = {p['name']: p['pcm_sha256'] for p in r6g['pcm'] if 'pcm_sha256' in p}
+             p61 = {p['name']: p['pcm_sha256'] for p in r61['pcm'] if 'pcm_sha256' in p}
+             reales = bool(p6g) and bool(p61)
++            rep6g_e = normalizar(r6g['report'])
++            rep61_e = normalizar(r61['report'])
++            dif_estricto = campos_diferentes(rep6g_e, rep61_e)
++            excl = VOLATILES | VOLATILES_ADICIONALES
++            rep6g_x = normalizar_con(r6g['report'], excl)
++            rep61_x = normalizar_con(r61['report'], excl)
++            dif_norm = campos_diferentes(rep6g_x, rep61_x)
+             pcm[contenedor] = dict(
+                 pcm_6g=p6g, pcm_6g1=p61, reales=reales,
+                 identicos=(reales and p6g == p61),
+                 exit_6g=r6g['exit'], exit_6g1=r61['exit'],
+-                informe_igual=normalizar(r6g['report']) == normalizar(r61['report']))
++                informe_igual=(rep6g_x == rep61_x),
++                informe_igual_estricto=(rep6g_e == rep61_e),
++                campos_diferentes_estricto=dif_estricto,
++                campos_diferentes_normalizado=dif_norm)
+ 
+         veredicto = 'ACCEPTED' if (dsp_ok and all(
+             v['identicos'] for v in pcm.values())) else 'REJECTED'
+@@ -139,6 +204,12 @@ def main():
+                           huella_dsp_ok=dsp_ok,
+                           pcm_wav='IDENTICO' if pcm['WAV']['identicos'] else 'DISTINTO',
+                           pcm_flac='IDENTICO' if pcm['FLAC']['identicos'] else 'DISTINTO',
++                          informe_wav='IGUAL' if pcm['WAV']['informe_igual']
++                          else 'DISTINTO (%s)' % ';'.join(
++                              pcm['WAV']['campos_diferentes_normalizado'][:4]),
++                          informe_flac='IGUAL' if pcm['FLAC']['informe_igual']
++                          else 'DISTINTO (%s)' % ';'.join(
++                              pcm['FLAC']['campos_diferentes_normalizado'][:4]),
+                           veredicto=veredicto))
+ 
+     EV.mkdir(parents=True, exist_ok=True)
+@@ -147,6 +218,8 @@ def main():
+         w.writeheader()
+         w.writerows(filas)
+     dump(EV / 'no_regresion_dsp_6g1.json', dict(
++        volatiles=sorted(VOLATILES),
++        volatiles_adicionales=sorted(VOLATILES_ADICIONALES),
+         schema='no-regresion-dsp-6g1/1', entorno=entorno(),
+         fuentes_6g=str(G6), fuentes_6g1=str(MOT),
+         motores=detalles, filas=filas,
+diff --git a/ETAPA_6G1_CORRECCION_LECTURA_SEGURA/scripts/pruebas_correccion_6g1.py b/ETAPA_6G1_CORRECCION_LECTURA_SEGURA/scripts/pruebas_correccion_6g1.py
+new file mode 100644
+index 0000000..24305da
+--- /dev/null
++++ b/ETAPA_6G1_CORRECCION_LECTURA_SEGURA/scripts/pruebas_correccion_6g1.py
+@@ -0,0 +1,568 @@
++"""Pruebas obligatorias de la rectificación 6G.1 (auditoría: correcciones A, B y C).
++
++Batería por motor (Hardened, EVO, MQR) — cada veredicto exige estado de
++archivos y publicación, no sólo el código de salida:
++
++  T1 excepción de hmix.verificar()          -> aborto en provisional, sin publicación
++  T2 excepción de comprobación de ruta      -> ídem
++  T3 sustitución del Mix tras abrir el descriptor (durante el DSP) -> ídem
++  T4 verificación fallida (sin excepción)   -> ídem
++  T5 ausencia de directorio definitivo tras los abortos T1–T4
++  T6 conservación de ajenos con colisión de nombres (SDV.wav, nombre exacto de
++     salida del motor, candidates/, archivo suelto) + eliminación de salidas
++     propias acreditadas
++  T7 eliminación de salidas propias acreditadas (de T1) con motivos del registro
++  T8 procesamiento normal con verificación satisfactoria (WAV y FLAC) y PCM
++     idéntico a la campaña auditada (confirmación de DSP intacto)
++
++Unidad (sin DSP) sobre lectura_segura_6g1 — los cinco casos de la corrección C:
++  UC1 ajeno dentro de candidates/
++  UC2 ajeno llamado SDV.wav
++  UC3 ajeno con el nombre exacto de una salida del motor
++  UC4 propio acreditado que debe eliminarse
++  UC5 propio sustituido tras su creación (identidad distinta -> se conserva)
++  UC6 propio en curso (inodo continuo) que debe eliminarse
++  UC7 propio sellado modificado in situ (se conserva)
++
++Resultados: evidence/pruebas_correccion_6g1.json + evidence/matriz_correccion_6g1.csv
++Veredictos: PASS / FAIL / NOT_EXECUTED (con motivo). Nada se declara PASS sin
++ejecución real.
++"""
++import csv
++import json
++import os
++import re
++import shutil
++import subprocess
++import sys
++import time
++from pathlib import Path
++
++sys.path.insert(0, str(Path(__file__).resolve().parent))
++from comun_6g1 import (FIX, MOT, MOTORES, escribir_manifest, recolectar,
++                       sha_file, dump)
++
++sys.path.insert(0, str(MOT))
++
++RAIZ = Path(__file__).resolve().parent.parent
++EV = RAIZ / 'evidence'
++INJ = Path(__file__).resolve().parent / 'inyeccion_6g1'
++TRABAJO = Path('/tmp/f6g1corr')
++
++MOTIVO = 'MIX_CAMBIADO_DURANTE_EL_PROCESAMIENTO'
++PATRON_DSP = {'Hardened': r'(?i)chunk\s+10\s*/', 'EVO': r'(?i)chunk\s+10\s*/',
++              'MQR': r'(?i)chunk\s+10\s*/'}
++PATRON_SIEMBRA = r'(?i)post-wav identity'
++EXTRA_DSP = ('--chunk-frames', '48')
++SALIDAS = {'Hardened': ('mix SDV.wav', 'mix SDI.wav'),
++           'EVO': ('mix SDV.wav', 'mix SDI.wav'),
++           'MQR': ('SDV.wav', 'SDI.wav')}
++PREFIJO_FINAL = {'Hardened': 'motorA_run_', 'EVO': 'motorA_run_', 'MQR': 'mqr_run_'}
++AJENOS_T6 = {'Hardened': ('SDV.wav', 'candidates/ajeno_cand.wav',
++                          'otro_ajeno.txt'),
++             'EVO': ('SDV.wav', 'candidates/ajeno_cand.wav',
++                     'otro_ajeno.txt'),
++             'MQR': ('mix SDV.wav', 'candidates/ajeno_cand.wav',
++                     'otro_ajeno.txt')}
++REEMPLAZO_T6 = {'Hardened': ('mix SDV.wav',), 'EVO': ('mix SDV.wav',),
++                'MQR': ('SDV.wav',)}
++ESPERADO_NEG = {'T1': ('after', 'ruta'), 'T2': ('after', 'ruta'),
++                'T4': ('after',)}
++
++
++def dirs_definitivos(out, motor):
++    pref = PREFIJO_FINAL[motor]
++    if not Path(out).exists():
++        return []
++    return [d.name for d in Path(out).iterdir()
++            if d.is_dir() and d.name.startswith(pref)
++            and not d.name.endswith('_partial')
++            and not d.name.endswith('_aborted')]
++
++
++def _vigia(out, proc, sembrar, patron_siembra, sustituir, patron_sustitucion,
++           reemplazar=None):
++    """Siembra ajenos, reemplaza salidas propias del motor (os.replace, inodo
++    distinto) y/o sustituye el Mix cuando el log del motor alcanza el patrón.
++    Misma política que la campaña 6G.1: os.replace atómico tras pre-copia;
++    ajenos con padres creados si faltan."""
++    evento = dict(sembrados=[], sustitucion_aplicada=False, reemplazados=[])
++    destino = Path(sustituir['destino']) if sustituir else None
++    if sustituir:
++        shutil.copyfile(str(sustituir['fuente']), str(destino) + '.sustituto')
++    repl_pre = {}
++    for nombre, fuente in (reemplazar or {}).items():
++        repl_pre[nombre] = str(fuente) + '.reemplazo'
++        shutil.copyfile(str(fuente), repl_pre[nombre])
++    vistos = ''
++    t0 = time.perf_counter()
++    while proc.poll() is None and time.perf_counter() - t0 < 600:
++        logs = sorted(Path(out).glob('*/engine_log.txt')) if Path(out).exists() else []
++        if logs:
++            try:
++                texto = logs[0].read_text(errors='replace')
++            except OSError:
++                texto = ''
++            if len(texto) > len(vistos):
++                nuevo = texto[len(vistos):]
++                vistos = texto
++                disparo = None
++                if sembrar and patron_siembra and re.search(patron_siembra, nuevo) \
++                        and not evento['sembrados']:
++                    base = logs[0].parent
++                    for nombre in sembrar:
++                        objetivo = base / nombre
++                        objetivo.parent.mkdir(parents=True, exist_ok=True)
++                        objetivo.write_text('archivo ajeno a la corrida 6G.1 '
++                                            '(rectificación)\n', encoding='utf-8')
++                        evento['sembrados'].append(nombre)
++                    for nombre, pre in repl_pre.items():
++                        objetivo = base / nombre
++                        if objetivo.exists() and Path(pre).exists():
++                            os.replace(pre, objetivo)
++                            evento['reemplazados'].append(nombre)
++                    disparo = 'siembra' if sembrar else 'reemplazo'
++                if sustituir and re.search(patron_sustitucion, nuevo) \
++                        and not evento['sustitucion_aplicada']:
++                    os.replace(str(destino) + '.sustituto', str(destino))
++                    evento['sustitucion_aplicada'] = True
++                    evento['sha_mix_tras_sustitucion'] = sha_file(destino)
++                    disparo = (disparo + '+sustitucion') if disparo else 'sustitucion'
++                if disparo:
++                    evento['disparo'] = disparo
++                    evento['segundos'] = round(time.perf_counter() - t0, 3)
++                if evento['sembrados'] and (not sustituir or evento['sustitucion_aplicada']):
++                    break
++        time.sleep(0.002)
++    sobra = Path(str(destino) + '.sustituto') if destino else None
++    if sobra and sobra.exists():
++        sobra.unlink()
++    for pre in repl_pre.values():
++        if Path(pre).exists():
++            Path(pre).unlink()
++    return evento
++
++
++def correr(motor, mixdict, work, mode='full_processing', inject=None,
++           sembrar=None, patron_siembra=None, sustituir=None,
++           patron_sustitucion=None, extra=(), reemplazar=None):
++    work = Path(work)
++    shutil.rmtree(work, ignore_errors=True)
++    work.mkdir(parents=True)
++    man = work / 'manifest.json'
++    escribir_manifest(man, mixdict)
++    out = work / 'out'
++    cmd = [sys.executable, '-B', str(MOT / MOTORES[motor]),
++           '--manifest', str(man), '--out', str(out), '--mode', mode, *extra]
++    env = dict(os.environ, PYTHONPATH=str(INJ))
++    if inject:
++        env['SDVSDI_6G1_INJECT'] = inject
++        env['SDVSDI_6G1_MOTORES'] = str(MOT)
++    else:
++        env.pop('SDVSDI_6G1_INJECT', None)
++    proc = subprocess.Popen(cmd, cwd=str(MOT), stdout=subprocess.PIPE,
++                            stderr=subprocess.STDOUT, text=True, env=env)
++    evento = {}
++    if sembrar or sustituir or reemplazar:
++        evento = _vigia(out, proc, sembrar or [], patron_siembra, sustituir,
++                        patron_sustitucion, reemplazar=reemplazar)
++    salida = proc.communicate(timeout=900)[0] or ''
++    datos = recolectar(out)
++    datos.update(exit=proc.returncode, stdout_tail=salida[-4000:],
++                 evento=evento, out=str(out))
++    return datos
++
++
++def fila(prueba, motor, alcance, checks, motivo_ne=None):
++    if motivo_ne is not None:
++        return dict(prueba=prueba, motor=motor, alcance=alcance,
++                    veredicto='NOT_EXECUTED', checks_ok=0, checks_total=0,
++                    detalle=motivo_ne)
++    ok = [c for c in checks if c[1]]
++    detalle = '; '.join('%s=%s' % (c[0], 'OK' if c[1] else 'FALLO: %s' % c[2])
++                        for c in checks if not c[1]) or 'todos los checks OK'
++    return dict(prueba=prueba, motor=motor, alcance=alcance,
++                veredicto='PASS' if len(ok) == len(checks) else 'FAIL',
++                checks_ok=len(ok), checks_total=len(checks), detalle=detalle)
++
++
++# ---------------------------------------------------------------- unidad (C)
++def pruebas_unidad():
++    filas, detalles = [], {}
++    casos = [
++        ('UC1', 'ajeno dentro de candidates/', 'candidates/ajeno_cand.wav',
++         'ajeno', None),
++        ('UC2', 'ajeno llamado SDV.wav', 'SDV.wav', 'ajeno', None),
++        ('UC3', 'ajeno con nombre exacto de salida del motor', 'mix SDV.wav',
++         'ajeno', None),
++        ('UC4', 'propio acreditado (sellado) debe eliminarse', 'propio.wav',
++         'propio_estable', None),
++        ('UC5', 'propio sustituido tras su creación se conserva',
++         'sustituido.wav', 'propio_sustituido', None),
++        ('UC6', 'propio en curso (inodo continuo) debe eliminarse',
++         'en_curso.wav', 'propio_curso', None),
++        ('UC7', 'propio sellado modificado in situ se conserva',
++         'sellado.json', 'propio_modificado', None),
++    ]
++    import lectura_segura_6g1 as L
++    for cid, desc, rel, clase, _ in casos:
++        run = TRABAJO / 'UC' / cid
++        shutil.rmtree(run, ignore_errors=True)
++        run.mkdir(parents=True)
++        L.reiniciar_registro_6g1()
++        p = run / rel
++        p.parent.mkdir(parents=True, exist_ok=True)
++        p.write_bytes(b'contenido original del archivo\n')
++        info = None
++        try:
++            if clase == 'propio_estable':
++                L.registrar_propio_6g1(p, estable=True)
++            elif clase == 'propio_sustituido':
++                L.registrar_propio_6g1(p, estable=True)
++                otro = run / 'otro_contenido.bin'
++                otro.write_bytes(b'contenido ajeno de reemplazo\n')
++                os.replace(otro, p)
++            elif clase == 'propio_curso':
++                L.registrar_propio_6g1(p, estable=False)
++            elif clase == 'propio_modificado':
++                L.registrar_propio_6g1(p, estable=True)
++                p.write_bytes(b'contenido ALTERADO in situ\n')
++            info = L.abortar_6g1(run, 'PRUEBA_' + cid)
++            if clase in ('ajeno', 'propio_sustituido', 'propio_modificado'):
++                ok_borrado = rel not in info['salidas_invalidadas']
++                ok_cons = rel in info['conservados']
++                motivo = info['motivos_propiedad'].get(rel, '(sin motivo)')
++                if clase == 'ajeno':
++                    ok_motivo = motivo == 'ajeno_no_registrado'
++                elif clase == 'propio_sustituido':
++                    ok_motivo = motivo.startswith('identidad_distinta')
++                else:
++                    ok_motivo = motivo in ('contenido modificado tras el registro',
++                                           'tamaño/mtime distintos de los registrados')
++                checks = [('no_eliminado', ok_borrado, motivo),
++                          ('conservado', ok_cons, motivo),
++                          ('motivo_correcto', ok_motivo, motivo)]
++            else:
++                ok_borrado = rel in info['salidas_invalidadas']
++                checks = [('eliminado', ok_borrado,
++                           info['motivos_propiedad'].get(rel, '(sin motivo)'))]
++            ok_schema = info.get('schema') == 'abort-6g1/2'
++            checks.append(('schema_abort_6g1_2', ok_schema, info.get('schema')))
++            filas.append(fila(cid, 'lectura_segura_6g1', desc, checks))
++            detalles[cid] = dict(descripcion=desc, rel=rel, clase=clase,
++                                 abort=info)
++        except Exception as exc:
++            filas.append(fila(cid, 'lectura_segura_6g1', desc, None,
++                              motivo_ne='excepción del propio ensayo: %r' % exc))
++            detalles[cid] = dict(descripcion=desc, rel=rel, clase=clase,
++                                 error=repr(exc))
++    return filas, detalles
++
++
++# ---------------------------------------------------------------- motores
++def estado_aborto(r, motor, esperado_neg=('after', 'ruta'),
++                  propias_esperadas=None):
++    """Checks comunes de aborto: código, motivo, sin publicación, propia
++    eliminada, ajeno conservado y evidencia de integridad desfavorable en los
++    componentes indicados (la guarda exige after AND ruta; con una inyección
++    en un solo componente, el otro puede ser legítimamente True)."""
++    out = Path(r['out'])
++    abort = r['abort']
++    propios = propias_esperadas if propias_esperadas is not None else SALIDAS[motor]
++    checks = [
++        ('exit_2', r['exit'] == 2, 'exit=%s' % r['exit']),
++        ('abort_json', bool(abort), 'ABORT_6G1.json %s' % ('presente' if abort else 'ausente')),
++        ('motivo', abort.get('motivo') == MOTIVO,
++         'motivo=%s' % abort.get('motivo')),
++        ('schema_abort_6g1_2', abort.get('schema') == 'abort-6g1/2',
++         'schema=%s' % abort.get('schema')),
++        ('sin_dir_definitivo', not dirs_definitivos(r['out'], motor),
++         'definitivos=%s' % dirs_definitivos(r['out'], motor)),
++    ]
++    nom = sorted(p.name for p in out.rglob('*.wav')) if out.exists() else []
++    faltan = [s for s in propios if s in nom]
++    checks.append(('salidas_propias_eliminadas', not faltan,
++                   'presentes=%s' % faltan))
++    inv = abort.get('salidas_invalidadas', [])
++    checks.append(('salidas_invalidadas_acreditadas',
++                   all(s in inv for s in propios),
++                   'invalidadas=%s' % inv))
++    integ = r['integrity']
++    after_ok = (integ.get('after', {}).get('unchanged') is False)
++    ruta_ok = (integ.get('ruta_actual', {}).get('unchanged') is False)
++    neg = {'after': after_ok, 'ruta': ruta_ok}
++    checks.append(('evidencia_integridad_negativa_en_provisional',
++                   all(neg[c] for c in esperado_neg),
++                   'after=%s ruta=%s esperado_neg=%s'
++                   % (integ.get('after', {}).get('unchanged'),
++                      integ.get('ruta_actual', {}).get('unchanged'),
++                      esperado_neg)))
++    return checks, abort
++
++
++def pruebas_motor(motor):
++    filas, detalles = {}, {}
++    mix_local_wav = {}
++    # ---- T1 / T2 / T4 (inyección determinista en la guarda final)
++    escenarios = [('T1', 'verificar_raise', 'excepción de hmix.verificar()'),
++                  ('T2', 'ruta_raise',
++                   'excepción de comprobación de ruta'),
++                  ('T4', 'verificar_false',
++                   'verificación fallida sin excepción')]
++    for tid, inj, desc in escenarios:
++        try:
++            r = correr(motor, dict(mix=str(FIX / 'mix.wav'),
++                                   vocal=str(FIX / 'vocal_mix.wav'),
++                                   instrumental=str(FIX / 'instrumental_mix.wav')),
++                       TRABAJO / motor / tid, inject=inj)
++            checks, abort = estado_aborto(r, motor,
++                                          esperado_neg=ESPERADO_NEG[tid])
++            filas[tid] = fila(tid, motor, desc, checks)
++            detalles[tid] = dict(descripcion=desc, abort=abort,
++                                 exit=r['exit'], wavs=r['wavs'],
++                                 dirs_definitivos=dirs_definitivos(r['out'], motor))
++        except Exception as exc:
++            filas[tid] = fila(tid, motor, desc, None,
++                              motivo_ne='entorno de ensayo: %r' % exc)
++            detalles[tid] = dict(descripcion=desc, error=repr(exc))
++
++    # ---- T3: sustitución del Mix tras abrir el descriptor (durante el DSP)
++    try:
++        work = TRABAJO / motor / 'T3'
++        # el Mix sustituible vive FUERA del directorio de trabajo (que `correr`
++        # recrea desde cero); nunca se toca el fixture del repositorio.
++        mix_local = TRABAJO / 'mezclas' / ('T3_%s_mix_12s.flac' % motor)
++        mix_local.parent.mkdir(parents=True, exist_ok=True)
++        shutil.copyfile(str(FIX / 'mix_12s.flac'), str(mix_local))
++        r = correr(motor, dict(mix=str(mix_local),
++                               vocal=str(FIX / 'vocal_mix_12s.wav'),
++                               instrumental=str(FIX / 'instrumental_mix_12s.wav')),
++                   work, sustituir=dict(destino=mix_local,
++                                        fuente=FIX / 'mix_otro.flac'),
++                   patron_sustitucion=PATRON_DSP[motor],
++                   extra=EXTRA_DSP)
++        # Hardened/EVO nombran sus salidas '<stem> SDV.wav'; MQR usa SDV.wav.
++        # En sustitución por os.replace el descriptor retiene el contenido
++        # original (after=True legítimo); la ruta es la que deja de coincidir.
++        if motor == 'MQR':
++            propias_esp = SALIDAS['MQR']
++        else:
++            stem = Path(mix_local).stem
++            propias_esp = ('%s SDV.wav' % stem, '%s SDI.wav' % stem)
++        checks, abort = estado_aborto(r, motor, esperado_neg=('ruta',),
++                                      propias_esperadas=propias_esp)
++        checks.append(('sustitucion_aplicada',
++                       r['evento'].get('sustitucion_aplicada') is True,
++                       'evento=%s' % r['evento']))
++        filas['T3'] = fila('T3', motor,
++                           'sustitución del Mix tras abrir el descriptor (DSP)',
++                           checks)
++        detalles['T3'] = dict(descripcion='sustitución durante el DSP',
++                              abort=abort, exit=r['exit'], evento=r['evento'])
++    except Exception as exc:
++        filas['T3'] = fila('T3', motor,
++                           'sustitución del Mix tras abrir el descriptor (DSP)',
++                           None, motivo_ne='entorno de ensayo: %r' % exc)
++        detalles['T3'] = dict(error=repr(exc))
++
++    # ---- T5: ausencia de directorio definitivo en TODOS los abortos T1–T4
++    try:
++        definitiva = []
++        for tid in ('T1', 'T2', 'T3', 'T4'):
++            det = detalles.get(tid, {})
++            definitiva.extend(det.get('dirs_definitivos',
++                                      dirs_definitivos(TRABAJO / motor / tid / 'out',
++                                                       motor)))
++        filas['T5'] = fila('T5', motor,
++                           'ausencia de directorio definitivo tras los abortos',
++                           [('ningun_directorio_definitivo_en_T1_T4',
++                             not definitiva, 'definitivos=%s' % definitiva)])
++        detalles['T5'] = dict(descripcion='agregado sobre T1–T4',
++                              definitivos=definitiva)
++    except Exception as exc:
++        filas['T5'] = fila('T5', motor,
++                           'ausencia de directorio definitivo tras los abortos',
++                           None, motivo_ne='entorno de ensayo: %r' % exc)
++        detalles['T5'] = dict(error=repr(exc))
++
++    # ---- T6: conservación de ajenos con colisiones + eliminación de propias.
++    # Siembra por creación (nombres que el motor no usa) y, además, REEMPLAZO
++    # por os.replace de la salida propia ya cerrada del motor (inodo distinto:
++    # propiedad indemostrable -> se conserva, caso 'sustituido tras creación').
++    try:
++        ajenos = AJENOS_T6[motor]
++        reempl = REEMPLAZO_T6[motor]
++        r = correr(motor, dict(mix=str(FIX / 'mix.wav'),
++                               vocal=str(FIX / 'vocal_mix.wav'),
++                               instrumental=str(FIX / 'instrumental_mix.wav')),
++                   TRABAJO / motor / 'T6', inject='verificar_raise',
++                   sembrar=ajenos, patron_siembra=PATRON_SIEMBRA,
++                   reemplazar={n: FIX / 'mix_otro.flac' for n in reempl})
++        propias_esp = [s for s in SALIDAS[motor] if s not in reempl]
++        checks, abort = estado_aborto(r, motor,
++                                      propias_esperadas=propias_esp)
++        cons = abort.get('conservados', [])
++        mot = abort.get('motivos_propiedad', {})
++        checks.append(('siembra_aplicada',
++                       sorted(r['evento'].get('sembrados', [])) == sorted(ajenos),
++                       'sembrados=%s' % r['evento'].get('sembrados')))
++        for a in ajenos:
++            checks.append(('ajeno_conservado:%s' % a, a in cons,
++                           'motivo=%s' % mot.get(a, '(sin motivo)')))
++            checks.append(('ajeno_motivo_ajeno_no_registrado:%s' % a,
++                           mot.get(a) == 'ajeno_no_registrado',
++                           'motivo=%s' % mot.get(a, '(sin motivo)')))
++        for n in reempl:
++            checks.append(('propia_reemplazada_conservada:%s' % n,
++                           n in cons and n not in abort.get('salidas_invalidadas', []),
++                           'motivo=%s' % mot.get(n, '(sin motivo)')))
++            checks.append(('reemplazo_motivo_identidad_distinta:%s' % n,
++                           str(mot.get(n, '')).startswith('identidad_distinta'),
++                           'motivo=%s' % mot.get(n, '(sin motivo)')))
++        propias_inv = [s for s in propias_esp
++                       if s in abort.get('salidas_invalidadas', [])]
++        checks.append(('propias_eliminadas_con_acreditacion',
++                       len(propias_inv) == len(propias_esp),
++                       'invalidadas=%s' % abort.get('salidas_invalidadas', [])))
++        filas['T6'] = fila('T6', motor,
++                           'colisiones de nombre, candidates/ y sustitución '
++                           'de salida propia en aborto', checks)
++        detalles['T6'] = dict(descripcion='sembrados=%s reemplazados=%s'
++                              % (ajenos, reempl), abort=abort,
++                              evento=r['evento'])
++    except Exception as exc:
++        filas['T6'] = fila('T6', motor,
++                           'colisiones de nombre, candidates/ y sustitución '
++                           'de salida propia en aborto',
++                           None, motivo_ne='entorno de ensayo: %r' % exc)
++        detalles['T6'] = dict(error=repr(exc))
++
++    # ---- T7: eliminación de salidas propias acreditadas (de T1)
++    try:
++        abort = detalles['T1']['abort']
++        inv = abort.get('salidas_invalidadas', [])
++        mot = abort.get('motivos_propiedad', {})
++        checks = []
++        for s in SALIDAS[motor]:
++            checks.append(('propia_eliminada:%s' % s, s in inv,
++                           'motivo=%s' % mot.get(s, '(sin motivo)')))
++        filas['T7'] = fila('T7', motor,
++                           'eliminación de salidas propias acreditadas', checks)
++        detalles['T7'] = dict(descripcion='derivado de T1 (mismo ensayo, '
++                                          'aserciones específicas de propiedad)',
++                              salidas_invalidadas=inv,
++                              motivos_propiedad={k: v for k, v in mot.items()
++                                                 if k in SALIDAS[motor]})
++    except Exception as exc:
++        filas['T7'] = fila('T7', motor,
++                           'eliminación de salidas propias acreditadas',
++                           None, motivo_ne='entorno de ensayo: %r' % exc)
++        detalles['T7'] = dict(error=repr(exc))
++
++    return filas, detalles
++
++
++def audited_pcm():
++    d = json.loads((EV / 'contenedores_6g1.json').read_text())
++    out = {}
++    for m in MOTORES:
++        for c in ('WAV', 'FLAC'):
++            out[(m, c)] = d['casos']['%s/%s/full_processing' % (m, c)]['pcm']
++    return out
++
++
++def prueba_t8(motor, pcm_auditado):
++    filas, detalles = {}, {}
++    for cont, archivo in (('WAV', 'mix.wav'), ('FLAC', 'mix.flac')):
++        try:
++            r = correr(motor, dict(mix=str(FIX / archivo),
++                                   vocal=str(FIX / 'vocal_mix.wav'),
++                                   instrumental=str(FIX / 'instrumental_mix.wav')),
++                       TRABAJO / motor / ('T8_' + cont), 'full_processing')
++            defs = dirs_definitivos(r['out'], motor)
++            integ = r['integrity']
++            checks = [
++                ('exit_0', r['exit'] == 0, 'exit=%s' % r['exit']),
++                ('sin_abort', not r['abort'], 'abort=%s' % bool(r['abort'])),
++                ('dir_definitivo_unico', len(defs) == 1, 'defs=%s' % defs),
++                ('publicado_en_definitivo',
++                 bool(defs) and all(d in r['run_dirs'][0] for d in defs[:1])
++                 and len(r['run_dirs']) == 1 and defs[0] in r['run_dirs'][0],
++                 'run_dirs=%s' % r['run_dirs']),
++                ('integridad_after_true',
++                 integ.get('after', {}).get('unchanged') is True,
++                 'after=%s' % integ.get('after', {}).get('unchanged')),
++                ('integridad_ruta_true',
++                 integ.get('ruta_actual', {}).get('unchanged') is True,
++                 'ruta=%s' % integ.get('ruta_actual', {}).get('unchanged')),
++            ]
++            pcm = {p['name']: p['pcm_sha256'] for p in r['pcm']
++                   if 'pcm_sha256' in p}
++            esperado = pcm_auditado.get((motor, cont), {})
++            reales = bool(pcm) and len(pcm) == len(esperado) and len(esperado) > 0
++            checks.append(('pcm_reales', reales, 'pcm=%s' % sorted(pcm)))
++            checks.append(('pcm_identico_a_campana_auditada',
++                           reales and pcm == esperado,
++                           'diff=%s' % {k: (pcm.get(k, '')[:12],
++                                            esperado.get(k, '')[:12])
++                                        for k in set(pcm) | set(esperado)
++                                        if pcm.get(k) != esperado.get(k)}))
++            tid = 'T8 (%s)' % cont
++            filas[tid] = fila('T8', motor,
++                              'procesamiento normal + PCM vs campaña auditada (%s)' % cont,
++                              checks)
++            detalles[tid] = dict(descripcion='full_processing %s' % cont,
++                                 exit=r['exit'], pcm=pcm,
++                                 esperado=esperado, run_dirs=r['run_dirs'],
++                                 dirs_definitivos=defs)
++        except Exception as exc:
++            filas['T8 (%s)' % cont] = fila('T8', motor,
++                                           'procesamiento normal (%s)' % cont,
++                                           None,
++                                           motivo_ne='entorno de ensayo: %r' % exc)
++            detalles['T8 (%s)' % cont] = dict(error=repr(exc))
++    return filas, detalles
++
++
++def main():
++    EV.mkdir(parents=True, exist_ok=True)
++    TRABAJO.mkdir(parents=True, exist_ok=True)
++    entorno_de_ejecucion = dict(python=sys.version.split()[0])
++    todas, detalle_todo = [], {}
++    print('== Unidad: propiedad y limpieza (corrección C) ==')
++    fu, du = pruebas_unidad()
++    todas.extend(fu)
++    detalle_todo['unidad'] = du
++    for f in fu:
++        print('  %-4s %-14s %s' % (f['veredicto'], f['prueba'], f['detalle'][:90]))
++    pa = audited_pcm()
++    for motor in MOTORES:
++        print('== Motor %s ==' % motor)
++        fm, dm = pruebas_motor(motor)
++        f8, d8 = prueba_t8(motor, pa)
++        fm.update(f8)
++        dm.update(d8)
++        for tid, f in fm.items():
++            todas.append(f)
++            print('  %-14s %-18s %s' % (f['veredicto'], tid, f['detalle'][:90]))
++        detalle_todo[motor] = dm
++    dump(EV / 'pruebas_correccion_6g1.json',
++         dict(schema='pruebas-correccion-6g1/1', entorno=entorno_de_ejecucion,
++              filas=todas, detalles=detalle_todo))
++    with (EV / 'matriz_correccion_6g1.csv').open('w', newline='',
++                                                 encoding='utf-8') as fh:
++        w = csv.DictWriter(fh, fieldnames=('prueba', 'motor', 'alcance',
++                                           'veredicto', 'checks_ok',
++                                           'checks_total', 'detalle'),
++                           lineterminator='\n')
++        w.writeheader()
++        w.writerows(todas)
++    npass = sum(1 for f in todas if f['veredicto'] == 'PASS')
++    nfail = sum(1 for f in todas if f['veredicto'] == 'FAIL')
++    nne = sum(1 for f in todas if f['veredicto'] == 'NOT_EXECUTED')
++    print('RESUMEN: %d PASS, %d FAIL, %d NOT_EXECUTED de %d filas'
++          % (npass, nfail, nne, len(todas)))
++
++
++if __name__ == '__main__':
++    main()
