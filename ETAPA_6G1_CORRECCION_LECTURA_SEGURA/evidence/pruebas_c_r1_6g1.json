@@ -22,10 +22,10 @@
     {
       "prueba": "CR1c",
       "motor": "lectura_segura_6g1",
-      "alcance": "sustitución concurrente durante el aborto: el sustituto queda intacto (sin unlink)",
+      "alcance": "sustitución concurrente tras el dictamen positivo y antes de que el llamador continuara: sustituto intacto (sin unlink); clasificación por el dictamen anterior",
       "veredicto": "PASS",
-      "checks_ok": 6,
-      "checks_total": 6,
+      "checks_ok": 9,
+      "checks_total": 9,
       "detalle": "todos los checks OK"
     },
     {
@@ -167,21 +167,31 @@
         }
       },
       "CR1c": {
+        "suceso": {
+          "dictamen": [
+            true,
+            "propiedad_acreditada"
+          ],
+          "sustituido": true,
+          "secuencia": [
+            "dictamen_positivo",
+            "sustitucion_os_replace"
+          ]
+        },
         "abort": {
           "schema": "abort-6g1/3",
           "motivo": "PRUEBA_CR1c",
           "detalle": null,
           "salidas_invalidadas": [
-            "otra_salida.wav"
+            "otra_salida.wav",
+            "salida_concurrente.wav"
           ],
           "estado_salidas_invalidadas": "conservadas en el provisional; sin eliminación (C-R1)",
           "resultados_validos": [],
-          "conservados": [
-            "salida_concurrente.wav"
-          ],
+          "conservados": [],
           "motivos_propiedad": {
             "otra_salida.wav": "salida_parcial_invalidada_y_conservada (sin eliminación; C-R1)",
-            "salida_concurrente.wav": "identidad_distinta (sustituido o reemplazado tras el registro)"
+            "salida_concurrente.wav": "salida_parcial_invalidada_y_conservada (sin eliminación; C-R1)"
           },
           "analysis_intacto": true,
           "politica": "sin_eliminacion (C-R1): ningún archivo se elimina durante el aborto; las salidas propias registradas quedan invalidadas y conservadas; sin borrado por patrón de nombre ni por ubicación; sin escritura a través de enlaces simbólicos; analysis.json no se modifica durante el aborto (E-R2): toda la información del aborto vive en ABORT_6G1.json; un directorio con ABORT_6G1.json nunca es una corrida exitosa"
@@ -253,7 +263,7 @@
     "Hardened": {
       "E2E": {
         "exit": 2,
-        "abort_dir": "/tmp/f6g1cr1/Hardened/E2E/out/motorA_run_20261121_232935_partial"
+        "abort_dir": "/tmp/f6g1cr1/Hardened/E2E/out/motorA_run_20261121_233936_partial"
       },
       "sanidad": {
         "exit": 0
@@ -262,7 +272,7 @@
     "EVO": {
       "E2E": {
         "exit": 2,
-        "abort_dir": "/tmp/f6g1cr1/EVO/E2E/out/motorA_run_20261121_232938_partial"
+        "abort_dir": "/tmp/f6g1cr1/EVO/E2E/out/motorA_run_20261121_233939_partial"
       },
       "sanidad": {
         "exit": 0
@@ -271,7 +281,7 @@
     "MQR": {
       "E2E": {
         "exit": 2,
-        "abort_dir": "/tmp/f6g1cr1/MQR/E2E/out/mqr_run_20261121_232941_partial"
+        "abort_dir": "/tmp/f6g1cr1/MQR/E2E/out/mqr_run_20261121_233941_partial"
       },
       "sanidad": {
         "exit": 0

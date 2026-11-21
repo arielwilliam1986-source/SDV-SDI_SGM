@@ -8,10 +8,14 @@ registra en `ABORT_6G1.json` (schema versionado a `abort-6g1/3`).
 
   CR1a  propios conservados tras el aborto (bytes intactos) + registro /3
   CR1b  ajenos byte a byte intactos (incluidos nombres tipo salida)
-  CR1c  SUSTITUCIÓN CONCURRENTE durante el aborto (la ventana del hallazgo:
-        el archivo se sustituye por otro regular mediante os.replace() EN
-        MEDIO del barrido, vía gancho sobre os.lstat): el sustituto queda
-        byte a byte intacto; nada se elimina
+  CR1c  SUSTITUCIÓN CONCURRENTE en la ventana histórica EXACTA del hallazgo:
+        se intercepta propiedad_de_6g1(); se ejecuta la función original y se
+        obtiene su dictamen; inmediatamente después de un dictamen POSITIVO
+        se sustituye el archivo por otro regular (os.replace()); se devuelve
+        el dictamen ORIGINAL al llamador. El sustituto queda byte a byte
+        intacto; nada se elimina; la clasificación del informe se basa en el
+        dictamen obtenido ANTES de la sustitución (no identifica
+        necesariamente la identidad posterior)
   CR1d  enlaces simbólicos conservados, nunca seguidos; objetivo externo intacto
   CR1e  ABORT_6G1.json registra las invalidadas (/3) y la creación exclusiva
         se mantiene (colisión conservada, info completa en el retorno)
@@ -176,13 +180,21 @@ def unidad():
                           motivo_ne='entorno de ensayo: %r' % exc))
         detalles['CR1b'] = dict(error=repr(exc))
 
-    # ---- CR1c: sustitución concurrente EN MEDIO del aborto (hallazgo C-R1)
+    # ---- CR1c: sustitución concurrente en la VENTANA HISTÓRICA EXACTA del
+    # hallazgo C-R1 [C-R1-R, mecanismo a petición de Cris]: se intercepta
+    # propiedad_de_6g1(); se ejecuta la función original y se obtiene su
+    # dictamen; INMEDIATAMENTE después de un dictamen POSITIVO se sustituye
+    # el archivo por otro regular mediante os.replace(); se devuelve el
+    # dictamen ORIGINAL al llamador. Así la sustitución queda demostrada
+    # DESPUÉS del dictamen positivo y ANTES de que el llamador continuara
+    # (con el código anterior a C-R1, el unlink posterior habría borrado al
+    # sustituto ajeno). El módulo de producción NO se modifica para ensayar.
     try:
         run = TRABAJO / 'CR1c'
         shutil.rmtree(run, ignore_errors=True)
         run.mkdir(parents=True)
         sustituto = TRABAJO / 'sustituto_ajeno_CR1c.wav'
-        bytes_sub = b'contenido AJENO plantado durante el aborto\n'
+        bytes_sub = b'contenido AJENO plantado tras el dictamen positivo\n'
         sustituto.write_bytes(bytes_sub)
         sha_sub = sha_file(sustituto)
         ruta_propia = run / 'salida_concurrente.wav'
@@ -193,46 +205,68 @@ def unidad():
         otro.write_bytes(b'otra salida propia\n')
         L.registrar_propio_6g1(otro, estable=True)
 
-        original_lstat = os.lstat
-        estado = dict(sustituido=False)
+        original_prop = L.propiedad_de_6g1
+        suceso = dict(dictamen=None, sustituido=False, secuencia=[])
 
-        def lstat_con_sustitucion(p, *a, **k):
-            st = original_lstat(p, *a, **k)
-            if not estado['sustituido'] \
-                    and os.path.abspath(str(p)) == str(ruta_propia):
-                # sustitución concurrente: DESPUÉS del dictamen de este
-                # archivo y antes de que el antiguo código llegara a unlink
+        def prop_con_sustitucion(p):
+            # 1-2: función ORIGINAL: dictamen sobre el archivo registrado
+            propia, motivo = original_prop(p)
+            if propia and os.path.abspath(str(p)) == str(ruta_propia) \
+                    and not suceso['sustituido']:
+                suceso['secuencia'].append('dictamen_positivo')
+                suceso['dictamen'] = (propia, motivo)
+                # 3: sustitución INMEDIATAMENTE después del dictamen positivo
                 tmp = run / '.sust_tmp'
                 shutil.copyfile(str(sustituto), str(tmp))
                 os.replace(str(tmp), str(ruta_propia))
-                estado['sustituido'] = True
-            return original_lstat(p, *a, **k)
+                suceso['sustituido'] = True
+                suceso['secuencia'].append('sustitucion_os_replace')
+                # 4: abajo se devuelve el dictamen ORIGINAL al llamador
+            return propia, motivo
 
-        os.lstat = lstat_con_sustitucion
+        L.propiedad_de_6g1 = prop_con_sustitucion
         try:
             info = L.abortar_6g1(run, 'PRUEBA_CR1c')
         finally:
-            os.lstat = original_lstat
+            L.propiedad_de_6g1 = original_prop
         ab = leer_abort(run)
+        motivo_archivo = str((ab or {}).get('motivos_propiedad', {})
+                             .get('salida_concurrente.wav', ''))
         checks = [
-            ('sustitucion_inyectada', estado['sustituido'], ''),
+            ('dictamen_positivo_original',
+             suceso['dictamen'] == (True, 'propiedad_acreditada'),
+             str(suceso['dictamen'])),
+            ('sustitucion_despues_del_dictamen_y_antes_del_llamador',
+             suceso['secuencia'] == ['dictamen_positivo',
+                                     'sustitucion_os_replace'],
+             str(suceso['secuencia'])),
+            ('sustitucion_inyectada', suceso['sustituido'], ''),
             ('sustituto_byte_a_byte', sha_file(sustituto) == sha_sub,
              sha_file(sustituto)[:16]),
             ('sustituto_en_disco_intacto',
-             ruta_propia.read_bytes() == bytes_sub, ruta_propia.read_bytes()[:40]),
+             ruta_propia.read_bytes() == bytes_sub,
+             ruta_propia.read_bytes()[:40]),
             ('nada_eliminado',
              ruta_propia.exists() and otro.exists()
              and otro.read_bytes() == b'otra salida propia\n', ''),
-            ('sin_eliminacion_en_motivos',
-             not any('eliminad' in m and 'sin eliminación' not in m
-                     for m in (ab or {}).get('motivos_propiedad', {}).values()),
-             str((ab or {}).get('motivos_propiedad'))),
+            # Clasificación basada en el dictamen obtenido ANTES de la
+            # sustitución; NO identifica necesariamente la identidad
+            # posterior (el motivo registrado no afirma identidad).
+            ('clasificacion_por_dictamen_anterior',
+             'salida_concurrente.wav' in (ab or {}).get('salidas_invalidadas', []),
+             str((ab or {}).get('salidas_invalidadas'))),
+            ('motivo_sin_afirmar_identidad_posterior',
+             'sin eliminación' in motivo_archivo
+             and 'propiedad_acreditada' not in motivo_archivo,
+             motivo_archivo),
             ('schema_3', (ab or {}).get('schema') == 'abort-6g1/3', ''),
         ]
         filas.append(fila('CR1c', 'lectura_segura_6g1',
-                          'sustitución concurrente durante el aborto: el '
-                          'sustituto queda intacto (sin unlink)', checks))
-        detalles['CR1c'] = dict(abort=ab)
+                          'sustitución concurrente tras el dictamen positivo '
+                          'y antes de que el llamador continuara: sustituto '
+                          'intacto (sin unlink); clasificación por el '
+                          'dictamen anterior', checks))
+        detalles['CR1c'] = dict(suceso=dict(suceso), abort=ab)
     except Exception as exc:
         filas.append(fila('CR1c', 'lectura_segura_6g1', 'unidad', None,
                           motivo_ne='entorno de ensayo: %r' % exc))

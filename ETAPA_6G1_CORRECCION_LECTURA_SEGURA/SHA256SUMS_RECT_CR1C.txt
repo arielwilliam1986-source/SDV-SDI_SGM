@@ -1,0 +1,7 @@
+# SHA-256 de los archivos modificados/añadidos por la rectificación de evidencia CR1c (C-R1 / 6G.1)
+# Base de esta entrega: 8caa65bbaab2ba57961430f2891e89b34d72ec10
+# Formato: <sha256_nuevo>  <ruta>  # previo: <sha256_en_la_base>
+35d32fb6af01324ef8e67134a4cd2e920e8153494989787681db78f126a867ca  ETAPA_6G1_CORRECCION_LECTURA_SEGURA/scripts/pruebas_c_r1_6g1.py  # previo: 18651e24c986cd81f5b9d02b860f93ebbb62721a98b7004fc090bf1148905404
+517e61edc870c710cfc04d2b0487dd3eead50ad7f45e54e922e9e04d2441f344  ETAPA_6G1_CORRECCION_LECTURA_SEGURA/evidence/pruebas_c_r1_6g1.json  # previo: 12fa13ec2993849bc327236fdea26ddf98f216b190ffec8faf02f0da3970478f
+569b939172ac2b56a2fcc4e7169957c9923f4fe54d414a7af2a42ab2cf972d4b  ETAPA_6G1_CORRECCION_LECTURA_SEGURA/evidence/matriz_c_r1_6g1.csv  # previo: 69cdb571bc683fd8b7715b1850c7224fdd8e253bad1e8315f409cb9bfe41ee30
+9fa8a1149347d4a391de4abdf77caaaf78a6ff1118fb70a97ebdf1b813bb2fb2  ETAPA_6G1_CORRECCION_LECTURA_SEGURA/INFORME_C_R1_6G1.md  # previo: 6a05a0aac76443d45e2924747097da17b6aec0296d2f65319f42639e44001684
