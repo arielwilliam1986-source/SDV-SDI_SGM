@@ -83,7 +83,7 @@ import struct
 import stat
 from pathlib import Path
 
-SCRIPT_VERSION = "0.2.6"
+SCRIPT_VERSION = "0.2.7"
 SCRIPT_NAME = "audioinput_diag_termux.py"
 
 
@@ -927,6 +927,40 @@ class OwnedFdResource(object):
                                            self.state, self.close_result))
 
 
+class _ReadOnlyResourceView(object):
+    """Vista de SOLO LECTURA de un OwnedFdResource (C4-A cierre, v0.2.7).
+
+    get_resource(token) retorna esta vista: otros componentes pueden
+    CONSULTAR el estado (state, close_result, fd, dev, ino, label, token,
+    acceso tipo dict de compatibilidad) pero NO modificarlo — cualquier
+    intento de asignacion de atributo lanza AttributeError. El estado y la
+    propiedad del recurso solo se modifican dentro del logger propietario
+    (transiciones de la maquina de estados), cumpliendo el requisito C4-A
+    de que ningun componente externo altere la propiedad.
+    """
+    __slots__ = ('_res',)
+
+    def __init__(self, resource):
+        object.__setattr__(self, '_res', resource)
+
+    def __getattr__(self, name):
+        return getattr(object.__getattribute__(self, '_res'), name)
+
+    def __setattr__(self, name, value):
+        raise AttributeError(
+            "vista de solo lectura: el estado y la propiedad del recurso "
+            "solo se modifican dentro del logger propietario")
+
+    def __getitem__(self, key):
+        return self._res[key]
+
+    def __contains__(self, key):
+        return key in self._res
+
+    def __repr__(self):
+        return "<ReadOnlyResourceView {0!r}>".format(self._res)
+
+
 class CloseErrorLogger:
     """Acumula errores de cierre de descriptores y SoundFile (C4).
 
@@ -960,15 +994,26 @@ class CloseErrorLogger:
     MISMO archivo) no es detectable de forma portatil: limitacion
     documentada, no una deteccion.
 
-    REGLAS (C4-A):
-      - un recurso solo puede iniciar un cierre una vez (OPEN -> CLOSING);
+    REGLAS (C4-A, v0.2.7):
+      - solo el propietario inicia el cierre de su recurso, una unica vez
+        (OPEN -> CLOSING), SIEMPRE mediante el token de su apertura;
+      - close_fd() SIN token (o con token no valido) NO cierra ningun
+        descriptor, ni siquiera uno registrado como OPEN (contrato
+        estricto; aviso, no operacion);
       - un token obsoleto (CLOSED, CLOSE_FAILED_UNCERTAIN o desconocido)
         nunca inicia un segundo cierre (aviso, no operacion);
       - un cierre incierto nunca se reintenta automaticamente;
       - un descriptor no registrado no se cierra mediante el logger (aviso);
+      - get_resource(token) retorna una vista de SOLO LECTURA: el estado
+        y la propiedad solo se modifican dentro del logger propietario;
       - los errores de cierre se conservan en self.errors y en el sink
         global para su posterior propagacion (la propagacion completa ante
         KeyboardInterrupt corresponde a C4-B, fuera de esta etapa).
+
+    LIMITE DOCUMENTADO (EXPECTED_LIMITATION): la violacion indetectable del
+    contrato (cierre externo + reutilizacion del MISMO numero para el
+    MISMO archivo) no es detectable de forma portable; no se presenta como
+    una proteccion conseguida (ver INFORME_CIERRE_C4_A.md).
 
     Los avisos van a `warnings`; los fallos reales a `errors`.
     """
@@ -1004,8 +1049,19 @@ class CloseErrorLogger:
         _record_close_error(entry)  # sink para errores durante excepciones
 
     def get_resource(self, token):
-        """Retorna el OwnedFdResource del token, o None (C4-A v0.2.6)."""
-        return self._entries.get(token)
+        """Retorna una VISTA DE SOLO LECTURA del recurso del token (v0.2.7).
+
+        Otros componentes pueden consultar el estado (state, close_result,
+        fd, dev, ino, label, token) pero NO modificarlo: cualquier intento
+        de asignacion sobre la vista lanza AttributeError. El estado solo
+        se modifica dentro del logger propietario (maquina de estados).
+
+        Retorna la vista, o None si el token es desconocido.
+        """
+        resource = self._entries.get(token)
+        if resource is None:
+            return None
+        return _ReadOnlyResourceView(resource)
 
     def register_fd(self, fd, label):
         """Registra la propiedad de una apertura concreta (C4, v0.2.4).
@@ -1033,20 +1089,24 @@ class CloseErrorLogger:
         return token
 
     def close_fd(self, fd, label, token=None):
-        """Solicita el cierre de un recurso de propiedad (C4-A v0.2.6).
+        """Solicita el cierre de un recurso de propiedad (C4-A cierre, v0.2.7).
 
-        - Con token: resuelve el recurso registrado.
+        CONTRATO ESTRICTO: solo el propietario, mediante el token de SU
+        apertura, puede iniciar el cierre; una unica vez.
+
+        - Sin token: NO se cierra NINGUN descriptor (ni siquiera uno
+          registrado como OPEN). Aviso y retorno inmediato: el cierre sin
+          token esta rechazado por el contrato de propiedad.
+        - Token desconocido: aviso; no se cierra nada.
+        - Estados del recurso identificado por el token:
             OPEN: unico camino de cierre (una sola vez): guardias previas
               y os.close(); termina en CLOSED o CLOSE_FAILED_UNCERTAIN.
             CLOSING: aviso (cierre ya iniciado); no se duplica.
             CLOSED: aviso (token obsoleto); no se reintenta.
             CLOSE_FAILED_UNCERTAIN: aviso (resultado incierto previo);
               NUNCA se reintenta.
-          Token desconocido: aviso; no se cierra nada.
-        - Sin token: busca un recurso OPEN registrado para ese numero. Si
-          no lo hay, NO se cierra (aviso: doble cierre, numero reutilizado
-          o descriptor no registrado). Si hay varios, aviso y se cierra el
-          primero (compatibilidad).
+        - El cierre opera sobre resource.fd (la verdad del propietario);
+          el argumento fd es informativo por compatibilidad de firma.
         - Guardias previas al os.close (defensivas, NO prueba de identidad):
             EBADF en fstat: cierre externo (contrato violado) o numero
               reutilizado y re-cerrado -> CLOSE_FAILED_UNCERTAIN, error
@@ -1055,61 +1115,47 @@ class CloseErrorLogger:
               reutilizado por otro archivo -> NO se cierra el recurso
               ajeno -> CLOSE_FAILED_UNCERTAIN, anomalia conservada.
             Coincidencia: NO prueba que sea la misma apertura (limite
-              documentado); el cierre procede bajo el contrato de
-              propiedad.
+              documentado, EXPECTED_LIMITATION); el cierre procede bajo el
+              contrato de propiedad.
         - Un error de os.close() deja el recurso en CLOSE_FAILED_UNCERTAIN
           (no se reintenta) y el error se conserva y se devuelve.
 
         Retorna None si OK o si hubo aviso (no operacion); el OSError si
         fallo el cierre.
         """
-        if token is None and fd is None:
+        # C4-A cierre (v0.2.7): contrato estricto. Sin token valido no se
+        # cierra ningun descriptor. El cierre solo puede iniciarlo el
+        # propietario con el token de SU apertura concreta.
+        if token is None:
+            self.warnings.append(
+                {"label": label, "errno": None,
+                 "strerror": "cierre sin token rechazado por el contrato de "
+                             "propiedad; el cierre requiere el token de la "
+                             "apertura"})
             return None
-        resource = None
-        if token is not None:
-            resource = self._entries.get(token)
-            if resource is None:
-                self.warnings.append(
-                    {"label": label, "errno": None,
-                     "strerror": "token de apertura desconocido; no se cierra nada"})
-                return None
-            if resource.state == resource.STATE_CLOSED:
-                self.warnings.append(
-                    {"label": label, "errno": None,
-                     "strerror": "apertura ya cerrada (token obsoleto); no se reintenta"})
-                return None
-            if resource.state == resource.STATE_UNCERTAIN:
-                self.warnings.append(
-                    {"label": label, "errno": None,
-                     "strerror": "cierre previo de resultado incierto; "
-                                 "no se reintenta (contrato de propiedad)"})
-                return None
-            if resource.state == resource.STATE_CLOSING:
-                self.warnings.append(
-                    {"label": label, "errno": None,
-                     "strerror": "cierre ya iniciado para este recurso; no se duplica"})
-                return None
-            fd = resource.fd
-        else:
-            open_tokens = [t for t in self._by_fd.get(fd, set())
-                           if self._entries[t].state
-                           == OwnedFdResource.STATE_OPEN]
-            if not open_tokens:
-                # Sin recurso OPEN para este numero: doble cierre, numero
-                # reutilizado o descriptor no registrado. No se cierra.
-                self.warnings.append(
-                    {"label": label, "errno": None,
-                     "strerror": "no hay apertura registrada como abierta para "
-                                 "este fd; no se cierra (doble cierre, numero "
-                                 "reutilizado o descriptor no registrado)"})
-                return None
-            if len(open_tokens) > 1:
-                self.warnings.append(
-                    {"label": label, "errno": None,
-                     "strerror": "multiples aperturas registradas para el mismo "
-                                 "fd; se cierra la primera"})
-            resource = self._entries[open_tokens[0]]
-            fd = resource.fd
+        resource = self._entries.get(token)
+        if resource is None:
+            self.warnings.append(
+                {"label": label, "errno": None,
+                 "strerror": "token de apertura desconocido; no se cierra nada"})
+            return None
+        if resource.state == resource.STATE_CLOSED:
+            self.warnings.append(
+                {"label": label, "errno": None,
+                 "strerror": "apertura ya cerrada (token obsoleto); no se reintenta"})
+            return None
+        if resource.state == resource.STATE_UNCERTAIN:
+            self.warnings.append(
+                {"label": label, "errno": None,
+                 "strerror": "cierre previo de resultado incierto; "
+                             "no se reintenta (contrato de propiedad)"})
+            return None
+        if resource.state == resource.STATE_CLOSING:
+            self.warnings.append(
+                {"label": label, "errno": None,
+                 "strerror": "cierre ya iniciado para este recurso; no se duplica"})
+            return None
+        fd = resource.fd
 
         # Unico camino de cierre: OPEN -> CLOSING (una sola vez).
         resource.state = resource.STATE_CLOSING
@@ -2567,12 +2613,14 @@ def main():
                 'publicacion deja el provisional en disco y sale con rc 130; la creacion '
                 'anclada del directorio de ejecucion interrumpida registra el entorno '
                 'NOT_EXECUTED.',
-                'C4-A (v0.2.6): modelo de propiedad por recurso (OwnedFdResource) '
-                'con estados OPEN/CLOSING/CLOSED/CLOSE_FAILED_UNCERTAIN; un '
-                'recurso inicia a lo sumo un cierre; tokens obsoletos y resultados '
-                'inciertos no reintentan; la reutilizacion del numero por el mismo '
-                'archivo no es detectable por fstat (limite documentado del '
-                'contrato de propiedad).',
+                'C4-A cierre (v0.2.7): contrato estricto de propiedad por recurso '
+                '(OwnedFdResource; estados OPEN/CLOSING/CLOSED/CLOSE_FAILED_UNCERTAIN): '
+                'solo el propietario inicia el cierre, una unica vez y siempre con el '
+                'token de su apertura (close_fd sin token no cierra nada); '
+                'get_resource expone una vista de solo lectura; la reutilizacion del '
+                'numero por el mismo archivo tras un cierre externo no es detectable '
+                'por fstat (EXPECTED_LIMITATION documentada, no una proteccion '
+                'conseguida).',
                 'C5: KeyboardInterrupt y excepciones fatales nunca terminan con codigo 0.',
                 'C7: escritura completa del informe con manejo de escrituras parciales.',
             ],
