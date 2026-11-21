@@ -1,0 +1,284 @@
+diff --git a/herramientas/diagnostico_audio/etapa2/audioinput_diag_termux.py b/herramientas/diagnostico_audio/etapa2/audioinput_diag_termux.py
+index 5a5a052..d8006f6 100644
+--- a/herramientas/diagnostico_audio/etapa2/audioinput_diag_termux.py
++++ b/herramientas/diagnostico_audio/etapa2/audioinput_diag_termux.py
+@@ -83,7 +83,7 @@ import struct
+ import stat
+ from pathlib import Path
+ 
+-SCRIPT_VERSION = "0.2.11"
++SCRIPT_VERSION = "0.2.12"
+ SCRIPT_NAME = "audioinput_diag_termux.py"
+ 
+ 
+@@ -869,12 +869,16 @@ def _close_errors_unattributed():
+ 
+ def _close_pair_conserving_interrupt(closer, sfile, sfile_label,
+                                      fd, fd_label, fd_token):
+-    """Limpieza conservadora ante interrupcion (C5 — v0.2.11).
++    """Limpieza conservadora ante interrupcion (C5 — v0.2.11/v0.2.12).
+ 
+     Intenta cerrar el SoundFile (si aplica) y DESPUES el descriptor
+-    propietario (si aplica), de modo que una KeyboardInterrupt durante el
+-    cierre de SoundFile NO impida intentar el cierre independiente del
+-    descriptor propietario.
++    propietario (si aplica). C5 (v0.2.12): el intento de cierre del
++    descriptor queda GARANTIZADO mediante un finally que abarca el cierre
++    de SoundFile, y los metodos del propietario se pre-vinculan antes del
++    primer intento, de modo que una KeyboardInterrupt durante el cierre de
++    SoundFile o en el limite entre ambas operaciones (incluida una
++    interrupcion asincrona entregada justo al terminar close_soundfile)
++    NO impida el intento de cierre del descriptor.
+ 
+     Contratos intactos:
+     - C4-A: los cierres se solicitan por el canal del propietario
+@@ -884,26 +888,46 @@ def _close_pair_conserving_interrupt(closer, sfile, sfile_label,
+     - C4-B: los errores de limpieza siguen registrandose en el acumulador
+       persistente via _append_error/_record_close_error.
+ 
++    Si el cierre del descriptor genera KeyboardInterrupt, NO se reintenta
++    (contrato C4-A). La interrupcion absorbida se propaga al retornar
++    (retorno True; el llamador debe re-lanzarla tras los intentos de
++    limpieza posibles). Una KI entregada antes del primer intento
++    (durante la pre-vinculacion de los metodos) se propaga sin intentos:
++    la limpieza aun no habia comenzado y no habia intentos posibles.
++
+     Retorna True si se absorbio una KeyboardInterrupt durante la limpieza
+     (el llamador debe propagarla tras los intentos), False en caso
+     contrario.
+     """
+     ki_absorbida = False
+-    if sfile is not None:
+-        try:
+-            closer.close_soundfile(sfile, sfile_label)
+-        except KeyboardInterrupt:
+-            # Resultado del cierre incierto: NO se reintenta; la
+-            # interrupcion se propaga tras los intentos de limpieza.
+-            ki_absorbida = True
+-    if fd is not None:
+-        try:
+-            closer.close_fd(fd, fd_label, token=fd_token)
+-        except KeyboardInterrupt:
+-            # Cierre con resultado incierto (el recurso queda en estado
+-            # CLOSING): NO se reintenta (contrato C4-A); la interrupcion
+-            # se propaga tras los intentos de limpieza.
+-            ki_absorbida = True
++    # C5 (v0.2.12): pre-vinculacion de los metodos del propietario antes
++    # de cualquier intento: no queda ninguna ventana de acceso a
++    # atributos entre ambas operaciones donde una KI asincrona pueda
++    # impedir el intento del descriptor.
++    close_sf_fn = closer.close_soundfile
++    close_fd_fn = closer.close_fd
++    try:
++        if sfile is not None:
++            try:
++                close_sf_fn(sfile, sfile_label)
++            except KeyboardInterrupt:
++                # Resultado del cierre incierto: NO se reintenta; la
++                # interrupcion se propaga tras los intentos de limpieza.
++                ki_absorbida = True
++    finally:
++        # C5 (v0.2.12): intento del descriptor propietario GARANTIZADO:
++        # se ejecuta tanto si el cierre de SoundFile retorno normalmente
++        # como si genero KeyboardInterrupt (absorbida), si genero una
++        # excepcion ordinaria, o si la interrupcion llego en el limite
++        # entre ambas operaciones.
++        if fd is not None:
++            try:
++                close_fd_fn(fd, fd_label, token=fd_token)
++            except KeyboardInterrupt:
++                # Cierre con resultado incierto (el recurso queda en
++                # estado CLOSING): NO se reintenta (contrato C4-A); la
++                # interrupcion se propaga tras los intentos de limpieza.
++                ki_absorbida = True
+     return ki_absorbida
+ 
+ 
+@@ -944,68 +968,114 @@ def _reconcile_pending_tests(results, env_names, detail):
+ 
+ def _publication_state_after_interrupt(report_path):
+     """Determina el estado real de publicacion del informe tras una
+-    KeyboardInterrupt (C5 — v0.2.11).
++    KeyboardInterrupt (C5 — v0.2.11/v0.2.12).
+ 
+     Verificacion de SOLO LECTURA (ninguna escritura, ningun reintento de
+-    publicacion, ninguna limpieza): compara la identidad (st_dev, st_ino)
+-    del informe final con la del provisional creado por esta ejecucion
+-    (el enlace duro de C1 comparte inode; un archivo ajeno preexistente
+-    con el mismo nombre NO lo comparte y no se confunde).
++    publicacion, ninguna limpieza ni borrado). C5 (v0.2.12): la
++    verificacion se realiza mediante el directorio ANCLADO (C1) y
++    operaciones lstat RELATIVAS a su descriptor (sin seguir enlaces
++    simbolicos y sin comprobaciones de ruta vulnerable a cambios
++    concurrentes). La identidad (st_dev, st_ino) solo se acepta como
++    evidencia si AMBAS entradas son archivos regulares: el enlace duro de
++    C1 produce siempre archivos regulares. Un archivo ajeno preexistente
++    con el mismo nombre NO comparte identidad con el provisional de esta
++    ejecucion y no se confunde. Si el provisional de esta ejecucion
++    desaparecio, el informe final NO se atribuye a esta ejecucion por
++    inferencia: sin evidencia independiente de identidad el estado es
++    INDETERMINADO (otro proceso pudo eliminar el provisional).
+ 
+     Retorna (estado, detalle) con estado en:
+-      'PUBLICADO'     — el informe final existe y es el enlace de esta
+-                        ejecucion (o el provisional fue eliminado tras un
+-                        enlace exitoso: la unica ruta del flujo que lo
+-                        elimina).
+-      'NO_PUBLICADO'  — el provisional de esta ejecucion sigue en disco y
+-                        el informe final no existe, o existe un archivo
+-                        ajeno con identidad distinta.
+-      'INDETERMINADO' — el estado no pudo verificarse (error de acceso
+-                        distinto de inexistencia).
++      'PUBLICADO'     — final y provisional de esta ejecucion existen,
++                        ambos archivos regulares y comparten
++                        (st_dev, st_ino).
++      'NO_PUBLICADO'  — el provisional existe y el final no; o la entrada
++                        del final no comparte identidad con el provisional
++                        (archivo ajeno, entrada no regular como un enlace
++                        simbolico, o enlace no completado); o no existe
++                        ninguno.
++      'INDETERMINADO' — el estado no pudo verificarse (directorio o
++                        entradas inaccesibles), o el provisional de esta
++                        ejecucion desaparecio sin evidencia independiente
++                        de identidad para atribuir el final a esta
++                        ejecucion.
+     """
+-    ruta_final = str(report_path)
+-    ruta_prov = ruta_final + '.tmp'
+-    st_final = None
+-    st_prov = None
+-    try:
+-        st_final = os.stat(ruta_final)
+-    except FileNotFoundError:
+-        st_final = None
+-    except OSError as exc:
++    nombre_final = report_path.name
++    nombre_prov = nombre_final + '.tmp'
++    parent_fd, anchor_msg = safe_open_dir_anchored(str(report_path.parent))
++    if parent_fd < 0:
+         return ('INDETERMINADO',
+-                'no se pudo verificar el informe final (errno={0})'.format(
+-                    exc.errno))
++                'no se pudo abrir el directorio anclado para verificar el '
++                'estado de publicacion ({0})'.format(anchor_msg))
+     try:
+-        st_prov = os.stat(ruta_prov)
+-    except FileNotFoundError:
+-        st_prov = None
+-    except OSError as exc:
+-        return ('INDETERMINADO',
+-                'no se pudo verificar el provisional (errno={0})'.format(
+-                    exc.errno))
+-    if st_final is not None and st_prov is not None:
+-        if ((st_final.st_dev, st_final.st_ino)
+-                == (st_prov.st_dev, st_prov.st_ino)):
+-            return ('PUBLICADO',
+-                    'el informe comparte identidad (st_dev, st_ino) con el '
+-                    'provisional de esta ejecucion: el enlace se completo; '
+-                    'el provisional se conserva (sin limpieza automatica)')
+-        return ('NO_PUBLICADO',
+-                'el informe no se publica: existe un archivo con el nombre '
+-                'del informe pero su identidad no coincide con el '
+-                'provisional de esta ejecucion (archivo ajeno preexistente); '
+-                'provisional conservado')
+-    if st_final is not None and st_prov is None:
+-        return ('PUBLICADO',
+-                'provisional ausente: la unica ruta del flujo que lo '
+-                'elimina es la eliminacion posterior a un enlace exitoso')
+-    if st_final is None and st_prov is not None:
++        try:
++            st_final = os.lstat(nombre_final, dir_fd=parent_fd)
++        except FileNotFoundError:
++            st_final = None
++        except OSError as exc:
++            return ('INDETERMINADO',
++                    'no se pudo verificar el informe final '
++                    '(errno={0})'.format(exc.errno))
++        try:
++            st_prov = os.lstat(nombre_prov, dir_fd=parent_fd)
++        except FileNotFoundError:
++            st_prov = None
++        except OSError as exc:
++            return ('INDETERMINADO',
++                    'no se pudo verificar el provisional '
++                    '(errno={0})'.format(exc.errno))
++        regular_final = (st_final is not None
++                         and stat.S_ISREG(st_final.st_mode))
++        regular_prov = (st_prov is not None
++                        and stat.S_ISREG(st_prov.st_mode))
++        if st_final is not None and st_prov is not None:
++            if (regular_final and regular_prov
++                    and (st_final.st_dev, st_final.st_ino)
++                    == (st_prov.st_dev, st_prov.st_ino)):
++                return ('PUBLICADO',
++                        'el informe comparte identidad (st_dev, st_ino) '
++                        'con el provisional de esta ejecucion (ambos '
++                        'archivos regulares): el enlace se completo; el '
++                        'provisional se conserva (sin limpieza '
++                        'automatica)')
++            return ('NO_PUBLICADO',
++                    'el informe no se publica: la entrada existente y el '
++                    'provisional de esta ejecucion no comparten identidad '
++                    '(archivo ajeno preexistente, entrada no regular o '
++                    'enlace no completado); provisional conservado')
++        if st_final is not None and st_prov is None:
++            if not regular_final:
++                return ('NO_PUBLICADO',
++                        'el informe no se publica: la entrada existente '
++                        'no es un archivo regular (p. ej. enlace '
++                        'simbolico) y no puede ser la publicacion por '
++                        'enlace duro de esta ejecucion')
++            return ('INDETERMINADO',
++                    'el provisional de esta ejecucion no existe y el '
++                    'informe final no puede atribuirse a esta ejecucion '
++                    'por identidad: sin evidencia independiente '
++                    'suficiente (otro proceso pudo eliminar el '
++                    'provisional); no se afirma publicacion ni '
++                    'no-publicacion')
++        if st_final is None and st_prov is not None:
++            return ('NO_PUBLICADO',
++                    'el informe no se publica: provisional de esta '
++                    'ejecucion en disco; informe final inexistente; sin '
++                    'segunda publicacion')
+         return ('NO_PUBLICADO',
+-                'el informe no se publica: provisional de esta ejecucion en '
+-                'disco; informe final inexistente; sin segunda publicacion')
+-    return ('NO_PUBLICADO',
+-            'el informe no se publica: ni el informe final ni el provisional '
+-            'existen')
++                'el informe no se publica: ni el informe final ni el '
++                'provisional existen')
++    finally:
++        # C5 (v0.2.12): cierre best-effort del ancla de verificacion. Si una
++        # KI llega durante este cierre (el ancla es del mismo directorio que
++        # el informe), se absorbe aqui SIN reintento para no perder el
++        # anuncio del estado de publicacion ni el exit 130 del manejador de
++        # la KI original (ya en gestion). El resultado del cierre queda
++        # incierto; los errores OSError sigue registrandolos
++        # _close_fd_tracked (C4-B intacto).
++        try:
++            _close_fd_tracked(parent_fd, 'publication_state_anchor_fd')
++        except KeyboardInterrupt:
++            pass
+ 
+ 
+ def _reconcile_interrupted(interrupt_flag, interrupted, interrupt_msg):
+@@ -2957,7 +3027,17 @@ def main():
+                 'KI se verifica por identidad (st_dev, st_ino) frente al provisional '
+                 '(PUBLICADO / NO_PUBLICADO / INDETERMINADO, nunca una afirmacion '
+                 'falsa); una KI durante la reconstruccion del informe registra la '
+-                'limitacion explicitamente y sale con codigo no nulo.',
++                'no nulo.',
++                'C5 (v0.2.12): el intento de cierre del descriptor propietario '
++                'queda garantizado por un finally que abarca el cierre de '
++                'SoundFile (metodos del propietario pre-vinculados; sin ventana '
++                'de acceso a atributos entre ambas operaciones; sin reintentos '
++                'de cierres inciertos); el estado de publicacion tras una KI se '
++                'verifica por directorio anclado y lstat relativo (sin seguir '
++                'enlaces simbolicos): PUBLICADO solo con identidad '
++                '(st_dev, st_ino) compartida entre final y provisional '
++                'regulares; provisional ausente sin evidencia de identidad '
++                'implica INDETERMINADO, nunca una afirmacion falsa.',
+                 'C5: KeyboardInterrupt y excepciones fatales nunca terminan con codigo 0.',
+                 'C7: escritura completa del informe con manejo de escrituras parciales.',
+             ],
