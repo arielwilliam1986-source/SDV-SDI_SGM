@@ -83,7 +83,7 @@ import struct
 import stat
 from pathlib import Path
 
-SCRIPT_VERSION = "0.2.9"
+SCRIPT_VERSION = "0.2.10"
 SCRIPT_NAME = "audioinput_diag_termux.py"
 
 
@@ -2346,11 +2346,13 @@ def write_report_json_robust(report_path, report_dict):
                 except OSError as exc:
                     err = "fstat errno={0}: {1}".format(exc.errno, os.strerror(exc.errno))
         finally:
-            # C7.3: cerrar el descriptor y conservar errores de cierre
+            # C7.3: cerrar el descriptor y conservar errores de cierre.
+            # C4-B (v0.2.10): close_fd ya registra el error como propietario
+            # (_append_error -> _record_close_error); un registro adicional
+            # aqui duplicaria el mismo evento en el acumulador con otro id.
+            # El detalle se conserva en el retorno via close_err
+            # (closer.summary()) y en el acumulador persistente.
             exc_close = closer.close_fd(tmp_fd, 'report_tmp_fd', token=tmp_token)
-            if exc_close is not None:
-                _record_close_error({"label": 'report_tmp_fd', "errno": exc_close.errno,
-                                     "strerror": os.strerror(exc_close.errno)})
         close_err = closer.summary()
 
         result = None
@@ -2402,8 +2404,10 @@ def write_report_json_robust(report_path, report_dict):
         # conservado y reportado en el resultado del informe.
         exc_parent = _close_fd_tracked(parent_fd, 'report_parent_fd')
         if exc_parent is not None:
-            _record_close_error({"label": 'report_parent_fd', "errno": exc_parent.errno,
-                                 "strerror": os.strerror(exc_parent.errno)})
+            # C4-B (v0.2.10): _close_fd_tracked ya registra el error en el
+            # acumulador persistente; un registro adicional aqui duplicaria
+            # el mismo evento con otro id. El detalle se conserva en el
+            # retorno (parent_close_err se agrega a close_err).
             parent_close_err = "parent_fd close errno={0}: {1}".format(
                 exc_parent.errno, os.strerror(exc_parent.errno))
             if result is not None:
@@ -2741,6 +2745,11 @@ def main():
                 'visibles en la salida de diagnostico); un fallo que no sea interrupcion '
                 'en la fecha de finalizacion no impide construir el informe ni borrar '
                 'errores de cierre.',
+                'C4-B (v0.2.10): registro unico por evento de cierre fallido en la '
+                'escritura del informe (el propietario ya registra; sin doble registro '
+                'del temporal ni del directorio padre) y errores de cierre informados '
+                'tambien ante interrupcion durante la escritura/publicacion (codigo 130 '
+                'conservado, provisional sin borrar, sin segunda publicacion).',
                 'C5: KeyboardInterrupt y excepciones fatales nunca terminan con codigo 0.',
                 'C7: escritura completa del informe con manejo de escrituras parciales.',
             ],
@@ -2805,6 +2814,15 @@ def main():
     except KeyboardInterrupt:
         print("\n[INTERRUMPIDO] KeyboardInterrupt durante la publicacion del "
               "informe; no se publica; el provisional queda en disco")
+        # C4-B (v0.2.10): los errores de cierre producidos durante la
+        # escritura/publicacion interrumpida se informan ANTES de finalizar
+        # con 130: conservados en el acumulador persistente y en la salida
+        # de diagnostico. C5 intacto: mismo codigo de salida, no se publica,
+        # no se borra el provisional, no hay segunda publicacion ni nuevos
+        # fallbacks de escritura.
+        for entry in _drain_close_error_sink():
+            print("  [cierre pendiente] {0}: {1}".format(
+                entry.get('label', '?'), entry.get('strerror', '')))
         sys.exit(130)
     if ok_write:
         print("\nReporte JSON: {0}".format(report_path))
