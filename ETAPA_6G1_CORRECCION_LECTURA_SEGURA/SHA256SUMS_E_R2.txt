@@ -1,0 +1,7 @@
+# SHA-256 de los archivos modificados/añadidos por E-R2 (6G.1)
+# Base de esta entrega: 97d1bd0bd3c430470fa6fa1058fdbcbb61c778f2
+# Formato: <sha256_nuevo>  <ruta>  # previo: <sha256_en_la_base>
+271131772f696bd96162ed54dc0ce72da7010651692f43162fe6182a61209957  ETAPA_6G1_CORRECCION_LECTURA_SEGURA/motores/lectura_segura_6g1.py  # previo: 20bb996bf323531e818173f7c8044de9f148707eef68c6d61842dacbc734f07a
+3f4a7f66c304db0d7217a61c43febcb8d0e02155432bd4b9fb171e6debb80f92  ETAPA_6G1_CORRECCION_LECTURA_SEGURA/scripts/pruebas_e_r2_6g1.py  # previo: e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855
+8b5f0ae049e2036b1b21e69641e17bb1cffec2991e09145c488f85b152aae6c7  ETAPA_6G1_CORRECCION_LECTURA_SEGURA/evidence/pruebas_e_r2_6g1.json  # previo: e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855
+ec9d891f455ffd7bfebffba189fbf2275c3b8b5cb35c5464dd23983c1ddaa460  ETAPA_6G1_CORRECCION_LECTURA_SEGURA/evidence/matriz_e_r2_6g1.csv  # previo: e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855

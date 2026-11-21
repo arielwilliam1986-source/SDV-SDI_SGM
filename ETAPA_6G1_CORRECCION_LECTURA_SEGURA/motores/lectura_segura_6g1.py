@@ -215,25 +215,6 @@ def propiedad_de_6g1(path):
     return True, 'propiedad_acreditada'
 
 
-def _propiedad_fd_acreditada(run_dir, rel, st, datos):
-    """[6G.1-R/E] Acreditación de propiedad de un archivo ya ABIERTO por
-    descriptor (sin rutas): identidad del descriptor contra el registro de la
-    corrida (entrada estable sellada por tamaño/mtime/SHA-256). Fail-closed."""
-    p = os.path.abspath(os.path.join(str(run_dir), rel))
-    reg = _PROPIOS_6G1.get(p)
-    if reg is None:
-        return False, 'ajeno_no_registrado'
-    if not reg.get('estable'):
-        return False, 'registro no sellado'
-    if (st.st_dev, st.st_ino) != (reg['device'], reg['inode']):
-        return False, 'identidad_distinta'
-    if st.st_size != reg['size'] or st.st_mtime_ns != reg['mtime_ns']:
-        return False, 'tamaño/mtime distintos de los registrados'
-    if hashlib.sha256(datos).hexdigest() != reg['sha256']:
-        return False, 'contenido modificado tras el registro'
-    return True, 'propiedad_acreditada'
-
-
 def _es_registro_interno(nombre):
     """Archivos de registro forense que el aborto conserva siempre."""
     return nombre in ('ABORT_6G1.json', 'engine_log.txt',
@@ -255,11 +236,12 @@ def abortar_6g1(run_dir, motivo, detalle=None):
       descriptor del directorio (`O_CREAT|O_EXCL|O_NOFOLLOW` + `dir_fd`): no
       sobrescribe preexistente ni simbólico y nunca escribe fuera del
       directorio de corrida;
-    - `analysis.json` se lee/actualiza sólo si es un **regular no-simbólico**
-      cuya identidad y sello (tamaño/mtime/SHA-256) están **acreditados** en
-      el registro de la corrida, vía descriptor con `O_NOFOLLOW` anclado al
-      directorio; si la propiedad no puede demostrarse, se conserva con el
-      motivo (fail-closed).
+    - `analysis.json` **no se modifica durante el aborto** [6G.1-R/E-R2]:
+      toda la información del aborto se registra exclusivamente en
+      `ABORT_6G1.json`; `analysis.json` permanece byte a byte intacto. Esto
+      elimina la ventana de pérdida de contenido que existía si write()/
+      fsync() fallaba tras ftruncate() (hallazgo E-R2), sin reintroducir
+      escrituras por nombre ni ventanas TOCTOU.
     """
     run_dir = Path(run_dir)
     eliminados, conservados, motivos = [], [], {}
@@ -294,9 +276,12 @@ def abortar_6g1(run_dir, motivo, detalle=None):
     info = dict(schema='abort-6g1/2', motivo=motivo, detalle=detalle,
                 salidas_invalidadas=eliminados, conservados=conservados,
                 motivos_propiedad=motivos,
+                analysis_intacto=True,
                 politica='propiedad_acreditada_o_conserva; sin borrado por '
                          'patrón de nombre ni por ubicación; sin escritura a '
-                         'través de enlaces simbólicos')
+                         'través de enlaces simbólicos; analysis.json no se '
+                         'modifica durante el aborto (E-R2): toda la '
+                         'información del aborto vive en ABORT_6G1.json')
     if run_dir.exists():
         # --- ABORT_6G1.json: creación exclusiva y no-follow anclada al dirfd
         try:
@@ -315,76 +300,17 @@ def abortar_6g1(run_dir, motivo, detalle=None):
                                          '(o enlace); sin sobrescribir')
         except OSError as exc:
             motivos['ABORT_6G1.json'] = ('no escribible de forma segura: %s' % exc)
-        # --- analysis.json: sólo con propiedad e identidad acreditadas
-        # [6G.1-R/E-R1] Sin ventana TOCTOU: el archivo se abre UNA sola vez con
-        # un descriptor de lectura/escritura (O_RDWR | O_NOFOLLOW, anclado al
-        # dirfd); fstat, lectura, acreditación (identidad/sello/SHA-256) y
-        # actualización (ftruncate + escritura) ocurren sobre EL MISMO
-        # descriptor, ya verificado. No hay cierre ni reapertura por nombre
-        # entre la verificación y la escritura: una sustitución del nombre por
-        # otro archivo regular durante la operación no puede recibir la
-        # escritura (ésta sólo alcanza al objeto cuyo descriptor fue
-        # acreditado). Fail-closed: si la acreditación falla, el archivo se
-        # conserva sin modificar y se registra el motivo.
-        try:
-            dirfd = os.open(str(run_dir), os.O_RDONLY | os.O_DIRECTORY)
-            fd = None
-            try:
-                try:
-                    fd = os.open('analysis.json',
-                                 os.O_RDWR | os.O_NOFOLLOW, dir_fd=dirfd)
-                except OSError as exc:
-                    if exc.errno == errno.ENOENT:
-                        fd = None                    # no existe: nada que hacer
-                    else:                            # ELOOP (enlace), EACCES, etc.
-                        fd = None
-                        motivos['analysis.json (actualizacion)'] = ('actualizacion omitida: '
-                                                    'apertura segura fallo (%s)'
-                                                    % exc)
-                if fd is not None:
-                    st = os.fstat(fd)
-                    datos = b''
-                    while True:
-                        bloque = os.read(fd, 1 << 20)
-                        if not bloque:
-                            break
-                        datos += bloque
-                    if not stat.S_ISREG(st.st_mode):
-                        raise OSError('analysis.json no es un archivo regular')
-                    acredita, motivo_a = _propiedad_fd_acreditada(
-                        run_dir, 'analysis.json', st, datos)
-                    if not acredita:
-                        motivos['analysis.json (actualizacion)'] = ('actualizacion omitida: '
-                                                    'propiedad no acreditada (%s)'
-                                                    % motivo_a)
-                    else:
-                        data = json.loads(datos.decode('utf-8'))
-                        if not isinstance(data, dict):
-                            raise ValueError('analysis.json no es un objeto JSON')
-                        data['abort_6g1'] = info
-                        nuevo = json.dumps(data, indent=2, ensure_ascii=False,
-                                           allow_nan=True, default=str)
-                        os.ftruncate(fd, 0)
-                        os.lseek(fd, 0, os.SEEK_SET)
-                        nb = nuevo.encode('utf-8')
-                        escrito = 0
-                        while escrito < len(nb):
-                            escrito += os.write(fd, nb[escrito:])
-                        os.fsync(fd)
-                        motivos['analysis.json (actualizacion)'] = ('actualizado con abort_6g1 '
-                                                    '(identidad acreditada; mismo '
-                                                    'descriptor verificado, sin '
-                                                    'reapertura por nombre)')
-            finally:
-                if fd is not None:
-                    try:
-                        os.close(fd)
-                    except OSError:
-                        pass
-                os.close(dirfd)
-        except Exception as exc:
-            motivos.setdefault('analysis.json',
-                               'actualizacion omitida (fallo seguro): %s' % exc)
+        # --- analysis.json: SIN MODIFICAR durante el aborto [6G.1-R/E-R2]
+        # La actualización con descriptor único (E-R1) dejaba una pérdida de
+        # contenido si write()/fsync() fallaba después de ftruncate(): el
+        # original no era recuperable. Por decisión del responsable se aplica
+        # la solución preferida: analysis.json NO se modifica durante el
+        # aborto; la información completa del aborto (schema, motivo,
+        # salidas_invalidadas, conservados, motivos_propiedad) se registra
+        # exclusivamente en ABORT_6G1.json, que ya tiene creación exclusiva y
+        # no-follow anclada al dirfd. Así la conservación de analysis.json es
+        # estructural (no hay ninguna escritura dirigida a él) y no se
+        # reintroducen escrituras por nombre ni ventanas TOCTOU.
     return info
 
 

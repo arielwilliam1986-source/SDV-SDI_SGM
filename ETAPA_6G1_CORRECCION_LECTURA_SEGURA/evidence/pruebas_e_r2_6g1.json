@@ -1,0 +1,236 @@
+{
+  "schema": "pruebas-e-r2-6g1/1",
+  "filas": [
+    {
+      "prueba": "R2a",
+      "motor": "lectura_segura_6g1",
+      "alcance": "analysis.json propio acreditado: intacto; info íntegra en ABORT_6G1.json",
+      "veredicto": "PASS",
+      "checks_ok": 8,
+      "checks_total": 8,
+      "detalle": "todos los checks OK"
+    },
+    {
+      "prueba": "R2b",
+      "motor": "lectura_segura_6g1",
+      "alcance": "analysis.json ajeno ordinario: intacto y conservado",
+      "veredicto": "PASS",
+      "checks_ok": 5,
+      "checks_total": 5,
+      "detalle": "todos los checks OK"
+    },
+    {
+      "prueba": "R2c",
+      "motor": "lectura_segura_6g1",
+      "alcance": "analysis.json simbólico: externo intacto, enlace conservado",
+      "veredicto": "PASS",
+      "checks_ok": 5,
+      "checks_total": 5,
+      "detalle": "todos los checks OK"
+    },
+    {
+      "prueba": "R2d",
+      "motor": "lectura_segura_6g1",
+      "alcance": "colisión de ABORT_6G1.json: nada sobrescrito; info completa en el retorno",
+      "veredicto": "PASS",
+      "checks_ok": 6,
+      "checks_total": 6,
+      "detalle": "todos los checks OK"
+    },
+    {
+      "prueba": "R2e",
+      "motor": "lectura_segura_6g1",
+      "alcance": "hostil: ftruncate/fsync prohibidos -> aborto completa y analysis.json intacto (conservación estructural)",
+      "veredicto": "PASS",
+      "checks_ok": 5,
+      "checks_total": 5,
+      "detalle": "todos los checks OK"
+    },
+    {
+      "prueba": "R2-estatico",
+      "motor": "lectura_segura_6g1",
+      "alcance": "sin camino de escritura a analysis.json en el código",
+      "veredicto": "PASS",
+      "checks_ok": 4,
+      "checks_total": 4,
+      "detalle": "todos los checks OK"
+    },
+    {
+      "prueba": "R2-e2e",
+      "motor": "Hardened",
+      "alcance": "aborto real: analysis.json intacto; info íntegra en ABORT_6G1.json",
+      "veredicto": "PASS",
+      "checks_ok": 6,
+      "checks_total": 6,
+      "detalle": "todos los checks OK"
+    },
+    {
+      "prueba": "sanidad",
+      "motor": "Hardened",
+      "alcance": "corrida feliz tras E-R2",
+      "veredicto": "PASS",
+      "checks_ok": 4,
+      "checks_total": 4,
+      "detalle": "todos los checks OK"
+    },
+    {
+      "prueba": "R2-e2e",
+      "motor": "EVO",
+      "alcance": "aborto real: analysis.json intacto; info íntegra en ABORT_6G1.json",
+      "veredicto": "PASS",
+      "checks_ok": 6,
+      "checks_total": 6,
+      "detalle": "todos los checks OK"
+    },
+    {
+      "prueba": "sanidad",
+      "motor": "EVO",
+      "alcance": "corrida feliz tras E-R2",
+      "veredicto": "PASS",
+      "checks_ok": 4,
+      "checks_total": 4,
+      "detalle": "todos los checks OK"
+    },
+    {
+      "prueba": "R2-e2e",
+      "motor": "MQR",
+      "alcance": "aborto real: analysis.json intacto; info íntegra en ABORT_6G1.json",
+      "veredicto": "PASS",
+      "checks_ok": 6,
+      "checks_total": 6,
+      "detalle": "todos los checks OK"
+    },
+    {
+      "prueba": "sanidad",
+      "motor": "MQR",
+      "alcance": "corrida feliz tras E-R2",
+      "veredicto": "PASS",
+      "checks_ok": 4,
+      "checks_total": 4,
+      "detalle": "todos los checks OK"
+    }
+  ],
+  "detalles": {
+    "unidad": {
+      "R2a": {
+        "abort": {
+          "schema": "abort-6g1/2",
+          "motivo": "PRUEBA_R2a",
+          "detalle": null,
+          "salidas_invalidadas": [
+            "propio.wav"
+          ],
+          "conservados": [
+            "analysis.json"
+          ],
+          "motivos_propiedad": {
+            "analysis.json": "registro_interno_conservado"
+          },
+          "analysis_intacto": true,
+          "politica": "propiedad_acreditada_o_conserva; sin borrado por patrón de nombre ni por ubicación; sin escritura a través de enlaces simbólicos; analysis.json no se modifica durante el aborto (E-R2): toda la información del aborto vive en ABORT_6G1.json"
+        }
+      },
+      "R2b": {
+        "abort": {
+          "schema": "abort-6g1/2",
+          "motivo": "PRUEBA_R2b",
+          "detalle": null,
+          "salidas_invalidadas": [
+            "propio.wav"
+          ],
+          "conservados": [
+            "analysis.json"
+          ],
+          "motivos_propiedad": {
+            "analysis.json": "registro_interno_conservado"
+          },
+          "analysis_intacto": true,
+          "politica": "propiedad_acreditada_o_conserva; sin borrado por patrón de nombre ni por ubicación; sin escritura a través de enlaces simbólicos; analysis.json no se modifica durante el aborto (E-R2): toda la información del aborto vive en ABORT_6G1.json"
+        }
+      },
+      "R2c": {
+        "abort": {
+          "schema": "abort-6g1/2",
+          "motivo": "PRUEBA_R2c",
+          "detalle": null,
+          "salidas_invalidadas": [
+            "propio.wav"
+          ],
+          "conservados": [
+            "analysis.json"
+          ],
+          "motivos_propiedad": {
+            "analysis.json": "enlace_simbolico_conservado (sin seguir)"
+          },
+          "analysis_intacto": true,
+          "politica": "propiedad_acreditada_o_conserva; sin borrado por patrón de nombre ni por ubicación; sin escritura a través de enlaces simbólicos; analysis.json no se modifica durante el aborto (E-R2): toda la información del aborto vive en ABORT_6G1.json"
+        }
+      },
+      "R2d": {
+        "info": {
+          "schema": "abort-6g1/2",
+          "motivo": "PRUEBA_R2d",
+          "detalle": null,
+          "salidas_invalidadas": [
+            "propio.wav"
+          ],
+          "conservados": [
+            "ABORT_6G1.json",
+            "analysis.json"
+          ],
+          "motivos_propiedad": {
+            "ABORT_6G1.json": "colision: ABORT_6G1.json preexistente (o enlace); sin sobrescribir",
+            "analysis.json": "registro_interno_conservado"
+          },
+          "analysis_intacto": true,
+          "politica": "propiedad_acreditada_o_conserva; sin borrado por patrón de nombre ni por ubicación; sin escritura a través de enlaces simbólicos; analysis.json no se modifica durante el aborto (E-R2): toda la información del aborto vive en ABORT_6G1.json"
+        }
+      },
+      "R2e": {
+        "abort": {
+          "schema": "abort-6g1/2",
+          "motivo": "PRUEBA_R2e",
+          "detalle": null,
+          "salidas_invalidadas": [
+            "propio.wav"
+          ],
+          "conservados": [
+            "analysis.json"
+          ],
+          "motivos_propiedad": {
+            "analysis.json": "registro_interno_conservado"
+          },
+          "analysis_intacto": true,
+          "politica": "propiedad_acreditada_o_conserva; sin borrado por patrón de nombre ni por ubicación; sin escritura a través de enlaces simbólicos; analysis.json no se modifica durante el aborto (E-R2): toda la información del aborto vive en ABORT_6G1.json"
+        }
+      },
+      "R2-estatico": {
+        "estatico": true
+      }
+    },
+    "Hardened": {
+      "E2E": {
+        "exit": 2
+      },
+      "sanidad": {
+        "exit": 0
+      }
+    },
+    "EVO": {
+      "E2E": {
+        "exit": 2
+      },
+      "sanidad": {
+        "exit": 0
+      }
+    },
+    "MQR": {
+      "E2E": {
+        "exit": 2
+      },
+      "sanidad": {
+        "exit": 0
+      }
+    }
+  }
+}
