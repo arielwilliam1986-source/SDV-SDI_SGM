@@ -1,5 +1,7 @@
 # INFORME DE PREPARACIÓN — PILOTO MUSICAL ELIS / TRISTANIA
 
+> **RECTIFICADO 2026-11-21**: leer junto con `INFORME_RECTIFICACION_PILOTO_ELIS_TRISTANIA.md` (mismo directorio). Correcciones principales: (1) la Etapa 6G.1 **sí existe** en la rama `arena/89d5c189-sdv-sdi-sgm`; (2) C5-A/C5-C **aceptados por Cris** — C5 concluida, C1/C4-A/C4-B cerrados y congelados, pendiente solo la validación Android/Termux; (3) S5 sintético ya ejecutado y auditado; la batería `per_channel` (P1–P6) pendiente usa fixtures sintéticos y **no requiere las canciones**; (4) material designado oficialmente: Elis — Die Stadt y Tristania — Lethean River (rutas en §4 de la rectificación, **sin hash ni inspección**); (5) matriz de los 10 defectos de Fase 1B clasificada por defecto. Las secciones de este documento que contradigan la rectificación quedan sustituidas por ella.
+
 **Modalidad**: inspección estática y diagnóstico de solo lectura. **No se ejecutó DSP, no se procesaron canciones, no se abrieron ni copiaron muestras musicales (no existen muestras de audio en el repositorio), no se modificó código.**
 
 - **Fecha**: 2026-11-21
