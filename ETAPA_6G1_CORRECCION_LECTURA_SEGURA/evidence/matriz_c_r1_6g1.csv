@@ -1,0 +1,14 @@
+prueba,motor,alcance,veredicto,checks_ok,checks_total,detalle
+CR1a,lectura_segura_6g1,propios conservados tras el aborto + registro /3,PASS,7,7,todos los checks OK
+CR1b,lectura_segura_6g1,ajenos byte a byte intactos (incluido nombre tipo salida),PASS,6,6,todos los checks OK
+CR1c,lectura_segura_6g1,sustitución concurrente durante el aborto: el sustituto queda intacto (sin unlink),PASS,6,6,todos los checks OK
+CR1d,lectura_segura_6g1,"enlaces simbólicos conservados, nunca seguidos",PASS,4,4,todos los checks OK
+CR1e,lectura_segura_6g1,ABORT_6G1.json: registro de invalidadas y exclusividad (colisión conservada),PASS,4,4,todos los checks OK
+CR1f,lectura_segura_6g1,analysis.json intacto (E-R2 se mantiene),PASS,5,5,todos los checks OK
+CR1-estatico,lectura_segura_6g1,sin camino de borrado en el módulo; schema /3,PASS,5,5,todos los checks OK
+CR1-e2e,Hardened,aborto real: conservación total + registro /3 + fail-closed,PASS,13,13,todos los checks OK
+sanidad,Hardened,corrida feliz tras C-R1,PASS,4,4,todos los checks OK
+CR1-e2e,EVO,aborto real: conservación total + registro /3 + fail-closed,PASS,13,13,todos los checks OK
+sanidad,EVO,corrida feliz tras C-R1,PASS,4,4,todos los checks OK
+CR1-e2e,MQR,aborto real: conservación total + registro /3 + fail-closed,PASS,13,13,todos los checks OK
+sanidad,MQR,corrida feliz tras C-R1,PASS,4,4,todos los checks OK

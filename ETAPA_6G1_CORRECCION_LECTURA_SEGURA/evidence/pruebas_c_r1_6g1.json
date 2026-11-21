@@ -1,0 +1,281 @@
+{
+  "schema": "pruebas-c-r1-6g1/1",
+  "filas": [
+    {
+      "prueba": "CR1a",
+      "motor": "lectura_segura_6g1",
+      "alcance": "propios conservados tras el aborto + registro /3",
+      "veredicto": "PASS",
+      "checks_ok": 7,
+      "checks_total": 7,
+      "detalle": "todos los checks OK"
+    },
+    {
+      "prueba": "CR1b",
+      "motor": "lectura_segura_6g1",
+      "alcance": "ajenos byte a byte intactos (incluido nombre tipo salida)",
+      "veredicto": "PASS",
+      "checks_ok": 6,
+      "checks_total": 6,
+      "detalle": "todos los checks OK"
+    },
+    {
+      "prueba": "CR1c",
+      "motor": "lectura_segura_6g1",
+      "alcance": "sustitución concurrente durante el aborto: el sustituto queda intacto (sin unlink)",
+      "veredicto": "PASS",
+      "checks_ok": 6,
+      "checks_total": 6,
+      "detalle": "todos los checks OK"
+    },
+    {
+      "prueba": "CR1d",
+      "motor": "lectura_segura_6g1",
+      "alcance": "enlaces simbólicos conservados, nunca seguidos",
+      "veredicto": "PASS",
+      "checks_ok": 4,
+      "checks_total": 4,
+      "detalle": "todos los checks OK"
+    },
+    {
+      "prueba": "CR1e",
+      "motor": "lectura_segura_6g1",
+      "alcance": "ABORT_6G1.json: registro de invalidadas y exclusividad (colisión conservada)",
+      "veredicto": "PASS",
+      "checks_ok": 4,
+      "checks_total": 4,
+      "detalle": "todos los checks OK"
+    },
+    {
+      "prueba": "CR1f",
+      "motor": "lectura_segura_6g1",
+      "alcance": "analysis.json intacto (E-R2 se mantiene)",
+      "veredicto": "PASS",
+      "checks_ok": 5,
+      "checks_total": 5,
+      "detalle": "todos los checks OK"
+    },
+    {
+      "prueba": "CR1-estatico",
+      "motor": "lectura_segura_6g1",
+      "alcance": "sin camino de borrado en el módulo; schema /3",
+      "veredicto": "PASS",
+      "checks_ok": 5,
+      "checks_total": 5,
+      "detalle": "todos los checks OK"
+    },
+    {
+      "prueba": "CR1-e2e",
+      "motor": "Hardened",
+      "alcance": "aborto real: conservación total + registro /3 + fail-closed",
+      "veredicto": "PASS",
+      "checks_ok": 13,
+      "checks_total": 13,
+      "detalle": "todos los checks OK"
+    },
+    {
+      "prueba": "sanidad",
+      "motor": "Hardened",
+      "alcance": "corrida feliz tras C-R1",
+      "veredicto": "PASS",
+      "checks_ok": 4,
+      "checks_total": 4,
+      "detalle": "todos los checks OK"
+    },
+    {
+      "prueba": "CR1-e2e",
+      "motor": "EVO",
+      "alcance": "aborto real: conservación total + registro /3 + fail-closed",
+      "veredicto": "PASS",
+      "checks_ok": 13,
+      "checks_total": 13,
+      "detalle": "todos los checks OK"
+    },
+    {
+      "prueba": "sanidad",
+      "motor": "EVO",
+      "alcance": "corrida feliz tras C-R1",
+      "veredicto": "PASS",
+      "checks_ok": 4,
+      "checks_total": 4,
+      "detalle": "todos los checks OK"
+    },
+    {
+      "prueba": "CR1-e2e",
+      "motor": "MQR",
+      "alcance": "aborto real: conservación total + registro /3 + fail-closed",
+      "veredicto": "PASS",
+      "checks_ok": 13,
+      "checks_total": 13,
+      "detalle": "todos los checks OK"
+    },
+    {
+      "prueba": "sanidad",
+      "motor": "MQR",
+      "alcance": "corrida feliz tras C-R1",
+      "veredicto": "PASS",
+      "checks_ok": 4,
+      "checks_total": 4,
+      "detalle": "todos los checks OK"
+    }
+  ],
+  "detalles": {
+    "unidad": {
+      "CR1a": {
+        "abort": {
+          "schema": "abort-6g1/3",
+          "motivo": "PRUEBA_CR1a",
+          "detalle": null,
+          "salidas_invalidadas": [
+            "salida_A.wav",
+            "salida_B.wav"
+          ],
+          "estado_salidas_invalidadas": "conservadas en el provisional; sin eliminación (C-R1)",
+          "resultados_validos": [],
+          "conservados": [],
+          "motivos_propiedad": {
+            "salida_A.wav": "salida_parcial_invalidada_y_conservada (sin eliminación; C-R1)",
+            "salida_B.wav": "salida_parcial_invalidada_y_conservada (sin eliminación; C-R1)"
+          },
+          "analysis_intacto": true,
+          "politica": "sin_eliminacion (C-R1): ningún archivo se elimina durante el aborto; las salidas propias registradas quedan invalidadas y conservadas; sin borrado por patrón de nombre ni por ubicación; sin escritura a través de enlaces simbólicos; analysis.json no se modifica durante el aborto (E-R2): toda la información del aborto vive en ABORT_6G1.json; un directorio con ABORT_6G1.json nunca es una corrida exitosa"
+        }
+      },
+      "CR1b": {
+        "abort": {
+          "schema": "abort-6g1/3",
+          "motivo": "PRUEBA_CR1b",
+          "detalle": null,
+          "salidas_invalidadas": [
+            "propio.wav"
+          ],
+          "estado_salidas_invalidadas": "conservadas en el provisional; sin eliminación (C-R1)",
+          "resultados_validos": [],
+          "conservados": [
+            "SDV.wav",
+            "ajeno_ordinario.txt",
+            "candidates_ajeno.wav"
+          ],
+          "motivos_propiedad": {
+            "SDV.wav": "ajeno_no_registrado",
+            "ajeno_ordinario.txt": "ajeno_no_registrado",
+            "candidates_ajeno.wav": "ajeno_no_registrado",
+            "propio.wav": "salida_parcial_invalidada_y_conservada (sin eliminación; C-R1)"
+          },
+          "analysis_intacto": true,
+          "politica": "sin_eliminacion (C-R1): ningún archivo se elimina durante el aborto; las salidas propias registradas quedan invalidadas y conservadas; sin borrado por patrón de nombre ni por ubicación; sin escritura a través de enlaces simbólicos; analysis.json no se modifica durante el aborto (E-R2): toda la información del aborto vive en ABORT_6G1.json; un directorio con ABORT_6G1.json nunca es una corrida exitosa"
+        }
+      },
+      "CR1c": {
+        "abort": {
+          "schema": "abort-6g1/3",
+          "motivo": "PRUEBA_CR1c",
+          "detalle": null,
+          "salidas_invalidadas": [
+            "otra_salida.wav"
+          ],
+          "estado_salidas_invalidadas": "conservadas en el provisional; sin eliminación (C-R1)",
+          "resultados_validos": [],
+          "conservados": [
+            "salida_concurrente.wav"
+          ],
+          "motivos_propiedad": {
+            "otra_salida.wav": "salida_parcial_invalidada_y_conservada (sin eliminación; C-R1)",
+            "salida_concurrente.wav": "identidad_distinta (sustituido o reemplazado tras el registro)"
+          },
+          "analysis_intacto": true,
+          "politica": "sin_eliminacion (C-R1): ningún archivo se elimina durante el aborto; las salidas propias registradas quedan invalidadas y conservadas; sin borrado por patrón de nombre ni por ubicación; sin escritura a través de enlaces simbólicos; analysis.json no se modifica durante el aborto (E-R2): toda la información del aborto vive en ABORT_6G1.json; un directorio con ABORT_6G1.json nunca es una corrida exitosa"
+        }
+      },
+      "CR1d": {
+        "abort": {
+          "schema": "abort-6g1/3",
+          "motivo": "PRUEBA_CR1d",
+          "detalle": null,
+          "salidas_invalidadas": [],
+          "estado_salidas_invalidadas": "conservadas en el provisional; sin eliminación (C-R1)",
+          "resultados_validos": [],
+          "conservados": [
+            "analysis_link.json",
+            "enlace.json"
+          ],
+          "motivos_propiedad": {
+            "analysis_link.json": "enlace_simbolico_conservado (sin seguir)",
+            "enlace.json": "enlace_simbolico_conservado (sin seguir)"
+          },
+          "analysis_intacto": true,
+          "politica": "sin_eliminacion (C-R1): ningún archivo se elimina durante el aborto; las salidas propias registradas quedan invalidadas y conservadas; sin borrado por patrón de nombre ni por ubicación; sin escritura a través de enlaces simbólicos; analysis.json no se modifica durante el aborto (E-R2): toda la información del aborto vive en ABORT_6G1.json; un directorio con ABORT_6G1.json nunca es una corrida exitosa"
+        }
+      },
+      "CR1e": {
+        "info": {
+          "schema": "abort-6g1/3",
+          "motivo": "PRUEBA_CR1e",
+          "detalle": null,
+          "salidas_invalidadas": [
+            "salida.wav"
+          ],
+          "estado_salidas_invalidadas": "conservadas en el provisional; sin eliminación (C-R1)",
+          "resultados_validos": [],
+          "conservados": [
+            "ABORT_6G1.json"
+          ],
+          "motivos_propiedad": {
+            "ABORT_6G1.json": "colision: ABORT_6G1.json preexistente (o enlace); sin sobrescribir",
+            "salida.wav": "salida_parcial_invalidada_y_conservada (sin eliminación; C-R1)"
+          },
+          "analysis_intacto": true,
+          "politica": "sin_eliminacion (C-R1): ningún archivo se elimina durante el aborto; las salidas propias registradas quedan invalidadas y conservadas; sin borrado por patrón de nombre ni por ubicación; sin escritura a través de enlaces simbólicos; analysis.json no se modifica durante el aborto (E-R2): toda la información del aborto vive en ABORT_6G1.json; un directorio con ABORT_6G1.json nunca es una corrida exitosa"
+        }
+      },
+      "CR1f": {
+        "abort": {
+          "schema": "abort-6g1/3",
+          "motivo": "PRUEBA_CR1f",
+          "detalle": null,
+          "salidas_invalidadas": [],
+          "estado_salidas_invalidadas": "conservadas en el provisional; sin eliminación (C-R1)",
+          "resultados_validos": [],
+          "conservados": [
+            "analysis.json"
+          ],
+          "motivos_propiedad": {
+            "analysis.json": "registro_interno_conservado"
+          },
+          "analysis_intacto": true,
+          "politica": "sin_eliminacion (C-R1): ningún archivo se elimina durante el aborto; las salidas propias registradas quedan invalidadas y conservadas; sin borrado por patrón de nombre ni por ubicación; sin escritura a través de enlaces simbólicos; analysis.json no se modifica durante el aborto (E-R2): toda la información del aborto vive en ABORT_6G1.json; un directorio con ABORT_6G1.json nunca es una corrida exitosa"
+        }
+      },
+      "CR1-estatico": {
+        "estatico": true
+      }
+    },
+    "Hardened": {
+      "E2E": {
+        "exit": 2,
+        "abort_dir": "/tmp/f6g1cr1/Hardened/E2E/out/motorA_run_20261121_232935_partial"
+      },
+      "sanidad": {
+        "exit": 0
+      }
+    },
+    "EVO": {
+      "E2E": {
+        "exit": 2,
+        "abort_dir": "/tmp/f6g1cr1/EVO/E2E/out/motorA_run_20261121_232938_partial"
+      },
+      "sanidad": {
+        "exit": 0
+      }
+    },
+    "MQR": {
+      "E2E": {
+        "exit": 2,
+        "abort_dir": "/tmp/f6g1cr1/MQR/E2E/out/mqr_run_20261121_232941_partial"
+      },
+      "sanidad": {
+        "exit": 0
+      }
+    }
+  }
+}

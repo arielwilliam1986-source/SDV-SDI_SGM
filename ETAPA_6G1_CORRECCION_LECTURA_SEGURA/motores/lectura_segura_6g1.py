@@ -192,6 +192,10 @@ def propiedad_de_6g1(path):
     Devuelve `(es_propia, motivo)`. Fail-closed: cualquier duda conserva el
     archivo (`ajeno_no_registrado`, `identidad_distinta`, `modificado`,
     `no_accesible`).
+
+    [6G.1-R/C-R1] El dictamen es SOLO para clasificar y registrar: el aborto
+    NO elimina archivos, así que una carrera entre este dictamen y cualquier
+    operación posterior ya no puede provocar el borrado de un archivo ajeno.
     """
     p = os.path.abspath(str(path))
     reg = _PROPIOS_6G1.get(p)
@@ -222,13 +226,22 @@ def _es_registro_interno(nombre):
 
 
 def abortar_6g1(run_dir, motivo, detalle=None):
-    """Invalida las salidas de la corrida y registra el aborto (C + E).
+    """Registra el aborto de la corrida conservando TODOS los archivos (C-R1).
 
-    Sólo borra archivos con **propiedad acreditada** por el registro de la
-    corrida (ruta + identidad verificada con `lstat`, sin seguir enlaces).
-    Un archivo ajeno —incluido uno que coincida con un nombre de salida del
-    motor o que esté dentro de `candidates/`— y un archivo registrado cuya
-    identidad actual no coincida se **conservan** con el motivo.
+    [6G.1-R/C-R1] **Sin eliminación de archivos**: el aborto no borra nada.
+    Las salidas propias registradas por la corrida quedan **invalidadas y
+    conservadas** en el provisional (listadas en `salidas_invalidadas`, con
+    `estado_salidas_invalidadas`); los archivos ajenos —incluido uno que
+    coincida con un nombre de salida del motor o que esté dentro de
+    `candidates/`—, los registros internos y los enlaces se **conservan**
+    con su motivo; `resultados_validos` es siempre vacío. La clasificación
+    usa el registro de la corrida (ruta + identidad) SOLO para registrar,
+    nunca como decisión de borrado: la ventana TOCTOU entre la comprobación
+    y `os.unlink` (hallazgo C-R1) deja de existir por construcción. Un
+    directorio con `ABORT_6G1.json` nunca puede publicarse como corrida
+    exitosa (la publicación sólo ocurre por `publicar_dir_6g1` en la ruta de
+    éxito tras la guarda, y los traslados de aborto usan nombres
+    `_aborted*`).
 
     [6G.1-R/E] Seguridad frente a enlaces simbólicos en los archivos internos:
     - el inventario usa `lstat` (los enlaces se conservan, nunca se siguen);
@@ -244,7 +257,7 @@ def abortar_6g1(run_dir, motivo, detalle=None):
       escrituras por nombre ni ventanas TOCTOU.
     """
     run_dir = Path(run_dir)
-    eliminados, conservados, motivos = [], [], {}
+    invalidadas, conservados, motivos = [], [], {}
     if run_dir.exists():
         for p in sorted(run_dir.rglob('*')):
             rel = str(p.relative_to(run_dir))
@@ -264,24 +277,36 @@ def abortar_6g1(run_dir, motivo, detalle=None):
                 continue
             propia, motivo_p = propiedad_de_6g1(p)
             if propia:
-                try:
-                    os.unlink(p)
-                    eliminados.append(rel)
-                except OSError as exc:
-                    conservados.append(rel)
-                    motivos[rel] = 'ERROR al eliminar: %s' % exc
+                # [6G.1-R/C-R1] Sin eliminación: la salida propia registrada
+                # queda INVALIDADA y CONSERVADA en el provisional. Aunque un
+                # proceso concurrente sustituya el archivo tras este
+                # dictamen, nada se borra: el sustituto también sobrevive.
+                invalidadas.append(rel)
+                motivos[rel] = ('salida_parcial_invalidada_y_conservada '
+                                '(sin eliminación; C-R1)')
             else:
                 conservados.append(rel)
                 motivos[rel] = motivo_p
-    info = dict(schema='abort-6g1/2', motivo=motivo, detalle=detalle,
-                salidas_invalidadas=eliminados, conservados=conservados,
+    # [6G.1-R/C-R1] Esquema versionado: abort-6g1/3 (la semántica de
+    # salidas_invalidadas cambia respecto de /2: quedan CONSERVADAS, no
+    # eliminadas). Consumidores actualizados en compatibilidad y documentación.
+    info = dict(schema='abort-6g1/3', motivo=motivo, detalle=detalle,
+                salidas_invalidadas=invalidadas,
+                estado_salidas_invalidadas=('conservadas en el provisional; '
+                                            'sin eliminación (C-R1)'),
+                resultados_validos=[],
+                conservados=conservados,
                 motivos_propiedad=motivos,
                 analysis_intacto=True,
-                politica='propiedad_acreditada_o_conserva; sin borrado por '
+                politica='sin_eliminacion (C-R1): ningún archivo se elimina '
+                         'durante el aborto; las salidas propias registradas '
+                         'quedan invalidadas y conservadas; sin borrado por '
                          'patrón de nombre ni por ubicación; sin escritura a '
                          'través de enlaces simbólicos; analysis.json no se '
                          'modifica durante el aborto (E-R2): toda la '
-                         'información del aborto vive en ABORT_6G1.json')
+                         'información del aborto vive en ABORT_6G1.json; un '
+                         'directorio con ABORT_6G1.json nunca es una corrida '
+                         'exitosa')
     if run_dir.exists():
         # --- ABORT_6G1.json: creación exclusiva y no-follow anclada al dirfd
         try:

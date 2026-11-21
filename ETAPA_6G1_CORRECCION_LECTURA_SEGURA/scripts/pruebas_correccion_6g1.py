@@ -246,7 +246,8 @@ def pruebas_unidad():
                 ok_borrado = rel in info['salidas_invalidadas']
                 checks = [('eliminado', ok_borrado,
                            info['motivos_propiedad'].get(rel, '(sin motivo)'))]
-            ok_schema = info.get('schema') == 'abort-6g1/2'
+            # [6G.1-R/C-R1] compatibilidad de lectura: /2 histórico, /3 vigente
+            ok_schema = info.get('schema') in ('abort-6g1/2', 'abort-6g1/3')
             checks.append(('schema_abort_6g1_2', ok_schema, info.get('schema')))
             filas.append(fila(cid, 'lectura_segura_6g1', desc, checks))
             detalles[cid] = dict(descripcion=desc, rel=rel, clase=clase,
@@ -274,7 +275,8 @@ def estado_aborto(r, motor, esperado_neg=('after', 'ruta'),
         ('abort_json', bool(abort), 'ABORT_6G1.json %s' % ('presente' if abort else 'ausente')),
         ('motivo', abort.get('motivo') == MOTIVO,
          'motivo=%s' % abort.get('motivo')),
-        ('schema_abort_6g1_2', abort.get('schema') == 'abort-6g1/2',
+        # [6G.1-R/C-R1] compatibilidad de lectura: /2 histórico, /3 vigente
+        ('schema_abort_6g1_2', abort.get('schema') in ('abort-6g1/2', 'abort-6g1/3'),
          'schema=%s' % abort.get('schema')),
         ('sin_dir_definitivo', not dirs_definitivos(r['out'], motor),
          'definitivos=%s' % dirs_definitivos(r['out'], motor)),

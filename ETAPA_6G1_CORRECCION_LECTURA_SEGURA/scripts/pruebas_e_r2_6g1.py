@@ -128,7 +128,7 @@ def unidad():
              'abort_6g1' not in json.loads(ruta_a.read_text(encoding='utf-8')), ''),
             ('abort_creado_regular', ab is not None, ''),
             ('abort_info_completa',
-             ab is not None and ab.get('schema') == 'abort-6g1/2'
+             ab is not None and ab.get('schema') in ('abort-6g1/2', 'abort-6g1/3')
              and ab.get('motivo') == 'PRUEBA_R2a'
              and ab.get('analysis_intacto') is True
              and 'propio.wav' in (ab.get('salidas_invalidadas') or []),
@@ -253,7 +253,7 @@ def unidad():
                               .get('ABORT_6G1.json', '')),
              str(info.get('motivos_propiedad', {}).get('ABORT_6G1.json'))),
             ('info_completa_en_retorno',
-             info.get('schema') == 'abort-6g1/2'
+             info.get('schema') in ('abort-6g1/2', 'abort-6g1/3')
              and info.get('analysis_intacto') is True
              and 'propio.wav' in (info.get('salidas_invalidadas') or []), ''),
             ('propio_eliminado', not propio.exists(), ''),
@@ -385,7 +385,7 @@ def motores_er2():
                 checks.append(('analysis_sin_abort_6g1', False, 'ausente'))
             checks += [
                 ('abort_regular_con_info_completa',
-                 ab is not None and ab.get('schema') == 'abort-6g1/2'
+                 ab is not None and ab.get('schema') in ('abort-6g1/2', 'abort-6g1/3')
                  and ab.get('analysis_intacto') is True
                  and ab.get('motivo')
                  and any(s in (ab.get('salidas_invalidadas') or [])
