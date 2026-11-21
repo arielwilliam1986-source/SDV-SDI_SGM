@@ -83,7 +83,7 @@ import struct
 import stat
 from pathlib import Path
 
-SCRIPT_VERSION = "0.2.4"
+SCRIPT_VERSION = "0.2.5"
 SCRIPT_NAME = "audioinput_diag_termux.py"
 
 
@@ -494,10 +494,17 @@ def safe_create_file_exclusive_anchored(path, content_bytes):
         return False, "apertura anclada del padre fallo: {0} (path: {1})".format(
             anchor_msg, parent), None
 
+    # C4 (v0.2.5): propiedad por apertura — el descriptor del archivo se
+    # registra con token y se cierra asociado a el; el descriptor del
+    # directorio padre se cierra con _close_fd_tracked. Los errores de
+    # cierre se conservan y se reportan (sin silencio).
+    closer = CloseErrorLogger()
     close_error = None
     parent_close_error = None
     ok = False
     err = None
+    fd = None
+    fd_token = None
     try:
         try:
             fd = os.open(p.name, os.O_WRONLY | os.O_CREAT | os.O_EXCL
@@ -509,6 +516,8 @@ def safe_create_file_exclusive_anchored(path, content_bytes):
                 err = "os.open anclado errno={0}: {1}".format(
                     exc.errno, os.strerror(exc.errno))
         else:
+            # C4 (v0.2.5): registro de propiedad por apertura (token).
+            fd_token = closer.register_fd(fd, 'create_file_fd')
             try:
                 if content_bytes:
                     # C7: escritura completa con manejo de escrituras parciales
@@ -535,18 +544,21 @@ def safe_create_file_exclusive_anchored(path, content_bytes):
                 if err is None:
                     ok = True
             finally:
-                try:
-                    os.close(fd)
-                except OSError as exc:
-                    close_error = "close errno={0}: {1}".format(exc.errno, os.strerror(exc.errno))
+                # C4 (v0.2.5): cierre asociado al token; error conservado.
+                exc_close = closer.close_fd(fd, 'create_file_fd', token=fd_token)
+                if exc_close is not None:
+                    close_error = "close errno={0}: {1}".format(
+                        exc_close.errno, os.strerror(exc_close.errno))
                     # Si la escritura fue OK pero el cierre fallo, se conserva
                     # el error de cierre (el archivo no se invalida).
+                fd = None
+                fd_token = None
     finally:
-        try:
-            os.close(parent_fd)
-        except OSError as exc:
+        # C4 (v0.2.5): cierre del descriptor del padre conservado (sin silencio).
+        exc_parent = _close_fd_tracked(parent_fd, 'create_file_parent_fd')
+        if exc_parent is not None:
             parent_close_error = "parent_fd close errno={0}: {1}".format(
-                exc.errno, os.strerror(exc.errno))
+                exc_parent.errno, os.strerror(exc_parent.errno))
     close_errors = [e for e in (close_error, parent_close_error) if e]
     if not ok:
         if err is None:
@@ -1121,15 +1133,20 @@ def test_t11_soundfile_fd_closefd_false(np, sf, fixture_path):
     """
     closer = CloseErrorLogger()
     fd = None
+    fd_token = None  # C4 (v0.2.5): token de propiedad de esta apertura
     sfile = None
     try:
         fd = os.open(str(fixture_path), os.O_RDONLY | os.O_NOFOLLOW)
+        # C4 (v0.2.5): registrar la propiedad de la apertura; todos los
+        # cierres de este descriptor en la prueba se asocian al token.
+        fd_token = closer.register_fd(fd, 'fd')
         st = os.fstat(fd)
         try:
             sfile = sf.SoundFile(fd, mode='r', closefd=False)
         except Exception as exc:
-            closer.close_fd(fd, 'fd')
+            closer.close_fd(fd, 'fd', token=fd_token)
             fd = None
+            fd_token = None
             return (Result.FAIL,
                     "SoundFile open fallo: {0}: {1}".format(type(exc).__name__, str(exc)[:80]),
                     closer.errors)
@@ -1142,8 +1159,9 @@ def test_t11_soundfile_fd_closefd_false(np, sf, fixture_path):
                 # C2: cierre incluso ante retorno anticipado
                 closer.close_soundfile(sfile, 'sfile')
                 sfile = None
-                closer.close_fd(fd, 'fd')
+                closer.close_fd(fd, 'fd', token=fd_token)
                 fd = None
+                fd_token = None
                 return (Result.FAIL,
                         "metadatos incorrectos: sr={0}, ch={1}, fr={2}".format(sr, ch, fr),
                         closer.errors)
@@ -1159,15 +1177,17 @@ def test_t11_soundfile_fd_closefd_false(np, sf, fixture_path):
             fd_alive = True
         except OSError as exc:
             fd_alive = False
-            closer.close_fd(fd, 'fd')
+            closer.close_fd(fd, 'fd', token=fd_token)
             fd = None
+            fd_token = None
             return (Result.FAIL,
                     "fd cerrado por SoundFile.close() pese a closefd=False: errno={0}".format(exc.errno),
                     closer.errors)
 
-        # Cierre del fd por el propietario
-        close_err = closer.close_fd(fd, 'fd')
+        # Cierre del fd por el propietario (C4 v0.2.5: asociado al token)
+        close_err = closer.close_fd(fd, 'fd', token=fd_token)
         fd = None
+        fd_token = None
         if close_err is not None:
             return (Result.FAIL,
                     "cierre del fd fallo: errno={0}".format(close_err.errno),
@@ -1179,10 +1199,11 @@ def test_t11_soundfile_fd_closefd_false(np, sf, fixture_path):
                 closer.errors)
     finally:
         # C5/C4: intento de cierre conservador ante excepcion o interrupcion
+        # C4 (v0.2.5): el cierre conservador tambien se asocia al token.
         if sfile is not None:
             closer.close_soundfile(sfile, 'sfile_finally')
         if fd is not None:
-            closer.close_fd(fd, 'fd_finally')
+            closer.close_fd(fd, 'fd_finally', token=fd_token)
 
 
 def test_t12_pread_works(np, sf, fixture_path):
@@ -1195,12 +1216,17 @@ def test_t12_pread_works(np, sf, fixture_path):
     """
     closer = CloseErrorLogger()
     fd = None
+    fd_token = None  # C4 (v0.2.5): token de propiedad de esta apertura
     try:
         fd = os.open(str(fixture_path), os.O_RDONLY | os.O_NOFOLLOW)
+        # C4 (v0.2.5): registrar la propiedad de la apertura; todos los
+        # cierres de este descriptor en la prueba se asocian al token.
+        fd_token = closer.register_fd(fd, 'fd')
         size = os.fstat(fd).st_size
         if size < 200:
-            closer.close_fd(fd, 'fd')
+            closer.close_fd(fd, 'fd', token=fd_token)
             fd = None
+            fd_token = None
             return (Result.FAIL, "archivo demasiado pequeno: {0} bytes".format(size),
                     closer.errors)
         first = os.pread(fd, 100, 0)
@@ -1212,15 +1238,16 @@ def test_t12_pread_works(np, sf, fixture_path):
         detail = ("pread(0,100)={0}B, pread(size-100,100)={1}B, fd_pos={2}, "
                   "offset_ok={3}, reads_ok={4}").format(
                       len(first), len(last), pos, offset_ok, reads_ok)
-        close_err = closer.close_fd(fd, 'fd')
+        close_err = closer.close_fd(fd, 'fd', token=fd_token)
         fd = None
+        fd_token = None
         if close_err is not None:
             status = Result.FAIL
             detail += "; cierre_fd_fallo: errno={0}".format(close_err.errno)
         return (status, detail, closer.errors)
     finally:
         if fd is not None:
-            closer.close_fd(fd, 'fd_finally')
+            closer.close_fd(fd, 'fd_finally', token=fd_token)
 
 
 def test_t13_pread_hash_matches_canonical(np, sf, fixture_path):
@@ -1235,8 +1262,12 @@ def test_t13_pread_hash_matches_canonical(np, sf, fixture_path):
     """
     closer = CloseErrorLogger()
     fd = None
+    fd_token = None  # C4 (v0.2.5): token de propiedad de esta apertura
     try:
         fd = os.open(str(fixture_path), os.O_RDONLY | os.O_NOFOLLOW)
+        # C4 (v0.2.5): registrar la propiedad de la apertura; todos los
+        # cierres de este descriptor en la prueba se asocian al token.
+        fd_token = closer.register_fd(fd, 'fd')
         pread_result = sha256_pread_v2(fd)
         pos_after = os.lseek(fd, 0, os.SEEK_CUR)
         offset_preserved = (pos_after == 0)
@@ -1263,8 +1294,9 @@ def test_t13_pread_hash_matches_canonical(np, sf, fixture_path):
         if canon_size != pread_result.bytes_read:
             checks.append("sizes_differ canon={0} pread={1}".format(
                 canon_size, pread_result.bytes_read))
-        close_err = closer.close_fd(fd, 'fd')
+        close_err = closer.close_fd(fd, 'fd', token=fd_token)
         fd = None
+        fd_token = None
         if close_err is not None:
             checks.append("cierre_fd_fallo errno={0}".format(close_err.errno))
         if checks:
@@ -1275,7 +1307,7 @@ def test_t13_pread_hash_matches_canonical(np, sf, fixture_path):
                 closer.errors)
     finally:
         if fd is not None:
-            closer.close_fd(fd, 'fd_finally')
+            closer.close_fd(fd, 'fd_finally', token=fd_token)
 
 
 def test_t14_pread_coexists_with_soundfile(np, sf, fixture_path):
@@ -1305,6 +1337,7 @@ def test_t14_pread_coexists_with_soundfile(np, sf, fixture_path):
     """
     closer = CloseErrorLogger()
     fd = None
+    fd_token = None  # C4 (v0.2.5): token de propiedad de esta apertura
     sfile = None
     checks_status = []  # Lista de (name, status, detail) donde status ∈ {OK, FAIL, NOT_DONE}
 
@@ -1341,6 +1374,9 @@ def test_t14_pread_coexists_with_soundfile(np, sf, fixture_path):
         # 1. Apertura del descriptor original
         try:
             fd = os.open(str(fixture_path), os.O_RDONLY | os.O_NOFOLLOW)
+            # C4 (v0.2.5): registrar la propiedad de la apertura; el cierre
+            # de este descriptor se asocia al token en toda la prueba.
+            fd_token = closer.register_fd(fd, 'fd')
             st_open = os.fstat(fd)
             record_check('01_open_fd', 'OK', "fd={0} size={1}".format(fd, st_open.st_size))
         except OSError as exc:
@@ -1483,8 +1519,10 @@ def test_t14_pread_coexists_with_soundfile(np, sf, fixture_path):
                          "OSError errno={0}: {1}".format(exc.errno, os.strerror(exc.errno)))
 
         # 11. Cierre explicito del descriptor por el propietario
-        close_err = closer.close_fd(fd, 'fd')
+        # C4 (v0.2.5): asociado al token de la apertura registrada.
+        close_err = closer.close_fd(fd, 'fd', token=fd_token)
         fd = None
+        fd_token = None
         if close_err is None:
             record_check('11_fd_close', 'OK', "cierre OK")
         else:
@@ -1499,10 +1537,11 @@ def test_t14_pread_coexists_with_soundfile(np, sf, fixture_path):
         return (Result.PASS, format_checks(checks_status), closer.errors)
     finally:
         # C2.4 / C5 / C4: intento de cierre conservador ante excepcion o interrupcion
+        # C4 (v0.2.5): el cierre conservador tambien se asocia al token.
         if sfile is not None:
             closer.close_soundfile(sfile, 'sfile_finally')
         if fd is not None:
-            closer.close_fd(fd, 'fd_finally')
+            closer.close_fd(fd, 'fd_finally', token=fd_token)
 
 
 def format_checks(checks_status):
@@ -1524,39 +1563,47 @@ def test_t15_libsndfile_error_raised(np, sf, fixture_dir):
     """
     closer = CloseErrorLogger()
     dir_fd = None
+    dir_fd_token = None  # C4 (v0.2.5): token de propiedad de esta apertura
     try:
         dir_fd = os.open(str(fixture_dir), os.O_RDONLY)
+        # C4 (v0.2.5): registrar la propiedad de la apertura; los cierres
+        # de este descriptor se asocian al token en toda la prueba.
+        dir_fd_token = closer.register_fd(dir_fd, 'dir_fd')
         try:
             sfile = sf.SoundFile(dir_fd, mode='r', closefd=False)
             # Si llegamos aqui, no fallo como esperabamos
             closer.close_soundfile(sfile, 'sfile_unexpected')
-            closer.close_fd(dir_fd, 'dir_fd')
+            closer.close_fd(dir_fd, 'dir_fd', token=dir_fd_token)
             dir_fd = None
+            dir_fd_token = None
             return (Result.FAIL, "SoundFile acepto fd de directorio (no esperado)",
                     closer.errors)
         except sf.LibsndfileError as exc:
-            close_err = closer.close_fd(dir_fd, 'dir_fd')
+            close_err = closer.close_fd(dir_fd, 'dir_fd', token=dir_fd_token)
             dir_fd = None
+            dir_fd_token = None
             detail = "LibsndfileError capturada: {0}".format(str(exc)[:80])
             if close_err is not None:
                 detail += "; cierre_dir_fd_fallo errno={0}".format(close_err.errno)
                 return (Result.FAIL, detail + " (cierre fallo)", closer.errors)
             return (Result.PASS, detail, closer.errors)
         except OSError as exc:
-            close_err = closer.close_fd(dir_fd, 'dir_fd')
+            close_err = closer.close_fd(dir_fd, 'dir_fd', token=dir_fd_token)
             dir_fd = None
+            dir_fd_token = None
             return (Result.FAIL,
                     "Se lanzo OSError en lugar de LibsndfileError: errno={0}".format(exc.errno),
                     closer.errors)
         except Exception as exc:
-            close_err = closer.close_fd(dir_fd, 'dir_fd')
+            close_err = closer.close_fd(dir_fd, 'dir_fd', token=dir_fd_token)
             dir_fd = None
+            dir_fd_token = None
             return (Result.FAIL,
                     "Excepcion no esperada: {0}: {1}".format(type(exc).__name__, str(exc)[:80]),
                     closer.errors)
     finally:
         if dir_fd is not None:
-            closer.close_fd(dir_fd, 'dir_fd_finally')
+            closer.close_fd(dir_fd, 'dir_fd_finally', token=dir_fd_token)
 
 
 def test_t16_fd_survives_closefd_false_failure(np, sf, fixture_dir):
@@ -1569,21 +1616,27 @@ def test_t16_fd_survives_closefd_false_failure(np, sf, fixture_dir):
     """
     closer = CloseErrorLogger()
     dir_fd = None
+    dir_fd_token = None  # C4 (v0.2.5): token de propiedad de esta apertura
     try:
         dir_fd = os.open(str(fixture_dir), os.O_RDONLY)
+        # C4 (v0.2.5): registrar la propiedad de la apertura; los cierres
+        # de este descriptor se asocian al token en toda la prueba.
+        dir_fd_token = closer.register_fd(dir_fd, 'dir_fd')
         try:
             sfile = sf.SoundFile(dir_fd, mode='r', closefd=False)
             # Si llegamos aqui, no fallo como esperabamos
             closer.close_soundfile(sfile, 'sfile_unexpected')
-            closer.close_fd(dir_fd, 'dir_fd')
+            closer.close_fd(dir_fd, 'dir_fd', token=dir_fd_token)
             dir_fd = None
+            dir_fd_token = None
             return (Result.FAIL, "SoundFile acepto fd de directorio (no esperado)",
                     closer.errors)
         except sf.LibsndfileError:
             pass  # Esperado
         except Exception as exc:
-            close_err = closer.close_fd(dir_fd, 'dir_fd')
+            close_err = closer.close_fd(dir_fd, 'dir_fd', token=dir_fd_token)
             dir_fd = None
+            dir_fd_token = None
             return (Result.FAIL,
                     "Excepcion no esperada: {0}: {1}".format(type(exc).__name__, str(exc)[:80]),
                     closer.errors)
@@ -1598,15 +1651,18 @@ def test_t16_fd_survives_closefd_false_failure(np, sf, fixture_dir):
                 detail = "fd cerrado por libsndfile pese a closefd=False (EBADF)"
             else:
                 detail = "fstat errno={0}: {1}".format(exc.errno, os.strerror(exc.errno))
-            close_err = closer.close_fd(dir_fd, 'dir_fd')
+            close_err = closer.close_fd(dir_fd, 'dir_fd', token=dir_fd_token)
             dir_fd = None
+            dir_fd_token = None
             if close_err is not None:
                 detail += "; cierre fallo errno={0}".format(close_err.errno)
             return (Result.FAIL, detail, closer.errors)
 
         # Cierre exitoso del fd por el propietario
-        close_err = closer.close_fd(dir_fd, 'dir_fd')
+        # C4 (v0.2.5): asociado al token de la apertura registrada.
+        close_err = closer.close_fd(dir_fd, 'dir_fd', token=dir_fd_token)
         dir_fd = None
+        dir_fd_token = None
         if close_err is not None:
             return (Result.FAIL,
                     "cierre fd fallo: errno={0}".format(close_err.errno),
@@ -1615,7 +1671,7 @@ def test_t16_fd_survives_closefd_false_failure(np, sf, fixture_dir):
                 closer.errors)
     finally:
         if dir_fd is not None:
-            closer.close_fd(dir_fd, 'dir_fd_finally')
+            closer.close_fd(dir_fd, 'dir_fd_finally', token=dir_fd_token)
 
 
 # ----------------------------------------------------------------------------
@@ -1643,6 +1699,29 @@ def run_environment(np, sf, env_name, env_parent_dir, results, run_id, interrupt
     # C1: crear directorio de ejecucion exclusivo (anclado)
     try:
         safe_makedirs_exclusive_anchored(run_dir)
+    except KeyboardInterrupt:
+        # C5 (v0.2.5): interrupcion durante la creacion del directorio de
+        # ejecucion. Coherente con la ruta OSError: todas las pruebas del
+        # entorno se registran NOT_EXECUTED (nunca PASS, no se inventan
+        # resultados), el flag global de interrupcion se setea y los
+        # errores de cierre acumulados se conservan en la primera entrada.
+        interrupt_flag[0] = True
+        msg = ("KeyboardInterrupt durante creacion del directorio de "
+               "ejecucion; prueba no ejecutada")
+        close_errs = _drain_close_error_sink()
+        first_entry = True
+        for fname in ['pcm16', 'pcm24', 'pcm32', 'float32']:
+            for tid in ['T11', 'T12', 'T13', 'T14']:
+                results.append({'env': env_name, 'test': tid, 'fixture': fname,
+                                'status': Result.NOT_EXECUTED, 'detail': msg,
+                                'close_errors': close_errs if first_entry else []})
+                first_entry = False
+        for tid in ['T15', 'T16']:
+            results.append({'env': env_name, 'test': tid, 'fixture': None,
+                            'status': Result.NOT_EXECUTED, 'detail': msg,
+                            'close_errors': []})
+        print("  [NOT_EXECUTED] {0}".format(msg))
+        return None  # Sin run_dir creado
     except OSError as exc:
         msg = "No se pudo crear directorio de ejecucion {0}: errno={1} ({2})".format(
             run_dir, exc.errno, os.strerror(exc.errno) if exc.errno else str(exc))
@@ -2245,108 +2324,154 @@ def main():
     interrupted, interrupt_msg = _reconcile_interrupted(
         interrupt_flag, interrupted, interrupt_msg)
 
-    # C4 (v0.2.3): conservar errores de cierre acumulados a nivel de
-    # entorno (creacion de fixtures, cierres absorbidos) que no tuvieron
-    # un resultado propio, para que no se pierdan y queden en el informe.
-    env_close_errors = _drain_close_error_sink()
+    # C5 (v0.2.5): la construccion del informe se realiza en una funcion
+    # auxiliar para poder reconstruirlo de forma consistente si una
+    # interrupcion cae en la fase de resumen. El contenido del informe
+    # definido en v0.2.4 no se modifica (solo se anaden las notas v0.2.5).
+    def _finalize_report(interrupted_state, interrupt_message):
+        """Construye el informe final a partir de los resultados obtenidos.
 
-    finished_at = time.strftime('%Y-%m-%dT%H:%M:%S%z')
+        Retorna (env_close_errors, finished_at, counts, total, report).
+        """
+        env_close_errors_local = _drain_close_error_sink()
+        finished_at_local = time.strftime('%Y-%m-%dT%H:%M:%S%z')
+        counts_local = {'PASS': 0, 'FAIL': 0, 'NOT_EXECUTED': 0, 'ERROR': 0}
+        for r in results:
+            counts_local[r['status']] = counts_local.get(r['status'], 0) + 1
+        total_local = len(results)
+        report_local = {
+            'metadata': meta,
+            'started_at': started_at,
+            'finished_at': finished_at_local,
+            'run_id': run_id,
+            'interrupted': interrupted_state,
+            'interrupt_message': interrupt_message,
+            'fatal_exception': (str(type(fatal_exception).__name__) + ": " + str(fatal_exception)[:200])
+                               if fatal_exception else None,
+            'fatal_traceback': traceback.format_exception(type(fatal_exception), fatal_exception,
+                                                          fatal_exception.__traceback__) if fatal_exception else None,
+            'private_parent_dir': str(private_parent),
+            'shared_parent_dir': str(shared_parent) if shared_parent else None,
+            'private_run_dir': str(private_run_dir) if private_run_dir else None,
+            'shared_run_dir': str(shared_run_dir) if shared_run_dir else None,
+            # C4 (v0.2.3): errores de cierre acumulados a nivel de entorno
+            'environment_close_errors': env_close_errors_local,
+            'results': results,
+            'summary': {
+                'total': total_local,
+                'pass': counts_local.get('PASS', 0),
+                'fail': counts_local.get('FAIL', 0),
+                'not_executed': counts_local.get('NOT_EXECUTED', 0),
+                'error': counts_local.get('ERROR', 0),
+                'interrupted': interrupted_state,
+            },
+            'notes': [
+                'Este diagnostico NO ejecuta codigo del proyecto SDV-SDI_SGM.',
+                'NO modifica archivos originales del usuario.',
+                'Crea exclusivamente fixtures sinteticos en directorios de ejecucion exclusivos.',
+                'NO realiza limpieza automatica: los fixtures y el informe quedan en disco.',
+                'NO usa /proc/self/fd como mecanismo de apertura.',
+                'NO usa closefd=True en pruebas de apertura directa.',
+                'NO introduce fallbacks por ruta.',
+                'NO declara compatibilidad general de Android basada en estas pruebas.',
+                'Los resultados son especificos al dispositivo, entorno y versiones utilizadas.',
+                'C1: directorios de ejecucion y archivos creados con O_CREAT|O_EXCL|O_NOFOLLOW.',
+                'C1: recorrido anclado por dir_fd + O_DIRECTORY + O_NOFOLLOW cuando es viable.',
+                'C1 (v0.2.4): eliminados fallbacks por ruta; creaciones ancladas por dir_fd; '
+                'publicacion del informe por os.link anclado (nombres relativos), atomica y '
+                'sin sobrescritura; si el mecanismo no es viable, se conserva el provisional '
+                'y se reporta explicitamente.',
+                'C2: T14 ejecuta todas las comprobaciones obligatorias antes de declarar PASS; '
+                'comprobaciones no realizadas se registran como NOT_DONE.',
+                'C3: sha256_pread_v2 clasifica COMPLETE/ZERO_SIZE/EMPTY_UNEXPECTED/PARTIAL/SIZE_CHANGED/SYSTEM_ERROR.',
+                'C3: SIZE_CHANGED no es deteccion completa de modificaciones concurrentes; '
+                'cambios de contenido sin cambio de tamano pasan inadvertidos.',
+                'C4: errores de cierre registrados en cada resultado (campo close_errors).',
+                'C4 (v0.2.4): modelo de propiedad por apertura: cada descriptor se registra '
+                'con un token único de apertura; el numero de fd y (st_dev, st_ino) no se '
+                'consideran identidad suficiente; no se cierra un recurso ajeno por '
+                'reutilizacion del numero de fd y no hay silencio de errores de cierre.',
+                'C4 (v0.2.4): errores de cierre conservados en todos los cierres revisados '
+                '(no hay except OSError: pass); se distingue el error primario del '
+                'secundario de cierre.',
+                'C4 (v0.2.5): registro de propiedad por token en todas las aperturas de '
+                'descriptores de las pruebas T11-T16 y en safe_create_file_exclusive_anchored; '
+                'los cierres se asocian al token de su apertura concreta; verificado sin '
+                'fuga de descriptores por prueba.',
+                'C5 (v0.2.4): toda interrupcion (prueba, creacion de fixture, escritura del '
+                'informe) se refleja en el estado global; interrupcion nunca PASS; pruebas '
+                'posteriores NOT_EXECUTED; rc no nulo; segundo entorno no iniciado.',
+                'C5 (v0.2.5): la fase de resumen/construccion del informe y la publicacion '
+                'estan protegidas contra KeyboardInterrupt: los resultados obtenidos se '
+                'conservan y el informe se publica con interrupted=true; una KI durante la '
+                'publicacion deja el provisional en disco y sale con rc 130; la creacion '
+                'anclada del directorio de ejecucion interrumpida registra el entorno '
+                'NOT_EXECUTED.',
+                'C5: KeyboardInterrupt y excepciones fatales nunca terminan con codigo 0.',
+                'C7: escritura completa del informe con manejo de escrituras parciales.',
+            ],
+        }
+        return (env_close_errors_local, finished_at_local, counts_local,
+                total_local, report_local)
 
-    # Resumen
-    print("\n" + "=" * 60)
-    print("=== RESUMEN ===")
-    print("=" * 60)
-    counts = {'PASS': 0, 'FAIL': 0, 'NOT_EXECUTED': 0, 'ERROR': 0}
-    for r in results:
-        counts[r['status']] = counts.get(r['status'], 0) + 1
-    total = len(results)
-    print("Total: {0}".format(total))
-    for k in ['PASS', 'FAIL', 'NOT_EXECUTED', 'ERROR']:
-        print("  {0}: {1}".format(k, counts.get(k, 0)))
-    if interrupted:
-        print("  INTERRUMPIDO: {0}".format(interrupt_msg))
-    print()
+    # C5 (v0.2.5): la fase de resumen y construccion del informe queda
+    # protegida contra KeyboardInterrupt: una interrupcion en esta ventana
+    # conserva los resultados ya obtenidos y publica el informe con
+    # interrupted=true y codigo de salida no nulo.
+    try:
+        env_close_errors, finished_at, counts, total, report = _finalize_report(
+            interrupted, interrupt_msg)
 
-    # Detalle por entorno
-    for env in ['A_private', 'B_shared']:
-        print("\n--- {0} ---".format(env))
-        env_results = [r for r in results if r['env'] == env]
-        for r in env_results:
-            fx = r['fixture'] or '-'
-            detail_short = str(r['detail'])[:60]
-            close_errs = r.get('close_errors', [])
-            close_str = ""
-            if close_errs:
-                close_str = " close_errs={0}".format(len(close_errs))
-            print("  {0} [{1:12}] {2:10} {3}{4}".format(
-                r['test'], r['status'], fx, detail_short, close_str))
+        # Resumen
+        print("\n" + "=" * 60)
+        print("=== RESUMEN ===")
+        print("=" * 60)
+        print("Total: {0}".format(total))
+        for k in ['PASS', 'FAIL', 'NOT_EXECUTED', 'ERROR']:
+            print("  {0}: {1}".format(k, counts.get(k, 0)))
+        if interrupted:
+            print("  INTERRUMPIDO: {0}".format(interrupt_msg))
+        print()
 
-    # Construir reporte JSON
-    report = {
-        'metadata': meta,
-        'started_at': started_at,
-        'finished_at': finished_at,
-        'run_id': run_id,
-        'interrupted': interrupted,
-        'interrupt_message': interrupt_msg,
-        'fatal_exception': (str(type(fatal_exception).__name__) + ": " + str(fatal_exception)[:200])
-                           if fatal_exception else None,
-        'fatal_traceback': traceback.format_exception(type(fatal_exception), fatal_exception,
-                                                      fatal_exception.__traceback__) if fatal_exception else None,
-        'private_parent_dir': str(private_parent),
-        'shared_parent_dir': str(shared_parent) if shared_parent else None,
-        'private_run_dir': str(private_run_dir) if private_run_dir else None,
-        'shared_run_dir': str(shared_run_dir) if shared_run_dir else None,
-        # C4 (v0.2.3): errores de cierre acumulados a nivel de entorno
-        'environment_close_errors': env_close_errors,
-        'results': results,
-        'summary': {
-            'total': total,
-            'pass': counts.get('PASS', 0),
-            'fail': counts.get('FAIL', 0),
-            'not_executed': counts.get('NOT_EXECUTED', 0),
-            'error': counts.get('ERROR', 0),
-            'interrupted': interrupted,
-        },
-        'notes': [
-            'Este diagnostico NO ejecuta codigo del proyecto SDV-SDI_SGM.',
-            'NO modifica archivos originales del usuario.',
-            'Crea exclusivamente fixtures sinteticos en directorios de ejecucion exclusivos.',
-            'NO realiza limpieza automatica: los fixtures y el informe quedan en disco.',
-            'NO usa /proc/self/fd como mecanismo de apertura.',
-            'NO usa closefd=True en pruebas de apertura directa.',
-            'NO introduce fallbacks por ruta.',
-            'NO declara compatibilidad general de Android basada en estas pruebas.',
-            'Los resultados son especificos al dispositivo, entorno y versiones utilizadas.',
-            'C1: directorios de ejecucion y archivos creados con O_CREAT|O_EXCL|O_NOFOLLOW.',
-            'C1: recorrido anclado por dir_fd + O_DIRECTORY + O_NOFOLLOW cuando es viable.',
-            'C1 (v0.2.4): eliminados fallbacks por ruta; creaciones ancladas por dir_fd; '
-            'publicacion del informe por os.link anclado (nombres relativos), atomica y '
-            'sin sobrescritura; si el mecanismo no es viable, se conserva el provisional '
-            'y se reporta explicitamente.',
-            'C2: T14 ejecuta todas las comprobaciones obligatorias antes de declarar PASS; '
-            'comprobaciones no realizadas se registran como NOT_DONE.',
-            'C3: sha256_pread_v2 clasifica COMPLETE/ZERO_SIZE/EMPTY_UNEXPECTED/PARTIAL/SIZE_CHANGED/SYSTEM_ERROR.',
-            'C3: SIZE_CHANGED no es deteccion completa de modificaciones concurrentes; '
-            'cambios de contenido sin cambio de tamano pasan inadvertidos.',
-            'C4: errores de cierre registrados en cada resultado (campo close_errors).',
-            'C4 (v0.2.4): modelo de propiedad por apertura: cada descriptor se registra '
-            'con un token único de apertura; el numero de fd y (st_dev, st_ino) no se '
-            'consideran identidad suficiente; no se cierra un recurso ajeno por '
-            'reutilizacion del numero de fd y no hay silencio de errores de cierre.',
-            'C4 (v0.2.4): errores de cierre conservados en todos los cierres revisados '
-            '(no hay except OSError: pass); se distingue el error primario del '
-            'secundario de cierre.',
-            'C5 (v0.2.4): toda interrupcion (prueba, creacion de fixture, escritura del '
-            'informe) se refleja en el estado global; interrupcion nunca PASS; pruebas '
-            'posteriores NOT_EXECUTED; rc no nulo; segundo entorno no iniciado.',
-            'C5: KeyboardInterrupt y excepciones fatales nunca terminan con codigo 0.',
-            'C7: escritura completa del informe con manejo de escrituras parciales.',
-        ],
-    }
+        # Detalle por entorno
+        for env in ['A_private', 'B_shared']:
+            print("\n--- {0} ---".format(env))
+            env_results = [r for r in results if r['env'] == env]
+            for r in env_results:
+                fx = r['fixture'] or '-'
+                detail_short = str(r['detail'])[:60]
+                close_errs = r.get('close_errors', [])
+                close_str = ""
+                if close_errs:
+                    close_str = " close_errs={0}".format(len(close_errs))
+                print("  {0} [{1:12}] {2:10} {3}{4}".format(
+                    r['test'], r['status'], fx, detail_short, close_str))
+    except KeyboardInterrupt:
+        # C5 (v0.2.5): KI en la fase de resumen/construccion del informe:
+        # estado global coherente y reconstruccion del informe (los
+        # resultados obtenidos no se pierden).
+        interrupted = True
+        interrupt_flag[0] = True
+        interrupt_msg = ((interrupt_msg + "; ") if interrupt_msg else "") + \
+            "KeyboardInterrupt durante la preparacion del resumen/informe; " \
+            "resultados conservados"
+        interrupted, interrupt_msg = _reconcile_interrupted(
+            interrupt_flag, interrupted, interrupt_msg)
+        print("\n[KI durante la preparacion del informe: resultados "
+              "conservados; informe con interrupted=true]")
+        env_close_errors, finished_at, counts, total, report = _finalize_report(
+            interrupted, interrupt_msg)
 
     # C5/C7: escribir reporte JSON de forma robusta
-    ok_write, write_err, close_err = write_report_json_robust(report_path, report)
+    # C5 (v0.2.5): una KI durante la publicacion no publica el informe
+    # (el provisional queda en disco; mecanismo C1 de v0.2.4 sin cambios)
+    # y sale con codigo no nulo y mensaje explicito.
+    try:
+        ok_write, write_err, close_err = write_report_json_robust(report_path, report)
+    except KeyboardInterrupt:
+        print("\n[INTERRUMPIDO] KeyboardInterrupt durante la publicacion del "
+              "informe; no se publica; el provisional queda en disco")
+        sys.exit(130)
     if ok_write:
         print("\nReporte JSON: {0}".format(report_path))
     else:
