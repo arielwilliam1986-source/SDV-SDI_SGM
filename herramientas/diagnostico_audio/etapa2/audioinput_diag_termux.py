@@ -83,7 +83,7 @@ import struct
 import stat
 from pathlib import Path
 
-SCRIPT_VERSION = "0.2.7"
+SCRIPT_VERSION = "0.2.8"
 SCRIPT_NAME = "audioinput_diag_termux.py"
 
 
@@ -927,38 +927,55 @@ class OwnedFdResource(object):
                                            self.state, self.close_result))
 
 
-class _ReadOnlyResourceView(object):
-    """Vista de SOLO LECTURA de un OwnedFdResource (C4-A cierre, v0.2.7).
+class _ResourceSnapshot(object):
+    """Instantanea INMUTABLE del estado de consulta de un recurso (v0.2.8).
 
-    get_resource(token) retorna esta vista: otros componentes pueden
-    CONSULTAR el estado (state, close_result, fd, dev, ino, label, token,
-    acceso tipo dict de compatibilidad) pero NO modificarlo — cualquier
-    intento de asignacion de atributo lanza AttributeError. El estado y la
-    propiedad del recurso solo se modifican dentro del logger propietario
-    (transiciones de la maquina de estados), cumpliendo el requisito C4-A
-    de que ningun componente externo altere la propiedad.
+    get_resource(token) retorna una copia puntual de los campos de
+    consulta (token, fd, label, dev, ino, state, close_result) del
+    recurso interno; NO expone ni conserva referencia alguna al objeto
+    OwnedFdResource (no existe _res ni ningun atributo de reenvio), de
+    modo que ningun consumidor externo puede modificar el estado, el
+    descriptor o la propiedad del recurso a traves del objeto retornado.
+
+    - Lectura por atributo y por clave (compatibilidad de consulta).
+    - Los intentos de asignacion de atributos o claves son rechazados:
+      la instantanea es de solo lectura.
+    - La instantanea es una COPIA: incluso una mutacion hostil de sus
+      campos (p. ej. via object.__setattr__, fuera del alcance exigido)
+      no altera el recurso interno.
+    - Cada nueva llamada a get_resource(token) toma una instantanea que
+      refleja el estado ACTUAL del recurso en ese momento; una
+      instantanea obtenida antes de una transicion no se actualiza
+      (semantica de fotografia).
+
+    No se modifica la maquina de estados ni la logica de cierre
+    (OwnedFdResource y close_fd permanecen intactos).
     """
-    __slots__ = ('_res',)
+    _FIELDS = ('token', 'fd', 'label', 'dev', 'ino', 'state', 'close_result')
+    __slots__ = _FIELDS
 
     def __init__(self, resource):
-        object.__setattr__(self, '_res', resource)
-
-    def __getattr__(self, name):
-        return getattr(object.__getattribute__(self, '_res'), name)
+        # Copia puntual de los campos; sin referencia al objeto interno.
+        for field in self._FIELDS:
+            object.__setattr__(self, field, getattr(resource, field))
 
     def __setattr__(self, name, value):
         raise AttributeError(
-            "vista de solo lectura: el estado y la propiedad del recurso "
-            "solo se modifican dentro del logger propietario")
+            "la instantanea es de solo lectura; el estado y la propiedad "
+            "del recurso solo se modifican dentro del logger propietario")
 
     def __getitem__(self, key):
-        return self._res[key]
+        if key in self._FIELDS:
+            return getattr(self, key)
+        raise KeyError(key)
 
     def __contains__(self, key):
-        return key in self._res
+        return key in self._FIELDS
 
     def __repr__(self):
-        return "<ReadOnlyResourceView {0!r}>".format(self._res)
+        return ("_ResourceSnapshot(token={0}, fd={1}, label={2}, state={3}, "
+                "close_result={4})".format(self.token, self.fd, self.label,
+                                           self.state, self.close_result))
 
 
 class CloseErrorLogger:
@@ -1049,19 +1066,22 @@ class CloseErrorLogger:
         _record_close_error(entry)  # sink para errores durante excepciones
 
     def get_resource(self, token):
-        """Retorna una VISTA DE SOLO LECTURA del recurso del token (v0.2.7).
+        """Retorna una INSTANTANEA INMUTABLE del recurso del token (v0.2.8).
 
-        Otros componentes pueden consultar el estado (state, close_result,
-        fd, dev, ino, label, token) pero NO modificarlo: cualquier intento
-        de asignacion sobre la vista lanza AttributeError. El estado solo
-        se modifica dentro del logger propietario (maquina de estados).
+        Copia puntual de los campos de consulta (token, fd, label, dev,
+        ino, state, close_result). NO expone ni conserva referencia al
+        objeto OwnedFdResource interno: ningun consumidor puede modificar
+        el estado, el descriptor o la propiedad a traves del objeto
+        retornado. Cada nueva llamada refleja el estado ACTUAL del
+        recurso en ese momento; una instantanea previa no se actualiza
+        (semantica de fotografia).
 
-        Retorna la vista, o None si el token es desconocido.
+        Retorna la instantanea, o None si el token es desconocido.
         """
         resource = self._entries.get(token)
         if resource is None:
             return None
-        return _ReadOnlyResourceView(resource)
+        return _ResourceSnapshot(resource)
 
     def register_fd(self, fd, label):
         """Registra la propiedad de una apertura concreta (C4, v0.2.4).
@@ -2613,14 +2633,14 @@ def main():
                 'publicacion deja el provisional en disco y sale con rc 130; la creacion '
                 'anclada del directorio de ejecucion interrumpida registra el entorno '
                 'NOT_EXECUTED.',
-                'C4-A cierre (v0.2.7): contrato estricto de propiedad por recurso '
+                'C4-A cierre (v0.2.8): contrato estricto de propiedad por recurso '
                 '(OwnedFdResource; estados OPEN/CLOSING/CLOSED/CLOSE_FAILED_UNCERTAIN): '
                 'solo el propietario inicia el cierre, una unica vez y siempre con el '
                 'token de su apertura (close_fd sin token no cierra nada); '
-                'get_resource expone una vista de solo lectura; la reutilizacion del '
-                'numero por el mismo archivo tras un cierre externo no es detectable '
-                'por fstat (EXPECTED_LIMITATION documentada, no una proteccion '
-                'conseguida).',
+                'get_resource retorna una instantanea inmutable sin referencia al '
+                'recurso interno; la reutilizacion del numero por el mismo archivo '
+                'tras un cierre externo no es detectable por fstat (EXPECTED_LIMITATION '
+                'documentada, no una proteccion conseguida).',
                 'C5: KeyboardInterrupt y excepciones fatales nunca terminan con codigo 0.',
                 'C7: escritura completa del informe con manejo de escrituras parciales.',
             ],
