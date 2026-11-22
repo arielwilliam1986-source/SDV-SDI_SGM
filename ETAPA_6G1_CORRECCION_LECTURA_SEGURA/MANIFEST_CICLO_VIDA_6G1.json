@@ -1,0 +1,103 @@
+{
+  "schema": "manifest-ciclo-vida-6g1/1",
+  "commit_base": "594a90f18c42139dcc7e753633afe33cb89cc752",
+  "rama": "arena/c7719286-sdv-sdi-sgm",
+  "alcance": "ciclo de vida (hallazgo A) + contrato de retorno MQR (hallazgo B); sin cambios DSP",
+  "archivos": [
+    {
+      "ruta": "ETAPA_6G1_CORRECCION_LECTURA_SEGURA/CICLO_VIDA_6G1.md",
+      "estado": "nuevo",
+      "sha256_594a90f": null,
+      "sha256": "b45c6c85af0324be2b7ad29fcf8cb768aed57038b3dc57e369a215cf9f5e7c2e"
+    },
+    {
+      "ruta": "ETAPA_6G1_CORRECCION_LECTURA_SEGURA/DIFF_CICLO_VIDA_6G1_vs_594a90f.patch",
+      "estado": "nuevo",
+      "sha256_594a90f": null,
+      "sha256": "bd7a8440388dd3e047fe5113739bf8fb5b633c3d93d38c4d9e0b687844e254e7"
+    },
+    {
+      "ruta": "ETAPA_6G1_CORRECCION_LECTURA_SEGURA/evidence/ast_ciclo_vida_6g1.json",
+      "estado": "nuevo",
+      "sha256_594a90f": null,
+      "sha256": "115c54cc644a13470bc26c0f112279da3b99b6d3c3fc93719a51dccd5b917910"
+    },
+    {
+      "ruta": "ETAPA_6G1_CORRECCION_LECTURA_SEGURA/evidence/matriz_ciclo_vida_6g1.csv",
+      "estado": "nuevo",
+      "sha256_594a90f": null,
+      "sha256": "5a889acecfa5d2887af4913f4602a709b021917e007a12860968bdc3b02410b5"
+    },
+    {
+      "ruta": "ETAPA_6G1_CORRECCION_LECTURA_SEGURA/evidence/pruebas_ciclo_vida_6g1.json",
+      "estado": "nuevo",
+      "sha256_594a90f": null,
+      "sha256": "b81d87634786e88d013e0d5981bd9974ceec786787e92c66c1aa05be675302fd"
+    },
+    {
+      "ruta": "ETAPA_6G1_CORRECCION_LECTURA_SEGURA/motores/MOTOR_SEP_SDV-SDI_EVO.py",
+      "estado": "modificado",
+      "sha256_594a90f": "7b99ab805a9134fef2bc813024d38d107b3c31cb452282418e407e7779de19d8",
+      "sha256": "cd5aa200903b98065de9a722613581c66404d7962d9c6827f3689818dc80858d"
+    },
+    {
+      "ruta": "ETAPA_6G1_CORRECCION_LECTURA_SEGURA/motores/MOTOR_SEP_SDV-SDI_v3.1.1_Hardened_Final.py",
+      "estado": "modificado",
+      "sha256_594a90f": "8c1fca989886de01d4cc8a849426a68851f0806e7dbdc1c62b36966372a1f571",
+      "sha256": "3977473dd4eab50c9bf365cbc913691f0c977d0c95f29e3b14764ebc6d4b5c8c"
+    },
+    {
+      "ruta": "ETAPA_6G1_CORRECCION_LECTURA_SEGURA/motores/lectura_segura_6g1.py",
+      "estado": "modificado",
+      "sha256_594a90f": "a4c3b5d1a7659731bb2af2f5af4b28b402f2323d707d870a481c82c5f5741759",
+      "sha256": "e66ae40f39042da5c7b2fb5e5e129064224b856bc73e830175001744a0091c09"
+    },
+    {
+      "ruta": "ETAPA_6G1_CORRECCION_LECTURA_SEGURA/motores/sdv_sdi_mqr_engine.py",
+      "estado": "modificado",
+      "sha256_594a90f": "00734713ef729a607e173c518d49f844295af08a58c9ad4c2f6dbff45729372d",
+      "sha256": "75f41cdaa811ad61822292ea3bbbc1e3c279389190a350f7d9b9e8dd989f717a"
+    },
+    {
+      "ruta": "ETAPA_6G1_CORRECCION_LECTURA_SEGURA/scripts/inyeccion_ciclo_6g1/ejecutar_motor_inyectado.py",
+      "estado": "nuevo",
+      "sha256_594a90f": null,
+      "sha256": "3446b3f6bba1fb648f73c3e5c0dafc2f13db805afa5de76603b58ddee62a10dc"
+    },
+    {
+      "ruta": "ETAPA_6G1_CORRECCION_LECTURA_SEGURA/scripts/pruebas_ciclo_vida_6g1.py",
+      "estado": "nuevo",
+      "sha256_594a90f": null,
+      "sha256": "8c484d62814d41ed14377b9c47a6ccb33add006824496ab5b2bfce5f86b74e53"
+    },
+    {
+      "ruta": "ETAPA_6G1_CORRECCION_LECTURA_SEGURA/scripts/verificar_ast_ciclo_vida_6g1.py",
+      "estado": "nuevo",
+      "sha256_594a90f": null,
+      "sha256": "f43a790afd06b8d839bb8956151e20cfdac390145d6cc3d74fdb8ffae8083f38"
+    }
+  ],
+  "resultados": {
+    "bateria_ciclo_vida": {
+      "corregido": {
+        "pass_": 33,
+        "total": 33
+      },
+      "base_594a90f": {
+        "pass_": 8,
+        "total": 33
+      }
+    },
+    "ast": "OK"
+  },
+  "no_modificados": [
+    "ETAPA_6G_SOPORTE_FLAC_MIX (motores 6G originales)",
+    "main",
+    "DSP/STFT/ISTFT/máscaras/consenso/reconstrucción/parámetros",
+    "validadores WAV/FLAC",
+    "fixtures/Mix/stems",
+    "evidencia de la prueba DSP y adjudicación",
+    "matriz global/consolidación/SHA256SUMS.txt/MANIFEST_6G1.json"
+  ],
+  "estado": "propuesto para auditoría independiente; 6G.1 NO cerrada"
+}

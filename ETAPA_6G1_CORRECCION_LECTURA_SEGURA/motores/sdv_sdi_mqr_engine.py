@@ -501,6 +501,10 @@ from lectura_segura_6g1 import (MixCambiado as _MixCambiado_6g1,
                                  reiniciar_registro_6g1 as _reiniciar_registro_6g1,
                                  crear_y_acreditar_dir_6g1 as _crear_y_acreditar_dir_6g1,
                                  publicar_dir_6g1 as _publicar_dir_6g1,
+                                 FalloCorrida6G1 as _FalloCorrida_6g1,
+                                 abortar_corrida_6g1 as _abortar_corrida_6g1,
+                                 cerrar_recursos_6g1 as _cerrar_recursos_6g1,
+                                 resumen_aborto_6g1 as _resumen_aborto_6g1,
                                  sha_fd_estable_6g1 as _sha_fd_estable_6g1)
 
 from atribucion_6f import (measure, verify_wave, alignment_gate,
@@ -2286,54 +2290,65 @@ def run_experiment(mix_path, pairs, mode, opt):
     }
 
     # --- directorio de corrida + log ------------------------------------------
-    run_dir, run_dir_final = create_run_dir(opt.out_base)
-    init_tee(os.path.join(run_dir, "engine_log.txt"))
-    log("Directorio de corrida (parcial): %s" % run_dir)
-    masks_dir = os.path.join(run_dir, "masks")
-    os.makedirs(masks_dir, exist_ok=True)
-
+    # [6G.1-R/CV] Creación del provisional: si falla (incluida la
+    # acreditación), no hay corrida que abortar ni publicar; nada se escribe
+    # ni se traslada.
     try:
-        run_dir_final = _run_core(mix_info, pairs, mode, opt, plan, freqs,
+        run_dir, run_dir_final = create_run_dir(opt.out_base)
+    except Exception as _exc_dir6g1:
+        log("[FATAL] directorio provisional no creado o no acreditado (%s); "
+            "sin corrida y sin publicación" % _exc_dir6g1)
+        return EXIT_PROCESSING, None
+
+    # [6G.1-R/CV] La preparación inicial (log, masks/) queda DENTRO del bloque
+    # protegido: cualquier fallo posterior a la creación del provisional pasa
+    # por el protocolo único de aborto.
+    try:
+        init_tee(os.path.join(run_dir, "engine_log.txt"))
+        log("Directorio de corrida (parcial): %s" % run_dir)
+        masks_dir = os.path.join(run_dir, "masks")
+        os.makedirs(masks_dir, exist_ok=True)
+
+        _publicado6g1 = _run_core(mix_info, pairs, mode, opt, plan, freqs,
                                   band_masks, band_labels, coverage_K,
                                   scale_factors, run_dir, run_dir_final,
                                   masks_dir, ctx, t_start)
+        # [6G.1-R/CV-B] Contrato de retorno unificado: _run_core devuelve
+        # EXCLUSIVAMENTE la ruta final realmente publicada (str, distinta del
+        # provisional, existente como directorio); todo fallo se propaga como
+        # excepción. Cualquier otro valor es un fallo (nunca EXIT_OK).
+        if not (isinstance(_publicado6g1, str) and _publicado6g1
+                and os.path.abspath(_publicado6g1) != os.path.abspath(run_dir)
+                and os.path.isdir(_publicado6g1)):
+            raise _FalloCorrida_6g1("CONTRATO_DE_RETORNO_INVALIDO",
+                                    repr(_publicado6g1), trasladar=False)
+        run_dir_final = _publicado6g1
     except KeyboardInterrupt:
-        aborted = run_dir_final + "_aborted"
-        # [6G.1-R/G-R1] Traslado al destino de aborto con no-reemplazo atómico
-        # (renameat2 RENAME_NOREPLACE): nunca reemplaza un destino preexistente
-        # (ni vacío, ni enlace simbólico); ante colisión elige un sufijo libre;
-        # si el entorno no garantiza la operación, conserva el provisional en su
-        # ubicación original. Sin degradación a os.rename.
-        try:
-            aborted = _publicar_dir_6g1(run_dir, aborted)
-        except Exception as _exc_ab:
-            aborted = run_dir
-            log("[ABORT] traslado seguro no garantizado (%s); provisional "
-                "conservado en: %s" % (_exc_ab, run_dir))
-        log("[ABORT] interrupcion del usuario; corrida en %s" % aborted)
+        # [6G.1-R/CV] Protocolo único de aborto: abortar_6g1() ANTES de
+        # cualquier traslado; traslado a _aborted* sólo con directorio
+        # acreditado y ABORT_6G1.json verificado, y sólo con publicar_dir_6g1
+        # (renameat2 RENAME_NOREPLACE); si no, el provisional se conserva.
+        _cerrar_recursos_6g1(ctx.get("_mix_handle_6g1"))
+        _res6g1 = _abortar_corrida_6g1(run_dir, run_dir_final + "_aborted",
+                                       "INTERRUPCION_DEL_USUARIO")
+        log("[ABORT] interrupcion del usuario: %s" % _resumen_aborto_6g1(_res6g1))
         close_tee()
         return EXIT_ABORTED, None
-    except _VerifFallida_6g1 as _exc6g1:
-        # [6G.1-R/A] La guarda final ya abortó sobre el provisional y no hay
-        # publicación; no se renombra ni se publica nada.
-        log("[FATAL] guarda final no superada (fail-closed): %s" % _exc6g1)
+    except _FalloCorrida_6g1 as _f6g1:
+        _cerrar_recursos_6g1(ctx.get("_mix_handle_6g1"))
+        _res6g1 = _abortar_corrida_6g1(run_dir, run_dir_final + "_aborted",
+                                       _f6g1.motivo, _f6g1.detalle,
+                                       trasladar=_f6g1.trasladar)
+        log("[FATAL] %s; sin publicar: %s" % (_f6g1.motivo,
+                                               _resumen_aborto_6g1(_res6g1)))
         close_tee()
         return EXIT_PROCESSING, None
-    except Exception:
-        aborted = run_dir_final + "_aborted"
-        # [6G.1-R/G-R1] Traslado al destino de aborto con no-reemplazo atómico
-        # (renameat2 RENAME_NOREPLACE): nunca reemplaza un destino preexistente
-        # (ni vacío, ni enlace simbólico); ante colisión elige un sufijo libre;
-        # si el entorno no garantiza la operación, conserva el provisional en su
-        # ubicación original. Sin degradación a os.rename.
-        try:
-            aborted = _publicar_dir_6g1(run_dir, aborted)
-        except Exception as _exc_ab:
-            aborted = run_dir
-            log("[ABORT] traslado seguro no garantizado (%s); provisional "
-                "conservado en: %s" % (_exc_ab, run_dir))
-        log("[FATAL] excepcion en el pipeline; corrida preservada en %s"
-            % aborted)
+    except Exception as _exc6g1:
+        _cerrar_recursos_6g1(ctx.get("_mix_handle_6g1"))
+        _res6g1 = _abortar_corrida_6g1(run_dir, run_dir_final + "_aborted",
+                                       "EXCEPCION_DURANTE_EL_PROCESAMIENTO",
+                                       "%s: %s" % (type(_exc6g1).__name__, _exc6g1))
+        log("[FATAL] excepcion en el pipeline: %s" % _resumen_aborto_6g1(_res6g1))
         traceback.print_exc()
         close_tee()
         return EXIT_PROCESSING, None
@@ -2343,7 +2358,8 @@ def run_experiment(mix_path, pairs, mode, opt):
     # [6G.1-R/A+B] La guarda final fail-closed, la evidencia de integridad y la
     # publicación por renombrado viven ahora en _run_core (verificación ANTES de
     # publicar; aborto sobre el provisional). Aquí sólo se registra el éxito:
-    # ninguna verificación alternativa ni fallback.
+    # ninguna verificación alternativa ni fallback. [6G.1-R/CV-B] EXIT_OK sólo
+    # con _run_core terminado sin excepción y ruta final realmente publicada.
     return EXIT_OK, run_dir_final
 
 
@@ -2352,7 +2368,12 @@ def _run_core(mix_info, pairs, mode, opt, plan, freqs, band_masks,
               run_dir_final, masks_dir, ctx, t_start):
     """Bucle single-pass + escritura de artefactos. Toda excepcion se
     propaga al orquestador (que preserva el directorio parcial).
-    Devuelve el directorio final (con sufijo anti-colision si aplica)."""
+    Devuelve el directorio final (con sufijo anti-colision si aplica).
+
+    [6G.1-R/CV-B] Contrato: devuelve EXCLUSIVAMENTE la ruta final realmente
+    publicada. Apertura del Mix, guarda final y publicación fallidas se
+    propagan como `FalloCorrida6G1`; la interrupción como KeyboardInterrupt;
+    nunca se devuelve una tupla de código ni None."""
     n_pairs = len(pairs)
     full_mode = (mode == MODE_FULL_PROCESSING)
     log("Pipeline: mode=%s, %d pares, K=%d frames en chunks de %d"
@@ -2435,13 +2456,20 @@ def _run_core(mix_info, pairs, mode, opt, plan, freqs, band_masks,
                                            opt.consensus_default)][0]
 
     # --- bucle single-pass ------------------------------------------------------
+    # [6G.1-R/CV-B] Fallo de apertura del Mix antes del DSP: se PROPAGA como
+    # fallo (antes devolvía una tupla que run_experiment tomaba como ruta
+    # final y terminaba en EXIT_OK).
+    # Registro en el provisional SIN traslado (contrato histórico de los
+    # abortos por integridad del Mix).
     try:
         hmix = _abrir_mix_6g1(mix_info.path, mix_info.sha256, identidad_esperada=(mix_info.device, mix_info.inode))
     except _MixCambiado_6g1 as _exc6g1:
-        _abortar_6g1(run_dir, "MIX_SUSTITUIDO_ANTES_DEL_DSP", str(_exc6g1))
-        log("[FATAL] Mix sustituido antes del DSP: %s" % _exc6g1)
-        close_tee()
-        return EXIT_PROCESSING, None
+        raise _FalloCorrida_6g1("MIX_SUSTITUIDO_ANTES_DEL_DSP", str(_exc6g1),
+                                trasladar=False)
+    except Exception as _exc6g1:
+        raise _FalloCorrida_6g1("MIX_NO_ABIERTO_ANTES_DEL_DSP",
+                                "%s: %s" % (type(_exc6g1).__name__, _exc6g1),
+                                trasladar=False)
     ctx["_mix_handle_6g1"] = hmix
     handles = {}
     for p in pairs:
@@ -2699,12 +2727,10 @@ def _run_core(mix_info, pairs, mode, opt, plan, freqs, band_masks,
                                                   reason="evidencia no escrita o no verificable")
     if not (ctx["container_6g"]["after"].get("unchanged")
             and ctx["container_6g"].get("ruta_actual", {}).get("unchanged")):
-        _info6g1 = _abortar_6g1(
-            run_dir, "MIX_CAMBIADO_DURANTE_EL_PROCESAMIENTO",
-            ctx["container_6g"])
-        log("[FATAL] Mix cambiado o verificacion incierta antes de publicar: "
-            "salidas propias invalidadas: %s" % _info6g1["salidas_invalidadas"])
-        raise _VerifFallida_6g1("guarda final no superada; no se publica")
+        # [6G.1-R/CV] Guarda final no superada: protocolo único de aborto en
+        # run_experiment; registro en el provisional SIN traslado, sin publicar.
+        raise _FalloCorrida_6g1("MIX_CAMBIADO_DURANTE_EL_PROCESAMIENTO",
+                                ctx["container_6g"], trasladar=False)
     # [6G.1-R/G] Publicación con no-reemplazo atómico (renameat2
     # RENAME_NOREPLACE): nunca sustituye un destino existente; ante colisión
     # elige otro identificador sin tocarlo; si el entorno no garantiza la
@@ -2712,9 +2738,11 @@ def _run_core(mix_info, pairs, mode, opt, plan, freqs, band_masks,
     try:
         run_dir_final = _publicar_dir_6g1(run_dir, run_dir_final)
     except Exception as _exc_pub:
-        log("[FATAL] publicacion segura no garantizada (%s); sin publicar; "
-            "corrida conservada en: %s" % (_exc_pub, run_dir))
-        raise _VerifFallida_6g1("publicacion no garantizada; no se publica")
+        # [6G.1-R/CV] Fallo de publicación segura: se registra el aborto y el
+        # provisional se conserva en su ubicación (sin traslado).
+        raise _FalloCorrida_6g1("PUBLICACION_SEGURA_FALLIDA",
+                                "%s: %s" % (type(_exc_pub).__name__, _exc_pub),
+                                trasladar=False)
     log("Directorio final: %s" % run_dir_final)
     log("Duracion total: %.1f s" % (time.monotonic() - t_start))
     return run_dir_final

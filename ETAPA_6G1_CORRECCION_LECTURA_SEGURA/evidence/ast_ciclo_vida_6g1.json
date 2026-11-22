@@ -1,0 +1,118 @@
+{
+  "schema": "ast-ciclo-vida-6g1/1",
+  "base": "594a90f18c42139dcc7e753633afe33cb89cc752",
+  "motores": {
+    "Hardened": {
+      "archivo": "ETAPA_6G1_CORRECCION_LECTURA_SEGURA/motores/MOTOR_SEP_SDV-SDI_v3.1.1_Hardened_Final.py",
+      "defs_cambiadas": [
+        "run_experiment"
+      ],
+      "defs_añadidas": [],
+      "defs_eliminadas": [],
+      "defs_sin_cambio": 64,
+      "otras_sentencias_cambiadas": [
+        "from lectura_segura_6g1 import MixCambiado as _MixCambiado_6g1, abrir_mix as _abrir_mix_6g1, abortar_6g1 as _abortar_6g1, registrar_propio_6g1 as _registrar_propio_6g1, reiniciar_registro_6g1 as _reiniciar_registro_6g1, crear_y_acreditar_dir_6g1 as _crear_y_acreditar_dir_6g1, publicar_dir_6g1 as _pu"
+      ],
+      "detalle_defs_cambiadas": {
+        "run_experiment": {
+          "literales_iguales": true,
+          "llamadas_dsp_iguales": true,
+          "llamadas_dsp": [
+            "abs",
+            "abs",
+            "abs",
+            "abs",
+            "clip",
+            "mean",
+            "mean",
+            "mean",
+            "mean",
+            "mean",
+            "mean",
+            "stack",
+            "stack",
+            "stack"
+          ]
+        }
+      },
+      "veredicto": "OK"
+    },
+    "EVO": {
+      "archivo": "ETAPA_6G1_CORRECCION_LECTURA_SEGURA/motores/MOTOR_SEP_SDV-SDI_EVO.py",
+      "defs_cambiadas": [
+        "run_experiment"
+      ],
+      "defs_añadidas": [],
+      "defs_eliminadas": [],
+      "defs_sin_cambio": 67,
+      "otras_sentencias_cambiadas": [
+        "from lectura_segura_6g1 import MixCambiado as _MixCambiado_6g1, abrir_mix as _abrir_mix_6g1, abortar_6g1 as _abortar_6g1, registrar_propio_6g1 as _registrar_propio_6g1, reiniciar_registro_6g1 as _reiniciar_registro_6g1, crear_y_acreditar_dir_6g1 as _crear_y_acreditar_dir_6g1, publicar_dir_6g1 as _pu"
+      ],
+      "detalle_defs_cambiadas": {
+        "run_experiment": {
+          "literales_iguales": true,
+          "llamadas_dsp_iguales": true,
+          "llamadas_dsp": [
+            "abs",
+            "abs",
+            "abs",
+            "abs",
+            "clip",
+            "clip",
+            "clip",
+            "mean",
+            "mean",
+            "mean",
+            "mean",
+            "mean",
+            "mean",
+            "mean",
+            "mean",
+            "median",
+            "median",
+            "stack",
+            "stack",
+            "stack",
+            "stack",
+            "stack",
+            "stack"
+          ]
+        }
+      },
+      "veredicto": "OK"
+    },
+    "MQR": {
+      "archivo": "ETAPA_6G1_CORRECCION_LECTURA_SEGURA/motores/sdv_sdi_mqr_engine.py",
+      "defs_cambiadas": [
+        "_run_core",
+        "run_experiment"
+      ],
+      "defs_añadidas": [],
+      "defs_eliminadas": [],
+      "defs_sin_cambio": 86,
+      "otras_sentencias_cambiadas": [
+        "from lectura_segura_6g1 import MixCambiado as _MixCambiado_6g1, abrir_mix as _abrir_mix_6g1, abortar_6g1 as _abortar_6g1, VerificacionFallida6G1 as _VerifFallida_6g1, registrar_propio_6g1 as _registrar_propio_6g1, reiniciar_registro_6g1 as _reiniciar_registro_6g1, crear_y_acreditar_dir_6g1 as _crear"
+      ],
+      "detalle_defs_cambiadas": {
+        "_run_core": {
+          "literales_iguales": true,
+          "llamadas_dsp_iguales": true,
+          "llamadas_dsp": [
+            "abs",
+            "abs",
+            "abs",
+            "median",
+            "stack"
+          ]
+        },
+        "run_experiment": {
+          "literales_iguales": true,
+          "llamadas_dsp_iguales": true,
+          "llamadas_dsp": []
+        }
+      },
+      "veredicto": "OK"
+    }
+  },
+  "veredicto": "OK"
+}

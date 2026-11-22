@@ -41,6 +41,19 @@ validaciones de contenedor y SHA-256 operan sobre ese descriptor (vía
 `/proc/self/fd/N` donde la API exige ruta, y con `sha_fd_estable_6g1` para
 el hash); la ruta del usuario no se reabre durante la validación y el fstat
 final falla cerrado si el objeto cambió.
+
+[CV] Ciclo de vida (hallazgo A): `abortar_corrida_6g1()` es el protocolo
+ÚNICO de aborto de los tres motores (interrupción, excepción general, fallo
+de apertura del Mix, guarda final, publicación segura y fallos de preparación
+posteriores a la creación del provisional): registra primero con
+`abortar_6g1()`; sólo con el directorio acreditado y `ABORT_6G1.json` escrito
+y verificado sobre el descriptor anclado, y si el motor solicita traslado
+(interrupción, excepción general, fallos de preparación), traslada a
+`_aborted*` con `publicar_dir_6g1()` (sin reemplazo); los fallos de
+integridad del Mix (apertura, guarda final) y de publicación registran el
+aborto SIN traslado (contrato histórico); en cualquier otro caso conserva el
+provisional en su ubicación. `FalloCorrida6G1` encauza los fallos conocidos
+hacia ese manejador.
 """
 import errno
 import hashlib
@@ -769,3 +782,193 @@ def publicar_dir_6g1(origen, destino, max_intentos=64):
             ultimo = exc
             continue
     raise ultimo or OSError('agotados los intentos de publicación segura')
+
+
+# ---------------------------------------------------------------------------
+# [6G.1-R/CV] Ciclo de vida: protocolo ÚNICO de aborto de corrida (hallazgo A)
+# ---------------------------------------------------------------------------
+
+class FalloCorrida6G1(RuntimeError):
+    """[6G.1-R/CV] Fallo de corrida ya clasificado por el motor.
+
+    Lo eleva el motor en los puntos de fallo conocidos (apertura del Mix antes
+    del DSP, guarda final de integridad, publicación segura) para que TODOS
+    los fallos converjan en el mismo manejador y en `abortar_corrida_6g1()`.
+    `trasladar=False` conserva el provisional en su ubicación aunque el
+    registro del aborto haya podido escribirse (p. ej. si falló el propio
+    mecanismo de publicación atómica)."""
+
+    def __init__(self, motivo, detalle=None, trasladar=True):
+        RuntimeError.__init__(self, motivo if detalle is None
+                              else '%s: %s' % (motivo, detalle))
+        self.motivo = motivo
+        self.detalle = detalle
+        self.trasladar = bool(trasladar)
+
+
+def cerrar_recursos_6g1(*recursos):
+    """[6G.1-R/CV] Cierra, sin propagar errores, descriptores de lectura
+    (MixHandle, SoundFile) o colecciones de ellos (dict/list). No toca
+    archivos en disco; sólo libera descriptores antes del aborto."""
+    for r in recursos:
+        if r is None:
+            continue
+        if isinstance(r, dict):
+            cerrar_recursos_6g1(*list(r.values()))
+            continue
+        if isinstance(r, (list, tuple)):
+            cerrar_recursos_6g1(*list(r))
+            continue
+        try:
+            r.close()
+        except Exception:
+            pass
+
+
+def _registro_aborto_verificado_6g1(fd_dir, motivo):
+    """[6G.1-R/CV] Relee `ABORT_6G1.json` ANCLADO al descriptor del
+    directorio acreditado (O_NOFOLLOW + fstat regular) y comprueba que es el
+    registro de ESTE aborto: schema abort-6g1/3, mismo motivo,
+    resultados_validos=[] y directorio_acreditado=True."""
+    try:
+        fd = os.open('ABORT_6G1.json',
+                     os.O_RDONLY | os.O_NOFOLLOW | os.O_NONBLOCK, dir_fd=fd_dir)
+    except OSError as exc:
+        return False, 'ABORT_6G1.json no legible de forma segura: %s' % exc
+    try:
+        st = os.fstat(fd)
+        if not stat.S_ISREG(st.st_mode):
+            return False, 'ABORT_6G1.json no es un archivo regular'
+        partes = []
+        while True:
+            b = os.read(fd, 1 << 16)
+            if not b:
+                break
+            partes.append(b)
+        datos = json.loads(b''.join(partes).decode('utf-8'))
+    except (OSError, ValueError) as exc:
+        return False, 'ABORT_6G1.json no verificable: %s' % exc
+    finally:
+        os.close(fd)
+    if not isinstance(datos, dict):
+        return False, 'ABORT_6G1.json sin objeto JSON'
+    if (datos.get('schema') != 'abort-6g1/3' or datos.get('motivo') != motivo
+            or datos.get('resultados_validos') != []
+            or datos.get('directorio_acreditado') is not True):
+        return False, 'ABORT_6G1.json no corresponde a este aborto'
+    return True, 'ABORT_6G1.json escrito y verificado sobre el descriptor acreditado'
+
+
+def abortar_corrida_6g1(run_dir, destino_aborto, motivo, detalle=None,
+                        trasladar=True):
+    """[6G.1-R/CV] Protocolo ÚNICO de aborto de los tres motores.
+
+    1. Registra SIEMPRE primero el aborto con `abortar_6g1()` (C-R1: sin
+       eliminación; salidas propias invalidadas y conservadas;
+       `resultados_validos=[]`; `analysis.json` intacto; schema abort-6g1/3;
+       anclaje H1 del directorio).
+    2. Sólo si el directorio quedó acreditado Y `ABORT_6G1.json` se escribió
+       de forma segura (y se relee y verifica sobre el MISMO descriptor
+       acreditado) se considera el aborto registrado.
+    3. Sólo si el aborto quedó registrado, se solicitó traslado y la ruta
+       sigue designando el MISMO directorio acreditado (lstat vs fstat del
+       descriptor anclado, justo antes de renombrar), el provisional se
+       traslada a `destino_aborto` exclusivamente con `publicar_dir_6g1()`
+       (renameat2 RENAME_NOREPLACE: nunca reemplaza un destino existente;
+       ante colisión, sufijo libre; sin degradación a os.rename).
+    4. En cualquier otro caso el provisional se CONSERVA en su ubicación
+       original: no se intenta trasladar una ruta cuya identidad no pudo
+       acreditarse ni un directorio sin registro de aborto.
+
+    Nunca publica la corrida como exitosa ni elimina archivos. Devuelve un
+    dict de resultado (no se escribe en disco: el registro en disco es
+    `ABORT_6G1.json`, schema abort-6g1/3 sin cambios)."""
+    origen = os.path.abspath(str(run_dir))
+    res = dict(motivo=motivo, provisional=origen,
+               destino_solicitado=(os.path.abspath(str(destino_aborto))
+                                   if destino_aborto else None),
+               traslado_solicitado=bool(trasladar and destino_aborto),
+               abort_registrado=False, trasladado=False,
+               traslado_verificado=False, ruta_final=origen,
+               salidas_invalidadas=[], motivo_conservacion=None)
+    try:
+        info = abortar_6g1(origen, motivo, detalle)
+    except Exception as exc:
+        res['motivo_conservacion'] = ('abortar_6g1 no completó (%s: %s); '
+                                      'provisional conservado en su ubicación'
+                                      % (type(exc).__name__, exc))
+        return res
+    res['salidas_invalidadas'] = list(info.get('salidas_invalidadas', []))
+    res['anclaje_directorio'] = info.get('anclaje_directorio')
+    if not info.get('directorio_acreditado'):
+        res['motivo_conservacion'] = ('directorio no acreditado (%s): sin '
+                                      'escritura y sin traslado'
+                                      % info.get('anclaje_directorio'))
+        return res
+    if 'ABORT_6G1.json' in (info.get('motivos_propiedad') or {}):
+        res['motivo_conservacion'] = ('registro de aborto no escrito de forma '
+                                      'segura (%s): provisional conservado en '
+                                      'su ubicación'
+                                      % info['motivos_propiedad']['ABORT_6G1.json'])
+        return res
+    fd_dir, motivo_anclaje = _anclar_dir_aborto_6g1(origen)
+    if fd_dir is None:
+        res['motivo_conservacion'] = ('identidad no re-acreditada tras el '
+                                      'registro (%s): sin traslado'
+                                      % motivo_anclaje)
+        return res
+    try:
+        ok, motivo_reg = _registro_aborto_verificado_6g1(fd_dir, motivo)
+        res['verificacion_registro'] = motivo_reg
+        if not ok:
+            res['motivo_conservacion'] = ('registro de aborto no verificable '
+                                          '(%s): provisional conservado en su '
+                                          'ubicación' % motivo_reg)
+            return res
+        res['abort_registrado'] = True
+        if not res['traslado_solicitado']:
+            res['motivo_conservacion'] = ('traslado no solicitado: provisional '
+                                          'conservado en su ubicación')
+            return res
+        st_dir = os.fstat(fd_dir)
+        try:
+            st_ruta = os.lstat(origen)
+        except OSError as exc:
+            res['motivo_conservacion'] = ('ruta del provisional no observable '
+                                          '(%s): sin traslado' % exc)
+            return res
+        if (not stat.S_ISDIR(st_ruta.st_mode)
+                or (st_ruta.st_dev, st_ruta.st_ino) != (st_dir.st_dev, st_dir.st_ino)):
+            res['motivo_conservacion'] = ('la ruta ya no designa el directorio '
+                                          'acreditado: sin traslado')
+            return res
+        try:
+            destino = publicar_dir_6g1(origen, res['destino_solicitado'])
+        except Exception as exc:
+            res['motivo_conservacion'] = ('traslado atómico sin reemplazo no '
+                                          'garantizado (%s: %s): provisional '
+                                          'conservado en su ubicación'
+                                          % (type(exc).__name__, exc))
+            return res
+        res['trasladado'] = True
+        res['ruta_final'] = destino
+        try:
+            st_dest = os.lstat(destino)
+            res['traslado_verificado'] = (
+                (st_dest.st_dev, st_dest.st_ino) == (st_dir.st_dev, st_dir.st_ino))
+        except OSError:
+            res['traslado_verificado'] = False
+        return res
+    finally:
+        os.close(fd_dir)
+
+
+def resumen_aborto_6g1(res):
+    """[6G.1-R/CV] Línea de log del resultado de `abortar_corrida_6g1()`."""
+    return ('motivo=%s abort_registrado=%s trasladado=%s ruta=%s '
+            'salidas_invalidadas=%d%s'
+            % (res.get('motivo'), res.get('abort_registrado'),
+               res.get('trasladado'), res.get('ruta_final'),
+               len(res.get('salidas_invalidadas') or []),
+               '' if not res.get('motivo_conservacion')
+               else ' conservacion=%s' % res['motivo_conservacion']))

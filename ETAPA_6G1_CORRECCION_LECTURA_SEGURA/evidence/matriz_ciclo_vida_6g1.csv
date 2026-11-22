@@ -1,0 +1,34 @@
+prueba,motor,condicion,codigo_esperado,codigo,comprobaciones,fallos,veredicto,codigo_base,veredicto_base
+A1,Hardened,KeyboardInterrupt tras salidas parciales,130,130,23/23,,PASS,130,FAIL
+A2,Hardened,Excepción general tras salidas parciales,2,2,23/23,,PASS,2,FAIL
+A2NA,Hardened,Excepción general con provisional sustituido (no acreditable),2,2,16/16,,PASS,2,FAIL
+A3,Hardened,Fallo de publicación segura (renameat2 indisponible),2,2,23/23,,PASS,2,FAIL
+A4,Hardened,Fallo de apertura del Mix (MixCambiado),2,2,21/21,,PASS,2,PASS
+A4b,Hardened,Fallo de apertura del Mix (OSError),2,2,21/21,,PASS,2,FAIL
+A5,Hardened,Fallo de la guarda final,2,2,23/23,,PASS,2,PASS
+A6,Hardened,Fallo de preparación inicial tras crear el provisional (log),2,2,21/21,,PASS,1,FAIL
+A6b,Hardened,Provisional creado pero no acreditado,2,2,13/13,,PASS,1,FAIL
+A7,Hardened,Escritura de ABORT_6G1.json fallida (tras excepción general),2,2,18/18,,PASS,2,FAIL
+E0,Hardened,Corrida feliz (sin inyección),0,0,8/8,,PASS,0,PASS
+A1,EVO,KeyboardInterrupt tras salidas parciales,130,130,23/23,,PASS,130,FAIL
+A2,EVO,Excepción general tras salidas parciales,2,2,23/23,,PASS,2,FAIL
+A2NA,EVO,Excepción general con provisional sustituido (no acreditable),2,2,16/16,,PASS,2,FAIL
+A3,EVO,Fallo de publicación segura (renameat2 indisponible),2,2,23/23,,PASS,2,FAIL
+A4,EVO,Fallo de apertura del Mix (MixCambiado),2,2,21/21,,PASS,2,PASS
+A4b,EVO,Fallo de apertura del Mix (OSError),2,2,21/21,,PASS,2,FAIL
+A5,EVO,Fallo de la guarda final,2,2,23/23,,PASS,2,PASS
+A6,EVO,Fallo de preparación inicial tras crear el provisional (log),2,2,21/21,,PASS,1,FAIL
+A6b,EVO,Provisional creado pero no acreditado,2,2,13/13,,PASS,1,FAIL
+A7,EVO,Escritura de ABORT_6G1.json fallida (tras excepción general),2,2,18/18,,PASS,2,FAIL
+E0,EVO,Corrida feliz (sin inyección),0,0,8/8,,PASS,0,PASS
+A1,MQR,KeyboardInterrupt tras salidas parciales,130,130,23/23,,PASS,130,FAIL
+A2,MQR,Excepción general tras salidas parciales,2,2,23/23,,PASS,2,FAIL
+A2NA,MQR,Excepción general con provisional sustituido (no acreditable),2,2,16/16,,PASS,2,FAIL
+A3,MQR,Fallo de publicación segura (renameat2 indisponible),2,2,23/23,,PASS,2,FAIL
+A4,MQR,Fallo de apertura del Mix (MixCambiado),2,2,21/21,,PASS,1,FAIL
+A4b,MQR,Fallo de apertura del Mix (OSError),2,2,21/21,,PASS,2,FAIL
+A5,MQR,Fallo de la guarda final,2,2,23/23,,PASS,2,PASS
+A6,MQR,Fallo de preparación inicial tras crear el provisional (log),2,2,21/21,,PASS,1,FAIL
+A6b,MQR,Provisional creado pero no acreditado,2,2,13/13,,PASS,1,FAIL
+A7,MQR,Escritura de ABORT_6G1.json fallida (tras excepción general),2,2,18/18,,PASS,2,FAIL
+E0,MQR,Corrida feliz (sin inyección),0,0,8/8,,PASS,0,PASS
