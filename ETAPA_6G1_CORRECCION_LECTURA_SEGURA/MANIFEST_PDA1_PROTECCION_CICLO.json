@@ -1,0 +1,83 @@
+{
+ "schema": "pda1-ciclo-manifest/1",
+ "fecha": "2026-11-22T16:55:41Z",
+ "rama": "arena/f1c5739f-sdv-sdi-sgm",
+ "commit_padre": "9975f507a70466ea70369bca9fba053888e63353",
+ "referencia_tecnica": "9fedc5b223444e73955d2b899b6a434b0f5c670e",
+ "instruccion": "Cris 22-11-2026: segunda revision PDA-1, proteccion integral del ciclo (Hallazgos A y B)",
+ "adjudicacion_previa": "PDA-1 aceptado como base arquitectonica; NO implementar; EVO/MQR pendientes de validacion experimental",
+ "alcance": "solo informe complementario, prototipo de diagnostico y evidencia; 0 cambios de produccion (motores, lectura_segura_6g1.py, DSP, fixtures, validadores intactos)",
+ "resultados": {
+  "veredictos": {
+   "A1": "DEMOSTRADO (PDA-1 publica el acreditado con contenido desviado: identidad != contenido; Hallazgo A confirmado)",
+   "A2": "PASS (EA: soundfile WAV real, numpy open_memmap real, open builtin y log via /proc/self/fd/fd_run caen en el acreditado; lectura post via ruta publicada OK)",
+   "A3": "PASS (sustitucion del intermedio DURANTE escrituras: fd_run inmune)",
+   "B1": "DEMOSTRADO (sustitucion del destino post-verificacion por misma uid: EXIT_OK se emitiria igual; deteccion forense posible; limite de PDA-1)",
+   "B2": "PASS (re-verificacion tardia por descriptor del padre: detecta y evita EXIT_OK)",
+   "C": "PASS (cierre determinista fd_padre/fd_run en exito/excepcion/interrupcion: 0 fds residuales)"
+  },
+  "sintesis": "A1: PDA-1 solo puede publicar el acreditado con contenidos desviados (necesita EA + checklist); A2/A3: escrituras ancladas via fd_run + /proc/self/fd con las bibliotecas reales (soundfile 0.13.1, numpy 1.26.4) mantienen todo artefacto en el acreditado incluso con sustitucion durante el procesamiento; B1: la garantia de PDA-1 termina en la verificacion post (misma uid puede secuestrar el destino: EXIT_OK igual); B2: re-verificacion tardia por descriptor detecta y evita EXIT_OK; ventana residual post-return cubierta con evidencia forense; C: cierre determinista de fds en los 3 caminos"
+ },
+ "modelo_amenazas": "otra uid: sin efecto por construccion (no puede mutar el padre 0700 euid ni desviar escrituras); misma uid: deteccion en cada punto verificable, prevencion post-return irrecuperable desde userspace (fuera del modelo de prevencion, evidencia forense); root fuera del modelo",
+ "regresiones_propuestas": {
+  "RG_EA": [
+   "EA-1..EA-6"
+  ],
+  "RG_FLOW": [
+   "FLOW-1..FLOW-9 por motor, con corrida real EVO y MQR exigidas"
+  ]
+ },
+ "inventario_escrituras": {
+  "Hardened": "L1396/1398, L1614-1616, L1628-1639, L1654/1672, L1889, L1957/1963, L1997, L2130, L2185",
+  "EVO": "L1396/1398, L1683-1685, L1698-1709, L1724/1742, L2068/2074, L2108, L2241, L2296",
+  "MQR": "L2115/2120, L2358-2361, L2469-2484, L2512/2529, L2805/2811, L2857-2859, L3191, L3578 (re-lectura), L3626"
+ },
+ "no_implementado": [
+  "EA/B2 en produccion",
+  "corridas reales EVO y MQR",
+  "matplotlib por procfs (no probado)",
+  "baterias historicas y prueba DSP",
+  "audio real, Android, Termux",
+  "atacante otra uid real (entorno single-uid)",
+  "integracion (prohibida)"
+ ],
+ "estado": "informe complementario para adjudicacion de Cris; NO implementado; 6G.1 ABIERTA; parada obligatoria",
+ "archivos": [
+  {
+   "ruta": "ETAPA_6G1_CORRECCION_LECTURA_SEGURA/INFORME_PDA1_PROTECCION_CICLO_6G1.md",
+   "sha256": "ea67debb6e227ea9b8399211490ca03aef9276cd6d30333154ebf107f4955926"
+  },
+  {
+   "ruta": "ETAPA_6G1_CORRECCION_LECTURA_SEGURA/scripts/prototipo_escrituras_ancladas_6g1.py",
+   "sha256": "c189306b83e925513f60b0c71de8ecaa9f6599ff6f05e8e5771d43d16a1d7c18"
+  },
+  {
+   "ruta": "ETAPA_6G1_CORRECCION_LECTURA_SEGURA/evidence/prototipo_escrituras_ancladas_6g1/consolidado_prototipo_ea_1.json",
+   "sha256": "8e4d9ce03c59f5c1565f9db15f0e788e3d7a863fa555d53064fda9db061cac08"
+  },
+  {
+   "ruta": "ETAPA_6G1_CORRECCION_LECTURA_SEGURA/evidence/prototipo_escrituras_ancladas_6g1/escenario_A1.json",
+   "sha256": "bc4f76f69896f83e3961754fd4554638430a20c1319360c2d5157dd730870874"
+  },
+  {
+   "ruta": "ETAPA_6G1_CORRECCION_LECTURA_SEGURA/evidence/prototipo_escrituras_ancladas_6g1/escenario_A2.json",
+   "sha256": "06e0a535cbab8b4c48963c882be7b1097e6c4328eb41ed4ffa6988ef95eb4f80"
+  },
+  {
+   "ruta": "ETAPA_6G1_CORRECCION_LECTURA_SEGURA/evidence/prototipo_escrituras_ancladas_6g1/escenario_A3.json",
+   "sha256": "4eeb83970709f93fba839815de78ccf5c1c94bb0d579c300e9ed92ef259f2595"
+  },
+  {
+   "ruta": "ETAPA_6G1_CORRECCION_LECTURA_SEGURA/evidence/prototipo_escrituras_ancladas_6g1/escenario_B1.json",
+   "sha256": "66e27c8a65c387f3944c70a5f6896ca5216749ab204a1ad07855fd14942db672"
+  },
+  {
+   "ruta": "ETAPA_6G1_CORRECCION_LECTURA_SEGURA/evidence/prototipo_escrituras_ancladas_6g1/escenario_B2.json",
+   "sha256": "bdc876ad721e07c47183911903bcb5e4afed89ec18434026fd37b916f9c141a0"
+  },
+  {
+   "ruta": "ETAPA_6G1_CORRECCION_LECTURA_SEGURA/evidence/prototipo_escrituras_ancladas_6g1/escenario_C.json",
+   "sha256": "a5480be9835e262385f69cc84ed3cb312515dbb16b3ab5315f324c250d4ddd89"
+  }
+ ]
+}

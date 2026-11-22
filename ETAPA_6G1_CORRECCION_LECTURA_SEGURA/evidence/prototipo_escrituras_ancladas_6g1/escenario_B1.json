@@ -1,0 +1,34 @@
+{
+ "amenaza": "Que el EXIT_OK declare éxito sobre una ruta que ya no designa el objeto verificado.",
+ "clasificacion": [
+  "limitacion_residual_atacante_misma_uid (confirmada)",
+  "resultado_experimental"
+ ],
+ "escenario": "B1",
+ "nota": "PDA-1 garantiza la identidad del objeto publicado EN EL INSTANTE de la verificación; después, la misma uid puede secuestrar la ruta: el EXIT_OK sería emitido igual. Detección forense posible; prevención imposible sin soporte del kernel.",
+ "resultado": {
+  "deteccion_forense_posible": true,
+  "exito_en_verificacion": true,
+  "exitok_emitido": true,
+  "identidad_acreditada": {
+   "dev": 65024,
+   "ino": 535298
+  },
+  "identidad_ruta_final": {
+   "dev": 65024,
+   "ino": 535300
+  },
+  "provisional_robado_conservado": true,
+  "publicacion": {
+   "destino": "run_final",
+   "exito": true,
+   "motivos": [],
+   "publicado": true,
+   "traslado_verificado": true
+  },
+  "ruta_final_designa_impostor": true
+ },
+ "schema": "prototipo-ea-1/1",
+ "titulo": "Hallazgo B: sustitución del DESTINO publicado después de la verificación post y antes del EXIT_OK (misma uid)",
+ "veredicto": "DEMOSTRADO"
+}

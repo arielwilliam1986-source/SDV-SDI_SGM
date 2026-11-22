@@ -1,0 +1,65 @@
+{
+ "schema": "prototipo-ea-1/1",
+ "generado": "2026-11-22T16:53:00Z",
+ "entorno": {
+  "python": "3.11.2",
+  "numpy": "1.26.4",
+  "soundfile": "0.13.1",
+  "libsndfile": "1.2.2",
+  "euid": 1001
+ },
+ "escenarios": [
+  {
+   "escenario": "A1",
+   "veredicto": "DEMOSTRADO",
+   "clasificacion": [
+    "vulnerabilidad_reproducida_sin_escrituras_ancladas",
+    "resultado_experimental"
+   ],
+   "fichero": "escenario_A1.json"
+  },
+  {
+   "escenario": "A2",
+   "veredicto": "PASS",
+   "clasificacion": [
+    "comportamiento_permitido_por_diseno",
+    "vulnerabilidad_eliminada_por_diseno"
+   ],
+   "fichero": "escenario_A2.json"
+  },
+  {
+   "escenario": "A3",
+   "veredicto": "PASS",
+   "clasificacion": [
+    "comportamiento_permitido_por_diseno"
+   ],
+   "fichero": "escenario_A3.json"
+  },
+  {
+   "escenario": "B1",
+   "veredicto": "DEMOSTRADO",
+   "clasificacion": [
+    "limitacion_residual_atacante_misma_uid (confirmada)",
+    "resultado_experimental"
+   ],
+   "fichero": "escenario_B1.json"
+  },
+  {
+   "escenario": "B2",
+   "veredicto": "PASS",
+   "clasificacion": [
+    "comportamiento_rechazado_por_diseno (detección en el punto añadido)",
+    "limitacion_residual_atacante_misma_uid (ventana entre la re-verificación y la salida del proceso)"
+   ],
+   "fichero": "escenario_B2.json"
+  },
+  {
+   "escenario": "C",
+   "veredicto": "PASS",
+   "clasificacion": [
+    "comportamiento_permitido_por_diseno"
+   ],
+   "fichero": "escenario_C.json"
+  }
+ ]
+}

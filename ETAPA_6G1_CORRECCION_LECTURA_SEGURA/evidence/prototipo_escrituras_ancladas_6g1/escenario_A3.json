@@ -1,0 +1,30 @@
+{
+ "amenaza": "Que las escrituras posteriores a la sustitución se desvíen.",
+ "clasificacion": [
+  "comportamiento_permitido_por_diseno"
+ ],
+ "escenario": "A3",
+ "nota": "fd_run designa el OBJETO acreditado; el secuestro posterior de la ruta no afecta a /proc/self/fd",
+ "resultado": {
+  "contenido_publicado": [
+   "analysis.json",
+   "engine_log.txt",
+   "masks",
+   "masks/confidence_map.npy",
+   "mix SDI.wav",
+   "mix SDV.wav"
+  ],
+  "faltan_en_publicado": [],
+  "publicacion": {
+   "destino": "run_final",
+   "exito": true,
+   "motivos": [],
+   "publicado": true,
+   "traslado_verificado": true
+  },
+  "sustituto_atacante_contenido": null
+ },
+ "schema": "prototipo-ea-1/1",
+ "titulo": "Sustitución del componente intermedio DURANTE las escrituras (inyección entre artefactos) con mecanismo EA activo",
+ "veredicto": "PASS"
+}

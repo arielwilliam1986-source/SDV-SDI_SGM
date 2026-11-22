@@ -1,0 +1,32 @@
+{
+ "amenaza": "Que EXIT_OK se emita sobre el directorio correcto con CONTENIDOS desviados (o ausentes).",
+ "clasificacion": [
+  "vulnerabilidad_reproducida_sin_escrituras_ancladas",
+  "resultado_experimental"
+ ],
+ "escenario": "A1",
+ "resultado": {
+  "artefactos_reales_en_acreditado": false,
+  "contenido_acreditado_publicado": [],
+  "contenido_sustituto_atacante": [
+   "analysis.json",
+   "mix SDI.wav",
+   "mix SDV.wav"
+  ],
+  "publicacion": {
+   "destino": "run_final",
+   "exito": true,
+   "motivos": [],
+   "publicado": true,
+   "traslado_verificado": true
+  },
+  "publicado_identidad": {
+   "dev": 65024,
+   "ino": 535298
+  },
+  "respuesta_hallazgo_A": "SI: PDA-1 publica correctamente (identidad) el directorio acreditado aunque TODOS los artefactos hayan sido desviados al sustituto — la identidad del directorio NO implica contenidos correctos. Se requiere protección de escrituras (EA) y checklist de completitud."
+ },
+ "schema": "prototipo-ea-1/1",
+ "titulo": "Hallazgo A: publicación anclada del provisional acreditado tras sustitución del intermedio y escrituras por ruta nominal (como los motores hoy)",
+ "veredicto": "DEMOSTRADO"
+}

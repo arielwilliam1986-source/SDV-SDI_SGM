@@ -1,0 +1,50 @@
+{
+ "amenaza": "Que alguna escritura caiga fuera del acreditado por seguir la ruta secuestrada.",
+ "clasificacion": [
+  "comportamiento_permitido_por_diseno",
+  "vulnerabilidad_eliminada_por_diseno"
+ ],
+ "escenario": "A2",
+ "resultado": {
+  "artefactos_escritos_anclados": [
+   "engine_log.txt",
+   "analysis.json",
+   "mix SDV.wav",
+   "mix SDI.wav",
+   "masks/confidence_map.npy"
+  ],
+  "contenido_publicado": [
+   "analysis.json",
+   "engine_log.txt",
+   "masks",
+   "masks/confidence_map.npy",
+   "mix SDI.wav",
+   "mix SDV.wav"
+  ],
+  "faltan_en_publicado": [],
+  "lectura_posterior_via_ruta_publicada": {
+   "mix SDI.wav": {
+    "frames": 44100,
+    "sha": "edf6f5285656a678ee2795983997d87794a5973982c2c95d9097d0472e1c73e9",
+    "sr": 44100
+   },
+   "mix SDV.wav": {
+    "frames": 44100,
+    "sha": "7f9ad35893dab08ef08fc105c23466002892723c090e5cc73b471a7157836c67",
+    "sr": 44100
+   }
+  },
+  "publicacion": {
+   "destino": "run_final",
+   "exito": true,
+   "motivos": [],
+   "publicado": true,
+   "traslado_verificado": true
+  },
+  "respuesta_hallazgo_A": "CON EA (fd_run + /proc/self/fd + openat relativo): todos los artefactos (soundfile, numpy memmap, open builtin, log) caen en el directorio acreditado aunque la ruta nominal esté secuestrada; la publicación devuelve un directorio identidad-correcta y contenido-correcto.",
+  "sustituto_atacante_contenido": []
+ },
+ "schema": "prototipo-ea-1/1",
+ "titulo": "Mecanismo EA propuesto: escrituras ancladas por descriptor (soundfile WAV real, numpy open_memmap real, open builtin, log) con sustitución del intermedio antes de escribir",
+ "veredicto": "PASS"
+}

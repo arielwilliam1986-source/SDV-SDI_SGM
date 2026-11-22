@@ -1,0 +1,27 @@
+{
+ "amenaza": "Que el motor declare EXIT_OK cuando la ruta final ya no designa el objeto verificado.",
+ "clasificacion": [
+  "comportamiento_rechazado_por_diseno (detección en el punto añadido)",
+  "limitacion_residual_atacante_misma_uid (ventana entre la re-verificación y la salida del proceso)"
+ ],
+ "escenario": "B2",
+ "nota": "cierra la ventana B1 hasta el return EXIT_OK; el residual inalienable (post-return, misma uid) queda cubierto por el registro forense de identidad",
+ "resultado": {
+  "exitok_emitido": false,
+  "provisional_robado_conservado": true,
+  "publicacion": {
+   "destino": "run_final",
+   "exito": true,
+   "motivos": [],
+   "publicado": true,
+   "traslado_verificado": true
+  },
+  "reverificacion": {
+   "coincide": false,
+   "existe": true
+  }
+ },
+ "schema": "prototipo-ea-1/1",
+ "titulo": "Mitigación propuesta: re-verificación de la identidad del destino (por descriptor del padre) inmediatamente antes del EXIT_OK",
+ "veredicto": "PASS"
+}

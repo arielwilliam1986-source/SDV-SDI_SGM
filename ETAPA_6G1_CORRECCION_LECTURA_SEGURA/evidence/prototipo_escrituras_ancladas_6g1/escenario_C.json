@@ -1,0 +1,79 @@
+{
+ "amenaza": "Que queden descriptores residuales en cualquier camino de salida.",
+ "clasificacion": [
+  "comportamiento_permitido_por_diseno"
+ ],
+ "escenario": "C",
+ "nota": "en producción, el cierre pasa a los protocolos vigentes (preparar_aborto_6g1 / cierre normal acreditado)",
+ "resultado": {
+  "excepcion": {
+   "exito_publicacion": false,
+   "fds_antes": [
+    0,
+    1,
+    2,
+    3,
+    4,
+    7,
+    8
+   ],
+   "fds_despues": [
+    0,
+    1,
+    2,
+    3,
+    4,
+    7,
+    8
+   ],
+   "fds_residuales": []
+  },
+  "exito": {
+   "exito_publicacion": true,
+   "fds_antes": [
+    0,
+    1,
+    2,
+    3,
+    4,
+    7,
+    8
+   ],
+   "fds_despues": [
+    0,
+    1,
+    2,
+    3,
+    4,
+    7,
+    8
+   ],
+   "fds_residuales": []
+  },
+  "interrupcion": {
+   "exito_publicacion": false,
+   "fds_antes": [
+    0,
+    1,
+    2,
+    3,
+    4,
+    7,
+    8
+   ],
+   "fds_despues": [
+    0,
+    1,
+    2,
+    3,
+    4,
+    7,
+    8
+   ],
+   "fds_residuales": []
+  }
+ },
+ "schema": "prototipo-ea-1/1",
+ "titulo": "Cierre determinista de fd_padre y fd_run en éxito, excepción e interrupción (nivel de mecanismo)",
+ "veredicto": "PASS"
+}
