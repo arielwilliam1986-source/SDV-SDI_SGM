@@ -1,0 +1,133 @@
+{
+  "schema": "manifest-rectificacion-cr-r1-6g1/1",
+  "commit_padre": "8e773df9506f3d6600fa5fe675ef8fbddfd882ad",
+  "rama": "arena/c7719286-sdv-sdi-sgm",
+  "alcance": "CR-R1: fallo de cierre de lectores y de cerrar_log() marca completo=False (ABORT registrado, sin traslado); sin cambios en motores ni DSP",
+  "archivos": [
+    {
+      "ruta": "ETAPA_6G1_CORRECCION_LECTURA_SEGURA/DIFF_RECTIFICACION_CR_R1_6G1_vs_8e773df.patch",
+      "estado": "nuevo",
+      "sha256_8e773df": null,
+      "sha256": "560ff6ae9d9e962f7701452b59d0d9be1e3dde12521a28c1722a819ed4de73d9"
+    },
+    {
+      "ruta": "ETAPA_6G1_CORRECCION_LECTURA_SEGURA/RECTIFICACION_CR_R1_6G1.md",
+      "estado": "nuevo",
+      "sha256_8e773df": null,
+      "sha256": "f94230b190fe18e607bd4a6c78f2d03de56221c8df85b8d1de45f55425f70707"
+    },
+    {
+      "ruta": "ETAPA_6G1_CORRECCION_LECTURA_SEGURA/evidence/matriz_protocolo_cierre_cr_r1_6g1.csv",
+      "estado": "nuevo",
+      "sha256_8e773df": null,
+      "sha256": "9dbf73f9e0e754c9196ac0af2a4c7d18bd16c807a4b86c106851edca3f3d06a4"
+    },
+    {
+      "ruta": "ETAPA_6G1_CORRECCION_LECTURA_SEGURA/evidence/matriz_rectificacion_cr_r1_6g1.csv",
+      "estado": "nuevo",
+      "sha256_8e773df": null,
+      "sha256": "0596df318848b1f9b7f42332257688874dd2641d6f606d32c929c462e6df5164"
+    },
+    {
+      "ruta": "ETAPA_6G1_CORRECCION_LECTURA_SEGURA/evidence/pruebas_protocolo_cierre_cr_r1_6g1.json",
+      "estado": "nuevo",
+      "sha256_8e773df": null,
+      "sha256": "3d21b2d55d1aa58cb90107197725edbdf988eaf73cc8e9257182d5650a46ab07"
+    },
+    {
+      "ruta": "ETAPA_6G1_CORRECCION_LECTURA_SEGURA/evidence/pruebas_rectificacion_cr_r1_6g1.json",
+      "estado": "nuevo",
+      "sha256_8e773df": null,
+      "sha256": "672fe59dc67b91b49ed1e4c88fa607491770795fea9377639a869a5a466bda32"
+    },
+    {
+      "ruta": "ETAPA_6G1_CORRECCION_LECTURA_SEGURA/motores/lectura_segura_6g1.py",
+      "estado": "modificado",
+      "sha256_8e773df": "c1b73d4cb26f8ebc17aa873bbca694ca0cb169ad2e40988833185a5077c00407",
+      "sha256": "833077a57c091f730c2e315460e9c11d768f0810e36b32f896b4ffdee85c2ff8"
+    },
+    {
+      "ruta": "ETAPA_6G1_CORRECCION_LECTURA_SEGURA/scripts/inyeccion_cierre_6g1/ejecutar_motor_cierre.py",
+      "estado": "modificado",
+      "sha256_8e773df": "ae8759233ee1a8029caf41a3b681b01c1c359260b0ed98f4d8ea14b0b9acf3f3",
+      "sha256": "1db96c199d31842c9dce9afb1da62c16f0dc09284942f54d092b376f159334b3"
+    },
+    {
+      "ruta": "ETAPA_6G1_CORRECCION_LECTURA_SEGURA/scripts/pruebas_cierre_recursos_6g1.py",
+      "estado": "modificado",
+      "sha256_8e773df": "046dfe81042043e2c9c478b6086d325926fddb50b2721dcb7acb23e9049c7873",
+      "sha256": "2bea3c10fab504944e26229cc006bd34bcda8fd462230f3bee788570fa04f2b2"
+    },
+    {
+      "ruta": "ETAPA_6G1_CORRECCION_LECTURA_SEGURA/scripts/pruebas_protocolo_cierre_cr_r1_6g1.py",
+      "estado": "nuevo",
+      "sha256_8e773df": null,
+      "sha256": "999c1581e46dcb505e6934ed6669a222f8a00c0af1ecc2a41fed2a4d237381d4"
+    }
+  ],
+  "motores_sin_cambios": {
+    "MOTOR_SEP_SDV-SDI_v3.1.1_Hardened_Final.py": {
+      "sha256_8e773df": "e3a0574fa6f4a35dd59968093df8a338431423d47f55f30e3114c80c272c5fe8",
+      "sha256": "e3a0574fa6f4a35dd59968093df8a338431423d47f55f30e3114c80c272c5fe8",
+      "identico": true
+    },
+    "MOTOR_SEP_SDV-SDI_EVO.py": {
+      "sha256_8e773df": "438bb7a8eb834dee0bba060c9fe3d1d5e350909cb5d51c6e0c90f40b39b2690c",
+      "sha256": "438bb7a8eb834dee0bba060c9fe3d1d5e350909cb5d51c6e0c90f40b39b2690c",
+      "identico": true
+    },
+    "sdv_sdi_mqr_engine.py": {
+      "sha256_8e773df": "41b075dfdac23b4a4ecbb543051cfcfddabc36dfa4e496d90e7cb3b27efdbaf7",
+      "sha256": "41b075dfdac23b4a4ecbb543051cfcfddabc36dfa4e496d90e7cb3b27efdbaf7",
+      "identico": true
+    }
+  },
+  "ast_lectura_segura_vs_8e773df": {
+    "defs_cambiadas": [
+      "cerrar_recursos_corrida_6g1",
+      "preparar_aborto_6g1"
+    ],
+    "defs_añadidas": [],
+    "defs_eliminadas": [],
+    "otras_sentencias_iguales": true
+  },
+  "resultados": {
+    "protocolo": {
+      "corregido": {
+        "pass_": 4,
+        "total": 4
+      },
+      "base_8e773df": {
+        "pass_": 1,
+        "total": 4
+      }
+    },
+    "motores_R1_R5_E0": {
+      "corregido": {
+        "pass_": 18,
+        "total": 18
+      },
+      "base_8e773df": {
+        "pass_": 15,
+        "total": 18
+      }
+    }
+  },
+  "evidencia_8e773df_no_sobrescrita": [
+    "ETAPA_6G1_CORRECCION_LECTURA_SEGURA/evidence/pruebas_cierre_recursos_6g1.json",
+    "ETAPA_6G1_CORRECCION_LECTURA_SEGURA/evidence/matriz_cierre_recursos_6g1.csv",
+    "ETAPA_6G1_CORRECCION_LECTURA_SEGURA/evidence/ast_cierre_recursos_6g1.json",
+    "ETAPA_6G1_CORRECCION_LECTURA_SEGURA/CIERRE_RECURSOS_6G1.md"
+  ],
+  "no_ejecutado": [
+    "batería CV",
+    "H1",
+    "C-R1",
+    "H2",
+    "baterías históricas 34/26/17/12",
+    "prueba DSP",
+    "audio real",
+    "Android/Termux"
+  ],
+  "estado": "propuesto para revisión de Cris; 6G.1 NO cerrada ni autorizada para integración"
+}

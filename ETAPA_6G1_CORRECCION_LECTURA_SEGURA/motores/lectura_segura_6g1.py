@@ -1011,8 +1011,11 @@ def resumen_aborto_6g1(res):
 #   6. sólo entonces abortar_corrida_6g1() (registro -> eventual traslado).
 # No se confía en __del__ ni en la recolección: cada recurso se cierra con una
 # llamada explícita y su estado se verifica. Ningún error de cierre se
-# propaga: queda documentado y el aborto continúa (sin traslado si quedó
-# algo abierto; nunca publicación ni eliminación).
+# propaga: queda documentado y el aborto continúa. [CR-R1] CUALQUIER fallo o
+# cierre no verificado de un escritor, memmap, lector o del log marca el
+# cierre como incompleto (`completo=False`): ABORT_6G1.json se registra igual,
+# pero el provisional NO se traslada (fail-closed; nunca publicación ni
+# eliminación).
 
 
 def _bajo_dir_6g1(ruta):
@@ -1115,7 +1118,15 @@ def cerrar_recursos_corrida_6g1(runners=None, memmaps=None, lectores=None):
     subyacente; las entradas se retiran del diccionario del motor para soltar
     su referencia, el contenido lógico no se toca) y descriptores de lectura.
     Nunca propaga errores: devuelve un informe con el orden de los pasos, los
-    errores y `completo` (todo escritor y todo memmap cerrado y verificado)."""
+    errores y `completo`.
+
+    [CR-R1] `completo` es True sólo si TODOS los recursos recibidos quedaron
+    cerrados y verificados: cada escritor WAV, cada memmap (flush + mmap
+    cerrado; un memmap con referencias activas NO se cierra y cuenta como
+    incompleto) y cada lector. Un fallo de cierre de un lector, o un lector
+    cuyo estado de cierre no es verificable, también deja `completo=False`.
+    (El cierre del log y la comprobación en /proc se añaden en
+    preparar_aborto_6g1.)"""
     inf = dict(orden=[], errores=[], completo=True, escritores=0,
                memmaps=0, lectores=0)
 
@@ -1182,8 +1193,9 @@ def cerrar_recursos_corrida_6g1(runners=None, memmaps=None, lectores=None):
     elif memmaps:
         paso('memmap', repr(type(memmaps)), 'close', False,
              'colección no soportada (se esperaba dict)')
-    # 3. descriptores de lectura (no críticos para el traslado: no apuntan
-    #    al provisional; los errores quedan igualmente documentados)
+    # 3. descriptores de lectura. [CR-R1] Críticos como el resto: un lector que
+    #    no se cierra (o cuyo cierre no es verificable) marca el cierre como
+    #    incompleto y bloquea el traslado.
     pendientes = [lectores]
     while pendientes:
         x = pendientes.pop(0)
@@ -1198,7 +1210,7 @@ def cerrar_recursos_corrida_6g1(runners=None, memmaps=None, lectores=None):
         nombre = str(getattr(x, 'path', None) or getattr(x, 'name', None) or repr(x))
         ok, err = _cerrar_idempotente_6g1(x)
         inf['lectores'] += 1
-        paso('lector', nombre, 'close', ok, err, critico=False)
+        paso('lector', nombre, 'close', ok, err)
     return inf
 
 
@@ -1216,7 +1228,14 @@ def preparar_aborto_6g1(run_dir, log=None, cerrar_log=None, runners=None,
     resultado y cualquier error en engine_log.txt, cierra el log y verifica
     que no queda ningún descriptor de escritura ni mapeo bajo el
     provisional. Nunca propaga errores. Devuelve el informe que se pasa como
-    `cierre=` a abortar_corrida_6g1()."""
+    `cierre=` a abortar_corrida_6g1().
+
+    [CR-R1] `completo` describe TODOS los recursos exigidos antes del registro:
+    es True sólo si (a) cerrar_recursos_corrida_6g1 cerró y verificó cada
+    escritor, memmap y lector; (b) el cierre del log (`cerrar_log`) no
+    falló; y (c) no queda ningún descriptor de escritura ni mapeo bajo el
+    provisional, ni antes ni después de cerrar el log. Con `completo=False`
+    abortar_corrida_6g1() registra el aborto pero NO traslada."""
     try:
         inf = cerrar_recursos_corrida_6g1(runners, memmaps, lectores)
     except Exception as exc:        # defensa: nunca impedir el aborto
@@ -1244,7 +1263,13 @@ def preparar_aborto_6g1(run_dir, log=None, cerrar_log=None, runners=None,
     if cerrar_log is not None:
         try:
             cerrar_log()
+            inf['log_cerrado'] = True
         except Exception as exc:
+            # [CR-R1] el log ya no está disponible para documentarlo: queda en
+            # el informe (y en el motivo de conservación del resultado del
+            # aborto) y el cierre pasa a incompleto -> sin traslado.
+            inf['log_cerrado'] = False
+            inf['completo'] = False
             inf['errores'].append('cierre del log: %s: %s' % (type(exc).__name__, exc))
     try:
         final = escritura_abierta_bajo_dir_6g1(run_dir)

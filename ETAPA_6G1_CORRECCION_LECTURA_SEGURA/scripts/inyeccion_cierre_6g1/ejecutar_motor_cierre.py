@@ -36,6 +36,11 @@ Escenarios:
   R4  (complementario) la apertura del Mix falla (OSError) DESPUÉS de
       construir los CandidateRunner, es decir, con los escritores y los
       memmaps abiertos. Ejercita el manejador de FalloCorrida6G1.
+  R5  [CR-R1] como R2, y además el PRIMER cierre del lector del Mix
+      (MixHandle.close) posterior a la inyección eleva OSError sin cerrar
+      nada: el lector queda abierto (sólo lectura, fuera del provisional).
+      El cierre debe quedar incompleto, el error documentado en
+      engine_log.txt, el ABORT registrado y el provisional SIN trasladar.
   E0  (complementario) sin inyección: corrida feliz instrumentada.
 
 En el instante de la inyección siembra AJENO_CV.txt dentro del provisional y
@@ -321,8 +326,22 @@ def _push_instr(self, X):
     return r
 
 
-if ESC in ('R1', 'R2', 'R3'):
+if ESC in ('R1', 'R2', 'R3', 'R5'):
     M.OlaStream.push = _push_instr
+    if ESC == 'R5':
+        _orig_mh_close = L.MixHandle.close
+
+        def _mh_close_falla(self):
+            # un único fallo transitorio, sólo después de la inyección
+            if ESTADO['inyeccion'] is not None and 'lector_fallido' not in ESTADO:
+                ruta = os.path.realpath(str(object.__getattribute__(self, 'path')))
+                ESTADO['lector_fallido'] = ruta
+                ev('lector_cierre_fallido', ruta=ruta)
+                guardar()
+                raise OSError(5, 'inyeccion CR R5: fallo de E/S al cerrar el '
+                                 'lector del Mix')
+            return _orig_mh_close(self)
+        L.MixHandle.close = _mh_close_falla
 elif ESC == 'R4':
     _orig_abrir = M._abrir_mix_6g1
 

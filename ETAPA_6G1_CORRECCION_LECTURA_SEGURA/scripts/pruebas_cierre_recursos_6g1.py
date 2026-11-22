@@ -11,6 +11,10 @@ Escenarios, cada uno sobre los 3 motores:
   R4  (complementario) apertura del Mix fallida DESPUÉS de construir los
       CandidateRunner (escritores y memmaps abiertos, 0 frames): ejercita el
       manejador de FalloCorrida6G1; registro sin traslado.
+  R5  [CR-R1] R2 con un fallo de cierre del lector del Mix (OSError en
+      MixHandle.close; el lector queda abierto). Debe quedar el error
+      documentado en engine_log.txt, completo=False, el ABORT registrado y el
+      provisional SIN trasladar.
   E0  (complementario) corrida feliz con los argumentos por defecto: código
       0, publicación única sin ABORT, PCM idéntico al registrado en
       evidence/no_regresion_dsp_6g1.json (sólo lectura) y ningún descriptor
@@ -56,8 +60,10 @@ Comprobaciones por caso:
 `--base DIR --etiqueta-base X` ejecuta la MISMA batería sobre otra copia de los
 motores. Es sólo un diagnóstico y no cambia el veredicto.
 
-Evidencia: evidence/pruebas_cierre_recursos_6g1.json y
-           evidence/matriz_cierre_recursos_6g1.csv
+Evidencia (por defecto): evidence/pruebas_cierre_recursos_6g1.json y
+           evidence/matriz_cierre_recursos_6g1.csv; `--json`/`--csv` permiten
+           otra ruta (la rectificación CR-R1 escribe archivos propios para no
+           sobrescribir la evidencia de 8e773df).
 Salida 0 sólo si todos los casos de los motores corregidos dan PASS.
 """
 import argparse
@@ -94,9 +100,13 @@ ESCENARIOS = {
     'R4': ('Apertura del Mix fallida con CandidateRunner y memmaps abiertos '
            '(complementario)', EXIT_PROCESSING, 'MIX_NO_ABIERTO_ANTES_DEL_DSP',
            False, True),
+    'R5': ('Excepción general con fallo de cierre del lector del Mix (CR-R1)',
+           EXIT_PROCESSING, 'EXCEPCION_DURANTE_EL_PROCESAMIENTO', False, False),
     'E0': ('Corrida feliz instrumentada, argumentos por defecto (complementario)',
            EXIT_OK, None, False, True),
 }
+# recurso que queda sin cerrar en los escenarios con cierre incompleto
+INCOMPLETO = {'R3': 'memmap', 'R5': 'lector'}
 SALIDAS = {'Hardened': ('mix SDV.wav', 'mix SDI.wav'),
            'EVO': ('mix SDV.wav', 'mix SDI.wav'),
            'MQR': ('SDV.wav', 'SDI.wav')}
@@ -244,6 +254,7 @@ def verificar(motor, esc, r):
     if esc == 'E0':
         return verificar_e0(motor, r)
     cond, cod_esp, motivo_esp, tras_esp, completo_esp = ESCENARIOS[esc]
+    fallo = INCOMPLETO.get(esc)
     e = r['estado']
     ch = {}
 
@@ -304,16 +315,30 @@ def verificar(motor, esc, r):
       all(w['cerrado'] for w in fe['escritores'])
       and rutas_abiertas <= {w['ruta'] for w in fe['escritores']},
       [(os.path.basename(w['ruta']), w['cerrado']) for w in fe['escritores']])
-    c('lectores_cerrados_antes_de_abortar', fe['lectores_abiertos'] == [], fe['lectores_abiertos'])
+    lector_fallido = e.get('lector_fallido')
+    if fallo == 'lector':
+        c('fallo_de_cierre_de_lector_inyectado',
+          lector_fallido is not None and lector_fallido == ENTRADAS[0].resolve().as_posix(),
+          lector_fallido)
+        c('unico_lector_abierto_es_el_fallido', fe['lectores_abiertos'] == [lector_fallido],
+          fe['lectores_abiertos'])
+    else:
+        c('lectores_cerrados_antes_de_abortar', fe['lectores_abiertos'] == [],
+          fe['lectores_abiertos'])
     retenido = inj.get('memmap_retenido')
     mm_ok = [m for m in fe['memmaps'] if m['mmap_cerrado'] is True and not m['array_vivo']]
     mm_no = [m for m in fe['memmaps'] if m not in mm_ok]
-    if completo_esp:
+    if fallo != 'memmap':
         c('memmaps_vaciados_y_cerrados_antes_de_abortar',
           fe['memmaps'] and not mm_no, 'cerrados %d/%d; abiertos %s'
           % (len(mm_ok), len(fe['memmaps']), [os.path.basename(m['ruta']) for m in mm_no]))
+        # en R5 sólo se toleran los descriptores de SÓLO LECTURA del lector
+        # fallido (sobre la entrada, fuera del provisional)
+        desc = [d for d in fe['descriptores_salida_o_entradas']
+                if not (fallo == 'lector' and d['destino'] == lector_fallido
+                        and d['escritura'] is False)]
         c('sin_descriptores_ni_mapeos_al_abortar',
-          fe['descriptores_salida_o_entradas'] == [] and fe['mapeos_bajo_salida'] == [],
+          desc == [] and fe['mapeos_bajo_salida'] == [],
           '%s %s' % (fe['descriptores_salida_o_entradas'], fe['mapeos_bajo_salida']))
     else:
         c('memmap_no_cerrable_detectado_resto_cerrado',
@@ -424,9 +449,11 @@ def verificar(motor, esc, r):
     ref = dict(a_sal, **{'ABORT_6G1.json': abort_sha})
     c('sha_estable_tras_terminar_el_proceso', post == ref,
       sorted(k for k in set(post) | set(ref) if post.get(k) != ref.get(k)))
+    c('ningun_archivo_eliminado', set(inj['archivos']) <= set(post),
+      'faltan %s' % sorted(set(inj['archivos']) - set(post)))
     if ff is not None:
         esc_vivos = [d for d in ff['descriptores_salida_o_entradas'] if d['escritura'] is not False]
-        if completo_esp:
+        if fallo != 'memmap':
             c('sin_descriptores_de_escritura_tras_registro', not esc_vivos and not ff['mapeos_bajo_salida'],
               '%s %s' % (esc_vivos, ff['mapeos_bajo_salida']))
         else:
@@ -444,6 +471,14 @@ def verificar(motor, esc, r):
     if completo_esp:
         c('log_documenta_cierre_completo',
           '[6G.1-R/CR] cierre de recursos previo al aborto' in lg and 'completo=True' in lg)
+    elif fallo == 'lector':
+        c('log_documenta_error_de_cierre_del_lector',
+          'completo=False' in lg and 'ERROR de cierre' in lg
+          and 'inyeccion CR R5: fallo de E/S al cerrar el lector del Mix' in lg
+          and ('lector ' + str(lector_fallido)) in lg, 'lector %s' % lector_fallido)
+        c('resultado_del_aborto_traslado_bloqueado',
+          'trasladado=False' in r['stdout'] and 'cierre de recursos incompleto' in r['stdout'],
+          r['stdout'][-400:])
     else:
         c('log_documenta_error_de_cierre',
           'completo=False' in lg and 'ERROR de cierre' in lg and 'referencias activas' in lg
@@ -488,8 +523,10 @@ def main():
     ap = argparse.ArgumentParser()
     ap.add_argument('--base', default=None)
     ap.add_argument('--etiqueta-base', default='base')
+    ap.add_argument('--json', default=str(EV / 'pruebas_cierre_recursos_6g1.json'))
+    ap.add_argument('--csv', default=str(EV / 'matriz_cierre_recursos_6g1.csv'))
     a = ap.parse_args()
-    res = dict(schema='pruebas-cierre-recursos-6g1/1', entorno=entorno(),
+    res = dict(schema='pruebas-cierre-recursos-6g1/2', entorno=entorno(),
                motores_sha256={m: sha_file(MOT / n) for m, n in MOTORES.items()},
                modulo_sha256=sha_file(MOT / 'lectura_segura_6g1.py'),
                escenarios={k: dict(condicion=v[0], codigo_esperado=v[1], motivo=v[2],
@@ -511,10 +548,10 @@ def main():
     res.update(filas=filas, detalle=det,
                resumen=dict(pass_=sum(f['veredicto'] == 'PASS' for f in filas), total=len(filas)))
     EV.mkdir(parents=True, exist_ok=True)
-    (EV / 'pruebas_cierre_recursos_6g1.json').write_text(
+    Path(a.json).write_text(
         json.dumps(res, indent=2, ensure_ascii=False, default=str) + '\n', encoding='utf-8')
     base_idx = {(f['prueba'], f['motor']): f for f in res.get('diagnostico_base', {}).get('filas', [])}
-    with open(EV / 'matriz_cierre_recursos_6g1.csv', 'w', newline='', encoding='utf-8') as fh:
+    with open(a.csv, 'w', newline='', encoding='utf-8') as fh:
         cols = ['prueba', 'motor', 'condicion', 'codigo_esperado', 'codigo', 'comprobaciones',
                 'fallos', 'veredicto', 'codigo_base', 'veredicto_base', 'fallos_base']
         wr = csv.DictWriter(fh, fieldnames=cols)

@@ -1,0 +1,917 @@
+{
+  "schema": "pruebas-protocolo-cierre-cr-r1-6g1/1",
+  "entorno": {
+    "python": "3.11.2",
+    "numpy": "1.26.4",
+    "scipy": "1.13.1",
+    "soundfile": "0.13.1",
+    "libsndfile": "1.2.2",
+    "platform": "linux",
+    "machine": "x86_64",
+    "cpu_count": 2
+  },
+  "modulo_sha256": "833077a57c091f730c2e315460e9c11d768f0810e36b32f896b4ffdee85c2ff8",
+  "casos": {
+    "P0": {
+      "condicion": "Control: lector y log se cierran correctamente",
+      "completo_esperado": true,
+      "traslado_esperado": true
+    },
+    "P1": {
+      "condicion": "Fallo de cierre de un lector (queda abierto)",
+      "completo_esperado": false,
+      "traslado_esperado": false
+    },
+    "P2": {
+      "condicion": "Fallo al cerrar el log tras cerrar el archivo (sin descriptor vivo)",
+      "completo_esperado": false,
+      "traslado_esperado": false
+    },
+    "P3": {
+      "condicion": "Fallo al cerrar el log dejando el descriptor abierto",
+      "completo_esperado": false,
+      "traslado_esperado": false
+    }
+  },
+  "diagnostico_base": {
+    "etiqueta": "8e773df",
+    "modulo_sha256": "c1b73d4cb26f8ebc17aa873bbca694ca0cb169ad2e40988833185a5077c00407",
+    "filas": [
+      {
+        "prueba": "P0",
+        "condicion": "Control: lector y log se cierran correctamente",
+        "completo_esperado": true,
+        "traslado_esperado": true,
+        "completo": true,
+        "trasladado": true,
+        "comprobaciones": "13/13",
+        "fallos": "",
+        "veredicto": "PASS"
+      },
+      {
+        "prueba": "P1",
+        "condicion": "Fallo de cierre de un lector (queda abierto)",
+        "completo_esperado": false,
+        "traslado_esperado": false,
+        "completo": true,
+        "trasladado": true,
+        "comprobaciones": "10/16",
+        "fallos": "completo_esperado;sin_traslado;provisional_en_su_ubicacion;ningun_aborted_r_creado;traslado_bloqueado_por_cierre_incompleto;error_del_lector_documentado_en_log",
+        "veredicto": "FAIL"
+      },
+      {
+        "prueba": "P2",
+        "condicion": "Fallo al cerrar el log tras cerrar el archivo (sin descriptor vivo)",
+        "completo_esperado": false,
+        "traslado_esperado": false,
+        "completo": true,
+        "trasladado": true,
+        "comprobaciones": "10/17",
+        "fallos": "completo_esperado;sin_traslado;provisional_en_su_ubicacion;ningun_aborted_r_creado;traslado_bloqueado_por_cierre_incompleto;error_del_log_documentado_en_informe_y_resultado;log_cerrado_marcado_false",
+        "veredicto": "FAIL"
+      },
+      {
+        "prueba": "P3",
+        "condicion": "Fallo al cerrar el log dejando el descriptor abierto",
+        "completo_esperado": false,
+        "traslado_esperado": false,
+        "completo": false,
+        "trasladado": false,
+        "comprobaciones": "16/17",
+        "fallos": "log_cerrado_marcado_false",
+        "veredicto": "FAIL"
+      }
+    ],
+    "detalle": {
+      "P0": {
+        "condicion": "Control: lector y log se cierran correctamente",
+        "completo_esperado": true,
+        "traslado_esperado": true,
+        "veredicto": "PASS",
+        "fallos": [],
+        "resultado": {
+          "completo": true,
+          "errores": [],
+          "log_cerrado": null,
+          "escritura_abierta_al_registrar": [],
+          "abort_registrado": true,
+          "trasladado": true,
+          "ruta_final": "/tmp/f6g1cr_r1_protocolo/8e773df/P0/run_cr_r1_aborted_r001",
+          "traslado_bloqueado": null,
+          "motivo_conservacion": null,
+          "orden_cierre": [
+            {
+              "paso": 1,
+              "tipo": "lector",
+              "recurso": "/home/user/SDV-SDI_SGM/ETAPA_6G1_CORRECCION_LECTURA_SEGURA/fixtures/mix.wav",
+              "accion": "close",
+              "ok": true
+            }
+          ]
+        },
+        "comprobaciones": {
+          "completo_esperado": {
+            "ok": true,
+            "detalle": "completo=True errores=[]"
+          },
+          "abort_registrado": {
+            "ok": true,
+            "detalle": "True"
+          },
+          "trasladado_sin_reemplazo": {
+            "ok": true,
+            "detalle": "(True, 'run_cr_r1_aborted_r001')"
+          },
+          "destino_preexistente_intacto": {
+            "ok": true,
+            "detalle": ""
+          },
+          "sin_publicacion_exitosa": {
+            "ok": true,
+            "detalle": "['run_cr_r1_aborted', 'run_cr_r1_aborted_r001']"
+          },
+          "ABORT_6G1_schema_3": {
+            "ok": true,
+            "detalle": "abort-6g1/3"
+          },
+          "motivo": {
+            "ok": true,
+            "detalle": "EXCEPCION_DURANTE_EL_PROCESAMIENTO"
+          },
+          "resultados_validos_vacio": {
+            "ok": true,
+            "detalle": ""
+          },
+          "wav_parcial_invalidado_y_conservado": {
+            "ok": true,
+            "detalle": ""
+          },
+          "ajeno_conservado": {
+            "ok": true,
+            "detalle": ""
+          },
+          "ningun_archivo_eliminado": {
+            "ok": true,
+            "detalle": "faltan []"
+          },
+          "archivos_previos_sin_modificar_salvo_log": {
+            "ok": true,
+            "detalle": ""
+          },
+          "log_documenta_cierre_completo": {
+            "ok": true,
+            "detalle": "[prueba CR-R1] corrida sintética P0\n[6G.1-R/CR] cierre de recursos previo al aborto: escritores=0 memmaps=0 lectores=1 completo=True errores=0\n[6G.1-R/CR] se cierra engine_log.txt; a continuación se registra el aborto\n"
+          }
+        }
+      },
+      "P1": {
+        "condicion": "Fallo de cierre de un lector (queda abierto)",
+        "completo_esperado": false,
+        "traslado_esperado": false,
+        "veredicto": "FAIL",
+        "fallos": [
+          "completo_esperado",
+          "sin_traslado",
+          "provisional_en_su_ubicacion",
+          "ningun_aborted_r_creado",
+          "traslado_bloqueado_por_cierre_incompleto",
+          "error_del_lector_documentado_en_log"
+        ],
+        "resultado": {
+          "completo": true,
+          "errores": [
+            "lector /home/user/SDV-SDI_SGM/ETAPA_6G1_CORRECCION_LECTURA_SEGURA/fixtures/mix.wav (close): OSError: [Errno 5] inyeccion CR-R1 P1: fallo de E/S al cerrar el lector"
+          ],
+          "log_cerrado": null,
+          "escritura_abierta_al_registrar": [],
+          "abort_registrado": true,
+          "trasladado": true,
+          "ruta_final": "/tmp/f6g1cr_r1_protocolo/8e773df/P1/run_cr_r1_aborted_r001",
+          "traslado_bloqueado": null,
+          "motivo_conservacion": null,
+          "orden_cierre": [
+            {
+              "paso": 1,
+              "tipo": "lector",
+              "recurso": "/home/user/SDV-SDI_SGM/ETAPA_6G1_CORRECCION_LECTURA_SEGURA/fixtures/mix.wav",
+              "accion": "close",
+              "ok": false,
+              "error": "OSError: [Errno 5] inyeccion CR-R1 P1: fallo de E/S al cerrar el lector"
+            }
+          ]
+        },
+        "comprobaciones": {
+          "completo_esperado": {
+            "ok": false,
+            "detalle": "completo=True errores=['lector /home/user/SDV-SDI_SGM/ETAPA_6G1_CORRECCION_LECTURA_SEGURA/fixtures/mix.wav (close): OSError: [Errno 5] inyeccion CR-R1 P1: fallo de E/S al cerrar el lector']"
+          },
+          "abort_registrado": {
+            "ok": true,
+            "detalle": "True"
+          },
+          "sin_traslado": {
+            "ok": false,
+            "detalle": "(True, None)"
+          },
+          "provisional_en_su_ubicacion": {
+            "ok": false,
+            "detalle": "run_cr_r1_partial"
+          },
+          "ningun_aborted_r_creado": {
+            "ok": false,
+            "detalle": "['run_cr_r1_aborted', 'run_cr_r1_aborted_r001']"
+          },
+          "traslado_bloqueado_por_cierre_incompleto": {
+            "ok": false,
+            "detalle": "None"
+          },
+          "destino_preexistente_intacto": {
+            "ok": true,
+            "detalle": ""
+          },
+          "sin_publicacion_exitosa": {
+            "ok": true,
+            "detalle": "['run_cr_r1_aborted', 'run_cr_r1_aborted_r001']"
+          },
+          "ABORT_6G1_schema_3": {
+            "ok": true,
+            "detalle": "abort-6g1/3"
+          },
+          "motivo": {
+            "ok": true,
+            "detalle": "EXCEPCION_DURANTE_EL_PROCESAMIENTO"
+          },
+          "resultados_validos_vacio": {
+            "ok": true,
+            "detalle": ""
+          },
+          "wav_parcial_invalidado_y_conservado": {
+            "ok": true,
+            "detalle": ""
+          },
+          "ajeno_conservado": {
+            "ok": true,
+            "detalle": ""
+          },
+          "ningun_archivo_eliminado": {
+            "ok": true,
+            "detalle": "faltan []"
+          },
+          "archivos_previos_sin_modificar_salvo_log": {
+            "ok": true,
+            "detalle": ""
+          },
+          "error_del_lector_documentado_en_log": {
+            "ok": false,
+            "detalle": "[prueba CR-R1] corrida sintética P1\n[6G.1-R/CR] cierre de recursos previo al aborto: escritores=0 memmaps=0 lectores=1 completo=True errores=1\n[6G.1-R/CR] ERROR de cierre (documentado; el aborto continúa sin traslado): lector /home/user/SDV-SDI_SGM/ETAPA_6G1_CORRECCION_LECTURA_SEGURA/fixtures/mix.wav (close): OSError: [Errno 5] inyeccion CR-R1 P1: fallo de E/S al cerrar el lector\n[6G.1-R/CR] se cierra engine_log.txt; a continuación se registra el aborto\n"
+          }
+        }
+      },
+      "P2": {
+        "condicion": "Fallo al cerrar el log tras cerrar el archivo (sin descriptor vivo)",
+        "completo_esperado": false,
+        "traslado_esperado": false,
+        "veredicto": "FAIL",
+        "fallos": [
+          "completo_esperado",
+          "sin_traslado",
+          "provisional_en_su_ubicacion",
+          "ningun_aborted_r_creado",
+          "traslado_bloqueado_por_cierre_incompleto",
+          "error_del_log_documentado_en_informe_y_resultado",
+          "log_cerrado_marcado_false"
+        ],
+        "resultado": {
+          "completo": true,
+          "errores": [
+            "cierre del log: OSError: [Errno 28] inyeccion CR-R1: fallo al cerrar engine_log.txt (tras cerrar el archivo)"
+          ],
+          "log_cerrado": null,
+          "escritura_abierta_al_registrar": [],
+          "abort_registrado": true,
+          "trasladado": true,
+          "ruta_final": "/tmp/f6g1cr_r1_protocolo/8e773df/P2/run_cr_r1_aborted_r001",
+          "traslado_bloqueado": null,
+          "motivo_conservacion": null,
+          "orden_cierre": [
+            {
+              "paso": 1,
+              "tipo": "lector",
+              "recurso": "/home/user/SDV-SDI_SGM/ETAPA_6G1_CORRECCION_LECTURA_SEGURA/fixtures/mix.wav",
+              "accion": "close",
+              "ok": true
+            }
+          ]
+        },
+        "comprobaciones": {
+          "completo_esperado": {
+            "ok": false,
+            "detalle": "completo=True errores=['cierre del log: OSError: [Errno 28] inyeccion CR-R1: fallo al cerrar engine_log.txt (tras cerrar el archivo)']"
+          },
+          "abort_registrado": {
+            "ok": true,
+            "detalle": "True"
+          },
+          "sin_traslado": {
+            "ok": false,
+            "detalle": "(True, None)"
+          },
+          "provisional_en_su_ubicacion": {
+            "ok": false,
+            "detalle": "run_cr_r1_partial"
+          },
+          "ningun_aborted_r_creado": {
+            "ok": false,
+            "detalle": "['run_cr_r1_aborted', 'run_cr_r1_aborted_r001']"
+          },
+          "traslado_bloqueado_por_cierre_incompleto": {
+            "ok": false,
+            "detalle": "None"
+          },
+          "destino_preexistente_intacto": {
+            "ok": true,
+            "detalle": ""
+          },
+          "sin_publicacion_exitosa": {
+            "ok": true,
+            "detalle": "['run_cr_r1_aborted', 'run_cr_r1_aborted_r001']"
+          },
+          "ABORT_6G1_schema_3": {
+            "ok": true,
+            "detalle": "abort-6g1/3"
+          },
+          "motivo": {
+            "ok": true,
+            "detalle": "EXCEPCION_DURANTE_EL_PROCESAMIENTO"
+          },
+          "resultados_validos_vacio": {
+            "ok": true,
+            "detalle": ""
+          },
+          "wav_parcial_invalidado_y_conservado": {
+            "ok": true,
+            "detalle": ""
+          },
+          "ajeno_conservado": {
+            "ok": true,
+            "detalle": ""
+          },
+          "ningun_archivo_eliminado": {
+            "ok": true,
+            "detalle": "faltan []"
+          },
+          "archivos_previos_sin_modificar_salvo_log": {
+            "ok": true,
+            "detalle": ""
+          },
+          "error_del_log_documentado_en_informe_y_resultado": {
+            "ok": false,
+            "detalle": "['cierre del log: OSError: [Errno 28] inyeccion CR-R1: fallo al cerrar engine_log.txt (tras cerrar el archivo)']"
+          },
+          "log_cerrado_marcado_false": {
+            "ok": false,
+            "detalle": "None"
+          }
+        }
+      },
+      "P3": {
+        "condicion": "Fallo al cerrar el log dejando el descriptor abierto",
+        "completo_esperado": false,
+        "traslado_esperado": false,
+        "veredicto": "FAIL",
+        "fallos": [
+          "log_cerrado_marcado_false"
+        ],
+        "resultado": {
+          "completo": false,
+          "errores": [
+            "cierre del log: OSError: [Errno 28] inyeccion CR-R1: fallo al cerrar engine_log.txt (descriptor abierto)",
+            "escritura abierta al registrar: ['fd 3 (escritura): engine_log.txt']"
+          ],
+          "log_cerrado": null,
+          "escritura_abierta_al_registrar": [
+            "fd 3 (escritura): engine_log.txt"
+          ],
+          "abort_registrado": true,
+          "trasladado": false,
+          "ruta_final": "/tmp/f6g1cr_r1_protocolo/8e773df/P3/run_cr_r1_partial",
+          "traslado_bloqueado": "cierre de recursos incompleto: cierre del log: OSError: [Errno 28] inyeccion CR-R1: fallo al cerrar engine_log.txt (descriptor abierto); escritura abierta al registrar: ['fd 3 (escritura): engine_log.txt']",
+          "motivo_conservacion": "cierre de recursos incompleto: cierre del log: OSError: [Errno 28] inyeccion CR-R1: fallo al cerrar engine_log.txt (descriptor abierto); escritura abierta al registrar: ['fd 3 (escritura): engine_log.txt']: provisional conservado en su ubicación",
+          "orden_cierre": [
+            {
+              "paso": 1,
+              "tipo": "lector",
+              "recurso": "/home/user/SDV-SDI_SGM/ETAPA_6G1_CORRECCION_LECTURA_SEGURA/fixtures/mix.wav",
+              "accion": "close",
+              "ok": true
+            }
+          ]
+        },
+        "comprobaciones": {
+          "completo_esperado": {
+            "ok": true,
+            "detalle": "completo=False errores=['cierre del log: OSError: [Errno 28] inyeccion CR-R1: fallo al cerrar engine_log.txt (descriptor abierto)', \"escritura abierta al registrar: ['fd 3 (escritura): engine_log.txt']\"]"
+          },
+          "abort_registrado": {
+            "ok": true,
+            "detalle": "True"
+          },
+          "sin_traslado": {
+            "ok": true,
+            "detalle": "(False, \"cierre de recursos incompleto: cierre del log: OSError: [Errno 28] inyeccion CR-R1: fallo al cerrar engine_log.txt (descriptor abierto); escritura abierta al registrar: ['fd 3 (escritura): engine_log.txt']: provisional conservado en su ubicación\")"
+          },
+          "provisional_en_su_ubicacion": {
+            "ok": true,
+            "detalle": "run_cr_r1_partial"
+          },
+          "ningun_aborted_r_creado": {
+            "ok": true,
+            "detalle": "['run_cr_r1_aborted', 'run_cr_r1_partial']"
+          },
+          "traslado_bloqueado_por_cierre_incompleto": {
+            "ok": true,
+            "detalle": "cierre de recursos incompleto: cierre del log: OSError: [Errno 28] inyeccion CR-R1: fallo al cerrar engine_log.txt (descriptor abierto); escritura abierta al registrar: ['fd 3 (escritura): engine_log.txt']: provisional conservado en su ubicación"
+          },
+          "destino_preexistente_intacto": {
+            "ok": true,
+            "detalle": ""
+          },
+          "sin_publicacion_exitosa": {
+            "ok": true,
+            "detalle": "['run_cr_r1_aborted', 'run_cr_r1_partial']"
+          },
+          "ABORT_6G1_schema_3": {
+            "ok": true,
+            "detalle": "abort-6g1/3"
+          },
+          "motivo": {
+            "ok": true,
+            "detalle": "EXCEPCION_DURANTE_EL_PROCESAMIENTO"
+          },
+          "resultados_validos_vacio": {
+            "ok": true,
+            "detalle": ""
+          },
+          "wav_parcial_invalidado_y_conservado": {
+            "ok": true,
+            "detalle": ""
+          },
+          "ajeno_conservado": {
+            "ok": true,
+            "detalle": ""
+          },
+          "ningun_archivo_eliminado": {
+            "ok": true,
+            "detalle": "faltan []"
+          },
+          "archivos_previos_sin_modificar_salvo_log": {
+            "ok": true,
+            "detalle": ""
+          },
+          "error_del_log_documentado_en_informe_y_resultado": {
+            "ok": true,
+            "detalle": "['cierre del log: OSError: [Errno 28] inyeccion CR-R1: fallo al cerrar engine_log.txt (descriptor abierto)', \"escritura abierta al registrar: ['fd 3 (escritura): engine_log.txt']\"]"
+          },
+          "log_cerrado_marcado_false": {
+            "ok": false,
+            "detalle": "None"
+          }
+        }
+      }
+    },
+    "resumen": {
+      "pass_": 1,
+      "total": 4
+    }
+  },
+  "filas": [
+    {
+      "prueba": "P0",
+      "condicion": "Control: lector y log se cierran correctamente",
+      "completo_esperado": true,
+      "traslado_esperado": true,
+      "completo": true,
+      "trasladado": true,
+      "comprobaciones": "13/13",
+      "fallos": "",
+      "veredicto": "PASS"
+    },
+    {
+      "prueba": "P1",
+      "condicion": "Fallo de cierre de un lector (queda abierto)",
+      "completo_esperado": false,
+      "traslado_esperado": false,
+      "completo": false,
+      "trasladado": false,
+      "comprobaciones": "16/16",
+      "fallos": "",
+      "veredicto": "PASS"
+    },
+    {
+      "prueba": "P2",
+      "condicion": "Fallo al cerrar el log tras cerrar el archivo (sin descriptor vivo)",
+      "completo_esperado": false,
+      "traslado_esperado": false,
+      "completo": false,
+      "trasladado": false,
+      "comprobaciones": "17/17",
+      "fallos": "",
+      "veredicto": "PASS"
+    },
+    {
+      "prueba": "P3",
+      "condicion": "Fallo al cerrar el log dejando el descriptor abierto",
+      "completo_esperado": false,
+      "traslado_esperado": false,
+      "completo": false,
+      "trasladado": false,
+      "comprobaciones": "17/17",
+      "fallos": "",
+      "veredicto": "PASS"
+    }
+  ],
+  "detalle": {
+    "P0": {
+      "condicion": "Control: lector y log se cierran correctamente",
+      "completo_esperado": true,
+      "traslado_esperado": true,
+      "veredicto": "PASS",
+      "fallos": [],
+      "resultado": {
+        "completo": true,
+        "errores": [],
+        "log_cerrado": true,
+        "escritura_abierta_al_registrar": [],
+        "abort_registrado": true,
+        "trasladado": true,
+        "ruta_final": "/tmp/f6g1cr_r1_protocolo/corregido/P0/run_cr_r1_aborted_r001",
+        "traslado_bloqueado": null,
+        "motivo_conservacion": null,
+        "orden_cierre": [
+          {
+            "paso": 1,
+            "tipo": "lector",
+            "recurso": "/home/user/SDV-SDI_SGM/ETAPA_6G1_CORRECCION_LECTURA_SEGURA/fixtures/mix.wav",
+            "accion": "close",
+            "ok": true
+          }
+        ]
+      },
+      "comprobaciones": {
+        "completo_esperado": {
+          "ok": true,
+          "detalle": "completo=True errores=[]"
+        },
+        "abort_registrado": {
+          "ok": true,
+          "detalle": "True"
+        },
+        "trasladado_sin_reemplazo": {
+          "ok": true,
+          "detalle": "(True, 'run_cr_r1_aborted_r001')"
+        },
+        "destino_preexistente_intacto": {
+          "ok": true,
+          "detalle": ""
+        },
+        "sin_publicacion_exitosa": {
+          "ok": true,
+          "detalle": "['run_cr_r1_aborted', 'run_cr_r1_aborted_r001']"
+        },
+        "ABORT_6G1_schema_3": {
+          "ok": true,
+          "detalle": "abort-6g1/3"
+        },
+        "motivo": {
+          "ok": true,
+          "detalle": "EXCEPCION_DURANTE_EL_PROCESAMIENTO"
+        },
+        "resultados_validos_vacio": {
+          "ok": true,
+          "detalle": ""
+        },
+        "wav_parcial_invalidado_y_conservado": {
+          "ok": true,
+          "detalle": ""
+        },
+        "ajeno_conservado": {
+          "ok": true,
+          "detalle": ""
+        },
+        "ningun_archivo_eliminado": {
+          "ok": true,
+          "detalle": "faltan []"
+        },
+        "archivos_previos_sin_modificar_salvo_log": {
+          "ok": true,
+          "detalle": ""
+        },
+        "log_documenta_cierre_completo": {
+          "ok": true,
+          "detalle": "[prueba CR-R1] corrida sintética P0\n[6G.1-R/CR] cierre de recursos previo al aborto: escritores=0 memmaps=0 lectores=1 completo=True errores=0\n[6G.1-R/CR] se cierra engine_log.txt; a continuación se registra el aborto\n"
+        }
+      }
+    },
+    "P1": {
+      "condicion": "Fallo de cierre de un lector (queda abierto)",
+      "completo_esperado": false,
+      "traslado_esperado": false,
+      "veredicto": "PASS",
+      "fallos": [],
+      "resultado": {
+        "completo": false,
+        "errores": [
+          "lector /home/user/SDV-SDI_SGM/ETAPA_6G1_CORRECCION_LECTURA_SEGURA/fixtures/mix.wav (close): OSError: [Errno 5] inyeccion CR-R1 P1: fallo de E/S al cerrar el lector"
+        ],
+        "log_cerrado": true,
+        "escritura_abierta_al_registrar": [],
+        "abort_registrado": true,
+        "trasladado": false,
+        "ruta_final": "/tmp/f6g1cr_r1_protocolo/corregido/P1/run_cr_r1_partial",
+        "traslado_bloqueado": "cierre de recursos incompleto: lector /home/user/SDV-SDI_SGM/ETAPA_6G1_CORRECCION_LECTURA_SEGURA/fixtures/mix.wav (close): OSError: [Errno 5] inyeccion CR-R1 P1: fallo de E/S al cerrar el lector",
+        "motivo_conservacion": "cierre de recursos incompleto: lector /home/user/SDV-SDI_SGM/ETAPA_6G1_CORRECCION_LECTURA_SEGURA/fixtures/mix.wav (close): OSError: [Errno 5] inyeccion CR-R1 P1: fallo de E/S al cerrar el lector: provisional conservado en su ubicación",
+        "orden_cierre": [
+          {
+            "paso": 1,
+            "tipo": "lector",
+            "recurso": "/home/user/SDV-SDI_SGM/ETAPA_6G1_CORRECCION_LECTURA_SEGURA/fixtures/mix.wav",
+            "accion": "close",
+            "ok": false,
+            "error": "OSError: [Errno 5] inyeccion CR-R1 P1: fallo de E/S al cerrar el lector"
+          }
+        ]
+      },
+      "comprobaciones": {
+        "completo_esperado": {
+          "ok": true,
+          "detalle": "completo=False errores=['lector /home/user/SDV-SDI_SGM/ETAPA_6G1_CORRECCION_LECTURA_SEGURA/fixtures/mix.wav (close): OSError: [Errno 5] inyeccion CR-R1 P1: fallo de E/S al cerrar el lector']"
+        },
+        "abort_registrado": {
+          "ok": true,
+          "detalle": "True"
+        },
+        "sin_traslado": {
+          "ok": true,
+          "detalle": "(False, 'cierre de recursos incompleto: lector /home/user/SDV-SDI_SGM/ETAPA_6G1_CORRECCION_LECTURA_SEGURA/fixtures/mix.wav (close): OSError: [Errno 5] inyeccion CR-R1 P1: fallo de E/S al cerrar el lector: provisional conservado en su ubicación')"
+        },
+        "provisional_en_su_ubicacion": {
+          "ok": true,
+          "detalle": "run_cr_r1_partial"
+        },
+        "ningun_aborted_r_creado": {
+          "ok": true,
+          "detalle": "['run_cr_r1_aborted', 'run_cr_r1_partial']"
+        },
+        "traslado_bloqueado_por_cierre_incompleto": {
+          "ok": true,
+          "detalle": "cierre de recursos incompleto: lector /home/user/SDV-SDI_SGM/ETAPA_6G1_CORRECCION_LECTURA_SEGURA/fixtures/mix.wav (close): OSError: [Errno 5] inyeccion CR-R1 P1: fallo de E/S al cerrar el lector: provisional conservado en su ubicación"
+        },
+        "destino_preexistente_intacto": {
+          "ok": true,
+          "detalle": ""
+        },
+        "sin_publicacion_exitosa": {
+          "ok": true,
+          "detalle": "['run_cr_r1_aborted', 'run_cr_r1_partial']"
+        },
+        "ABORT_6G1_schema_3": {
+          "ok": true,
+          "detalle": "abort-6g1/3"
+        },
+        "motivo": {
+          "ok": true,
+          "detalle": "EXCEPCION_DURANTE_EL_PROCESAMIENTO"
+        },
+        "resultados_validos_vacio": {
+          "ok": true,
+          "detalle": ""
+        },
+        "wav_parcial_invalidado_y_conservado": {
+          "ok": true,
+          "detalle": ""
+        },
+        "ajeno_conservado": {
+          "ok": true,
+          "detalle": ""
+        },
+        "ningun_archivo_eliminado": {
+          "ok": true,
+          "detalle": "faltan []"
+        },
+        "archivos_previos_sin_modificar_salvo_log": {
+          "ok": true,
+          "detalle": ""
+        },
+        "error_del_lector_documentado_en_log": {
+          "ok": true,
+          "detalle": "[prueba CR-R1] corrida sintética P1\n[6G.1-R/CR] cierre de recursos previo al aborto: escritores=0 memmaps=0 lectores=1 completo=False errores=1\n[6G.1-R/CR] ERROR de cierre (documentado; el aborto continúa sin traslado): lector /home/user/SDV-SDI_SGM/ETAPA_6G1_CORRECCION_LECTURA_SEGURA/fixtures/mix.wav (close): OSError: [Errno 5] inyeccion CR-R1 P1: fallo de E/S al cerrar el lector\n[6G.1-R/CR] se cierra engine_log.txt; a continuación se registra el aborto\n"
+        }
+      }
+    },
+    "P2": {
+      "condicion": "Fallo al cerrar el log tras cerrar el archivo (sin descriptor vivo)",
+      "completo_esperado": false,
+      "traslado_esperado": false,
+      "veredicto": "PASS",
+      "fallos": [],
+      "resultado": {
+        "completo": false,
+        "errores": [
+          "cierre del log: OSError: [Errno 28] inyeccion CR-R1: fallo al cerrar engine_log.txt (tras cerrar el archivo)"
+        ],
+        "log_cerrado": false,
+        "escritura_abierta_al_registrar": [],
+        "abort_registrado": true,
+        "trasladado": false,
+        "ruta_final": "/tmp/f6g1cr_r1_protocolo/corregido/P2/run_cr_r1_partial",
+        "traslado_bloqueado": "cierre de recursos incompleto: cierre del log: OSError: [Errno 28] inyeccion CR-R1: fallo al cerrar engine_log.txt (tras cerrar el archivo)",
+        "motivo_conservacion": "cierre de recursos incompleto: cierre del log: OSError: [Errno 28] inyeccion CR-R1: fallo al cerrar engine_log.txt (tras cerrar el archivo): provisional conservado en su ubicación",
+        "orden_cierre": [
+          {
+            "paso": 1,
+            "tipo": "lector",
+            "recurso": "/home/user/SDV-SDI_SGM/ETAPA_6G1_CORRECCION_LECTURA_SEGURA/fixtures/mix.wav",
+            "accion": "close",
+            "ok": true
+          }
+        ]
+      },
+      "comprobaciones": {
+        "completo_esperado": {
+          "ok": true,
+          "detalle": "completo=False errores=['cierre del log: OSError: [Errno 28] inyeccion CR-R1: fallo al cerrar engine_log.txt (tras cerrar el archivo)']"
+        },
+        "abort_registrado": {
+          "ok": true,
+          "detalle": "True"
+        },
+        "sin_traslado": {
+          "ok": true,
+          "detalle": "(False, 'cierre de recursos incompleto: cierre del log: OSError: [Errno 28] inyeccion CR-R1: fallo al cerrar engine_log.txt (tras cerrar el archivo): provisional conservado en su ubicación')"
+        },
+        "provisional_en_su_ubicacion": {
+          "ok": true,
+          "detalle": "run_cr_r1_partial"
+        },
+        "ningun_aborted_r_creado": {
+          "ok": true,
+          "detalle": "['run_cr_r1_aborted', 'run_cr_r1_partial']"
+        },
+        "traslado_bloqueado_por_cierre_incompleto": {
+          "ok": true,
+          "detalle": "cierre de recursos incompleto: cierre del log: OSError: [Errno 28] inyeccion CR-R1: fallo al cerrar engine_log.txt (tras cerrar el archivo): provisional conservado en su ubicación"
+        },
+        "destino_preexistente_intacto": {
+          "ok": true,
+          "detalle": ""
+        },
+        "sin_publicacion_exitosa": {
+          "ok": true,
+          "detalle": "['run_cr_r1_aborted', 'run_cr_r1_partial']"
+        },
+        "ABORT_6G1_schema_3": {
+          "ok": true,
+          "detalle": "abort-6g1/3"
+        },
+        "motivo": {
+          "ok": true,
+          "detalle": "EXCEPCION_DURANTE_EL_PROCESAMIENTO"
+        },
+        "resultados_validos_vacio": {
+          "ok": true,
+          "detalle": ""
+        },
+        "wav_parcial_invalidado_y_conservado": {
+          "ok": true,
+          "detalle": ""
+        },
+        "ajeno_conservado": {
+          "ok": true,
+          "detalle": ""
+        },
+        "ningun_archivo_eliminado": {
+          "ok": true,
+          "detalle": "faltan []"
+        },
+        "archivos_previos_sin_modificar_salvo_log": {
+          "ok": true,
+          "detalle": ""
+        },
+        "error_del_log_documentado_en_informe_y_resultado": {
+          "ok": true,
+          "detalle": "['cierre del log: OSError: [Errno 28] inyeccion CR-R1: fallo al cerrar engine_log.txt (tras cerrar el archivo)']"
+        },
+        "log_cerrado_marcado_false": {
+          "ok": true,
+          "detalle": "False"
+        }
+      }
+    },
+    "P3": {
+      "condicion": "Fallo al cerrar el log dejando el descriptor abierto",
+      "completo_esperado": false,
+      "traslado_esperado": false,
+      "veredicto": "PASS",
+      "fallos": [],
+      "resultado": {
+        "completo": false,
+        "errores": [
+          "cierre del log: OSError: [Errno 28] inyeccion CR-R1: fallo al cerrar engine_log.txt (descriptor abierto)",
+          "escritura abierta al registrar: ['fd 3 (escritura): engine_log.txt']"
+        ],
+        "log_cerrado": false,
+        "escritura_abierta_al_registrar": [
+          "fd 3 (escritura): engine_log.txt"
+        ],
+        "abort_registrado": true,
+        "trasladado": false,
+        "ruta_final": "/tmp/f6g1cr_r1_protocolo/corregido/P3/run_cr_r1_partial",
+        "traslado_bloqueado": "cierre de recursos incompleto: cierre del log: OSError: [Errno 28] inyeccion CR-R1: fallo al cerrar engine_log.txt (descriptor abierto); escritura abierta al registrar: ['fd 3 (escritura): engine_log.txt']",
+        "motivo_conservacion": "cierre de recursos incompleto: cierre del log: OSError: [Errno 28] inyeccion CR-R1: fallo al cerrar engine_log.txt (descriptor abierto); escritura abierta al registrar: ['fd 3 (escritura): engine_log.txt']: provisional conservado en su ubicación",
+        "orden_cierre": [
+          {
+            "paso": 1,
+            "tipo": "lector",
+            "recurso": "/home/user/SDV-SDI_SGM/ETAPA_6G1_CORRECCION_LECTURA_SEGURA/fixtures/mix.wav",
+            "accion": "close",
+            "ok": true
+          }
+        ]
+      },
+      "comprobaciones": {
+        "completo_esperado": {
+          "ok": true,
+          "detalle": "completo=False errores=['cierre del log: OSError: [Errno 28] inyeccion CR-R1: fallo al cerrar engine_log.txt (descriptor abierto)', \"escritura abierta al registrar: ['fd 3 (escritura): engine_log.txt']\"]"
+        },
+        "abort_registrado": {
+          "ok": true,
+          "detalle": "True"
+        },
+        "sin_traslado": {
+          "ok": true,
+          "detalle": "(False, \"cierre de recursos incompleto: cierre del log: OSError: [Errno 28] inyeccion CR-R1: fallo al cerrar engine_log.txt (descriptor abierto); escritura abierta al registrar: ['fd 3 (escritura): engine_log.txt']: provisional conservado en su ubicación\")"
+        },
+        "provisional_en_su_ubicacion": {
+          "ok": true,
+          "detalle": "run_cr_r1_partial"
+        },
+        "ningun_aborted_r_creado": {
+          "ok": true,
+          "detalle": "['run_cr_r1_aborted', 'run_cr_r1_partial']"
+        },
+        "traslado_bloqueado_por_cierre_incompleto": {
+          "ok": true,
+          "detalle": "cierre de recursos incompleto: cierre del log: OSError: [Errno 28] inyeccion CR-R1: fallo al cerrar engine_log.txt (descriptor abierto); escritura abierta al registrar: ['fd 3 (escritura): engine_log.txt']: provisional conservado en su ubicación"
+        },
+        "destino_preexistente_intacto": {
+          "ok": true,
+          "detalle": ""
+        },
+        "sin_publicacion_exitosa": {
+          "ok": true,
+          "detalle": "['run_cr_r1_aborted', 'run_cr_r1_partial']"
+        },
+        "ABORT_6G1_schema_3": {
+          "ok": true,
+          "detalle": "abort-6g1/3"
+        },
+        "motivo": {
+          "ok": true,
+          "detalle": "EXCEPCION_DURANTE_EL_PROCESAMIENTO"
+        },
+        "resultados_validos_vacio": {
+          "ok": true,
+          "detalle": ""
+        },
+        "wav_parcial_invalidado_y_conservado": {
+          "ok": true,
+          "detalle": ""
+        },
+        "ajeno_conservado": {
+          "ok": true,
+          "detalle": ""
+        },
+        "ningun_archivo_eliminado": {
+          "ok": true,
+          "detalle": "faltan []"
+        },
+        "archivos_previos_sin_modificar_salvo_log": {
+          "ok": true,
+          "detalle": ""
+        },
+        "error_del_log_documentado_en_informe_y_resultado": {
+          "ok": true,
+          "detalle": "['cierre del log: OSError: [Errno 28] inyeccion CR-R1: fallo al cerrar engine_log.txt (descriptor abierto)', \"escritura abierta al registrar: ['fd 3 (escritura): engine_log.txt']\"]"
+        },
+        "log_cerrado_marcado_false": {
+          "ok": true,
+          "detalle": "False"
+        }
+      }
+    }
+  },
+  "resumen": {
+    "pass_": 4,
+    "total": 4
+  }
+}

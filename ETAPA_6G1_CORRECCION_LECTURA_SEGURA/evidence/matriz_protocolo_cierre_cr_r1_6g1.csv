@@ -1,0 +1,5 @@
+prueba,condicion,completo_esperado,traslado_esperado,completo,trasladado,comprobaciones,fallos,veredicto,completo_base,trasladado_base,veredicto_base,fallos_base
+P0,Control: lector y log se cierran correctamente,True,True,True,True,13/13,,PASS,True,True,PASS,
+P1,Fallo de cierre de un lector (queda abierto),False,False,False,False,16/16,,PASS,True,True,FAIL,completo_esperado;sin_traslado;provisional_en_su_ubicacion;ningun_aborted_r_creado;traslado_bloqueado_por_cierre_incompleto;error_del_lector_documentado_en_log
+P2,Fallo al cerrar el log tras cerrar el archivo (sin descriptor vivo),False,False,False,False,17/17,,PASS,True,True,FAIL,completo_esperado;sin_traslado;provisional_en_su_ubicacion;ningun_aborted_r_creado;traslado_bloqueado_por_cierre_incompleto;error_del_log_documentado_en_informe_y_resultado;log_cerrado_marcado_false
+P3,Fallo al cerrar el log dejando el descriptor abierto,False,False,False,False,17/17,,PASS,False,False,FAIL,log_cerrado_marcado_false
