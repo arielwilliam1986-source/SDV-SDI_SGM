@@ -28,7 +28,7 @@ La apertura de `_sha_via_descriptor_6g1()` usaba `os.O_RDONLY | os.O_NOFOLLOW`: 
 
 ## 3. SHA-256, DIFF y commits
 
-- `SHA256SUMS_H1_R2_R2.txt` (5 ficheros con SHA previo en comentario; verificado con `sha256sum -c`: 5/5 OK).
+- `SHA256SUMS_H1_R2_R2.txt` (**10 ficheros** — módulo, prueba focalizada y las 8 evidencias JSON/CSV de la batería nueva y sus regresiones — con SHA previo en comentario; verificado con `sha256sum -c`: **10/10 OK**). [Rectificación documental H1-R2-R2-R]: la versión anterior de esta línea indicaba «5 ficheros / 5/5» por un error de conteo en la redacción; el manifiesto publicado siempre contuvo las 10 entradas correctas y fue verificado 10/10 al generarlo y al rectificar este informe.
 - `DIFF_6G1_H1_R2_R2.patch`: diff incremental **reversible** respecto de `cda43639df114450424eb4b466a57e99c30259ec` (`patch -R -p1` → árbol base byte a byte; forward dry-run exit 0).
 - **Padre directo**: `cda43639df114450424eb4b466a57e99c30259ec` · **Nuevo commit**: hijo directo (SHA completo en el informe de ejecución).
 
