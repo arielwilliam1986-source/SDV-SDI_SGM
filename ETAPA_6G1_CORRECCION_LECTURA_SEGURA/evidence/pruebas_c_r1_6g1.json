@@ -275,7 +275,7 @@
     "Hardened": {
       "E2E": {
         "exit": 2,
-        "abort_dir": "/tmp/f6g1cr1/Hardened/E2E/out/motorA_run_20261122_003542_partial"
+        "abort_dir": "/tmp/f6g1cr1/Hardened/E2E/out/motorA_run_20261122_010414_partial"
       },
       "sanidad": {
         "exit": 0
@@ -284,7 +284,7 @@
     "EVO": {
       "E2E": {
         "exit": 2,
-        "abort_dir": "/tmp/f6g1cr1/EVO/E2E/out/motorA_run_20261122_003545_partial"
+        "abort_dir": "/tmp/f6g1cr1/EVO/E2E/out/motorA_run_20261122_010417_partial"
       },
       "sanidad": {
         "exit": 0
@@ -293,7 +293,7 @@
     "MQR": {
       "E2E": {
         "exit": 2,
-        "abort_dir": "/tmp/f6g1cr1/MQR/E2E/out/mqr_run_20261122_003548_partial"
+        "abort_dir": "/tmp/f6g1cr1/MQR/E2E/out/mqr_run_20261122_010419_partial"
       },
       "sanidad": {
         "exit": 0

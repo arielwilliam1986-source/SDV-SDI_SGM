@@ -1,0 +1,11 @@
+prueba,motor,alcance,veredicto,checks_ok,checks_total,detalle
+T1,lectura_segura_6g1,"validado->FIFO antes de abrir MixHandle: sin bloqueo, fail-closed, sin SHA, sin salidas",PASS,9,9,todos los checks OK
+T2,lectura_segura_6g1,gemelo byte a byte con distinto inodo: el SHA coincidente NO aprueba la identidad,PASS,7,7,todos los checks OK
+T3a,Hardened,probe_file captura identidad del objeto validado (H2-A),PASS,5,5,todos los checks OK
+T3a,EVO,probe_file captura identidad del objeto validado (H2-A),PASS,5,5,todos los checks OK
+T3a,MQR,probe_file captura identidad del objeto validado (H2-A),PASS,5,5,todos los checks OK
+T3b,lectura_segura_6g1,apertura feliz: identidad validada conservada y guarda final estable (H2-C),PASS,8,8,todos los checks OK
+T4,Hardened,mutación durante la validación: SHA no acreditado (H2-C),PASS,4,4,todos los checks OK
+H2-e2e,Hardened,corrida feliz: MixHandle reformado en producción (DSP intacto),PASS,5,5,todos los checks OK
+H2-e2e,EVO,corrida feliz: MixHandle reformado en producción (DSP intacto),PASS,5,5,todos los checks OK
+H2-e2e,MQR,corrida feliz: MixHandle reformado en producción (DSP intacto),PASS,5,5,todos los checks OK

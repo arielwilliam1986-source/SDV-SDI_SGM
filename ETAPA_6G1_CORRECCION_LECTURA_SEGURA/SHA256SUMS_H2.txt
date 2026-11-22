@@ -1,0 +1,16 @@
+# SHA256SUMS_H2 — apertura segura del Mix validado (H2)
+# Base: 16a64058f05316b03245ffacdda4daed084bea05 (H1-R2-R2-R) · Commit H2: hijo directo (ver informe de ejecución)
+# Rama: arena/441a4bf8-sdv-sdi-sgm · 13 ficheros · DIFF_6G1_H2.patch reversible (patch -R -> base byte a byte)
+885a5d2eb7fdbe8609716ca6f05874c7efe44d4fb37592be947cced50014f423  motores/lectura_segura_6g1.py
+d361679308e3c54b866164f2bb7dbe3ab36fb6b8f81137e581b52b8def60b279  motores/MOTOR_SEP_SDV-SDI_v3.1.1_Hardened_Final.py
+deb93c24aafbad5586911bf5c9fe34d6f5830699ff849002ac30d630ceae7397  motores/MOTOR_SEP_SDV-SDI_EVO.py
+6d43f7f34ad40f6053f845ed07822e0299c20bd76706bd3765869eb1f8b771bc  motores/sdv_sdi_mqr_engine.py
+581b0dc60f01d93caeb70c9c40ba870927bc111f0ff768c1c36be032a6ba344e  INDICE_PARA_AUDITORIA_6G1.md
+89160af6b5e52d127675d0b1be89fcaab27b189b7514829b9201ac50c26e8500  INFORME_IMPLEMENTACION_6G1.md
+419bf2c6ca9d0b85856834277de9f5fc81d6457df06476e758fe929efd3dd42d  INFORME_H2_6G1.md
+87c4bd2294917fcb6bcd0316a19f30062806afd8336bcf6f75b85f9b30dfca60  scripts/pruebas_h2_6g1.py
+1a8c02c01ddb1cc465b287e55d30393d9e3bcc7625f6aa54ed5d1915d631947b  evidence/pruebas_h2_6g1.json
+825039d0c54bb5ec58b545b0433dc0401716b934080fbb407d5f760534d53cfa  evidence/matriz_h2_6g1.csv
+56c9799b3e8093651b67d75af84fc56343a0a40be41de2e6f0b989de6a717149  evidence/pruebas_h1_r2_r2_6g1.json
+90c23433bb4edc8419f16ed4d5522b2caba80e116b2a68071742341d4222424a  evidence/pruebas_h1_r2_6g1.json
+d9adb50720753e50347b8a5afd8af08e722e74484f01cafb5aaa5ba36fb00915  evidence/pruebas_c_r1_6g1.json

@@ -22,6 +22,18 @@ y sin escritura para terceros); el inventario y la clasificación de propiedad
 se realizan exclusivamente por descriptores, sin re-consultar rutas
 (H1-R2/B); si el anclaje no puede acreditarse, no se escribe nada en esa
 ubicación (fail-closed).
+
+La apertura del Mix validado es segura (H2): `probe_file()` de los motores
+captura la identidad (st_dev, st_ino, tamaño, mtime_ns, ctime_ns) del objeto
+validado y verifica su estabilidad durante la validación y el cálculo del
+SHA (H2-C); `MixHandle` abre con `O_NONBLOCK` (H2-B: una sustitución por FIFO
+no puede bloquear la llamada), exige por `fstat` un archivo regular cuya
+identidad coincida con la validada (H2-A: un archivo DISTINTO con SHA
+idéntico no es aceptable) y calcula el SHA con verificación de estabilidad.
+POLÍTICA DE ENLACES SIMBÓLICOS SIN CAMBIO: la apertura sigue enlaces
+legítimos (como toda la fase de validación) y el anclaje se logra por
+identidad del objeto abierto, no con `O_NOFOLLOW`; rechazarlos rompería
+instalaciones legítimas y no aporta seguridad adicional frente a sustitución.
 """
 import errno
 import hashlib
@@ -48,7 +60,15 @@ def _identity(st):
                 mtime_ns=st.st_mtime_ns, mode=oct(st.st_mode))
 
 
-def _sha_fd(fd):
+def _sha_fd_estable(fd):
+    """[H2-C] SHA-256 de un descriptor con verificación de ESTABILIDAD:
+    `fstat()` antes y después de la lectura; comparación de identidad
+    (st_dev/st_ino), tamaño, mtime_ns y ctime_ns entre ambos estados. Si
+    cualquier dato cambia, el archivo se modificó durante la lectura y el
+    SHA NO se acredita. Lectura incremental (sin acumular en memoria) sobre
+    un duplicado con seek(0) (no altera el offset del descriptor original).
+    Compatible con Python 3.8. Devuelve (sha256, None) o (None, motivo)."""
+    st0 = os.fstat(fd)
     m = hashlib.sha256()
     g = os.fdopen(os.dup(fd), 'rb')
     try:
@@ -57,7 +77,13 @@ def _sha_fd(fd):
             m.update(block)
     finally:
         g.close()
-    return m.hexdigest()
+    st1 = os.fstat(fd)
+    if (st1.st_dev, st1.st_ino) != (st0.st_dev, st0.st_ino) or \
+            (st1.st_size, st1.st_mtime_ns, st1.st_ctime_ns) != \
+            (st0.st_size, st0.st_mtime_ns, st0.st_ctime_ns):
+        return None, ('archivo modificado durante la lectura del SHA '
+                      '(H2-C): SHA no acreditable')
+    return m.hexdigest(), None
 
 
 def _sha_archivo(path):
@@ -71,16 +97,44 @@ def _sha_archivo(path):
 class MixHandle:
     """Descriptor del Mix validado + lector SoundFile sobre el mismo inodo."""
 
-    def __init__(self, path, sha_esperado=None):
+    def __init__(self, path, sha_esperado=None, identidad_esperada=None):
         object.__setattr__(self, '_snd', None)
         self.path = os.path.abspath(path)
-        self.fd = os.open(self.path, os.O_RDONLY)
+        # [6G.1-R/H2-B] O_NONBLOCK: una sustitución por FIFO entre la
+        # validación y esta apertura no puede bloquear la llamada (el
+        # descriptor se obtiene al instante y el fstat siguiente clasifica el
+        # objeto). POLÍTICA DE ENLACES SIMBÓLICOS SIN CAMBIO (documentada):
+        # la apertura sigue enlaces legítimos como toda la fase de
+        # validación; el anclaje se logra por identidad (H2-A), no con
+        # O_NOFOLLOW.
+        self.fd = os.open(self.path, os.O_RDONLY | os.O_NONBLOCK)
         try:
             st = os.fstat(self.fd)
             if not stat.S_ISREG(st.st_mode):
-                raise MixCambiado('El Mix no es un archivo regular')
+                raise MixCambiado('El Mix no es un archivo regular (H2-B: '
+                                  'apertura no bloqueante ante FIFO)')
             self.identity = _identity(st)
-            self.digest = _sha_fd(self.fd)
+            # [6G.1-R/H2-A] La identidad del objeto ABIERTO debe coincidir con
+            # la del objeto VALIDADO (probe_file): un archivo distinto con
+            # contenido idéntico NO es aceptable aunque el SHA coincida.
+            if identidad_esperada is not None and \
+                    (st.st_dev, st.st_ino) != tuple(identidad_esperada):
+                raise MixCambiado(
+                    'La identidad del Mix abierto no coincide con la validada '
+                    f'(H2-A): abierto dev/ino ({st.st_dev}, {st.st_ino}) != '
+                    f'validado {tuple(identidad_esperada)}; un archivo distinto '
+                    'con SHA idéntico no es aceptable')
+            self.identity_expected = (tuple(identidad_esperada)
+                                      if identidad_esperada is not None
+                                      else None)
+            # [6G.1-R/H2-A] Bandera de apertura segura: la identidad del
+            # descriptor fue exigida y coincide con la del objeto validado.
+            self.identity_validada = identidad_esperada is not None
+            # [6G.1-R/H2-C] SHA estable: fstat antes/después de la lectura
+            # (identidad/tamaño/mtime_ns/ctime_ns); si cambió, no se acredita.
+            self.digest, motivo = _sha_fd_estable(self.fd)
+            if motivo is not None:
+                raise MixCambiado(f'H2-C: {motivo}')
             if sha_esperado is not None and self.digest != sha_esperado:
                 raise MixCambiado(
                     'SHA-256 del Mix distinto del sondeo: sustitución antes del DSP '
@@ -125,19 +179,29 @@ class MixHandle:
 
     # --- integridad ---------------------------------------------------------
     def verificar(self):
-        """Relee el descriptor y compara bytes e identidad con la apertura."""
+        """Relee el descriptor, compara bytes e identidad con la apertura y
+        verifica la ESTABILIDAD del objeto durante la relectura (H2-C: fstat
+        antes y después; identidad, tamaño, mtime_ns y ctime_ns)."""
         if self.fd is None:
             return dict(unchanged=False, reason='descriptor cerrado')
         st = os.fstat(self.fd)
         ident = _identity(st)
-        digest = _sha_fd(self.fd)
-        ok = (digest == self.digest and ident == self.identity)
+        digest, motivo = _sha_fd_estable(self.fd)
+        estable = motivo is None
+        ok = (estable and digest == self.digest and ident == self.identity)
+        if motivo is not None:
+            razon = f'H2-C: {motivo}'
+        elif ok:
+            razon = 'sha256 e identidad revalidados (estables, H2-C)'
+        elif digest != self.digest:
+            razon = 'contenido distinto'
+        else:
+            razon = 'identidad fstat distinta'
         return dict(unchanged=ok,
-                    reason='sha256 e identidad revalidados' if ok
-                    else ('contenido distinto' if digest != self.digest
-                          else 'identidad fstat distinta'),
-                    sha256=digest, expected=self.digest,
-                    identity=ident, identity_expected=self.identity)
+                    reason=razon,
+                    sha256=(digest or ''), expected=self.digest,
+                    identity=ident, identity_expected=self.identity,
+                    estable=estable)
 
     def ruta_lectura(self):
         """Ruta al mismo inodo (para funciones que exigen un nombre de archivo)."""
@@ -157,8 +221,14 @@ class MixHandle:
                     identity=ident, identity_expected=self.identity)
 
 
-def abrir_mix(path, sha_esperado=None):
-    return MixHandle(path, sha_esperado)
+def abrir_mix(path, sha_esperado=None, identidad_esperada=None):
+    """Abre el Mix validado.
+    [H2-A] `identidad_esperada` = (st_dev, st_ino) capturado en `probe_file()`
+    del motor: exigida por `fstat` antes de aceptar el descriptor (un archivo
+    distinto con SHA idéntico es rechazado).
+    [H2-B] Apertura con O_NONBLOCK (una FIFO no bloquea).
+    [H2-C] SHA estable (fstat antes/después de la lectura)."""
+    return MixHandle(path, sha_esperado, identidad_esperada)
 
 
 # ---------------------------------------------------------------------------

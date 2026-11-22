@@ -470,6 +470,10 @@ class FileInfo:
     duration_s: float = 0.0
     size_bytes: int = 0
     sha256: str = ""
+    device: int = 0
+    inode: int = 0
+    mtime_ns: int = 0
+    ctime_ns: int = 0
     bit_depth_nominal: int = 0
     warnings: list = field(default_factory=list)
     notes: list = field(default_factory=list)
@@ -510,6 +514,9 @@ def probe_file(path, role):
         return info
     info.exists = True
     info.size_bytes = os.path.getsize(path)
+    st0 = os.stat(path)  # [6G.1-R/H2-A] identidad del objeto validado
+    info.device, info.inode = st0.st_dev, st0.st_ino
+    info.mtime_ns, info.ctime_ns = st0.st_mtime_ns, st0.st_ctime_ns
     try:
         sfi = sf.info(path)
         _verify_audio_6g(path, sfi)
@@ -527,6 +534,14 @@ def probe_file(path, role):
         info.sha256 = sha256_file(path)
     except OSError as exc:
         info.errors.append("fallo calculando sha256: %s" % exc)
+
+    st1 = os.stat(path)  # [6G.1-R/H2-C] estabilidad durante la validación
+    if (st1.st_dev, st1.st_ino, st1.st_size, st1.st_mtime_ns,
+            st1.st_ctime_ns) != \
+            (st0.st_dev, st0.st_ino, st0.st_size, st0.st_mtime_ns,
+             st0.st_ctime_ns):
+        info.errors.append("H2-C: el archivo cambió durante la validación; "
+                           "identidad y SHA-256 no acreditables")
     info.valid = len(info.errors) == 0
     return info
 
@@ -1015,7 +1030,7 @@ def analyze_guide_scale(mix_info, pair):
     rec = {"pair_id": pair.pair_id, "family": pair.family,
            "variant": pair.variant, "compensation_policy":
            GUIDE_SCALE_COMPENSATION}
-    with _abrir_mix_6g1(mix_info.path, mix_info.sha256) as _hm6g1:
+    with _abrir_mix_6g1(mix_info.path, mix_info.sha256, identidad_esperada=(mix_info.device, mix_info.inode)) as _hm6g1:
         mix_common = stream_level_stats(_hm6g1.ruta_lectura(),
                                         limit_frames=mix_info.frames)
     rec["mix_common_region"] = mix_common
@@ -2390,7 +2405,7 @@ def _run_core(mix_info, pairs, mode, opt, plan, freqs, band_masks,
 
     # --- bucle single-pass ------------------------------------------------------
     try:
-        hmix = _abrir_mix_6g1(mix_info.path, mix_info.sha256)
+        hmix = _abrir_mix_6g1(mix_info.path, mix_info.sha256, identidad_esperada=(mix_info.device, mix_info.inode))
     except _MixCambiado_6g1 as _exc6g1:
         _abortar_6g1(run_dir, "MIX_SUSTITUIDO_ANTES_DEL_DSP", str(_exc6g1))
         log("[FATAL] Mix sustituido antes del DSP: %s" % _exc6g1)

@@ -1,0 +1,136 @@
+{
+  "schema": "pruebas-h2-6g1/1",
+  "filas": [
+    {
+      "prueba": "T1",
+      "motor": "lectura_segura_6g1",
+      "alcance": "validado->FIFO antes de abrir MixHandle: sin bloqueo, fail-closed, sin SHA, sin salidas",
+      "veredicto": "PASS",
+      "checks_ok": 9,
+      "checks_total": 9,
+      "detalle": "todos los checks OK"
+    },
+    {
+      "prueba": "T2",
+      "motor": "lectura_segura_6g1",
+      "alcance": "gemelo byte a byte con distinto inodo: el SHA coincidente NO aprueba la identidad",
+      "veredicto": "PASS",
+      "checks_ok": 7,
+      "checks_total": 7,
+      "detalle": "todos los checks OK"
+    },
+    {
+      "prueba": "T3a",
+      "motor": "Hardened",
+      "alcance": "probe_file captura identidad del objeto validado (H2-A)",
+      "veredicto": "PASS",
+      "checks_ok": 5,
+      "checks_total": 5,
+      "detalle": "todos los checks OK"
+    },
+    {
+      "prueba": "T3a",
+      "motor": "EVO",
+      "alcance": "probe_file captura identidad del objeto validado (H2-A)",
+      "veredicto": "PASS",
+      "checks_ok": 5,
+      "checks_total": 5,
+      "detalle": "todos los checks OK"
+    },
+    {
+      "prueba": "T3a",
+      "motor": "MQR",
+      "alcance": "probe_file captura identidad del objeto validado (H2-A)",
+      "veredicto": "PASS",
+      "checks_ok": 5,
+      "checks_total": 5,
+      "detalle": "todos los checks OK"
+    },
+    {
+      "prueba": "T3b",
+      "motor": "lectura_segura_6g1",
+      "alcance": "apertura feliz: identidad validada conservada y guarda final estable (H2-C)",
+      "veredicto": "PASS",
+      "checks_ok": 8,
+      "checks_total": 8,
+      "detalle": "todos los checks OK"
+    },
+    {
+      "prueba": "T4",
+      "motor": "Hardened",
+      "alcance": "mutación durante la validación: SHA no acreditado (H2-C)",
+      "veredicto": "PASS",
+      "checks_ok": 4,
+      "checks_total": 4,
+      "detalle": "todos los checks OK"
+    },
+    {
+      "prueba": "H2-e2e",
+      "motor": "Hardened",
+      "alcance": "corrida feliz: MixHandle reformado en producción (DSP intacto)",
+      "veredicto": "PASS",
+      "checks_ok": 5,
+      "checks_total": 5,
+      "detalle": "todos los checks OK"
+    },
+    {
+      "prueba": "H2-e2e",
+      "motor": "EVO",
+      "alcance": "corrida feliz: MixHandle reformado en producción (DSP intacto)",
+      "veredicto": "PASS",
+      "checks_ok": 5,
+      "checks_total": 5,
+      "detalle": "todos los checks OK"
+    },
+    {
+      "prueba": "H2-e2e",
+      "motor": "MQR",
+      "alcance": "corrida feliz: MixHandle reformado en producción (DSP intacto)",
+      "veredicto": "PASS",
+      "checks_ok": 5,
+      "checks_total": 5,
+      "detalle": "todos los checks OK"
+    }
+  ],
+  "detalles": {
+    "T1": {
+      "exc": "El Mix no es un archivo regular (H2-B: apertura no bloqueante ante FIFO)",
+      "transcurrido": 0.00014596699929825263,
+      "agotado": false,
+      "cls_fifo": "(False, 'identidad_distinta (sustituido o reemplazado tras el registro)')",
+      "cls_aside": "(True, 'propiedad_acreditada')"
+    },
+    "T2": {
+      "exc": "La identidad del Mix abierto no coincide con la validada (H2-A): abierto dev/ino (65024, 537460) != validado (65024, 537459); un archivo distinto con SHA idéntico no es aceptable",
+      "identidad0": [
+        65024,
+        537459
+      ]
+    },
+    "Hardened": {
+      "e2e": {
+        "exit": 0
+      }
+    },
+    "EVO": {
+      "e2e": {
+        "exit": 0
+      }
+    },
+    "MQR": {
+      "e2e": {
+        "exit": 0
+      }
+    },
+    "T3b": {
+      "estable": true,
+      "unchanged": true
+    },
+    "T4": {
+      "errors": [
+        "H2-C: el archivo cambió durante la validación; identidad y SHA-256 no acreditables"
+      ],
+      "valid": false
+    }
+  }
+}

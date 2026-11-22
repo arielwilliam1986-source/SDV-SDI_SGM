@@ -280,6 +280,10 @@ class FileInfo:
     duration_s: float = 0.0
     size_bytes: int = 0
     sha256: str = ""
+    device: int = 0
+    inode: int = 0
+    mtime_ns: int = 0
+    ctime_ns: int = 0
     bit_depth_nominal: int = 0
     warnings: list = field(default_factory=list)
     notes: list = field(default_factory=list)
@@ -314,6 +318,9 @@ def probe_file(path: str, role: str) -> FileInfo:
         return info
     info.exists = True
     info.size_bytes = os.path.getsize(path)
+    st0 = os.stat(path)  # [6G.1-R/H2-A] identidad del objeto validado
+    info.device, info.inode = st0.st_dev, st0.st_ino
+    info.mtime_ns, info.ctime_ns = st0.st_mtime_ns, st0.st_ctime_ns
     try:
         sfi = sf.info(path)
         _verify_audio_6g(path, sfi)
@@ -333,6 +340,14 @@ def probe_file(path: str, role: str) -> FileInfo:
         info.sha256 = sha256_file(path)
     except OSError as exc:
         info.errors.append(f"Fallo calculando sha256: {exc}")
+
+    st1 = os.stat(path)  # [6G.1-R/H2-C] estabilidad durante la validación
+    if (st1.st_dev, st1.st_ino, st1.st_size, st1.st_mtime_ns,
+            st1.st_ctime_ns) != \
+            (st0.st_dev, st0.st_ino, st0.st_size, st0.st_mtime_ns,
+             st0.st_ctime_ns):
+        info.errors.append("H2-C: el archivo cambió durante la validación; "
+                           "identidad y SHA-256 no acreditables")
 
     info.valid = len(info.errors) == 0
     return info
@@ -697,7 +712,7 @@ def analyze_guide_scale(mix_info: FileInfo, pair: PairMeta) -> tuple:
     acc = {"vocal": {"gm": 0.0, "gg": 0.0, "sq": 0.0, "n": 0, "peak": 0.0},
            "instrumental": {"gm": 0.0, "gg": 0.0, "sq": 0.0, "n": 0, "peak": 0.0}}
     mix_sq = 0.0; mix_n = 0
-    with _abrir_mix_6g1(mix_info.path, mix_info.sha256) as hm:
+    with _abrir_mix_6g1(mix_info.path, mix_info.sha256, identidad_esperada=(mix_info.device, mix_info.inode)) as hm:
         handles = {"vocal": sf.SoundFile(pair.vocal_path), "instrumental": sf.SoundFile(pair.instrumental_path)}
         try:
             while True:
@@ -1563,7 +1578,7 @@ def run_experiment(mix_path: str, pairs: list, mode: str, opt: argparse.Namespac
             ))
 
         try:
-            hmix = _abrir_mix_6g1(mix_info.path, mix_info.sha256)
+            hmix = _abrir_mix_6g1(mix_info.path, mix_info.sha256, identidad_esperada=(mix_info.device, mix_info.inode))
         except _MixCambiado_6g1 as _exc6g1:
             _abortar_6g1(run_dir, "MIX_SUSTITUIDO_ANTES_DEL_DSP", str(_exc6g1))
             log("[FATAL] Mix sustituido antes del DSP: %s" % _exc6g1)

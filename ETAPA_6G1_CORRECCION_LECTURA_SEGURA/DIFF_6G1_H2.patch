@@ -1,0 +1,1243 @@
+diff --git a/ETAPA_6G1_CORRECCION_LECTURA_SEGURA/INDICE_PARA_AUDITORIA_6G1.md b/ETAPA_6G1_CORRECCION_LECTURA_SEGURA/INDICE_PARA_AUDITORIA_6G1.md
+index 59341dd..30b55a9 100644
+--- a/ETAPA_6G1_CORRECCION_LECTURA_SEGURA/INDICE_PARA_AUDITORIA_6G1.md
++++ b/ETAPA_6G1_CORRECCION_LECTURA_SEGURA/INDICE_PARA_AUDITORIA_6G1.md
+@@ -68,9 +68,14 @@
+ 2. **¿Una sustitución puede alimentar el DSP?**
+    `evidence/sustituciones_6g1.json` → `unitaria` (guarda determinista) y
+    `casos[*]` (4c antes del DSP, 5 durante, 6 después).
+-3. **¿Quedan salidas parciales tras abortar?**
+-   `casos[*].estado` (`wavs_propios` vacío, `salidas_invalidadas`,
+-   `conservados`) y las filas de prueba `7`.
++3. **¿Qué ocurre con las salidas parciales al abortar?** (comportamiento
++   vigente C-R1)
++   `ABORT_6G1.json` (`schema=abort-6g1/3`): **ningún archivo se elimina**;
++   las salidas de la corrida quedan **invalidadas y conservadas** en el
++   provisional (`salidas_invalidadas` + `estado_salidas_invalidadas`) y
++   `resultados_validos` permanece vacío; `casos[*].estado` y las filas de
++   prueba `7` son registro **histórico** de la semántica `abort-6g1/2` (que
++   entonces eliminaba las salidas acreditadas).
+ 4. **¿Se borraron archivos ajenos?**
+    `casos[*].estado.ajenos_presentes` (tres archivos sembrados, los tres
+    presentes tras el aborto) y `conservados` en `ABORT_6G1.json`.
+@@ -129,8 +134,10 @@ Verifica en particular:
+    (grep de "sf.SoundFile(mix_info.path)" y "mix_info.path" en los tres motores).
+ 2. Que la guarda final exige contenido Y ruta (after.unchanged y
+    ruta_actual.unchanged) y que aborta sin presentar salidas parciales.
+-3. Que abortar_6g1 sólo borra salidas reconocidas como propias y conserva
+-   archivos ajenos.
++3. Que abortar_6g1 **no elimina ningún archivo** (C-R1): las salidas de la
++   corrida quedan invalidadas y conservadas en el provisional, los archivos
++   ajenos se conservan con su motivo y `resultados_validos` permanece vacío
++   (`schema=abort-6g1/3`).
+ 4. Que un veredicto PCM_IDENTICAL sólo aparece con archivos PCM reales y hashes.
+ 5. Que la prueba 10 demuestra DSP idéntico (constantes, huella de literales y
+    llamadas, PCM byte a byte) frente a las copias 6G.
+diff --git a/ETAPA_6G1_CORRECCION_LECTURA_SEGURA/INFORME_H2_6G1.md b/ETAPA_6G1_CORRECCION_LECTURA_SEGURA/INFORME_H2_6G1.md
+new file mode 100644
+index 0000000..ea10af5
+--- /dev/null
++++ b/ETAPA_6G1_CORRECCION_LECTURA_SEGURA/INFORME_H2_6G1.md
+@@ -0,0 +1,75 @@
++# INFORME H2 — RECTIFICACIÓN 6G.1 (APERTURA SEGURA DEL MIX VALIDADO)
++
++**Implementador**: Arena.ai · **Responsable técnico**: Cris · **Decisor final**: Will
++**Fecha**: 2026-11-21
++**HEAD obligatorio**: `16a64058f05316b03245ffacdda4daed084bea05` (H1-R2-R2-R; padre directo del commit de esta entrega, verificado con `git rev-parse HEAD^`)
++**Alcance**: exclusivamente la vinculación entre la validación inicial del Mix (probe/SHA) y la apertura del descriptor usado por el DSP. Sin cambios DSP (STFT/ISTFT/FFT/hop/chunking/máscaras/fórmulas/consenso/ganancias/polaridad/parámetros intactos); motores originales de 6G y carpeta de referencia intactos; `main`, `arena/89d5c189-sdv-sdi-sgm` y otras ramas sin tocar; baterías históricas 34/26/17/12 no repetidas; sin canciones reales, Elis/Tristania, Android/Termux; sin fusionar, integrar ni abrir PR.
++
++> **Estado**: ENTREGADA, **NO CERRADA**. No se declaran H2, H1 ni 6G.1 cerradas: la aprobación técnica corresponde a Cris y la decisión final a Will.
++
++---
++
++## 1. Hallazgo y corrección
++
++Tras la validación inicial (probe + SHA-256 por ruta) existía una **ventana hasta la apertura del descriptor de procesamiento** en la que el objeto validado podía ser sustituido por otro en la misma ruta. `MixHandle` sólo contrastaba el **contenido** (SHA) contra el sondeo: un archivo **distinto** con contenido idéntico habría pasado; una **FIFO** colocada en la ventana habría bloqueado la apertura `O_RDONLY` antes del `fstat`; y ni el sondeo ni la apertura verificaban la **identidad del objeto** (dispositivo/inodo) ni la **estabilidad** del archivo durante la validación y el cálculo del SHA.
++
++**Corrección** (tres piezas, modelo H2-A/B/C):
++
++* **H2-A — Identidad del objeto validado.** `probe_file()` de los **tres motores** (Hardened, EVO, MQR) captura y conserva en `FileInfo` la identidad del objeto validado: `device`, `inode`, `mtime_ns`, `ctime_ns` (nuevos campos). `MixHandle.__init__` recibe `identidad_esperada=(device, inode)` a través de `abrir_mix(..., identidad_esperada=...)` y, tras el `fstat` de la apertura, **exige** `(st_dev, st_ino)` coincidente con la validada; si difiere → `MixCambiado` con el motivo explícito «La identidad del Mix abierto no coincide con la validada (H2-A): … un archivo distinto con SHA idéntico no es aceptable». El SHA coincidente **NO aprueba la identidad**. El modelo exacto de la fase: la identidad se obtiene por `os.stat()` sobre la ruta al inicio de `probe_file()` (antes de `sf.info` y del SHA por ruta) y la estabilidad se verifica con un segundo `os.stat()` tras el SHA (H2-C); el objeto validado es el que el validador abrió por ruta en ese intervalo, y esa identidad — no sólo el contenido — es la que se transmite y exige al abrir el descriptor de procesamiento.
++* **H2-B — Apertura no bloqueante fail-closed.** `MixHandle.__init__` abre con `os.O_RDONLY | os.O_NONBLOCK`: una sustitución por FIFO entre la validación y la apertura devuelve el descriptor al instante y el `fstat` siguiente la clasifica como no regular → `MixCambiado` («El Mix no es un archivo regular (H2-B: apertura no bloqueante ante FIFO)»), sin leer ni procesar el objeto no regular. El descriptor queda **anclado** durante todo el procesamiento y la guarda final existente (`verificar()` + `ruta_apunta_al_mismo_objeto()`) se conserva.
++* **H2-C — Hash estable.** `_sha_fd(fd)` se sustituye por `_sha_fd_estable(fd)`: `fstat` **antes y después** de la lectura incremental (identidad `st_dev/st_ino`, tamaño, `mtime_ns`, `ctime_ns`); cualquier cambio → SHA **no acreditado** (`MixCambiado` «H2-C: archivo modificado durante la lectura del SHA…»). La misma verificación se aplica en `probe_file()` de los tres motores (error «H2-C: el archivo cambió durante la validación; identidad y SHA-256 no acreditables» → `info.valid=False`) y en la guarda final `verificar()` (nuevo campo `estable` del dictámen).
++
++**Política de enlaces simbólicos (sin cambio, documentada):** la apertura del Mix **sigue** enlaces legítimos (como toda la fase de validación, que abre por ruta con `soundfile`); el anclaje se logra **por identidad del objeto abierto** (H2-A), no con `O_NOFOLLOW`. Rechazar symlinks rompería instalaciones legítimas sin aportar seguridad frente a sustitución (el atacante con capacidad de sustituir la entrada también puede sustituir el objetivo del enlace); la política queda documentada en el docstring del módulo y en `MixHandle.__init__`. No hay cambio de política implícito: el comportamiento symlink es idéntico al previo a H2.
++
++## 2. Pruebas deterministas — 10/10 PASS, 0 FAIL, 0 NOT_EXECUTED
++
++`evidence/matriz_h2_6g1.csv` · detalle: `evidence/pruebas_h2_6g1.json` (schema `pruebas-h2-6g1/1`). Arnés independiente `scripts/pruebas_h2_6g1.py`. Todas verifican el **estado real en disco** (lstat/bytes/SHA-256), no sólo los retornos:
++
++| Prueba | Motor | Checks | Resultado |
++|---|---|---|---|
++| **T1** — validado→FIFO entre validación y apertura | `lectura_segura_6g1` | 9/9 | PASS |
++| **T2** — gemelo byte a byte con distinto inodo | `lectura_segura_6g1` | 7/7 | PASS |
++| **T3a** — `probe_file` captura identidad (H2-A) | Hardened / EVO / MQR | 5/5 ×3 | PASS ×3 |
++| **T3b** — apertura feliz + guarda final estable | `lectura_segura_6g1` | 8/8 | PASS |
++| **T4** — mutación durante la validación | Hardened | 4/4 | PASS |
++| **H2-e2e** — producción, DSP intacto | Hardened / EVO / MQR | 5/5 ×3 | PASS ×3 |
++
++* **T1**: el objeto validado (WAV regular con identidad+SHA estilo `probe_file`) se sustituye por una FIFO **en el punto exacto** (envoltorio de `L.abrir_mix` que sustituye antes de delegar); bajo vigía temporal (`setitimer` 8 s) la apertura **no se bloquea**, se rechaza fail-closed (motivo no regular H2-B), **sin SHA acreditado, sin handle y sin salidas de audio** (`['mix.wav', 'mix_validado_aside']`), la FIFO queda **sin contenido escrito por nadie** y el objeto validado renombrado aparte permanece **byte a byte intacto**. **2ª vía (anclaje 6G.1)**: con el objeto validado registrado (`registrar_propio_6g1` estable + `acreditar_dir_6g1`), la clasificación por descriptor `_clasificar_entrada_6g1` dictamina la FIFO **no-propia por `identidad_distinta`** y el objeto validado **`propiedad_acreditada`** — dos mecanismos independientes (H2 y 6G.1) rechazan el sustituto.
++* **T2**: sustitución por OTRO regular **byte a byte idéntico** con distinto inodo antes de abrir MixHandle: el arnés comprueba que el SHA del impostor **coincide** con el validado y, aun así, la apertura se rechaza por identidad (motivo H2-A), sin handle; el objeto validado original permanece vivo e intacto al margen.
++* **T3a**: `probe_file()` de los tres motores devuelve `device`/`inode` != 0 coincidentes con `os.stat`, `mtime_ns`/`ctime_ns` capturados y el SHA-256 correcto.
++* **T3b**: `abrir_mix` con identidad+SHA del probe supera la apertura; `identity_validada=True`, identidad conservada igual al probe, SHA sobre descriptor igual al probe, mismo inodo legible por soundfile, guarda final `verificar()` con `unchanged=True` y **`estable=True`** (H2-C), `ruta_apunta_al_mismo_objeto` afirmativo, `close()` idempotente y disco sin cambios.
++* **T4**: mutación inyectada dentro de la ventana de validación (envoltorio de `sha256_file` del motor Hardened): `probe_file` marca el error H2-C, `info.valid=False` y `validate_mix` rechaza; el SHA del contenido mutado queda **no acreditado**.
++* **H2-e2e ×3**: corrida feliz de producción por motor: `exit 0`, publicación única, integridad `after.unchanged=True` **y `after.estable=True`** (evidencia H2-C del MixHandle reformado en producción) y **PCM idéntico a la campaña auditada** (`contenedores_6g1.json`) — el DSP no cambió.
++
++**Regresiones autorizadas (sólo éstas)**, evidencias regeneradas en `evidence/`: batería **H1-R2-R2**: **1/1 PASS** · batería **H1-R2**: **4/4 PASS** · batería **H1**: **10/10 PASS** · batería **C-R1**: **13/13 PASS**. Baterías históricas 34/26/17/12: no ejecutadas.
++
++## 3. SHA-256, DIFF y commits
++
++- `SHA256SUMS_H2.txt` (**13 ficheros** — 3 motores, módulo compartido, 2 docs rectificados, informe H2, arnés de pruebas y 5 evidencias: JSON+CSV de la batería nueva y los 3 JSON regenerados de las regresiones, cuyos CSV quedan byte a byte idénticos al no cambiar sus filas — con SHA previo en comentario; verificado con `sha256sum -c`: **13/13 OK**).
++- `DIFF_6G1_H2.patch`: diff incremental **reversible** respecto de `16a64058f05316b03245ffacdda4daed084bea05` (`patch -R -p1` → árbol base byte a byte; forward dry-run exit 0).
++- **Padre directo**: `16a64058f05316b03245ffacdda4daed084bea05` · **Nuevo commit**: hijo directo (SHA completo en el informe de ejecución).
++- **Resumen exacto de archivos** (numstat vs base): `motores/lectura_segura_6g1.py` +86/−16 · `motores/MOTOR_SEP_SDV-SDI_v3.1.1_Hardened_Final.py` +17/−2 · `motores/MOTOR_SEP_SDV-SDI_EVO.py` +17/−2 · `motores/sdv_sdi_mqr_engine.py` +17/−2 · `INDICE_PARA_AUDITORIA_6G1.md` +12/−5 · `INFORME_IMPLEMENTACION_6G1.md` +21/−6 · `scripts/pruebas_h2_6g1.py` nuevo · `evidence/pruebas_h2_6g1.json` + `evidence/matriz_h2_6g1.csv` nuevos · evidencias regeneradas de regresiones (`pruebas_h1_r2_r2_6g1.json`, `pruebas_h1_r2_6g1.json`, `pruebas_c_r1_6g1.json`; los CSV de regresiones se regeneran byte a byte idénticos al no cambiar sus filas).
++
++## 4. Rectificación documental (únicamente los pasajes señalados)
++
++* `INDICE_PARA_AUDITORIA_6G1.md`: pregunta 3 («¿Quedan salidas parciales tras abortar?») e ítem 3 de la lista de verificación describían la semántica `abort-6g1/2` (borrado de salidas acreditadas). Rectificados al comportamiento **vigente C-R1** (`abort-6g1/3`: nada se elimina; salidas propias invalidadas y conservadas; `resultados_validos` vacío), dejando constancia expresa de que las filas/casos citados son registro **histórico** de la semántica /2. No se reescribió ninguna otra parte ni ningún informe histórico de pruebas.
++* `INFORME_IMPLEMENTACION_6G1.md`: §2.1 (bullet de `abortar_6g1` con la «regla de borrado conservadora» histórica) rectificado al comportamiento vigente (no elimina nada; esquema /3; invalidadas y conservadas; `analysis.json` intacto E-R2), conservando el texto histórico entre corchetes como referencia; §5.3 punto 3 (corrección C) se conserva como referencia histórica y se añade la nota [6G.1-R/C-R1 — política vigente] con el estado actual y la referencia a `INFORME_C_R1_6G1.md`.
++
++## 5. Límites respetados
++
++Sin modificaciones en STFT/ISTFT/FFT/hop/chunking/máscaras/fórmulas/consenso/ganancias/polaridad/parámetros DSP: los cambios DSP-visible son cero (sanidad e2e ×3 con PCM idéntico a la campaña auditada). Los tres motores de la carpeta de corrección reciben únicamente la captura de identidad en `FileInfo`/`probe_file`, la verificación de estabilidad y el paso de `identidad_esperada` en las dos llamadas de apertura de cada motor (6 call sites en total). Motores originales de 6G y carpeta de referencia intactos (fuera de `ETAPA_6G1_CORRECCION_LECTURA_SEGURA/` no se modificó ningún fichero); `main` intacto; sin canciones reales ni Elis/Tristania; sin Android/Termux; sin fusionar, integrar, cherry-pick ni PR; baterías históricas no repetidas; H2-A/B/C aplicados sin alterar H1, H1-R2, H1-R2-R1, H1-R2-R2, C-R1 ni E-R2 (regresiones en verde). **No se declaran H2, H1 ni 6G.1 cerradas.**
++
++## 6. Enlaces (URLs completas, texto plano — sin markdown)
++
++```
++https://github.com/arielwilliam1986-source/SDV-SDI_SGM/blob/arena/441a4bf8-sdv-sdi-sgm/ETAPA_6G1_CORRECCION_LECTURA_SEGURA/motores/lectura_segura_6g1.py
++https://github.com/arielwilliam1986-source/SDV-SDI_SGM/blob/arena/441a4bf8-sdv-sdi-sgm/ETAPA_6G1_CORRECCION_LECTURA_SEGURA/motores/MOTOR_SEP_SDV-SDI_v3.1.1_Hardened_Final.py
++https://github.com/arielwilliam1986-source/SDV-SDI_SGM/blob/arena/441a4bf8-sdv-sdi-sgm/ETAPA_6G1_CORRECCION_LECTURA_SEGURA/motores/MOTOR_SEP_SDV-SDI_EVO.py
++https://github.com/arielwilliam1986-source/SDV-SDI_SGM/blob/arena/441a4bf8-sdv-sdi-sgm/ETAPA_6G1_CORRECCION_LECTURA_SEGURA/motores/sdv_sdi_mqr_engine.py
++https://github.com/arielwilliam1986-source/SDV-SDI_SGM/blob/arena/441a4bf8-sdv-sdi-sgm/ETAPA_6G1_CORRECCION_LECTURA_SEGURA/scripts/pruebas_h2_6g1.py
++https://github.com/arielwilliam1986-source/SDV-SDI_SGM/blob/arena/441a4bf8-sdv-sdi-sgm/ETAPA_6G1_CORRECCION_LECTURA_SEGURA/evidence/pruebas_h2_6g1.json
++https://github.com/arielwilliam1986-source/SDV-SDI_SGM/blob/arena/441a4bf8-sdv-sdi-sgm/ETAPA_6G1_CORRECCION_LECTURA_SEGURA/evidence/matriz_h2_6g1.csv
++https://github.com/arielwilliam1986-source/SDV-SDI_SGM/blob/arena/441a4bf8-sdv-sdi-sgm/ETAPA_6G1_CORRECCION_LECTURA_SEGURA/INFORME_H2_6G1.md
++https://github.com/arielwilliam1986-source/SDV-SDI_SGM/blob/arena/441a4bf8-sdv-sdi-sgm/ETAPA_6G1_CORRECCION_LECTURA_SEGURA/SHA256SUMS_H2.txt
++https://github.com/arielwilliam1986-source/SDV-SDI_SGM/blob/arena/441a4bf8-sdv-sdi-sgm/ETAPA_6G1_CORRECCION_LECTURA_SEGURA/DIFF_6G1_H2.patch
++```
+diff --git a/ETAPA_6G1_CORRECCION_LECTURA_SEGURA/INFORME_IMPLEMENTACION_6G1.md b/ETAPA_6G1_CORRECCION_LECTURA_SEGURA/INFORME_IMPLEMENTACION_6G1.md
+index 1cfeb42..e2d4049 100644
+--- a/ETAPA_6G1_CORRECCION_LECTURA_SEGURA/INFORME_IMPLEMENTACION_6G1.md
++++ b/ETAPA_6G1_CORRECCION_LECTURA_SEGURA/INFORME_IMPLEMENTACION_6G1.md
+@@ -64,12 +64,18 @@ de evidencias".
+ * `ruta_lectura()`: devuelve `/proc/self/fd/N` para las funciones que exigen un
+   nombre de archivo (p. ej. `post_wav_identity`); no reabre la ruta del usuario.
+ * `close()` idempotente.
+-* `abortar_6g1(run_dir, motivo, detalle)`: invalida **sólo** las salidas de la
+-  corrida actual y escribe `ABORT_6G1.json`, anotando también `analysis.json`
+-  si existe. Regla de borrado conservadora: `<base> SDV.wav`,
+-  `<base> SDI.wav`, `SDV.wav`, `SDI.wav`, cualquier `*.wav` dentro de
+-  `candidates/`, y `*.png` cuyo nombre contenga `SDV`/`SDI`. Todo lo demás se
+-  **conserva** y se lista en `conservados` (archivos ajenos o preexistentes).
++* `abortar_6g1(run_dir, motivo, detalle)`: **no elimina ningún archivo**
++  (vigente desde C-R1) y escribe `ABORT_6G1.json` (`schema=abort-6g1/3`):
++  las salidas de la corrida quedan **invalidadas y conservadas** en el
++  provisional (`salidas_invalidadas` + `estado_salidas_invalidadas`),
++  `resultados_validos` permanece vacío, los archivos ajenos y los enlaces se
++  conservan con su motivo, y `analysis.json` permanece intacto (E-R2).
++  [Histórico pre-C-R1, ya sustituido: la primera versión invalidaba y
++  **borraba** las salidas acreditadas con una regla de borrado conservadora
++  por nombre (`<base> SDV.wav`, `<base> SDI.wav`, `SDV.wav`, `SDI.wav`,
++  `*.wav` en `candidates/`, `*.png` con `SDV`/`SDI`); la corrección C la
++  sustituyó por el registro de propiedad (acreditación) y C-R1 eliminó el
++  borrado por completo.]
+ 
+ ### 2.2 Motores (copias 6G.1, mismas funciones DSP)
+ 
+@@ -207,6 +213,15 @@ Todo lo anterior vive dentro de `ETAPA_6G1_CORRECCION_LECTURA_SEGURA/`.
+    > propiedad **acreditada** y conserva los demás con el motivo
+    > (`schema=abort-6g1/2`, campo `motivos_propiedad`). Detalles, casos de
+    > prueba y evidencia: `INFORME_CORRECCIONES_AUDITORIA_6G1.md`.
++
++   > **[6G.1-R/C-R1 — política vigente]** El borrado fue eliminado por
++   > completo: `abortar_6g1` **no elimina ningún archivo**; las salidas de la
++   > corrida quedan **invalidadas y conservadas** en el provisional
++   > (`estado_salidas_invalidadas`), `resultados_validos` permanece vacío y
++   > el registro usa el esquema **`abort-6g1/3`**. La ventana TOCTOU entre
++   > el dictamen de propiedad y el `unlink` deja de existir por construcción.
++   > Detalles: `INFORME_C_R1_6G1.md`. (El texto [corrección C] anterior se
++   > conserva como referencia histórica de la semántica `abort-6g1/2`.)
+ 4. Los tiempos y el consumo de memoria del informe de validación son los
+    observados en este entorno, no una promesa de rendimiento.
+ 5. No se ejecutó ninguna canción real, ni el piloto, ni comparación de calidad
+diff --git a/ETAPA_6G1_CORRECCION_LECTURA_SEGURA/evidence/matriz_h2_6g1.csv b/ETAPA_6G1_CORRECCION_LECTURA_SEGURA/evidence/matriz_h2_6g1.csv
+new file mode 100644
+index 0000000..ad7ee7c
+--- /dev/null
++++ b/ETAPA_6G1_CORRECCION_LECTURA_SEGURA/evidence/matriz_h2_6g1.csv
+@@ -0,0 +1,11 @@
++prueba,motor,alcance,veredicto,checks_ok,checks_total,detalle
++T1,lectura_segura_6g1,"validado->FIFO antes de abrir MixHandle: sin bloqueo, fail-closed, sin SHA, sin salidas",PASS,9,9,todos los checks OK
++T2,lectura_segura_6g1,gemelo byte a byte con distinto inodo: el SHA coincidente NO aprueba la identidad,PASS,7,7,todos los checks OK
++T3a,Hardened,probe_file captura identidad del objeto validado (H2-A),PASS,5,5,todos los checks OK
++T3a,EVO,probe_file captura identidad del objeto validado (H2-A),PASS,5,5,todos los checks OK
++T3a,MQR,probe_file captura identidad del objeto validado (H2-A),PASS,5,5,todos los checks OK
++T3b,lectura_segura_6g1,apertura feliz: identidad validada conservada y guarda final estable (H2-C),PASS,8,8,todos los checks OK
++T4,Hardened,mutación durante la validación: SHA no acreditado (H2-C),PASS,4,4,todos los checks OK
++H2-e2e,Hardened,corrida feliz: MixHandle reformado en producción (DSP intacto),PASS,5,5,todos los checks OK
++H2-e2e,EVO,corrida feliz: MixHandle reformado en producción (DSP intacto),PASS,5,5,todos los checks OK
++H2-e2e,MQR,corrida feliz: MixHandle reformado en producción (DSP intacto),PASS,5,5,todos los checks OK
+diff --git a/ETAPA_6G1_CORRECCION_LECTURA_SEGURA/evidence/pruebas_c_r1_6g1.json b/ETAPA_6G1_CORRECCION_LECTURA_SEGURA/evidence/pruebas_c_r1_6g1.json
+index 1ec326e..74ce8e9 100644
+--- a/ETAPA_6G1_CORRECCION_LECTURA_SEGURA/evidence/pruebas_c_r1_6g1.json
++++ b/ETAPA_6G1_CORRECCION_LECTURA_SEGURA/evidence/pruebas_c_r1_6g1.json
+@@ -275,7 +275,7 @@
+     "Hardened": {
+       "E2E": {
+         "exit": 2,
+-        "abort_dir": "/tmp/f6g1cr1/Hardened/E2E/out/motorA_run_20261122_003542_partial"
++        "abort_dir": "/tmp/f6g1cr1/Hardened/E2E/out/motorA_run_20261122_010414_partial"
+       },
+       "sanidad": {
+         "exit": 0
+@@ -284,7 +284,7 @@
+     "EVO": {
+       "E2E": {
+         "exit": 2,
+-        "abort_dir": "/tmp/f6g1cr1/EVO/E2E/out/motorA_run_20261122_003545_partial"
++        "abort_dir": "/tmp/f6g1cr1/EVO/E2E/out/motorA_run_20261122_010417_partial"
+       },
+       "sanidad": {
+         "exit": 0
+@@ -293,7 +293,7 @@
+     "MQR": {
+       "E2E": {
+         "exit": 2,
+-        "abort_dir": "/tmp/f6g1cr1/MQR/E2E/out/mqr_run_20261122_003548_partial"
++        "abort_dir": "/tmp/f6g1cr1/MQR/E2E/out/mqr_run_20261122_010419_partial"
+       },
+       "sanidad": {
+         "exit": 0
+diff --git a/ETAPA_6G1_CORRECCION_LECTURA_SEGURA/evidence/pruebas_h1_r2_6g1.json b/ETAPA_6G1_CORRECCION_LECTURA_SEGURA/evidence/pruebas_h1_r2_6g1.json
+index 2453cd8..55b1d1c 100644
+--- a/ETAPA_6G1_CORRECCION_LECTURA_SEGURA/evidence/pruebas_h1_r2_6g1.json
++++ b/ETAPA_6G1_CORRECCION_LECTURA_SEGURA/evidence/pruebas_h1_r2_6g1.json
+@@ -44,7 +44,7 @@
+         "ruta": "/tmp/f6g1h1r2/A1/out/run_partial",
+         "acreditada": [
+           65024,
+-          537311
++          537507
+         ]
+       },
+       "A2": {
+diff --git a/ETAPA_6G1_CORRECCION_LECTURA_SEGURA/evidence/pruebas_h1_r2_r2_6g1.json b/ETAPA_6G1_CORRECCION_LECTURA_SEGURA/evidence/pruebas_h1_r2_r2_6g1.json
+index 008d7da..53ed4a8 100644
+--- a/ETAPA_6G1_CORRECCION_LECTURA_SEGURA/evidence/pruebas_h1_r2_r2_6g1.json
++++ b/ETAPA_6G1_CORRECCION_LECTURA_SEGURA/evidence/pruebas_h1_r2_r2_6g1.json
+@@ -16,7 +16,7 @@
+       "R2": {
+         "err": "no_es_archivo_regular (H1-R2-R1)",
+         "sha": null,
+-        "transcurrido": 9.41460002650274e-05,
++        "transcurrido": 5.4556000577576924e-05,
+         "agotado": false,
+         "fifo_con_contenido": false
+       }
+diff --git a/ETAPA_6G1_CORRECCION_LECTURA_SEGURA/evidence/pruebas_h2_6g1.json b/ETAPA_6G1_CORRECCION_LECTURA_SEGURA/evidence/pruebas_h2_6g1.json
+new file mode 100644
+index 0000000..2207215
+--- /dev/null
++++ b/ETAPA_6G1_CORRECCION_LECTURA_SEGURA/evidence/pruebas_h2_6g1.json
+@@ -0,0 +1,136 @@
++{
++  "schema": "pruebas-h2-6g1/1",
++  "filas": [
++    {
++      "prueba": "T1",
++      "motor": "lectura_segura_6g1",
++      "alcance": "validado->FIFO antes de abrir MixHandle: sin bloqueo, fail-closed, sin SHA, sin salidas",
++      "veredicto": "PASS",
++      "checks_ok": 9,
++      "checks_total": 9,
++      "detalle": "todos los checks OK"
++    },
++    {
++      "prueba": "T2",
++      "motor": "lectura_segura_6g1",
++      "alcance": "gemelo byte a byte con distinto inodo: el SHA coincidente NO aprueba la identidad",
++      "veredicto": "PASS",
++      "checks_ok": 7,
++      "checks_total": 7,
++      "detalle": "todos los checks OK"
++    },
++    {
++      "prueba": "T3a",
++      "motor": "Hardened",
++      "alcance": "probe_file captura identidad del objeto validado (H2-A)",
++      "veredicto": "PASS",
++      "checks_ok": 5,
++      "checks_total": 5,
++      "detalle": "todos los checks OK"
++    },
++    {
++      "prueba": "T3a",
++      "motor": "EVO",
++      "alcance": "probe_file captura identidad del objeto validado (H2-A)",
++      "veredicto": "PASS",
++      "checks_ok": 5,
++      "checks_total": 5,
++      "detalle": "todos los checks OK"
++    },
++    {
++      "prueba": "T3a",
++      "motor": "MQR",
++      "alcance": "probe_file captura identidad del objeto validado (H2-A)",
++      "veredicto": "PASS",
++      "checks_ok": 5,
++      "checks_total": 5,
++      "detalle": "todos los checks OK"
++    },
++    {
++      "prueba": "T3b",
++      "motor": "lectura_segura_6g1",
++      "alcance": "apertura feliz: identidad validada conservada y guarda final estable (H2-C)",
++      "veredicto": "PASS",
++      "checks_ok": 8,
++      "checks_total": 8,
++      "detalle": "todos los checks OK"
++    },
++    {
++      "prueba": "T4",
++      "motor": "Hardened",
++      "alcance": "mutación durante la validación: SHA no acreditado (H2-C)",
++      "veredicto": "PASS",
++      "checks_ok": 4,
++      "checks_total": 4,
++      "detalle": "todos los checks OK"
++    },
++    {
++      "prueba": "H2-e2e",
++      "motor": "Hardened",
++      "alcance": "corrida feliz: MixHandle reformado en producción (DSP intacto)",
++      "veredicto": "PASS",
++      "checks_ok": 5,
++      "checks_total": 5,
++      "detalle": "todos los checks OK"
++    },
++    {
++      "prueba": "H2-e2e",
++      "motor": "EVO",
++      "alcance": "corrida feliz: MixHandle reformado en producción (DSP intacto)",
++      "veredicto": "PASS",
++      "checks_ok": 5,
++      "checks_total": 5,
++      "detalle": "todos los checks OK"
++    },
++    {
++      "prueba": "H2-e2e",
++      "motor": "MQR",
++      "alcance": "corrida feliz: MixHandle reformado en producción (DSP intacto)",
++      "veredicto": "PASS",
++      "checks_ok": 5,
++      "checks_total": 5,
++      "detalle": "todos los checks OK"
++    }
++  ],
++  "detalles": {
++    "T1": {
++      "exc": "El Mix no es un archivo regular (H2-B: apertura no bloqueante ante FIFO)",
++      "transcurrido": 0.00014596699929825263,
++      "agotado": false,
++      "cls_fifo": "(False, 'identidad_distinta (sustituido o reemplazado tras el registro)')",
++      "cls_aside": "(True, 'propiedad_acreditada')"
++    },
++    "T2": {
++      "exc": "La identidad del Mix abierto no coincide con la validada (H2-A): abierto dev/ino (65024, 537460) != validado (65024, 537459); un archivo distinto con SHA idéntico no es aceptable",
++      "identidad0": [
++        65024,
++        537459
++      ]
++    },
++    "Hardened": {
++      "e2e": {
++        "exit": 0
++      }
++    },
++    "EVO": {
++      "e2e": {
++        "exit": 0
++      }
++    },
++    "MQR": {
++      "e2e": {
++        "exit": 0
++      }
++    },
++    "T3b": {
++      "estable": true,
++      "unchanged": true
++    },
++    "T4": {
++      "errors": [
++        "H2-C: el archivo cambió durante la validación; identidad y SHA-256 no acreditables"
++      ],
++      "valid": false
++    }
++  }
++}
+diff --git a/ETAPA_6G1_CORRECCION_LECTURA_SEGURA/motores/MOTOR_SEP_SDV-SDI_EVO.py b/ETAPA_6G1_CORRECCION_LECTURA_SEGURA/motores/MOTOR_SEP_SDV-SDI_EVO.py
+index 440d995..d127c82 100644
+--- a/ETAPA_6G1_CORRECCION_LECTURA_SEGURA/motores/MOTOR_SEP_SDV-SDI_EVO.py
++++ b/ETAPA_6G1_CORRECCION_LECTURA_SEGURA/motores/MOTOR_SEP_SDV-SDI_EVO.py
+@@ -285,6 +285,10 @@ class FileInfo:
+     duration_s: float = 0.0
+     size_bytes: int = 0
+     sha256: str = ""
++    device: int = 0
++    inode: int = 0
++    mtime_ns: int = 0
++    ctime_ns: int = 0
+     bit_depth_nominal: int = 0
+     warnings: list = field(default_factory=list)
+     notes: list = field(default_factory=list)
+@@ -319,6 +323,9 @@ def probe_file(path: str, role: str) -> FileInfo:
+         return info
+     info.exists = True
+     info.size_bytes = os.path.getsize(path)
++    st0 = os.stat(path)  # [6G.1-R/H2-A] identidad del objeto validado
++    info.device, info.inode = st0.st_dev, st0.st_ino
++    info.mtime_ns, info.ctime_ns = st0.st_mtime_ns, st0.st_ctime_ns
+     try:
+         sfi = sf.info(path)
+         _verify_audio_6g(path, sfi)
+@@ -339,6 +346,14 @@ def probe_file(path: str, role: str) -> FileInfo:
+     except OSError as exc:
+         info.errors.append(f"Fallo calculando sha256: {exc}")
+ 
++    st1 = os.stat(path)  # [6G.1-R/H2-C] estabilidad durante la validación
++    if (st1.st_dev, st1.st_ino, st1.st_size, st1.st_mtime_ns,
++            st1.st_ctime_ns) != \
++            (st0.st_dev, st0.st_ino, st0.st_size, st0.st_mtime_ns,
++             st0.st_ctime_ns):
++        info.errors.append("H2-C: el archivo cambió durante la validación; "
++                           "identidad y SHA-256 no acreditables")
++
+     info.valid = len(info.errors) == 0
+     return info
+ 
+@@ -692,7 +707,7 @@ def analyze_guide_scale(mix_info: FileInfo, pair: PairMeta) -> tuple:
+     acc = {"vocal": {"gm": 0.0, "gg": 0.0, "sq": 0.0, "n": 0, "peak": 0.0},
+            "instrumental": {"gm": 0.0, "gg": 0.0, "sq": 0.0, "n": 0, "peak": 0.0}}
+     mix_sq = 0.0; mix_n = 0
+-    with _abrir_mix_6g1(mix_info.path, mix_info.sha256) as hm:
++    with _abrir_mix_6g1(mix_info.path, mix_info.sha256, identidad_esperada=(mix_info.device, mix_info.inode)) as hm:
+         handles = {"vocal": sf.SoundFile(pair.vocal_path), "instrumental": sf.SoundFile(pair.instrumental_path)}
+         try:
+             while True:
+@@ -1633,7 +1648,7 @@ def run_experiment(mix_path: str, pairs: list, mode: str, opt: argparse.Namespac
+             ))
+ 
+         try:
+-            hmix = _abrir_mix_6g1(mix_info.path, mix_info.sha256)
++            hmix = _abrir_mix_6g1(mix_info.path, mix_info.sha256, identidad_esperada=(mix_info.device, mix_info.inode))
+         except _MixCambiado_6g1 as _exc6g1:
+             _abortar_6g1(run_dir, "MIX_SUSTITUIDO_ANTES_DEL_DSP", str(_exc6g1))
+             log("[FATAL] Mix sustituido antes del DSP: %s" % _exc6g1)
+diff --git a/ETAPA_6G1_CORRECCION_LECTURA_SEGURA/motores/MOTOR_SEP_SDV-SDI_v3.1.1_Hardened_Final.py b/ETAPA_6G1_CORRECCION_LECTURA_SEGURA/motores/MOTOR_SEP_SDV-SDI_v3.1.1_Hardened_Final.py
+index e4a47f7..23bb920 100644
+--- a/ETAPA_6G1_CORRECCION_LECTURA_SEGURA/motores/MOTOR_SEP_SDV-SDI_v3.1.1_Hardened_Final.py
++++ b/ETAPA_6G1_CORRECCION_LECTURA_SEGURA/motores/MOTOR_SEP_SDV-SDI_v3.1.1_Hardened_Final.py
+@@ -280,6 +280,10 @@ class FileInfo:
+     duration_s: float = 0.0
+     size_bytes: int = 0
+     sha256: str = ""
++    device: int = 0
++    inode: int = 0
++    mtime_ns: int = 0
++    ctime_ns: int = 0
+     bit_depth_nominal: int = 0
+     warnings: list = field(default_factory=list)
+     notes: list = field(default_factory=list)
+@@ -314,6 +318,9 @@ def probe_file(path: str, role: str) -> FileInfo:
+         return info
+     info.exists = True
+     info.size_bytes = os.path.getsize(path)
++    st0 = os.stat(path)  # [6G.1-R/H2-A] identidad del objeto validado
++    info.device, info.inode = st0.st_dev, st0.st_ino
++    info.mtime_ns, info.ctime_ns = st0.st_mtime_ns, st0.st_ctime_ns
+     try:
+         sfi = sf.info(path)
+         _verify_audio_6g(path, sfi)
+@@ -334,6 +341,14 @@ def probe_file(path: str, role: str) -> FileInfo:
+     except OSError as exc:
+         info.errors.append(f"Fallo calculando sha256: {exc}")
+ 
++    st1 = os.stat(path)  # [6G.1-R/H2-C] estabilidad durante la validación
++    if (st1.st_dev, st1.st_ino, st1.st_size, st1.st_mtime_ns,
++            st1.st_ctime_ns) != \
++            (st0.st_dev, st0.st_ino, st0.st_size, st0.st_mtime_ns,
++             st0.st_ctime_ns):
++        info.errors.append("H2-C: el archivo cambió durante la validación; "
++                           "identidad y SHA-256 no acreditables")
++
+     info.valid = len(info.errors) == 0
+     return info
+ 
+@@ -697,7 +712,7 @@ def analyze_guide_scale(mix_info: FileInfo, pair: PairMeta) -> tuple:
+     acc = {"vocal": {"gm": 0.0, "gg": 0.0, "sq": 0.0, "n": 0, "peak": 0.0},
+            "instrumental": {"gm": 0.0, "gg": 0.0, "sq": 0.0, "n": 0, "peak": 0.0}}
+     mix_sq = 0.0; mix_n = 0
+-    with _abrir_mix_6g1(mix_info.path, mix_info.sha256) as hm:
++    with _abrir_mix_6g1(mix_info.path, mix_info.sha256, identidad_esperada=(mix_info.device, mix_info.inode)) as hm:
+         handles = {"vocal": sf.SoundFile(pair.vocal_path), "instrumental": sf.SoundFile(pair.instrumental_path)}
+         try:
+             while True:
+@@ -1563,7 +1578,7 @@ def run_experiment(mix_path: str, pairs: list, mode: str, opt: argparse.Namespac
+             ))
+ 
+         try:
+-            hmix = _abrir_mix_6g1(mix_info.path, mix_info.sha256)
++            hmix = _abrir_mix_6g1(mix_info.path, mix_info.sha256, identidad_esperada=(mix_info.device, mix_info.inode))
+         except _MixCambiado_6g1 as _exc6g1:
+             _abortar_6g1(run_dir, "MIX_SUSTITUIDO_ANTES_DEL_DSP", str(_exc6g1))
+             log("[FATAL] Mix sustituido antes del DSP: %s" % _exc6g1)
+diff --git a/ETAPA_6G1_CORRECCION_LECTURA_SEGURA/motores/lectura_segura_6g1.py b/ETAPA_6G1_CORRECCION_LECTURA_SEGURA/motores/lectura_segura_6g1.py
+index 257cd9a..7417115 100644
+--- a/ETAPA_6G1_CORRECCION_LECTURA_SEGURA/motores/lectura_segura_6g1.py
++++ b/ETAPA_6G1_CORRECCION_LECTURA_SEGURA/motores/lectura_segura_6g1.py
+@@ -22,6 +22,18 @@ y sin escritura para terceros); el inventario y la clasificación de propiedad
+ se realizan exclusivamente por descriptores, sin re-consultar rutas
+ (H1-R2/B); si el anclaje no puede acreditarse, no se escribe nada en esa
+ ubicación (fail-closed).
++
++La apertura del Mix validado es segura (H2): `probe_file()` de los motores
++captura la identidad (st_dev, st_ino, tamaño, mtime_ns, ctime_ns) del objeto
++validado y verifica su estabilidad durante la validación y el cálculo del
++SHA (H2-C); `MixHandle` abre con `O_NONBLOCK` (H2-B: una sustitución por FIFO
++no puede bloquear la llamada), exige por `fstat` un archivo regular cuya
++identidad coincida con la validada (H2-A: un archivo DISTINTO con SHA
++idéntico no es aceptable) y calcula el SHA con verificación de estabilidad.
++POLÍTICA DE ENLACES SIMBÓLICOS SIN CAMBIO: la apertura sigue enlaces
++legítimos (como toda la fase de validación) y el anclaje se logra por
++identidad del objeto abierto, no con `O_NOFOLLOW`; rechazarlos rompería
++instalaciones legítimas y no aporta seguridad adicional frente a sustitución.
+ """
+ import errno
+ import hashlib
+@@ -48,7 +60,15 @@ def _identity(st):
+                 mtime_ns=st.st_mtime_ns, mode=oct(st.st_mode))
+ 
+ 
+-def _sha_fd(fd):
++def _sha_fd_estable(fd):
++    """[H2-C] SHA-256 de un descriptor con verificación de ESTABILIDAD:
++    `fstat()` antes y después de la lectura; comparación de identidad
++    (st_dev/st_ino), tamaño, mtime_ns y ctime_ns entre ambos estados. Si
++    cualquier dato cambia, el archivo se modificó durante la lectura y el
++    SHA NO se acredita. Lectura incremental (sin acumular en memoria) sobre
++    un duplicado con seek(0) (no altera el offset del descriptor original).
++    Compatible con Python 3.8. Devuelve (sha256, None) o (None, motivo)."""
++    st0 = os.fstat(fd)
+     m = hashlib.sha256()
+     g = os.fdopen(os.dup(fd), 'rb')
+     try:
+@@ -57,7 +77,13 @@ def _sha_fd(fd):
+             m.update(block)
+     finally:
+         g.close()
+-    return m.hexdigest()
++    st1 = os.fstat(fd)
++    if (st1.st_dev, st1.st_ino) != (st0.st_dev, st0.st_ino) or \
++            (st1.st_size, st1.st_mtime_ns, st1.st_ctime_ns) != \
++            (st0.st_size, st0.st_mtime_ns, st0.st_ctime_ns):
++        return None, ('archivo modificado durante la lectura del SHA '
++                      '(H2-C): SHA no acreditable')
++    return m.hexdigest(), None
+ 
+ 
+ def _sha_archivo(path):
+@@ -71,16 +97,44 @@ def _sha_archivo(path):
+ class MixHandle:
+     """Descriptor del Mix validado + lector SoundFile sobre el mismo inodo."""
+ 
+-    def __init__(self, path, sha_esperado=None):
++    def __init__(self, path, sha_esperado=None, identidad_esperada=None):
+         object.__setattr__(self, '_snd', None)
+         self.path = os.path.abspath(path)
+-        self.fd = os.open(self.path, os.O_RDONLY)
++        # [6G.1-R/H2-B] O_NONBLOCK: una sustitución por FIFO entre la
++        # validación y esta apertura no puede bloquear la llamada (el
++        # descriptor se obtiene al instante y el fstat siguiente clasifica el
++        # objeto). POLÍTICA DE ENLACES SIMBÓLICOS SIN CAMBIO (documentada):
++        # la apertura sigue enlaces legítimos como toda la fase de
++        # validación; el anclaje se logra por identidad (H2-A), no con
++        # O_NOFOLLOW.
++        self.fd = os.open(self.path, os.O_RDONLY | os.O_NONBLOCK)
+         try:
+             st = os.fstat(self.fd)
+             if not stat.S_ISREG(st.st_mode):
+-                raise MixCambiado('El Mix no es un archivo regular')
++                raise MixCambiado('El Mix no es un archivo regular (H2-B: '
++                                  'apertura no bloqueante ante FIFO)')
+             self.identity = _identity(st)
+-            self.digest = _sha_fd(self.fd)
++            # [6G.1-R/H2-A] La identidad del objeto ABIERTO debe coincidir con
++            # la del objeto VALIDADO (probe_file): un archivo distinto con
++            # contenido idéntico NO es aceptable aunque el SHA coincida.
++            if identidad_esperada is not None and \
++                    (st.st_dev, st.st_ino) != tuple(identidad_esperada):
++                raise MixCambiado(
++                    'La identidad del Mix abierto no coincide con la validada '
++                    f'(H2-A): abierto dev/ino ({st.st_dev}, {st.st_ino}) != '
++                    f'validado {tuple(identidad_esperada)}; un archivo distinto '
++                    'con SHA idéntico no es aceptable')
++            self.identity_expected = (tuple(identidad_esperada)
++                                      if identidad_esperada is not None
++                                      else None)
++            # [6G.1-R/H2-A] Bandera de apertura segura: la identidad del
++            # descriptor fue exigida y coincide con la del objeto validado.
++            self.identity_validada = identidad_esperada is not None
++            # [6G.1-R/H2-C] SHA estable: fstat antes/después de la lectura
++            # (identidad/tamaño/mtime_ns/ctime_ns); si cambió, no se acredita.
++            self.digest, motivo = _sha_fd_estable(self.fd)
++            if motivo is not None:
++                raise MixCambiado(f'H2-C: {motivo}')
+             if sha_esperado is not None and self.digest != sha_esperado:
+                 raise MixCambiado(
+                     'SHA-256 del Mix distinto del sondeo: sustitución antes del DSP '
+@@ -125,19 +179,29 @@ class MixHandle:
+ 
+     # --- integridad ---------------------------------------------------------
+     def verificar(self):
+-        """Relee el descriptor y compara bytes e identidad con la apertura."""
++        """Relee el descriptor, compara bytes e identidad con la apertura y
++        verifica la ESTABILIDAD del objeto durante la relectura (H2-C: fstat
++        antes y después; identidad, tamaño, mtime_ns y ctime_ns)."""
+         if self.fd is None:
+             return dict(unchanged=False, reason='descriptor cerrado')
+         st = os.fstat(self.fd)
+         ident = _identity(st)
+-        digest = _sha_fd(self.fd)
+-        ok = (digest == self.digest and ident == self.identity)
++        digest, motivo = _sha_fd_estable(self.fd)
++        estable = motivo is None
++        ok = (estable and digest == self.digest and ident == self.identity)
++        if motivo is not None:
++            razon = f'H2-C: {motivo}'
++        elif ok:
++            razon = 'sha256 e identidad revalidados (estables, H2-C)'
++        elif digest != self.digest:
++            razon = 'contenido distinto'
++        else:
++            razon = 'identidad fstat distinta'
+         return dict(unchanged=ok,
+-                    reason='sha256 e identidad revalidados' if ok
+-                    else ('contenido distinto' if digest != self.digest
+-                          else 'identidad fstat distinta'),
+-                    sha256=digest, expected=self.digest,
+-                    identity=ident, identity_expected=self.identity)
++                    reason=razon,
++                    sha256=(digest or ''), expected=self.digest,
++                    identity=ident, identity_expected=self.identity,
++                    estable=estable)
+ 
+     def ruta_lectura(self):
+         """Ruta al mismo inodo (para funciones que exigen un nombre de archivo)."""
+@@ -157,8 +221,14 @@ class MixHandle:
+                     identity=ident, identity_expected=self.identity)
+ 
+ 
+-def abrir_mix(path, sha_esperado=None):
+-    return MixHandle(path, sha_esperado)
++def abrir_mix(path, sha_esperado=None, identidad_esperada=None):
++    """Abre el Mix validado.
++    [H2-A] `identidad_esperada` = (st_dev, st_ino) capturado en `probe_file()`
++    del motor: exigida por `fstat` antes de aceptar el descriptor (un archivo
++    distinto con SHA idéntico es rechazado).
++    [H2-B] Apertura con O_NONBLOCK (una FIFO no bloquea).
++    [H2-C] SHA estable (fstat antes/después de la lectura)."""
++    return MixHandle(path, sha_esperado, identidad_esperada)
+ 
+ 
+ # ---------------------------------------------------------------------------
+diff --git a/ETAPA_6G1_CORRECCION_LECTURA_SEGURA/motores/sdv_sdi_mqr_engine.py b/ETAPA_6G1_CORRECCION_LECTURA_SEGURA/motores/sdv_sdi_mqr_engine.py
+index 1a0c9e6..ceebe94 100644
+--- a/ETAPA_6G1_CORRECCION_LECTURA_SEGURA/motores/sdv_sdi_mqr_engine.py
++++ b/ETAPA_6G1_CORRECCION_LECTURA_SEGURA/motores/sdv_sdi_mqr_engine.py
+@@ -470,6 +470,10 @@ class FileInfo:
+     duration_s: float = 0.0
+     size_bytes: int = 0
+     sha256: str = ""
++    device: int = 0
++    inode: int = 0
++    mtime_ns: int = 0
++    ctime_ns: int = 0
+     bit_depth_nominal: int = 0
+     warnings: list = field(default_factory=list)
+     notes: list = field(default_factory=list)
+@@ -510,6 +514,9 @@ def probe_file(path, role):
+         return info
+     info.exists = True
+     info.size_bytes = os.path.getsize(path)
++    st0 = os.stat(path)  # [6G.1-R/H2-A] identidad del objeto validado
++    info.device, info.inode = st0.st_dev, st0.st_ino
++    info.mtime_ns, info.ctime_ns = st0.st_mtime_ns, st0.st_ctime_ns
+     try:
+         sfi = sf.info(path)
+         _verify_audio_6g(path, sfi)
+@@ -527,6 +534,14 @@ def probe_file(path, role):
+         info.sha256 = sha256_file(path)
+     except OSError as exc:
+         info.errors.append("fallo calculando sha256: %s" % exc)
++
++    st1 = os.stat(path)  # [6G.1-R/H2-C] estabilidad durante la validación
++    if (st1.st_dev, st1.st_ino, st1.st_size, st1.st_mtime_ns,
++            st1.st_ctime_ns) != \
++            (st0.st_dev, st0.st_ino, st0.st_size, st0.st_mtime_ns,
++             st0.st_ctime_ns):
++        info.errors.append("H2-C: el archivo cambió durante la validación; "
++                           "identidad y SHA-256 no acreditables")
+     info.valid = len(info.errors) == 0
+     return info
+ 
+@@ -1015,7 +1030,7 @@ def analyze_guide_scale(mix_info, pair):
+     rec = {"pair_id": pair.pair_id, "family": pair.family,
+            "variant": pair.variant, "compensation_policy":
+            GUIDE_SCALE_COMPENSATION}
+-    with _abrir_mix_6g1(mix_info.path, mix_info.sha256) as _hm6g1:
++    with _abrir_mix_6g1(mix_info.path, mix_info.sha256, identidad_esperada=(mix_info.device, mix_info.inode)) as _hm6g1:
+         mix_common = stream_level_stats(_hm6g1.ruta_lectura(),
+                                         limit_frames=mix_info.frames)
+     rec["mix_common_region"] = mix_common
+@@ -2390,7 +2405,7 @@ def _run_core(mix_info, pairs, mode, opt, plan, freqs, band_masks,
+ 
+     # --- bucle single-pass ------------------------------------------------------
+     try:
+-        hmix = _abrir_mix_6g1(mix_info.path, mix_info.sha256)
++        hmix = _abrir_mix_6g1(mix_info.path, mix_info.sha256, identidad_esperada=(mix_info.device, mix_info.inode))
+     except _MixCambiado_6g1 as _exc6g1:
+         _abortar_6g1(run_dir, "MIX_SUSTITUIDO_ANTES_DEL_DSP", str(_exc6g1))
+         log("[FATAL] Mix sustituido antes del DSP: %s" % _exc6g1)
+diff --git a/ETAPA_6G1_CORRECCION_LECTURA_SEGURA/scripts/pruebas_h2_6g1.py b/ETAPA_6G1_CORRECCION_LECTURA_SEGURA/scripts/pruebas_h2_6g1.py
+new file mode 100644
+index 0000000..f77d5c7
+--- /dev/null
++++ b/ETAPA_6G1_CORRECCION_LECTURA_SEGURA/scripts/pruebas_h2_6g1.py
+@@ -0,0 +1,527 @@
++"""Pruebas H2 (rectificación 6G.1 — apertura segura del Mix validado).
++
++Ejecuta ÚNICAMENTE la batería focalizada de este hallazgo; las regresiones
++(H1-R2-R2, H1-R2, H1, C-R1) se ejecutan con sus propias baterías. No repite
++las baterías históricas (34/26/17/12).
++
++  T1 (H2-B)  Mix WAV regular VALIDADO (identidad + SHA por ruta, semántica
++        probe_file); en el punto exacto entre la validación y la apertura de
++        MixHandle se SUSTITUYE la entrada por una FIFO (envoltorio sobre
++        L.abrir_mix que sustituye antes de delegar): la apertura NO se
++        bloquea (O_NONBLOCK; límite temporal 8 s), se rechaza fail-closed
++        (no regular), sin SHA acreditado, sin handle, sin salidas de audio;
++        la FIFO queda SIN contenido escrito por nadie y el objeto validado
++        (renombrado aparte) queda byte a byte intacto. 2ª vía: clasificación
++        de propiedad 6G.1 (_clasificar_entrada_6g1) — la FIFO NO es el
++        objeto registrado (identidad_distinta) y el objeto validado SÍ
++        conserva la propiedad acreditada.
++  T2 (H2-A)  Sustitución por OTRO archivo regular BYTE A BYTE IDÉNTICO con
++        distinto inodo antes de abrir MixHandle: el SHA coincidente NO
++        aprueba la identidad — apertura rechazada (H2-A), sin handle, el
++        objeto validado original permanece vivo e intacto.
++  T3a (H2-A) probe_file() de los TRES motores captura la identidad del
++        objeto validado (device/inode/mtime_ns != 0 y coincidentes con
++        os.stat) junto al SHA-256.
++  T3b (H2)   Apertura feliz: L.abrir_mix con identidad + SHA del probe
++        supera la apertura, conserva la identidad validada
++        (identity_validada=True), lee el mismo inodo, la guarda final
++        verificar() da unchanged=True con estable=True (H2-C) y close() es
++        idempotente.
++  T4 (H2-C)  El archivo MUTA durante la validación (envoltorio sobre
++        sha256_file del motor): probe_file marca el error H2-C y el SHA
++        queda NO acreditado (info.valid=False; validate_mix lo rechaza).
++  H2-e2e ×3  Corrida feliz de producción (DSP intacto): exit 0, publicación
++        única, integridad after.unchanged=True y after.estable=True
++        (evidencia H2-C del MixHandle reformado), PCM idéntico a la campaña
++        auditada.
++
++Evidencia: evidence/pruebas_h2_6g1.json + evidence/matriz_h2_6g1.csv
++"""
++import csv
++import importlib.util
++import json
++import os
++import shutil
++import signal
++import stat
++import sys
++import time
++from pathlib import Path
++
++RAIZ = Path(__file__).resolve().parent.parent
++sys.path.insert(0, str(RAIZ / 'scripts'))
++sys.path.insert(0, str(RAIZ / 'motores'))
++from comun_6g1 import FIX, MOT, MOTORES, escribir_manifest, recolectar, \
++    sha_file, dump
++import lectura_segura_6g1 as L
++
++EV = RAIZ / 'evidence'
++TRABAJO = Path('/tmp/f6g1h2')
++
++NOMBRE_MOTOR = {
++    'Hardened': 'MOTOR_SEP_SDV-SDI_v3.1.1_Hardened_Final.py',
++    'EVO': 'MOTOR_SEP_SDV-SDI_EVO.py',
++    'MQR': 'sdv_sdi_mqr_engine.py',
++}
++SALIDAS = {'Hardened': ('mix SDV.wav', 'mix SDI.wav'),
++           'EVO': ('mix SDV.wav', 'mix SDI.wav'),
++           'MQR': ('SDV.wav', 'SDI.wav')}
++PREFIJO = {'Hardened': 'motorA_run_', 'EVO': 'motorA_run_', 'MQR': 'mqr_run_'}
++
++
++class _TiempoAgotado(Exception):
++    pass
++
++
++def _alarma(signum, frame):
++    raise _TiempoAgotado()
++
++
++def fila(prueba, motor, alcance, checks, motivo_ne=None):
++    if motivo_ne is not None:
++        return dict(prueba=prueba, motor=motor, alcance=alcance,
++                    veredicto='NOT_EXECUTED', checks_ok=0, checks_total=0,
++                    detalle=motivo_ne)
++    ok = [c for c in checks if c[1]]
++    detalle = '; '.join('%s=FALLO: %s' % (c[0], c[2]) for c in checks
++                        if not c[1]) or 'todos los checks OK'
++    return dict(prueba=prueba, motor=motor, alcance=alcance,
++                veredicto='PASS' if len(ok) == len(checks) else 'FAIL',
++                checks_ok=len(ok), checks_total=len(checks), detalle=detalle)
++
++
++def cargar_motor(clave):
++    ruta = MOT / NOMBRE_MOTOR[clave]
++    spec = importlib.util.spec_from_file_location('eng_h2_%s' % clave, ruta)
++    m = importlib.util.module_from_spec(spec)
++    spec.loader.exec_module(m)
++    return m
++
++
++def validar_como_probe(ruta):
++    """[unidad] Reproduce la semántica probe_file (H2-A + H2-C) SIN el motor:
++    identidad del objeto + SHA-256 por ruta + verificación de estabilidad
++    (st0/st1). Devuelve (identidad, sha) o lanza si es inestable."""
++    st0 = os.stat(ruta)
++    sha = sha_file(ruta)
++    st1 = os.stat(ruta)
++    if (st1.st_dev, st1.st_ino, st1.st_size, st1.st_mtime_ns,
++            st1.st_ctime_ns) != (st0.st_dev, st0.st_ino, st0.st_size,
++                                 st0.st_mtime_ns, st0.st_ctime_ns):
++        raise AssertionError('fixture inestable durante la validación')
++    identidad = (st0.st_dev, st0.st_ino)
++    return identidad, sha
++
++
++def unidad_fifo():
++    """T1 (H2-B): sustitución por FIFO entre la validación y MixHandle."""
++    filas, detalle = [], {}
++    try:
++        base = TRABAJO / 'T1'
++        shutil.rmtree(base, ignore_errors=True)
++        base.mkdir(parents=True)
++        L.reiniciar_registro_6g1()
++        nombre = 'mix.wav'
++        bytes0 = (FIX / 'mix.wav').read_bytes()
++        (base / nombre).write_bytes(bytes0)
++        # validación estilo probe_file sobre el objeto ORIGINAL
++        identidad, sha0 = validar_como_probe(base / nombre)
++        st0 = os.stat(base / nombre)
++        # el objeto validado se registra como propio (2ª vía, semántica 6G.1)
++        assert L.registrar_propio_6g1(str(base / nombre), estable=True)
++        L.acreditar_dir_6g1(str(base))  # anclaje 6G.1 del dir de ensayo
++        fd_dir = os.open(str(base), os.O_RDONLY | os.O_DIRECTORY
++                         | os.O_NOFOLLOW)
++        # envoltorio que SUSTITUYE la entrada por una FIFO justo después de
++        # la validación y ANTES de que MixHandle abra el descriptor
++        original_abrir = L.abrir_mix
++        suceso = dict(sustituida=False)
++
++        def abrir_con_fifo(path, sha_esperado=None, identidad_esperada=None):
++            os.rename(str(base / nombre), str(base / 'mix_validado_aside'))
++            os.mkfifo(nombre, 0o644, dir_fd=fd_dir)
++            suceso['sustituida'] = True
++            return original_abrir(path, sha_esperado, identidad_esperada)
++
++        L.abrir_mix = abrir_con_fifo
++        exc, transcurrido, agotado = None, None, False
++        previo = signal.signal(signal.SIGALRM, _alarma)
++        signal.setitimer(signal.ITIMER_REAL, 8)   # fail-safe anti-bloqueo
++        try:
++            t0 = time.perf_counter()
++            try:
++                L.abrir_mix(str(base / nombre), sha_esperado=sha0,
++                            identidad_esperada=identidad)
++            except Exception as e:
++                exc = e
++            transcurrido = time.perf_counter() - t0
++        finally:
++            signal.setitimer(signal.ITIMER_REAL, 0)
++            signal.signal(signal.SIGALRM, previo)
++            L.abrir_mix = original_abrir
++        # verificación sobre el estado real en disco
++        st_fifo = os.lstat(nombre, dir_fd=fd_dir)
++        fd_r = os.open(nombre, os.O_RDONLY | os.O_NONBLOCK, dir_fd=fd_dir)
++        try:
++            contenido_fifo = os.read(fd_r, 4096)
++        finally:
++            os.close(fd_r)
++        nombres = sorted(os.listdir(fd_dir))
++        # 2ª vía: clasificación de propiedad 6G.1 por descriptor
++        cls_fifo = L._clasificar_entrada_6g1(nombre, st_fifo, fd_dir,
++                                             str(base / nombre))
++        st_aside = os.lstat('mix_validado_aside', dir_fd=fd_dir)
++        cls_aside = L._clasificar_entrada_6g1('mix_validado_aside', st_aside,
++                                              fd_dir, str(base / nombre))
++        checks = [
++            ('sustitucion_inyectada_en_la_ventana',
++             suceso['sustituida'] and stat.S_ISFIFO(st_fifo.st_mode), ''),
++            ('apertura_sin_bloquearse',
++             not agotado and transcurrido is not None and transcurrido < 5.0,
++             'agotado=%s t=%s' % (agotado, transcurrido)),
++            ('rechazo_fail_closed_no_regular',
++             exc is not None and 'no es un archivo regular' in str(exc)
++             and 'H2-B' in str(exc), str(exc)[:120]),
++            ('sin_sha_acreditado', exc is not None, 'sin handle => sin SHA'),
++            ('sin_salidas_de_audio',
++             nombres == ['mix.wav', 'mix_validado_aside'], str(nombres)),
++            ('fifo_sin_contenido_escrito',
++             stat.S_ISFIFO(st_fifo.st_mode) and contenido_fifo == b'', ''),
++            ('objeto_validado_intacto_al_margen',
++             (base / 'mix_validado_aside').read_bytes() == bytes0
++             and sha_file(base / 'mix_validado_aside') == sha0,
++             sha_file(base / 'mix_validado_aside')[:16]),
++            ('via2_fifo_no_es_el_objeto_registrado',
++             cls_fifo[0] is False
++             and 'identidad_distinta' in cls_fifo[1], str(cls_fifo)),
++            ('via2_objeto_validado_conserva_propiedad',
++             cls_aside[0] is True
++             and 'propiedad_acreditada' in cls_aside[1], str(cls_aside)),
++        ]
++        filas.append(fila('T1', 'lectura_segura_6g1',
++                          'validado->FIFO antes de abrir MixHandle: sin '
++                          'bloqueo, fail-closed, sin SHA, sin salidas',
++                          checks))
++        detalle['T1'] = dict(exc=str(exc)[:160], transcurrido=transcurrido,
++                             agotado=agotado, cls_fifo=str(cls_fifo),
++                             cls_aside=str(cls_aside))
++        os.close(fd_dir)
++        shutil.rmtree(base, ignore_errors=True)
++    except Exception as exc:
++        filas.append(fila('T1', 'lectura_segura_6g1', 'unidad', None,
++                          motivo_ne='entorno de ensayo: %r' % exc))
++        detalle['T1'] = dict(error=repr(exc))
++    return filas, detalle
++
++
++def unidad_gemelo():
++    """T2 (H2-A): impostor regular byte a byte idéntico, distinto inodo."""
++    filas, detalle = [], {}
++    try:
++        base = TRABAJO / 'T2'
++        shutil.rmtree(base, ignore_errors=True)
++        base.mkdir(parents=True)
++        L.reiniciar_registro_6g1()
++        nombre = 'mix.wav'
++        bytes0 = (FIX / 'mix.wav').read_bytes()
++        (base / nombre).write_bytes(bytes0)
++        identidad0, sha0 = validar_como_probe(base / nombre)
++        st0 = os.stat(base / nombre)
++        # impostor byte a byte idéntico (otro inodo), creado ANTES
++        (base / 'impostor.wav').write_bytes(bytes0)
++        st_imp = os.stat(base / 'impostor.wav')
++        fd_dir = os.open(str(base), os.O_RDONLY | os.O_DIRECTORY
++                         | os.O_NOFOLLOW)
++        original_abrir = L.abrir_mix
++        suceso = dict(sustituido=False)
++
++        def abrir_con_gemelo(path, sha_esperado=None, identidad_esperada=None):
++            os.rename(str(base / nombre), str(base / 'mix_validado_aside'))
++            os.rename(str(base / 'impostor.wav'), str(base / nombre))
++            suceso['sustituido'] = True
++            return original_abrir(path, sha_esperado, identidad_esperada)
++
++        L.abrir_mix = abrir_con_gemelo
++        exc = None
++        try:
++            try:
++                L.abrir_mix(str(base / nombre), sha_esperado=sha0,
++                            identidad_esperada=identidad0)
++            except Exception as e:
++                exc = e
++        finally:
++            L.abrir_mix = original_abrir
++        st_mix = os.lstat(nombre, dir_fd=fd_dir)
++        checks = [
++            ('sustitucion_inyectada_en_la_ventana',
++             suceso['sustituido'] and stat.S_ISREG(st_mix.st_mode), ''),
++            ('impostor_byte_a_byte_identico_mismo_sha',
++             sha_file(base / nombre) == sha0, sha_file(base / nombre)[:16]),
++            ('impostor_distinto_inodo',
++             (st_mix.st_dev, st_mix.st_ino) != identidad0,
++             'imp=%s valid=%s' % ((st_mix.st_dev, st_mix.st_ino), identidad0)),
++            ('sha_coincidente_NO_aprueba_identidad',
++             exc is not None and 'H2-A' in str(exc)
++             and 'no coincide' in str(exc), str(exc)[:160]),
++            ('sin_handle_sin_sha_acreditado', exc is not None, ''),
++            ('objeto_validado_original_vivo_e_intacto',
++             (base / 'mix_validado_aside').read_bytes() == bytes0
++             and (os.lstat('mix_validado_aside', dir_fd=fd_dir).st_dev,
++                  os.lstat('mix_validado_aside', dir_fd=fd_dir).st_ino)
++             == identidad0, ''),
++            ('sin_salidas_de_audio',
++             sorted(os.listdir(fd_dir)) == ['mix.wav', 'mix_validado_aside'],
++             str(sorted(os.listdir(fd_dir)))),
++        ]
++        filas.append(fila('T2', 'lectura_segura_6g1',
++                          'gemelo byte a byte con distinto inodo: el SHA '
++                          'coincidente NO aprueba la identidad', checks))
++        detalle['T2'] = dict(exc=str(exc)[:200],
++                             identidad0=list(identidad0))
++        os.close(fd_dir)
++        shutil.rmtree(base, ignore_errors=True)
++    except Exception as exc:
++        filas.append(fila('T2', 'lectura_segura_6g1', 'unidad', None,
++                          motivo_ne='entorno de ensayo: %r' % exc))
++        detalle['T2'] = dict(error=repr(exc))
++    return filas, detalle
++
++
++def unidad_probe_identity():
++    """T3a (H2-A): probe_file de los tres motores captura identidad."""
++    filas, detalle = [], {}
++    base = TRABAJO / 'T3'
++    shutil.rmtree(base, ignore_errors=True)
++    base.mkdir(parents=True)
++    copia = base / 'mix.wav'
++    copia.write_bytes((FIX / 'mix.wav').read_bytes())
++    st = os.stat(copia)
++    sha0 = sha_file(copia)
++    for motor in MOTORES:
++        try:
++            m = cargar_motor(motor)
++            info = m.probe_file(str(copia), 'mix')
++            checks = [
++                ('probe_valido', info.valid is True, str(info.errors)),
++                ('identidad_capturada',
++                 info.device != 0 and info.inode != 0,
++                 'dev=%s ino=%s' % (info.device, info.inode)),
++                ('identidad_coincide_con_el_objeto',
++                 (info.device, info.inode) == (st.st_dev, st.st_ino), ''),
++                ('mtime_ns_capturado',
++                 info.mtime_ns == st.st_mtime_ns
++                 and info.ctime_ns == st.st_ctime_ns, ''),
++                ('sha256_capturado', info.sha256 == sha0, info.sha256[:16]),
++            ]
++            filas.append(fila('T3a', motor,
++                              'probe_file captura identidad del objeto '
++                              'validado (H2-A)', checks))
++            detalle[motor] = dict(dev=info.device, ino=info.inode)
++        except Exception as exc:
++            filas.append(fila('T3a', motor, 'unidad', None,
++                              motivo_ne='entorno de ensayo: %r' % exc))
++            detalle[motor] = dict(error=repr(exc))
++    # T3b (H2): apertura feliz + guarda final, con la identidad del probe
++    try:
++        m = cargar_motor('EVO')
++        info = m.probe_file(str(copia), 'mix')
++        h = L.abrir_mix(str(copia), sha_esperado=info.sha256,
++                        identidad_esperada=(info.device, info.inode))
++        v = h.verificar()
++        frames = h._snd.frames
++        ruta_ok = h.ruta_apunta_al_mismo_objeto()
++        h.close()
++        idempotente = (h.fd is None)
++        h.close()  # idempotencia
++        checks = [
++            ('apertura_superada_con_identidad_validada',
++             getattr(h, 'identity_validada', None) is True, ''),
++            ('identidad_conservada_igual_al_probe',
++             (h.identity['device'], h.identity['inode'])
++             == (info.device, info.inode), str(h.identity)),
++            ('sha_sobre_descriptor_igual_al_probe',
++             h.digest == info.sha256, (h.digest or '')[:16]),
++            ('mismo_inodo_legible_por_soundfile',
++             frames == info.frames and frames > 0,
++             'frames=%s' % frames),
++            ('guarda_final_unchanged_y_estable',
++             v.get('unchanged') is True and v.get('estable') is True,
++             str(v)),
++            ('ruta_apunta_al_mismo_objeto',
++             ruta_ok.get('unchanged') is True, str(ruta_ok)[:90]),
++            ('close_idempotente', idempotente, ''),
++            ('disco_sin_cambios_tras_la_corrida', sha_file(copia) == sha0,
++             sha_file(copia)[:16]),
++        ]
++        filas.append(fila('T3b', 'lectura_segura_6g1',
++                          'apertura feliz: identidad validada conservada y '
++                          'guarda final estable (H2-C)', checks))
++        detalle['T3b'] = dict(estable=v.get('estable'),
++                              unchanged=v.get('unchanged'))
++    except Exception as exc:
++        filas.append(fila('T3b', 'lectura_segura_6g1', 'unidad', None,
++                          motivo_ne='entorno de ensayo: %r' % exc))
++        detalle['T3b'] = dict(error=repr(exc))
++    shutil.rmtree(base, ignore_errors=True)
++    return filas, detalle
++
++
++def unidad_probe_inestable():
++    """T4 (H2-C): el archivo muta durante la validación -> SHA no acreditado."""
++    filas, detalle = [], {}
++    try:
++        base = TRABAJO / 'T4'
++        shutil.rmtree(base, ignore_errors=True)
++        base.mkdir(parents=True)
++        copia = base / 'mix.wav'
++        copia.write_bytes((FIX / 'mix.wav').read_bytes())
++        m = cargar_motor('Hardened')
++        original_sha = m.sha256_file
++
++        def sha_con_muta(path, blocksize=1 << 20):
++            with open(path, 'ab') as g:   # mutación EN la ventana probe
++                g.write(b'\x00')
++            return original_sha(path, blocksize)
++
++        m.sha256_file = sha_con_muta
++        try:
++            info = m.probe_file(str(copia), 'mix')
++        finally:
++            m.sha256_file = original_sha
++        vm = m.validate_mix(info)
++        checks = [
++            ('probe_detecta_mutacion_h2c',
++             any('H2-C' in e for e in info.errors), str(info.errors)),
++            ('sha_NO_acreditado_valid_false',
++             info.valid is False, str(info.valid)),
++            ('validate_mix_rechaza', vm.valid is False, str(vm.valid)),
++            ('disco_realmente_mutado',
++             copia.stat().st_size
++             == (FIX / 'mix.wav').stat().st_size + 1,
++             'size=%s base=%s' % (copia.stat().st_size,
++                                  (FIX / 'mix.wav').stat().st_size)),
++        ]
++        filas.append(fila('T4', 'Hardened',
++                          'mutación durante la validación: SHA no acreditado '
++                          '(H2-C)', checks))
++        detalle['T4'] = dict(errors=list(info.errors), valid=info.valid)
++        shutil.rmtree(base, ignore_errors=True)
++    except Exception as exc:
++        filas.append(fila('T4', 'Hardened', 'unidad', None,
++                          motivo_ne='entorno de ensayo: %r' % exc))
++        detalle['T4'] = dict(error=repr(exc))
++    return filas, detalle
++
++
++def dirs_definitivos(out, motor):
++    pref = PREFIJO[motor]
++    if not Path(out).exists():
++        return []
++    return [d.name for d in Path(out).iterdir()
++            if d.is_dir() and d.name.startswith(pref)
++            and not d.name.endswith('_partial')
++            and not d.name.endswith('_aborted')]
++
++
++def correr(motor, work):
++    work = Path(work)
++    shutil.rmtree(work, ignore_errors=True)
++    work.mkdir(parents=True)
++    man = work / 'manifest.json'
++    escribir_manifest(man, dict(mix=str(FIX / 'mix.wav'),
++                                vocal=str(FIX / 'vocal_mix.wav'),
++                                instrumental=str(FIX / 'instrumental_mix.wav')))
++    out = work / 'out'
++    import subprocess
++    cmd = [sys.executable, '-B', str(MOT / NOMBRE_MOTOR[motor]),
++           '--manifest', str(man), '--out', str(out),
++           '--mode', 'full_processing']
++    proc = subprocess.Popen(cmd, cwd=str(MOT), stdout=subprocess.PIPE,
++                            stderr=subprocess.STDOUT, text=True)
++    salida = proc.communicate(timeout=900)[0] or ''
++    datos = recolectar(out)
++    datos.update(exit=proc.returncode, out=str(out),
++                 stdout_tail=salida[-2000:])
++    return datos
++
++
++def pcm_auditado(motor):
++    d = json.loads((EV / 'contenedores_6g1.json').read_text())
++    return d['casos']['%s/%s/full_processing' % (motor, 'WAV')]['pcm']
++
++
++def motores_h2():
++    filas, detalles = [], {}
++    for motor in MOTORES:
++        try:
++            r = correr(motor, TRABAJO / motor / 'e2e')
++            pcm = {p['name']: p['pcm_sha256'] for p in r['pcm']
++                   if 'pcm_sha256' in p}
++            esperado = pcm_auditado(motor)
++            integ = r['integrity']
++            defs = dirs_definitivos(r['out'], motor)
++            checks = [
++                ('exit_0', r['exit'] == 0, 'exit=%s' % r['exit']),
++                ('publicacion_unica', len(defs) == 1, 'defs=%s' % defs),
++                ('integridad_unchanged',
++                 integ.get('after', {}).get('unchanged') is True
++                 and integ.get('ruta_actual', {}).get('unchanged') is True,
++                 ''),
++                ('h2c_estable_true_en_produccion',
++                 integ.get('after', {}).get('estable') is True,
++                 str(integ.get('after', {}).get('estable'))),
++                ('pcm_identico_a_campana_auditada', pcm == esperado,
++                 'diff=%s' % {k: pcm.get(k, '')[:12] for k in
++                              set(pcm) | set(esperado)
++                              if pcm.get(k) != esperado.get(k)}),
++            ]
++            filas.append(fila('H2-e2e', motor,
++                              'corrida feliz: MixHandle reformado en '
++                              'producción (DSP intacto)', checks))
++            detalles.setdefault(motor, {})['e2e'] = dict(exit=r['exit'])
++        except Exception as exc:
++            filas.append(fila('H2-e2e', motor, 'end-to-end', None,
++                              motivo_ne='entorno de ensayo: %r' % exc))
++            detalles.setdefault(motor, {})['e2e'] = dict(error=repr(exc))
++    return filas, detalles
++
++
++def main():
++    EV.mkdir(parents=True, exist_ok=True)
++    TRABAJO.mkdir(parents=True, exist_ok=True)
++    todas, detalle_todo = [], {}
++    print('== H2 unidad ==')
++    for fn in (unidad_fifo, unidad_gemelo, unidad_probe_identity,
++               unidad_probe_inestable):
++        f, d = fn()
++        todas.extend(f)
++        detalle_todo.update(d)
++        for x in f:
++            print('  %-4s %-6s %-14s %s' % (x['veredicto'], x['motor'],
++                                            x['prueba'],
++                                            x['detalle'][:70]))
++    print('== H2 motores (e2e produccion) ==')
++    fm, dm = motores_h2()
++    todas.extend(fm)
++    detalle_todo.update(dm)
++    for x in fm:
++        print('  %-14s %-6s %-14s %s' % (x['veredicto'], x['motor'],
++                                         x['prueba'], x['detalle'][:70]))
++    dump(EV / 'pruebas_h2_6g1.json',
++         dict(schema='pruebas-h2-6g1/1', filas=todas, detalles=detalle_todo))
++    with (EV / 'matriz_h2_6g1.csv').open('w', newline='',
++                                         encoding='utf-8') as fh:
++        w = csv.DictWriter(fh, fieldnames=('prueba', 'motor', 'alcance',
++                                           'veredicto', 'checks_ok',
++                                           'checks_total', 'detalle'),
++                           lineterminator='\n')
++        w.writeheader()
++        w.writerows(todas)
++    n = {v: sum(1 for f in todas if f['veredicto'] == v)
++         for v in ('PASS', 'FAIL', 'NOT_EXECUTED')}
++    print('RESUMEN: %d PASS, %d FAIL, %d NOT_EXECUTED de %d filas'
++          % (n['PASS'], n['FAIL'], n['NOT_EXECUTED'], len(todas)))
++
++
++if __name__ == '__main__':
++    main()

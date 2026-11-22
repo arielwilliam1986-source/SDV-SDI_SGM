@@ -64,12 +64,18 @@ de evidencias".
 * `ruta_lectura()`: devuelve `/proc/self/fd/N` para las funciones que exigen un
   nombre de archivo (p. ej. `post_wav_identity`); no reabre la ruta del usuario.
 * `close()` idempotente.
-* `abortar_6g1(run_dir, motivo, detalle)`: invalida **sólo** las salidas de la
-  corrida actual y escribe `ABORT_6G1.json`, anotando también `analysis.json`
-  si existe. Regla de borrado conservadora: `<base> SDV.wav`,
-  `<base> SDI.wav`, `SDV.wav`, `SDI.wav`, cualquier `*.wav` dentro de
-  `candidates/`, y `*.png` cuyo nombre contenga `SDV`/`SDI`. Todo lo demás se
-  **conserva** y se lista en `conservados` (archivos ajenos o preexistentes).
+* `abortar_6g1(run_dir, motivo, detalle)`: **no elimina ningún archivo**
+  (vigente desde C-R1) y escribe `ABORT_6G1.json` (`schema=abort-6g1/3`):
+  las salidas de la corrida quedan **invalidadas y conservadas** en el
+  provisional (`salidas_invalidadas` + `estado_salidas_invalidadas`),
+  `resultados_validos` permanece vacío, los archivos ajenos y los enlaces se
+  conservan con su motivo, y `analysis.json` permanece intacto (E-R2).
+  [Histórico pre-C-R1, ya sustituido: la primera versión invalidaba y
+  **borraba** las salidas acreditadas con una regla de borrado conservadora
+  por nombre (`<base> SDV.wav`, `<base> SDI.wav`, `SDV.wav`, `SDI.wav`,
+  `*.wav` en `candidates/`, `*.png` con `SDV`/`SDI`); la corrección C la
+  sustituyó por el registro de propiedad (acreditación) y C-R1 eliminó el
+  borrado por completo.]
 
 ### 2.2 Motores (copias 6G.1, mismas funciones DSP)
 
@@ -207,6 +213,15 @@ Todo lo anterior vive dentro de `ETAPA_6G1_CORRECCION_LECTURA_SEGURA/`.
    > propiedad **acreditada** y conserva los demás con el motivo
    > (`schema=abort-6g1/2`, campo `motivos_propiedad`). Detalles, casos de
    > prueba y evidencia: `INFORME_CORRECCIONES_AUDITORIA_6G1.md`.
+
+   > **[6G.1-R/C-R1 — política vigente]** El borrado fue eliminado por
+   > completo: `abortar_6g1` **no elimina ningún archivo**; las salidas de la
+   > corrida quedan **invalidadas y conservadas** en el provisional
+   > (`estado_salidas_invalidadas`), `resultados_validos` permanece vacío y
+   > el registro usa el esquema **`abort-6g1/3`**. La ventana TOCTOU entre
+   > el dictamen de propiedad y el `unlink` deja de existir por construcción.
+   > Detalles: `INFORME_C_R1_6G1.md`. (El texto [corrección C] anterior se
+   > conserva como referencia histórica de la semántica `abort-6g1/2`.)
 4. Los tiempos y el consumo de memoria del informe de validación son los
    observados en este entorno, no una promesa de rendimiento.
 5. No se ejecutó ninguna canción real, ni el piloto, ni comparación de calidad

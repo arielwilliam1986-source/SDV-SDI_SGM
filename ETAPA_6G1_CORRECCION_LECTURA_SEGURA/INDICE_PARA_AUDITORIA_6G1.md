@@ -68,9 +68,14 @@
 2. **¿Una sustitución puede alimentar el DSP?**
    `evidence/sustituciones_6g1.json` → `unitaria` (guarda determinista) y
    `casos[*]` (4c antes del DSP, 5 durante, 6 después).
-3. **¿Quedan salidas parciales tras abortar?**
-   `casos[*].estado` (`wavs_propios` vacío, `salidas_invalidadas`,
-   `conservados`) y las filas de prueba `7`.
+3. **¿Qué ocurre con las salidas parciales al abortar?** (comportamiento
+   vigente C-R1)
+   `ABORT_6G1.json` (`schema=abort-6g1/3`): **ningún archivo se elimina**;
+   las salidas de la corrida quedan **invalidadas y conservadas** en el
+   provisional (`salidas_invalidadas` + `estado_salidas_invalidadas`) y
+   `resultados_validos` permanece vacío; `casos[*].estado` y las filas de
+   prueba `7` son registro **histórico** de la semántica `abort-6g1/2` (que
+   entonces eliminaba las salidas acreditadas).
 4. **¿Se borraron archivos ajenos?**
    `casos[*].estado.ajenos_presentes` (tres archivos sembrados, los tres
    presentes tras el aborto) y `conservados` en `ABORT_6G1.json`.
@@ -129,8 +134,10 @@ Verifica en particular:
    (grep de "sf.SoundFile(mix_info.path)" y "mix_info.path" en los tres motores).
 2. Que la guarda final exige contenido Y ruta (after.unchanged y
    ruta_actual.unchanged) y que aborta sin presentar salidas parciales.
-3. Que abortar_6g1 sólo borra salidas reconocidas como propias y conserva
-   archivos ajenos.
+3. Que abortar_6g1 **no elimina ningún archivo** (C-R1): las salidas de la
+   corrida quedan invalidadas y conservadas en el provisional, los archivos
+   ajenos se conservan con su motivo y `resultados_validos` permanece vacío
+   (`schema=abort-6g1/3`).
 4. Que un veredicto PCM_IDENTICAL sólo aparece con archivos PCM reales y hashes.
 5. Que la prueba 10 demuestra DSP idéntico (constantes, huella de literales y
    llamadas, PCM byte a byte) frente a las copias 6G.
