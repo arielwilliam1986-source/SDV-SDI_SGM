@@ -27,9 +27,11 @@ las baterías históricas (34/26/17/12).
         (identity_validada=True), lee el mismo inodo, la guarda final
         verificar() da unchanged=True con estable=True (H2-C) y close() es
         idempotente.
-  T4 (H2-C)  El archivo MUTA durante la validación (envoltorio sobre
-        sha256_file del motor): probe_file marca el error H2-C y el SHA
-        queda NO acreditado (info.valid=False; validate_mix lo rechaza).
+  T4 (H2-C)  El archivo MUTA durante la validación (envoltorio sobre el
+        hash sobre descriptor del motor, `sha_fd_estable_6g1` — gancho
+        actualizado por H2-R, mismo punto de validación): probe_file marca
+        el error (H2-C/H2-R) y el SHA queda NO acreditado
+        (info.valid=False; validate_mix lo rechaza).
   H2-e2e ×3  Corrida feliz de producción (DSP intacto): exit 0, publicación
         única, integridad after.unchanged=True y after.estable=True
         (evidencia H2-C del MixHandle reformado), PCM idéntico a la campaña
@@ -376,22 +378,23 @@ def unidad_probe_inestable():
         copia = base / 'mix.wav'
         copia.write_bytes((FIX / 'mix.wav').read_bytes())
         m = cargar_motor('Hardened')
-        original_sha = m.sha256_file
+        original_sha = m._sha_fd_estable_6g1  # [H2-R] hash sobre descriptor
 
-        def sha_con_muta(path, blocksize=1 << 20):
-            with open(path, 'ab') as g:   # mutación EN la ventana probe
+        def sha_con_muta(fd):
+            with open(str(copia), 'ab') as g:   # mutación EN la ventana probe
                 g.write(b'\x00')
-            return original_sha(path, blocksize)
+            return original_sha(fd)
 
-        m.sha256_file = sha_con_muta
+        m._sha_fd_estable_6g1 = sha_con_muta
         try:
             info = m.probe_file(str(copia), 'mix')
         finally:
-            m.sha256_file = original_sha
+            m._sha_fd_estable_6g1 = original_sha
         vm = m.validate_mix(info)
         checks = [
-            ('probe_detecta_mutacion_h2c',
-             any('H2-C' in e for e in info.errors), str(info.errors)),
+            ('probe_detecta_mutacion_h2c_h2r',
+             any(('H2-C' in e or 'H2-R' in e) for e in info.errors),
+             str(info.errors)),
             ('sha_NO_acreditado_valid_false',
              info.valid is False, str(info.valid)),
             ('validate_mix_rechaza', vm.valid is False, str(vm.valid)),

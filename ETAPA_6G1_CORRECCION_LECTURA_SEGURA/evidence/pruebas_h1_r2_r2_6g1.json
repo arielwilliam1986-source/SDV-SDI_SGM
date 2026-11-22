@@ -16,7 +16,7 @@
       "R2": {
         "err": "no_es_archivo_regular (H1-R2-R1)",
         "sha": null,
-        "transcurrido": 5.4556000577576924e-05,
+        "transcurrido": 5.8323000303062145e-05,
         "agotado": false,
         "fifo_con_contenido": false
       }

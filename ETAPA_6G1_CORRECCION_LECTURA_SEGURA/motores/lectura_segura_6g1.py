@@ -34,6 +34,13 @@ POLÍTICA DE ENLACES SIMBÓLICOS SIN CAMBIO: la apertura sigue enlaces
 legítimos (como toda la fase de validación) y el anclaje se logra por
 identidad del objeto abierto, no con `O_NOFOLLOW`; rechazarlos rompería
 instalaciones legítimas y no aporta seguridad adicional frente a sustitución.
+
+[H2-R] Los probes de los motores validan el Mix ANCLADO AL MISMO OBJETO
+desde el inicio: una única apertura O_NONBLOCK + fstat (regular); metadatos,
+validaciones de contenedor y SHA-256 operan sobre ese descriptor (vía
+`/proc/self/fd/N` donde la API exige ruta, y con `sha_fd_estable_6g1` para
+el hash); la ruta del usuario no se reabre durante la validación y el fstat
+final falla cerrado si el objeto cambió.
 """
 import errno
 import hashlib
@@ -84,6 +91,15 @@ def _sha_fd_estable(fd):
         return None, ('archivo modificado durante la lectura del SHA '
                       '(H2-C): SHA no acreditable')
     return m.hexdigest(), None
+
+
+def sha_fd_estable_6g1(fd):
+    """[H2-R] API pública para probes anclados al descriptor: SHA-256 con
+    verificación de estabilidad (misma garantía que `_sha_fd_estable`: fstat
+    antes/después de la lectura incremental — identidad, tamaño, mtime_ns,
+    ctime_ns) sobre un descriptor YA ABIERTO. Devuelve (sha256, None) o
+    (None, motivo) si el objeto cambió durante la lectura."""
+    return _sha_fd_estable(fd)
 
 
 def _sha_archivo(path):

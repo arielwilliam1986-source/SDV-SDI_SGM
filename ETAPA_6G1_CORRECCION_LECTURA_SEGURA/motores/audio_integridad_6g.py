@@ -271,14 +271,20 @@ def open_validated_flac(path):
                          data['digest'], data['identity'])
 
 
-def verify_audio(path, decoder=None):
+def verify_audio(path, decoder=None, ext_ref=None):
     """Valida el contenedor real y su coherencia con la extensión.
 
     WAV -> validación estricta 6F (RIFF/WAVE, chunks, geometría, bits).
     FLAC -> STREAMINFO + libsndfile + decodificación completa + MD5 de PCM.
+
+    [H2-R] `ext_ref`: ruta cuyo NOMBRE se usa para la política de extensión
+    cuando `path` es una referencia respaldada por descriptor
+    (/proc/self/fd/N). El contenedor y TODAS las validaciones se leen del
+    objeto anclado a `path`; sin `ext_ref` el comportamiento es idéntico al
+    anterior (ninguna validación se debilita).
     """
     cont = container_of(path)
-    ext = os.path.splitext(path)[1].lower()
+    ext = os.path.splitext(ext_ref if ext_ref is not None else path)[1].lower()
     if cont == 'WAV':
         if ext not in WAV_EXTENSIONS:
             raise AudioError(f'Contenedor WAV con extensión {ext!r}: se exige .wav')

@@ -153,6 +153,7 @@ import json
 import math
 import os
 import platform
+import stat
 import sys
 import time
 import traceback
@@ -499,7 +500,8 @@ from lectura_segura_6g1 import (MixCambiado as _MixCambiado_6g1,
                                  registrar_propio_6g1 as _registrar_propio_6g1,
                                  reiniciar_registro_6g1 as _reiniciar_registro_6g1,
                                  crear_y_acreditar_dir_6g1 as _crear_y_acreditar_dir_6g1,
-                                 publicar_dir_6g1 as _publicar_dir_6g1)
+                                 publicar_dir_6g1 as _publicar_dir_6g1,
+                                 sha_fd_estable_6g1 as _sha_fd_estable_6g1)
 
 from atribucion_6f import (measure, verify_wave, alignment_gate,
                         analyze_files as _analyze_files_6f,
@@ -507,41 +509,70 @@ from atribucion_6f import (measure, verify_wave, alignment_gate,
 
 def probe_file(path, role):
     """Lee metadatos con soundfile y calcula integridad (spec
-    input_validation.integrity). NO modifica el archivo (solo lectura)."""
+    input_validation.integrity). NO modifica el archivo (solo lectura).
+
+    [6G.1-R/H2-R] Validación anclada al MISMO OBJETO: una única apertura
+    no bloqueante (O_NONBLOCK) al comienzo; `fstat` exige archivo regular;
+    metadatos (`sf.info`), validaciones de contenedor (`_verify_audio_6g`
+    sobre /proc/self/fd/N, con `ext_ref` para conservar la política de
+    extensión) y SHA-256 (`_sha_fd_estable_6g1`) operan sobre el
+    descriptor: la ruta del usuario NUNCA se reabre durante la
+    validación. [H2-R-B] `fstat` final: si el objeto no es regular, no se
+    puede validar o cambió (st_dev/st_ino/st_size/st_mtime_ns/
+    st_ctime_ns) -> fail-closed (valid=False, SHA no acreditado).
+    Política de symlinks sin cambio: se siguen enlaces legítimos y se
+    ancla el objeto al que resuelve la apertura inicial."""
     info = FileInfo(path=os.path.abspath(path), role=role)
-    if not os.path.isfile(path):
+    try:
+        fd = os.open(path, os.O_RDONLY | os.O_NONBLOCK)  # [H2-R-A] apertura única
+    except OSError:
         info.errors.append("archivo no encontrado: %s" % path)
         return info
-    info.exists = True
-    info.size_bytes = os.path.getsize(path)
-    st0 = os.stat(path)  # [6G.1-R/H2-A] identidad del objeto validado
-    info.device, info.inode = st0.st_dev, st0.st_ino
-    info.mtime_ns, info.ctime_ns = st0.st_mtime_ns, st0.st_ctime_ns
     try:
-        sfi = sf.info(path)
-        _verify_audio_6g(path, sfi)
-    except Exception as exc:  # soundfile error generico
-        info.errors.append("soundfile no pudo abrir el archivo: %s" % exc)
-        return info
-    info.format = str(sfi.format)
-    info.subtype = str(sfi.subtype)
-    info.sample_rate = int(sfi.samplerate)
-    info.channels = int(sfi.channels)
-    info.frames = int(sfi.frames)
-    info.duration_s = info.frames / float(info.sample_rate) if info.sample_rate else 0.0
-    info.bit_depth_nominal = _nominal_bit_depth(info.subtype)
-    try:
-        info.sha256 = sha256_file(path)
-    except OSError as exc:
-        info.errors.append("fallo calculando sha256: %s" % exc)
+        info.exists = True
+        st0 = os.fstat(fd)  # identidad y estado inicial desde el descriptor
+        if not stat.S_ISREG(st0.st_mode):
+            info.errors.append("H2-R: el objeto no es un archivo regular; "
+                               "no se puede validar (fail-closed)")
+            return info
+        info.device, info.inode = st0.st_dev, st0.st_ino
+        info.mtime_ns, info.ctime_ns = st0.st_mtime_ns, st0.st_ctime_ns
+        info.size_bytes = st0.st_size  # del objeto validado, no de la ruta
+        proc = '/proc/self/fd/%d' % fd  # referencia respaldada por el descriptor
+        try:
+            sfi = sf.info(proc)
+            _verify_audio_6g(proc, sfi, ext_ref=path)
+        except Exception as exc:
+            info.errors.append("soundfile no pudo abrir el archivo: %s" % exc)
+            return info
 
-    st1 = os.stat(path)  # [6G.1-R/H2-C] estabilidad durante la validación
-    if (st1.st_dev, st1.st_ino, st1.st_size, st1.st_mtime_ns,
-            st1.st_ctime_ns) != \
-            (st0.st_dev, st0.st_ino, st0.st_size, st0.st_mtime_ns,
-             st0.st_ctime_ns):
-        info.errors.append("H2-C: el archivo cambió durante la validación; "
-                           "identidad y SHA-256 no acreditables")
+        info.format = str(sfi.format)
+        info.subtype = str(sfi.subtype)
+        info.sample_rate = int(sfi.samplerate)
+        info.channels = int(sfi.channels)
+        info.frames = int(sfi.frames)
+        info.duration_s = info.frames / float(info.sample_rate) if info.sample_rate else 0.0
+        info.bit_depth_nominal = _nominal_bit_depth(info.subtype)
+
+        motivo_sha = None
+        try:
+            info.sha256, motivo_sha = _sha_fd_estable_6g1(fd)
+        except OSError as exc:
+            info.errors.append("fallo calculando sha256: %s" % exc)
+            info.sha256 = ""
+        if motivo_sha is not None:
+            info.errors.append(motivo_sha)  # [H2-C] SHA no acreditable
+            info.sha256 = ""
+        st1 = os.fstat(fd)  # [H2-R-B] estabilidad durante TODA la validación
+        if (st1.st_dev, st1.st_ino, st1.st_size, st1.st_mtime_ns,
+                st1.st_ctime_ns) != \
+                (st0.st_dev, st0.st_ino, st0.st_size, st0.st_mtime_ns,
+                 st0.st_ctime_ns):
+            info.errors.append("H2-R: el objeto cambió durante la validación; "
+                               "identidad y SHA-256 no acreditables")
+            info.sha256 = ""
+    finally:
+        os.close(fd)
     info.valid = len(info.errors) == 0
     return info
 

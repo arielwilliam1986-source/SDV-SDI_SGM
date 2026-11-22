@@ -1,0 +1,16 @@
+prueba,motor,alcance,veredicto,checks_ok,checks_total,detalle
+T1,Hardened,"sustitución temporal durante los metadatos: rechazo fail-closed, campos del objeto anclado, sustituto jamás leído",PASS,7,7,todos los checks OK
+T1,EVO,"sustitución temporal durante los metadatos: rechazo fail-closed, campos del objeto anclado, sustituto jamás leído",PASS,7,7,todos los checks OK
+T1,MQR,"sustitución temporal durante los metadatos: rechazo fail-closed, campos del objeto anclado, sustituto jamás leído",PASS,7,7,todos los checks OK
+T2,Hardened,sustitución temporal durante el SHA: el SHA acreditado es el del objeto anclado,PASS,7,7,todos los checks OK
+T2,EVO,sustitución temporal durante el SHA: el SHA acreditado es el del objeto anclado,PASS,7,7,todos los checks OK
+T2,MQR,sustitución temporal durante el SHA: el SHA acreditado es el del objeto anclado,PASS,7,7,todos los checks OK
+T3,Hardened,"Mix estable: identidad, metadatos y SHA del mismo objeto",PASS,8,8,todos los checks OK
+T3,EVO,"Mix estable: identidad, metadatos y SHA del mismo objeto",PASS,8,8,todos los checks OK
+T3,MQR,"Mix estable: identidad, metadatos y SHA del mismo objeto",PASS,8,8,todos los checks OK
+T4,Hardened,"FIFO al comenzar el probe: sin bloqueo, fail-closed, sin SHA, sin salidas",PASS,5,5,todos los checks OK
+T4,EVO,"FIFO al comenzar el probe: sin bloqueo, fail-closed, sin SHA, sin salidas",PASS,5,5,todos los checks OK
+T4,MQR,"FIFO al comenzar el probe: sin bloqueo, fail-closed, sin SHA, sin salidas",PASS,5,5,todos los checks OK
+H2-R-e2e,Hardened,corrida feliz con probe anclado (DSP intacto),PASS,5,5,todos los checks OK
+H2-R-e2e,EVO,corrida feliz con probe anclado (DSP intacto),PASS,5,5,todos los checks OK
+H2-R-e2e,MQR,corrida feliz con probe anclado (DSP intacto),PASS,5,5,todos los checks OK

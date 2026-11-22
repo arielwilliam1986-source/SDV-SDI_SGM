@@ -1,0 +1,157 @@
+{
+  "schema": "pruebas-h2-r-6g1/1",
+  "filas": [
+    {
+      "prueba": "T1",
+      "motor": "Hardened",
+      "alcance": "sustitución temporal durante los metadatos: rechazo fail-closed, campos del objeto anclado, sustituto jamás leído",
+      "veredicto": "PASS",
+      "checks_ok": 7,
+      "checks_total": 7,
+      "detalle": "todos los checks OK"
+    },
+    {
+      "prueba": "T1",
+      "motor": "EVO",
+      "alcance": "sustitución temporal durante los metadatos: rechazo fail-closed, campos del objeto anclado, sustituto jamás leído",
+      "veredicto": "PASS",
+      "checks_ok": 7,
+      "checks_total": 7,
+      "detalle": "todos los checks OK"
+    },
+    {
+      "prueba": "T1",
+      "motor": "MQR",
+      "alcance": "sustitución temporal durante los metadatos: rechazo fail-closed, campos del objeto anclado, sustituto jamás leído",
+      "veredicto": "PASS",
+      "checks_ok": 7,
+      "checks_total": 7,
+      "detalle": "todos los checks OK"
+    },
+    {
+      "prueba": "T2",
+      "motor": "Hardened",
+      "alcance": "sustitución temporal durante el SHA: el SHA acreditado es el del objeto anclado",
+      "veredicto": "PASS",
+      "checks_ok": 7,
+      "checks_total": 7,
+      "detalle": "todos los checks OK"
+    },
+    {
+      "prueba": "T2",
+      "motor": "EVO",
+      "alcance": "sustitución temporal durante el SHA: el SHA acreditado es el del objeto anclado",
+      "veredicto": "PASS",
+      "checks_ok": 7,
+      "checks_total": 7,
+      "detalle": "todos los checks OK"
+    },
+    {
+      "prueba": "T2",
+      "motor": "MQR",
+      "alcance": "sustitución temporal durante el SHA: el SHA acreditado es el del objeto anclado",
+      "veredicto": "PASS",
+      "checks_ok": 7,
+      "checks_total": 7,
+      "detalle": "todos los checks OK"
+    },
+    {
+      "prueba": "T3",
+      "motor": "Hardened",
+      "alcance": "Mix estable: identidad, metadatos y SHA del mismo objeto",
+      "veredicto": "PASS",
+      "checks_ok": 8,
+      "checks_total": 8,
+      "detalle": "todos los checks OK"
+    },
+    {
+      "prueba": "T3",
+      "motor": "EVO",
+      "alcance": "Mix estable: identidad, metadatos y SHA del mismo objeto",
+      "veredicto": "PASS",
+      "checks_ok": 8,
+      "checks_total": 8,
+      "detalle": "todos los checks OK"
+    },
+    {
+      "prueba": "T3",
+      "motor": "MQR",
+      "alcance": "Mix estable: identidad, metadatos y SHA del mismo objeto",
+      "veredicto": "PASS",
+      "checks_ok": 8,
+      "checks_total": 8,
+      "detalle": "todos los checks OK"
+    },
+    {
+      "prueba": "T4",
+      "motor": "Hardened",
+      "alcance": "FIFO al comenzar el probe: sin bloqueo, fail-closed, sin SHA, sin salidas",
+      "veredicto": "PASS",
+      "checks_ok": 5,
+      "checks_total": 5,
+      "detalle": "todos los checks OK"
+    },
+    {
+      "prueba": "T4",
+      "motor": "EVO",
+      "alcance": "FIFO al comenzar el probe: sin bloqueo, fail-closed, sin SHA, sin salidas",
+      "veredicto": "PASS",
+      "checks_ok": 5,
+      "checks_total": 5,
+      "detalle": "todos los checks OK"
+    },
+    {
+      "prueba": "T4",
+      "motor": "MQR",
+      "alcance": "FIFO al comenzar el probe: sin bloqueo, fail-closed, sin SHA, sin salidas",
+      "veredicto": "PASS",
+      "checks_ok": 5,
+      "checks_total": 5,
+      "detalle": "todos los checks OK"
+    },
+    {
+      "prueba": "H2-R-e2e",
+      "motor": "Hardened",
+      "alcance": "corrida feliz con probe anclado (DSP intacto)",
+      "veredicto": "PASS",
+      "checks_ok": 5,
+      "checks_total": 5,
+      "detalle": "todos los checks OK"
+    },
+    {
+      "prueba": "H2-R-e2e",
+      "motor": "EVO",
+      "alcance": "corrida feliz con probe anclado (DSP intacto)",
+      "veredicto": "PASS",
+      "checks_ok": 5,
+      "checks_total": 5,
+      "detalle": "todos los checks OK"
+    },
+    {
+      "prueba": "H2-R-e2e",
+      "motor": "MQR",
+      "alcance": "corrida feliz con probe anclado (DSP intacto)",
+      "veredicto": "PASS",
+      "checks_ok": 5,
+      "checks_total": 5,
+      "detalle": "todos los checks OK"
+    }
+  ],
+  "detalles": {
+    "Hardened": {
+      "e2e": {
+        "exit": 0
+      }
+    },
+    "EVO": {
+      "e2e": {
+        "exit": 0
+      }
+    },
+    "MQR": {
+      "e2e": {
+        "exit": 0
+      }
+    }
+  }
+}

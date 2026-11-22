@@ -95,16 +95,16 @@
   "detalles": {
     "T1": {
       "exc": "El Mix no es un archivo regular (H2-B: apertura no bloqueante ante FIFO)",
-      "transcurrido": 0.00014596699929825263,
+      "transcurrido": 0.00011514400011947146,
       "agotado": false,
       "cls_fifo": "(False, 'identidad_distinta (sustituido o reemplazado tras el registro)')",
       "cls_aside": "(True, 'propiedad_acreditada')"
     },
     "T2": {
-      "exc": "La identidad del Mix abierto no coincide con la validada (H2-A): abierto dev/ino (65024, 537460) != validado (65024, 537459); un archivo distinto con SHA idéntico no es aceptable",
+      "exc": "La identidad del Mix abierto no coincide con la validada (H2-A): abierto dev/ino (65024, 538075) != validado (65024, 538074); un archivo distinto con SHA idéntico no es aceptable",
       "identidad0": [
         65024,
-        537459
+        538074
       ]
     },
     "Hardened": {
@@ -128,7 +128,7 @@
     },
     "T4": {
       "errors": [
-        "H2-C: el archivo cambió durante la validación; identidad y SHA-256 no acreditables"
+        "H2-R: el objeto cambió durante la validación; identidad y SHA-256 no acreditables"
       ],
       "valid": false
     }
