@@ -1,0 +1,7 @@
+# SHA256SUMS_NOREG_DSP_FINAL — auditoría final de no regresión DSP 6G.1 (código H2/H2-R)
+# Base: b362c56e724811feab2570618c44b082e0d79d3d · commit: hijo directo · 4 ficheros modificados · verificar desde la raíz del repositorio: sha256sum -c
+# Resultado: Hardened/EVO/MQR REJECTED (huella de literales en FileInfo y create_run_dir); PCM WAV/FLAC idénticos frente a 6G
+09afeebdde3e049c106a8aca586addc2c3d484b02c1539cd5d3f7d0e97ce569a  ETAPA_6G1_CORRECCION_LECTURA_SEGURA/NO_REGRESION_DSP_6G1.md
+9a499e813c7f2499989b5fcb2779cd298f73671415943fedb57e4c4a262b7dca  ETAPA_6G1_CORRECCION_LECTURA_SEGURA/evidence/no_regresion_dsp_6g1.json
+af607dd61370dc4b2d006dbf3f5fdd53da49aa17793db44fe62945777f3b8260  ETAPA_6G1_CORRECCION_LECTURA_SEGURA/evidence/no_regresion_dsp_6g1.csv
+1fd4defb75f82e8712bdf018b71651c93e980ca9586a537ea1b4f562e9f5994a  ETAPA_6G1_CORRECCION_LECTURA_SEGURA/scripts/no_regresion_dsp_6g1.py

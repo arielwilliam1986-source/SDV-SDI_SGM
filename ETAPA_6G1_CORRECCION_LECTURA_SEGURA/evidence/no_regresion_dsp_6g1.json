@@ -11,7 +11,7 @@
     "post_wav_validation"
   ],
   "volatiles_adicionales": [],
-  "schema": "no-regresion-dsp-6g1/1",
+  "schema": "no-regresion-dsp-6g1/2",
   "entorno": {
     "python": "3.11.2",
     "numpy": "1.26.4",
@@ -24,23 +24,94 @@
   },
   "fuentes_6g": "/tmp/wt6g1/ETAPA_6G_SOPORTE_FLAC_MIX/motores",
   "fuentes_6g1": "/tmp/wt6g1/ETAPA_6G1_CORRECCION_LECTURA_SEGURA/motores",
+  "sha256_motores": {
+    "Hardened": {
+      "sha256_6g": "29b30593d97733eb0c073de437ef6725c6264e42034e4a388b4e4baf3bbdcc1b",
+      "sha256_6g1": "8c1fca989886de01d4cc8a849426a68851f0806e7dbdc1c62b36966372a1f571"
+    },
+    "EVO": {
+      "sha256_6g": "87bf83651f8f237a4de94d45f0104559b47daf55c03b3e18265f83edfb8a522c",
+      "sha256_6g1": "7b99ab805a9134fef2bc813024d38d107b3c31cb452282418e407e7779de19d8"
+    },
+    "MQR": {
+      "sha256_6g": "f014cc0c71a0012054eb249862b55bd9cff112e3bd08855604e914c4b1ebe1e8",
+      "sha256_6g1": "00734713ef729a607e173c518d49f844295af08a58c9ad4c2f6dbff45729372d"
+    }
+  },
+  "fixtures_verificados": {
+    "mix.wav": {
+      "sha256_manifiesto": "060d6c89b1aabe5d0c449eefa696dc23efe6c77e00d2669dea7a6dfaebfe9627",
+      "sha256_obtenido": "060d6c89b1aabe5d0c449eefa696dc23efe6c77e00d2669dea7a6dfaebfe9627",
+      "coincide": true
+    },
+    "mix.flac": {
+      "sha256_manifiesto": "2f550ce2cb3a6ec124bc1bc0373adc00a609f32ccf6c4fd9f73cfafafac945fa",
+      "sha256_obtenido": "2f550ce2cb3a6ec124bc1bc0373adc00a609f32ccf6c4fd9f73cfafafac945fa",
+      "coincide": true
+    },
+    "vocal_mix.wav": {
+      "sha256_manifiesto": "69a3a5527accf1db114c00d862bf33af69f50e5fcab2ca8eb5f08051c2038357",
+      "sha256_obtenido": "69a3a5527accf1db114c00d862bf33af69f50e5fcab2ca8eb5f08051c2038357",
+      "coincide": true
+    },
+    "instrumental_mix.wav": {
+      "sha256_manifiesto": "896bd59b6bdbbcb092bd9bbf4acc28361a6a124941a86af04ef8ca147077cea8",
+      "sha256_obtenido": "896bd59b6bdbbcb092bd9bbf4acc28361a6a124941a86af04ef8ca147077cea8",
+      "coincide": true
+    }
+  },
+  "criterio_dsp_ok": "sin definiciones añadidas ni eliminadas; sin constantes cambiadas, añadidas ni eliminadas; huella de literales y llamadas DSP idéntica en cada definición cambiada",
+  "criterio_pcm": "salida 0 en ambas corridas; salidas reales en disco; mismo conjunto de nombres; geometría igual; hash PCM decodificado float64 igual por salida",
   "motores": {
     "Hardened": {
       "cambiadas": [
         "CandidateRunner",
+        "FileInfo",
         "_open_memmap",
         "analyze_guide_scale",
+        "create_run_dir",
+        "probe_file",
         "run_experiment",
         "write_reports"
       ],
       "anadidas": [],
       "quitadas": [],
       "constantes_cambiadas": {},
+      "constantes_anadidas": [],
+      "constantes_quitadas": [],
       "huellas": {
         "CandidateRunner": {
           "numeros_iguales": true,
           "numeros_6g": [],
           "numeros_6g1": [],
+          "indent_excluidos_6g": 0,
+          "indent_excluidos_6g1": 0,
+          "llamadas_dsp_iguales": true,
+          "llamadas_6g": [],
+          "llamadas_6g1": []
+        },
+        "FileInfo": {
+          "numeros_iguales": false,
+          "numeros_6g": [
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0
+          ],
+          "numeros_6g1": [
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0
+          ],
           "indent_excluidos_6g": 0,
           "indent_excluidos_6g1": 0,
           "llamadas_dsp_iguales": true,
@@ -146,6 +217,37 @@
             "sum",
             "zeros"
           ]
+        },
+        "create_run_dir": {
+          "numeros_iguales": false,
+          "numeros_6g": [],
+          "numeros_6g1": [
+            0.0,
+            0.0,
+            1.0,
+            999.0
+          ],
+          "indent_excluidos_6g": 0,
+          "indent_excluidos_6g1": 0,
+          "llamadas_dsp_iguales": true,
+          "llamadas_6g": [],
+          "llamadas_6g1": []
+        },
+        "probe_file": {
+          "numeros_iguales": true,
+          "numeros_6g": [
+            0.0,
+            0.0
+          ],
+          "numeros_6g1": [
+            0.0,
+            0.0
+          ],
+          "indent_excluidos_6g": 0,
+          "indent_excluidos_6g1": 0,
+          "llamadas_dsp_iguales": true,
+          "llamadas_6g": [],
+          "llamadas_6g1": []
         },
         "run_experiment": {
           "numeros_iguales": true,
@@ -308,7 +410,7 @@
           "llamadas_6g1": []
         }
       },
-      "dsp_ok": true,
+      "dsp_ok": false,
       "pcm": {
         "WAV": {
           "pcm_6g": {
@@ -320,6 +422,61 @@
             "mix SDV.wav": "a347838da989c3645115f9d08dd296a9902a2b8ac0372fde5002e40f1d420bc0"
           },
           "reales": true,
+          "n_salidas_6g": 2,
+          "n_salidas_6g1": 2,
+          "salidas_disco_6g": {
+            "mix SDI.wav": {
+              "ruta": "/tmp/f6g1/noreg/Hardened_WAV_6g/out/motorA_run_20261122_111604/mix SDI.wav",
+              "existe": true,
+              "bytes": 705688,
+              "file_sha256": "716daccad148d6a177021c7d3d2ed667cce6ab726c8b18c5e199689bd97f2504"
+            },
+            "mix SDV.wav": {
+              "ruta": "/tmp/f6g1/noreg/Hardened_WAV_6g/out/motorA_run_20261122_111604/mix SDV.wav",
+              "existe": true,
+              "bytes": 705688,
+              "file_sha256": "ad7b52d8b5f98d0238f064e101ab233cb1f3d3ecbaa036ac536834c2fb5f5f4d"
+            }
+          },
+          "salidas_disco_6g1": {
+            "mix SDI.wav": {
+              "ruta": "/tmp/f6g1/noreg/Hardened_WAV_6g1/out/motorA_run_20261122_111605/mix SDI.wav",
+              "existe": true,
+              "bytes": 705688,
+              "file_sha256": "f032c682914587b2b36f73e49738dab776ee79259b6190e54acc8f9ab2f44ad9"
+            },
+            "mix SDV.wav": {
+              "ruta": "/tmp/f6g1/noreg/Hardened_WAV_6g1/out/motorA_run_20261122_111605/mix SDV.wav",
+              "existe": true,
+              "bytes": 705688,
+              "file_sha256": "4eeddfe11e3ea2b561c1c2d3c3e76dd3fba989b1bbaab1d230f722841a82e08f"
+            }
+          },
+          "geometria_6g": {
+            "mix SDI.wav": [
+              88200,
+              2,
+              44100
+            ],
+            "mix SDV.wav": [
+              88200,
+              2,
+              44100
+            ]
+          },
+          "geometria_6g1": {
+            "mix SDI.wav": [
+              88200,
+              2,
+              44100
+            ],
+            "mix SDV.wav": [
+              88200,
+              2,
+              44100
+            ]
+          },
+          "geometria_igual": true,
           "identicos": true,
           "exit_6g": 0,
           "exit_6g1": 0,
@@ -348,6 +505,61 @@
             "mix SDV.wav": "a347838da989c3645115f9d08dd296a9902a2b8ac0372fde5002e40f1d420bc0"
           },
           "reales": true,
+          "n_salidas_6g": 2,
+          "n_salidas_6g1": 2,
+          "salidas_disco_6g": {
+            "mix SDI.wav": {
+              "ruta": "/tmp/f6g1/noreg/Hardened_FLAC_6g/out/motorA_run_20261122_111607/mix SDI.wav",
+              "existe": true,
+              "bytes": 705688,
+              "file_sha256": "5c122ede82842e614f9a50812ea878c4c7dba008f1df7a786cc4e4f37ac194b5"
+            },
+            "mix SDV.wav": {
+              "ruta": "/tmp/f6g1/noreg/Hardened_FLAC_6g/out/motorA_run_20261122_111607/mix SDV.wav",
+              "existe": true,
+              "bytes": 705688,
+              "file_sha256": "a2db2b59f1f1428ed29708a2498d6644910788e0193e976302d59a7ce5e8d31f"
+            }
+          },
+          "salidas_disco_6g1": {
+            "mix SDI.wav": {
+              "ruta": "/tmp/f6g1/noreg/Hardened_FLAC_6g1/out/motorA_run_20261122_111610/mix SDI.wav",
+              "existe": true,
+              "bytes": 705688,
+              "file_sha256": "f9afe7bdaf5c68d7484fa5c84185582120087f382b351c2080d361401ff9ef89"
+            },
+            "mix SDV.wav": {
+              "ruta": "/tmp/f6g1/noreg/Hardened_FLAC_6g1/out/motorA_run_20261122_111610/mix SDV.wav",
+              "existe": true,
+              "bytes": 705688,
+              "file_sha256": "461e7b8d6864f3af3f007a90f90b57cb06537b2f04ddc72bf331dba88464a192"
+            }
+          },
+          "geometria_6g": {
+            "mix SDI.wav": [
+              88200,
+              2,
+              44100
+            ],
+            "mix SDV.wav": [
+              88200,
+              2,
+              44100
+            ]
+          },
+          "geometria_6g1": {
+            "mix SDI.wav": [
+              88200,
+              2,
+              44100
+            ],
+            "mix SDV.wav": [
+              88200,
+              2,
+              44100
+            ]
+          },
+          "geometria_igual": true,
           "identicos": true,
           "exit_6g": 0,
           "exit_6g1": 0,
@@ -387,24 +599,57 @@
           ]
         }
       },
-      "veredicto": "ACCEPTED"
+      "veredicto": "REJECTED"
     },
     "EVO": {
       "cambiadas": [
         "CandidateRunner",
+        "FileInfo",
         "_open_memmap",
         "analyze_guide_scale",
+        "create_run_dir",
+        "probe_file",
         "run_experiment",
         "write_reports"
       ],
       "anadidas": [],
       "quitadas": [],
       "constantes_cambiadas": {},
+      "constantes_anadidas": [],
+      "constantes_quitadas": [],
       "huellas": {
         "CandidateRunner": {
           "numeros_iguales": true,
           "numeros_6g": [],
           "numeros_6g1": [],
+          "indent_excluidos_6g": 0,
+          "indent_excluidos_6g1": 0,
+          "llamadas_dsp_iguales": true,
+          "llamadas_6g": [],
+          "llamadas_6g1": []
+        },
+        "FileInfo": {
+          "numeros_iguales": false,
+          "numeros_6g": [
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0
+          ],
+          "numeros_6g1": [
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0
+          ],
           "indent_excluidos_6g": 0,
           "indent_excluidos_6g1": 0,
           "llamadas_dsp_iguales": true,
@@ -520,6 +765,37 @@
             "sum",
             "zeros"
           ]
+        },
+        "create_run_dir": {
+          "numeros_iguales": false,
+          "numeros_6g": [],
+          "numeros_6g1": [
+            0.0,
+            0.0,
+            1.0,
+            999.0
+          ],
+          "indent_excluidos_6g": 0,
+          "indent_excluidos_6g1": 0,
+          "llamadas_dsp_iguales": true,
+          "llamadas_6g": [],
+          "llamadas_6g1": []
+        },
+        "probe_file": {
+          "numeros_iguales": true,
+          "numeros_6g": [
+            0.0,
+            0.0
+          ],
+          "numeros_6g1": [
+            0.0,
+            0.0
+          ],
+          "indent_excluidos_6g": 0,
+          "indent_excluidos_6g1": 0,
+          "llamadas_dsp_iguales": true,
+          "llamadas_6g": [],
+          "llamadas_6g1": []
         },
         "run_experiment": {
           "numeros_iguales": true,
@@ -748,7 +1024,7 @@
           "llamadas_6g1": []
         }
       },
-      "dsp_ok": true,
+      "dsp_ok": false,
       "pcm": {
         "WAV": {
           "pcm_6g": {
@@ -760,6 +1036,61 @@
             "mix SDV.wav": "a347838da989c3645115f9d08dd296a9902a2b8ac0372fde5002e40f1d420bc0"
           },
           "reales": true,
+          "n_salidas_6g": 2,
+          "n_salidas_6g1": 2,
+          "salidas_disco_6g": {
+            "mix SDI.wav": {
+              "ruta": "/tmp/f6g1/noreg/EVO_WAV_6g/out/motorA_run_20261122_111611/mix SDI.wav",
+              "existe": true,
+              "bytes": 705688,
+              "file_sha256": "fcbb266f6ac77627bb99e3ea1d6126940b061730f96ad47064e07c8be15abad0"
+            },
+            "mix SDV.wav": {
+              "ruta": "/tmp/f6g1/noreg/EVO_WAV_6g/out/motorA_run_20261122_111611/mix SDV.wav",
+              "existe": true,
+              "bytes": 705688,
+              "file_sha256": "85dcdadb505ed68f5276d95fafda6da06ef770b9f6cf13dc50fa58509c90afdf"
+            }
+          },
+          "salidas_disco_6g1": {
+            "mix SDI.wav": {
+              "ruta": "/tmp/f6g1/noreg/EVO_WAV_6g1/out/motorA_run_20261122_111613/mix SDI.wav",
+              "existe": true,
+              "bytes": 705688,
+              "file_sha256": "4382aba3f83c51622dbe8ac0aafcc0a857da40611fbf892809ab5f1c0cd33795"
+            },
+            "mix SDV.wav": {
+              "ruta": "/tmp/f6g1/noreg/EVO_WAV_6g1/out/motorA_run_20261122_111613/mix SDV.wav",
+              "existe": true,
+              "bytes": 705688,
+              "file_sha256": "e844e3698ab40a9f178b433a23298fbd3b98a34ac64deae8f7055d787f9f9522"
+            }
+          },
+          "geometria_6g": {
+            "mix SDI.wav": [
+              88200,
+              2,
+              44100
+            ],
+            "mix SDV.wav": [
+              88200,
+              2,
+              44100
+            ]
+          },
+          "geometria_6g1": {
+            "mix SDI.wav": [
+              88200,
+              2,
+              44100
+            ],
+            "mix SDV.wav": [
+              88200,
+              2,
+              44100
+            ]
+          },
+          "geometria_igual": true,
           "identicos": true,
           "exit_6g": 0,
           "exit_6g1": 0,
@@ -788,6 +1119,61 @@
             "mix SDV.wav": "a347838da989c3645115f9d08dd296a9902a2b8ac0372fde5002e40f1d420bc0"
           },
           "reales": true,
+          "n_salidas_6g": 2,
+          "n_salidas_6g1": 2,
+          "salidas_disco_6g": {
+            "mix SDI.wav": {
+              "ruta": "/tmp/f6g1/noreg/EVO_FLAC_6g/out/motorA_run_20261122_111614/mix SDI.wav",
+              "existe": true,
+              "bytes": 705688,
+              "file_sha256": "5f9e351d553192c1d74e6f696addf0b617652060a139ce3d00b25aba39d49211"
+            },
+            "mix SDV.wav": {
+              "ruta": "/tmp/f6g1/noreg/EVO_FLAC_6g/out/motorA_run_20261122_111614/mix SDV.wav",
+              "existe": true,
+              "bytes": 705688,
+              "file_sha256": "79fd1cee7c38b560f4bd1575e608a72153c68147cd0a7490454c0532da291fb7"
+            }
+          },
+          "salidas_disco_6g1": {
+            "mix SDI.wav": {
+              "ruta": "/tmp/f6g1/noreg/EVO_FLAC_6g1/out/motorA_run_20261122_111616/mix SDI.wav",
+              "existe": true,
+              "bytes": 705688,
+              "file_sha256": "d9d12a6fdec3d584c4dab6d3c47cb4589df039a7256426d627f972194fe274dc"
+            },
+            "mix SDV.wav": {
+              "ruta": "/tmp/f6g1/noreg/EVO_FLAC_6g1/out/motorA_run_20261122_111616/mix SDV.wav",
+              "existe": true,
+              "bytes": 705688,
+              "file_sha256": "e9f7598ba4cc039ca58d7f9d6d7fadc9cc70ff46925e6200f65dcd48d2d42a4a"
+            }
+          },
+          "geometria_6g": {
+            "mix SDI.wav": [
+              88200,
+              2,
+              44100
+            ],
+            "mix SDV.wav": [
+              88200,
+              2,
+              44100
+            ]
+          },
+          "geometria_6g1": {
+            "mix SDI.wav": [
+              88200,
+              2,
+              44100
+            ],
+            "mix SDV.wav": [
+              88200,
+              2,
+              44100
+            ]
+          },
+          "geometria_igual": true,
           "identicos": true,
           "exit_6g": 0,
           "exit_6g1": 0,
@@ -827,25 +1213,58 @@
           ]
         }
       },
-      "veredicto": "ACCEPTED"
+      "veredicto": "REJECTED"
     },
     "MQR": {
       "cambiadas": [
         "CandidateRunner",
+        "FileInfo",
         "_open_memmap",
         "_run_core",
         "analyze_guide_scale",
+        "create_run_dir",
+        "probe_file",
         "run_experiment",
         "write_reports"
       ],
       "anadidas": [],
       "quitadas": [],
       "constantes_cambiadas": {},
+      "constantes_anadidas": [],
+      "constantes_quitadas": [],
       "huellas": {
         "CandidateRunner": {
           "numeros_iguales": true,
           "numeros_6g": [],
           "numeros_6g1": [],
+          "indent_excluidos_6g": 0,
+          "indent_excluidos_6g1": 0,
+          "llamadas_dsp_iguales": true,
+          "llamadas_6g": [],
+          "llamadas_6g1": []
+        },
+        "FileInfo": {
+          "numeros_iguales": false,
+          "numeros_6g": [
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0
+          ],
+          "numeros_6g1": [
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0
+          ],
           "indent_excluidos_6g": 0,
           "indent_excluidos_6g1": 0,
           "llamadas_dsp_iguales": true,
@@ -966,6 +1385,37 @@
             "sqrt"
           ]
         },
+        "create_run_dir": {
+          "numeros_iguales": false,
+          "numeros_6g": [],
+          "numeros_6g1": [
+            0.0,
+            0.0,
+            1.0,
+            999.0
+          ],
+          "indent_excluidos_6g": 0,
+          "indent_excluidos_6g1": 0,
+          "llamadas_dsp_iguales": true,
+          "llamadas_6g": [],
+          "llamadas_6g1": []
+        },
+        "probe_file": {
+          "numeros_iguales": true,
+          "numeros_6g": [
+            0.0,
+            0.0
+          ],
+          "numeros_6g1": [
+            0.0,
+            0.0
+          ],
+          "indent_excluidos_6g": 0,
+          "indent_excluidos_6g1": 0,
+          "llamadas_dsp_iguales": true,
+          "llamadas_6g": [],
+          "llamadas_6g1": []
+        },
         "run_experiment": {
           "numeros_iguales": true,
           "numeros_6g": [
@@ -991,7 +1441,7 @@
           "llamadas_6g1": []
         }
       },
-      "dsp_ok": true,
+      "dsp_ok": false,
       "pcm": {
         "WAV": {
           "pcm_6g": {
@@ -1003,6 +1453,61 @@
             "SDV.wav": "8fb3578a2b56b062d6bcb9b9d72b2657106efcd1aa838cc5de8f8a42fe6f9af8"
           },
           "reales": true,
+          "n_salidas_6g": 2,
+          "n_salidas_6g1": 2,
+          "salidas_disco_6g": {
+            "SDI.wav": {
+              "ruta": "/tmp/f6g1/noreg/MQR_WAV_6g/out/mqr_run_20261122_111617/SDI.wav",
+              "existe": true,
+              "bytes": 705688,
+              "file_sha256": "287c2e9053445487676f8f1a0bb0e6211c67ade54df8be148d9115592ad36e20"
+            },
+            "SDV.wav": {
+              "ruta": "/tmp/f6g1/noreg/MQR_WAV_6g/out/mqr_run_20261122_111617/SDV.wav",
+              "existe": true,
+              "bytes": 705688,
+              "file_sha256": "9744de09077a81716042acfc0a5df37392ec17a455d0112bbbec2946e3ff2400"
+            }
+          },
+          "salidas_disco_6g1": {
+            "SDI.wav": {
+              "ruta": "/tmp/f6g1/noreg/MQR_WAV_6g1/out/mqr_run_20261122_111619/SDI.wav",
+              "existe": true,
+              "bytes": 705688,
+              "file_sha256": "b9c86d6542af05a688bd534d62f79dd4ed35276522e38fb6f30c354fcefe0677"
+            },
+            "SDV.wav": {
+              "ruta": "/tmp/f6g1/noreg/MQR_WAV_6g1/out/mqr_run_20261122_111619/SDV.wav",
+              "existe": true,
+              "bytes": 705688,
+              "file_sha256": "d313f932be792673dbd2940f302c8db3cd9fb188d1408fa50e795c6a6b664652"
+            }
+          },
+          "geometria_6g": {
+            "SDI.wav": [
+              88200,
+              2,
+              44100
+            ],
+            "SDV.wav": [
+              88200,
+              2,
+              44100
+            ]
+          },
+          "geometria_6g1": {
+            "SDI.wav": [
+              88200,
+              2,
+              44100
+            ],
+            "SDV.wav": [
+              88200,
+              2,
+              44100
+            ]
+          },
+          "geometria_igual": true,
           "identicos": true,
           "exit_6g": 0,
           "exit_6g1": 0,
@@ -1031,6 +1536,61 @@
             "SDV.wav": "8fb3578a2b56b062d6bcb9b9d72b2657106efcd1aa838cc5de8f8a42fe6f9af8"
           },
           "reales": true,
+          "n_salidas_6g": 2,
+          "n_salidas_6g1": 2,
+          "salidas_disco_6g": {
+            "SDI.wav": {
+              "ruta": "/tmp/f6g1/noreg/MQR_FLAC_6g/out/mqr_run_20261122_111620/SDI.wav",
+              "existe": true,
+              "bytes": 705688,
+              "file_sha256": "4c692a329f26cad566ffc7dbc39680a30632714ce6f305ec4b211b0d2c3bb1ae"
+            },
+            "SDV.wav": {
+              "ruta": "/tmp/f6g1/noreg/MQR_FLAC_6g/out/mqr_run_20261122_111620/SDV.wav",
+              "existe": true,
+              "bytes": 705688,
+              "file_sha256": "0206857a163efaf2270e5076b73791fb1cbf1d58dd6e2bf8c97ca56ca2053238"
+            }
+          },
+          "salidas_disco_6g1": {
+            "SDI.wav": {
+              "ruta": "/tmp/f6g1/noreg/MQR_FLAC_6g1/out/mqr_run_20261122_111623/SDI.wav",
+              "existe": true,
+              "bytes": 705688,
+              "file_sha256": "f543ff86b15c01d0022b169ff73422644384b0d06769df55cda679bf7a84c26b"
+            },
+            "SDV.wav": {
+              "ruta": "/tmp/f6g1/noreg/MQR_FLAC_6g1/out/mqr_run_20261122_111623/SDV.wav",
+              "existe": true,
+              "bytes": 705688,
+              "file_sha256": "315b2062cefda2ed40c6aad88f3a678dd3f67a28c5f1a02ae91452a3f52bca0d"
+            }
+          },
+          "geometria_6g": {
+            "SDI.wav": [
+              88200,
+              2,
+              44100
+            ],
+            "SDV.wav": [
+              88200,
+              2,
+              44100
+            ]
+          },
+          "geometria_6g1": {
+            "SDI.wav": [
+              88200,
+              2,
+              44100
+            ],
+            "SDV.wav": [
+              88200,
+              2,
+              44100
+            ]
+          },
+          "geometria_igual": true,
           "identicos": true,
           "exit_6g": 0,
           "exit_6g1": 0,
@@ -1070,52 +1630,70 @@
           ]
         }
       },
-      "veredicto": "ACCEPTED"
+      "veredicto": "REJECTED"
     }
   },
   "filas": [
     {
       "motor": "Hardened",
-      "defs_cambiadas": "CandidateRunner;_open_memmap;analyze_guide_scale;run_experiment;write_reports",
+      "defs_cambiadas": "CandidateRunner;FileInfo;_open_memmap;analyze_guide_scale;create_run_dir;probe_file;run_experiment;write_reports",
       "defs_anadidas": "",
       "defs_quitadas": "",
       "constantes_cambiadas": "",
-      "huella_dsp_ok": true,
+      "huella_dsp_ok": false,
       "pcm_wav": "IDENTICO",
       "pcm_flac": "IDENTICO",
       "informe_wav": "DISTINTO (alignment_analysis[0].integrity.guide_after.identidad_comparada_6g1;alignment_analysis[0].integrity.mix_after.identidad_comparada_6g1;alignment_analysis[1].integrity.guide_after.identidad_comparada_6g1;alignment_analysis[1].integrity.mix_after.identidad_comparada_6g1)",
       "informe_flac": "DISTINTO (alignment_analysis[0].integrity.guide_after.identidad_comparada_6g1;alignment_analysis[0].integrity.mix_after.after;alignment_analysis[0].integrity.mix_after.before;alignment_analysis[0].integrity.mix_after.identidad_comparada_6g1)",
-      "veredicto": "ACCEPTED"
+      "veredicto": "REJECTED",
+      "constantes_anadidas": "",
+      "constantes_quitadas": "",
+      "salidas_wav": "REALES",
+      "salidas_flac": "REALES",
+      "geometria_wav": "IGUAL",
+      "geometria_flac": "IGUAL"
     },
     {
       "motor": "EVO",
-      "defs_cambiadas": "CandidateRunner;_open_memmap;analyze_guide_scale;run_experiment;write_reports",
+      "defs_cambiadas": "CandidateRunner;FileInfo;_open_memmap;analyze_guide_scale;create_run_dir;probe_file;run_experiment;write_reports",
       "defs_anadidas": "",
       "defs_quitadas": "",
       "constantes_cambiadas": "",
-      "huella_dsp_ok": true,
+      "huella_dsp_ok": false,
       "pcm_wav": "IDENTICO",
       "pcm_flac": "IDENTICO",
       "informe_wav": "DISTINTO (alignment_analysis[0].integrity.guide_after.identidad_comparada_6g1;alignment_analysis[0].integrity.mix_after.identidad_comparada_6g1;alignment_analysis[1].integrity.guide_after.identidad_comparada_6g1;alignment_analysis[1].integrity.mix_after.identidad_comparada_6g1)",
       "informe_flac": "DISTINTO (alignment_analysis[0].integrity.guide_after.identidad_comparada_6g1;alignment_analysis[0].integrity.mix_after.after;alignment_analysis[0].integrity.mix_after.before;alignment_analysis[0].integrity.mix_after.identidad_comparada_6g1)",
-      "veredicto": "ACCEPTED"
+      "veredicto": "REJECTED",
+      "constantes_anadidas": "",
+      "constantes_quitadas": "",
+      "salidas_wav": "REALES",
+      "salidas_flac": "REALES",
+      "geometria_wav": "IGUAL",
+      "geometria_flac": "IGUAL"
     },
     {
       "motor": "MQR",
-      "defs_cambiadas": "CandidateRunner;_open_memmap;_run_core;analyze_guide_scale;run_experiment;write_reports",
+      "defs_cambiadas": "CandidateRunner;FileInfo;_open_memmap;_run_core;analyze_guide_scale;create_run_dir;probe_file;run_experiment;write_reports",
       "defs_anadidas": "",
       "defs_quitadas": "",
       "constantes_cambiadas": "",
-      "huella_dsp_ok": true,
+      "huella_dsp_ok": false,
       "pcm_wav": "IDENTICO",
       "pcm_flac": "IDENTICO",
       "informe_wav": "DISTINTO (alignment[0].integrity.guide_after.identidad_comparada_6g1;alignment[0].integrity.mix_after.identidad_comparada_6g1;alignment[1].integrity.guide_after.identidad_comparada_6g1;alignment[1].integrity.mix_after.identidad_comparada_6g1)",
       "informe_flac": "DISTINTO (alignment[0].integrity.guide_after.identidad_comparada_6g1;alignment[0].integrity.mix_after.after;alignment[0].integrity.mix_after.before;alignment[0].integrity.mix_after.identidad_comparada_6g1)",
-      "veredicto": "ACCEPTED"
+      "veredicto": "REJECTED",
+      "constantes_anadidas": "",
+      "constantes_quitadas": "",
+      "salidas_wav": "REALES",
+      "salidas_flac": "REALES",
+      "geometria_wav": "IGUAL",
+      "geometria_flac": "IGUAL"
     }
   ],
   "resumen": {
-    "aprobados": 3,
+    "aprobados": 0,
     "total": 3
   }
 }

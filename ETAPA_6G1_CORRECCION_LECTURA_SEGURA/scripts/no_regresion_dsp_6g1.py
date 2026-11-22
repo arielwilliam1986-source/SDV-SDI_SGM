@@ -5,6 +5,18 @@
    primitivas DSP deben ser idénticos; sólo puede variar la gestión de lectura.
 3. PCM: mismo Mix (WAV y FLAC) procesado por 6G y por 6G.1 en cada motor ->
    archivos reales, mismos hashes PCM y misma geometría.
+
+Ajuste de auditoría final (schema no-regresion-dsp-6g1/2):
+- `dsp_ok` rechaza definiciones de nivel superior AÑADIDAS o ELIMINADAS (antes
+  sólo rechazaba las eliminadas) y constantes en mayúsculas cambiadas,
+  añadidas o eliminadas: ninguna definición nueva o retirada queda sin auditar.
+- Fixtures: los cuatro archivos sintéticos usados se verifican contra
+  `fixtures/fixtures_manifest.json` antes de ejecutar (si no coinciden, la
+  prueba se detiene sin veredicto).
+- Salidas: existencia real comprobada en disco (archivo presente, tamaño > 0,
+  SHA-256 de archivo recalculado igual al registrado), salida del proceso 0 y
+  mismo conjunto de nombres en 6G y 6G.1.
+- Geometría: (frames, canales, sr) por salida, 6G frente a 6G.1.
 """
 import ast
 import csv
@@ -13,7 +25,8 @@ import sys
 from pathlib import Path
 
 sys.path.insert(0, str(Path(__file__).resolve().parent))
-from comun_6g1 import (EV, FIX, G6, MOT, MOTORES, dump, ejecutar, entorno)
+from comun_6g1 import (EV, FIX, G6, MOT, MOTORES, dump, ejecutar, entorno,
+                       sha_file)
 
 VOLATILES = {'document_meta', 'mix_original', 'guide_inventory',
              'guide_family_inventory', 'guide_variant_inventory',
@@ -134,9 +147,47 @@ def campos_diferentes(a, b, prefijo=''):
     return []
 
 
+FIXTURES_USADOS = ('mix.wav', 'mix.flac', 'vocal_mix.wav', 'instrumental_mix.wav')
+
+
+def verificar_fixtures():
+    """SHA-256 de los fixtures usados frente al manifiesto publicado."""
+    man = json.loads((FIX / 'fixtures_manifest.json').read_text(encoding='utf-8'))
+    res = {}
+    for nombre in FIXTURES_USADOS:
+        esperado = man['archivos'][nombre]['sha256']
+        obtenido = sha_file(FIX / nombre)
+        res[nombre] = dict(sha256_manifiesto=esperado, sha256_obtenido=obtenido,
+                           coincide=esperado == obtenido)
+    return res
+
+
+def salidas_en_disco(r):
+    """Existencia real de cada salida PCM en el directorio de la corrida."""
+    out = Path(r['out'])
+    res = {}
+    for p in r['pcm']:
+        hallados = sorted(out.rglob(p['name'])) if out.exists() else []
+        ok = (len(hallados) == 1 and hallados[0].is_file()
+              and not hallados[0].is_symlink()
+              and hallados[0].stat().st_size > 0
+              and 'error' not in p and 'pcm_sha256' in p
+              and sha_file(hallados[0]) == p.get('file_sha256'))
+        res[p['name']] = dict(ruta=str(hallados[0]) if len(hallados) == 1 else None,
+                              existe=ok, bytes=p.get('bytes'),
+                              file_sha256=p.get('file_sha256'))
+    return res
+
+
 def main():
     trabajos = Path('/tmp/f6g1/noreg')
     filas, detalles = [], {}
+    fixtures = verificar_fixtures()
+    if not all(v['coincide'] for v in fixtures.values()):
+        print('FIXTURES NO COINCIDEN CON EL MANIFIESTO: prueba detenida', fixtures)
+        sys.exit(2)
+    sha_motores = {m: dict(sha256_6g=sha_file(G6 / n), sha256_6g1=sha_file(MOT / n))
+                   for m, n in MOTORES.items()}
     for motor, nombre in MOTORES.items():
         _, d6g, c6g = _defs(G6 / nombre)
         _, d6g1, c6g1 = _defs(MOT / nombre)
@@ -146,6 +197,8 @@ def main():
         quitadas = sorted(set(d6g) - set(d6g1))
         const_cambiadas = {k: [c6g[k], c6g1[k]] for k in c6g
                            if k in c6g1 and c6g[k] != c6g1[k]}
+        const_anadidas = sorted(set(c6g1) - set(c6g))
+        const_quitadas = sorted(set(c6g) - set(c6g1))
         huellas = {}
         for k in cambiadas:
             num_a, num_a_i = _numeros(d6g[k])
@@ -156,7 +209,9 @@ def main():
                               indent_excluidos_6g=num_a_i, indent_excluidos_6g1=num_b_i,
                               llamadas_dsp_iguales=dsp_a == dsp_b,
                               llamadas_6g=dsp_a, llamadas_6g1=dsp_b)
-        dsp_ok = (not const_cambiadas and not quitadas
+        # Auditoría final: ninguna definición añadida o eliminada sin auditar.
+        dsp_ok = (not const_cambiadas and not const_anadidas
+                  and not const_quitadas and not anadidas and not quitadas
                   and all(h['numeros_iguales'] and h['llamadas_dsp_iguales']
                           for h in huellas.values()))
 
@@ -173,7 +228,19 @@ def main():
                            trabajos / f'{motor}_{contenedor}_6g1', 'full_processing')
             p6g = {p['name']: p['pcm_sha256'] for p in r6g['pcm'] if 'pcm_sha256' in p}
             p61 = {p['name']: p['pcm_sha256'] for p in r61['pcm'] if 'pcm_sha256' in p}
-            reales = bool(p6g) and bool(p61)
+            disco6g, disco61 = salidas_en_disco(r6g), salidas_en_disco(r61)
+            geo6g = {p['name']: [p['frames'], p['channels'], p['sr']]
+                     for p in r6g['pcm'] if 'pcm_sha256' in p}
+            geo61 = {p['name']: [p['frames'], p['channels'], p['sr']]
+                     for p in r61['pcm'] if 'pcm_sha256' in p}
+            reales = (bool(p6g) and bool(p61)
+                      and r6g['exit'] == 0 and r61['exit'] == 0
+                      and len(p6g) == len(r6g['pcm'])
+                      and len(p61) == len(r61['pcm'])
+                      and set(p6g) == set(p61)
+                      and all(v['existe'] for v in disco6g.values())
+                      and all(v['existe'] for v in disco61.values()))
+            geometria_igual = bool(geo6g) and geo6g == geo61
             rep6g_e = normalizar(r6g['report'])
             rep61_e = normalizar(r61['report'])
             dif_estricto = campos_diferentes(rep6g_e, rep61_e)
@@ -183,7 +250,11 @@ def main():
             dif_norm = campos_diferentes(rep6g_x, rep61_x)
             pcm[contenedor] = dict(
                 pcm_6g=p6g, pcm_6g1=p61, reales=reales,
-                identicos=(reales and p6g == p61),
+                n_salidas_6g=len(r6g['pcm']), n_salidas_6g1=len(r61['pcm']),
+                salidas_disco_6g=disco6g, salidas_disco_6g1=disco61,
+                geometria_6g=geo6g, geometria_6g1=geo61,
+                geometria_igual=geometria_igual,
+                identicos=(reales and geometria_igual and p6g == p61),
                 exit_6g=r6g['exit'], exit_6g1=r61['exit'],
                 informe_igual=(rep6g_x == rep61_x),
                 informe_igual_estricto=(rep6g_e == rep61_e),
@@ -195,6 +266,8 @@ def main():
         detalles[motor] = dict(cambiadas=cambiadas, anadidas=anadidas,
                                quitadas=quitadas,
                                constantes_cambiadas=const_cambiadas,
+                               constantes_anadidas=const_anadidas,
+                               constantes_quitadas=const_quitadas,
                                huellas=huellas, dsp_ok=dsp_ok, pcm=pcm,
                                veredicto=veredicto)
         filas.append(dict(motor=motor, defs_cambiadas=';'.join(cambiadas),
@@ -210,7 +283,13 @@ def main():
                           informe_flac='IGUAL' if pcm['FLAC']['informe_igual']
                           else 'DISTINTO (%s)' % ';'.join(
                               pcm['FLAC']['campos_diferentes_normalizado'][:4]),
-                          veredicto=veredicto))
+                          veredicto=veredicto,
+                          constantes_anadidas=';'.join(const_anadidas),
+                          constantes_quitadas=';'.join(const_quitadas),
+                          salidas_wav='REALES' if pcm['WAV']['reales'] else 'NO_REALES',
+                          salidas_flac='REALES' if pcm['FLAC']['reales'] else 'NO_REALES',
+                          geometria_wav='IGUAL' if pcm['WAV']['geometria_igual'] else 'DISTINTA',
+                          geometria_flac='IGUAL' if pcm['FLAC']['geometria_igual'] else 'DISTINTA'))
 
     EV.mkdir(parents=True, exist_ok=True)
     with (EV / 'no_regresion_dsp_6g1.csv').open('w', newline='', encoding='utf-8') as fh:
@@ -220,8 +299,15 @@ def main():
     dump(EV / 'no_regresion_dsp_6g1.json', dict(
         volatiles=sorted(VOLATILES),
         volatiles_adicionales=sorted(VOLATILES_ADICIONALES),
-        schema='no-regresion-dsp-6g1/1', entorno=entorno(),
+        schema='no-regresion-dsp-6g1/2', entorno=entorno(),
         fuentes_6g=str(G6), fuentes_6g1=str(MOT),
+        sha256_motores=sha_motores, fixtures_verificados=fixtures,
+        criterio_dsp_ok=('sin definiciones añadidas ni eliminadas; sin constantes '
+                         'cambiadas, añadidas ni eliminadas; huella de literales '
+                         'y llamadas DSP idéntica en cada definición cambiada'),
+        criterio_pcm=('salida 0 en ambas corridas; salidas reales en disco; '
+                      'mismo conjunto de nombres; geometría igual; hash PCM '
+                      'decodificado float64 igual por salida'),
         motores=detalles, filas=filas,
         resumen=dict(aprobados=sum(1 for f in filas if f['veredicto'] == 'ACCEPTED'),
                      total=len(filas))))
@@ -230,7 +316,8 @@ def main():
               f"añadidas={f['defs_anadidas'] or '-'} eliminadas={f['defs_quitadas'] or '-'} "
               f"constantes={f['constantes_cambiadas'] or '-'} "
               f"huella={f['huella_dsp_ok']} pcm_wav={f['pcm_wav']} "
-              f"pcm_flac={f['pcm_flac']} -> {f['veredicto']}")
+              f"pcm_flac={f['pcm_flac']} salidas={f['salidas_wav']}/{f['salidas_flac']} "
+              f"geometria={f['geometria_wav']}/{f['geometria_flac']} -> {f['veredicto']}")
 
 
 if __name__ == '__main__':
