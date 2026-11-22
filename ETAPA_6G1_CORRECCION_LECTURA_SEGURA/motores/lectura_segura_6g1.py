@@ -60,6 +60,7 @@ import hashlib
 import json
 import os
 import stat
+import sys
 from pathlib import Path
 
 import soundfile as sf
@@ -860,7 +861,7 @@ def _registro_aborto_verificado_6g1(fd_dir, motivo):
 
 
 def abortar_corrida_6g1(run_dir, destino_aborto, motivo, detalle=None,
-                        trasladar=True):
+                        trasladar=True, cierre=None):
     """[6G.1-R/CV] Protocolo ÚNICO de aborto de los tres motores.
 
     1. Registra SIEMPRE primero el aborto con `abortar_6g1()` (C-R1: sin
@@ -891,6 +892,25 @@ def abortar_corrida_6g1(run_dir, destino_aborto, motivo, detalle=None,
                abort_registrado=False, trasladado=False,
                traslado_verificado=False, ruta_final=origen,
                salidas_invalidadas=[], motivo_conservacion=None)
+    # [6G.1-R/CR] El registro del aborto exige el cierre previo de los
+    # recursos de escritura (preparar_aborto_6g1). Si el cierre quedó
+    # incompleto o aún hay descriptores de escritura / mapeos abiertos bajo el
+    # provisional, el aborto SE REGISTRA igualmente, pero el directorio NUNCA
+    # se traslada (un descriptor abierto seguiría escribiendo en la ruta
+    # trasladada).
+    try:
+        abiertos = escritura_abierta_bajo_dir_6g1(origen)
+    except Exception as exc:
+        abiertos = ['no observable: %s: %s' % (type(exc).__name__, exc)]
+    res['escritura_abierta_al_registrar'] = abiertos
+    if cierre is not None:
+        res['cierre_recursos_completo'] = bool(cierre.get('completo'))
+        if not cierre.get('completo'):
+            res['traslado_bloqueado'] = ('cierre de recursos incompleto: %s'
+                                         % '; '.join(cierre.get('errores') or ['?']))
+    if abiertos and not res.get('traslado_bloqueado'):
+        res['traslado_bloqueado'] = ('descriptores de escritura o mapeos '
+                                     'abiertos bajo el provisional: %s' % abiertos)
     try:
         info = abortar_6g1(origen, motivo, detalle)
     except Exception as exc:
@@ -926,6 +946,10 @@ def abortar_corrida_6g1(run_dir, destino_aborto, motivo, detalle=None,
                                           'ubicación' % motivo_reg)
             return res
         res['abort_registrado'] = True
+        if res['traslado_solicitado'] and res.get('traslado_bloqueado'):
+            res['motivo_conservacion'] = ('%s: provisional conservado en su '
+                                          'ubicación' % res['traslado_bloqueado'])
+            return res
         if not res['traslado_solicitado']:
             res['motivo_conservacion'] = ('traslado no solicitado: provisional '
                                           'conservado en su ubicación')
@@ -972,3 +996,262 @@ def resumen_aborto_6g1(res):
                len(res.get('salidas_invalidadas') or []),
                '' if not res.get('motivo_conservacion')
                else ' conservacion=%s' % res['motivo_conservacion']))
+
+
+# ---------------------------------------------------------------------------
+# [6G.1-R/CR] Cierre DETERMINISTA de recursos antes del aborto
+# ---------------------------------------------------------------------------
+# Orden obligatorio en los tres motores:
+#   1. escritores WAV de todos los CandidateRunner construidos (close():
+#      cabecera RIFF finalizada);
+#   2. memmaps: flush() y cierre EXPLÍCITO del mmap subyacente;
+#   3. descriptores de lectura (MixHandle, SoundFile de guías);
+#   4. registro del resultado en engine_log.txt y cierre del log;
+#   5. comprobación en /proc/self/fd y /proc/self/maps;
+#   6. sólo entonces abortar_corrida_6g1() (registro -> eventual traslado).
+# No se confía en __del__ ni en la recolección: cada recurso se cierra con una
+# llamada explícita y su estado se verifica. Ningún error de cierre se
+# propaga: queda documentado y el aborto continúa (sin traslado si quedó
+# algo abierto; nunca publicación ni eliminación).
+
+
+def _bajo_dir_6g1(ruta):
+    base = os.path.realpath(str(ruta))
+    return base, base.rstrip(os.sep) + os.sep
+
+
+def descriptores_bajo_dir_6g1(ruta):
+    """Descriptores abiertos del proceso cuyo destino es `ruta` o está bajo
+    ella (Linux: /proc/self/fd + flags de /proc/self/fdinfo). Devuelve una
+    lista de dicts (fd, ruta relativa, escritura) o None si no es observable."""
+    base, pref = _bajo_dir_6g1(ruta)
+    try:
+        nombres = os.listdir('/proc/self/fd')
+    except OSError:
+        return None
+    res = []
+    for s in nombres:
+        try:
+            dest = os.readlink('/proc/self/fd/' + s)
+        except OSError:
+            continue
+        if dest != base and not dest.startswith(pref):
+            continue
+        escritura = None
+        try:
+            with open('/proc/self/fdinfo/' + s, encoding='ascii') as f:
+                for linea in f:
+                    if linea.startswith('flags:'):
+                        fl = int(linea.split()[1], 8)
+                        escritura = (fl & os.O_ACCMODE) in (os.O_WRONLY, os.O_RDWR)
+        except (OSError, ValueError):
+            pass
+        res.append(dict(fd=int(s), ruta=os.path.relpath(dest, base),
+                        escritura=escritura))
+    return res
+
+
+def mapeos_bajo_dir_6g1(ruta):
+    """Archivos bajo `ruta` con un mapeo de memoria vivo en el proceso
+    (/proc/self/maps). None si no es observable."""
+    base, pref = _bajo_dir_6g1(ruta)
+    try:
+        with open('/proc/self/maps', encoding='utf-8', errors='replace') as f:
+            lineas = f.read().splitlines()
+    except OSError:
+        return None
+    res = set()
+    for linea in lineas:
+        partes = linea.split(None, 5)
+        if len(partes) == 6:
+            p = partes[5].strip()
+            if p.endswith(' (deleted)'):
+                p = p[:-len(' (deleted)')]
+            if p == base or p.startswith(pref):
+                res.add(os.path.relpath(p, base))
+    return sorted(res)
+
+
+def escritura_abierta_bajo_dir_6g1(ruta, excluir=()):
+    """Lista legible de descriptores con permiso de escritura (o de modo no
+    determinable) y de mapeos vivos bajo `ruta`; [] si no hay ninguno."""
+    out = []
+    for d in descriptores_bajo_dir_6g1(ruta) or []:
+        if d['ruta'] in excluir or d['escritura'] is False:
+            continue
+        out.append('fd %d (%s): %s' % (d['fd'], 'escritura' if d['escritura']
+                                        else 'modo desconocido', d['ruta']))
+    for m in mapeos_bajo_dir_6g1(ruta) or []:
+        if m not in excluir:
+            out.append('mapeo: %s' % m)
+    return out
+
+
+def _cerrado_6g1(obj):
+    """True/False si el estado de cierre es verificable; None si no."""
+    if isinstance(obj, MixHandle):
+        return (object.__getattribute__(obj, '_snd') is None
+                and getattr(obj, 'fd', None) is None)
+    c = getattr(obj, 'closed', None)
+    return c if isinstance(c, bool) else None
+
+
+def _cerrar_idempotente_6g1(obj):
+    """close() sólo si no está ya cerrado; un segundo cierre nunca falla.
+    Devuelve (cerrado_verificado, error_o_None)."""
+    err = None
+    try:
+        if _cerrado_6g1(obj) is not True:
+            obj.close()
+    except Exception as exc:
+        err = '%s: %s' % (type(exc).__name__, exc)
+    return _cerrado_6g1(obj), err
+
+
+def cerrar_recursos_corrida_6g1(runners=None, memmaps=None, lectores=None):
+    """[6G.1-R/CR] Cierra de forma determinista e idempotente los recursos
+    de una corrida, en orden: escritores WAV de los CandidateRunner (cabecera
+    finalizada por close()), memmaps (flush() + close() explícito del mmap
+    subyacente; las entradas se retiran del diccionario del motor para soltar
+    su referencia, el contenido lógico no se toca) y descriptores de lectura.
+    Nunca propaga errores: devuelve un informe con el orden de los pasos, los
+    errores y `completo` (todo escritor y todo memmap cerrado y verificado)."""
+    inf = dict(orden=[], errores=[], completo=True, escritores=0,
+               memmaps=0, lectores=0)
+
+    def paso(tipo, recurso, accion, ok, error=None, critico=True):
+        e = dict(paso=len(inf['orden']) + 1, tipo=tipo, recurso=recurso,
+                 accion=accion, ok=ok)
+        if error:
+            e['error'] = error
+            inf['errores'].append('%s %s (%s): %s' % (tipo, recurso, accion, error))
+        if critico and ok is not True:
+            inf['completo'] = False
+            if not error:
+                inf['errores'].append('%s %s (%s): cierre no verificado'
+                                      % (tipo, recurso, accion))
+        inf['orden'].append(e)
+
+    # 1. escritores WAV de todos los CandidateRunner ya construidos
+    for r in list(runners or []):
+        for attr in ('writer_sdv', 'writer_sdi'):
+            w = getattr(r, attr, None)
+            if w is None:
+                continue
+            nombre = getattr(w, 'name', None) or '%s/%s' % (
+                getattr(r, 'cand_id', '?'), attr)
+            ok, err = _cerrar_idempotente_6g1(w)
+            inf['escritores'] += 1
+            paso('escritor_wav', str(nombre), 'close (cabecera finalizada)', ok, err)
+    # 2. memmaps: flush + cierre explícito del mmap subyacente
+    if isinstance(memmaps, dict):
+        for clave in sorted(memmaps, key=str):
+            arr = memmaps.pop(clave)
+            nombre = str(getattr(arr, 'filename', None) or clave)
+            inf['memmaps'] += 1
+            try:
+                arr.flush()
+                paso('memmap', nombre, 'flush', True)
+            except Exception as exc:
+                paso('memmap', nombre, 'flush', False,
+                     '%s: %s' % (type(exc).__name__, exc))
+            m = getattr(arr, '_mmap', None)
+            # mmap.close() NO falla aunque existan arrays que apunten a la
+            # región (numpy no retiene el buffer exportado): cerrar con otras
+            # referencias vivas dejaría memoria inválida en uso. Por eso se
+            # exige ser el ÚNICO titular (esta variable + el argumento de
+            # getrefcount); si no, sólo flush, error documentado y sin cierre.
+            refs = sys.getrefcount(arr) - 2
+            del arr
+            if m is None:
+                paso('memmap', nombre, 'close (sin mmap subyacente)', True)
+                continue
+            if refs > 0:
+                paso('memmap', nombre, 'close mmap', False,
+                     'referencias activas al memmap (%d); no se cierra para no '
+                     'invalidar memoria en uso; sigue mapeado' % refs)
+                del m
+                continue
+            try:
+                m.close()               # idempotente: cerrar dos veces no falla
+                paso('memmap', nombre, 'close mmap', bool(m.closed))
+            except Exception as exc:
+                paso('memmap', nombre, 'close mmap', False,
+                     '%s: %s' % (type(exc).__name__, exc))
+            del m
+    elif memmaps:
+        paso('memmap', repr(type(memmaps)), 'close', False,
+             'colección no soportada (se esperaba dict)')
+    # 3. descriptores de lectura (no críticos para el traslado: no apuntan
+    #    al provisional; los errores quedan igualmente documentados)
+    pendientes = [lectores]
+    while pendientes:
+        x = pendientes.pop(0)
+        if x is None:
+            continue
+        if isinstance(x, dict):
+            pendientes.extend(x.values())
+            continue
+        if isinstance(x, (list, tuple)):
+            pendientes.extend(x)
+            continue
+        nombre = str(getattr(x, 'path', None) or getattr(x, 'name', None) or repr(x))
+        ok, err = _cerrar_idempotente_6g1(x)
+        inf['lectores'] += 1
+        paso('lector', nombre, 'close', ok, err, critico=False)
+    return inf
+
+
+def resumen_cierre_6g1(inf):
+    return ('escritores=%d memmaps=%d lectores=%d completo=%s errores=%d'
+            % (inf.get('escritores', 0), inf.get('memmaps', 0),
+               inf.get('lectores', 0), inf.get('completo'),
+               len(inf.get('errores') or [])))
+
+
+def preparar_aborto_6g1(run_dir, log=None, cerrar_log=None, runners=None,
+                        memmaps=None, lectores=None):
+    """[6G.1-R/CR] Paso previo OBLIGATORIO a abortar_corrida_6g1() en los
+    tres motores: cierra los recursos (cerrar_recursos_corrida_6g1), deja el
+    resultado y cualquier error en engine_log.txt, cierra el log y verifica
+    que no queda ningún descriptor de escritura ni mapeo bajo el
+    provisional. Nunca propaga errores. Devuelve el informe que se pasa como
+    `cierre=` a abortar_corrida_6g1()."""
+    try:
+        inf = cerrar_recursos_corrida_6g1(runners, memmaps, lectores)
+    except Exception as exc:        # defensa: nunca impedir el aborto
+        inf = dict(orden=[], errores=['cierre de recursos interrumpido: %s: %s'
+                                      % (type(exc).__name__, exc)],
+                   completo=False, escritores=0, memmaps=0, lectores=0)
+    try:
+        previo = escritura_abierta_bajo_dir_6g1(run_dir, excluir=('engine_log.txt',))
+    except Exception as exc:
+        previo = ['no observable: %s' % exc]
+    if previo:
+        inf['completo'] = False
+        inf['errores'].append('escritura abierta tras el cierre: %s' % previo)
+    if log is not None:
+        try:
+            log('[6G.1-R/CR] cierre de recursos previo al aborto: %s'
+                % resumen_cierre_6g1(inf))
+            for e in inf['errores']:
+                log('[6G.1-R/CR] ERROR de cierre (documentado; el aborto '
+                    'continúa sin traslado): %s' % e)
+            log('[6G.1-R/CR] se cierra engine_log.txt; a continuación se '
+                'registra el aborto')
+        except Exception:
+            pass
+    if cerrar_log is not None:
+        try:
+            cerrar_log()
+        except Exception as exc:
+            inf['errores'].append('cierre del log: %s: %s' % (type(exc).__name__, exc))
+    try:
+        final = escritura_abierta_bajo_dir_6g1(run_dir)
+    except Exception as exc:
+        final = ['no observable: %s' % exc]
+    inf['escritura_abierta_al_registrar'] = final
+    if final:
+        inf['completo'] = False
+        inf['errores'].append('escritura abierta al registrar: %s' % final)
+    return inf

@@ -1,0 +1,261 @@
+{
+  "schema": "ast-cierre-recursos-6g1/1",
+  "bases": {
+    "c38d00d": "c38d00d505c6b359585fe7f474a21fd3ab272b4b",
+    "594a90f": "594a90f18c42139dcc7e753633afe33cb89cc752"
+  },
+  "motores": {
+    "Hardened": {
+      "c38d00d": {
+        "defs_cambiadas": [
+          "run_experiment"
+        ],
+        "defs_añadidas": [],
+        "defs_eliminadas": [],
+        "defs_sin_cambio": 64,
+        "otras_sentencias_cambiadas": [
+          "from lectura_segura_6g1 import MixCambiado as _MixCambiado_6g1, abrir_mix as _abrir_mix_6g1, abortar_6g1 as _abortar_6g1, registrar_propio_6g1 as _registrar_propio_6g1, reiniciar_registro_6g1 as _reiniciar_registro_6g1, crear_y_acreditar_dir_6g1 as _crear_y_acreditar_dir_6g1, publicar_dir_6g1 as _publicar_dir_6g1, FalloCorrida6G1 as _FalloCorrida_6g1, abortar_corrida_6g1 as _abortar_corrida_6g1, c"
+        ],
+        "detalle_defs_cambiadas": {
+          "run_experiment": {
+            "literales_iguales": true,
+            "llamadas_dsp_iguales": true
+          }
+        },
+        "defs_dsp_identicas": {
+          "analyze_guide_scale": true,
+          "CandidateRunner": true,
+          "OlaStream": true,
+          "stft_span_frames": true,
+          "compute_vocal_mask": true,
+          "consensus_from_masks": true,
+          "confidence_and_disagreement": true,
+          "apply_sfumato_smoothing": true,
+          "read_span": true,
+          "mono_downmix": true,
+          "FramePlan": true,
+          "post_wav_identity": true,
+          "build_band_masks": true
+        },
+        "veredicto": "OK"
+      },
+      "594a90f": {
+        "defs_cambiadas": [
+          "run_experiment"
+        ],
+        "defs_añadidas": [],
+        "defs_eliminadas": [],
+        "defs_sin_cambio": 64,
+        "otras_sentencias_cambiadas": [
+          "from lectura_segura_6g1 import MixCambiado as _MixCambiado_6g1, abrir_mix as _abrir_mix_6g1, abortar_6g1 as _abortar_6g1, registrar_propio_6g1 as _registrar_propio_6g1, reiniciar_registro_6g1 as _reiniciar_registro_6g1, crear_y_acreditar_dir_6g1 as _crear_y_acreditar_dir_6g1, publicar_dir_6g1 as _publicar_dir_6g1, FalloCorrida6G1 as _FalloCorrida_6g1, abortar_corrida_6g1 as _abortar_corrida_6g1, c"
+        ],
+        "detalle_defs_cambiadas": {
+          "run_experiment": {
+            "literales_iguales": true,
+            "llamadas_dsp_iguales": true
+          }
+        },
+        "defs_dsp_identicas": {
+          "analyze_guide_scale": true,
+          "CandidateRunner": true,
+          "OlaStream": true,
+          "stft_span_frames": true,
+          "compute_vocal_mask": true,
+          "consensus_from_masks": true,
+          "confidence_and_disagreement": true,
+          "apply_sfumato_smoothing": true,
+          "read_span": true,
+          "mono_downmix": true,
+          "FramePlan": true,
+          "post_wav_identity": true,
+          "build_band_masks": true
+        },
+        "veredicto": "OK"
+      }
+    },
+    "EVO": {
+      "c38d00d": {
+        "defs_cambiadas": [
+          "run_experiment"
+        ],
+        "defs_añadidas": [],
+        "defs_eliminadas": [],
+        "defs_sin_cambio": 67,
+        "otras_sentencias_cambiadas": [
+          "from lectura_segura_6g1 import MixCambiado as _MixCambiado_6g1, abrir_mix as _abrir_mix_6g1, abortar_6g1 as _abortar_6g1, registrar_propio_6g1 as _registrar_propio_6g1, reiniciar_registro_6g1 as _reiniciar_registro_6g1, crear_y_acreditar_dir_6g1 as _crear_y_acreditar_dir_6g1, publicar_dir_6g1 as _publicar_dir_6g1, FalloCorrida6G1 as _FalloCorrida_6g1, abortar_corrida_6g1 as _abortar_corrida_6g1, c"
+        ],
+        "detalle_defs_cambiadas": {
+          "run_experiment": {
+            "literales_iguales": true,
+            "llamadas_dsp_iguales": true
+          }
+        },
+        "defs_dsp_identicas": {
+          "analyze_guide_scale": true,
+          "CandidateRunner": true,
+          "OlaStream": true,
+          "stft_span_frames": true,
+          "compute_vocal_mask": true,
+          "consensus_from_masks": true,
+          "confidence_and_disagreement": true,
+          "apply_sfumato_smoothing": true,
+          "read_span": true,
+          "mono_downmix": true,
+          "FramePlan": true,
+          "post_wav_identity": true,
+          "build_band_masks": true
+        },
+        "veredicto": "OK"
+      },
+      "594a90f": {
+        "defs_cambiadas": [
+          "run_experiment"
+        ],
+        "defs_añadidas": [],
+        "defs_eliminadas": [],
+        "defs_sin_cambio": 67,
+        "otras_sentencias_cambiadas": [
+          "from lectura_segura_6g1 import MixCambiado as _MixCambiado_6g1, abrir_mix as _abrir_mix_6g1, abortar_6g1 as _abortar_6g1, registrar_propio_6g1 as _registrar_propio_6g1, reiniciar_registro_6g1 as _reiniciar_registro_6g1, crear_y_acreditar_dir_6g1 as _crear_y_acreditar_dir_6g1, publicar_dir_6g1 as _publicar_dir_6g1, FalloCorrida6G1 as _FalloCorrida_6g1, abortar_corrida_6g1 as _abortar_corrida_6g1, c"
+        ],
+        "detalle_defs_cambiadas": {
+          "run_experiment": {
+            "literales_iguales": true,
+            "llamadas_dsp_iguales": true
+          }
+        },
+        "defs_dsp_identicas": {
+          "analyze_guide_scale": true,
+          "CandidateRunner": true,
+          "OlaStream": true,
+          "stft_span_frames": true,
+          "compute_vocal_mask": true,
+          "consensus_from_masks": true,
+          "confidence_and_disagreement": true,
+          "apply_sfumato_smoothing": true,
+          "read_span": true,
+          "mono_downmix": true,
+          "FramePlan": true,
+          "post_wav_identity": true,
+          "build_band_masks": true
+        },
+        "veredicto": "OK"
+      }
+    },
+    "MQR": {
+      "c38d00d": {
+        "defs_cambiadas": [
+          "_run_core",
+          "run_experiment"
+        ],
+        "defs_añadidas": [],
+        "defs_eliminadas": [],
+        "defs_sin_cambio": 86,
+        "otras_sentencias_cambiadas": [
+          "from lectura_segura_6g1 import MixCambiado as _MixCambiado_6g1, abrir_mix as _abrir_mix_6g1, abortar_6g1 as _abortar_6g1, VerificacionFallida6G1 as _VerifFallida_6g1, registrar_propio_6g1 as _registrar_propio_6g1, reiniciar_registro_6g1 as _reiniciar_registro_6g1, crear_y_acreditar_dir_6g1 as _crear_y_acreditar_dir_6g1, publicar_dir_6g1 as _publicar_dir_6g1, FalloCorrida6G1 as _FalloCorrida_6g1, a"
+        ],
+        "detalle_defs_cambiadas": {
+          "_run_core": {
+            "literales_iguales": true,
+            "llamadas_dsp_iguales": true
+          },
+          "run_experiment": {
+            "literales_iguales": true,
+            "llamadas_dsp_iguales": true
+          }
+        },
+        "defs_dsp_identicas": {
+          "analyze_guide_scale": true,
+          "CandidateRunner": true,
+          "OlaStream": true,
+          "stft_span_frames": true,
+          "compute_vocal_mask": true,
+          "consensus_from_masks": true,
+          "confidence_and_disagreement": true,
+          "read_span": true,
+          "mono_downmix": true,
+          "FramePlan": true,
+          "post_wav_identity": true,
+          "build_band_masks": true
+        },
+        "veredicto": "OK"
+      },
+      "594a90f": {
+        "defs_cambiadas": [
+          "_run_core",
+          "run_experiment"
+        ],
+        "defs_añadidas": [],
+        "defs_eliminadas": [],
+        "defs_sin_cambio": 86,
+        "otras_sentencias_cambiadas": [
+          "from lectura_segura_6g1 import MixCambiado as _MixCambiado_6g1, abrir_mix as _abrir_mix_6g1, abortar_6g1 as _abortar_6g1, VerificacionFallida6G1 as _VerifFallida_6g1, registrar_propio_6g1 as _registrar_propio_6g1, reiniciar_registro_6g1 as _reiniciar_registro_6g1, crear_y_acreditar_dir_6g1 as _crear_y_acreditar_dir_6g1, publicar_dir_6g1 as _publicar_dir_6g1, FalloCorrida6G1 as _FalloCorrida_6g1, a"
+        ],
+        "detalle_defs_cambiadas": {
+          "_run_core": {
+            "literales_iguales": true,
+            "llamadas_dsp_iguales": true
+          },
+          "run_experiment": {
+            "literales_iguales": true,
+            "llamadas_dsp_iguales": true
+          }
+        },
+        "defs_dsp_identicas": {
+          "analyze_guide_scale": true,
+          "CandidateRunner": true,
+          "OlaStream": true,
+          "stft_span_frames": true,
+          "compute_vocal_mask": true,
+          "consensus_from_masks": true,
+          "confidence_and_disagreement": true,
+          "read_span": true,
+          "mono_downmix": true,
+          "FramePlan": true,
+          "post_wav_identity": true,
+          "build_band_masks": true
+        },
+        "veredicto": "OK"
+      }
+    }
+  },
+  "modulo": {
+    "c38d00d": {
+      "defs_añadidas": [
+        "_bajo_dir_6g1",
+        "_cerrado_6g1",
+        "_cerrar_idempotente_6g1",
+        "cerrar_recursos_corrida_6g1",
+        "descriptores_bajo_dir_6g1",
+        "escritura_abierta_bajo_dir_6g1",
+        "mapeos_bajo_dir_6g1",
+        "preparar_aborto_6g1",
+        "resumen_cierre_6g1"
+      ],
+      "defs_eliminadas": [],
+      "defs_cambiadas": [
+        "abortar_corrida_6g1"
+      ]
+    },
+    "594a90f": {
+      "defs_añadidas": [
+        "FalloCorrida6G1",
+        "_bajo_dir_6g1",
+        "_cerrado_6g1",
+        "_cerrar_idempotente_6g1",
+        "_registro_aborto_verificado_6g1",
+        "abortar_corrida_6g1",
+        "cerrar_recursos_6g1",
+        "cerrar_recursos_corrida_6g1",
+        "descriptores_bajo_dir_6g1",
+        "escritura_abierta_bajo_dir_6g1",
+        "mapeos_bajo_dir_6g1",
+        "preparar_aborto_6g1",
+        "resumen_aborto_6g1",
+        "resumen_cierre_6g1"
+      ],
+      "defs_eliminadas": [],
+      "defs_cambiadas": []
+    }
+  },
+  "veredicto": "OK"
+}

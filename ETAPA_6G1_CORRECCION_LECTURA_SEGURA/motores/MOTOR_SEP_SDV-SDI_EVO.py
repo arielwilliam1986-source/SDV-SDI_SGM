@@ -316,6 +316,7 @@ from lectura_segura_6g1 import (MixCambiado as _MixCambiado_6g1,
                                  abortar_corrida_6g1 as _abortar_corrida_6g1,
                                  cerrar_recursos_6g1 as _cerrar_recursos_6g1,
                                  resumen_aborto_6g1 as _resumen_aborto_6g1,
+                                 preparar_aborto_6g1 as _preparar_aborto_6g1,
                                  sha_fd_estable_6g1 as _sha_fd_estable_6g1)
 
 from atribucion_6f import (measure, verify_wave, alignment_gate,
@@ -2044,28 +2045,53 @@ def run_experiment(mix_path: str, pairs: list, mode: str, opt: argparse.Namespac
         # cualquier traslado; traslado a _aborted* sólo con directorio
         # acreditado y ABORT_6G1.json verificado, y sólo con publicar_dir_6g1
         # (renameat2 RENAME_NOREPLACE); si no, el provisional se conserva.
-        _cerrar_recursos_6g1(locals().get("hmix"), locals().get("handles"))
+        # [6G.1-R/CR] Cierre DETERMINISTA antes del aborto: escritores WAV de
+        # todos los CandidateRunner (cabeceras finalizadas), memmaps (flush +
+        # cierre del mmap), lectores; después se cierra el log y sólo entonces
+        # se registra el aborto (y, si procede, se traslada).
+        _cr6g1 = _preparar_aborto_6g1(run_dir, log, close_tee,
+                                      runners=locals().get("runners"),
+                                      memmaps=locals().get("mm"),
+                                      lectores=(locals().get("hmix"),
+                                                locals().get("handles")))
         _res6g1 = _abortar_corrida_6g1(run_dir, run_dir_final + "_aborted",
-                                       "INTERRUPCION_DEL_USUARIO")
+                                       "INTERRUPCION_DEL_USUARIO", cierre=_cr6g1)
         log("[ABORT] Interrumpido por usuario: %s" % _resumen_aborto_6g1(_res6g1))
         close_tee()
         return EXIT_ABORTED, None
     except _FalloCorrida_6g1 as _f6g1:
-        _cerrar_recursos_6g1(locals().get("hmix"), locals().get("handles"))
+        # [6G.1-R/CR] Cierre DETERMINISTA antes del aborto: escritores WAV de
+        # todos los CandidateRunner (cabeceras finalizadas), memmaps (flush +
+        # cierre del mmap), lectores; después se cierra el log y sólo entonces
+        # se registra el aborto (y, si procede, se traslada).
+        _cr6g1 = _preparar_aborto_6g1(run_dir, log, close_tee,
+                                      runners=locals().get("runners"),
+                                      memmaps=locals().get("mm"),
+                                      lectores=(locals().get("hmix"),
+                                                locals().get("handles")))
         _res6g1 = _abortar_corrida_6g1(run_dir, run_dir_final + "_aborted",
                                        _f6g1.motivo, _f6g1.detalle,
-                                       trasladar=_f6g1.trasladar)
+                                       trasladar=_f6g1.trasladar, cierre=_cr6g1)
         log("[FATAL] %s; sin publicar: %s" % (_f6g1.motivo,
                                                _resumen_aborto_6g1(_res6g1)))
         close_tee()
         return EXIT_PROCESSING, None
     except Exception as exc:
-        _cerrar_recursos_6g1(locals().get("hmix"), locals().get("handles"))
+        traceback.print_exc()       # [6G.1-R/CR] antes de cerrar el log
+        # [6G.1-R/CR] Cierre DETERMINISTA antes del aborto: escritores WAV de
+        # todos los CandidateRunner (cabeceras finalizadas), memmaps (flush +
+        # cierre del mmap), lectores; después se cierra el log y sólo entonces
+        # se registra el aborto (y, si procede, se traslada).
+        _cr6g1 = _preparar_aborto_6g1(run_dir, log, close_tee,
+                                      runners=locals().get("runners"),
+                                      memmaps=locals().get("mm"),
+                                      lectores=(locals().get("hmix"),
+                                                locals().get("handles")))
         _res6g1 = _abortar_corrida_6g1(run_dir, run_dir_final + "_aborted",
                                        "EXCEPCION_DURANTE_EL_PROCESAMIENTO",
-                                       "%s: %s" % (type(exc).__name__, exc))
+                                       "%s: %s" % (type(exc).__name__, exc),
+                                       cierre=_cr6g1)
         log(f"[FATAL] Excepción: {exc}. " + _resumen_aborto_6g1(_res6g1))
-        traceback.print_exc()
         close_tee()
         return EXIT_PROCESSING, None
 

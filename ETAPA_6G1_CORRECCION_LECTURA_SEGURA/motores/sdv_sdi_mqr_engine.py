@@ -505,6 +505,7 @@ from lectura_segura_6g1 import (MixCambiado as _MixCambiado_6g1,
                                  abortar_corrida_6g1 as _abortar_corrida_6g1,
                                  cerrar_recursos_6g1 as _cerrar_recursos_6g1,
                                  resumen_aborto_6g1 as _resumen_aborto_6g1,
+                                 preparar_aborto_6g1 as _preparar_aborto_6g1,
                                  sha_fd_estable_6g1 as _sha_fd_estable_6g1)
 
 from atribucion_6f import (measure, verify_wave, alignment_gate,
@@ -2328,28 +2329,56 @@ def run_experiment(mix_path, pairs, mode, opt):
         # cualquier traslado; traslado a _aborted* sólo con directorio
         # acreditado y ABORT_6G1.json verificado, y sólo con publicar_dir_6g1
         # (renameat2 RENAME_NOREPLACE); si no, el provisional se conserva.
-        _cerrar_recursos_6g1(ctx.get("_mix_handle_6g1"))
+        # [6G.1-R/CR] Cierre DETERMINISTA antes del aborto: escritores WAV de
+        # todos los CandidateRunner (cabeceras finalizadas), memmaps (flush +
+        # cierre del mmap), lectores (registrados por _run_core en ctx);
+        # después se cierra el log y sólo entonces se registra el aborto.
+        _rec6g1 = ctx.get("_recursos_6g1") or {}
+        _cr6g1 = _preparar_aborto_6g1(run_dir, log, close_tee,
+                                      runners=_rec6g1.get("runners"),
+                                      memmaps=_rec6g1.get("memmaps"),
+                                      lectores=(ctx.get("_mix_handle_6g1"),
+                                                _rec6g1.get("lectores")))
         _res6g1 = _abortar_corrida_6g1(run_dir, run_dir_final + "_aborted",
-                                       "INTERRUPCION_DEL_USUARIO")
+                                       "INTERRUPCION_DEL_USUARIO", cierre=_cr6g1)
         log("[ABORT] interrupcion del usuario: %s" % _resumen_aborto_6g1(_res6g1))
         close_tee()
         return EXIT_ABORTED, None
     except _FalloCorrida_6g1 as _f6g1:
-        _cerrar_recursos_6g1(ctx.get("_mix_handle_6g1"))
+        # [6G.1-R/CR] Cierre DETERMINISTA antes del aborto: escritores WAV de
+        # todos los CandidateRunner (cabeceras finalizadas), memmaps (flush +
+        # cierre del mmap), lectores (registrados por _run_core en ctx);
+        # después se cierra el log y sólo entonces se registra el aborto.
+        _rec6g1 = ctx.get("_recursos_6g1") or {}
+        _cr6g1 = _preparar_aborto_6g1(run_dir, log, close_tee,
+                                      runners=_rec6g1.get("runners"),
+                                      memmaps=_rec6g1.get("memmaps"),
+                                      lectores=(ctx.get("_mix_handle_6g1"),
+                                                _rec6g1.get("lectores")))
         _res6g1 = _abortar_corrida_6g1(run_dir, run_dir_final + "_aborted",
                                        _f6g1.motivo, _f6g1.detalle,
-                                       trasladar=_f6g1.trasladar)
+                                       trasladar=_f6g1.trasladar, cierre=_cr6g1)
         log("[FATAL] %s; sin publicar: %s" % (_f6g1.motivo,
                                                _resumen_aborto_6g1(_res6g1)))
         close_tee()
         return EXIT_PROCESSING, None
     except Exception as _exc6g1:
-        _cerrar_recursos_6g1(ctx.get("_mix_handle_6g1"))
+        traceback.print_exc()       # [6G.1-R/CR] antes de cerrar el log
+        # [6G.1-R/CR] Cierre DETERMINISTA antes del aborto: escritores WAV de
+        # todos los CandidateRunner (cabeceras finalizadas), memmaps (flush +
+        # cierre del mmap), lectores (registrados por _run_core en ctx);
+        # después se cierra el log y sólo entonces se registra el aborto.
+        _rec6g1 = ctx.get("_recursos_6g1") or {}
+        _cr6g1 = _preparar_aborto_6g1(run_dir, log, close_tee,
+                                      runners=_rec6g1.get("runners"),
+                                      memmaps=_rec6g1.get("memmaps"),
+                                      lectores=(ctx.get("_mix_handle_6g1"),
+                                                _rec6g1.get("lectores")))
         _res6g1 = _abortar_corrida_6g1(run_dir, run_dir_final + "_aborted",
                                        "EXCEPCION_DURANTE_EL_PROCESAMIENTO",
-                                       "%s: %s" % (type(_exc6g1).__name__, _exc6g1))
+                                       "%s: %s" % (type(_exc6g1).__name__, _exc6g1),
+                                       cierre=_cr6g1)
         log("[FATAL] excepcion en el pipeline: %s" % _resumen_aborto_6g1(_res6g1))
-        traceback.print_exc()
         close_tee()
         return EXIT_PROCESSING, None
 
@@ -2381,6 +2410,10 @@ def _run_core(mix_info, pairs, mode, opt, plan, freqs, band_masks,
 
     # --- memmaps de mascaras (spec outputs; D2: float32 en disco) ------------
     mm = {}
+    # [6G.1-R/CR] Registro de los recursos de escritura/lectura de la corrida
+    # (los mismos objetos, llenados en sitio) para que el manejador de aborto
+    # de run_experiment los cierre de forma determinista.
+    ctx["_recursos_6g1"] = {"memmaps": mm}
     for p in pairs:
         pid = safe_name(p.pair_id)
         mm["mask_%s_vocal" % pid] = _open_memmap(
@@ -2420,6 +2453,7 @@ def _run_core(mix_info, pairs, mode, opt, plan, freqs, band_masks,
     # --- candidatos ------------------------------------------------------------
     all_ids = [p.pair_id for p in pairs]
     runners = []
+    ctx["_recursos_6g1"]["runners"] = runners       # [6G.1-R/CR]
     for k, p in enumerate(pairs):
         write_audio = full_mode and opt.write_all_candidates
         if write_audio:
@@ -2472,6 +2506,7 @@ def _run_core(mix_info, pairs, mode, opt, plan, freqs, band_masks,
                                 trasladar=False)
     ctx["_mix_handle_6g1"] = hmix
     handles = {}
+    ctx["_recursos_6g1"]["lectores"] = handles      # [6G.1-R/CR]
     for p in pairs:
         handles[(p.pair_id, "vocal")] = sf.SoundFile(p.vocal.path)
         handles[(p.pair_id, "instrumental")] = sf.SoundFile(
@@ -2630,6 +2665,7 @@ def _run_core(mix_info, pairs, mode, opt, plan, freqs, band_masks,
     for arr in mm.values():
         arr.flush()
     del mm
+    ctx["_recursos_6g1"].pop("memmaps", None)       # [6G.1-R/CR] vida útil sin cambio
 
     # cierre de writers y metricas finales por candidato
     per_candidate = {}

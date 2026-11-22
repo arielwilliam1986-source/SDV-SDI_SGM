@@ -1,0 +1,121 @@
+{
+  "schema": "manifest-cierre-recursos-6g1/1",
+  "commit_padre": "c38d00d505c6b359585fe7f474a21fd3ab272b4b",
+  "rama": "arena/c7719286-sdv-sdi-sgm",
+  "alcance": "cierre determinista de recursos (escritores WAV, memmaps, lectores, log) antes de abortar_corrida_6g1 en Hardened/EVO/MQR; sin cambios DSP",
+  "archivos": [
+    {
+      "ruta": "ETAPA_6G1_CORRECCION_LECTURA_SEGURA/CIERRE_RECURSOS_6G1.md",
+      "estado": "nuevo",
+      "sha256_c38d00d": null,
+      "sha256": "fc3989db32e0364277dff7fde6aedca7bf34b75eca4fa2ec35fe1526235ee092"
+    },
+    {
+      "ruta": "ETAPA_6G1_CORRECCION_LECTURA_SEGURA/DIFF_CIERRE_RECURSOS_6G1_vs_c38d00d.patch",
+      "estado": "nuevo",
+      "sha256_c38d00d": null,
+      "sha256": "605a6645d33a8794603184b9358719fd5a0821dcc88ffa5ab8f49bd456cbf07f"
+    },
+    {
+      "ruta": "ETAPA_6G1_CORRECCION_LECTURA_SEGURA/evidence/ast_cierre_recursos_6g1.json",
+      "estado": "nuevo",
+      "sha256_c38d00d": null,
+      "sha256": "134d544e7079000bef1fac17e69997a32df283c70016912b3ea304743abed0af"
+    },
+    {
+      "ruta": "ETAPA_6G1_CORRECCION_LECTURA_SEGURA/evidence/matriz_cierre_recursos_6g1.csv",
+      "estado": "nuevo",
+      "sha256_c38d00d": null,
+      "sha256": "1cad5218a2d05acf3a0bbed211d1532009d0fba9e2c0200f4d58fc84a324a7b8"
+    },
+    {
+      "ruta": "ETAPA_6G1_CORRECCION_LECTURA_SEGURA/evidence/pruebas_cierre_recursos_6g1.json",
+      "estado": "nuevo",
+      "sha256_c38d00d": null,
+      "sha256": "54fa531d07760f66b6378f16fa6ee83efa7a5e13f105514a1140e6d406f3f7e6"
+    },
+    {
+      "ruta": "ETAPA_6G1_CORRECCION_LECTURA_SEGURA/motores/MOTOR_SEP_SDV-SDI_EVO.py",
+      "estado": "modificado",
+      "sha256_c38d00d": "cd5aa200903b98065de9a722613581c66404d7962d9c6827f3689818dc80858d",
+      "sha256": "438bb7a8eb834dee0bba060c9fe3d1d5e350909cb5d51c6e0c90f40b39b2690c"
+    },
+    {
+      "ruta": "ETAPA_6G1_CORRECCION_LECTURA_SEGURA/motores/MOTOR_SEP_SDV-SDI_v3.1.1_Hardened_Final.py",
+      "estado": "modificado",
+      "sha256_c38d00d": "3977473dd4eab50c9bf365cbc913691f0c977d0c95f29e3b14764ebc6d4b5c8c",
+      "sha256": "e3a0574fa6f4a35dd59968093df8a338431423d47f55f30e3114c80c272c5fe8"
+    },
+    {
+      "ruta": "ETAPA_6G1_CORRECCION_LECTURA_SEGURA/motores/lectura_segura_6g1.py",
+      "estado": "modificado",
+      "sha256_c38d00d": "e66ae40f39042da5c7b2fb5e5e129064224b856bc73e830175001744a0091c09",
+      "sha256": "c1b73d4cb26f8ebc17aa873bbca694ca0cb169ad2e40988833185a5077c00407"
+    },
+    {
+      "ruta": "ETAPA_6G1_CORRECCION_LECTURA_SEGURA/motores/sdv_sdi_mqr_engine.py",
+      "estado": "modificado",
+      "sha256_c38d00d": "75f41cdaa811ad61822292ea3bbbc1e3c279389190a350f7d9b9e8dd989f717a",
+      "sha256": "41b075dfdac23b4a4ecbb543051cfcfddabc36dfa4e496d90e7cb3b27efdbaf7"
+    },
+    {
+      "ruta": "ETAPA_6G1_CORRECCION_LECTURA_SEGURA/scripts/inyeccion_cierre_6g1/ejecutar_motor_cierre.py",
+      "estado": "nuevo",
+      "sha256_c38d00d": null,
+      "sha256": "ae8759233ee1a8029caf41a3b681b01c1c359260b0ed98f4d8ea14b0b9acf3f3"
+    },
+    {
+      "ruta": "ETAPA_6G1_CORRECCION_LECTURA_SEGURA/scripts/pruebas_cierre_recursos_6g1.py",
+      "estado": "nuevo",
+      "sha256_c38d00d": null,
+      "sha256": "046dfe81042043e2c9c478b6086d325926fddb50b2721dcb7acb23e9049c7873"
+    },
+    {
+      "ruta": "ETAPA_6G1_CORRECCION_LECTURA_SEGURA/scripts/verificar_ast_cierre_recursos_6g1.py",
+      "estado": "nuevo",
+      "sha256_c38d00d": null,
+      "sha256": "e6c712df977e15bc4946b8218060000beb9974f9a734f911c69934ce5b20244a"
+    }
+  ],
+  "resultados": {
+    "bateria_cierre_recursos": {
+      "corregido": {
+        "pass_": 15,
+        "total": 15
+      },
+      "base_c38d00d": {
+        "pass_": 3,
+        "total": 15
+      },
+      "escenarios": [
+        "R1",
+        "R2",
+        "R3",
+        "R4",
+        "E0"
+      ]
+    },
+    "ast": "OK"
+  },
+  "no_modificados": [
+    "motores 6G originales",
+    "main",
+    "DSP/STFT/ISTFT/FFT/hop/máscaras/consenso/fórmulas/reconstrucción/parámetros",
+    "validadores WAV/FLAC",
+    "fixtures",
+    "evidencia y scripts de c38d00d (CV)",
+    "evidencia de la prueba DSP y adjudicación",
+    "matriz global/consolidación"
+  ],
+  "no_ejecutado": [
+    "batería CV de c38d00d",
+    "H1",
+    "C-R1",
+    "H2",
+    "baterías históricas",
+    "audio real",
+    "Elis/Tristania",
+    "Android/Termux"
+  ],
+  "estado": "propuesto para revisión de Cris; 6G.1 NO cerrada"
+}
