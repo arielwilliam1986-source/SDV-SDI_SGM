@@ -1,0 +1,880 @@
+diff --git a/ETAPA_6G1_CORRECCION_LECTURA_SEGURA/INFORME_H1_R2_6G1.md b/ETAPA_6G1_CORRECCION_LECTURA_SEGURA/INFORME_H1_R2_6G1.md
+new file mode 100644
+index 0000000..60d593e
+--- /dev/null
++++ b/ETAPA_6G1_CORRECCION_LECTURA_SEGURA/INFORME_H1_R2_6G1.md
+@@ -0,0 +1,88 @@
++# INFORME H1-R2 — RECTIFICACIÓN 6G.1 (CIERRE DE DOS BRECHAS DE ANCLAJE)
++
++**Implementador**: Arena.ai · **Responsable técnico**: Cris · **Decisor final**: Will
++**Fecha**: 2026-11-21
++**HEAD obligatorio de partida**: `f54ceb532b4e6a38410cfedfe35dfd2bb5c4ff1d` (padre directo del commit de esta entrega, verificado con `git rev-parse HEAD^`)
++**Alcance**: exclusivamente los dos hallazgos (H1-R2-A, H1-R2-B) y sus pruebas. Sin cambios DSP; motores originales de 6G, `main` y rama de referencia intactos; baterías históricas 34/26/17/12 no repetidas.
++
++> **Estado**: ENTREGADA, **NO CERRADA**. No se declara H1 cerrada ni 6G.1 aprobada: la aprobación requiere una nueva auditoría independiente de Cris.
++
++---
++
++## 1. H1-R2-A — Acreditación segura desde la creación
++
++**Brecha**: `create_run_dir()` ejecutaba `os.mkdir(partial_dir)` y luego `_acreditar_dir_6g1(partial_dir)` (identidad por `os.lstat` de la ruta): entre ambas, una sustitución de la ruta podía registrar la identidad de un impostor.
++
++**Solución** (nueva función pública `crear_y_acreditar_dir_6g1(padre, nombre)`; aplicada en **Hardened, EVO y MQR**):
++
++1. **Padre evaluado y asegurado**: se abre de forma segura (`O_DIRECTORY | O_NOFOLLOW` — un enlace en la ruta del padre no se sigue) y se verifica la condición de privacidad: **propiedad del euid** y **sin permisos de escritura para grupo/otros** («privado y no modificable por terceros»). Si no se cumple, **no se crea nada y se eleva `RuntimeError`** (fail-closed: los motores abortan sin crear corrida).
++2. **Creación por descriptor**: `os.mkdir(nombre, 0o700, dir_fd=fd_padre)` — exclusiva respecto del padre **validado** y modo privado para el provisional.
++3. **Acreditación por descriptor**: apertura del provisional **relativa al padre validado** (`O_NOFOLLOW`, `dir_fd`) e identidad por **`fstat`** — la identidad registrada es la del objeto creado dentro del padre validado, no la de una re-consulta por ruta. La ventana POSIX residual entre `mkdir` y la apertura (sólo alcanzable por procesos de la misma uid) queda cubierta por la condición del padre verificada en el paso 2 (modelo de amenaza documentado en el docstring).
++4. La identidad `(st_dev, st_ino)` queda **vinculada a la corrida** (`_DIR_6G1`, limpiada por `reiniciar_registro_6g1()`); `_anclar_dir_aborto_6g1` (H1) la verifica al abortar. `acreditar_dir_6g1()` (por ruta) queda documentado como mecanismo de arneses de pruebas; la producción usa el nuevo.
++5. Los motores llaman al nuevo mecanismo dentro de su bucle anti-colisión (F intacto: `FileExistsError` → sufijo; la denegación por padre no conforme propaga y aborta sin crear nada).
++
++## 2. H1-R2-B — Inventario exclusivamente mediante descriptores
++
++**Brecha**: el recorrido usaba `fd_base`, pero la clasificación re-consultaba la ruta absoluta (`propiedad_de_6g1(os.path.join(str(run_dir), rel))`), que además volvía a hacer `lstat` por ruta: contradecía el anclaje y abría una consulta post-acreditación por ruta.
++
++**Solución** (nuevas `_clasificar_entrada_6g1(nombre, st, fd_dir, ruta_esperada)` y `_sha_via_descriptor_6g1(nombre, fd_dir, st)`):
++
++- La clasificación se hace **por identidad del descriptor**: `(st_dev, st_ino)` del `lstat` relativo (`os.lstat(nombre, dir_fd=fd_base)`) cotejado contra el registro de la corrida; **sin seguir enlaces**.
++- El **SHA-256** se calcula abriendo el archivo con `dir_fd` + `O_NOFOLLOW`, verificando por `fstat` la misma identidad y re-verificando tamaño/mtime tras la lectura (sin rutas).
++- `ruta_esperada` se usa **sólo como clave de comparación del registro** (para distinguir un *sustituido* de un *ajeno* y conservar los motivos C-R1: `identidad_distinta`, `ajeno_no_registrado`) — **nunca para re-consultar el sistema de archivos** (verificado estáticamente: 0 `propiedad_de_6g1(os…` en el módulo).
++- **Registro dinámico del motor** (`estable=False`, salidas en escritura): la propiedad se acredita **por identidad**, igual que la semántica C-R1 de `propiedad_de_6g1` (el sello sólo se exige en `estable=True`); detectado y corregido durante la regresión e2e (primera ejecución: salidas → conservadas por «registro no sellado»; corrección aplicada y re-regresión verde).
++- **Garantías C-R1 intactas**: nada se elimina; las propias se invalidan y conservan; los motivos se mantienen; `propiedad_de_6g1()` permanece como API de dictamen por ruta (arneses históricos de prueba).
++
++## 3. Invariantes preservadas
++
++C-R1 (cero eliminaciones) · E-R2 (`analysis.json` intacto) · parciales conservados · `resultados_validos: []` en abortos · `ABORT_6G1.json` con creación exclusiva + `O_NOFOLLOW` + `dir_fd` · schema **`abort-6g1/3`** sin cambios incompatibles · DSP original de los tres motores sin alteración.
++
++## 4. Pruebas focalizadas y resultados
++
++**Batería H1-R2 (nueva, `scripts/pruebas_h1_r2_6g1.py`): 4/4 PASS, 0 FAIL, 0 NOT_EXECUTED** (`evidence/matriz_h1_r2_6g1.csv`; detalle: `evidence/pruebas_h1_r2_6g1.json`):
++
++| Prueba | Qué comprueba | Resultado |
++|---|---|---|
++| **A1** | Creación+acreditación por descriptores: provisional creado (modo 0o700) dentro del padre validado; identidad acreditada == identidad de una apertura independiente `O_NOFOLLOW`; vinculada a la corrida (anclaje OK) | PASS |
++| **A2** | Sustituto en la ruta tras la acreditación (impostor con señuelo): **nunca acreditado como provisional legítimo** — aborto por esa ruta fail-closed (`identidad_distinta`), **sin ABORT en el impostor**, señuelo byte a byte intacto, nada eliminado, sin salidas válidas; el provisional acreditado (vivo, movido aparte) sigue vinculado | PASS |
++| **A3** | Padre **no conforme** (g+w, modificable por terceros): el mecanismo **se niega** (RuntimeError «modificable por terceros»), **sin crear y sin acreditar nada** | PASS |
++| **B1** | Sustitución de la ruta **después de abrir y validar el descriptor y antes de clasificar** (impostor con señuelo de contenido distinto): el ABORT aterriza en el **original vía descriptor** (en donde quedó el objeto abierto), `directorio_acreditado=True`, la clasificación corresponde al original (`salida.wav` invalidada aunque la ruta ya apuntaba al impostor), **sin consulta del árbol externo** (señuelo byte a byte, sin ABORT en el impostor), ajeno del original intacto, nada eliminado | PASS |
++
++**Regresiones focalizadas (ejecutadas tras los cambios)**: batería **H1** (H1a/H1b/H1c + **los tres flujos de aborto** e2e + sanidad ×3): **10/10 PASS**; batería **C-R1** (con el gancho de la ventana histórica actualizado al mecanismo por descriptor — dictamen original → `os.replace` → devolución): **13/13 PASS**. Evidencia regenerada (`pruebas_h1_6g1.json/csv`, `pruebas_c_r1_6g1.json/csv`). Baterías históricas 34/26/17/12: no ejecutadas.
++
++**Registro de iteraciones** (ninguna de diseño tras la corrección de la primera): (1) A2 usaba `shutil.move` sobre una ruta ya renombrada → el impostor se crea directamente en la ruta; (2) A2 trataba la ruta del helper (`str`) como `Path` → `Path(ruta)`; (3) primera regresión e2e: salidas del motor → conservadas por «registro no sellado» → clasificación corregida al semántico C-R1 (identidad para registros dinámicos). Ejecución final: 4/4 + 10/10 + 13/13.
++
++## 5. SHA-256, DIFF y commits
++
++- `SHA256SUMS_H1_R2.txt` (12 ficheros con SHA previo en comentario; verificado con `sha256sum -c`: 12/12 OK).
++- `DIFF_6G1_H1_R2.patch`: diff incremental **reversible** respecto de `f54ceb532b4e6a38410cfedfe35dfd2bb5c4ff1d` (`patch -R -p1` → árbol base byte a byte; forward dry-run exit 0).
++- **Padre directo**: `f54ceb532b4e6a38410cfedfe35dfd2bb5c4ff1d` · **Nuevo commit**: hijo directo (SHA completo en el informe de ejecución y en §6 de este documento).
++
++## 6. Identificación exacta de commits
++
++- **Commit anterior (base obligatoria)**: `f54ceb532b4e6a38410cfedfe35dfd2bb5c4ff1d`
++- **Nuevo commit (esta entrega)**: ver sección 8 y el informe de ejecución (padre directo verificado).
++
++## 7. Límites respetados
++
++Sin STFT/ISTFT/FFT/hop/chunking/máscaras/fórmulas/consenso/ganancias/polaridad/parámetros DSP (sanidad ×3 con PCM idéntico a la campaña auditada); motores originales de 6G y carpeta 6G de referencia intactos; `main` y otras ramas intactos; sin canciones reales ni Elis/Tristania; sin Android/Termux; baterías históricas 34/26/17/12 no repetidas; sin fusionar ramas ni abrir PR. **No se declara H1 cerrada ni 6G.1 aprobada.**
++
++## 8. Enlaces (URLs completas)
++
++Informe H1-R2 (este documento):
++https://github.com/arielwilliam1986-source/SDV-SDI_SGM/blob/arena/441a4bf8-sdv-sdi-sgm/ETAPA_6G1_CORRECCION_LECTURA_SEGURA/INFORME_H1_R2_6G1.md
++
++Diff incremental vs f54ceb5 (reversible):
++https://github.com/arielwilliam1986-source/SDV-SDI_SGM/blob/arena/441a4bf8-sdv-sdi-sgm/ETAPA_6G1_CORRECCION_LECTURA_SEGURA/DIFF_6G1_H1_R2.patch
++
++SHA-256 de los archivos modificados:
++https://github.com/arielwilliam1986-source/SDV-SDI_SGM/blob/arena/441a4bf8-sdv-sdi-sgm/ETAPA_6G1_CORRECCION_LECTURA_SEGURA/SHA256SUMS_H1_R2.txt
++
++Matriz H1-R2:
++https://github.com/arielwilliam1986-source/SDV-SDI_SGM/blob/arena/441a4bf8-sdv-sdi-sgm/ETAPA_6G1_CORRECCION_LECTURA_SEGURA/evidence/matriz_h1_r2_6g1.csv
++
++Resultados individuales por check:
++https://github.com/arielwilliam1986-source/SDV-SDI_SGM/blob/arena/441a4bf8-sdv-sdi-sgm/ETAPA_6G1_CORRECCION_LECTURA_SEGURA/evidence/pruebas_h1_r2_6g1.json
++
++Módulo corregido:
++https://github.com/arielwilliam1986-source/SDV-SDI_SGM/blob/arena/441a4bf8-sdv-sdi-sgm/ETAPA_6G1_CORRECCION_LECTURA_SEGURA/motores/lectura_segura_6g1.py
+diff --git a/ETAPA_6G1_CORRECCION_LECTURA_SEGURA/evidence/matriz_h1_r2_6g1.csv b/ETAPA_6G1_CORRECCION_LECTURA_SEGURA/evidence/matriz_h1_r2_6g1.csv
+new file mode 100644
+index 0000000..b4c6fcf
+--- /dev/null
++++ b/ETAPA_6G1_CORRECCION_LECTURA_SEGURA/evidence/matriz_h1_r2_6g1.csv
+@@ -0,0 +1,5 @@
++prueba,motor,alcance,veredicto,checks_ok,checks_total,detalle
++A1,lectura_segura_6g1,creación+acreditación por descriptores con padre validado,PASS,4,4,todos los checks OK
++A2,lectura_segura_6g1,sustituto en la ruta tras la acreditación: nunca acreditado como provisional legítimo,PASS,6,6,todos los checks OK
++A3,lectura_segura_6g1,"padre modificable por terceros: el mecanismo se niega (fail-closed, sin crear ni acreditar)",PASS,3,3,todos los checks OK
++B1,lectura_segura_6g1,"ruta sustituida tras validar el descriptor y antes de clasificar: la clasificación sigue al descriptor original, sin consultar el árbol externo",PASS,10,10,todos los checks OK
+diff --git a/ETAPA_6G1_CORRECCION_LECTURA_SEGURA/evidence/pruebas_c_r1_6g1.json b/ETAPA_6G1_CORRECCION_LECTURA_SEGURA/evidence/pruebas_c_r1_6g1.json
+index 358c43a..5d4b401 100644
+--- a/ETAPA_6G1_CORRECCION_LECTURA_SEGURA/evidence/pruebas_c_r1_6g1.json
++++ b/ETAPA_6G1_CORRECCION_LECTURA_SEGURA/evidence/pruebas_c_r1_6g1.json
+@@ -275,7 +275,7 @@
+     "Hardened": {
+       "E2E": {
+         "exit": 2,
+-        "abort_dir": "/tmp/f6g1cr1/Hardened/E2E/out/motorA_run_20261121_235907_partial"
++        "abort_dir": "/tmp/f6g1cr1/Hardened/E2E/out/motorA_run_20261122_001635_partial"
+       },
+       "sanidad": {
+         "exit": 0
+@@ -284,7 +284,7 @@
+     "EVO": {
+       "E2E": {
+         "exit": 2,
+-        "abort_dir": "/tmp/f6g1cr1/EVO/E2E/out/motorA_run_20261121_235910_partial"
++        "abort_dir": "/tmp/f6g1cr1/EVO/E2E/out/motorA_run_20261122_001638_partial"
+       },
+       "sanidad": {
+         "exit": 0
+@@ -293,7 +293,7 @@
+     "MQR": {
+       "E2E": {
+         "exit": 2,
+-        "abort_dir": "/tmp/f6g1cr1/MQR/E2E/out/mqr_run_20261121_235913_partial"
++        "abort_dir": "/tmp/f6g1cr1/MQR/E2E/out/mqr_run_20261122_001641_partial"
+       },
+       "sanidad": {
+         "exit": 0
+diff --git a/ETAPA_6G1_CORRECCION_LECTURA_SEGURA/evidence/pruebas_h1_r2_6g1.json b/ETAPA_6G1_CORRECCION_LECTURA_SEGURA/evidence/pruebas_h1_r2_6g1.json
+new file mode 100644
+index 0000000..a368fc8
+--- /dev/null
++++ b/ETAPA_6G1_CORRECCION_LECTURA_SEGURA/evidence/pruebas_h1_r2_6g1.json
+@@ -0,0 +1,98 @@
++{
++  "schema": "pruebas-h1-r2-6g1/1",
++  "filas": [
++    {
++      "prueba": "A1",
++      "motor": "lectura_segura_6g1",
++      "alcance": "creación+acreditación por descriptores con padre validado",
++      "veredicto": "PASS",
++      "checks_ok": 4,
++      "checks_total": 4,
++      "detalle": "todos los checks OK"
++    },
++    {
++      "prueba": "A2",
++      "motor": "lectura_segura_6g1",
++      "alcance": "sustituto en la ruta tras la acreditación: nunca acreditado como provisional legítimo",
++      "veredicto": "PASS",
++      "checks_ok": 6,
++      "checks_total": 6,
++      "detalle": "todos los checks OK"
++    },
++    {
++      "prueba": "A3",
++      "motor": "lectura_segura_6g1",
++      "alcance": "padre modificable por terceros: el mecanismo se niega (fail-closed, sin crear ni acreditar)",
++      "veredicto": "PASS",
++      "checks_ok": 3,
++      "checks_total": 3,
++      "detalle": "todos los checks OK"
++    },
++    {
++      "prueba": "B1",
++      "motor": "lectura_segura_6g1",
++      "alcance": "ruta sustituida tras validar el descriptor y antes de clasificar: la clasificación sigue al descriptor original, sin consultar el árbol externo",
++      "veredicto": "PASS",
++      "checks_ok": 10,
++      "checks_total": 10,
++      "detalle": "todos los checks OK"
++    }
++  ],
++  "detalles": {
++    "unidad": {
++      "A1": {
++        "ruta": "/tmp/f6g1h1r2/A1/out/run_partial",
++        "acreditada": [
++          65024,
++          536699
++        ]
++      },
++      "A2": {
++        "info": {
++          "schema": "abort-6g1/3",
++          "motivo": "PRUEBA_H1R2_A2",
++          "detalle": null,
++          "salidas_invalidadas": [],
++          "estado_salidas_invalidadas": "conservadas en el provisional; sin eliminación (C-R1)",
++          "resultados_validos": [],
++          "conservados": [],
++          "motivos_propiedad": {},
++          "analysis_intacto": true,
++          "directorio_acreditado": false,
++          "anclaje_directorio": "identidad_distinta (H1): el directorio de la ruta no coincide con el provisional acreditado",
++          "politica": "sin_eliminacion (C-R1): ningún archivo se elimina durante el aborto; anclaje H1: sin escritura de ABORT_6G1.json si el directorio no pudo acreditarse; analysis.json intacto (E-R2); un directorio con ABORT_6G1.json nunca es una corrida exitosa"
++        }
++      },
++      "A3": {
++        "error": "[H1-R2/A] padre modificable por terceros (escritura grupo/otros): /tmp/f6g1h1r2/A3/out"
++      },
++      "B1": {
++        "info": {
++          "schema": "abort-6g1/3",
++          "motivo": "PRUEBA_H1R2_B1",
++          "detalle": null,
++          "salidas_invalidadas": [
++            "salida.wav"
++          ],
++          "estado_salidas_invalidadas": "conservadas en el provisional; sin eliminación (C-R1)",
++          "resultados_validos": [],
++          "conservados": [
++            "ajeno_ordinario.txt"
++          ],
++          "motivos_propiedad": {
++            "ajeno_ordinario.txt": "ajeno_no_registrado",
++            "salida.wav": "salida_parcial_invalidada_y_conservada (sin eliminación; C-R1)"
++          },
++          "analysis_intacto": true,
++          "directorio_acreditado": true,
++          "anclaje_directorio": "directorio_acreditado (H1)",
++          "politica": "sin_eliminacion (C-R1): ningún archivo se elimina durante el aborto; las salidas propias registradas quedan invalidadas y conservadas; sin borrado por patrón de nombre ni por ubicación; sin escritura a través de enlaces simbólicos; analysis.json no se modifica durante el aborto (E-R2): toda la información del aborto vive en ABORT_6G1.json; un directorio con ABORT_6G1.json nunca es una corrida exitosa; anclaje H1: directorio acreditado y E/S sobre el descriptor validado"
++        },
++        "clasificadas": [
++          "ajeno_ordinario.txt",
++          "salida.wav"
++        ]
++      }
++    }
++  }
++}
+diff --git a/ETAPA_6G1_CORRECCION_LECTURA_SEGURA/motores/MOTOR_SEP_SDV-SDI_EVO.py b/ETAPA_6G1_CORRECCION_LECTURA_SEGURA/motores/MOTOR_SEP_SDV-SDI_EVO.py
+index 729ede8..440d995 100644
+--- a/ETAPA_6G1_CORRECCION_LECTURA_SEGURA/motores/MOTOR_SEP_SDV-SDI_EVO.py
++++ b/ETAPA_6G1_CORRECCION_LECTURA_SEGURA/motores/MOTOR_SEP_SDV-SDI_EVO.py
+@@ -305,7 +305,7 @@ from lectura_segura_6g1 import (MixCambiado as _MixCambiado_6g1,
+                                  abortar_6g1 as _abortar_6g1,
+                                  registrar_propio_6g1 as _registrar_propio_6g1,
+                                  reiniciar_registro_6g1 as _reiniciar_registro_6g1,
+-                                 acreditar_dir_6g1 as _acreditar_dir_6g1,
++                                 crear_y_acreditar_dir_6g1 as _crear_y_acreditar_dir_6g1,
+                                  publicar_dir_6g1 as _publicar_dir_6g1)
+ 
+ from atribucion_6f import (measure, verify_wave, alignment_gate,
+@@ -1339,8 +1339,9 @@ def create_run_dir(out_base: str) -> tuple:
+         final_dir = os.path.join(out_base, f"motorA_run_{stamp}{sufijo}")
+         partial_dir = final_dir + "_partial"
+         try:
+-            os.mkdir(partial_dir)
+-            _acreditar_dir_6g1(partial_dir)  # [6G.1-R/H1] anclaje del aborto
++            # [6G.1-R/H1-R2/A] creación+acreditación por descriptores, con
++            # el padre validado (propiedad del euid, sin escritura de terceros)
++            _crear_y_acreditar_dir_6g1(out_base, os.path.basename(partial_dir))
+             return partial_dir, final_dir
+         except FileExistsError:
+             intento += 1
+diff --git a/ETAPA_6G1_CORRECCION_LECTURA_SEGURA/motores/MOTOR_SEP_SDV-SDI_v3.1.1_Hardened_Final.py b/ETAPA_6G1_CORRECCION_LECTURA_SEGURA/motores/MOTOR_SEP_SDV-SDI_v3.1.1_Hardened_Final.py
+index 70e15ca..e4a47f7 100644
+--- a/ETAPA_6G1_CORRECCION_LECTURA_SEGURA/motores/MOTOR_SEP_SDV-SDI_v3.1.1_Hardened_Final.py
++++ b/ETAPA_6G1_CORRECCION_LECTURA_SEGURA/motores/MOTOR_SEP_SDV-SDI_v3.1.1_Hardened_Final.py
+@@ -300,7 +300,7 @@ from lectura_segura_6g1 import (MixCambiado as _MixCambiado_6g1,
+                                  abortar_6g1 as _abortar_6g1,
+                                  registrar_propio_6g1 as _registrar_propio_6g1,
+                                  reiniciar_registro_6g1 as _reiniciar_registro_6g1,
+-                                 acreditar_dir_6g1 as _acreditar_dir_6g1,
++                                 crear_y_acreditar_dir_6g1 as _crear_y_acreditar_dir_6g1,
+                                  publicar_dir_6g1 as _publicar_dir_6g1)
+ 
+ from atribucion_6f import (measure, verify_wave, alignment_gate,
+@@ -1339,8 +1339,9 @@ def create_run_dir(out_base: str) -> tuple:
+         final_dir = os.path.join(out_base, f"motorA_run_{stamp}{sufijo}")
+         partial_dir = final_dir + "_partial"
+         try:
+-            os.mkdir(partial_dir)
+-            _acreditar_dir_6g1(partial_dir)  # [6G.1-R/H1] anclaje del aborto
++            # [6G.1-R/H1-R2/A] creación+acreditación por descriptores, con
++            # el padre validado (propiedad del euid, sin escritura de terceros)
++            _crear_y_acreditar_dir_6g1(out_base, os.path.basename(partial_dir))
+             return partial_dir, final_dir
+         except FileExistsError:
+             intento += 1
+diff --git a/ETAPA_6G1_CORRECCION_LECTURA_SEGURA/motores/lectura_segura_6g1.py b/ETAPA_6G1_CORRECCION_LECTURA_SEGURA/motores/lectura_segura_6g1.py
+index 689e965..bfefe82 100644
+--- a/ETAPA_6G1_CORRECCION_LECTURA_SEGURA/motores/lectura_segura_6g1.py
++++ b/ETAPA_6G1_CORRECCION_LECTURA_SEGURA/motores/lectura_segura_6g1.py
+@@ -16,8 +16,12 @@ momento del barrido y nunca es una decisión de borrado. `ABORT_6G1.json`
+ `analysis.json` permanece intacto (E-R2). El directorio de aborto se abre
+ anclado a la identidad acreditada del provisional (H1): `O_DIRECTORY |
+ O_NOFOLLOW` + verificación `fstat` contra lo registrado por
+-`acreditar_dir_6g1()` en `create_run_dir()`; si no puede acreditarse, no se
+-escribe nada en esa ubicación (fail-closed).
++`crear_y_acreditar_dir_6g1()` en `create_run_dir()` (H1-R2/A: creación y
++acreditación por descriptores, con el padre validado como propiedad del euid
++y sin escritura para terceros); el inventario y la clasificación de propiedad
++se realizan exclusivamente por descriptores, sin re-consultar rutas
++(H1-R2/B); si el anclaje no puede acreditarse, no se escribe nada en esa
++ubicación (fail-closed).
+ """
+ import errno
+ import hashlib
+@@ -171,12 +175,13 @@ _DIR_6G1 = {}
+ 
+ 
+ def acreditar_dir_6g1(path):
+-    """[H1] Acredita la identidad del directorio provisional de la corrida.
++    """[H1] Acredita la identidad de un directorio existente (por ruta).
+ 
+-    Registra (st_dev, st_ino) del directorio creado por `create_run_dir()`
+-    (lstat, sin seguir enlaces). Debe llamarse inmediatamente después del
+-    mkdir exclusivo del provisional. Fail-closed: si la ruta no es un
+-    directorio real, eleva RuntimeError.
++    Registra (st_dev, st_ino) vía `lstat` (sin seguir enlaces). Uso en
++    arneses de pruebas sobre directorios ya creados; la producción usa
++    `crear_y_acreditar_dir_6g1()` (H1-R2/A), que crea y acredita por
++    descriptores sin depender de la ruta tras la creación. Fail-closed: si
++    la ruta no es un directorio real, eleva RuntimeError.
+     """
+     p = os.path.abspath(str(path))
+     st = os.lstat(p)
+@@ -222,6 +227,117 @@ def _anclar_dir_aborto_6g1(run_dir):
+     return fd, 'directorio_acreditado (H1)'
+ 
+ 
++def crear_y_acreditar_dir_6g1(padre, nombre):
++    """[H1-R2/A] Crea el directorio provisional y acredita su identidad sin
++    depender de la ruta tras la creación.
++
++    Secuencia fail-closed en cada paso:
++    1. Abre el padre de forma segura (`O_DIRECTORY | O_NOFOLLOW`; un enlace
++       simbólico en la ruta del padre no se sigue).
++    2. Verifica la condición de seguridad del padre: propiedad del euid y sin
++       permisos de escritura para grupo/otros ("privado y no modificable por
++       terceros"). Si no se cumple, NO crea nada y eleva RuntimeError.
++    3. Crea el provisional con `os.mkdir(nombre, 0o700, dir_fd=fd_padre)`
++       (exclusivo respecto del padre validado; modo privado).
++    4. Abre el provisional relativo al padre VALIDADO con `O_NOFOLLOW` y
++       acredita su identidad mediante `fstat`: la identidad registrada es la
++       del objeto creado dentro del padre validado, no la de una re-consulta
++       por ruta. La ventana POSIX residual entre mkdir y la apertura (sólo
++       alcanzable por procesos de la misma uid) queda cubierta por la
++       condición del padre verificada en el paso 2.
++    Devuelve (ruta_absoluta, (st_dev, st_ino)) y registra en `_DIR_6G1`.
++    """
++    p_padre = os.path.abspath(str(padre))
++    fd_padre = os.open(p_padre, os.O_RDONLY | os.O_DIRECTORY | os.O_NOFOLLOW)
++    try:
++        st_padre = os.fstat(fd_padre)
++        if not stat.S_ISDIR(st_padre.st_mode):
++            raise RuntimeError('[H1-R2/A] el padre no es un directorio: %s'
++                               % p_padre)
++        if st_padre.st_uid != os.geteuid():
++            raise RuntimeError('[H1-R2/A] padre sin propiedad del euid '
++                               '(no privado): %s' % p_padre)
++        if st_padre.st_mode & (stat.S_IWGRP | stat.S_IWOTH):
++            raise RuntimeError('[H1-R2/A] padre modificable por terceros '
++                               '(escritura grupo/otros): %s' % p_padre)
++        os.mkdir(str(nombre), 0o700, dir_fd=fd_padre)
++        fd_dir = os.open(str(nombre), os.O_RDONLY | os.O_DIRECTORY
++                         | os.O_NOFOLLOW, dir_fd=fd_padre)
++        try:
++            st = os.fstat(fd_dir)
++            if not stat.S_ISDIR(st.st_mode):
++                raise RuntimeError('[H1-R2/A] lo creado no es un directorio')
++        finally:
++            os.close(fd_dir)
++        ruta = os.path.join(p_padre, str(nombre))
++        _DIR_6G1[ruta] = dict(device=st.st_dev, inode=st.st_ino)
++        return ruta, (st.st_dev, st.st_ino)
++    finally:
++        os.close(fd_padre)
++
++
++def _sha_via_descriptor_6g1(nombre, fd_dir, st):
++    """[H1-R2/B] SHA-256 de un archivo del directorio anclado: se abre con
++    `dir_fd` + `O_NOFOLLOW`, se verifica por `fstat` que el descriptor apunta
++    a la misma identidad que el `lstat` relativo, y se re-verifica tamaño/
++    mtime tras la lectura (sin rutas). Devuelve (sha256, None) o (None,
++    motivo)."""
++    fd = os.open(str(nombre), os.O_RDONLY | os.O_NOFOLLOW, dir_fd=fd_dir)
++    try:
++        st2 = os.fstat(fd)
++        if (st2.st_dev, st2.st_ino) != (st.st_dev, st.st_ino):
++            return None, 'identidad_distinta'
++        datos = b''
++        while True:
++            bloque = os.read(fd, 1 << 20)
++            if not bloque:
++                break
++            datos += bloque
++        if st2.st_size != st.st_size or st2.st_mtime_ns != st.st_mtime_ns:
++            return None, ('tamaño/mtime distintos durante la lectura '
++                          '(H1-R2/B)')
++        return hashlib.sha256(datos).hexdigest(), None
++    finally:
++        os.close(fd)
++
++
++def _clasificar_entrada_6g1(nombre, st, fd_dir, ruta_esperada):
++    """[H1-R2/B] Clasificación de propiedad de una entrada del directorio
++    anclado, EXCLUSIVAMENTE por descriptor: identidad (st_dev, st_ino) del
++    `lstat` relativo cotejada contra el registro de la corrida y sellado
++    (tamaño/mtime/SHA-256) verificado por `dir_fd` + `O_NOFOLLOW` + `fstat`.
++    `ruta_esperada` se usa SOLO como clave de comparación del registro (para
++    distinguir un sustituido de un ajeno) — NUNCA para re-consultar el
++    sistema de archivos. Devuelve (es_propia, motivo) con semántica C-R1
++    (fail-closed: cualquier duda conserva).
++    """
++    match = [(k, reg) for k, reg in _PROPIOS_6G1.items()
++             if (reg.get('device'), reg.get('inode'))
++             == (st.st_dev, st.st_ino)]
++    if not match:
++        if ruta_esperada in _PROPIOS_6G1:
++            return False, ('identidad_distinta (sustituido o reemplazado '
++                           'tras el registro)')
++        return False, 'ajeno_no_registrado'
++    if len(match) > 1:
++        return False, 'identidad_ambigua_en_registro'
++    reg = match[0][1]
++    if not reg.get('estable'):
++        # [H1-R2/B] Registro dinámico del motor (archivo en escritura al
++        # registrarse): la propiedad se acredita por IDENTIDAD, igual que la
++        # semántica C-R1 de `propiedad_de_6g1` (el sello sólo se exige en
++        # registros estable=True). Sin identidad no habría propiedad.
++        return True, 'propiedad_acreditada (registro dinámico sin sello)'
++    if st.st_size != reg.get('size') or st.st_mtime_ns != reg.get('mtime_ns'):
++        return False, 'tamaño/mtime distintos de los registrados'
++    sha, err = _sha_via_descriptor_6g1(nombre, fd_dir, st)
++    if err:
++        return False, err
++    if sha != reg.get('sha256'):
++        return False, 'contenido modificado tras el registro'
++    return True, 'propiedad_acreditada'
++
++
+ def reiniciar_registro_6g1():
+     """Limpia los registros de propiedad y de directorio acreditado (uso en
+     pruebas y al iniciar corrida)."""
+@@ -398,8 +514,14 @@ def abortar_6g1(run_dir, motivo, detalle=None):
+                     conservados.append(rel)
+                     motivos[rel] = 'registro_interno_conservado'
+                     continue
+-                propia, motivo_p = propiedad_de_6g1(os.path.join(str(run_dir),
+-                                                                 rel))
++                # [6G.1-R/H1-R2/B] Clasificación EXCLUSIVAMENTE por
++                # descriptor (sin re-consultar rutas): identidad relativa al
++                # descriptor contra el registro; `ruta_esperada` sólo como
++                # clave de comparación del registro.
++                ruta_esperada = os.path.join(str(run_dir), rel)
++                propia, motivo_p = _clasificar_entrada_6g1(nombre, st,
++                                                           fd_base,
++                                                           ruta_esperada)
+                 if propia:
+                     # [6G.1-R/C-R1] Sin eliminación: la salida propia
+                     # registrada queda INVALIDADA y CONSERVADA en el
+diff --git a/ETAPA_6G1_CORRECCION_LECTURA_SEGURA/motores/sdv_sdi_mqr_engine.py b/ETAPA_6G1_CORRECCION_LECTURA_SEGURA/motores/sdv_sdi_mqr_engine.py
+index 7e7ca26..1a0c9e6 100644
+--- a/ETAPA_6G1_CORRECCION_LECTURA_SEGURA/motores/sdv_sdi_mqr_engine.py
++++ b/ETAPA_6G1_CORRECCION_LECTURA_SEGURA/motores/sdv_sdi_mqr_engine.py
+@@ -494,7 +494,7 @@ from lectura_segura_6g1 import (MixCambiado as _MixCambiado_6g1,
+                                  VerificacionFallida6G1 as _VerifFallida_6g1,
+                                  registrar_propio_6g1 as _registrar_propio_6g1,
+                                  reiniciar_registro_6g1 as _reiniciar_registro_6g1,
+-                                 acreditar_dir_6g1 as _acreditar_dir_6g1,
++                                 crear_y_acreditar_dir_6g1 as _crear_y_acreditar_dir_6g1,
+                                  publicar_dir_6g1 as _publicar_dir_6g1)
+ 
+ from atribucion_6f import (measure, verify_wave, alignment_gate,
+@@ -2075,8 +2075,9 @@ def create_run_dir(out_base):
+         final = os.path.join(out_base, "mqr_run_%s%s" % (stamp, sufijo))
+         partial = final + "_partial"
+         try:
+-            os.mkdir(partial)
+-            _acreditar_dir_6g1(partial)  # [6G.1-R/H1] anclaje del aborto
++            # [6G.1-R/H1-R2/A] creación+acreditación por descriptores, con
++            # el padre validado (propiedad del euid, sin escritura de terceros)
++            _crear_y_acreditar_dir_6g1(out_base, os.path.basename(partial))
+             return partial, final
+         except FileExistsError:
+             intento += 1
+diff --git a/ETAPA_6G1_CORRECCION_LECTURA_SEGURA/scripts/pruebas_c_r1_6g1.py b/ETAPA_6G1_CORRECCION_LECTURA_SEGURA/scripts/pruebas_c_r1_6g1.py
+index 3fb4708..bbf0b33 100644
+--- a/ETAPA_6G1_CORRECCION_LECTURA_SEGURA/scripts/pruebas_c_r1_6g1.py
++++ b/ETAPA_6G1_CORRECCION_LECTURA_SEGURA/scripts/pruebas_c_r1_6g1.py
+@@ -207,13 +207,18 @@ def unidad():
+         otro.write_bytes(b'otra salida propia\n')
+         L.registrar_propio_6g1(otro, estable=True)
+ 
+-        original_prop = L.propiedad_de_6g1
++        # [6G.1-R/H1-R2/B] La clasificación del aborto es por descriptor
++        # (_clasificar_entrada_6g1); la ventana histórica se intercepta allí
++        # con el mismo mecanismo exigido: dictamen ORIGINAL -> os.replace ->
++        # devolución del dictamen original al llamador.
++        original_clas = L._clasificar_entrada_6g1
+         suceso = dict(dictamen=None, sustituido=False, secuencia=[])
+ 
+-        def prop_con_sustitucion(p):
+-            # 1-2: función ORIGINAL: dictamen sobre el archivo registrado
+-            propia, motivo = original_prop(p)
+-            if propia and os.path.abspath(str(p)) == str(ruta_propia) \
++        def clas_con_sustitucion(nombre, st, fd_dir, ruta_esperada):
++            # 1-2: clasificación ORIGINAL: dictamen sobre el archivo
++            # registrado (por descriptor, sin re-consultar rutas)
++            propia, motivo = original_clas(nombre, st, fd_dir, ruta_esperada)
++            if propia and ruta_esperada == str(ruta_propia) \
+                     and not suceso['sustituido']:
+                 suceso['secuencia'].append('dictamen_positivo')
+                 suceso['dictamen'] = (propia, motivo)
+@@ -226,12 +231,12 @@ def unidad():
+                 # 4: abajo se devuelve el dictamen ORIGINAL al llamador
+             return propia, motivo
+ 
+-        L.propiedad_de_6g1 = prop_con_sustitucion
++        L._clasificar_entrada_6g1 = clas_con_sustitucion
+         L.acreditar_dir_6g1(run)  # [6G.1-R/H1] como create_run_dir
+         try:
+             info = L.abortar_6g1(run, 'PRUEBA_CR1c')
+         finally:
+-            L.propiedad_de_6g1 = original_prop
++            L._clasificar_entrada_6g1 = original_clas
+         ab = leer_abort(run)
+         motivo_archivo = str((ab or {}).get('motivos_propiedad', {})
+                              .get('salida_concurrente.wav', ''))
+diff --git a/ETAPA_6G1_CORRECCION_LECTURA_SEGURA/scripts/pruebas_h1_6g1.py b/ETAPA_6G1_CORRECCION_LECTURA_SEGURA/scripts/pruebas_h1_6g1.py
+index fc52256..4b5f83f 100644
+--- a/ETAPA_6G1_CORRECCION_LECTURA_SEGURA/scripts/pruebas_h1_6g1.py
++++ b/ETAPA_6G1_CORRECCION_LECTURA_SEGURA/scripts/pruebas_h1_6g1.py
+@@ -287,12 +287,13 @@ def unidad():
+         ruta_propia.write_bytes(b'salida propia original\n')
+         L.reiniciar_registro_6g1()
+         L.registrar_propio_6g1(ruta_propia, estable=True)
+-        original_prop = L.propiedad_de_6g1
++        # [6G.1-R/H1-R2/B] clasificación por descriptor -> gancho allí
++        original_clas = L._clasificar_entrada_6g1
+         suceso = dict(secuencia=[])
+ 
+-        def prop_con_sustitucion(p):
+-            propia, motivo = original_prop(p)
+-            if propia and os.path.abspath(str(p)) == str(ruta_propia) \
++        def clas_con_sustitucion(nombre, st, fd_dir, ruta_esperada):
++            propia, motivo = original_clas(nombre, st, fd_dir, ruta_esperada)
++            if propia and ruta_esperada == str(ruta_propia) \
+                     and not suceso['secuencia']:
+                 suceso['secuencia'].append('dictamen_positivo')
+                 tmp = run / '.sust_tmp'
+@@ -301,12 +302,12 @@ def unidad():
+                 suceso['secuencia'].append('sustitucion_os_replace')
+             return propia, motivo
+ 
+-        L.propiedad_de_6g1 = prop_con_sustitucion
++        L._clasificar_entrada_6g1 = clas_con_sustitucion
+         try:
+             L.acreditar_dir_6g1(run)
+             info = L.abortar_6g1(run, 'PRUEBA_H1_CR1c')
+         finally:
+-            L.propiedad_de_6g1 = original_prop
++            L._clasificar_entrada_6g1 = original_clas
+         checks = [
+             ('secuencia_dictamen_sustitucion',
+              suceso['secuencia'] == ['dictamen_positivo',
+diff --git a/ETAPA_6G1_CORRECCION_LECTURA_SEGURA/scripts/pruebas_h1_r2_6g1.py b/ETAPA_6G1_CORRECCION_LECTURA_SEGURA/scripts/pruebas_h1_r2_6g1.py
+new file mode 100644
+index 0000000..f10a19b
+--- /dev/null
++++ b/ETAPA_6G1_CORRECCION_LECTURA_SEGURA/scripts/pruebas_h1_r2_6g1.py
+@@ -0,0 +1,306 @@
++"""Pruebas H1-R2 (rectificación 6G.1 — cierre de dos brechas de anclaje).
++
++Ejecuta ÚNICAMENTE la batería focalizada de este hallazgo; no repite las
++baterías históricas (34/26/17/12). Las regresiones focalizadas de H1
++(H1a/H1b/H1c + tres flujos de aborto) y de C-R1 se ejecutan con sus propias
++baterías (pruebas_h1_6g1.py y pruebas_c_r1_6g1.py, actualizadas).
++
++  Prueba A (H1-R2/A — acreditación segura desde la creación):
++    A1  crear_y_acreditar_dir_6g1 crea el provisional (mkdir dir_fd, modo
++        0o700) dentro del padre validado y acredita por fstat la identidad
++        del objeto CREADO; la identidad acreditada coincide con la de una
++        apertura independiente O_NOFOLLOW del provisional.
++    A2  sustitución de la ruta provisional por un IMPOSTOR (directorio real
++        distinto) después de la acreditación: el sustituto NUNCA queda
++        acreditado como provisional legítimo — el aborto por esa ruta es
++        fail-closed (identidad_distinta), sin ABORT en el impostor y con su
++        contenido intacto; el provisional acreditado (movido aparte) sigue
++        vinculado a la corrida.
++    A3  padre NO conforme (modificable por terceros, g+w): el mecanismo se
++        niega (RuntimeError), no crea nada y no acredita nada (fail-closed).
++  Prueba B (H1-R2/B — inventario exclusivamente por descriptores):
++    B1  tras abrir y validar el descriptor del provisional, la ruta se
++        sustituye por un IMPOSTOR (con un archivo señuelo de contenido
++        distinto) ANTES de clasificar los archivos: la clasificación sigue
++        correspondiendo al directorio originalmente abierto (ABORT_6G1.json
++        aterriza en el ORIGINAL vía descriptor — verificado donde quedó el
++        descriptor tras el renombrado), el árbol impostor/externo NO es
++        consultado (sin ABORT allí, señuelo byte a byte intacto) y las
++        salidas clasificadas corresponden al original.
++    B2  la clasificación no re-consulta rutas: con la ruta del provisional
++        apuntando al impostor durante TODO el inventario, el registro /3
++        lista las salidas del original (imposible de ver por ruta).
++
++Evidencia: evidence/pruebas_h1_r2_6g1.json + evidence/matriz_h1_r2_6g1.csv
++"""
++import csv
++import json
++import os
++import shutil
++import stat
++import sys
++from pathlib import Path
++
++RAIZ = Path(__file__).resolve().parent.parent
++sys.path.insert(0, str(RAIZ / 'scripts'))
++sys.path.insert(0, str(RAIZ / 'motores'))
++from comun_6g1 import sha_file, dump
++
++EV = RAIZ / 'evidence'
++TRABAJO = Path('/tmp/f6g1h1r2')
++
++
++def fila(prueba, motor, alcance, checks, motivo_ne=None):
++    if motivo_ne is not None:
++        return dict(prueba=prueba, motor=motor, alcance=alcance,
++                    veredicto='NOT_EXECUTED', checks_ok=0, checks_total=0,
++                    detalle=motivo_ne)
++    ok = [c for c in checks if c[1]]
++    detalle = '; '.join('%s=FALLO: %s' % (c[0], c[2]) for c in checks
++                        if not c[1]) or 'todos los checks OK'
++    return dict(prueba=prueba, motor=motor, alcance=alcance,
++                veredicto='PASS' if len(ok) == len(checks) else 'FAIL',
++                checks_ok=len(ok), checks_total=len(checks), detalle=detalle)
++
++
++def unidad():
++    filas, detalles = [], {}
++    import lectura_segura_6g1 as L
++
++    # ---------------- Prueba A ----------------
++    # ---- A1: creación+acreditación por descriptores; identidad == lo creado
++    try:
++        base = TRABAJO / 'A1'
++        shutil.rmtree(base, ignore_errors=True)
++        base.mkdir(parents=True)
++        padre = base / 'out'
++        padre.mkdir()
++        L.reiniciar_registro_6g1()
++        ruta, (dev, ino) = L.crear_y_acreditar_dir_6g1(padre, 'run_partial')
++        st_indep = os.fstat(os.open(ruta, os.O_RDONLY | os.O_DIRECTORY
++                                    | os.O_NOFOLLOW))
++        reg = L._DIR_6G1[ruta]
++        checks = [
++            ('provisional_creado', os.path.isdir(ruta), ruta),
++            ('modo_privado_0o700',
++             (os.lstat(ruta).st_mode & 0o777) == 0o700,
++             oct(os.lstat(ruta).st_mode & 0o777)),
++            ('acreditada_identidad_del_creado',
++             (reg['device'], reg['inode']) == (dev, ino)
++             and (dev, ino) == (st_indep.st_dev, st_indep.st_ino),
++             str((reg['device'], reg['inode']), )),
++            ('vinculada_a_la_corrida',
++             L._anclar_dir_aborto_6g1(ruta)[0] is not None, ''),
++        ]
++        filas.append(fila('A1', 'lectura_segura_6g1',
++                          'creación+acreditación por descriptores con padre '
++                          'validado', checks))
++        detalles['A1'] = dict(ruta=ruta, acreditada=(dev, ino))
++        shutil.rmtree(base, ignore_errors=True)
++    except Exception as exc:
++        filas.append(fila('A1', 'lectura_segura_6g1', 'unidad', None,
++                          motivo_ne='entorno de ensayo: %r' % exc))
++        detalles['A1'] = dict(error=repr(exc))
++
++    # ---- A2: sustituto en la ruta tras la acreditación -> nunca acreditado
++    try:
++        base = TRABAJO / 'A2'
++        shutil.rmtree(base, ignore_errors=True)
++        base.mkdir(parents=True)
++        padre = base / 'out'
++        padre.mkdir()
++        L.reiniciar_registro_6g1()
++        ruta, (dev, ino) = L.crear_y_acreditar_dir_6g1(padre, 'run_partial')
++        # el provisional acreditado se mantiene VIVO, movido aparte (como en
++        # el escenario real en que el motor conserva su objeto creado)
++        aparte = base / 'original_vivo'
++        os.rename(ruta, aparte)
++        (aparte / 'propio.wav').write_bytes(b'salida del provisional acreditado\n')
++        # impostor OCUPANDO la ruta original (directorio real distinto al
++        # acreditado; creado directamente en la ruta tras el renombrado)
++        bytes_imp = b'contenido del IMPOSTOR: nunca debe recibir el ABORT\n'
++        imposter = Path(ruta)                      # ruta es str (del helper)
++        imposter.mkdir()
++        (imposter / 'señuelo.txt').write_bytes(bytes_imp)
++        sha_imp = sha_file(imposter / 'señuelo.txt')
++        info = L.abortar_6g1(ruta, 'PRUEBA_H1R2_A2')
++        checks = [
++            ('sustituto_nunca_acreditado',
++             info.get('directorio_acreditado') is False
++             and 'identidad_distinta' in str(info.get('anclaje_directorio', '')),
++             str(info.get('anclaje_directorio'))),
++            ('sin_abort_en_impostor', not (imposter / 'ABORT_6G1.json').exists(), ''),
++            ('impostor_byte_a_byte',
++             (imposter / 'señuelo.txt').read_bytes() == bytes_imp
++             and sha_file(imposter / 'señuelo.txt') == sha_imp,
++             sha_file(imposter / 'señuelo.txt')[:16]),
++            ('nada_eliminado', (imposter / 'señuelo.txt').exists()
++             and (aparte / 'propio.wav').exists(), ''),
++            ('sin_salidas_validas', info.get('resultados_validos') == []
++             and info.get('salidas_invalidadas') == []
++             and info.get('conservados') == [], ''),
++            ('schema_3', info.get('schema') == 'abort-6g1/3', ''),
++        ]
++        filas.append(fila('A2', 'lectura_segura_6g1',
++                          'sustituto en la ruta tras la acreditación: nunca '
++                          'acreditado como provisional legítimo', checks))
++        detalles['A2'] = dict(info=info)
++        shutil.rmtree(base, ignore_errors=True)
++    except Exception as exc:
++        filas.append(fila('A2', 'lectura_segura_6g1', 'unidad', None,
++                          motivo_ne='entorno de ensayo: %r' % exc))
++        detalles['A2'] = dict(error=repr(exc))
++
++    # ---- A3: padre no conforme -> fail-closed, sin crear ni acreditar
++    try:
++        base = TRABAJO / 'A3'
++        shutil.rmtree(base, ignore_errors=True)
++        base.mkdir(parents=True)
++        padre = base / 'out'
++        padre.mkdir()                              # 0755 (conforme)
++        L.reiniciar_registro_6g1()
++        os.chmod(padre, 0o775)                     # escritura de grupo -> NO
++        error = None
++        try:
++            L.crear_y_acreditar_dir_6g1(padre, 'run_partial')
++        except RuntimeError as exc:
++            error = str(exc)
++        checks = [
++            ('negacion_fail_closed', error is not None
++             and 'modificable por terceros' in error, str(error)),
++            ('sin_acreditacion',
++             not any(str(k).startswith(str(padre)) for k in L._DIR_6G1),
++             str(list(L._DIR_6G1))),
++            ('sin_acreditacion_ninguna', len(L._DIR_6G1) == 0,
++             str(len(L._DIR_6G1))),
++        ]
++        os.chmod(padre, 0o755)
++        filas.append(fila('A3', 'lectura_segura_6g1',
++                          'padre modificable por terceros: el mecanismo se '
++                          'niega (fail-closed, sin crear ni acreditar)',
++                          checks))
++        detalles['A3'] = dict(error=error)
++        shutil.rmtree(base, ignore_errors=True)
++    except Exception as exc:
++        filas.append(fila('A3', 'lectura_segura_6g1', 'unidad', None,
++                          motivo_ne='entorno de ensayo: %r' % exc))
++        detalles['A3'] = dict(error=repr(exc))
++
++    # ---------------- Prueba B ----------------
++    # ---- B1/B2: ruta sustituida tras validar el descriptor, antes de clasificar
++    try:
++        base = TRABAJO / 'B1'
++        shutil.rmtree(base, ignore_errors=True)
++        base.mkdir(parents=True)
++        run = base / 'run_partial'
++        run.mkdir()
++        bytes_propio = b'salida propia ORIGINAL (en el provisional real)\n'
++        salida = run / 'salida.wav'
++        salida.write_bytes(bytes_propio)
++        ajeno = run / 'ajeno_ordinario.txt'
++        ajeno.write_bytes(b'ajeno del provisional real\n')
++        sha_ajeno = sha_file(ajeno)
++        L.reiniciar_registro_6g1()
++        L.registrar_propio_6g1(salida, estable=True)
++        L.acreditar_dir_6g1(run)
++
++        original_clas = L._clasificar_entrada_6g1
++        suceso = dict(sustituido=False, ruta_durante_clasificacion=[])
++
++        def clas_con_sustitucion(nombre, st, fd_dir, ruta_esperada):
++            if not suceso['sustituido']:
++                # sustitución de la ruta DESPUÉS de abrir y validar el
++                # descriptor y ANTES de clasificar los archivos: el original
++                # se mueva aparte (sigue vivo, accesible sólo por descriptor)
++                # y un impostor con contenido distinto ocupa la ruta
++                movido = base / 'original_via_descriptor'
++                os.rename(run, movido)
++                run.mkdir()
++                (run / 'salida.wav').write_bytes(
++                    b'IMPOSTOR: el arbol externo no debe ser consultado\n')
++                suceso['sustituido'] = True
++            suceso['ruta_durante_clasificacion'].append(nombre)
++            return original_clas(nombre, st, fd_dir, ruta_esperada)
++
++        L._clasificar_entrada_6g1 = clas_con_sustitucion
++        try:
++            info = L.abortar_6g1(run, 'PRUEBA_H1R2_B1')
++        finally:
++            L._clasificar_entrada_6g1 = original_clas
++        movido = base / 'original_via_descriptor'
++        imposter = run
++        bytes_imp = b'IMPOSTOR: el arbol externo no debe ser consultado\n'
++        checks = [
++            ('sustitucion_antes_de_clasificar', suceso['sustituido'], ''),
++            ('abort_en_el_original_via_descriptor',
++             (movido / 'ABORT_6G1.json').is_file()
++             and not (imposter / 'ABORT_6G1.json').exists(),
++             str(sorted(p.name for p in movido.iterdir()))),
++            ('abort_directorio_acreditado_true',
++             info.get('directorio_acreditado') is True,
++             str(info.get('anclaje_directorio'))),
++            ('clasificacion_del_original',
++             'salida.wav' in info.get('salidas_invalidadas', [])
++             and info.get('resultados_validos') == [],
++             str(info.get('salidas_invalidadas'))),
++            ('sin_consulta_del_arbol_impostor',
++             not any('salida.wav' in str(m) and 'IMPOSTOR' in str(m)
++                     for m in info.get('motivos_propiedad', {}).values()),
++             str(info.get('motivos_propiedad', {}).get('salida.wav'))),
++            ('impostor_byte_a_byte',
++             (imposter / 'salida.wav').read_bytes() == bytes_imp,
++             (imposter / 'salida.wav').read_bytes()[:40]),
++            ('sin_abort_en_impostor', not (imposter / 'ABORT_6G1.json').exists(), ''),
++            ('ajeno_original_intacto',
++             (movido / 'ajeno_ordinario.txt').read_bytes()
++             == b'ajeno del provisional real\n'
++             and sha_file(movido / 'ajeno_ordinario.txt') == sha_ajeno,
++             sha_file(movido / 'ajeno_ordinario.txt')[:16]),
++            ('nada_eliminado', salida == run / 'salida.wav'
++             and (movido / 'salida.wav').read_bytes() == bytes_propio, ''),
++            ('schema_3', info.get('schema') == 'abort-6g1/3', ''),
++        ]
++        filas.append(fila('B1', 'lectura_segura_6g1',
++                          'ruta sustituida tras validar el descriptor y antes '
++                          'de clasificar: la clasificación sigue al '
++                          'descriptor original, sin consultar el árbol '
++                          'externo', checks))
++        detalles['B1'] = dict(info=info,
++                              clasificadas=suceso['ruta_durante_clasificacion'])
++        shutil.rmtree(base, ignore_errors=True)
++    except Exception as exc:
++        filas.append(fila('B1', 'lectura_segura_6g1', 'unidad', None,
++                          motivo_ne='entorno de ensayo: %r' % exc))
++        detalles['B1'] = dict(error=repr(exc))
++
++    return filas, detalles
++
++
++def main():
++    EV.mkdir(parents=True, exist_ok=True)
++    TRABAJO.mkdir(parents=True, exist_ok=True)
++    todas, detalle_todo = [], {}
++    print('== H1-R2 unidad (Prueba A y Prueba B) ==')
++    fu, du = unidad()
++    todas.extend(fu)
++    detalle_todo['unidad'] = du
++    for f in fu:
++        print('  %-14s %s' % (f['veredicto'], f['detalle'][:90]))
++    dump(EV / 'pruebas_h1_r2_6g1.json',
++         dict(schema='pruebas-h1-r2-6g1/1', filas=todas, detalles=detalle_todo))
++    with (EV / 'matriz_h1_r2_6g1.csv').open('w', newline='',
++                                            encoding='utf-8') as fh:
++        w = csv.DictWriter(fh, fieldnames=('prueba', 'motor', 'alcance',
++                                           'veredicto', 'checks_ok',
++                                           'checks_total', 'detalle'),
++                           lineterminator='\n')
++        w.writeheader()
++        w.writerows(todas)
++    n = {v: sum(1 for f in todas if f['veredicto'] == v)
++         for v in ('PASS', 'FAIL', 'NOT_EXECUTED')}
++    print('RESUMEN: %d PASS, %d FAIL, %d NOT_EXECUTED de %d filas'
++          % (n['PASS'], n['FAIL'], n['NOT_EXECUTED'], len(todas)))
++
++
++if __name__ == '__main__':
++    main()

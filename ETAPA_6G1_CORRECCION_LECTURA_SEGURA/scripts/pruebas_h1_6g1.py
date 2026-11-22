@@ -287,12 +287,13 @@ def unidad():
         ruta_propia.write_bytes(b'salida propia original\n')
         L.reiniciar_registro_6g1()
         L.registrar_propio_6g1(ruta_propia, estable=True)
-        original_prop = L.propiedad_de_6g1
+        # [6G.1-R/H1-R2/B] clasificación por descriptor -> gancho allí
+        original_clas = L._clasificar_entrada_6g1
         suceso = dict(secuencia=[])
 
-        def prop_con_sustitucion(p):
-            propia, motivo = original_prop(p)
-            if propia and os.path.abspath(str(p)) == str(ruta_propia) \
+        def clas_con_sustitucion(nombre, st, fd_dir, ruta_esperada):
+            propia, motivo = original_clas(nombre, st, fd_dir, ruta_esperada)
+            if propia and ruta_esperada == str(ruta_propia) \
                     and not suceso['secuencia']:
                 suceso['secuencia'].append('dictamen_positivo')
                 tmp = run / '.sust_tmp'
@@ -301,12 +302,12 @@ def unidad():
                 suceso['secuencia'].append('sustitucion_os_replace')
             return propia, motivo
 
-        L.propiedad_de_6g1 = prop_con_sustitucion
+        L._clasificar_entrada_6g1 = clas_con_sustitucion
         try:
             L.acreditar_dir_6g1(run)
             info = L.abortar_6g1(run, 'PRUEBA_H1_CR1c')
         finally:
-            L.propiedad_de_6g1 = original_prop
+            L._clasificar_entrada_6g1 = original_clas
         checks = [
             ('secuencia_dictamen_sustitucion',
              suceso['secuencia'] == ['dictamen_positivo',

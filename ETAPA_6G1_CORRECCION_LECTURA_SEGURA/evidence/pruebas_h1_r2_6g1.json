@@ -1,0 +1,98 @@
+{
+  "schema": "pruebas-h1-r2-6g1/1",
+  "filas": [
+    {
+      "prueba": "A1",
+      "motor": "lectura_segura_6g1",
+      "alcance": "creación+acreditación por descriptores con padre validado",
+      "veredicto": "PASS",
+      "checks_ok": 4,
+      "checks_total": 4,
+      "detalle": "todos los checks OK"
+    },
+    {
+      "prueba": "A2",
+      "motor": "lectura_segura_6g1",
+      "alcance": "sustituto en la ruta tras la acreditación: nunca acreditado como provisional legítimo",
+      "veredicto": "PASS",
+      "checks_ok": 6,
+      "checks_total": 6,
+      "detalle": "todos los checks OK"
+    },
+    {
+      "prueba": "A3",
+      "motor": "lectura_segura_6g1",
+      "alcance": "padre modificable por terceros: el mecanismo se niega (fail-closed, sin crear ni acreditar)",
+      "veredicto": "PASS",
+      "checks_ok": 3,
+      "checks_total": 3,
+      "detalle": "todos los checks OK"
+    },
+    {
+      "prueba": "B1",
+      "motor": "lectura_segura_6g1",
+      "alcance": "ruta sustituida tras validar el descriptor y antes de clasificar: la clasificación sigue al descriptor original, sin consultar el árbol externo",
+      "veredicto": "PASS",
+      "checks_ok": 10,
+      "checks_total": 10,
+      "detalle": "todos los checks OK"
+    }
+  ],
+  "detalles": {
+    "unidad": {
+      "A1": {
+        "ruta": "/tmp/f6g1h1r2/A1/out/run_partial",
+        "acreditada": [
+          65024,
+          536699
+        ]
+      },
+      "A2": {
+        "info": {
+          "schema": "abort-6g1/3",
+          "motivo": "PRUEBA_H1R2_A2",
+          "detalle": null,
+          "salidas_invalidadas": [],
+          "estado_salidas_invalidadas": "conservadas en el provisional; sin eliminación (C-R1)",
+          "resultados_validos": [],
+          "conservados": [],
+          "motivos_propiedad": {},
+          "analysis_intacto": true,
+          "directorio_acreditado": false,
+          "anclaje_directorio": "identidad_distinta (H1): el directorio de la ruta no coincide con el provisional acreditado",
+          "politica": "sin_eliminacion (C-R1): ningún archivo se elimina durante el aborto; anclaje H1: sin escritura de ABORT_6G1.json si el directorio no pudo acreditarse; analysis.json intacto (E-R2); un directorio con ABORT_6G1.json nunca es una corrida exitosa"
+        }
+      },
+      "A3": {
+        "error": "[H1-R2/A] padre modificable por terceros (escritura grupo/otros): /tmp/f6g1h1r2/A3/out"
+      },
+      "B1": {
+        "info": {
+          "schema": "abort-6g1/3",
+          "motivo": "PRUEBA_H1R2_B1",
+          "detalle": null,
+          "salidas_invalidadas": [
+            "salida.wav"
+          ],
+          "estado_salidas_invalidadas": "conservadas en el provisional; sin eliminación (C-R1)",
+          "resultados_validos": [],
+          "conservados": [
+            "ajeno_ordinario.txt"
+          ],
+          "motivos_propiedad": {
+            "ajeno_ordinario.txt": "ajeno_no_registrado",
+            "salida.wav": "salida_parcial_invalidada_y_conservada (sin eliminación; C-R1)"
+          },
+          "analysis_intacto": true,
+          "directorio_acreditado": true,
+          "anclaje_directorio": "directorio_acreditado (H1)",
+          "politica": "sin_eliminacion (C-R1): ningún archivo se elimina durante el aborto; las salidas propias registradas quedan invalidadas y conservadas; sin borrado por patrón de nombre ni por ubicación; sin escritura a través de enlaces simbólicos; analysis.json no se modifica durante el aborto (E-R2): toda la información del aborto vive en ABORT_6G1.json; un directorio con ABORT_6G1.json nunca es una corrida exitosa; anclaje H1: directorio acreditado y E/S sobre el descriptor validado"
+        },
+        "clasificadas": [
+          "ajeno_ordinario.txt",
+          "salida.wav"
+        ]
+      }
+    }
+  }
+}

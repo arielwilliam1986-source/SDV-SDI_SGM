@@ -16,8 +16,12 @@ momento del barrido y nunca es una decisión de borrado. `ABORT_6G1.json`
 `analysis.json` permanece intacto (E-R2). El directorio de aborto se abre
 anclado a la identidad acreditada del provisional (H1): `O_DIRECTORY |
 O_NOFOLLOW` + verificación `fstat` contra lo registrado por
-`acreditar_dir_6g1()` en `create_run_dir()`; si no puede acreditarse, no se
-escribe nada en esa ubicación (fail-closed).
+`crear_y_acreditar_dir_6g1()` en `create_run_dir()` (H1-R2/A: creación y
+acreditación por descriptores, con el padre validado como propiedad del euid
+y sin escritura para terceros); el inventario y la clasificación de propiedad
+se realizan exclusivamente por descriptores, sin re-consultar rutas
+(H1-R2/B); si el anclaje no puede acreditarse, no se escribe nada en esa
+ubicación (fail-closed).
 """
 import errno
 import hashlib
@@ -171,12 +175,13 @@ _DIR_6G1 = {}
 
 
 def acreditar_dir_6g1(path):
-    """[H1] Acredita la identidad del directorio provisional de la corrida.
+    """[H1] Acredita la identidad de un directorio existente (por ruta).
 
-    Registra (st_dev, st_ino) del directorio creado por `create_run_dir()`
-    (lstat, sin seguir enlaces). Debe llamarse inmediatamente después del
-    mkdir exclusivo del provisional. Fail-closed: si la ruta no es un
-    directorio real, eleva RuntimeError.
+    Registra (st_dev, st_ino) vía `lstat` (sin seguir enlaces). Uso en
+    arneses de pruebas sobre directorios ya creados; la producción usa
+    `crear_y_acreditar_dir_6g1()` (H1-R2/A), que crea y acredita por
+    descriptores sin depender de la ruta tras la creación. Fail-closed: si
+    la ruta no es un directorio real, eleva RuntimeError.
     """
     p = os.path.abspath(str(path))
     st = os.lstat(p)
@@ -220,6 +225,117 @@ def _anclar_dir_aborto_6g1(run_dir):
         return None, ('identidad_distinta (H1): el directorio de la ruta no '
                       'coincide con el provisional acreditado')
     return fd, 'directorio_acreditado (H1)'
+
+
+def crear_y_acreditar_dir_6g1(padre, nombre):
+    """[H1-R2/A] Crea el directorio provisional y acredita su identidad sin
+    depender de la ruta tras la creación.
+
+    Secuencia fail-closed en cada paso:
+    1. Abre el padre de forma segura (`O_DIRECTORY | O_NOFOLLOW`; un enlace
+       simbólico en la ruta del padre no se sigue).
+    2. Verifica la condición de seguridad del padre: propiedad del euid y sin
+       permisos de escritura para grupo/otros ("privado y no modificable por
+       terceros"). Si no se cumple, NO crea nada y eleva RuntimeError.
+    3. Crea el provisional con `os.mkdir(nombre, 0o700, dir_fd=fd_padre)`
+       (exclusivo respecto del padre validado; modo privado).
+    4. Abre el provisional relativo al padre VALIDADO con `O_NOFOLLOW` y
+       acredita su identidad mediante `fstat`: la identidad registrada es la
+       del objeto creado dentro del padre validado, no la de una re-consulta
+       por ruta. La ventana POSIX residual entre mkdir y la apertura (sólo
+       alcanzable por procesos de la misma uid) queda cubierta por la
+       condición del padre verificada en el paso 2.
+    Devuelve (ruta_absoluta, (st_dev, st_ino)) y registra en `_DIR_6G1`.
+    """
+    p_padre = os.path.abspath(str(padre))
+    fd_padre = os.open(p_padre, os.O_RDONLY | os.O_DIRECTORY | os.O_NOFOLLOW)
+    try:
+        st_padre = os.fstat(fd_padre)
+        if not stat.S_ISDIR(st_padre.st_mode):
+            raise RuntimeError('[H1-R2/A] el padre no es un directorio: %s'
+                               % p_padre)
+        if st_padre.st_uid != os.geteuid():
+            raise RuntimeError('[H1-R2/A] padre sin propiedad del euid '
+                               '(no privado): %s' % p_padre)
+        if st_padre.st_mode & (stat.S_IWGRP | stat.S_IWOTH):
+            raise RuntimeError('[H1-R2/A] padre modificable por terceros '
+                               '(escritura grupo/otros): %s' % p_padre)
+        os.mkdir(str(nombre), 0o700, dir_fd=fd_padre)
+        fd_dir = os.open(str(nombre), os.O_RDONLY | os.O_DIRECTORY
+                         | os.O_NOFOLLOW, dir_fd=fd_padre)
+        try:
+            st = os.fstat(fd_dir)
+            if not stat.S_ISDIR(st.st_mode):
+                raise RuntimeError('[H1-R2/A] lo creado no es un directorio')
+        finally:
+            os.close(fd_dir)
+        ruta = os.path.join(p_padre, str(nombre))
+        _DIR_6G1[ruta] = dict(device=st.st_dev, inode=st.st_ino)
+        return ruta, (st.st_dev, st.st_ino)
+    finally:
+        os.close(fd_padre)
+
+
+def _sha_via_descriptor_6g1(nombre, fd_dir, st):
+    """[H1-R2/B] SHA-256 de un archivo del directorio anclado: se abre con
+    `dir_fd` + `O_NOFOLLOW`, se verifica por `fstat` que el descriptor apunta
+    a la misma identidad que el `lstat` relativo, y se re-verifica tamaño/
+    mtime tras la lectura (sin rutas). Devuelve (sha256, None) o (None,
+    motivo)."""
+    fd = os.open(str(nombre), os.O_RDONLY | os.O_NOFOLLOW, dir_fd=fd_dir)
+    try:
+        st2 = os.fstat(fd)
+        if (st2.st_dev, st2.st_ino) != (st.st_dev, st.st_ino):
+            return None, 'identidad_distinta'
+        datos = b''
+        while True:
+            bloque = os.read(fd, 1 << 20)
+            if not bloque:
+                break
+            datos += bloque
+        if st2.st_size != st.st_size or st2.st_mtime_ns != st.st_mtime_ns:
+            return None, ('tamaño/mtime distintos durante la lectura '
+                          '(H1-R2/B)')
+        return hashlib.sha256(datos).hexdigest(), None
+    finally:
+        os.close(fd)
+
+
+def _clasificar_entrada_6g1(nombre, st, fd_dir, ruta_esperada):
+    """[H1-R2/B] Clasificación de propiedad de una entrada del directorio
+    anclado, EXCLUSIVAMENTE por descriptor: identidad (st_dev, st_ino) del
+    `lstat` relativo cotejada contra el registro de la corrida y sellado
+    (tamaño/mtime/SHA-256) verificado por `dir_fd` + `O_NOFOLLOW` + `fstat`.
+    `ruta_esperada` se usa SOLO como clave de comparación del registro (para
+    distinguir un sustituido de un ajeno) — NUNCA para re-consultar el
+    sistema de archivos. Devuelve (es_propia, motivo) con semántica C-R1
+    (fail-closed: cualquier duda conserva).
+    """
+    match = [(k, reg) for k, reg in _PROPIOS_6G1.items()
+             if (reg.get('device'), reg.get('inode'))
+             == (st.st_dev, st.st_ino)]
+    if not match:
+        if ruta_esperada in _PROPIOS_6G1:
+            return False, ('identidad_distinta (sustituido o reemplazado '
+                           'tras el registro)')
+        return False, 'ajeno_no_registrado'
+    if len(match) > 1:
+        return False, 'identidad_ambigua_en_registro'
+    reg = match[0][1]
+    if not reg.get('estable'):
+        # [H1-R2/B] Registro dinámico del motor (archivo en escritura al
+        # registrarse): la propiedad se acredita por IDENTIDAD, igual que la
+        # semántica C-R1 de `propiedad_de_6g1` (el sello sólo se exige en
+        # registros estable=True). Sin identidad no habría propiedad.
+        return True, 'propiedad_acreditada (registro dinámico sin sello)'
+    if st.st_size != reg.get('size') or st.st_mtime_ns != reg.get('mtime_ns'):
+        return False, 'tamaño/mtime distintos de los registrados'
+    sha, err = _sha_via_descriptor_6g1(nombre, fd_dir, st)
+    if err:
+        return False, err
+    if sha != reg.get('sha256'):
+        return False, 'contenido modificado tras el registro'
+    return True, 'propiedad_acreditada'
 
 
 def reiniciar_registro_6g1():
@@ -398,8 +514,14 @@ def abortar_6g1(run_dir, motivo, detalle=None):
                     conservados.append(rel)
                     motivos[rel] = 'registro_interno_conservado'
                     continue
-                propia, motivo_p = propiedad_de_6g1(os.path.join(str(run_dir),
-                                                                 rel))
+                # [6G.1-R/H1-R2/B] Clasificación EXCLUSIVAMENTE por
+                # descriptor (sin re-consultar rutas): identidad relativa al
+                # descriptor contra el registro; `ruta_esperada` sólo como
+                # clave de comparación del registro.
+                ruta_esperada = os.path.join(str(run_dir), rel)
+                propia, motivo_p = _clasificar_entrada_6g1(nombre, st,
+                                                           fd_base,
+                                                           ruta_esperada)
                 if propia:
                     # [6G.1-R/C-R1] Sin eliminación: la salida propia
                     # registrada queda INVALIDADA y CONSERVADA en el

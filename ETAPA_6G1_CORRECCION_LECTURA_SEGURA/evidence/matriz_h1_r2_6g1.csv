@@ -1,0 +1,5 @@
+prueba,motor,alcance,veredicto,checks_ok,checks_total,detalle
+A1,lectura_segura_6g1,creación+acreditación por descriptores con padre validado,PASS,4,4,todos los checks OK
+A2,lectura_segura_6g1,sustituto en la ruta tras la acreditación: nunca acreditado como provisional legítimo,PASS,6,6,todos los checks OK
+A3,lectura_segura_6g1,"padre modificable por terceros: el mecanismo se niega (fail-closed, sin crear ni acreditar)",PASS,3,3,todos los checks OK
+B1,lectura_segura_6g1,"ruta sustituida tras validar el descriptor y antes de clasificar: la clasificación sigue al descriptor original, sin consultar el árbol externo",PASS,10,10,todos los checks OK

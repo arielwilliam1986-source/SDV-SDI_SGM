@@ -207,13 +207,18 @@ def unidad():
         otro.write_bytes(b'otra salida propia\n')
         L.registrar_propio_6g1(otro, estable=True)
 
-        original_prop = L.propiedad_de_6g1
+        # [6G.1-R/H1-R2/B] La clasificación del aborto es por descriptor
+        # (_clasificar_entrada_6g1); la ventana histórica se intercepta allí
+        # con el mismo mecanismo exigido: dictamen ORIGINAL -> os.replace ->
+        # devolución del dictamen original al llamador.
+        original_clas = L._clasificar_entrada_6g1
         suceso = dict(dictamen=None, sustituido=False, secuencia=[])
 
-        def prop_con_sustitucion(p):
-            # 1-2: función ORIGINAL: dictamen sobre el archivo registrado
-            propia, motivo = original_prop(p)
-            if propia and os.path.abspath(str(p)) == str(ruta_propia) \
+        def clas_con_sustitucion(nombre, st, fd_dir, ruta_esperada):
+            # 1-2: clasificación ORIGINAL: dictamen sobre el archivo
+            # registrado (por descriptor, sin re-consultar rutas)
+            propia, motivo = original_clas(nombre, st, fd_dir, ruta_esperada)
+            if propia and ruta_esperada == str(ruta_propia) \
                     and not suceso['sustituido']:
                 suceso['secuencia'].append('dictamen_positivo')
                 suceso['dictamen'] = (propia, motivo)
@@ -226,12 +231,12 @@ def unidad():
                 # 4: abajo se devuelve el dictamen ORIGINAL al llamador
             return propia, motivo
 
-        L.propiedad_de_6g1 = prop_con_sustitucion
+        L._clasificar_entrada_6g1 = clas_con_sustitucion
         L.acreditar_dir_6g1(run)  # [6G.1-R/H1] como create_run_dir
         try:
             info = L.abortar_6g1(run, 'PRUEBA_CR1c')
         finally:
-            L.propiedad_de_6g1 = original_prop
+            L._clasificar_entrada_6g1 = original_clas
         ab = leer_abort(run)
         motivo_archivo = str((ab or {}).get('motivos_propiedad', {})
                              .get('salida_concurrente.wav', ''))
