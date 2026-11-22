@@ -1,0 +1,369 @@
+{
+  "escenario": "C2",
+  "eventos": [
+    {
+      "n": 1,
+      "t": 1823.767946802,
+      "tipo": "lector_cerrado",
+      "ruta": "/tmp/f6g1f/corregido/EVO/C2/mix_copia.wav",
+      "frames": 0
+    },
+    {
+      "n": 2,
+      "t": 1823.772580647,
+      "tipo": "lector_cerrado",
+      "ruta": "/home/user/SDV-SDI_SGM/ETAPA_6G1_CORRECCION_LECTURA_SEGURA/fixtures/vocal_mix.wav",
+      "frames": 0
+    },
+    {
+      "n": 3,
+      "t": 1823.775803895,
+      "tipo": "lector_cerrado",
+      "ruta": "/home/user/SDV-SDI_SGM/ETAPA_6G1_CORRECCION_LECTURA_SEGURA/fixtures/instrumental_mix.wav",
+      "frames": 0
+    },
+    {
+      "n": 4,
+      "t": 1824.355219819,
+      "tipo": "lector_cerrado",
+      "ruta": "/home/user/SDV-SDI_SGM/ETAPA_6G1_CORRECCION_LECTURA_SEGURA/fixtures/vocal_mix.wav",
+      "frames": 0
+    },
+    {
+      "n": 5,
+      "t": 1824.355244199,
+      "tipo": "lector_cerrado",
+      "ruta": "/home/user/SDV-SDI_SGM/ETAPA_6G1_CORRECCION_LECTURA_SEGURA/fixtures/instrumental_mix.wav",
+      "frames": 0
+    },
+    {
+      "n": 6,
+      "t": 1824.355255702,
+      "tipo": "lector_cerrado",
+      "ruta": "/tmp/f6g1f/corregido/EVO/C2/mix_copia.wav",
+      "frames": 0
+    },
+    {
+      "n": 7,
+      "t": 1824.753514959,
+      "tipo": "escritor_cerrado",
+      "ruta": "/tmp/f6g1f/corregido/EVO/C2/out/motorA_run_20261122_135645_partial/mix_copia SDV.wav",
+      "frames": 88200
+    },
+    {
+      "n": 8,
+      "t": 1824.755147465,
+      "tipo": "escritor_cerrado",
+      "ruta": "/tmp/f6g1f/corregido/EVO/C2/out/motorA_run_20261122_135645_partial/mix_copia SDI.wav",
+      "frames": 88200
+    },
+    {
+      "n": 9,
+      "t": 1824.75598593,
+      "tipo": "lector_cerrado",
+      "ruta": "/home/user/SDV-SDI_SGM/ETAPA_6G1_CORRECCION_LECTURA_SEGURA/fixtures/vocal_mix.wav",
+      "frames": 0
+    },
+    {
+      "n": 10,
+      "t": 1824.756005541,
+      "tipo": "lector_cerrado",
+      "ruta": "/home/user/SDV-SDI_SGM/ETAPA_6G1_CORRECCION_LECTURA_SEGURA/fixtures/instrumental_mix.wav",
+      "frames": 0
+    },
+    {
+      "n": 11,
+      "t": 1824.767438368,
+      "tipo": "lector_cerrado",
+      "ruta": "/tmp/f6g1f/corregido/EVO/C2/out/motorA_run_20261122_135645_partial/mix_copia SDI.wav",
+      "frames": 0
+    },
+    {
+      "n": 12,
+      "t": 1824.767461037,
+      "tipo": "lector_cerrado",
+      "ruta": "/tmp/f6g1f/corregido/EVO/C2/out/motorA_run_20261122_135645_partial/mix_copia SDV.wav",
+      "frames": 0
+    },
+    {
+      "n": 13,
+      "t": 1824.767469876,
+      "tipo": "lector_cerrado",
+      "ruta": "/tmp/f6g1f/corregido/EVO/C2/mix_copia.wav",
+      "frames": 0
+    },
+    {
+      "n": 14,
+      "t": 1824.787056977,
+      "tipo": "write_reports"
+    },
+    {
+      "n": 15,
+      "t": 1824.789676588,
+      "tipo": "inyeccion",
+      "escenario": "C2",
+      "detalle": {
+        "tipo": "cierre_log_fallido",
+        "modo": "despues",
+        "ruta": "/tmp/f6g1f/corregido/EVO/C2/out/motorA_run_20261122_135645_partial/engine_log.txt"
+      }
+    },
+    {
+      "n": 16,
+      "t": 1824.790078062,
+      "tipo": "log_cerrado",
+      "con_error": true
+    },
+    {
+      "n": 17,
+      "t": 1824.790081088,
+      "tipo": "cierre_log_fallido",
+      "modo": "despues"
+    },
+    {
+      "n": 18,
+      "t": 1824.792678089,
+      "tipo": "preparar_aborto_entrada"
+    },
+    {
+      "n": 19,
+      "t": 1824.792738387,
+      "tipo": "lector_cerrado",
+      "ruta": "/tmp/f6g1f/corregido/EVO/C2/mix_copia.wav",
+      "frames": 0
+    },
+    {
+      "n": 20,
+      "t": 1824.796406938,
+      "tipo": "preparar_aborto_salida",
+      "completo": false
+    },
+    {
+      "n": 21,
+      "t": 1824.798354383,
+      "tipo": "abortar_6g1_entrada",
+      "motivo": "EXCEPCION_DURANTE_EL_PROCESAMIENTO",
+      "run_dir": "/tmp/f6g1f/corregido/EVO/C2/out/motorA_run_20261122_135645_partial"
+    },
+    {
+      "n": 22,
+      "t": 1824.804387818,
+      "tipo": "abortar_6g1_salida",
+      "motivo": "EXCEPCION_DURANTE_EL_PROCESAMIENTO"
+    },
+    {
+      "n": 23,
+      "t": 1824.809766915,
+      "tipo": "fin_main",
+      "codigo": 2
+    }
+  ],
+  "fotos": {
+    "entrada_abortar": {
+      "etiqueta": "entrada_abortar",
+      "n_evento": 21,
+      "directorio": "/tmp/f6g1f/corregido/EVO/C2/out/motorA_run_20261122_135645_partial",
+      "gc_habilitado": false,
+      "identidad": [
+        65024,
+        537763
+      ],
+      "archivos": {
+        "engine_log.txt": "64fdb00a2849a9dbf542f1d1f4e72f1b83ed817f2a326bc43a2df09e61f3d61b",
+        "mix_copia SDV.wav": "2c9c0941b9d162f1c51c08d66cf1d6cde51b85dee778ea1ff7ffbf5e3ddb1afb",
+        "mix_copia SDI.wav": "532bf26dbbdf9e6424a964c259182221b30070e54a59687a703e10812979e557",
+        "analysis.json": "170f8d1abd32d828da5b0c240491ee8a05a871a6c7e26fe08f9c474b83fda7bf",
+        "analysis.txt": "6ac35275c0866adddab48272dee890f0bfcb5abe587664efa29f781d11a31733"
+      },
+      "descriptores_salida_o_entradas": [],
+      "mapeos_bajo_salida": [],
+      "escritores": [
+        {
+          "ruta": "/tmp/f6g1f/corregido/EVO/C2/out/motorA_run_20261122_135645_partial/mix_copia SDV.wav",
+          "cerrado": true,
+          "frames": 88200
+        },
+        {
+          "ruta": "/tmp/f6g1f/corregido/EVO/C2/out/motorA_run_20261122_135645_partial/mix_copia SDI.wav",
+          "cerrado": true,
+          "frames": 88200
+        }
+      ],
+      "lectores_abiertos": [],
+      "memmaps": []
+    },
+    "salida_abortar": {
+      "etiqueta": "salida_abortar",
+      "n_evento": 22,
+      "directorio": "/tmp/f6g1f/corregido/EVO/C2/out/motorA_run_20261122_135645_partial",
+      "gc_habilitado": false,
+      "identidad": [
+        65024,
+        537763
+      ],
+      "archivos": {
+        "engine_log.txt": "64fdb00a2849a9dbf542f1d1f4e72f1b83ed817f2a326bc43a2df09e61f3d61b",
+        "mix_copia SDV.wav": "2c9c0941b9d162f1c51c08d66cf1d6cde51b85dee778ea1ff7ffbf5e3ddb1afb",
+        "mix_copia SDI.wav": "532bf26dbbdf9e6424a964c259182221b30070e54a59687a703e10812979e557",
+        "analysis.json": "170f8d1abd32d828da5b0c240491ee8a05a871a6c7e26fe08f9c474b83fda7bf",
+        "analysis.txt": "6ac35275c0866adddab48272dee890f0bfcb5abe587664efa29f781d11a31733",
+        "ABORT_6G1.json": "0bec0f270147bed8111b022f8a61ad5da8837282abe2c5d952a9d4295e31b3d0"
+      },
+      "descriptores_salida_o_entradas": [],
+      "mapeos_bajo_salida": [],
+      "escritores": [
+        {
+          "ruta": "/tmp/f6g1f/corregido/EVO/C2/out/motorA_run_20261122_135645_partial/mix_copia SDV.wav",
+          "cerrado": true,
+          "frames": 88200
+        },
+        {
+          "ruta": "/tmp/f6g1f/corregido/EVO/C2/out/motorA_run_20261122_135645_partial/mix_copia SDI.wav",
+          "cerrado": true,
+          "frames": 88200
+        }
+      ],
+      "lectores_abiertos": [],
+      "memmaps": []
+    },
+    "fin_proceso": {
+      "etiqueta": "fin_proceso",
+      "n_evento": 23,
+      "directorio": "/tmp/f6g1f/corregido/EVO/C2/out/motorA_run_20261122_135645_partial",
+      "gc_habilitado": false,
+      "identidad": [
+        65024,
+        537763
+      ],
+      "archivos": {
+        "engine_log.txt": "64fdb00a2849a9dbf542f1d1f4e72f1b83ed817f2a326bc43a2df09e61f3d61b",
+        "mix_copia SDV.wav": "2c9c0941b9d162f1c51c08d66cf1d6cde51b85dee778ea1ff7ffbf5e3ddb1afb",
+        "mix_copia SDI.wav": "532bf26dbbdf9e6424a964c259182221b30070e54a59687a703e10812979e557",
+        "analysis.json": "170f8d1abd32d828da5b0c240491ee8a05a871a6c7e26fe08f9c474b83fda7bf",
+        "analysis.txt": "6ac35275c0866adddab48272dee890f0bfcb5abe587664efa29f781d11a31733",
+        "ABORT_6G1.json": "0bec0f270147bed8111b022f8a61ad5da8837282abe2c5d952a9d4295e31b3d0"
+      },
+      "descriptores_salida_o_entradas": [],
+      "mapeos_bajo_salida": [],
+      "escritores": [
+        {
+          "ruta": "/tmp/f6g1f/corregido/EVO/C2/out/motorA_run_20261122_135645_partial/mix_copia SDV.wav",
+          "cerrado": true,
+          "frames": 88200
+        },
+        {
+          "ruta": "/tmp/f6g1f/corregido/EVO/C2/out/motorA_run_20261122_135645_partial/mix_copia SDI.wav",
+          "cerrado": true,
+          "frames": 88200
+        }
+      ],
+      "lectores_abiertos": [],
+      "memmaps": []
+    }
+  },
+  "inyeccion": {
+    "detalle": {
+      "tipo": "cierre_log_fallido",
+      "modo": "despues",
+      "ruta": "/tmp/f6g1f/corregido/EVO/C2/out/motorA_run_20261122_135645_partial/engine_log.txt"
+    },
+    "provisional": "/tmp/f6g1f/corregido/EVO/C2/out/motorA_run_20261122_135645_partial",
+    "final": "/tmp/f6g1f/corregido/EVO/C2/out/motorA_run_20261122_135645",
+    "identidad": [
+      65024,
+      537763
+    ],
+    "archivos": {
+      "engine_log.txt": "64fdb00a2849a9dbf542f1d1f4e72f1b83ed817f2a326bc43a2df09e61f3d61b",
+      "mix_copia SDV.wav": "2c9c0941b9d162f1c51c08d66cf1d6cde51b85dee778ea1ff7ffbf5e3ddb1afb",
+      "mix_copia SDI.wav": "532bf26dbbdf9e6424a964c259182221b30070e54a59687a703e10812979e557",
+      "analysis.json": "170f8d1abd32d828da5b0c240491ee8a05a871a6c7e26fe08f9c474b83fda7bf",
+      "analysis.txt": "6ac35275c0866adddab48272dee890f0bfcb5abe587664efa29f781d11a31733"
+    },
+    "n_evento": 15
+  },
+  "armado": true,
+  "gc_deshabilitado_al_inicio": true,
+  "gc_colecciones_al_deshabilitar": [
+    9,
+    0,
+    0
+  ],
+  "gc_colecciones_posteriores": [],
+  "preparar": {
+    "completo": false,
+    "errores": [
+      "cierre del log: OSError: [Errno 28] inyeccion AI-C2: fallo al cerrar engine_log.txt (despues del cierre fisico)"
+    ],
+    "log_cerrado": false,
+    "escritores": 2,
+    "memmaps": 0,
+    "lectores": 3,
+    "orden": [
+      {
+        "paso": 1,
+        "tipo": "escritor_wav",
+        "recurso": "/tmp/f6g1f/corregido/EVO/C2/out/motorA_run_20261122_135645_partial/mix_copia SDV.wav",
+        "accion": "close (cabecera finalizada)",
+        "ok": true
+      },
+      {
+        "paso": 2,
+        "tipo": "escritor_wav",
+        "recurso": "/tmp/f6g1f/corregido/EVO/C2/out/motorA_run_20261122_135645_partial/mix_copia SDI.wav",
+        "accion": "close (cabecera finalizada)",
+        "ok": true
+      },
+      {
+        "paso": 3,
+        "tipo": "lector",
+        "recurso": "/tmp/f6g1f/corregido/EVO/C2/mix_copia.wav",
+        "accion": "close",
+        "ok": true
+      },
+      {
+        "paso": 4,
+        "tipo": "lector",
+        "recurso": "/home/user/SDV-SDI_SGM/ETAPA_6G1_CORRECCION_LECTURA_SEGURA/fixtures/vocal_mix.wav",
+        "accion": "close",
+        "ok": true
+      },
+      {
+        "paso": 5,
+        "tipo": "lector",
+        "recurso": "/home/user/SDV-SDI_SGM/ETAPA_6G1_CORRECCION_LECTURA_SEGURA/fixtures/instrumental_mix.wav",
+        "accion": "close",
+        "ok": true
+      }
+    ],
+    "escritura_abierta_al_registrar": []
+  },
+  "resultado_aborto": {
+    "motivo": "EXCEPCION_DURANTE_EL_PROCESAMIENTO",
+    "abort_registrado": true,
+    "trasladado": false,
+    "ruta_final": "/tmp/f6g1f/corregido/EVO/C2/out/motorA_run_20261122_135645_partial",
+    "traslado_solicitado": true,
+    "traslado_bloqueado": "cierre de recursos incompleto: cierre del log: OSError: [Errno 28] inyeccion AI-C2: fallo al cerrar engine_log.txt (despues del cierre fisico)",
+    "motivo_conservacion": "cierre de recursos incompleto: cierre del log: OSError: [Errno 28] inyeccion AI-C2: fallo al cerrar engine_log.txt (despues del cierre fisico): provisional conservado en su ubicaci\u00f3n",
+    "cierre_recursos_completo": false,
+    "escritura_abierta_al_registrar": [],
+    "salidas_invalidadas": [
+      "analysis.txt",
+      "mix_copia SDI.wav",
+      "mix_copia SDV.wav"
+    ]
+  },
+  "retorno_run_experiment": {
+    "codigo": 2,
+    "ruta": "None",
+    "ruta_str": null
+  },
+  "codigo_main": 2,
+  "gc_habilitado_al_final": false,
+  "gc_colecciones": [
+    9,
+    0,
+    0
+  ]
+}

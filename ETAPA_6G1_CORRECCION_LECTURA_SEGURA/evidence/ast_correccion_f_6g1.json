@@ -1,0 +1,86 @@
+{
+  "schema": "ast-correccion-f-6g1/1",
+  "base": "2f4aae411ce1672ec9aa57cc9a967e0556631d85",
+  "motores": {
+    "Hardened": {
+      "unidades_cambiadas": [
+        "run_experiment"
+      ],
+      "unidad_autorizada": "run_experiment",
+      "unidades_añadidas": [],
+      "unidades_eliminadas": [],
+      "sentencias_superiores_identicas": true,
+      "inserciones_arr_none_padre": 0,
+      "inserciones_arr_none": [
+        {
+          "linea": 1881,
+          "anterior": "for arr in mm.values():",
+          "siguiente": null,
+          "tras_bucle_flush": true,
+          "bloque": "body",
+          "padre": "If",
+          "primera_sentencia_posterior": "del mm",
+          "antes_de_del_mm": true
+        }
+      ],
+      "ast_identico_al_padre_sin_la_insercion": true,
+      "sha256_padre": "0e741d57bf04fada55fc0910a41ea75f0d9637a176945fc930c2699fb6948831",
+      "sha256": "a4c157e7607f52a229cb35506ca9c5a57b86d30a6da179fec59ad7df445c416a",
+      "veredicto": "OK"
+    },
+    "EVO": {
+      "unidades_cambiadas": [
+        "run_experiment"
+      ],
+      "unidad_autorizada": "run_experiment",
+      "unidades_añadidas": [],
+      "unidades_eliminadas": [],
+      "sentencias_superiores_identicas": true,
+      "inserciones_arr_none_padre": 0,
+      "inserciones_arr_none": [
+        {
+          "linea": 1992,
+          "anterior": "for arr in mm.values():",
+          "siguiente": null,
+          "tras_bucle_flush": true,
+          "bloque": "body",
+          "padre": "If",
+          "primera_sentencia_posterior": "del mm",
+          "antes_de_del_mm": true
+        }
+      ],
+      "ast_identico_al_padre_sin_la_insercion": true,
+      "sha256_padre": "9e156cab123b5922e5ecdae48947328f7bc346aa8af9c6db270a6ac05bbcf62c",
+      "sha256": "25ababfa4a177e46ce93460d937045795f8f2b0c75241d9b7ba71a8889f0e1e1",
+      "veredicto": "OK"
+    },
+    "MQR": {
+      "unidades_cambiadas": [
+        "_run_core"
+      ],
+      "unidad_autorizada": "_run_core",
+      "unidades_añadidas": [],
+      "unidades_eliminadas": [],
+      "sentencias_superiores_identicas": true,
+      "inserciones_arr_none_padre": 0,
+      "inserciones_arr_none": [
+        {
+          "linea": 2717,
+          "anterior": "for arr in mm.values():",
+          "siguiente": "del mm",
+          "tras_bucle_flush": true,
+          "bloque": "body",
+          "padre": "FunctionDef",
+          "primera_sentencia_posterior": "del mm",
+          "antes_de_del_mm": true
+        }
+      ],
+      "ast_identico_al_padre_sin_la_insercion": true,
+      "sha256_padre": "7e21f7ade20690f6c549dec13244a4f8b227d1c3a7cdbc8ff98a584354c9fbfa",
+      "sha256": "0c6a6d32b3702d87c2e5be52edb16a58b9c2fa56aa2dbd39a7c37c2fe789d372",
+      "veredicto": "OK"
+    }
+  },
+  "lectura_segura_6g1_identico": true,
+  "veredicto": "OK"
+}

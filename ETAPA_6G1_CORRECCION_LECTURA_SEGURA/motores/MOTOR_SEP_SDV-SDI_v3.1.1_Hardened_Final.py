@@ -1878,6 +1878,7 @@ def run_experiment(mix_path: str, pairs: list, mode: str, opt: argparse.Namespac
         for h in handles.values(): h.close()
         if write_masks:
             for arr in mm.values(): arr.flush()
+            arr = None   # [6G.1-R/AI-F] suelta la última referencia al memmap retenida por la variable de bucle
         del mm
 
         per_candidate = {runner.cand_id: runner.metrics.finalize() for runner in runners}

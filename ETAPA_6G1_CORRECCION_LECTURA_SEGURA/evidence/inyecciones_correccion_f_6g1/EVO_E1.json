@@ -1,0 +1,467 @@
+{
+  "escenario": "E1",
+  "eventos": [
+    {
+      "n": 1,
+      "t": 1827.590661931,
+      "tipo": "lector_cerrado",
+      "ruta": "/tmp/f6g1f/corregido/EVO/E1/mix_copia.wav",
+      "frames": 0
+    },
+    {
+      "n": 2,
+      "t": 1827.595085541,
+      "tipo": "lector_cerrado",
+      "ruta": "/home/user/SDV-SDI_SGM/ETAPA_6G1_CORRECCION_LECTURA_SEGURA/fixtures/vocal_mix.wav",
+      "frames": 0
+    },
+    {
+      "n": 3,
+      "t": 1827.598103836,
+      "tipo": "lector_cerrado",
+      "ruta": "/home/user/SDV-SDI_SGM/ETAPA_6G1_CORRECCION_LECTURA_SEGURA/fixtures/instrumental_mix.wav",
+      "frames": 0
+    },
+    {
+      "n": 4,
+      "t": 1828.167966146,
+      "tipo": "lector_cerrado",
+      "ruta": "/home/user/SDV-SDI_SGM/ETAPA_6G1_CORRECCION_LECTURA_SEGURA/fixtures/vocal_mix.wav",
+      "frames": 0
+    },
+    {
+      "n": 5,
+      "t": 1828.167987331,
+      "tipo": "lector_cerrado",
+      "ruta": "/home/user/SDV-SDI_SGM/ETAPA_6G1_CORRECCION_LECTURA_SEGURA/fixtures/instrumental_mix.wav",
+      "frames": 0
+    },
+    {
+      "n": 6,
+      "t": 1828.167997347,
+      "tipo": "lector_cerrado",
+      "ruta": "/tmp/f6g1f/corregido/EVO/E1/mix_copia.wav",
+      "frames": 0
+    },
+    {
+      "n": 7,
+      "t": 1828.490143436,
+      "tipo": "escritor_cerrado",
+      "ruta": "/tmp/f6g1f/corregido/EVO/E1/out/motorA_run_20261122_135649_partial/mix_copia SDV.wav",
+      "frames": 88200
+    },
+    {
+      "n": 8,
+      "t": 1828.492014964,
+      "tipo": "escritor_cerrado",
+      "ruta": "/tmp/f6g1f/corregido/EVO/E1/out/motorA_run_20261122_135649_partial/mix_copia SDI.wav",
+      "frames": 88200
+    },
+    {
+      "n": 9,
+      "t": 1828.492957161,
+      "tipo": "lector_cerrado",
+      "ruta": "/home/user/SDV-SDI_SGM/ETAPA_6G1_CORRECCION_LECTURA_SEGURA/fixtures/vocal_mix.wav",
+      "frames": 0
+    },
+    {
+      "n": 10,
+      "t": 1828.492972219,
+      "tipo": "lector_cerrado",
+      "ruta": "/home/user/SDV-SDI_SGM/ETAPA_6G1_CORRECCION_LECTURA_SEGURA/fixtures/instrumental_mix.wav",
+      "frames": 0
+    },
+    {
+      "n": 11,
+      "t": 1828.510364737,
+      "tipo": "lector_cerrado",
+      "ruta": "/tmp/f6g1f/corregido/EVO/E1/out/motorA_run_20261122_135649_partial/mix_copia SDI.wav",
+      "frames": 0
+    },
+    {
+      "n": 12,
+      "t": 1828.510383675,
+      "tipo": "lector_cerrado",
+      "ruta": "/tmp/f6g1f/corregido/EVO/E1/out/motorA_run_20261122_135649_partial/mix_copia SDV.wav",
+      "frames": 0
+    },
+    {
+      "n": 13,
+      "t": 1828.510390861,
+      "tipo": "lector_cerrado",
+      "ruta": "/tmp/f6g1f/corregido/EVO/E1/mix_copia.wav",
+      "frames": 0
+    },
+    {
+      "n": 14,
+      "t": 1828.531229251,
+      "tipo": "write_reports"
+    },
+    {
+      "n": 15,
+      "t": 1828.538589364,
+      "tipo": "inyeccion",
+      "escenario": "E1",
+      "detalle": {
+        "tipo": "mix_alterado_tras_masks",
+        "ruta": "/tmp/f6g1f/corregido/EVO/E1/mix_copia.wav"
+      }
+    },
+    {
+      "n": 16,
+      "t": 1828.539031765,
+      "tipo": "mix_alterado",
+      "ruta": "/tmp/f6g1f/corregido/EVO/E1/mix_copia.wav"
+    },
+    {
+      "n": 17,
+      "t": 1828.539991918,
+      "tipo": "lector_cerrado",
+      "ruta": "/tmp/f6g1f/corregido/EVO/E1/mix_copia.wav",
+      "frames": 0
+    },
+    {
+      "n": 18,
+      "t": 1828.540536667,
+      "tipo": "preparar_aborto_entrada"
+    },
+    {
+      "n": 19,
+      "t": 1828.544291522,
+      "tipo": "preparar_aborto_salida",
+      "completo": true
+    },
+    {
+      "n": 20,
+      "t": 1828.546581822,
+      "tipo": "abortar_6g1_entrada",
+      "motivo": "MIX_CAMBIADO_DURANTE_EL_PROCESAMIENTO",
+      "run_dir": "/tmp/f6g1f/corregido/EVO/E1/out/motorA_run_20261122_135649_partial"
+    },
+    {
+      "n": 21,
+      "t": 1828.556310857,
+      "tipo": "abortar_6g1_salida",
+      "motivo": "MIX_CAMBIADO_DURANTE_EL_PROCESAMIENTO"
+    },
+    {
+      "n": 22,
+      "t": 1828.567213598,
+      "tipo": "fin_main",
+      "codigo": 2
+    }
+  ],
+  "fotos": {
+    "entrada_abortar": {
+      "etiqueta": "entrada_abortar",
+      "n_evento": 20,
+      "directorio": "/tmp/f6g1f/corregido/EVO/E1/out/motorA_run_20261122_135649_partial",
+      "gc_habilitado": false,
+      "identidad": [
+        65024,
+        537799
+      ],
+      "archivos": {
+        "engine_log.txt": "4b6785ff12e879b74a13e5486875a95a54dd8d409f8bbebc94ef27e1a0cee8d4",
+        "mix_copia SDV.wav": "35fee26cfa5be7db469a3bc85af5490407ffa79f86b716955f3a00763aadf8ab",
+        "mix_copia SDI.wav": "f0597f0d874939f6699c1c185fe5ffc0900b442d542c5b1f91bcd584d38a1030",
+        "analysis.json": "c97dbfec623c2b04cc63b8ea46727f5b07e1a4a2ff693429c2ce14f0fa253a9e",
+        "analysis.txt": "ea881ef3c8d0da445626ab5d04d49fd636098463b5a245df4158f62728384883",
+        "input_integrity_6g.json": "f81bf5866703b9d6b1a4930edd8dea779baefbe5c45418cde102863e963be40d",
+        "masks/mask_P01_vocal.npy": "5502a999834d915e3dc85cd2e5f9509d97d9a36089006ace18e6256e4ad411fd",
+        "masks/confidence_map.npy": "bbdef2c675b84fa13b1cc52d0331dba39b44080b934534a0030b2368a42819ff",
+        "masks/mask_P01_instrumental.npy": "cc80fa8d89fc6bfed44887dee491d1796cb67a1d6672e835d4eb8ef8848031b2",
+        "masks/consensus_vocal_confidence_weighted_mean.npy": "5502a999834d915e3dc85cd2e5f9509d97d9a36089006ace18e6256e4ad411fd",
+        "masks/consensus_instrumental_confidence_weighted_mean.npy": "cc80fa8d89fc6bfed44887dee491d1796cb67a1d6672e835d4eb8ef8848031b2",
+        "masks/model_disagreement_map.npy": "7f17e5eda43def69b2c5c6101dc267edb7a00382309b5d060b740300dd9b449b"
+      },
+      "descriptores_salida_o_entradas": [],
+      "mapeos_bajo_salida": [],
+      "escritores": [
+        {
+          "ruta": "/tmp/f6g1f/corregido/EVO/E1/out/motorA_run_20261122_135649_partial/mix_copia SDV.wav",
+          "cerrado": true,
+          "frames": 88200
+        },
+        {
+          "ruta": "/tmp/f6g1f/corregido/EVO/E1/out/motorA_run_20261122_135649_partial/mix_copia SDI.wav",
+          "cerrado": true,
+          "frames": 88200
+        }
+      ],
+      "lectores_abiertos": [],
+      "memmaps": [
+        {
+          "ruta": "/tmp/f6g1f/corregido/EVO/E1/out/motorA_run_20261122_135649_partial/masks/mask_P01_vocal.npy",
+          "vivo": false
+        },
+        {
+          "ruta": "/tmp/f6g1f/corregido/EVO/E1/out/motorA_run_20261122_135649_partial/masks/mask_P01_instrumental.npy",
+          "vivo": false
+        },
+        {
+          "ruta": "/tmp/f6g1f/corregido/EVO/E1/out/motorA_run_20261122_135649_partial/masks/consensus_vocal_confidence_weighted_mean.npy",
+          "vivo": false
+        },
+        {
+          "ruta": "/tmp/f6g1f/corregido/EVO/E1/out/motorA_run_20261122_135649_partial/masks/consensus_instrumental_confidence_weighted_mean.npy",
+          "vivo": false
+        },
+        {
+          "ruta": "/tmp/f6g1f/corregido/EVO/E1/out/motorA_run_20261122_135649_partial/masks/confidence_map.npy",
+          "vivo": false
+        },
+        {
+          "ruta": "/tmp/f6g1f/corregido/EVO/E1/out/motorA_run_20261122_135649_partial/masks/model_disagreement_map.npy",
+          "vivo": false
+        }
+      ]
+    },
+    "salida_abortar": {
+      "etiqueta": "salida_abortar",
+      "n_evento": 21,
+      "directorio": "/tmp/f6g1f/corregido/EVO/E1/out/motorA_run_20261122_135649_partial",
+      "gc_habilitado": false,
+      "identidad": [
+        65024,
+        537799
+      ],
+      "archivos": {
+        "engine_log.txt": "4b6785ff12e879b74a13e5486875a95a54dd8d409f8bbebc94ef27e1a0cee8d4",
+        "mix_copia SDV.wav": "35fee26cfa5be7db469a3bc85af5490407ffa79f86b716955f3a00763aadf8ab",
+        "mix_copia SDI.wav": "f0597f0d874939f6699c1c185fe5ffc0900b442d542c5b1f91bcd584d38a1030",
+        "analysis.json": "c97dbfec623c2b04cc63b8ea46727f5b07e1a4a2ff693429c2ce14f0fa253a9e",
+        "analysis.txt": "ea881ef3c8d0da445626ab5d04d49fd636098463b5a245df4158f62728384883",
+        "input_integrity_6g.json": "f81bf5866703b9d6b1a4930edd8dea779baefbe5c45418cde102863e963be40d",
+        "ABORT_6G1.json": "16a5773fd8cff0d5e90752ddbe0b281743b0d2d79e5347ebbad78faf649039a5",
+        "masks/mask_P01_vocal.npy": "5502a999834d915e3dc85cd2e5f9509d97d9a36089006ace18e6256e4ad411fd",
+        "masks/confidence_map.npy": "bbdef2c675b84fa13b1cc52d0331dba39b44080b934534a0030b2368a42819ff",
+        "masks/mask_P01_instrumental.npy": "cc80fa8d89fc6bfed44887dee491d1796cb67a1d6672e835d4eb8ef8848031b2",
+        "masks/consensus_vocal_confidence_weighted_mean.npy": "5502a999834d915e3dc85cd2e5f9509d97d9a36089006ace18e6256e4ad411fd",
+        "masks/consensus_instrumental_confidence_weighted_mean.npy": "cc80fa8d89fc6bfed44887dee491d1796cb67a1d6672e835d4eb8ef8848031b2",
+        "masks/model_disagreement_map.npy": "7f17e5eda43def69b2c5c6101dc267edb7a00382309b5d060b740300dd9b449b"
+      },
+      "descriptores_salida_o_entradas": [],
+      "mapeos_bajo_salida": [],
+      "escritores": [
+        {
+          "ruta": "/tmp/f6g1f/corregido/EVO/E1/out/motorA_run_20261122_135649_partial/mix_copia SDV.wav",
+          "cerrado": true,
+          "frames": 88200
+        },
+        {
+          "ruta": "/tmp/f6g1f/corregido/EVO/E1/out/motorA_run_20261122_135649_partial/mix_copia SDI.wav",
+          "cerrado": true,
+          "frames": 88200
+        }
+      ],
+      "lectores_abiertos": [],
+      "memmaps": [
+        {
+          "ruta": "/tmp/f6g1f/corregido/EVO/E1/out/motorA_run_20261122_135649_partial/masks/mask_P01_vocal.npy",
+          "vivo": false
+        },
+        {
+          "ruta": "/tmp/f6g1f/corregido/EVO/E1/out/motorA_run_20261122_135649_partial/masks/mask_P01_instrumental.npy",
+          "vivo": false
+        },
+        {
+          "ruta": "/tmp/f6g1f/corregido/EVO/E1/out/motorA_run_20261122_135649_partial/masks/consensus_vocal_confidence_weighted_mean.npy",
+          "vivo": false
+        },
+        {
+          "ruta": "/tmp/f6g1f/corregido/EVO/E1/out/motorA_run_20261122_135649_partial/masks/consensus_instrumental_confidence_weighted_mean.npy",
+          "vivo": false
+        },
+        {
+          "ruta": "/tmp/f6g1f/corregido/EVO/E1/out/motorA_run_20261122_135649_partial/masks/confidence_map.npy",
+          "vivo": false
+        },
+        {
+          "ruta": "/tmp/f6g1f/corregido/EVO/E1/out/motorA_run_20261122_135649_partial/masks/model_disagreement_map.npy",
+          "vivo": false
+        }
+      ]
+    },
+    "fin_proceso": {
+      "etiqueta": "fin_proceso",
+      "n_evento": 22,
+      "directorio": "/tmp/f6g1f/corregido/EVO/E1/out/motorA_run_20261122_135649_partial",
+      "gc_habilitado": false,
+      "identidad": [
+        65024,
+        537799
+      ],
+      "archivos": {
+        "engine_log.txt": "4b6785ff12e879b74a13e5486875a95a54dd8d409f8bbebc94ef27e1a0cee8d4",
+        "mix_copia SDV.wav": "35fee26cfa5be7db469a3bc85af5490407ffa79f86b716955f3a00763aadf8ab",
+        "mix_copia SDI.wav": "f0597f0d874939f6699c1c185fe5ffc0900b442d542c5b1f91bcd584d38a1030",
+        "analysis.json": "c97dbfec623c2b04cc63b8ea46727f5b07e1a4a2ff693429c2ce14f0fa253a9e",
+        "analysis.txt": "ea881ef3c8d0da445626ab5d04d49fd636098463b5a245df4158f62728384883",
+        "input_integrity_6g.json": "f81bf5866703b9d6b1a4930edd8dea779baefbe5c45418cde102863e963be40d",
+        "ABORT_6G1.json": "16a5773fd8cff0d5e90752ddbe0b281743b0d2d79e5347ebbad78faf649039a5",
+        "masks/mask_P01_vocal.npy": "5502a999834d915e3dc85cd2e5f9509d97d9a36089006ace18e6256e4ad411fd",
+        "masks/confidence_map.npy": "bbdef2c675b84fa13b1cc52d0331dba39b44080b934534a0030b2368a42819ff",
+        "masks/mask_P01_instrumental.npy": "cc80fa8d89fc6bfed44887dee491d1796cb67a1d6672e835d4eb8ef8848031b2",
+        "masks/consensus_vocal_confidence_weighted_mean.npy": "5502a999834d915e3dc85cd2e5f9509d97d9a36089006ace18e6256e4ad411fd",
+        "masks/consensus_instrumental_confidence_weighted_mean.npy": "cc80fa8d89fc6bfed44887dee491d1796cb67a1d6672e835d4eb8ef8848031b2",
+        "masks/model_disagreement_map.npy": "7f17e5eda43def69b2c5c6101dc267edb7a00382309b5d060b740300dd9b449b"
+      },
+      "descriptores_salida_o_entradas": [],
+      "mapeos_bajo_salida": [],
+      "escritores": [
+        {
+          "ruta": "/tmp/f6g1f/corregido/EVO/E1/out/motorA_run_20261122_135649_partial/mix_copia SDV.wav",
+          "cerrado": true,
+          "frames": 88200
+        },
+        {
+          "ruta": "/tmp/f6g1f/corregido/EVO/E1/out/motorA_run_20261122_135649_partial/mix_copia SDI.wav",
+          "cerrado": true,
+          "frames": 88200
+        }
+      ],
+      "lectores_abiertos": [],
+      "memmaps": [
+        {
+          "ruta": "/tmp/f6g1f/corregido/EVO/E1/out/motorA_run_20261122_135649_partial/masks/mask_P01_vocal.npy",
+          "vivo": false
+        },
+        {
+          "ruta": "/tmp/f6g1f/corregido/EVO/E1/out/motorA_run_20261122_135649_partial/masks/mask_P01_instrumental.npy",
+          "vivo": false
+        },
+        {
+          "ruta": "/tmp/f6g1f/corregido/EVO/E1/out/motorA_run_20261122_135649_partial/masks/consensus_vocal_confidence_weighted_mean.npy",
+          "vivo": false
+        },
+        {
+          "ruta": "/tmp/f6g1f/corregido/EVO/E1/out/motorA_run_20261122_135649_partial/masks/consensus_instrumental_confidence_weighted_mean.npy",
+          "vivo": false
+        },
+        {
+          "ruta": "/tmp/f6g1f/corregido/EVO/E1/out/motorA_run_20261122_135649_partial/masks/confidence_map.npy",
+          "vivo": false
+        },
+        {
+          "ruta": "/tmp/f6g1f/corregido/EVO/E1/out/motorA_run_20261122_135649_partial/masks/model_disagreement_map.npy",
+          "vivo": false
+        }
+      ]
+    }
+  },
+  "inyeccion": {
+    "detalle": {
+      "tipo": "mix_alterado_tras_masks",
+      "ruta": "/tmp/f6g1f/corregido/EVO/E1/mix_copia.wav"
+    },
+    "provisional": "/tmp/f6g1f/corregido/EVO/E1/out/motorA_run_20261122_135649_partial",
+    "final": "/tmp/f6g1f/corregido/EVO/E1/out/motorA_run_20261122_135649",
+    "identidad": [
+      65024,
+      537799
+    ],
+    "archivos": {
+      "engine_log.txt": "4b6785ff12e879b74a13e5486875a95a54dd8d409f8bbebc94ef27e1a0cee8d4",
+      "mix_copia SDV.wav": "35fee26cfa5be7db469a3bc85af5490407ffa79f86b716955f3a00763aadf8ab",
+      "mix_copia SDI.wav": "f0597f0d874939f6699c1c185fe5ffc0900b442d542c5b1f91bcd584d38a1030",
+      "analysis.json": "c97dbfec623c2b04cc63b8ea46727f5b07e1a4a2ff693429c2ce14f0fa253a9e",
+      "analysis.txt": "ea881ef3c8d0da445626ab5d04d49fd636098463b5a245df4158f62728384883",
+      "masks/mask_P01_vocal.npy": "5502a999834d915e3dc85cd2e5f9509d97d9a36089006ace18e6256e4ad411fd",
+      "masks/confidence_map.npy": "bbdef2c675b84fa13b1cc52d0331dba39b44080b934534a0030b2368a42819ff",
+      "masks/mask_P01_instrumental.npy": "cc80fa8d89fc6bfed44887dee491d1796cb67a1d6672e835d4eb8ef8848031b2",
+      "masks/consensus_vocal_confidence_weighted_mean.npy": "5502a999834d915e3dc85cd2e5f9509d97d9a36089006ace18e6256e4ad411fd",
+      "masks/consensus_instrumental_confidence_weighted_mean.npy": "cc80fa8d89fc6bfed44887dee491d1796cb67a1d6672e835d4eb8ef8848031b2",
+      "masks/model_disagreement_map.npy": "7f17e5eda43def69b2c5c6101dc267edb7a00382309b5d060b740300dd9b449b"
+    },
+    "n_evento": 15
+  },
+  "armado": true,
+  "gc_deshabilitado_al_inicio": true,
+  "gc_colecciones_al_deshabilitar": [
+    9,
+    0,
+    0
+  ],
+  "gc_colecciones_posteriores": [],
+  "preparar": {
+    "completo": true,
+    "errores": [],
+    "log_cerrado": true,
+    "escritores": 2,
+    "memmaps": 0,
+    "lectores": 3,
+    "orden": [
+      {
+        "paso": 1,
+        "tipo": "escritor_wav",
+        "recurso": "/tmp/f6g1f/corregido/EVO/E1/out/motorA_run_20261122_135649_partial/mix_copia SDV.wav",
+        "accion": "close (cabecera finalizada)",
+        "ok": true
+      },
+      {
+        "paso": 2,
+        "tipo": "escritor_wav",
+        "recurso": "/tmp/f6g1f/corregido/EVO/E1/out/motorA_run_20261122_135649_partial/mix_copia SDI.wav",
+        "accion": "close (cabecera finalizada)",
+        "ok": true
+      },
+      {
+        "paso": 3,
+        "tipo": "lector",
+        "recurso": "/tmp/f6g1f/corregido/EVO/E1/mix_copia.wav",
+        "accion": "close",
+        "ok": true
+      },
+      {
+        "paso": 4,
+        "tipo": "lector",
+        "recurso": "/home/user/SDV-SDI_SGM/ETAPA_6G1_CORRECCION_LECTURA_SEGURA/fixtures/vocal_mix.wav",
+        "accion": "close",
+        "ok": true
+      },
+      {
+        "paso": 5,
+        "tipo": "lector",
+        "recurso": "/home/user/SDV-SDI_SGM/ETAPA_6G1_CORRECCION_LECTURA_SEGURA/fixtures/instrumental_mix.wav",
+        "accion": "close",
+        "ok": true
+      }
+    ],
+    "escritura_abierta_al_registrar": []
+  },
+  "resultado_aborto": {
+    "motivo": "MIX_CAMBIADO_DURANTE_EL_PROCESAMIENTO",
+    "abort_registrado": true,
+    "trasladado": false,
+    "ruta_final": "/tmp/f6g1f/corregido/EVO/E1/out/motorA_run_20261122_135649_partial",
+    "traslado_solicitado": false,
+    "traslado_bloqueado": null,
+    "motivo_conservacion": "traslado no solicitado: provisional conservado en su ubicaci\u00f3n",
+    "cierre_recursos_completo": true,
+    "escritura_abierta_al_registrar": [],
+    "salidas_invalidadas": [
+      "analysis.txt",
+      "masks/confidence_map.npy",
+      "masks/consensus_instrumental_confidence_weighted_mean.npy",
+      "masks/consensus_vocal_confidence_weighted_mean.npy",
+      "masks/mask_P01_instrumental.npy",
+      "masks/mask_P01_vocal.npy",
+      "masks/model_disagreement_map.npy",
+      "mix_copia SDI.wav",
+      "mix_copia SDV.wav"
+    ]
+  },
+  "retorno_run_experiment": {
+    "codigo": 2,
+    "ruta": "None",
+    "ruta_str": null
+  },
+  "codigo_main": 2,
+  "gc_habilitado_al_final": false,
+  "gc_colecciones": [
+    9,
+    0,
+    0
+  ]
+}

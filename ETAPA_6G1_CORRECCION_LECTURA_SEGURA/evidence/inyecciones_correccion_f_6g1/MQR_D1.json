@@ -1,0 +1,577 @@
+{
+  "escenario": "D1",
+  "eventos": [
+    {
+      "n": 1,
+      "t": 1840.15020765,
+      "tipo": "lector_cerrado",
+      "ruta": "/tmp/f6g1f/corregido/MQR/D1/mix_copia.wav",
+      "frames": 0
+    },
+    {
+      "n": 2,
+      "t": 1840.156295096,
+      "tipo": "lector_cerrado",
+      "ruta": "/home/user/SDV-SDI_SGM/ETAPA_6G1_CORRECCION_LECTURA_SEGURA/fixtures/vocal_mix.wav",
+      "frames": 0
+    },
+    {
+      "n": 3,
+      "t": 1840.160562756,
+      "tipo": "lector_cerrado",
+      "ruta": "/home/user/SDV-SDI_SGM/ETAPA_6G1_CORRECCION_LECTURA_SEGURA/fixtures/instrumental_mix.wav",
+      "frames": 0
+    },
+    {
+      "n": 4,
+      "t": 1841.05916039,
+      "tipo": "lector_cerrado",
+      "ruta": "/tmp/f6g1f/corregido/MQR/D1/mix_copia.wav",
+      "frames": 0
+    },
+    {
+      "n": 5,
+      "t": 1841.059214253,
+      "tipo": "lector_cerrado",
+      "ruta": "/tmp/f6g1f/corregido/MQR/D1/mix_copia.wav",
+      "frames": 0
+    },
+    {
+      "n": 6,
+      "t": 1841.061733459,
+      "tipo": "lector_cerrado",
+      "ruta": "/home/user/SDV-SDI_SGM/ETAPA_6G1_CORRECCION_LECTURA_SEGURA/fixtures/vocal_mix.wav",
+      "frames": 0
+    },
+    {
+      "n": 7,
+      "t": 1841.064351714,
+      "tipo": "lector_cerrado",
+      "ruta": "/home/user/SDV-SDI_SGM/ETAPA_6G1_CORRECCION_LECTURA_SEGURA/fixtures/instrumental_mix.wav",
+      "frames": 0
+    },
+    {
+      "n": 8,
+      "t": 1841.11741655,
+      "tipo": "inyeccion",
+      "escenario": "D1",
+      "detalle": {
+        "tipo": "apertura_segundo_escritor_fallida",
+        "ruta": "/tmp/f6g1f/corregido/MQR/D1/out/mqr_run_20261122_135702_partial/SDI.wav",
+        "primer_escritor": "/tmp/f6g1f/corregido/MQR/D1/out/mqr_run_20261122_135702_partial/SDV.wav"
+      }
+    },
+    {
+      "n": 9,
+      "t": 1841.117847764,
+      "tipo": "escritor_cerrado",
+      "ruta": "/tmp/f6g1f/corregido/MQR/D1/out/mqr_run_20261122_135702_partial/SDV.wav",
+      "frames": 0
+    },
+    {
+      "n": 10,
+      "t": 1841.119926082,
+      "tipo": "preparar_aborto_entrada"
+    },
+    {
+      "n": 11,
+      "t": 1841.127856515,
+      "tipo": "preparar_aborto_salida",
+      "completo": true
+    },
+    {
+      "n": 12,
+      "t": 1841.129628846,
+      "tipo": "abortar_6g1_entrada",
+      "motivo": "EXCEPCION_DURANTE_EL_PROCESAMIENTO",
+      "run_dir": "/tmp/f6g1f/corregido/MQR/D1/out/mqr_run_20261122_135702_partial"
+    },
+    {
+      "n": 13,
+      "t": 1841.139006281,
+      "tipo": "abortar_6g1_salida",
+      "motivo": "EXCEPCION_DURANTE_EL_PROCESAMIENTO"
+    },
+    {
+      "n": 14,
+      "t": 1841.148228126,
+      "tipo": "publicar_entrada",
+      "origen": "/tmp/f6g1f/corregido/MQR/D1/out/mqr_run_20261122_135702_partial",
+      "destino": "/tmp/f6g1f/corregido/MQR/D1/out/mqr_run_20261122_135702_aborted"
+    },
+    {
+      "n": 15,
+      "t": 1841.148427987,
+      "tipo": "publicar_salida",
+      "ruta": "/tmp/f6g1f/corregido/MQR/D1/out/mqr_run_20261122_135702_aborted"
+    },
+    {
+      "n": 16,
+      "t": 1841.149968697,
+      "tipo": "fin_main",
+      "codigo": 2
+    }
+  ],
+  "fotos": {
+    "entrada_abortar": {
+      "etiqueta": "entrada_abortar",
+      "n_evento": 12,
+      "directorio": "/tmp/f6g1f/corregido/MQR/D1/out/mqr_run_20261122_135702_partial",
+      "gc_habilitado": false,
+      "identidad": [
+        65024,
+        537963
+      ],
+      "archivos": {
+        "engine_log.txt": "bccab897df43b4e843a7366f6d807eaa718a3b971cb8aa7094ae6da319401bf3",
+        "SDV.wav": "8211ed29b424bb093460f36d24ed0c5a26166e373eab2d4f24fdd73ff15ad67c",
+        "masks/mask_P01_vocal.npy": "7f17e5eda43def69b2c5c6101dc267edb7a00382309b5d060b740300dd9b449b",
+        "masks/confidence_map.npy": "7f17e5eda43def69b2c5c6101dc267edb7a00382309b5d060b740300dd9b449b",
+        "masks/mask_P01_instrumental.npy": "7f17e5eda43def69b2c5c6101dc267edb7a00382309b5d060b740300dd9b449b",
+        "masks/consensus_vocal_weighted_mean.npy": "7f17e5eda43def69b2c5c6101dc267edb7a00382309b5d060b740300dd9b449b",
+        "masks/consensus_instrumental_weighted_mean.npy": "7f17e5eda43def69b2c5c6101dc267edb7a00382309b5d060b740300dd9b449b",
+        "masks/consensus_vocal_median.npy": "7f17e5eda43def69b2c5c6101dc267edb7a00382309b5d060b740300dd9b449b",
+        "masks/consensus_instrumental_median.npy": "7f17e5eda43def69b2c5c6101dc267edb7a00382309b5d060b740300dd9b449b",
+        "masks/consensus_vocal_confidence_weighted_mean.npy": "7f17e5eda43def69b2c5c6101dc267edb7a00382309b5d060b740300dd9b449b",
+        "masks/consensus_instrumental_confidence_weighted_mean.npy": "7f17e5eda43def69b2c5c6101dc267edb7a00382309b5d060b740300dd9b449b",
+        "masks/model_disagreement_map.npy": "7f17e5eda43def69b2c5c6101dc267edb7a00382309b5d060b740300dd9b449b"
+      },
+      "descriptores_salida_o_entradas": [],
+      "mapeos_bajo_salida": [],
+      "escritores": [
+        {
+          "ruta": "/tmp/f6g1f/corregido/MQR/D1/out/mqr_run_20261122_135702_partial/SDV.wav",
+          "cerrado": true,
+          "frames": 0
+        }
+      ],
+      "lectores_abiertos": [],
+      "memmaps": [
+        {
+          "ruta": "/tmp/f6g1f/corregido/MQR/D1/out/mqr_run_20261122_135702_partial/masks/mask_P01_vocal.npy",
+          "vivo": false
+        },
+        {
+          "ruta": "/tmp/f6g1f/corregido/MQR/D1/out/mqr_run_20261122_135702_partial/masks/mask_P01_instrumental.npy",
+          "vivo": false
+        },
+        {
+          "ruta": "/tmp/f6g1f/corregido/MQR/D1/out/mqr_run_20261122_135702_partial/masks/consensus_vocal_weighted_mean.npy",
+          "vivo": false
+        },
+        {
+          "ruta": "/tmp/f6g1f/corregido/MQR/D1/out/mqr_run_20261122_135702_partial/masks/consensus_instrumental_weighted_mean.npy",
+          "vivo": false
+        },
+        {
+          "ruta": "/tmp/f6g1f/corregido/MQR/D1/out/mqr_run_20261122_135702_partial/masks/consensus_vocal_median.npy",
+          "vivo": false
+        },
+        {
+          "ruta": "/tmp/f6g1f/corregido/MQR/D1/out/mqr_run_20261122_135702_partial/masks/consensus_instrumental_median.npy",
+          "vivo": false
+        },
+        {
+          "ruta": "/tmp/f6g1f/corregido/MQR/D1/out/mqr_run_20261122_135702_partial/masks/consensus_vocal_confidence_weighted_mean.npy",
+          "vivo": false
+        },
+        {
+          "ruta": "/tmp/f6g1f/corregido/MQR/D1/out/mqr_run_20261122_135702_partial/masks/consensus_instrumental_confidence_weighted_mean.npy",
+          "vivo": false
+        },
+        {
+          "ruta": "/tmp/f6g1f/corregido/MQR/D1/out/mqr_run_20261122_135702_partial/masks/confidence_map.npy",
+          "vivo": false
+        },
+        {
+          "ruta": "/tmp/f6g1f/corregido/MQR/D1/out/mqr_run_20261122_135702_partial/masks/model_disagreement_map.npy",
+          "vivo": false
+        }
+      ]
+    },
+    "salida_abortar": {
+      "etiqueta": "salida_abortar",
+      "n_evento": 13,
+      "directorio": "/tmp/f6g1f/corregido/MQR/D1/out/mqr_run_20261122_135702_partial",
+      "gc_habilitado": false,
+      "identidad": [
+        65024,
+        537963
+      ],
+      "archivos": {
+        "engine_log.txt": "bccab897df43b4e843a7366f6d807eaa718a3b971cb8aa7094ae6da319401bf3",
+        "SDV.wav": "8211ed29b424bb093460f36d24ed0c5a26166e373eab2d4f24fdd73ff15ad67c",
+        "ABORT_6G1.json": "b9cb7c50a4b6f39db53ba498c72621a017de33c575b16d7c398a71bde11a2412",
+        "masks/mask_P01_vocal.npy": "7f17e5eda43def69b2c5c6101dc267edb7a00382309b5d060b740300dd9b449b",
+        "masks/confidence_map.npy": "7f17e5eda43def69b2c5c6101dc267edb7a00382309b5d060b740300dd9b449b",
+        "masks/mask_P01_instrumental.npy": "7f17e5eda43def69b2c5c6101dc267edb7a00382309b5d060b740300dd9b449b",
+        "masks/consensus_vocal_weighted_mean.npy": "7f17e5eda43def69b2c5c6101dc267edb7a00382309b5d060b740300dd9b449b",
+        "masks/consensus_instrumental_weighted_mean.npy": "7f17e5eda43def69b2c5c6101dc267edb7a00382309b5d060b740300dd9b449b",
+        "masks/consensus_vocal_median.npy": "7f17e5eda43def69b2c5c6101dc267edb7a00382309b5d060b740300dd9b449b",
+        "masks/consensus_instrumental_median.npy": "7f17e5eda43def69b2c5c6101dc267edb7a00382309b5d060b740300dd9b449b",
+        "masks/consensus_vocal_confidence_weighted_mean.npy": "7f17e5eda43def69b2c5c6101dc267edb7a00382309b5d060b740300dd9b449b",
+        "masks/consensus_instrumental_confidence_weighted_mean.npy": "7f17e5eda43def69b2c5c6101dc267edb7a00382309b5d060b740300dd9b449b",
+        "masks/model_disagreement_map.npy": "7f17e5eda43def69b2c5c6101dc267edb7a00382309b5d060b740300dd9b449b"
+      },
+      "descriptores_salida_o_entradas": [],
+      "mapeos_bajo_salida": [],
+      "escritores": [
+        {
+          "ruta": "/tmp/f6g1f/corregido/MQR/D1/out/mqr_run_20261122_135702_partial/SDV.wav",
+          "cerrado": true,
+          "frames": 0
+        }
+      ],
+      "lectores_abiertos": [],
+      "memmaps": [
+        {
+          "ruta": "/tmp/f6g1f/corregido/MQR/D1/out/mqr_run_20261122_135702_partial/masks/mask_P01_vocal.npy",
+          "vivo": false
+        },
+        {
+          "ruta": "/tmp/f6g1f/corregido/MQR/D1/out/mqr_run_20261122_135702_partial/masks/mask_P01_instrumental.npy",
+          "vivo": false
+        },
+        {
+          "ruta": "/tmp/f6g1f/corregido/MQR/D1/out/mqr_run_20261122_135702_partial/masks/consensus_vocal_weighted_mean.npy",
+          "vivo": false
+        },
+        {
+          "ruta": "/tmp/f6g1f/corregido/MQR/D1/out/mqr_run_20261122_135702_partial/masks/consensus_instrumental_weighted_mean.npy",
+          "vivo": false
+        },
+        {
+          "ruta": "/tmp/f6g1f/corregido/MQR/D1/out/mqr_run_20261122_135702_partial/masks/consensus_vocal_median.npy",
+          "vivo": false
+        },
+        {
+          "ruta": "/tmp/f6g1f/corregido/MQR/D1/out/mqr_run_20261122_135702_partial/masks/consensus_instrumental_median.npy",
+          "vivo": false
+        },
+        {
+          "ruta": "/tmp/f6g1f/corregido/MQR/D1/out/mqr_run_20261122_135702_partial/masks/consensus_vocal_confidence_weighted_mean.npy",
+          "vivo": false
+        },
+        {
+          "ruta": "/tmp/f6g1f/corregido/MQR/D1/out/mqr_run_20261122_135702_partial/masks/consensus_instrumental_confidence_weighted_mean.npy",
+          "vivo": false
+        },
+        {
+          "ruta": "/tmp/f6g1f/corregido/MQR/D1/out/mqr_run_20261122_135702_partial/masks/confidence_map.npy",
+          "vivo": false
+        },
+        {
+          "ruta": "/tmp/f6g1f/corregido/MQR/D1/out/mqr_run_20261122_135702_partial/masks/model_disagreement_map.npy",
+          "vivo": false
+        }
+      ]
+    },
+    "fin_proceso": {
+      "etiqueta": "fin_proceso",
+      "n_evento": 16,
+      "directorio": "/tmp/f6g1f/corregido/MQR/D1/out/mqr_run_20261122_135702_aborted",
+      "gc_habilitado": false,
+      "identidad": [
+        65024,
+        537963
+      ],
+      "archivos": {
+        "engine_log.txt": "bccab897df43b4e843a7366f6d807eaa718a3b971cb8aa7094ae6da319401bf3",
+        "SDV.wav": "8211ed29b424bb093460f36d24ed0c5a26166e373eab2d4f24fdd73ff15ad67c",
+        "ABORT_6G1.json": "b9cb7c50a4b6f39db53ba498c72621a017de33c575b16d7c398a71bde11a2412",
+        "masks/mask_P01_vocal.npy": "7f17e5eda43def69b2c5c6101dc267edb7a00382309b5d060b740300dd9b449b",
+        "masks/confidence_map.npy": "7f17e5eda43def69b2c5c6101dc267edb7a00382309b5d060b740300dd9b449b",
+        "masks/mask_P01_instrumental.npy": "7f17e5eda43def69b2c5c6101dc267edb7a00382309b5d060b740300dd9b449b",
+        "masks/consensus_vocal_weighted_mean.npy": "7f17e5eda43def69b2c5c6101dc267edb7a00382309b5d060b740300dd9b449b",
+        "masks/consensus_instrumental_weighted_mean.npy": "7f17e5eda43def69b2c5c6101dc267edb7a00382309b5d060b740300dd9b449b",
+        "masks/consensus_vocal_median.npy": "7f17e5eda43def69b2c5c6101dc267edb7a00382309b5d060b740300dd9b449b",
+        "masks/consensus_instrumental_median.npy": "7f17e5eda43def69b2c5c6101dc267edb7a00382309b5d060b740300dd9b449b",
+        "masks/consensus_vocal_confidence_weighted_mean.npy": "7f17e5eda43def69b2c5c6101dc267edb7a00382309b5d060b740300dd9b449b",
+        "masks/consensus_instrumental_confidence_weighted_mean.npy": "7f17e5eda43def69b2c5c6101dc267edb7a00382309b5d060b740300dd9b449b",
+        "masks/model_disagreement_map.npy": "7f17e5eda43def69b2c5c6101dc267edb7a00382309b5d060b740300dd9b449b"
+      },
+      "descriptores_salida_o_entradas": [],
+      "mapeos_bajo_salida": [],
+      "escritores": [
+        {
+          "ruta": "/tmp/f6g1f/corregido/MQR/D1/out/mqr_run_20261122_135702_partial/SDV.wav",
+          "cerrado": true,
+          "frames": 0
+        }
+      ],
+      "lectores_abiertos": [],
+      "memmaps": [
+        {
+          "ruta": "/tmp/f6g1f/corregido/MQR/D1/out/mqr_run_20261122_135702_partial/masks/mask_P01_vocal.npy",
+          "vivo": false
+        },
+        {
+          "ruta": "/tmp/f6g1f/corregido/MQR/D1/out/mqr_run_20261122_135702_partial/masks/mask_P01_instrumental.npy",
+          "vivo": false
+        },
+        {
+          "ruta": "/tmp/f6g1f/corregido/MQR/D1/out/mqr_run_20261122_135702_partial/masks/consensus_vocal_weighted_mean.npy",
+          "vivo": false
+        },
+        {
+          "ruta": "/tmp/f6g1f/corregido/MQR/D1/out/mqr_run_20261122_135702_partial/masks/consensus_instrumental_weighted_mean.npy",
+          "vivo": false
+        },
+        {
+          "ruta": "/tmp/f6g1f/corregido/MQR/D1/out/mqr_run_20261122_135702_partial/masks/consensus_vocal_median.npy",
+          "vivo": false
+        },
+        {
+          "ruta": "/tmp/f6g1f/corregido/MQR/D1/out/mqr_run_20261122_135702_partial/masks/consensus_instrumental_median.npy",
+          "vivo": false
+        },
+        {
+          "ruta": "/tmp/f6g1f/corregido/MQR/D1/out/mqr_run_20261122_135702_partial/masks/consensus_vocal_confidence_weighted_mean.npy",
+          "vivo": false
+        },
+        {
+          "ruta": "/tmp/f6g1f/corregido/MQR/D1/out/mqr_run_20261122_135702_partial/masks/consensus_instrumental_confidence_weighted_mean.npy",
+          "vivo": false
+        },
+        {
+          "ruta": "/tmp/f6g1f/corregido/MQR/D1/out/mqr_run_20261122_135702_partial/masks/confidence_map.npy",
+          "vivo": false
+        },
+        {
+          "ruta": "/tmp/f6g1f/corregido/MQR/D1/out/mqr_run_20261122_135702_partial/masks/model_disagreement_map.npy",
+          "vivo": false
+        }
+      ]
+    }
+  },
+  "inyeccion": {
+    "detalle": {
+      "tipo": "apertura_segundo_escritor_fallida",
+      "ruta": "/tmp/f6g1f/corregido/MQR/D1/out/mqr_run_20261122_135702_partial/SDI.wav",
+      "primer_escritor": "/tmp/f6g1f/corregido/MQR/D1/out/mqr_run_20261122_135702_partial/SDV.wav"
+    },
+    "provisional": "/tmp/f6g1f/corregido/MQR/D1/out/mqr_run_20261122_135702_partial",
+    "final": "/tmp/f6g1f/corregido/MQR/D1/out/mqr_run_20261122_135702",
+    "identidad": [
+      65024,
+      537963
+    ],
+    "archivos": {
+      "engine_log.txt": "f162f66b2ba70b37dcd5df89488ca758a2c6817d10b94929923d8d47bc526562",
+      "SDV.wav": "b523a789d649ce2e8ca2316bf0a4ecaf92744167d56112b6cfad54ce90082288",
+      "masks/mask_P01_vocal.npy": "7f17e5eda43def69b2c5c6101dc267edb7a00382309b5d060b740300dd9b449b",
+      "masks/confidence_map.npy": "7f17e5eda43def69b2c5c6101dc267edb7a00382309b5d060b740300dd9b449b",
+      "masks/mask_P01_instrumental.npy": "7f17e5eda43def69b2c5c6101dc267edb7a00382309b5d060b740300dd9b449b",
+      "masks/consensus_vocal_weighted_mean.npy": "7f17e5eda43def69b2c5c6101dc267edb7a00382309b5d060b740300dd9b449b",
+      "masks/consensus_instrumental_weighted_mean.npy": "7f17e5eda43def69b2c5c6101dc267edb7a00382309b5d060b740300dd9b449b",
+      "masks/consensus_vocal_median.npy": "7f17e5eda43def69b2c5c6101dc267edb7a00382309b5d060b740300dd9b449b",
+      "masks/consensus_instrumental_median.npy": "7f17e5eda43def69b2c5c6101dc267edb7a00382309b5d060b740300dd9b449b",
+      "masks/consensus_vocal_confidence_weighted_mean.npy": "7f17e5eda43def69b2c5c6101dc267edb7a00382309b5d060b740300dd9b449b",
+      "masks/consensus_instrumental_confidence_weighted_mean.npy": "7f17e5eda43def69b2c5c6101dc267edb7a00382309b5d060b740300dd9b449b",
+      "masks/model_disagreement_map.npy": "7f17e5eda43def69b2c5c6101dc267edb7a00382309b5d060b740300dd9b449b"
+    },
+    "n_evento": 8
+  },
+  "armado": false,
+  "gc_deshabilitado_al_inicio": true,
+  "gc_colecciones_al_deshabilitar": [
+    9,
+    0,
+    0
+  ],
+  "gc_colecciones_posteriores": [],
+  "preparar": {
+    "completo": true,
+    "errores": [],
+    "log_cerrado": true,
+    "escritores": 1,
+    "memmaps": 10,
+    "lectores": 0,
+    "orden": [
+      {
+        "paso": 1,
+        "tipo": "escritor_wav",
+        "recurso": "/tmp/f6g1f/corregido/MQR/D1/out/mqr_run_20261122_135702_partial/SDV.wav",
+        "accion": "close (cabecera finalizada)",
+        "ok": true
+      },
+      {
+        "paso": 2,
+        "tipo": "memmap",
+        "recurso": "/tmp/f6g1f/corregido/MQR/D1/out/mqr_run_20261122_135702_partial/masks/confidence_map.npy",
+        "accion": "flush",
+        "ok": true
+      },
+      {
+        "paso": 3,
+        "tipo": "memmap",
+        "recurso": "/tmp/f6g1f/corregido/MQR/D1/out/mqr_run_20261122_135702_partial/masks/confidence_map.npy",
+        "accion": "close mmap",
+        "ok": true
+      },
+      {
+        "paso": 4,
+        "tipo": "memmap",
+        "recurso": "/tmp/f6g1f/corregido/MQR/D1/out/mqr_run_20261122_135702_partial/masks/consensus_instrumental_confidence_weighted_mean.npy",
+        "accion": "flush",
+        "ok": true
+      },
+      {
+        "paso": 5,
+        "tipo": "memmap",
+        "recurso": "/tmp/f6g1f/corregido/MQR/D1/out/mqr_run_20261122_135702_partial/masks/consensus_instrumental_confidence_weighted_mean.npy",
+        "accion": "close mmap",
+        "ok": true
+      },
+      {
+        "paso": 6,
+        "tipo": "memmap",
+        "recurso": "/tmp/f6g1f/corregido/MQR/D1/out/mqr_run_20261122_135702_partial/masks/consensus_instrumental_median.npy",
+        "accion": "flush",
+        "ok": true
+      },
+      {
+        "paso": 7,
+        "tipo": "memmap",
+        "recurso": "/tmp/f6g1f/corregido/MQR/D1/out/mqr_run_20261122_135702_partial/masks/consensus_instrumental_median.npy",
+        "accion": "close mmap",
+        "ok": true
+      },
+      {
+        "paso": 8,
+        "tipo": "memmap",
+        "recurso": "/tmp/f6g1f/corregido/MQR/D1/out/mqr_run_20261122_135702_partial/masks/consensus_instrumental_weighted_mean.npy",
+        "accion": "flush",
+        "ok": true
+      },
+      {
+        "paso": 9,
+        "tipo": "memmap",
+        "recurso": "/tmp/f6g1f/corregido/MQR/D1/out/mqr_run_20261122_135702_partial/masks/consensus_instrumental_weighted_mean.npy",
+        "accion": "close mmap",
+        "ok": true
+      },
+      {
+        "paso": 10,
+        "tipo": "memmap",
+        "recurso": "/tmp/f6g1f/corregido/MQR/D1/out/mqr_run_20261122_135702_partial/masks/consensus_vocal_confidence_weighted_mean.npy",
+        "accion": "flush",
+        "ok": true
+      },
+      {
+        "paso": 11,
+        "tipo": "memmap",
+        "recurso": "/tmp/f6g1f/corregido/MQR/D1/out/mqr_run_20261122_135702_partial/masks/consensus_vocal_confidence_weighted_mean.npy",
+        "accion": "close mmap",
+        "ok": true
+      },
+      {
+        "paso": 12,
+        "tipo": "memmap",
+        "recurso": "/tmp/f6g1f/corregido/MQR/D1/out/mqr_run_20261122_135702_partial/masks/consensus_vocal_median.npy",
+        "accion": "flush",
+        "ok": true
+      },
+      {
+        "paso": 13,
+        "tipo": "memmap",
+        "recurso": "/tmp/f6g1f/corregido/MQR/D1/out/mqr_run_20261122_135702_partial/masks/consensus_vocal_median.npy",
+        "accion": "close mmap",
+        "ok": true
+      },
+      {
+        "paso": 14,
+        "tipo": "memmap",
+        "recurso": "/tmp/f6g1f/corregido/MQR/D1/out/mqr_run_20261122_135702_partial/masks/consensus_vocal_weighted_mean.npy",
+        "accion": "flush",
+        "ok": true
+      },
+      {
+        "paso": 15,
+        "tipo": "memmap",
+        "recurso": "/tmp/f6g1f/corregido/MQR/D1/out/mqr_run_20261122_135702_partial/masks/consensus_vocal_weighted_mean.npy",
+        "accion": "close mmap",
+        "ok": true
+      },
+      {
+        "paso": 16,
+        "tipo": "memmap",
+        "recurso": "/tmp/f6g1f/corregido/MQR/D1/out/mqr_run_20261122_135702_partial/masks/mask_P01_instrumental.npy",
+        "accion": "flush",
+        "ok": true
+      },
+      {
+        "paso": 17,
+        "tipo": "memmap",
+        "recurso": "/tmp/f6g1f/corregido/MQR/D1/out/mqr_run_20261122_135702_partial/masks/mask_P01_instrumental.npy",
+        "accion": "close mmap",
+        "ok": true
+      },
+      {
+        "paso": 18,
+        "tipo": "memmap",
+        "recurso": "/tmp/f6g1f/corregido/MQR/D1/out/mqr_run_20261122_135702_partial/masks/mask_P01_vocal.npy",
+        "accion": "flush",
+        "ok": true
+      },
+      {
+        "paso": 19,
+        "tipo": "memmap",
+        "recurso": "/tmp/f6g1f/corregido/MQR/D1/out/mqr_run_20261122_135702_partial/masks/mask_P01_vocal.npy",
+        "accion": "close mmap",
+        "ok": true
+      },
+      {
+        "paso": 20,
+        "tipo": "memmap",
+        "recurso": "/tmp/f6g1f/corregido/MQR/D1/out/mqr_run_20261122_135702_partial/masks/model_disagreement_map.npy",
+        "accion": "flush",
+        "ok": true
+      },
+      {
+        "paso": 21,
+        "tipo": "memmap",
+        "recurso": "/tmp/f6g1f/corregido/MQR/D1/out/mqr_run_20261122_135702_partial/masks/model_disagreement_map.npy",
+        "accion": "close mmap",
+        "ok": true
+      }
+    ],
+    "escritura_abierta_al_registrar": []
+  },
+  "resultado_aborto": {
+    "motivo": "EXCEPCION_DURANTE_EL_PROCESAMIENTO",
+    "abort_registrado": true,
+    "trasladado": true,
+    "ruta_final": "/tmp/f6g1f/corregido/MQR/D1/out/mqr_run_20261122_135702_aborted",
+    "traslado_solicitado": true,
+    "traslado_bloqueado": null,
+    "motivo_conservacion": null,
+    "cierre_recursos_completo": true,
+    "escritura_abierta_al_registrar": [],
+    "salidas_invalidadas": [
+      "SDV.wav",
+      "masks/confidence_map.npy",
+      "masks/consensus_instrumental_confidence_weighted_mean.npy",
+      "masks/consensus_instrumental_median.npy",
+      "masks/consensus_instrumental_weighted_mean.npy",
+      "masks/consensus_vocal_confidence_weighted_mean.npy",
+      "masks/consensus_vocal_median.npy",
+      "masks/consensus_vocal_weighted_mean.npy",
+      "masks/mask_P01_instrumental.npy",
+      "masks/mask_P01_vocal.npy",
+      "masks/model_disagreement_map.npy"
+    ]
+  },
+  "retorno_run_experiment": {
+    "codigo": 2,
+    "ruta": "None",
+    "ruta_str": null
+  },
+  "codigo_main": 2,
+  "gc_habilitado_al_final": false,
+  "gc_colecciones": [
+    9,
+    0,
+    0
+  ]
+}

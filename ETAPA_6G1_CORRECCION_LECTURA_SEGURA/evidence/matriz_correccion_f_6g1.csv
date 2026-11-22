@@ -1,0 +1,28 @@
+prueba,motor,condicion,codigo,completo,log_cerrado,trasladado,aplica_F,hallazgo_F_resuelto,comprobaciones,fallos,veredicto,codigo_base,comprobaciones_base,veredicto_base,fallos_base
+A1,Hardened,Cierre WAV fallido en la finalización normal (antes del cierre físico),2,False,True,False,False,True,30/30,,PASS,2,30/30,PASS,
+A2,Hardened,Cierre WAV fallido en la finalización normal (después del cierre físico),2,False,True,False,False,True,30/30,,PASS,2,30/30,PASS,
+B1,Hardened,Cierre interno de MixHandle fallido en la guarda final (antes del cierre físico),2,False,True,False,False,True,29/29,,PASS,2,29/29,PASS,
+B2,Hardened,Cierre interno de MixHandle fallido en la guarda final (después del cierre físico),2,False,True,False,False,True,29/29,,PASS,2,29/29,PASS,
+C1,Hardened,Tee.close() fallido en el camino normal (antes del cierre físico),2,False,False,False,False,True,29/29,,PASS,2,29/29,PASS,
+C2,Hardened,Tee.close() fallido en el camino normal (después del cierre físico),2,False,False,False,False,True,29/29,,PASS,2,29/29,PASS,
+D1,Hardened,Construcción de CandidateRunner fallida tras abrir el primer escritor,2,True,True,True,False,True,28/28,,PASS,2,28/28,PASS,
+D2,Hardened,D1 + cierre fallido del primer escritor,2,False,True,False,False,True,30/30,,PASS,2,30/30,PASS,
+E1,Hardened,Guarda final de integridad del Mix fallida tras generar masks/,2,True,True,False,True,True,30/30,,PASS,2,23/30,FAIL,completo_esperado;informe_sin_errores_de_cierre;log_cerrado_esperado;sin_descriptores_ni_mapeos_al_registrar;memmaps_liberados_al_registrar;sin_escritura_al_terminar;hallazgo_F_resuelto
+A1,EVO,Cierre WAV fallido en la finalización normal (antes del cierre físico),2,False,True,False,False,True,30/30,,PASS,2,30/30,PASS,
+A2,EVO,Cierre WAV fallido en la finalización normal (después del cierre físico),2,False,True,False,False,True,30/30,,PASS,2,30/30,PASS,
+B1,EVO,Cierre interno de MixHandle fallido en la guarda final (antes del cierre físico),2,False,True,False,False,True,29/29,,PASS,2,29/29,PASS,
+B2,EVO,Cierre interno de MixHandle fallido en la guarda final (después del cierre físico),2,False,True,False,False,True,29/29,,PASS,2,29/29,PASS,
+C1,EVO,Tee.close() fallido en el camino normal (antes del cierre físico),2,False,False,False,False,True,29/29,,PASS,2,29/29,PASS,
+C2,EVO,Tee.close() fallido en el camino normal (después del cierre físico),2,False,False,False,False,True,29/29,,PASS,2,29/29,PASS,
+D1,EVO,Construcción de CandidateRunner fallida tras abrir el primer escritor,2,True,True,True,False,True,28/28,,PASS,2,28/28,PASS,
+D2,EVO,D1 + cierre fallido del primer escritor,2,False,True,False,False,True,30/30,,PASS,2,30/30,PASS,
+E1,EVO,Guarda final de integridad del Mix fallida tras generar masks/,2,True,True,False,True,True,30/30,,PASS,2,23/30,FAIL,completo_esperado;informe_sin_errores_de_cierre;log_cerrado_esperado;sin_descriptores_ni_mapeos_al_registrar;memmaps_liberados_al_registrar;sin_escritura_al_terminar;hallazgo_F_resuelto
+A1,MQR,Cierre WAV fallido en la finalización normal (antes del cierre físico),2,False,True,False,True,True,30/30,,PASS,2,26/30,FAIL,log_cerrado_esperado;sin_descriptores_ni_mapeos_al_registrar;memmaps_liberados_al_registrar;hallazgo_F_resuelto
+A2,MQR,Cierre WAV fallido en la finalización normal (después del cierre físico),2,False,True,False,True,True,30/30,,PASS,2,26/30,FAIL,log_cerrado_esperado;sin_descriptores_ni_mapeos_al_registrar;memmaps_liberados_al_registrar;hallazgo_F_resuelto
+B1,MQR,Cierre interno de MixHandle fallido en la guarda final (antes del cierre físico),2,False,True,False,True,True,29/29,,PASS,2,25/29,FAIL,log_cerrado_esperado;sin_descriptores_ni_mapeos_al_registrar;memmaps_liberados_al_registrar;hallazgo_F_resuelto
+B2,MQR,Cierre interno de MixHandle fallido en la guarda final (después del cierre físico),2,False,True,False,True,True,29/29,,PASS,2,25/29,FAIL,log_cerrado_esperado;sin_descriptores_ni_mapeos_al_registrar;memmaps_liberados_al_registrar;hallazgo_F_resuelto
+C1,MQR,Tee.close() fallido en el camino normal (antes del cierre físico),2,False,False,False,True,True,29/29,,PASS,2,26/29,FAIL,sin_descriptores_ni_mapeos_al_registrar;memmaps_liberados_al_registrar;hallazgo_F_resuelto
+C2,MQR,Tee.close() fallido en el camino normal (después del cierre físico),2,False,False,False,True,True,29/29,,PASS,2,26/29,FAIL,sin_descriptores_ni_mapeos_al_registrar;memmaps_liberados_al_registrar;hallazgo_F_resuelto
+D1,MQR,Construcción de CandidateRunner fallida tras abrir el primer escritor,2,True,True,True,True,True,28/28,,PASS,2,28/28,PASS,
+D2,MQR,D1 + cierre fallido del primer escritor,2,False,True,False,True,True,30/30,,PASS,2,30/30,PASS,
+E1,MQR,Guarda final de integridad del Mix fallida tras generar masks/,2,True,True,False,True,True,30/30,,PASS,2,24/30,FAIL,completo_esperado;informe_sin_errores_de_cierre;log_cerrado_esperado;sin_descriptores_ni_mapeos_al_registrar;memmaps_liberados_al_registrar;hallazgo_F_resuelto

@@ -1,0 +1,273 @@
+{
+  "schema": "manifest-correccion-f-6g1/1",
+  "commit_padre": "2f4aae411ce1672ec9aa57cc9a967e0556631d85",
+  "rama": "arena/c7719286-sdv-sdi-sgm",
+  "alcance": "Corrección F (autorización puntual): arr = None tras el bucle de flush() de memmaps en Hardened/EVO run_experiment y MQR _run_core; ninguna otra lógica",
+  "cambio": {
+    "Hardened": "run_experiment L1881",
+    "EVO": "run_experiment L1992",
+    "MQR": "_run_core L2717",
+    "lineas": "+3 / -0"
+  },
+  "archivos": [
+    {
+      "ruta": "ETAPA_6G1_CORRECCION_LECTURA_SEGURA/CORRECCION_F_6G1.md",
+      "estado": "nuevo",
+      "sha256_2f4aae4": null,
+      "sha256": "892c342b45cddcd60d5d03c4c4fdfa445a697254152332a4c9be6c171848316c"
+    },
+    {
+      "ruta": "ETAPA_6G1_CORRECCION_LECTURA_SEGURA/DIFF_CORRECCION_F_6G1_vs_2f4aae4.patch",
+      "estado": "nuevo",
+      "sha256_2f4aae4": null,
+      "sha256": "e795130c350f893a11655724a3e1e6622be1607be8e64d40f79cbd9dd9c24bb6"
+    },
+    {
+      "ruta": "ETAPA_6G1_CORRECCION_LECTURA_SEGURA/evidence/ast_correccion_f_6g1.json",
+      "estado": "nuevo",
+      "sha256_2f4aae4": null,
+      "sha256": "705e0a25fda4fe550acf88c813c7cc046c4226ab23df47a66667f41797e235ad"
+    },
+    {
+      "ruta": "ETAPA_6G1_CORRECCION_LECTURA_SEGURA/evidence/inyecciones_correccion_f_6g1/EVO_A1.json",
+      "estado": "nuevo",
+      "sha256_2f4aae4": null,
+      "sha256": "be9f22484a2c79362ed1e14e003f76ee3565b899a0831effacfd15d2b99d689a"
+    },
+    {
+      "ruta": "ETAPA_6G1_CORRECCION_LECTURA_SEGURA/evidence/inyecciones_correccion_f_6g1/EVO_A2.json",
+      "estado": "nuevo",
+      "sha256_2f4aae4": null,
+      "sha256": "67e9c7476d2992cab62089ddcb1413019de2313e642eaddebdd79ad524b208c1"
+    },
+    {
+      "ruta": "ETAPA_6G1_CORRECCION_LECTURA_SEGURA/evidence/inyecciones_correccion_f_6g1/EVO_B1.json",
+      "estado": "nuevo",
+      "sha256_2f4aae4": null,
+      "sha256": "d02d76d4cbf9f0ece89da72f2f579472f90fb850982347ddc072d961c8c97fcd"
+    },
+    {
+      "ruta": "ETAPA_6G1_CORRECCION_LECTURA_SEGURA/evidence/inyecciones_correccion_f_6g1/EVO_B2.json",
+      "estado": "nuevo",
+      "sha256_2f4aae4": null,
+      "sha256": "77f3b9231b668a9b14d07568bd3bf2f16e428d961ab27a04edb045c48275ea2c"
+    },
+    {
+      "ruta": "ETAPA_6G1_CORRECCION_LECTURA_SEGURA/evidence/inyecciones_correccion_f_6g1/EVO_C1.json",
+      "estado": "nuevo",
+      "sha256_2f4aae4": null,
+      "sha256": "b413f306b9a2e9bb975387e82d8a1e6caccefe6a6571c972aed432b270584101"
+    },
+    {
+      "ruta": "ETAPA_6G1_CORRECCION_LECTURA_SEGURA/evidence/inyecciones_correccion_f_6g1/EVO_C2.json",
+      "estado": "nuevo",
+      "sha256_2f4aae4": null,
+      "sha256": "761697457027010903fc275b2080b54a941bf8f66877fa0ef0527251583140ff"
+    },
+    {
+      "ruta": "ETAPA_6G1_CORRECCION_LECTURA_SEGURA/evidence/inyecciones_correccion_f_6g1/EVO_D1.json",
+      "estado": "nuevo",
+      "sha256_2f4aae4": null,
+      "sha256": "d13af60a294eb303a491b2f49b3f7a5c3b9d992f06526ffc59f8b6b8a62e0b52"
+    },
+    {
+      "ruta": "ETAPA_6G1_CORRECCION_LECTURA_SEGURA/evidence/inyecciones_correccion_f_6g1/EVO_D2.json",
+      "estado": "nuevo",
+      "sha256_2f4aae4": null,
+      "sha256": "68d6ac93c113c0a0c8d6736ed3796f0cb2ec50e54152f4eb7e6769a203984317"
+    },
+    {
+      "ruta": "ETAPA_6G1_CORRECCION_LECTURA_SEGURA/evidence/inyecciones_correccion_f_6g1/EVO_E1.json",
+      "estado": "nuevo",
+      "sha256_2f4aae4": null,
+      "sha256": "bde813885231310a7bec309185cb60240ea8c61f59d9c432aa809d7631ec4f2d"
+    },
+    {
+      "ruta": "ETAPA_6G1_CORRECCION_LECTURA_SEGURA/evidence/inyecciones_correccion_f_6g1/Hardened_A1.json",
+      "estado": "nuevo",
+      "sha256_2f4aae4": null,
+      "sha256": "82720e9ece7fc7b2c99d9e64310dba41272f69c7aebe0614bfec5ed83ccfa177"
+    },
+    {
+      "ruta": "ETAPA_6G1_CORRECCION_LECTURA_SEGURA/evidence/inyecciones_correccion_f_6g1/Hardened_A2.json",
+      "estado": "nuevo",
+      "sha256_2f4aae4": null,
+      "sha256": "d08161468da357f02c4ae007ee22634fd03e03b92418c4ed6e6051faf44d7302"
+    },
+    {
+      "ruta": "ETAPA_6G1_CORRECCION_LECTURA_SEGURA/evidence/inyecciones_correccion_f_6g1/Hardened_B1.json",
+      "estado": "nuevo",
+      "sha256_2f4aae4": null,
+      "sha256": "6c4813c53873dfaeda8960460f3861b1584430a1ab37f9d1791079feca6469fb"
+    },
+    {
+      "ruta": "ETAPA_6G1_CORRECCION_LECTURA_SEGURA/evidence/inyecciones_correccion_f_6g1/Hardened_B2.json",
+      "estado": "nuevo",
+      "sha256_2f4aae4": null,
+      "sha256": "97ef4522d05013cf3bd01d8d2c7f353b5b941b7c9f0f487ad55e95860229c77e"
+    },
+    {
+      "ruta": "ETAPA_6G1_CORRECCION_LECTURA_SEGURA/evidence/inyecciones_correccion_f_6g1/Hardened_C1.json",
+      "estado": "nuevo",
+      "sha256_2f4aae4": null,
+      "sha256": "e46beb596ff9a512c72922454b5cae32971919afe461aef9180eb3cc77bce455"
+    },
+    {
+      "ruta": "ETAPA_6G1_CORRECCION_LECTURA_SEGURA/evidence/inyecciones_correccion_f_6g1/Hardened_C2.json",
+      "estado": "nuevo",
+      "sha256_2f4aae4": null,
+      "sha256": "93623821fcbb86152daf652796381246c6fcb93f200bcee9e4f0185dd5917665"
+    },
+    {
+      "ruta": "ETAPA_6G1_CORRECCION_LECTURA_SEGURA/evidence/inyecciones_correccion_f_6g1/Hardened_D1.json",
+      "estado": "nuevo",
+      "sha256_2f4aae4": null,
+      "sha256": "a108444dc25d5d41d8d58454ec5ae77f9b30f7448a1e2f9aa86f9007b72704de"
+    },
+    {
+      "ruta": "ETAPA_6G1_CORRECCION_LECTURA_SEGURA/evidence/inyecciones_correccion_f_6g1/Hardened_D2.json",
+      "estado": "nuevo",
+      "sha256_2f4aae4": null,
+      "sha256": "d1f8c8527246941f6925b0926838d586090e2d1836a2edffda6cda6573dee1d4"
+    },
+    {
+      "ruta": "ETAPA_6G1_CORRECCION_LECTURA_SEGURA/evidence/inyecciones_correccion_f_6g1/Hardened_E1.json",
+      "estado": "nuevo",
+      "sha256_2f4aae4": null,
+      "sha256": "d3cce05e687fd12af8af1d32a227b83367f9de3b2064eb0baff7d1323f880e94"
+    },
+    {
+      "ruta": "ETAPA_6G1_CORRECCION_LECTURA_SEGURA/evidence/inyecciones_correccion_f_6g1/MQR_A1.json",
+      "estado": "nuevo",
+      "sha256_2f4aae4": null,
+      "sha256": "0122403768c56dd44d45ac84beaa42d58157791940b64247cd40a76b1fb77e03"
+    },
+    {
+      "ruta": "ETAPA_6G1_CORRECCION_LECTURA_SEGURA/evidence/inyecciones_correccion_f_6g1/MQR_A2.json",
+      "estado": "nuevo",
+      "sha256_2f4aae4": null,
+      "sha256": "2c4be7f73b3364a566e4a0973a3679892b916018df21274ff032b55c746e9110"
+    },
+    {
+      "ruta": "ETAPA_6G1_CORRECCION_LECTURA_SEGURA/evidence/inyecciones_correccion_f_6g1/MQR_B1.json",
+      "estado": "nuevo",
+      "sha256_2f4aae4": null,
+      "sha256": "cb21c8ebffea484188165c074b15e2350ca9e56a06b665e803913d6937dc791f"
+    },
+    {
+      "ruta": "ETAPA_6G1_CORRECCION_LECTURA_SEGURA/evidence/inyecciones_correccion_f_6g1/MQR_B2.json",
+      "estado": "nuevo",
+      "sha256_2f4aae4": null,
+      "sha256": "a1e568029bd15ea1c7b6a6b1589f17d7920294c76494b5c11347b6e60ca24f18"
+    },
+    {
+      "ruta": "ETAPA_6G1_CORRECCION_LECTURA_SEGURA/evidence/inyecciones_correccion_f_6g1/MQR_C1.json",
+      "estado": "nuevo",
+      "sha256_2f4aae4": null,
+      "sha256": "745a708eefdeb97d7fcd9e78abfc66b70ac891e27c7aada42ae12164283d3181"
+    },
+    {
+      "ruta": "ETAPA_6G1_CORRECCION_LECTURA_SEGURA/evidence/inyecciones_correccion_f_6g1/MQR_C2.json",
+      "estado": "nuevo",
+      "sha256_2f4aae4": null,
+      "sha256": "262b057994c6899d932e09f8e24341d084b13fab6db12c21e9a1974f711e8c55"
+    },
+    {
+      "ruta": "ETAPA_6G1_CORRECCION_LECTURA_SEGURA/evidence/inyecciones_correccion_f_6g1/MQR_D1.json",
+      "estado": "nuevo",
+      "sha256_2f4aae4": null,
+      "sha256": "c2d9613d821f25c68ad8274179e2ae790820a4996429c2b7dd5099b73b393265"
+    },
+    {
+      "ruta": "ETAPA_6G1_CORRECCION_LECTURA_SEGURA/evidence/inyecciones_correccion_f_6g1/MQR_D2.json",
+      "estado": "nuevo",
+      "sha256_2f4aae4": null,
+      "sha256": "edfaaff404add6d7393e84a01b85f873c0de262c71cec3a865e65155fa926392"
+    },
+    {
+      "ruta": "ETAPA_6G1_CORRECCION_LECTURA_SEGURA/evidence/inyecciones_correccion_f_6g1/MQR_E1.json",
+      "estado": "nuevo",
+      "sha256_2f4aae4": null,
+      "sha256": "27f0b93b3d62f4c9b67e2bf3f016ea2a9166dcc6fe6486df9ebb596676cf7a1c"
+    },
+    {
+      "ruta": "ETAPA_6G1_CORRECCION_LECTURA_SEGURA/evidence/matriz_correccion_f_6g1.csv",
+      "estado": "nuevo",
+      "sha256_2f4aae4": null,
+      "sha256": "568d7b8be54a187a9219082285792e678c405dea35f7e5dcd43525b201517f5b"
+    },
+    {
+      "ruta": "ETAPA_6G1_CORRECCION_LECTURA_SEGURA/evidence/pruebas_correccion_f_6g1.json",
+      "estado": "nuevo",
+      "sha256_2f4aae4": null,
+      "sha256": "62096f527b16d1eb64b3f99d7729c4fdb015fb53b0cef42bc97b033e01df355a"
+    },
+    {
+      "ruta": "ETAPA_6G1_CORRECCION_LECTURA_SEGURA/motores/MOTOR_SEP_SDV-SDI_EVO.py",
+      "estado": "modificado",
+      "sha256_2f4aae4": "9e156cab123b5922e5ecdae48947328f7bc346aa8af9c6db270a6ac05bbcf62c",
+      "sha256": "25ababfa4a177e46ce93460d937045795f8f2b0c75241d9b7ba71a8889f0e1e1"
+    },
+    {
+      "ruta": "ETAPA_6G1_CORRECCION_LECTURA_SEGURA/motores/MOTOR_SEP_SDV-SDI_v3.1.1_Hardened_Final.py",
+      "estado": "modificado",
+      "sha256_2f4aae4": "0e741d57bf04fada55fc0910a41ea75f0d9637a176945fc930c2699fb6948831",
+      "sha256": "a4c157e7607f52a229cb35506ca9c5a57b86d30a6da179fec59ad7df445c416a"
+    },
+    {
+      "ruta": "ETAPA_6G1_CORRECCION_LECTURA_SEGURA/motores/sdv_sdi_mqr_engine.py",
+      "estado": "modificado",
+      "sha256_2f4aae4": "7e21f7ade20690f6c549dec13244a4f8b227d1c3a7cdbc8ff98a584354c9fbfa",
+      "sha256": "0c6a6d32b3702d87c2e5be52edb16a58b9c2fa56aa2dbd39a7c37c2fe789d372"
+    },
+    {
+      "ruta": "ETAPA_6G1_CORRECCION_LECTURA_SEGURA/scripts/pruebas_correccion_f_6g1.py",
+      "estado": "nuevo",
+      "sha256_2f4aae4": null,
+      "sha256": "87c264bbc48ba5e246a3749556c4e80f84ade04ef6cb9b9c7199c2501f13f334"
+    },
+    {
+      "ruta": "ETAPA_6G1_CORRECCION_LECTURA_SEGURA/scripts/verificar_ast_correccion_f_6g1.py",
+      "estado": "nuevo",
+      "sha256_2f4aae4": null,
+      "sha256": "fc20e3a972b5f8ae67294a125b59fac6ec54f497526c3ec954e2b922e9e2ed11"
+    }
+  ],
+  "resultados": {
+    "bateria_AI_completa": {
+      "corregido": {
+        "pass_": 27,
+        "total": 27,
+        "casos_donde_aplica_F": 11,
+        "hallazgo_F_resuelto": 27
+      },
+      "padre_2f4aae4": {
+        "pass_": 18,
+        "total": 27
+      }
+    },
+    "ast": {
+      "veredicto": "OK",
+      "base": "2f4aae411ce1672ec9aa57cc9a967e0556631d85",
+      "lectura_segura_6g1_identico": true
+    }
+  },
+  "evidencia_previa_no_sobrescrita": [
+    "AI (2f4aae4): AUDITORIA_INTEGRAL_CIERRE_6G1.md, evidence/*auditoria*, MANIFEST/SHA256SUMS/patch AI",
+    "CR-R1 (6a93e4e)",
+    "CR (8e773df)",
+    "CV (c38d00d)",
+    "prueba DSP"
+  ],
+  "no_ejecutado": [
+    "baterías históricas",
+    "H1",
+    "C-R1",
+    "H2",
+    "CV",
+    "prueba DSP",
+    "audio real",
+    "Android/Termux"
+  ],
+  "estado": "corrección F validada 27/27; 6G.1 NO cerrada ni autorizada para integración"
+}

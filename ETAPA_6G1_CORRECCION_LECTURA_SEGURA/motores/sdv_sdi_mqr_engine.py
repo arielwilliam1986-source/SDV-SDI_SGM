@@ -2714,6 +2714,7 @@ def _run_core(mix_info, pairs, mode, opt, plan, freqs, band_masks,
     # flush de memmaps
     for arr in mm.values():
         arr.flush()
+    arr = None   # [6G.1-R/AI-F] suelta la última referencia al memmap retenida por la variable de bucle
     del mm
     ctx["_recursos_6g1"].pop("memmaps", None)       # [6G.1-R/CR] vida útil sin cambio
 
