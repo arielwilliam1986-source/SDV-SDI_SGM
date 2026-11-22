@@ -1,0 +1,221 @@
+{
+ "amenaza": "Un proceso con permiso de escritura sobre el directorio compartido que contiene un componente intermedio renombra ese componente y reconstruye la ruta: las escrituras posteriores del motor por ruta caen fuera del provisional acreditado y la publicación de éxito podría trasladar un objeto no acreditado.",
+ "caso": "C4",
+ "clasificacion": [
+  "vulnerabilidad_reproducida",
+  "comportamiento_rechazado_por_diseno"
+ ],
+ "condiciones": {
+  "capas_verificadas": "abortar_6g1 (anclaje H1) + abortar_corrida_6g1 (re-anclaje + lstat vs fstat) vs publicar_dir_6g1 (sin verificación previa)",
+  "nota_euid": "en el sandbox el atacante se simula con el mismo uid; la capacidad requerida (escritura sobre shared) es independiente del uid si el modo lo permite",
+  "shared": {
+   "capacidad_atacante": "permiso de escritura sobre shared (rename de user + reconstrucción de la ruta)",
+   "modo": "drwxrwxrwx"
+  },
+  "user": {
+   "modo": "drwx------ (0700, propiedad del euid)"
+  }
+ },
+ "descripcion": "Sustitución de un componente intermedio (user) DESPUÉS de acreditar el provisional, a nivel de funciones del módulo",
+ "fotos": {
+  "antes": {
+   "user": {
+    "dev": 65024,
+    "gid": 1001,
+    "ino": 534843,
+    "modo": "drwxr-xr-x",
+    "tipo": "directorio",
+    "uid": 1001
+   },
+   "user/base": {
+    "dev": 65024,
+    "gid": 1001,
+    "ino": 534844,
+    "modo": "drwx------",
+    "tipo": "directorio",
+    "uid": 1001
+   },
+   "user/base/prov_c4": {
+    "dev": 65024,
+    "gid": 1001,
+    "ino": 534845,
+    "modo": "drwx------",
+    "tipo": "directorio",
+    "uid": 1001
+   },
+   "user/base/prov_c4/analysis.json": {
+    "dev": 65024,
+    "gid": 1001,
+    "ino": 534846,
+    "modo": "-rw-r--r--",
+    "sha256": "556eba5f4e4052950832f6c37a2159020b72d9970438cc40c74d793157e73086",
+    "tamano": 29,
+    "tipo": "regular",
+    "uid": 1001
+   }
+  },
+  "final": {
+   "user": {
+    "dev": 65024,
+    "gid": 1001,
+    "ino": 534847,
+    "modo": "drwxr-xr-x",
+    "tipo": "directorio",
+    "uid": 1001
+   },
+   "user.orig": {
+    "dev": 65024,
+    "gid": 1001,
+    "ino": 534843,
+    "modo": "drwxr-xr-x",
+    "tipo": "directorio",
+    "uid": 1001
+   },
+   "user.orig/base": {
+    "dev": 65024,
+    "gid": 1001,
+    "ino": 534844,
+    "modo": "drwx------",
+    "tipo": "directorio",
+    "uid": 1001
+   },
+   "user.orig/base/prov_c4": {
+    "dev": 65024,
+    "gid": 1001,
+    "ino": 534845,
+    "modo": "drwx------",
+    "tipo": "directorio",
+    "uid": 1001
+   },
+   "user.orig/base/prov_c4/analysis.json": {
+    "dev": 65024,
+    "gid": 1001,
+    "ino": 534846,
+    "modo": "-rw-r--r--",
+    "sha256": "556eba5f4e4052950832f6c37a2159020b72d9970438cc40c74d793157e73086",
+    "tamano": 29,
+    "tipo": "regular",
+    "uid": 1001
+   },
+   "user/base": {
+    "dev": 65024,
+    "gid": 1001,
+    "ino": 534848,
+    "modo": "drwx------",
+    "tipo": "directorio",
+    "uid": 1001
+   },
+   "user/base/prov_c4_PUBLICADO": {
+    "dev": 65024,
+    "gid": 1001,
+    "ino": 534849,
+    "modo": "drwx------",
+    "tipo": "directorio",
+    "uid": 1001
+   },
+   "user/base/prov_c4_PUBLICADO/candidates.json": {
+    "dev": 65024,
+    "gid": 1001,
+    "ino": 534850,
+    "modo": "-rw-r--r--",
+    "sha256": "b8d7d7038ce26fb67721b296117ab663c7348c3891c375d21663090391ff175f",
+    "tamano": 49,
+    "tipo": "regular",
+    "uid": 1001
+   }
+  }
+ },
+ "procedimiento": [
+  "crear_y_acreditar_dir_6g1(shared/user/base, prov_c4)",
+  "escritura por ruta de analysis.json (fase pre)",
+  "rename shared/user -> shared/user.orig; mkdir shared/user (0777); reconstrucción base/prov_c4 por el atacante",
+  "escritura por ruta de candidates.json (fase post) + medición de caída",
+  "manipulación del contenido por el atacante (propietario del dir)",
+  "abortar_corrida_6g1(ruta, destino) — detección esperada",
+  "publicar_dir_6g1(ruta, destino_publicado) — sin verificación previa",
+  "fotografías de árbol + identidades dev/ino antes y después"
+ ],
+ "resultado_observado": {
+  "aborto": {
+   "abort_registrado": false,
+   "anclaje_directorio": "identidad_distinta (H1): el directorio de la ruta no coincide con el provisional acreditado",
+   "destino_solicitado": "/tmp/i1_6g1/c4/shared/user/base/prov_c4_aborted",
+   "escritura_abierta_al_registrar": [],
+   "motivo": "PRUEBA_I1_C4",
+   "motivo_conservacion": "directorio no acreditado (identidad_distinta (H1): el directorio de la ruta no coincide con el provisional acreditado): sin escritura y sin traslado",
+   "provisional": "/tmp/i1_6g1/c4/shared/user/base/prov_c4",
+   "ruta_final": "/tmp/i1_6g1/c4/shared/user/base/prov_c4",
+   "salidas_invalidadas": [],
+   "trasladado": false,
+   "traslado_solicitado": true,
+   "traslado_verificado": false
+  },
+  "c5_identidades": {
+   "acreditada": {
+    "dev": 65024,
+    "ino": 534845
+   },
+   "fstat_distinto_de_acreditada": true,
+   "fstat_reapertura_nofollow": {
+    "dev": 65024,
+    "ino": 534849
+   },
+   "lstat_distinto_de_acreditada": true,
+   "lstat_ruta_post_sustitucion": {
+    "dev": 65024,
+    "ino": 534849
+   }
+  },
+  "escrituras": {
+   "candidates_json_en_arbol_atacante": true,
+   "candidates_json_en_provisional_acreditado": false,
+   "fuera_del_directorio_previsto": [
+    {
+     "dev": 65024,
+     "gid": 1001,
+     "ino": 534849,
+     "modo": "drwx------",
+     "relativo": "user/base/prov_c4_PUBLICADO",
+     "tipo": "directorio",
+     "uid": 1001
+    },
+    {
+     "dev": 65024,
+     "gid": 1001,
+     "ino": 534850,
+     "modo": "-rw-r--r--",
+     "relativo": "user/base/prov_c4_PUBLICADO/candidates.json",
+     "sha256": "b8d7d7038ce26fb67721b296117ab663c7348c3891c375d21663090391ff175f",
+     "tamano": 49,
+     "tipo": "regular",
+     "uid": 1001
+    }
+   ]
+  },
+  "identidad_acreditada": {
+   "dev": 65024,
+   "ino": 534845
+  },
+  "manipulacion_atacante": {
+   "contenido_final_candidates": {
+    "caso": "C4",
+    "fase": "MANIPULADO-POR-ATACANTE"
+   }
+  },
+  "publicacion": {
+   "contenido": [
+    "candidates.json"
+   ],
+   "identidad_publicada": {
+    "dev": 65024,
+    "ino": 534849
+   },
+   "publicada_es_acreditada": false,
+   "resultado": "SIN_ERROR (publicado)",
+   "ruta_publicada": "/tmp/i1_6g1/c4/shared/user/base/prov_c4_PUBLICADO"
+  },
+  "veredicto": "VULNERABILIDAD_REPRODUCIDA"
+ },
+ "schema": "diagnostico-i1/1",
+ "t_sustitucion": 1795360075.8506317
+}

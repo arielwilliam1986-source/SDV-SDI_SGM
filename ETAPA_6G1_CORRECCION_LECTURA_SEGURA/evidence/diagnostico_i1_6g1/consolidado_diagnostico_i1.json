@@ -1,0 +1,64 @@
+{
+ "schema": "diagnostico-i1/1",
+ "generado": "2026-11-22T15:08:06Z",
+ "casos": [
+  {
+   "caso": "C1",
+   "clasificacion": [
+    "comportamiento_permitido_por_diseno"
+   ],
+   "veredicto": "PASS",
+   "fichero": "caso_c1.json"
+  },
+  {
+   "caso": "C2",
+   "clasificacion": [
+    "comportamiento_rechazado_por_diseno"
+   ],
+   "veredicto": null,
+   "fichero": "caso_c2.json"
+  },
+  {
+   "caso": "C3",
+   "clasificacion": [
+    "comportamiento_rechazado_por_diseno",
+    "comportamiento_permitido_por_diseno"
+   ],
+   "veredicto": null,
+   "fichero": "caso_c3.json"
+  },
+  {
+   "caso": "C4",
+   "clasificacion": [
+    "vulnerabilidad_reproducida",
+    "comportamiento_rechazado_por_diseno"
+   ],
+   "veredicto": "VULNERABILIDAD_REPRODUCIDA",
+   "fichero": "caso_c4.json"
+  },
+  {
+   "caso": "C0",
+   "clasificacion": [
+    "comportamiento_permitido_por_diseno"
+   ],
+   "veredicto": "COMPORTAMIENTO_PERMITIDO_POR_DISENO",
+   "fichero": "caso_c0.json"
+  },
+  {
+   "caso": "C4r",
+   "clasificacion": [
+    "vulnerabilidad_reproducida"
+   ],
+   "veredicto": "VULNERABILIDAD_REPRODUCIDA_EN_FLUJO_REAL",
+   "fichero": "caso_c4r.json"
+  },
+  {
+   "caso": "C4rt",
+   "clasificacion": [
+    "vulnerabilidad_reproducida"
+   ],
+   "veredicto": "VULNERABILIDAD_REPRODUCIDA_EN_FLUJO_REAL",
+   "fichero": "caso_c4rt.json"
+  }
+ ]
+}

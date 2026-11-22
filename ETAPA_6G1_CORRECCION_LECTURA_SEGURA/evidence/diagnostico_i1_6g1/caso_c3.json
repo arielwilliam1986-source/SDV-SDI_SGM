@@ -1,0 +1,48 @@
+{
+ "amenaza": "Que el provisional se cree (y se acredite) en un objeto distinto del que el operador cree designar, o que se eluda la comprobación de privacidad del padre.",
+ "caso": "C3",
+ "clasificacion": [
+  "comportamiento_rechazado_por_diseno",
+  "comportamiento_permitido_por_diseno"
+ ],
+ "condiciones": {
+  "enlace": {
+   "destino": "/tmp/i1_6g1/c3/real",
+   "ruta": "/tmp/i1_6g1/c3/link"
+  },
+  "mecanismo": "os.open(padre, O_DIRECTORY|O_NOFOLLOW): O_NOFOLLOW protege SOLO el componente final; privacidad verificada sobre el padre RESUELTO (euid + sin escritura grupo/otros)",
+  "real": {
+   "modo": "drwx------"
+  },
+  "real_777": {
+   "modo": "drwxr-xr-x"
+  }
+ },
+ "descripcion": "Componentes intermedios de la ruta del padre como enlaces simbólicos, presentes ANTES de la creación",
+ "procedimiento": [
+  "(a) crear_y_acreditar_dir_6g1(link, prov_a) — padre = enlace final",
+  "(b) crear_y_acreditar_dir_6g1(link/sub, prov_b) — enlace intermedio hacia real/sub (0700 euid)",
+  "(c) crear_y_acreditar_dir_6g1(link777/sub777, prov_c) — padre resuelto 0777",
+  "comparación de identidad nominal vs resuelta por lstat"
+ ],
+ "resultado_observado": {
+  "a_padre_es_enlace": "OSError(20): [Errno 20] Not a directory: '/tmp/i1_6g1/c3/link'",
+  "b_enlace_intermedio": {
+   "identidad_coincide": true,
+   "identidad_nominal": {
+    "dev": 65024,
+    "ino": 534838
+   },
+   "identidad_resuelta": {
+    "dev": 65024,
+    "ino": 534838
+   },
+   "padre_privacidad": "real/sub 0700 propiedad del euid",
+   "resultado": "SIN_ERROR (creado y acreditado)",
+   "ruta_nominal": "/tmp/i1_6g1/c3/link/sub/prov_b",
+   "ruta_resuelta": "/tmp/i1_6g1/c3/real/sub/prov_b"
+  },
+  "c_padre_resuelto_777": "SIN_ERROR (inesperado)"
+ },
+ "schema": "diagnostico-i1/1"
+}

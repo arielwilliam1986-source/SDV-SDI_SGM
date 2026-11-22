@@ -1,0 +1,89 @@
+{
+ "amenaza": "Que la corrida real publique como éxito (EXIT_OK) un directorio introducido por el atacante con contenido robado y manipulado, sin que el motor lo detecte: la publicación no re-verifica la identidad acreditada del provisional.",
+ "caso": "C4rt",
+ "clasificacion": [
+  "vulnerabilidad_reproducida"
+ ],
+ "condiciones": {
+  "disparo": "aparece analysis.json en el provisional (polling 0.5 ms)",
+  "modo": "full_processing",
+  "motor": "MOTOR_SEP_SDV-SDI_v3.1.1_Hardened_Final.py",
+  "nota_euid": "en el sandbox el atacante se simula con el mismo uid; la capacidad requerida (escritura sobre shared) es independiente del uid si el modo lo permite",
+  "reintentos": "hasta 5 corridas; la ventana es estrecha (ms)",
+  "shared": {
+   "capacidad_atacante": "permiso de escritura sobre shared (rename de user + reconstrucción)",
+   "modo": "drwxrwxrwx (0777)"
+  }
+ },
+ "descripcion": "Sustitución TARDÍA de componente intermedio (user) durante una corrida REAL del motor: dispara cuando analysis.json aparece en el provisional (write_reports en curso), dentro de la ventana entre las últimas escrituras por ruta y la publicación por ruta",
+ "procedimiento": [
+  "crear shared(0777)/user(0700)/base(0700) + mix + manifest",
+  "observador externo: polling del provisional y de analysis.json",
+  "al ver analysis.json: rename user -> user.orig, reconstrucción de la ruta con prov del atacante + robo y manipulación del analysis.json real",
+  "subprocess: python -B MOTOR --manifest ... --mode full_processing --out base",
+  "comparación (dev,ino) provisional acreditado vs publicado y contenido del publicado"
+ ],
+ "resultado_observado": {
+  "contenido_publicado": [
+   "ATAQUE_I1.txt",
+   "analysis.txt",
+   "input_integrity_6g.json"
+  ],
+  "intento_efectivo": 1,
+  "intentos": [
+   {
+    "caso": "c4rt_a1",
+    "codigo_salida": 0,
+    "eventos": {
+     "analysis_json_visto": {
+      "t": 1795360086.5159438
+     },
+     "identidad_al_sustituir": {
+      "dev": 65024,
+      "ino": 534891
+     },
+     "provisional_detectado": {
+      "dev": 65024,
+      "ino": 534891,
+      "nombre": "motorA_run_20261122_150805_partial",
+      "t": 1795360085.9819043
+     },
+     "sustitucion": {
+      "analysis_json_falsificado": false,
+      "delta_ms_desde_deteccion": 534.453,
+      "error_robo": "JSONDecodeError: Expecting value: line 1 column 1 (char 0)",
+      "prov_atacante": "/tmp/i1_6g1/c4rt_a1/shared/user/base/motorA_run_20261122_150805_partial",
+      "t": 1795360086.5163558
+     }
+    },
+    "exito": true,
+    "fichero": "caso_c4rt_a1.json",
+    "identidad_igual": false,
+    "intent": 1,
+    "publicado": {
+     "contenido": [
+      "ATAQUE_I1.txt",
+      "analysis.txt",
+      "input_integrity_6g.json"
+     ],
+     "dev": 65024,
+     "ino": 534899,
+     "ruta": "/tmp/i1_6g1/c4rt_a1/shared/user/base/motorA_run_20261122_150805"
+    },
+    "veredicto": "VULNERABILIDAD_REPRODUCIDA_EN_FLUJO_REAL"
+   }
+  ],
+  "publicado": {
+   "contenido": [
+    "ATAQUE_I1.txt",
+    "analysis.txt",
+    "input_integrity_6g.json"
+   ],
+   "dev": 65024,
+   "ino": 534899,
+   "ruta": "/tmp/i1_6g1/c4rt_a1/shared/user/base/motorA_run_20261122_150805"
+  },
+  "veredicto": "VULNERABILIDAD_REPRODUCIDA_EN_FLUJO_REAL"
+ },
+ "schema": "diagnostico-i1/1"
+}

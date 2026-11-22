@@ -1,0 +1,35 @@
+{
+ "amenaza": "Que la creación o apertura del provisional siga el enlace y escriba en un objeto ajeno (evil).",
+ "caso": "C2",
+ "clasificacion": [
+  "comportamiento_rechazado_por_diseno"
+ ],
+ "condiciones": {
+  "enlace": {
+   "destino": "/tmp/i1_6g1/c2/evil",
+   "ruta": "/tmp/i1_6g1/c2/base/prov_c2"
+  },
+  "evil": {
+   "modo": "drwx------"
+  },
+  "mecanismo": "mkdir(dir_fd) exclusivo + O_NOFOLLOW"
+ },
+ "descripcion": "Componente final de la ruta del provisional como enlace simbólico",
+ "fotos": {
+  "evil_antes": {},
+  "evil_despues": {}
+ },
+ "procedimiento": [
+  "ln -s evil base/prov_c2 (preexistente)",
+  "crear_y_acreditar_dir_6g1(base, prov_c2)",
+  "os.open(prov_c2, O_DIRECTORY|O_NOFOLLOW) directo",
+  "fotografía de evil antes/después"
+ ],
+ "resultado_observado": {
+  "apertura_nofollow": "OSError(20): [Errno 20] Not a directory: '/tmp/i1_6g1/c2/base/prov_c2'",
+  "creacion": "FileExistsError: [Errno 17] File exists: 'prov_c2'",
+  "enlace_intacto": true,
+  "escrituras_en_evil": []
+ },
+ "schema": "diagnostico-i1/1"
+}

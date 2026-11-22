@@ -1,0 +1,93 @@
+{
+ "schema": "diagnostico-i1-manifest/1",
+ "fecha": "2026-11-22T15:11:19Z",
+ "rama": "arena/f1c5739f-sdv-sdi-sgm",
+ "commit_padre": "72a935c711d530b89952bbe9317482a18144ac19",
+ "referencia_tecnica": "9fedc5b223444e73955d2b899b6a434b0f5c670e",
+ "instruccion": "Cris 22-11-2026: I-1 (simlinks en componentes intermedios de la ruta del provisional)",
+ "alcance": "solo documentacion y evidencia diagnostica; cero cambios de produccion (motores, DSP, fixtures, validadores intactos)",
+ "cambio": {
+  "produccion": "ninguno",
+  "ficheros_nuevos": "informe + arnes + 10 evidencias + matriz + manifiesto + sumas"
+ },
+ "resultados": {
+  "veredictos": {
+   "C1": "comportamiento_permitido_por_diseno (PASS)",
+   "C2": "comportamiento_rechazado_por_diseno",
+   "C3": "a: rechazado (ELOOP); b: permitido con salvedad (privacidad sobre padre resuelto); c: rechazado (0777)",
+   "C4": "vulnerabilidad_reproducida (modulo) + aborto detecta (rechazo correcto)",
+   "C0": "comportamiento_permitido_por_diseno (identidad publicada == acreditada)",
+   "C4r": "vulnerabilidad_reproducida (flujo real, sustitucion temprana 0,48 ms)",
+   "C4rt": "vulnerabilidad_reproducida (flujo real, sustitucion tardia; intento 1/5)",
+   "C5": "medido (identidades 534845/534849, 534874/534879, 534891/534899)",
+   "C6": "medido (fotografias de arbol, sin fugas en C1; fugas al arbol atacante en C4/C4r/C4rt)"
+  },
+  "sintesis": "sustitucion efectiva reproducida en el flujo real (EXIT_OK sobre un directorio no acreditado, con contenido del atacante y sin los artefactos reales); el aborto detecta (fail-closed H1/CV); la publicacion no re-verifica la identidad acreditada (publicar_dir_6g1, mismo patron en Hardened L1984 / EVO L2095 / MQR L2838)",
+  "clasificaciones": [
+   "EXPERIMENTAL_RESULT (C4/C4r/C4rt)",
+   "DOCUMENTED_FACT (estatica: publicacion sin verificacion)",
+   "THEORETICAL_DEDUCTION (extrapolacion EVO/MQR)",
+   "UNKNOWN (uids distintas, no probado)"
+  ]
+ },
+ "entorno": "Python 3.11.2, numpy 1.26.4, scipy 1.13.1, soundfile 0.13.1, libsndfile 1.2.2, Linux x86_64, kernel 6.1.158+, euid 1001",
+ "no_ejecutado": [
+  "correcciones (R1/R2/R3 no implementadas)",
+  "EVO y MQR en flujo real",
+  "baterias historicas (H1, C-R1, H2, CV, CR), prueba DSP y bateria AI",
+  "audio real, Android, Termux",
+  "atacante con uid distinta (simulado con permisos medidos)",
+  "masks/PNG/--keep-masks (fuera de alcance)"
+ ],
+ "estado": "diagnostico propuesto para adjudicacion de Cris; I-1 NO cerrado; 6G.1 ABIERTA; parada obligatoria",
+ "archivos": [
+  {
+   "ruta": "ETAPA_6G1_CORRECCION_LECTURA_SEGURA/DIAGNOSTICO_I1_6G1.md",
+   "sha256": "f131937ede015cf7082c9c42c52daf26b69881c1f85d34bca5a765c1ee2b7490"
+  },
+  {
+   "ruta": "ETAPA_6G1_CORRECCION_LECTURA_SEGURA/scripts/diagnostico_i1_6g1.py",
+   "sha256": "daf41515a4a39e2988518ab5554013a16d33ee031459830501b0ddb796153ff0"
+  },
+  {
+   "ruta": "ETAPA_6G1_CORRECCION_LECTURA_SEGURA/evidence/diagnostico_i1_6g1/caso_c0.json",
+   "sha256": "54603e100208c74b6b05bd308a7bec4fe4cf8ba2628c385039824233f4017c0f"
+  },
+  {
+   "ruta": "ETAPA_6G1_CORRECCION_LECTURA_SEGURA/evidence/diagnostico_i1_6g1/caso_c1.json",
+   "sha256": "6d3d2222aa76c1bb4ef645a6efd2ec72c417cd45558ef50d1bb1cc107175586f"
+  },
+  {
+   "ruta": "ETAPA_6G1_CORRECCION_LECTURA_SEGURA/evidence/diagnostico_i1_6g1/caso_c2.json",
+   "sha256": "ea9a2c40ccf0699b8c03ff798b69a9d1517dcdb0ec6ecbf7d37a255bbe8f5279"
+  },
+  {
+   "ruta": "ETAPA_6G1_CORRECCION_LECTURA_SEGURA/evidence/diagnostico_i1_6g1/caso_c3.json",
+   "sha256": "b3fdd4caaf0eadc6372f5c1e598eb814f6b3e6e955356ab686ce86d134c3b9f1"
+  },
+  {
+   "ruta": "ETAPA_6G1_CORRECCION_LECTURA_SEGURA/evidence/diagnostico_i1_6g1/caso_c4.json",
+   "sha256": "9c5bfcda89d7119bd297a8ae0c99d3d85bcc79b3416d9366f62fa10fcfe82500"
+  },
+  {
+   "ruta": "ETAPA_6G1_CORRECCION_LECTURA_SEGURA/evidence/diagnostico_i1_6g1/caso_c4r.json",
+   "sha256": "197fa5d9e151c30bb033c1bdcd1ce2a19ebbbbc15b6e10bf73d82e08cef85f3a"
+  },
+  {
+   "ruta": "ETAPA_6G1_CORRECCION_LECTURA_SEGURA/evidence/diagnostico_i1_6g1/caso_c4rt.json",
+   "sha256": "14905c9d9a5d21f7c00db7339df84902acdb4df16fde0e0cdfc923bbe3bb4b56"
+  },
+  {
+   "ruta": "ETAPA_6G1_CORRECCION_LECTURA_SEGURA/evidence/diagnostico_i1_6g1/caso_c4rt_a1.json",
+   "sha256": "3fd6f133cbaaf77b12b42b28fea972b1fcb68cec0e85bc200bb89a745dbe37e1"
+  },
+  {
+   "ruta": "ETAPA_6G1_CORRECCION_LECTURA_SEGURA/evidence/diagnostico_i1_6g1/consolidado_diagnostico_i1.json",
+   "sha256": "f7cff8e4eb4f3241f251054d4f1c2458c859ef93bc5d5d21f34414e82862f39d"
+  },
+  {
+   "ruta": "ETAPA_6G1_CORRECCION_LECTURA_SEGURA/evidence/diagnostico_i1_6g1/matriz_diagnostico_i1_6g1.csv",
+   "sha256": "2752a59f4987cf02c5b343339205d450d947d2b1963e263c622c4c06557dd3cd"
+  }
+ ]
+}

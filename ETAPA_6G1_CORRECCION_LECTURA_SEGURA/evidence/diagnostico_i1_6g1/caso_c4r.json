@@ -1,0 +1,218 @@
+{
+ "amenaza": "Que la corrida real publique como éxito un objeto distinto del provisional acreditado, y que las escrituras posteriores caigan fuera del directorio previsto.",
+ "caso": "C4r",
+ "clasificacion": [
+  "vulnerabilidad_reproducida"
+ ],
+ "condiciones": {
+  "mix": "fixtures/mix.wav (copia, sin enlaces simbólicos)",
+  "modo": "full_processing",
+  "motor": "MOTOR_SEP_SDV-SDI_v3.1.1_Hardened_Final.py",
+  "nota_euid": "capacidad del observador: permiso de escritura sobre shared; en el sandbox se ejecuta con el mismo uid",
+  "shared": {
+   "modo": "drwxrwxrwx"
+  }
+ },
+ "descripcion": "Corrida REAL del motor Hardened 6G.1 (full_processing, fixture sintético) CON sustitución de componente intermedio por un observador externo con permiso de escritura sobre el directorio compartido.",
+ "fotos": {
+  "final": {
+   "user": {
+    "dev": 65024,
+    "gid": 1001,
+    "ino": 534877,
+    "modo": "drwxr-xr-x",
+    "tipo": "directorio",
+    "uid": 1001
+   },
+   "user.orig": {
+    "dev": 65024,
+    "gid": 1001,
+    "ino": 534869,
+    "modo": "drwxr-xr-x",
+    "tipo": "directorio",
+    "uid": 1001
+   },
+   "user.orig/base": {
+    "dev": 65024,
+    "gid": 1001,
+    "ino": 534870,
+    "modo": "drwx------",
+    "tipo": "directorio",
+    "uid": 1001
+   },
+   "user.orig/base/motorA_run_20261122_150802_partial": {
+    "dev": 65024,
+    "gid": 1001,
+    "ino": 534874,
+    "modo": "drwx------",
+    "tipo": "directorio",
+    "uid": 1001
+   },
+   "user.orig/base/motorA_run_20261122_150802_partial/engine_log.txt": {
+    "dev": 65024,
+    "gid": 1001,
+    "ino": 534875,
+    "modo": "-rw-r--r--",
+    "sha256": "90e35e5bf3170d4640683e4b840579d49a6a35b0d8eda3e71f85c2e8ad42474c",
+    "tamano": 424,
+    "tipo": "regular",
+    "uid": 1001
+   },
+   "user.orig/base/motorA_run_20261122_150802_partial/masks": {
+    "dev": 65024,
+    "gid": 1001,
+    "ino": 534876,
+    "modo": "drwxr-xr-x",
+    "tipo": "directorio",
+    "uid": 1001
+   },
+   "user/base": {
+    "dev": 65024,
+    "gid": 1001,
+    "ino": 534878,
+    "modo": "drwx------",
+    "tipo": "directorio",
+    "uid": 1001
+   },
+   "user/base/motorA_run_20261122_150802": {
+    "dev": 65024,
+    "gid": 1001,
+    "ino": 534879,
+    "modo": "drwx------",
+    "tipo": "directorio",
+    "uid": 1001
+   },
+   "user/base/motorA_run_20261122_150802/ATAQUE_I1.txt": {
+    "dev": 65024,
+    "gid": 1001,
+    "ino": 534880,
+    "modo": "-rw-r--r--",
+    "sha256": "17b7ef000e001999bf0cd9fb6538e5c881d8e583a6f6251c3232e3e4bec523f8",
+    "tamano": 77,
+    "tipo": "regular",
+    "uid": 1001
+   },
+   "user/base/motorA_run_20261122_150802/analysis.json": {
+    "dev": 65024,
+    "gid": 1001,
+    "ino": 534883,
+    "modo": "-rw-r--r--",
+    "sha256": "493b6a26028cc504ccad90e5c4ee548b9ad10971fbcbff00c35ffe6e7c160d13",
+    "tamano": 196573,
+    "tipo": "regular",
+    "uid": 1001
+   },
+   "user/base/motorA_run_20261122_150802/analysis.txt": {
+    "dev": 65024,
+    "gid": 1001,
+    "ino": 534903,
+    "modo": "-rw-r--r--",
+    "sha256": "33d6394dd550db01ada2511bf08d5d47dae28b7d8a7c530afa7bd0bb11ffb9a6",
+    "tamano": 2202,
+    "tipo": "regular",
+    "uid": 1001
+   },
+   "user/base/motorA_run_20261122_150802/input_integrity_6g.json": {
+    "dev": 65024,
+    "gid": 1001,
+    "ino": 534904,
+    "modo": "-rw-r--r--",
+    "sha256": "f5b56b6a0ac40fe41714716e1f1a28421264694191f8e544b844f339a41971a9",
+    "tamano": 1270,
+    "tipo": "regular",
+    "uid": 1001
+   },
+   "user/base/motorA_run_20261122_150802/mix SDI.wav": {
+    "dev": 65024,
+    "gid": 1001,
+    "ino": 534882,
+    "modo": "-rw-r--r--",
+    "sha256": "6210863ea6f7acdf000ca28cc8d4d9d4fdffe35456807af6c303a634a87e52af",
+    "tamano": 705688,
+    "tipo": "regular",
+    "uid": 1001
+   },
+   "user/base/motorA_run_20261122_150802/mix SDV.wav": {
+    "dev": 65024,
+    "gid": 1001,
+    "ino": 534881,
+    "modo": "-rw-r--r--",
+    "sha256": "2671b9b21cfa6d0385464351b168c30a6638f3ff012d4f4bd13f55217af3696c",
+    "tamano": 705688,
+    "tipo": "regular",
+    "uid": 1001
+   }
+  }
+ },
+ "procedimiento": [
+  "crear shared(0777)/user(0700)/base(0700) + copia del fixture",
+  "observador externo en hilo: polling 2 ms del provisional motorA_run_*_partial y lstat de identidad + rename user -> user.orig + reconstrucción",
+  "subprocess: python -B MOTOR --mix ... --mode full_processing --out base",
+  "comparación (dev,ino) provisional detectado vs publicado",
+  "fotografía de árbol final de shared"
+ ],
+ "resultado_observado": {
+  "codigo_salida": 0,
+  "duracion_s": 3.288,
+  "eventos_observador": {
+   "provisional_detectado": {
+    "dev": 65024,
+    "ino": 534874,
+    "nombre": "motorA_run_20261122_150802_partial",
+    "t": 1795360082.7464414
+   },
+   "sustitucion": {
+    "analysis_json_falsificado": false,
+    "delta_ms_desde_deteccion": 0.479,
+    "prov_atacante": "/tmp/i1_6g1/c4r/shared/user/base/motorA_run_20261122_150802_partial",
+    "t": 1795360082.7469194
+   }
+  },
+  "exito_declarado_en_stdout": true,
+  "identidad_publicada_igual_a_provisional": false,
+  "provisional_original": {
+   "contenido": [
+    "engine_log.txt",
+    "masks"
+   ],
+   "dev": 65024,
+   "ino": 534874,
+   "ruta": "/tmp/i1_6g1/c4r/shared/user.orig/base/motorA_run_20261122_150802_partial"
+  },
+  "publicado": {
+   "contenido": [
+    "ATAQUE_I1.txt",
+    "analysis.json",
+    "analysis.txt",
+    "input_integrity_6g.json",
+    "mix SDI.wav",
+    "mix SDV.wav"
+   ],
+   "dev": 65024,
+   "ino": 534879,
+   "ruta": "/tmp/i1_6g1/c4r/shared/user/base/motorA_run_20261122_150802"
+  },
+  "stdout_tail": [
+   "[     0.07s] Validación de entradas OK: Mix 44100Hz/2ch (344.57 KiB) | 1 Pares",
+   "[     0.07s] Verificando alineación temporal NCC de las guías...",
+   "[     0.77s]   P01/vocal: k=0.00 ms; NCC=0.7077; ALIGNED (MEASURED_AGREEMENT); L: d=0 ALIGNED, R: d=0 ALIGNED; shift=0",
+   "[     1.38s]   P01/instrumental: k=0.00 ms; NCC=0.7277; ALIGNED (MEASURED_AGREEMENT); L: d=0 ALIGNED, R: d=0 ALIGNED; shift=0",
+   "[     1.40s] Iniciando pipeline v3.1.0 en: /tmp/i1_6g1/c4r/shared/user/base/motorA_run_20261122_150802_partial",
+   "[     1.40s] Configuración: consensus_order=magnitudes_first | smoothing=none | mask_mode=mono | residuals=False",
+   "[     1.41s] Procesando 89 tramas en 1 chunks de 256 tramas...",
+   "[     2.08s]   Chunk 01/1 [100.0%] completado (Tramas 0-88)",
+   "[     2.11s] Post-WAV Identity SNR: 154.44 dB (Estado: PASS_EXACT_IDENTITY)",
+   "[     2.14s] Corrida finalizada exitosamente en: /tmp/i1_6g1/c4r/shared/user/base/motorA_run_20261122_150802",
+   "",
+   "============================================================================",
+   "\u001b[92m[✓] SEPARACIÓN MOTOR A v3.1.0 COMPLETADA CON ÉXITO (SNR > 140 dB)\u001b[0m",
+   "Directorio de Resultados : \u001b[96m/tmp/i1_6g1/c4r/shared/user/base/motorA_run_20261122_150802\u001b[0m",
+   "Artefactos Generados     : mix SDV.wav | mix SDI.wav | analysis.json | analysis.txt",
+   "============================================================================",
+   ""
+  ],
+  "veredicto": "VULNERABILIDAD_REPRODUCIDA_EN_FLUJO_REAL"
+ },
+ "schema": "diagnostico-i1/1",
+ "workdir": "/tmp/i1_6g1/c4r"
+}

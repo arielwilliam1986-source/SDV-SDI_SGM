@@ -1,0 +1,128 @@
+{
+ "amenaza": "Ninguno: caso base que ancla el comportamiento esperado del diseño.",
+ "caso": "C1",
+ "clasificacion": [
+  "comportamiento_permitido_por_diseno"
+ ],
+ "condiciones": {
+  "base": {
+   "enlaces_simbolicos": 0,
+   "modo": "drwx------",
+   "uid": 1001
+  },
+  "euid": 1001
+ },
+ "descripcion": "Ruta normal, sin enlaces simbólicos",
+ "fotos": {
+  "antes": {},
+  "final": {
+   "prov_c1_aborted": {
+    "dev": 65024,
+    "gid": 1001,
+    "ino": 530768,
+    "modo": "drwx------",
+    "tipo": "directorio",
+    "uid": 1001
+   },
+   "prov_c1_aborted/ABORT_6G1.json": {
+    "dev": 65024,
+    "gid": 1001,
+    "ino": 530782,
+    "modo": "-rw-r--r--",
+    "sha256": "add9cff9b27c29d06bc05c2969e73ababf96ec36b4fe9a0d17573fa682214966",
+    "tamano": 1046,
+    "tipo": "regular",
+    "uid": 1001
+   },
+   "prov_c1_aborted/analysis.json": {
+    "dev": 65024,
+    "gid": 1001,
+    "ino": 530781,
+    "modo": "-rw-r--r--",
+    "sha256": "86159e1e69ffbcae75fddd98b4d878d8e0523ceb7e047b07ae0157d6a5a35ab8",
+    "tamano": 14,
+    "tipo": "regular",
+    "uid": 1001
+   },
+   "prov_c1_aborted/engine_log.txt": {
+    "dev": 65024,
+    "gid": 1001,
+    "ino": 530769,
+    "modo": "-rw-r--r--",
+    "sha256": "69d31bf53b0524b15809cd62d500da3f9a27bda0e9947059b260cd566d88624f",
+    "tamano": 7,
+    "tipo": "regular",
+    "uid": 1001
+   }
+  },
+  "tras_escrituras": {
+   "prov_c1": {
+    "dev": 65024,
+    "gid": 1001,
+    "ino": 530768,
+    "modo": "drwx------",
+    "tipo": "directorio",
+    "uid": 1001
+   },
+   "prov_c1/analysis.json": {
+    "dev": 65024,
+    "gid": 1001,
+    "ino": 530781,
+    "modo": "-rw-r--r--",
+    "sha256": "86159e1e69ffbcae75fddd98b4d878d8e0523ceb7e047b07ae0157d6a5a35ab8",
+    "tamano": 14,
+    "tipo": "regular",
+    "uid": 1001
+   },
+   "prov_c1/engine_log.txt": {
+    "dev": 65024,
+    "gid": 1001,
+    "ino": 530769,
+    "modo": "-rw-r--r--",
+    "sha256": "69d31bf53b0524b15809cd62d500da3f9a27bda0e9947059b260cd566d88624f",
+    "tamano": 7,
+    "tipo": "regular",
+    "uid": 1001
+   }
+  }
+ },
+ "procedimiento": [
+  "crear_y_acreditar_dir_6g1(base, prov_c1)",
+  "escritura por ruta de engine_log.txt y analysis.json (como el motor)",
+  "abortar_corrida_6g1(ruta, ruta_aborted, traslado=True)",
+  "fotografías de árbol antes/después + identidad (dev,ino)"
+ ],
+ "resultado_observado": {
+  "abort_registrado": true,
+  "aborto": {
+   "abort_registrado": true,
+   "anclaje_directorio": "directorio_acreditado (H1)",
+   "destino_solicitado": "/tmp/i1_6g1/c1/base/prov_c1_aborted",
+   "escritura_abierta_al_registrar": [],
+   "motivo": "PRUEBA_I1_C1",
+   "motivo_conservacion": null,
+   "provisional": "/tmp/i1_6g1/c1/base/prov_c1",
+   "ruta_final": "/tmp/i1_6g1/c1/base/prov_c1_aborted",
+   "salidas_invalidadas": [],
+   "trasladado": true,
+   "traslado_solicitado": true,
+   "traslado_verificado": true,
+   "verificacion_registro": "ABORT_6G1.json escrito y verificado sobre el descriptor acreditado"
+  },
+  "acreditacion": {
+   "dev": 65024,
+   "ino": 530768,
+   "ruta": "/tmp/i1_6g1/c1/base/prov_c1"
+  },
+  "escrituras_fuera_del_previsto": [],
+  "ficheros_creados": [
+   "prov_c1_aborted",
+   "prov_c1_aborted/ABORT_6G1.json",
+   "prov_c1_aborted/analysis.json",
+   "prov_c1_aborted/engine_log.txt"
+  ],
+  "identidad_trasladada_ok": true,
+  "veredicto": "PASS"
+ },
+ "schema": "diagnostico-i1/1"
+}
