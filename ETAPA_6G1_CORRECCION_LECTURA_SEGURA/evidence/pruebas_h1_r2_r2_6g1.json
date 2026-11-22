@@ -1,0 +1,25 @@
+{
+  "schema": "pruebas-h1-r2-r2-6g1/1",
+  "filas": [
+    {
+      "prueba": "R2",
+      "motor": "lectura_segura_6g1",
+      "alcance": "regular sustituida por FIFO entre la identificación y la apertura: sin bloqueo, sin SHA válido, fail-closed",
+      "veredicto": "PASS",
+      "checks_ok": 7,
+      "checks_total": 7,
+      "detalle": "todos los checks OK"
+    }
+  ],
+  "detalles": {
+    "unidad": {
+      "R2": {
+        "err": "no_es_archivo_regular (H1-R2-R1)",
+        "sha": null,
+        "transcurrido": 9.41460002650274e-05,
+        "agotado": false,
+        "fifo_con_contenido": false
+      }
+    }
+  }
+}

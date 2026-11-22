@@ -291,8 +291,21 @@ def _sha_via_descriptor_6g1(nombre, fd_dir, st):
        el SHA NO se acredita como válido (se devuelve (None, motivo)).
 
     Compatible con Python 3.8 (st_mtime_ns/st_ctime_ns). Devuelve
-    (sha256, None) o (None, motivo)."""
-    fd = os.open(str(nombre), os.O_RDONLY | os.O_NOFOLLOW, dir_fd=fd_dir)
+    (sha256, None) o (None, motivo).
+
+    [H1-R2-R2] La apertura incorpora `O_NONBLOCK`: cierra la ventana entre el
+    `lstat` previo y la apertura — si la entrada regular fue sustituida por
+    una FIFO, la apertura de sólo lectura NO se bloquea (con O_NONBLOCK el
+    descriptor se obtiene al instante); el `fstat` siguiente la clasifica
+    como no regular y el SHA no se acredita (fail-closed)."""
+    # [H1-R2-R2] O_NONBLOCK: cierra la ventana entre el lstat previo y esta
+    # apertura — si la entrada regular fue sustituida por una FIFO, la
+    # apertura de sólo lectura NO se bloquea (con O_NONBLOCK el descriptor se
+    # obtiene al instante); el fstat siguiente detecta que no es regular y el
+    # hash se rechaza (fail-closed, sin leer el objeto no regular).
+    fd = os.open(str(nombre),
+                 os.O_RDONLY | os.O_NOFOLLOW | os.O_NONBLOCK,
+                 dir_fd=fd_dir)
     try:
         st0 = os.fstat(fd)                                  # estado inicial
         if not stat.S_ISREG(st0.st_mode):

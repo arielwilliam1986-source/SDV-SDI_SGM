@@ -1,0 +1,2 @@
+prueba,motor,alcance,veredicto,checks_ok,checks_total,detalle
+R2,lectura_segura_6g1,"regular sustituida por FIFO entre la identificación y la apertura: sin bloqueo, sin SHA válido, fail-closed",PASS,7,7,todos los checks OK
