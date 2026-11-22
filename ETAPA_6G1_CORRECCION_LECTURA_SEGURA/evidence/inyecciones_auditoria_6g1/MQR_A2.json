@@ -1,0 +1,536 @@
+{
+  "escenario": "A2",
+  "eventos": [
+    {
+      "n": 1,
+      "t": 1541.703996499,
+      "tipo": "lector_cerrado",
+      "ruta": "/tmp/f6g1ai/corregido/MQR/A2/mix_copia.wav",
+      "frames": 0
+    },
+    {
+      "n": 2,
+      "t": 1541.708626649,
+      "tipo": "lector_cerrado",
+      "ruta": "/home/user/SDV-SDI_SGM/ETAPA_6G1_CORRECCION_LECTURA_SEGURA/fixtures/vocal_mix.wav",
+      "frames": 0
+    },
+    {
+      "n": 3,
+      "t": 1541.711857065,
+      "tipo": "lector_cerrado",
+      "ruta": "/home/user/SDV-SDI_SGM/ETAPA_6G1_CORRECCION_LECTURA_SEGURA/fixtures/instrumental_mix.wav",
+      "frames": 0
+    },
+    {
+      "n": 4,
+      "t": 1542.245752481,
+      "tipo": "lector_cerrado",
+      "ruta": "/tmp/f6g1ai/corregido/MQR/A2/mix_copia.wav",
+      "frames": 0
+    },
+    {
+      "n": 5,
+      "t": 1542.245803162,
+      "tipo": "lector_cerrado",
+      "ruta": "/tmp/f6g1ai/corregido/MQR/A2/mix_copia.wav",
+      "frames": 0
+    },
+    {
+      "n": 6,
+      "t": 1542.248305972,
+      "tipo": "lector_cerrado",
+      "ruta": "/home/user/SDV-SDI_SGM/ETAPA_6G1_CORRECCION_LECTURA_SEGURA/fixtures/vocal_mix.wav",
+      "frames": 0
+    },
+    {
+      "n": 7,
+      "t": 1542.250852859,
+      "tipo": "lector_cerrado",
+      "ruta": "/home/user/SDV-SDI_SGM/ETAPA_6G1_CORRECCION_LECTURA_SEGURA/fixtures/instrumental_mix.wav",
+      "frames": 0
+    },
+    {
+      "n": 8,
+      "t": 1542.94055441,
+      "tipo": "lector_cerrado",
+      "ruta": "/home/user/SDV-SDI_SGM/ETAPA_6G1_CORRECCION_LECTURA_SEGURA/fixtures/vocal_mix.wav",
+      "frames": 0
+    },
+    {
+      "n": 9,
+      "t": 1542.940618671,
+      "tipo": "lector_cerrado",
+      "ruta": "/home/user/SDV-SDI_SGM/ETAPA_6G1_CORRECCION_LECTURA_SEGURA/fixtures/instrumental_mix.wav",
+      "frames": 0
+    },
+    {
+      "n": 10,
+      "t": 1542.968839493,
+      "tipo": "inyeccion",
+      "escenario": "A2",
+      "detalle": {
+        "tipo": "cierre_escritor_fallido",
+        "ruta": "/tmp/f6g1ai/corregido/MQR/A2/out/mqr_run_20261122_134630_partial/SDV.wav",
+        "modo": "despues"
+      }
+    },
+    {
+      "n": 11,
+      "t": 1542.970667159,
+      "tipo": "escritor_cerrado",
+      "ruta": "/tmp/f6g1ai/corregido/MQR/A2/out/mqr_run_20261122_134630_partial/SDV.wav",
+      "frames": 88200,
+      "con_error": true
+    },
+    {
+      "n": 12,
+      "t": 1542.970673575,
+      "tipo": "cierre_escritor_fallido",
+      "ruta": "/tmp/f6g1ai/corregido/MQR/A2/out/mqr_run_20261122_134630_partial/SDV.wav",
+      "modo": "despues"
+    },
+    {
+      "n": 13,
+      "t": 1542.97122175,
+      "tipo": "escritor_cerrado",
+      "ruta": "/tmp/f6g1ai/corregido/MQR/A2/out/mqr_run_20261122_134630_partial/SDI.wav",
+      "frames": 88200
+    },
+    {
+      "n": 14,
+      "t": 1542.973821036,
+      "tipo": "preparar_aborto_entrada"
+    },
+    {
+      "n": 15,
+      "t": 1542.973872574,
+      "tipo": "lector_cerrado",
+      "ruta": "/tmp/f6g1ai/corregido/MQR/A2/mix_copia.wav",
+      "frames": 0
+    },
+    {
+      "n": 16,
+      "t": 1542.977163935,
+      "tipo": "preparar_aborto_salida",
+      "completo": false
+    },
+    {
+      "n": 17,
+      "t": 1542.978646497,
+      "tipo": "abortar_6g1_entrada",
+      "motivo": "EXCEPCION_DURANTE_EL_PROCESAMIENTO",
+      "run_dir": "/tmp/f6g1ai/corregido/MQR/A2/out/mqr_run_20261122_134630_partial"
+    },
+    {
+      "n": 18,
+      "t": 1542.989162669,
+      "tipo": "abortar_6g1_salida",
+      "motivo": "EXCEPCION_DURANTE_EL_PROCESAMIENTO"
+    },
+    {
+      "n": 19,
+      "t": 1543.002734799,
+      "tipo": "fin_main",
+      "codigo": 2
+    }
+  ],
+  "fotos": {
+    "entrada_abortar": {
+      "etiqueta": "entrada_abortar",
+      "n_evento": 17,
+      "directorio": "/tmp/f6g1ai/corregido/MQR/A2/out/mqr_run_20261122_134630_partial",
+      "gc_habilitado": false,
+      "identidad": [
+        65024,
+        536702
+      ],
+      "archivos": {
+        "engine_log.txt": "3654b68f8406bd6d798fa838c097a3f9b3161f8e3656ae52cf36e004362adf79",
+        "SDV.wav": "fa5a9cefd680843b4d7a423c5a6992a6455d82b1d33f45ff86389673f36e5055",
+        "SDI.wav": "42e596993fee0d5875d69df4cea6232c4a7478e474cc072b1f246321fa75a339",
+        "masks/mask_P01_vocal.npy": "91b6f00ae07b560bbe9d7c0bd09964f8b3b7ba81538058daa849ae21182e0343",
+        "masks/confidence_map.npy": "bbdef2c675b84fa13b1cc52d0331dba39b44080b934534a0030b2368a42819ff",
+        "masks/mask_P01_instrumental.npy": "09a6fc68b1f4dbccebeb6ffc4e564a6c125c5e7dfa4304e73665e4ca436718bd",
+        "masks/consensus_vocal_weighted_mean.npy": "91b6f00ae07b560bbe9d7c0bd09964f8b3b7ba81538058daa849ae21182e0343",
+        "masks/consensus_instrumental_weighted_mean.npy": "09a6fc68b1f4dbccebeb6ffc4e564a6c125c5e7dfa4304e73665e4ca436718bd",
+        "masks/consensus_vocal_median.npy": "91b6f00ae07b560bbe9d7c0bd09964f8b3b7ba81538058daa849ae21182e0343",
+        "masks/consensus_instrumental_median.npy": "09a6fc68b1f4dbccebeb6ffc4e564a6c125c5e7dfa4304e73665e4ca436718bd",
+        "masks/consensus_vocal_confidence_weighted_mean.npy": "91b6f00ae07b560bbe9d7c0bd09964f8b3b7ba81538058daa849ae21182e0343",
+        "masks/consensus_instrumental_confidence_weighted_mean.npy": "09a6fc68b1f4dbccebeb6ffc4e564a6c125c5e7dfa4304e73665e4ca436718bd",
+        "masks/model_disagreement_map.npy": "7f17e5eda43def69b2c5c6101dc267edb7a00382309b5d060b740300dd9b449b"
+      },
+      "descriptores_salida_o_entradas": [
+        {
+          "fd": 14,
+          "destino": "/tmp/f6g1ai/corregido/MQR/A2/out/mqr_run_20261122_134630_partial/masks/model_disagreement_map.npy",
+          "escritura": true
+        }
+      ],
+      "mapeos_bajo_salida": [
+        "/tmp/f6g1ai/corregido/MQR/A2/out/mqr_run_20261122_134630_partial/masks/model_disagreement_map.npy"
+      ],
+      "escritores": [
+        {
+          "ruta": "/tmp/f6g1ai/corregido/MQR/A2/out/mqr_run_20261122_134630_partial/SDV.wav",
+          "cerrado": true,
+          "frames": 88200
+        },
+        {
+          "ruta": "/tmp/f6g1ai/corregido/MQR/A2/out/mqr_run_20261122_134630_partial/SDI.wav",
+          "cerrado": true,
+          "frames": 88200
+        }
+      ],
+      "lectores_abiertos": [],
+      "memmaps": [
+        {
+          "ruta": "/tmp/f6g1ai/corregido/MQR/A2/out/mqr_run_20261122_134630_partial/masks/mask_P01_vocal.npy",
+          "vivo": false
+        },
+        {
+          "ruta": "/tmp/f6g1ai/corregido/MQR/A2/out/mqr_run_20261122_134630_partial/masks/mask_P01_instrumental.npy",
+          "vivo": false
+        },
+        {
+          "ruta": "/tmp/f6g1ai/corregido/MQR/A2/out/mqr_run_20261122_134630_partial/masks/consensus_vocal_weighted_mean.npy",
+          "vivo": false
+        },
+        {
+          "ruta": "/tmp/f6g1ai/corregido/MQR/A2/out/mqr_run_20261122_134630_partial/masks/consensus_instrumental_weighted_mean.npy",
+          "vivo": false
+        },
+        {
+          "ruta": "/tmp/f6g1ai/corregido/MQR/A2/out/mqr_run_20261122_134630_partial/masks/consensus_vocal_median.npy",
+          "vivo": false
+        },
+        {
+          "ruta": "/tmp/f6g1ai/corregido/MQR/A2/out/mqr_run_20261122_134630_partial/masks/consensus_instrumental_median.npy",
+          "vivo": false
+        },
+        {
+          "ruta": "/tmp/f6g1ai/corregido/MQR/A2/out/mqr_run_20261122_134630_partial/masks/consensus_vocal_confidence_weighted_mean.npy",
+          "vivo": false
+        },
+        {
+          "ruta": "/tmp/f6g1ai/corregido/MQR/A2/out/mqr_run_20261122_134630_partial/masks/consensus_instrumental_confidence_weighted_mean.npy",
+          "vivo": false
+        },
+        {
+          "ruta": "/tmp/f6g1ai/corregido/MQR/A2/out/mqr_run_20261122_134630_partial/masks/confidence_map.npy",
+          "vivo": false
+        },
+        {
+          "ruta": "/tmp/f6g1ai/corregido/MQR/A2/out/mqr_run_20261122_134630_partial/masks/model_disagreement_map.npy",
+          "vivo": true
+        }
+      ]
+    },
+    "salida_abortar": {
+      "etiqueta": "salida_abortar",
+      "n_evento": 18,
+      "directorio": "/tmp/f6g1ai/corregido/MQR/A2/out/mqr_run_20261122_134630_partial",
+      "gc_habilitado": false,
+      "identidad": [
+        65024,
+        536702
+      ],
+      "archivos": {
+        "engine_log.txt": "3654b68f8406bd6d798fa838c097a3f9b3161f8e3656ae52cf36e004362adf79",
+        "SDV.wav": "fa5a9cefd680843b4d7a423c5a6992a6455d82b1d33f45ff86389673f36e5055",
+        "SDI.wav": "42e596993fee0d5875d69df4cea6232c4a7478e474cc072b1f246321fa75a339",
+        "ABORT_6G1.json": "4b2938bef948bc754dba605097c4ff1337277a06e1eca193d5c1d50b30766ec9",
+        "masks/mask_P01_vocal.npy": "91b6f00ae07b560bbe9d7c0bd09964f8b3b7ba81538058daa849ae21182e0343",
+        "masks/confidence_map.npy": "bbdef2c675b84fa13b1cc52d0331dba39b44080b934534a0030b2368a42819ff",
+        "masks/mask_P01_instrumental.npy": "09a6fc68b1f4dbccebeb6ffc4e564a6c125c5e7dfa4304e73665e4ca436718bd",
+        "masks/consensus_vocal_weighted_mean.npy": "91b6f00ae07b560bbe9d7c0bd09964f8b3b7ba81538058daa849ae21182e0343",
+        "masks/consensus_instrumental_weighted_mean.npy": "09a6fc68b1f4dbccebeb6ffc4e564a6c125c5e7dfa4304e73665e4ca436718bd",
+        "masks/consensus_vocal_median.npy": "91b6f00ae07b560bbe9d7c0bd09964f8b3b7ba81538058daa849ae21182e0343",
+        "masks/consensus_instrumental_median.npy": "09a6fc68b1f4dbccebeb6ffc4e564a6c125c5e7dfa4304e73665e4ca436718bd",
+        "masks/consensus_vocal_confidence_weighted_mean.npy": "91b6f00ae07b560bbe9d7c0bd09964f8b3b7ba81538058daa849ae21182e0343",
+        "masks/consensus_instrumental_confidence_weighted_mean.npy": "09a6fc68b1f4dbccebeb6ffc4e564a6c125c5e7dfa4304e73665e4ca436718bd",
+        "masks/model_disagreement_map.npy": "7f17e5eda43def69b2c5c6101dc267edb7a00382309b5d060b740300dd9b449b"
+      },
+      "descriptores_salida_o_entradas": [
+        {
+          "fd": 14,
+          "destino": "/tmp/f6g1ai/corregido/MQR/A2/out/mqr_run_20261122_134630_partial/masks/model_disagreement_map.npy",
+          "escritura": true
+        }
+      ],
+      "mapeos_bajo_salida": [
+        "/tmp/f6g1ai/corregido/MQR/A2/out/mqr_run_20261122_134630_partial/masks/model_disagreement_map.npy"
+      ],
+      "escritores": [
+        {
+          "ruta": "/tmp/f6g1ai/corregido/MQR/A2/out/mqr_run_20261122_134630_partial/SDV.wav",
+          "cerrado": true,
+          "frames": 88200
+        },
+        {
+          "ruta": "/tmp/f6g1ai/corregido/MQR/A2/out/mqr_run_20261122_134630_partial/SDI.wav",
+          "cerrado": true,
+          "frames": 88200
+        }
+      ],
+      "lectores_abiertos": [],
+      "memmaps": [
+        {
+          "ruta": "/tmp/f6g1ai/corregido/MQR/A2/out/mqr_run_20261122_134630_partial/masks/mask_P01_vocal.npy",
+          "vivo": false
+        },
+        {
+          "ruta": "/tmp/f6g1ai/corregido/MQR/A2/out/mqr_run_20261122_134630_partial/masks/mask_P01_instrumental.npy",
+          "vivo": false
+        },
+        {
+          "ruta": "/tmp/f6g1ai/corregido/MQR/A2/out/mqr_run_20261122_134630_partial/masks/consensus_vocal_weighted_mean.npy",
+          "vivo": false
+        },
+        {
+          "ruta": "/tmp/f6g1ai/corregido/MQR/A2/out/mqr_run_20261122_134630_partial/masks/consensus_instrumental_weighted_mean.npy",
+          "vivo": false
+        },
+        {
+          "ruta": "/tmp/f6g1ai/corregido/MQR/A2/out/mqr_run_20261122_134630_partial/masks/consensus_vocal_median.npy",
+          "vivo": false
+        },
+        {
+          "ruta": "/tmp/f6g1ai/corregido/MQR/A2/out/mqr_run_20261122_134630_partial/masks/consensus_instrumental_median.npy",
+          "vivo": false
+        },
+        {
+          "ruta": "/tmp/f6g1ai/corregido/MQR/A2/out/mqr_run_20261122_134630_partial/masks/consensus_vocal_confidence_weighted_mean.npy",
+          "vivo": false
+        },
+        {
+          "ruta": "/tmp/f6g1ai/corregido/MQR/A2/out/mqr_run_20261122_134630_partial/masks/consensus_instrumental_confidence_weighted_mean.npy",
+          "vivo": false
+        },
+        {
+          "ruta": "/tmp/f6g1ai/corregido/MQR/A2/out/mqr_run_20261122_134630_partial/masks/confidence_map.npy",
+          "vivo": false
+        },
+        {
+          "ruta": "/tmp/f6g1ai/corregido/MQR/A2/out/mqr_run_20261122_134630_partial/masks/model_disagreement_map.npy",
+          "vivo": true
+        }
+      ]
+    },
+    "fin_proceso": {
+      "etiqueta": "fin_proceso",
+      "n_evento": 19,
+      "directorio": "/tmp/f6g1ai/corregido/MQR/A2/out/mqr_run_20261122_134630_partial",
+      "gc_habilitado": false,
+      "identidad": [
+        65024,
+        536702
+      ],
+      "archivos": {
+        "engine_log.txt": "3654b68f8406bd6d798fa838c097a3f9b3161f8e3656ae52cf36e004362adf79",
+        "SDV.wav": "fa5a9cefd680843b4d7a423c5a6992a6455d82b1d33f45ff86389673f36e5055",
+        "SDI.wav": "42e596993fee0d5875d69df4cea6232c4a7478e474cc072b1f246321fa75a339",
+        "ABORT_6G1.json": "4b2938bef948bc754dba605097c4ff1337277a06e1eca193d5c1d50b30766ec9",
+        "masks/mask_P01_vocal.npy": "91b6f00ae07b560bbe9d7c0bd09964f8b3b7ba81538058daa849ae21182e0343",
+        "masks/confidence_map.npy": "bbdef2c675b84fa13b1cc52d0331dba39b44080b934534a0030b2368a42819ff",
+        "masks/mask_P01_instrumental.npy": "09a6fc68b1f4dbccebeb6ffc4e564a6c125c5e7dfa4304e73665e4ca436718bd",
+        "masks/consensus_vocal_weighted_mean.npy": "91b6f00ae07b560bbe9d7c0bd09964f8b3b7ba81538058daa849ae21182e0343",
+        "masks/consensus_instrumental_weighted_mean.npy": "09a6fc68b1f4dbccebeb6ffc4e564a6c125c5e7dfa4304e73665e4ca436718bd",
+        "masks/consensus_vocal_median.npy": "91b6f00ae07b560bbe9d7c0bd09964f8b3b7ba81538058daa849ae21182e0343",
+        "masks/consensus_instrumental_median.npy": "09a6fc68b1f4dbccebeb6ffc4e564a6c125c5e7dfa4304e73665e4ca436718bd",
+        "masks/consensus_vocal_confidence_weighted_mean.npy": "91b6f00ae07b560bbe9d7c0bd09964f8b3b7ba81538058daa849ae21182e0343",
+        "masks/consensus_instrumental_confidence_weighted_mean.npy": "09a6fc68b1f4dbccebeb6ffc4e564a6c125c5e7dfa4304e73665e4ca436718bd",
+        "masks/model_disagreement_map.npy": "7f17e5eda43def69b2c5c6101dc267edb7a00382309b5d060b740300dd9b449b"
+      },
+      "descriptores_salida_o_entradas": [],
+      "mapeos_bajo_salida": [],
+      "escritores": [
+        {
+          "ruta": "/tmp/f6g1ai/corregido/MQR/A2/out/mqr_run_20261122_134630_partial/SDV.wav",
+          "cerrado": true,
+          "frames": 88200
+        },
+        {
+          "ruta": "/tmp/f6g1ai/corregido/MQR/A2/out/mqr_run_20261122_134630_partial/SDI.wav",
+          "cerrado": true,
+          "frames": 88200
+        }
+      ],
+      "lectores_abiertos": [],
+      "memmaps": [
+        {
+          "ruta": "/tmp/f6g1ai/corregido/MQR/A2/out/mqr_run_20261122_134630_partial/masks/mask_P01_vocal.npy",
+          "vivo": false
+        },
+        {
+          "ruta": "/tmp/f6g1ai/corregido/MQR/A2/out/mqr_run_20261122_134630_partial/masks/mask_P01_instrumental.npy",
+          "vivo": false
+        },
+        {
+          "ruta": "/tmp/f6g1ai/corregido/MQR/A2/out/mqr_run_20261122_134630_partial/masks/consensus_vocal_weighted_mean.npy",
+          "vivo": false
+        },
+        {
+          "ruta": "/tmp/f6g1ai/corregido/MQR/A2/out/mqr_run_20261122_134630_partial/masks/consensus_instrumental_weighted_mean.npy",
+          "vivo": false
+        },
+        {
+          "ruta": "/tmp/f6g1ai/corregido/MQR/A2/out/mqr_run_20261122_134630_partial/masks/consensus_vocal_median.npy",
+          "vivo": false
+        },
+        {
+          "ruta": "/tmp/f6g1ai/corregido/MQR/A2/out/mqr_run_20261122_134630_partial/masks/consensus_instrumental_median.npy",
+          "vivo": false
+        },
+        {
+          "ruta": "/tmp/f6g1ai/corregido/MQR/A2/out/mqr_run_20261122_134630_partial/masks/consensus_vocal_confidence_weighted_mean.npy",
+          "vivo": false
+        },
+        {
+          "ruta": "/tmp/f6g1ai/corregido/MQR/A2/out/mqr_run_20261122_134630_partial/masks/consensus_instrumental_confidence_weighted_mean.npy",
+          "vivo": false
+        },
+        {
+          "ruta": "/tmp/f6g1ai/corregido/MQR/A2/out/mqr_run_20261122_134630_partial/masks/confidence_map.npy",
+          "vivo": false
+        },
+        {
+          "ruta": "/tmp/f6g1ai/corregido/MQR/A2/out/mqr_run_20261122_134630_partial/masks/model_disagreement_map.npy",
+          "vivo": false
+        }
+      ]
+    }
+  },
+  "inyeccion": {
+    "detalle": {
+      "tipo": "cierre_escritor_fallido",
+      "ruta": "/tmp/f6g1ai/corregido/MQR/A2/out/mqr_run_20261122_134630_partial/SDV.wav",
+      "modo": "despues"
+    },
+    "provisional": "/tmp/f6g1ai/corregido/MQR/A2/out/mqr_run_20261122_134630_partial",
+    "final": "/tmp/f6g1ai/corregido/MQR/A2/out/mqr_run_20261122_134630",
+    "identidad": [
+      65024,
+      536702
+    ],
+    "archivos": {
+      "engine_log.txt": "30173a47f6da5f34d6699b6b54916f9cc7d44886782b2702000a17f240937a91",
+      "SDV.wav": "71585d68e0552db7f1f6573f4e5bc5a3f850892745a4f67e202a1e1a8b2651a5",
+      "SDI.wav": "fe966acf9214492ebab60b991dbc7375a3e4b6b3a62996f813558489f8ba04ac",
+      "masks/mask_P01_vocal.npy": "91b6f00ae07b560bbe9d7c0bd09964f8b3b7ba81538058daa849ae21182e0343",
+      "masks/confidence_map.npy": "bbdef2c675b84fa13b1cc52d0331dba39b44080b934534a0030b2368a42819ff",
+      "masks/mask_P01_instrumental.npy": "09a6fc68b1f4dbccebeb6ffc4e564a6c125c5e7dfa4304e73665e4ca436718bd",
+      "masks/consensus_vocal_weighted_mean.npy": "91b6f00ae07b560bbe9d7c0bd09964f8b3b7ba81538058daa849ae21182e0343",
+      "masks/consensus_instrumental_weighted_mean.npy": "09a6fc68b1f4dbccebeb6ffc4e564a6c125c5e7dfa4304e73665e4ca436718bd",
+      "masks/consensus_vocal_median.npy": "91b6f00ae07b560bbe9d7c0bd09964f8b3b7ba81538058daa849ae21182e0343",
+      "masks/consensus_instrumental_median.npy": "09a6fc68b1f4dbccebeb6ffc4e564a6c125c5e7dfa4304e73665e4ca436718bd",
+      "masks/consensus_vocal_confidence_weighted_mean.npy": "91b6f00ae07b560bbe9d7c0bd09964f8b3b7ba81538058daa849ae21182e0343",
+      "masks/consensus_instrumental_confidence_weighted_mean.npy": "09a6fc68b1f4dbccebeb6ffc4e564a6c125c5e7dfa4304e73665e4ca436718bd",
+      "masks/model_disagreement_map.npy": "7f17e5eda43def69b2c5c6101dc267edb7a00382309b5d060b740300dd9b449b"
+    },
+    "n_evento": 10
+  },
+  "armado": false,
+  "gc_deshabilitado_al_inicio": true,
+  "gc_colecciones_al_deshabilitar": [
+    9,
+    0,
+    0
+  ],
+  "gc_colecciones_posteriores": [],
+  "preparar": {
+    "completo": false,
+    "errores": [
+      "escritor_wav /tmp/f6g1ai/corregido/MQR/A2/out/mqr_run_20261122_134630_partial/SDV.wav (close (cabecera finalizada)): cierre fallido previo: OSError: [Errno 5] inyeccion AI-A2: fallo de E/S al cerrar SDV.wav (despues del cierre fisico)",
+      "escritura abierta tras el cierre: ['fd 14 (escritura): masks/model_disagreement_map.npy', 'mapeo: masks/model_disagreement_map.npy']",
+      "escritura abierta al registrar: ['fd 14 (escritura): masks/model_disagreement_map.npy', 'mapeo: masks/model_disagreement_map.npy']",
+      "cierre del log no verificado: ['fd 14 (escritura): masks/model_disagreement_map.npy', 'mapeo: masks/model_disagreement_map.npy']"
+    ],
+    "log_cerrado": false,
+    "escritores": 2,
+    "memmaps": 0,
+    "lectores": 3,
+    "orden": [
+      {
+        "paso": 1,
+        "tipo": "escritor_wav",
+        "recurso": "/tmp/f6g1ai/corregido/MQR/A2/out/mqr_run_20261122_134630_partial/SDV.wav",
+        "accion": "close (cabecera finalizada)",
+        "ok": false,
+        "error": "cierre fallido previo: OSError: [Errno 5] inyeccion AI-A2: fallo de E/S al cerrar SDV.wav (despues del cierre fisico)"
+      },
+      {
+        "paso": 2,
+        "tipo": "escritor_wav",
+        "recurso": "/tmp/f6g1ai/corregido/MQR/A2/out/mqr_run_20261122_134630_partial/SDI.wav",
+        "accion": "close (cabecera finalizada)",
+        "ok": true
+      },
+      {
+        "paso": 3,
+        "tipo": "lector",
+        "recurso": "/tmp/f6g1ai/corregido/MQR/A2/mix_copia.wav",
+        "accion": "close",
+        "ok": true
+      },
+      {
+        "paso": 4,
+        "tipo": "lector",
+        "recurso": "/home/user/SDV-SDI_SGM/ETAPA_6G1_CORRECCION_LECTURA_SEGURA/fixtures/vocal_mix.wav",
+        "accion": "close",
+        "ok": true
+      },
+      {
+        "paso": 5,
+        "tipo": "lector",
+        "recurso": "/home/user/SDV-SDI_SGM/ETAPA_6G1_CORRECCION_LECTURA_SEGURA/fixtures/instrumental_mix.wav",
+        "accion": "close",
+        "ok": true
+      }
+    ],
+    "escritura_abierta_al_registrar": [
+      "fd 14 (escritura): masks/model_disagreement_map.npy",
+      "mapeo: masks/model_disagreement_map.npy"
+    ]
+  },
+  "resultado_aborto": {
+    "motivo": "EXCEPCION_DURANTE_EL_PROCESAMIENTO",
+    "abort_registrado": true,
+    "trasladado": false,
+    "ruta_final": "/tmp/f6g1ai/corregido/MQR/A2/out/mqr_run_20261122_134630_partial",
+    "traslado_solicitado": true,
+    "traslado_bloqueado": "cierre de recursos incompleto: escritor_wav /tmp/f6g1ai/corregido/MQR/A2/out/mqr_run_20261122_134630_partial/SDV.wav (close (cabecera finalizada)): cierre fallido previo: OSError: [Errno 5] inyeccion AI-A2: fallo de E/S al cerrar SDV.wav (despues del cierre fisico); escritura abierta tras el cierre: ['fd 14 (escritura): masks/model_disagreement_map.npy', 'mapeo: masks/model_disagreement_map.npy']; escritura abierta al registrar: ['fd 14 (escritura): masks/model_disagreement_map.npy', 'mapeo: masks/model_disagreement_map.npy']; cierre del log no verificado: ['fd 14 (escritura): masks/model_disagreement_map.npy', 'mapeo: masks/model_disagreement_map.npy']",
+    "motivo_conservacion": "cierre de recursos incompleto: escritor_wav /tmp/f6g1ai/corregido/MQR/A2/out/mqr_run_20261122_134630_partial/SDV.wav (close (cabecera finalizada)): cierre fallido previo: OSError: [Errno 5] inyeccion AI-A2: fallo de E/S al cerrar SDV.wav (despues del cierre fisico); escritura abierta tras el cierre: ['fd 14 (escritura): masks/model_disagreement_map.npy', 'mapeo: masks/model_disagreement_map.npy']; escritura abierta al registrar: ['fd 14 (escritura): masks/model_disagreement_map.npy', 'mapeo: masks/model_disagreement_map.npy']; cierre del log no verificado: ['fd 14 (escritura): masks/model_disagreement_map.npy', 'mapeo: masks/model_disagreement_map.npy']: provisional conservado en su ubicaci\u00f3n",
+    "cierre_recursos_completo": false,
+    "escritura_abierta_al_registrar": [
+      "fd 14 (escritura): masks/model_disagreement_map.npy",
+      "mapeo: masks/model_disagreement_map.npy"
+    ],
+    "salidas_invalidadas": [
+      "SDI.wav",
+      "SDV.wav",
+      "masks/confidence_map.npy",
+      "masks/consensus_instrumental_confidence_weighted_mean.npy",
+      "masks/consensus_instrumental_median.npy",
+      "masks/consensus_instrumental_weighted_mean.npy",
+      "masks/consensus_vocal_confidence_weighted_mean.npy",
+      "masks/consensus_vocal_median.npy",
+      "masks/consensus_vocal_weighted_mean.npy",
+      "masks/mask_P01_instrumental.npy",
+      "masks/mask_P01_vocal.npy",
+      "masks/model_disagreement_map.npy"
+    ]
+  },
+  "retorno_run_experiment": {
+    "codigo": 2,
+    "ruta": "None",
+    "ruta_str": null
+  },
+  "codigo_main": 2,
+  "gc_habilitado_al_final": false,
+  "gc_colecciones": [
+    9,
+    0,
+    0
+  ]
+}

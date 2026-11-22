@@ -129,6 +129,8 @@ class MixHandle:
 
     def __init__(self, path, sha_esperado=None, identidad_esperada=None):
         object.__setattr__(self, '_snd', None)
+        # [6G.1-R/AI-B] primer fallo de cierre (persistente; ver close())
+        object.__setattr__(self, '_cierre_fallido_6g1', None)
         self.path = os.path.abspath(path)
         # [6G.1-R/H2-B] O_NONBLOCK: una sustitución por FIFO entre la
         # validación y esta apertura no puede bloquear la llamada (el
@@ -174,7 +176,10 @@ class MixHandle:
                 raise MixCambiado('Sin /proc/self/fd: no se puede leer el mismo inodo')
             self._snd = sf.SoundFile(proc)
         except Exception:
-            self.close()
+            # [6G.1-R/AI-B] el objeto nunca llega al llamador: se libera de
+            # forma determinista sin ocultar la excepción original (el error
+            # de cierre, si lo hubiera, queda en _cierre_fallido_6g1).
+            self._cerrar_6g1()
             raise
 
     # --- interfaz SoundFile -------------------------------------------------
@@ -191,21 +196,53 @@ class MixHandle:
         self.close()
         return False
 
-    def close(self):
+    def _cerrar_6g1(self):
+        """[6G.1-R/AI-B] Un intento de cierre de ambos recursos; nunca eleva.
+        Devuelve la lista de errores de ESTE intento.
+
+        - Lector `_snd`: `SoundFile.close()` es idempotente y seguro de
+          reintentar. Si eleva, la referencia se CONSERVA mientras el objeto
+          no conste cerrado (`closed` False), para poder verificarlo y
+          reintentar; sólo se suelta cuando consta cerrado físicamente.
+        - Descriptor `fd`: `os.close()` NO se reintenta nunca sobre el mismo
+          número. En Linux el descriptor queda liberado aunque close() falle
+          (EIO/EINTR), y el número puede haberse reasignado a otro archivo:
+          reintentar podría cerrar un descriptor ajeno (cierre duplicado
+          peligroso). Por eso `fd` pasa a None antes del primer intento y el
+          error, si lo hay, queda registrado.
+        - El primer fallo se guarda en `_cierre_fallido_6g1` y PERSISTE: un
+          Mix con un cierre fallido nunca se acredita como cerrado, aunque
+          sus referencias hayan quedado en None."""
+        errores = []
         snd = object.__getattribute__(self, '_snd')
         if snd is not None:
             try:
                 snd.close()
-            except Exception:
-                pass
-            object.__setattr__(self, '_snd', None)
-        fd = getattr(self, 'fd', None)
+            except Exception as exc:
+                errores.append('lector SoundFile del Mix: %s: %s'
+                               % (type(exc).__name__, exc))
+            if getattr(snd, 'closed', None) is True:
+                object.__setattr__(self, '_snd', None)
+        fd = self.__dict__.get('fd')
         if fd is not None:
+            self.fd = None
             try:
                 os.close(fd)
-            except OSError:
-                pass
-            self.fd = None
+            except OSError as exc:
+                errores.append('descriptor %d del Mix: %s: %s'
+                               % (fd, type(exc).__name__, exc))
+        if errores and self.__dict__.get('_cierre_fallido_6g1') is None:
+            object.__setattr__(self, '_cierre_fallido_6g1', '; '.join(errores))
+        return errores
+
+    def close(self):
+        """[6G.1-R/AI-B] Cierre verificable: intenta cerrar ambos recursos y,
+        si alguno falla, ELEVA (el fallo ya no se convierte en un estado
+        aparentemente cerrado). Ver `_cerrar_6g1()`."""
+        errores = self._cerrar_6g1()
+        if errores:
+            raise OSError('[6G.1-R/AI-B] cierre del Mix no acreditado: %s'
+                          % '; '.join(errores))
 
     # --- integridad ---------------------------------------------------------
     def verificar(self):
@@ -1090,25 +1127,102 @@ def escritura_abierta_bajo_dir_6g1(ruta, excluir=()):
     return out
 
 
-def _cerrado_6g1(obj):
-    """True/False si el estado de cierre es verificable; None si no."""
+class CierreNoAcreditado6G1(RuntimeError):
+    """[6G.1-R/AI] Un recurso de la corrida no pudo cerrarse de forma
+    acreditada. Impide publicar como éxito: el motor lo propaga al protocolo
+    de aborto, que lo informa con completo=False."""
+
+
+def fallo_cierre_6g1(obj):
+    """[6G.1-R/AI] Primer error de cierre registrado en `obj` (o None)."""
+    try:
+        d = object.__getattribute__(obj, '__dict__')
+    except AttributeError:
+        return None
+    return d.get('_cierre_fallido_6g1')
+
+
+def _marcar_fallo_cierre_6g1(obj, error):
+    """Registra (sólo el primero) un fallo de cierre en el propio objeto."""
+    if fallo_cierre_6g1(obj) is None:
+        try:
+            object.__setattr__(obj, '_cierre_fallido_6g1', str(error))
+        except Exception:
+            return False
+    return True
+
+
+def _estado_fisico_6g1(obj):
+    """Estado de cierre FÍSICO: True/False si es verificable; None si no."""
     if isinstance(obj, MixHandle):
         return (object.__getattribute__(obj, '_snd') is None
-                and getattr(obj, 'fd', None) is None)
+                and obj.__dict__.get('fd') is None)
     c = getattr(obj, 'closed', None)
     return c if isinstance(c, bool) else None
 
 
-def _cerrar_idempotente_6g1(obj):
-    """close() sólo si no está ya cerrado; un segundo cierre nunca falla.
-    Devuelve (cerrado_verificado, error_o_None)."""
+def _cerrado_6g1(obj):
+    """[6G.1-R/AI] Cierre ACREDITADO: True sólo si consta cerrado físicamente
+    y ningún cierre previo falló (un error de cierre nunca se convierte en
+    estado cerrado, aunque `closed` sea True: p. ej. soundfile pone
+    `_file=None` antes de elevar el error de sf_close). None si no es
+    verificable."""
+    fis = _estado_fisico_6g1(obj)
+    if fallo_cierre_6g1(obj) is not None:
+        return False
+    return fis
+
+
+def cerrar_verificado_6g1(obj):
+    """[6G.1-R/AI] Cierre idempotente y VERIFICABLE de un recurso.
+
+    Llama a close() sólo si el objeto no consta cerrado físicamente (un
+    objeto ya cerrado no se vuelve a cerrar). Un fallo se registra en el
+    propio objeto (`_cierre_fallido_6g1`) y persiste. Nunca eleva.
+    Devuelve (ok, error): ok=True sólo con cierre físico verificado y sin
+    ningún fallo de cierre, presente ni previo."""
     err = None
-    try:
-        if _cerrado_6g1(obj) is not True:
+    if _estado_fisico_6g1(obj) is not True:
+        try:
             obj.close()
-    except Exception as exc:
-        err = '%s: %s' % (type(exc).__name__, exc)
-    return _cerrado_6g1(obj), err
+        except Exception as exc:
+            err = '%s: %s' % (type(exc).__name__, exc)
+            _marcar_fallo_cierre_6g1(obj, err)
+    previo = fallo_cierre_6g1(obj)
+    fis = _estado_fisico_6g1(obj)
+    ok = fis is True and previo is None
+    if ok:
+        return True, None
+    if err is None and previo is not None:
+        err = 'cierre fallido previo: %s' % previo
+    if err is None:
+        err = ('cierre no verificable' if fis is None
+               else 'el recurso no consta cerrado')
+    return (None if fis is None and previo is None else False), err
+
+
+def _cerrar_idempotente_6g1(obj):
+    """Compatibilidad CR: delega en cerrar_verificado_6g1()."""
+    return cerrar_verificado_6g1(obj)
+
+
+def runner_parcial_6g1(runner, registro):
+    """[6G.1-R/AI-D] Limpieza determinista de un CandidateRunner cuya
+    construcción falló después de abrir algún recurso: lo añade a `registro`
+    (la lista de runners de la corrida) para que el protocolo de aborto lo
+    conozca, y cierra con cerrar_verificado_6g1() los escritores ya abiertos
+    (cualquier fallo queda marcado en el escritor y el protocolo lo informará
+    con completo=False). No depende de __del__ ni de la recolección. Nunca
+    eleva: el llamador re-eleva la excepción original."""
+    try:
+        if registro is not None and not any(r is runner for r in registro):
+            registro.append(runner)
+    except Exception:
+        pass
+    for attr in ('writer_sdv', 'writer_sdi'):
+        w = runner.__dict__.get(attr)
+        if w is not None:
+            cerrar_verificado_6g1(w)
 
 
 def cerrar_recursos_corrida_6g1(runners=None, memmaps=None, lectores=None):
@@ -1233,7 +1347,9 @@ def preparar_aborto_6g1(run_dir, log=None, cerrar_log=None, runners=None,
     [CR-R1] `completo` describe TODOS los recursos exigidos antes del registro:
     es True sólo si (a) cerrar_recursos_corrida_6g1 cerró y verificó cada
     escritor, memmap y lector; (b) el cierre del log (`cerrar_log`) no
-    falló; y (c) no queda ningún descriptor de escritura ni mapeo bajo el
+    falló ni informó ok=False ([AI-C]: close_tee() devuelve (ok, error) y
+    conserva el fallo hasta la siguiente corrida), y además log_cerrado=True
+    exige verificación en /proc; y (c) no queda ningún descriptor de escritura ni mapeo bajo el
     provisional, ni antes ni después de cerrar el log. Con `completo=False`
     abortar_corrida_6g1() registra el aborto pero NO traslada."""
     try:
@@ -1260,23 +1376,47 @@ def preparar_aborto_6g1(run_dir, log=None, cerrar_log=None, runners=None,
                 'registra el aborto')
         except Exception:
             pass
+    ok_log = None
     if cerrar_log is not None:
+        # [6G.1-R/AI-C] Contrato de cerrar_log: puede devolver (ok, error)
+        # —close_tee() de los motores—, True/False, o None (sin acreditación
+        # propia). Una excepción o ok=False es un cierre FALLIDO. [CR-R1] El
+        # log ya no está disponible para documentarlo: queda en el informe
+        # (y en el motivo de conservación del resultado del aborto) y el
+        # cierre pasa a incompleto -> sin traslado.
         try:
-            cerrar_log()
-            inf['log_cerrado'] = True
+            r = cerrar_log()
+            if isinstance(r, tuple):
+                ok_log = bool(r[0]) if r else False
+                err_log = r[1] if len(r) > 1 else None
+            elif r is True or r is False:
+                ok_log, err_log = r, None
+            else:
+                ok_log, err_log = None, None
         except Exception as exc:
-            # [CR-R1] el log ya no está disponible para documentarlo: queda en
-            # el informe (y en el motivo de conservación del resultado del
-            # aborto) y el cierre pasa a incompleto -> sin traslado.
+            ok_log, err_log = False, '%s: %s' % (type(exc).__name__, exc)
+        if ok_log is False:
             inf['log_cerrado'] = False
             inf['completo'] = False
-            inf['errores'].append('cierre del log: %s: %s' % (type(exc).__name__, exc))
+            inf['errores'].append('cierre del log: %s'
+                                  % (err_log or 'cierre no acreditado'))
     try:
         final = escritura_abierta_bajo_dir_6g1(run_dir)
+        observable = descriptores_bajo_dir_6g1(run_dir) is not None
     except Exception as exc:
-        final = ['no observable: %s' % exc]
+        final, observable = ['no observable: %s' % exc], False
     inf['escritura_abierta_al_registrar'] = final
     if final:
         inf['completo'] = False
         inf['errores'].append('escritura abierta al registrar: %s' % final)
+    if cerrar_log is not None and ok_log is not False:
+        # [6G.1-R/AI-C] log_cerrado=True sólo con verificación: cerrar_log sin
+        # fallo Y /proc observable sin ningún descriptor de escritura bajo el
+        # provisional (incluido engine_log.txt).
+        inf['log_cerrado'] = bool(observable and not final)
+        if not inf['log_cerrado']:
+            inf['completo'] = False
+            inf['errores'].append('cierre del log no verificable en /proc'
+                                  if not observable else
+                                  'cierre del log no verificado: %s' % final)
     return inf

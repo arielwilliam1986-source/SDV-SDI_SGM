@@ -312,6 +312,7 @@ class Tee:
     def __init__(self, path=None):
         self._console = sys.stdout
         self._file = None
+        self.error_cierre_6g1 = None    # [6G.1-R/AI-C] primer fallo de cierre
         if path is not None:
             try:
                 self._file = open(path, "w", encoding="utf-8")
@@ -336,32 +337,60 @@ class Tee:
                 pass
 
     def close(self):
-        if self._file is not None:
-            try:
-                self._file.close()
-            except OSError:
-                pass
-        self._file = None
+        # [6G.1-R/AI-C] Cierre verificable del log: un fallo se conserva en
+        # error_cierre_6g1 y se PROPAGA (ya no se silencia). La referencia al
+        # archivo sólo se suelta cuando consta cerrado físicamente, para
+        # poder reintentar sin depender de la recolección.
+        f = self._file
+        if f is None:
+            return
+        try:
+            f.close()
+        except Exception as exc:
+            if self.error_cierre_6g1 is None:
+                self.error_cierre_6g1 = "%s: %s" % (type(exc).__name__, exc)
+            raise
+        finally:
+            if getattr(f, "closed", False) is True:
+                self._file = None
 
 
 _G_TEE = None
+_G_TEE_FALLO = None     # [6G.1-R/AI-C] fallo de cierre del log de la corrida
 _G_T0 = time.monotonic()
 
 
 def init_tee(path):
-    global _G_TEE
+    global _G_TEE, _G_TEE_FALLO
+    _G_TEE_FALLO = None
     _G_TEE = Tee(path)
     sys.stdout = _G_TEE
     sys.stderr = sys.stdout
 
 
 def close_tee():
-    global _G_TEE
+    """[6G.1-R/AI-C] Restaura la consola y cierra engine_log.txt. Nunca eleva,
+    pero NO oculta el fallo: devuelve (ok, error). ok=True sólo si el archivo
+    consta cerrado físicamente y ningún cierre del log de esta corrida falló.
+    El fallo persiste hasta el siguiente init_tee() y se vuelve a informar en
+    cada llamada (el protocolo de aborto lo recibe aunque el primer intento
+    ocurriera en el camino normal). Si el archivo no quedó cerrado, se
+    conserva la referencia y la siguiente llamada reintenta el cierre."""
+    global _G_TEE, _G_TEE_FALLO
+    t = _G_TEE
+    if t is not None:
+        sys.stdout = t._console
+        sys.stderr = t._console
+        try:
+            t.close()
+        except Exception as exc:
+            if _G_TEE_FALLO is None:
+                _G_TEE_FALLO = "%s: %s" % (type(exc).__name__, exc)
+        if t._file is None:
+            _G_TEE = None
     if _G_TEE is not None:
-        sys.stdout = _G_TEE._console
-        sys.stderr = _G_TEE._console
-        _G_TEE.close()
-        _G_TEE = None
+        return False, (_G_TEE_FALLO or "engine_log.txt no consta cerrado")
+    return _G_TEE_FALLO is None, _G_TEE_FALLO
 
 
 def log(msg):
@@ -506,6 +535,9 @@ from lectura_segura_6g1 import (MixCambiado as _MixCambiado_6g1,
                                  cerrar_recursos_6g1 as _cerrar_recursos_6g1,
                                  resumen_aborto_6g1 as _resumen_aborto_6g1,
                                  preparar_aborto_6g1 as _preparar_aborto_6g1,
+                                 cerrar_verificado_6g1 as _cerrar_verificado_6g1,
+                                 runner_parcial_6g1 as _runner_parcial_6g1,
+                                 CierreNoAcreditado6G1 as _CierreNoAcreditado_6g1,
                                  sha_fd_estable_6g1 as _sha_fd_estable_6g1)
 
 from atribucion_6f import (measure, verify_wave, alignment_gate,
@@ -2065,7 +2097,8 @@ class CandidateRunner:
 
     def __init__(self, cand_id, mask_source, plan, channels, run_dir=None,
                  band_masks=None, band_labels=None, guide_refs=None,
-                 write_audio=False, output_subtype=OUTPUT_SUBTYPE):
+                 write_audio=False, output_subtype=OUTPUT_SUBTYPE,
+                 registro_6g1=None):
         self.cand_id = cand_id
         self.mask_source = mask_source      # ("individual", k) | ("consensus", method)
         self.plan = plan
@@ -2073,16 +2106,25 @@ class CandidateRunner:
         self.writer_sdv = None
         self.writer_sdi = None
         if write_audio and run_dir is not None:
-            self.writer_sdv = sf.SoundFile(
-                os.path.join(run_dir, "SDV.wav"), mode="w",
-                samplerate=REQUIRED_SAMPLE_RATE, channels=channels,
-                subtype=output_subtype)
-            self.writer_sdi = sf.SoundFile(
-                os.path.join(run_dir, "SDI.wav"), mode="w",
-                samplerate=REQUIRED_SAMPLE_RATE, channels=channels,
-                subtype=output_subtype)
-            _registrar_propio_6g1(os.path.join(run_dir, "SDV.wav"), estable=False)
-            _registrar_propio_6g1(os.path.join(run_dir, "SDI.wav"), estable=False)
+            # [6G.1-R/AI-D] Construcción con limpieza determinista: cada WAV se
+            # registra como propio en cuanto se abre; si algo falla después de
+            # abrir el primero, el runner parcial se incorpora a la lista de la
+            # corrida (registro_6g1) y sus escritores se cierran de forma
+            # verificable antes de re-elevar (sin __del__ ni recolección).
+            try:
+                self.writer_sdv = sf.SoundFile(
+                    os.path.join(run_dir, "SDV.wav"), mode="w",
+                    samplerate=REQUIRED_SAMPLE_RATE, channels=channels,
+                    subtype=output_subtype)
+                _registrar_propio_6g1(os.path.join(run_dir, "SDV.wav"), estable=False)
+                self.writer_sdi = sf.SoundFile(
+                    os.path.join(run_dir, "SDI.wav"), mode="w",
+                    samplerate=REQUIRED_SAMPLE_RATE, channels=channels,
+                    subtype=output_subtype)
+                _registrar_propio_6g1(os.path.join(run_dir, "SDI.wav"), estable=False)
+            except BaseException:
+                _runner_parcial_6g1(self, registro_6g1)
+                raise
         self.ola_sdv = OlaStream(plan, channels, writer=self.writer_sdv,
                                  label="%s/SDV" % cand_id)
         self.ola_sdi = OlaStream(plan, channels, writer=self.writer_sdi,
@@ -2092,14 +2134,22 @@ class CandidateRunner:
                                         channels)
 
     def close(self):
-        for w in (self.writer_sdv, self.writer_sdi):
+        # [6G.1-R/AI-A] Cierre VERIFICABLE: cada escritor se cierra con
+        # cerrar_verificado_6g1 (idempotente; un fallo queda marcado en el
+        # propio escritor y persiste). Las referencias NO se descartan: el
+        # protocolo de aborto debe poder verificar su estado. Un fallo eleva
+        # CierreNoAcreditado6G1: nunca se convierte en un estado "cerrado" y
+        # la corrida no puede publicarse como éxito.
+        errores = []
+        for attr in ("writer_sdv", "writer_sdi"):
+            w = getattr(self, attr, None)
             if w is not None:
-                try:
-                    w.close()
-                except Exception:
-                    pass
-        self.writer_sdv = None
-        self.writer_sdi = None
+                ok, err = _cerrar_verificado_6g1(w)
+                if not ok:
+                    errores.append("%s/%s: %s" % (self.cand_id, attr, err))
+        if errores:
+            raise _CierreNoAcreditado_6g1("cierre de escritores WAV no acreditado: "
+                                          + "; ".join(errores))
 
 
 # ============================================================================
@@ -2467,7 +2517,7 @@ def _run_core(mix_info, pairs, mode, opt, plan, freqs, band_masks,
             plan=plan, channels=mix_info.channels, run_dir=sub,
             band_masks=band_masks, band_labels=band_labels,
             guide_refs={"vocal": [p.pair_id], "instrumental": [p.pair_id]},
-            write_audio=write_audio))
+            write_audio=write_audio, registro_6g1=runners))     # [6G.1-R/AI-D]
     for method in CONSENSUS_METHODS:
         is_default = (method == opt.consensus_default)
         write_audio = full_mode and (is_default or opt.write_all_candidates)
@@ -2484,7 +2534,7 @@ def _run_core(mix_info, pairs, mode, opt, plan, freqs, band_masks,
             plan=plan, channels=mix_info.channels, run_dir=sub,
             band_masks=band_masks, band_labels=band_labels,
             guide_refs={"vocal": all_ids, "instrumental": all_ids},
-            write_audio=write_audio))
+            write_audio=write_audio, registro_6g1=runners))     # [6G.1-R/AI-D]
     default_runner = [r for r in runners
                       if r.mask_source == ("consensus",
                                            opt.consensus_default)][0]
@@ -2740,10 +2790,15 @@ def _run_core(mix_info, pairs, mode, opt, plan, freqs, band_masks,
         ctx["container_6g"]["ruta_actual"] = dict(unchanged=False,
                                                   reason="excepcion: %s" % _exc6g1)
     finally:
+        # [6G.1-R/AI-B] el cierre del Mix se acredita: un fallo ya no se
+        # silencia; se propaga al protocolo de aborto (sin publicación).
+        _err_mix6g1 = None
         try:
             _h6g1.close()
-        except Exception:
-            pass
+        except Exception as _exc_c6g1:
+            _err_mix6g1 = "%s: %s" % (type(_exc_c6g1).__name__, _exc_c6g1)
+    if _err_mix6g1 is not None:
+        raise _CierreNoAcreditado_6g1("cierre del Mix no acreditado: %s" % _err_mix6g1)
     # [6G.1-R/B] evidencia de integridad en el provisional + comprobación
     try:
         with open(os.path.join(run_dir, "input_integrity_6g.json"),
@@ -2767,6 +2822,13 @@ def _run_core(mix_info, pairs, mode, opt, plan, freqs, band_masks,
         # run_experiment; registro en el provisional SIN traslado, sin publicar.
         raise _FalloCorrida_6g1("MIX_CAMBIADO_DURANTE_EL_PROCESAMIENTO",
                                 ctx["container_6g"], trasladar=False)
+    # [6G.1-R/AI-C] Cierre ACREDITADO del log ANTES de publicar (antes se
+    # cerraba en run_experiment tras la publicación, donde un fallo ya no
+    # podía impedirla): un fallo se propaga al protocolo de aborto.
+    _log_ok6g1, _log_err6g1 = close_tee()
+    if not _log_ok6g1:
+        raise _CierreNoAcreditado_6g1("cierre de engine_log.txt no acreditado: %s"
+                                      % _log_err6g1)
     # [6G.1-R/G] Publicación con no-reemplazo atómico (renameat2
     # RENAME_NOREPLACE): nunca sustituye un destino existente; ante colisión
     # elige otro identificador sin tocarlo; si el entorno no garantiza la

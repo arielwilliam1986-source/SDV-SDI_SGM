@@ -179,6 +179,7 @@ class Tee:
     def __init__(self, path=None):
         self._console = sys.stdout
         self._file = open(path, "w", encoding="utf-8") if path else None
+        self.error_cierre_6g1 = None    # [6G.1-R/AI-C] primer fallo de cierre
 
     def write(self, data):
         self._console.write(data)
@@ -195,27 +196,57 @@ class Tee:
             except OSError: pass
 
     def close(self):
-        if self._file is not None:
-            try: self._file.close()
-            except OSError: pass
-        self._file = None
+        # [6G.1-R/AI-C] Cierre verificable del log: un fallo se conserva en
+        # error_cierre_6g1 y se PROPAGA (ya no se silencia). La referencia al
+        # archivo sólo se suelta cuando consta cerrado físicamente, para
+        # poder reintentar sin depender de la recolección.
+        f = self._file
+        if f is None:
+            return
+        try:
+            f.close()
+        except Exception as exc:
+            if self.error_cierre_6g1 is None:
+                self.error_cierre_6g1 = "%s: %s" % (type(exc).__name__, exc)
+            raise
+        finally:
+            if getattr(f, "closed", False) is True:
+                self._file = None
 
 _G_TEE = None
+_G_TEE_FALLO = None     # [6G.1-R/AI-C] fallo de cierre del log de la corrida
 _G_T0 = time.monotonic()
 
 def init_tee(path):
-    global _G_TEE
+    global _G_TEE, _G_TEE_FALLO
+    _G_TEE_FALLO = None
     _G_TEE = Tee(path)
     sys.stdout = _G_TEE
     sys.stderr = sys.stdout
 
 def close_tee():
-    global _G_TEE
+    """[6G.1-R/AI-C] Restaura la consola y cierra engine_log.txt. Nunca eleva,
+    pero NO oculta el fallo: devuelve (ok, error). ok=True sólo si el archivo
+    consta cerrado físicamente y ningún cierre del log de esta corrida falló.
+    El fallo persiste hasta el siguiente init_tee() y se vuelve a informar en
+    cada llamada (el protocolo de aborto lo recibe aunque el primer intento
+    ocurriera en el camino normal). Si el archivo no quedó cerrado, se
+    conserva la referencia y la siguiente llamada reintenta el cierre."""
+    global _G_TEE, _G_TEE_FALLO
+    t = _G_TEE
+    if t is not None:
+        sys.stdout = t._console
+        sys.stderr = t._console
+        try:
+            t.close()
+        except Exception as exc:
+            if _G_TEE_FALLO is None:
+                _G_TEE_FALLO = "%s: %s" % (type(exc).__name__, exc)
+        if t._file is None:
+            _G_TEE = None
     if _G_TEE is not None:
-        sys.stdout = _G_TEE._console
-        sys.stderr = _G_TEE._console
-        _G_TEE.close()
-        _G_TEE = None
+        return False, (_G_TEE_FALLO or "engine_log.txt no consta cerrado")
+    return _G_TEE_FALLO is None, _G_TEE_FALLO
 
 def log(msg):
     elapsed = time.monotonic() - _G_T0
@@ -317,6 +348,9 @@ from lectura_segura_6g1 import (MixCambiado as _MixCambiado_6g1,
                                  cerrar_recursos_6g1 as _cerrar_recursos_6g1,
                                  resumen_aborto_6g1 as _resumen_aborto_6g1,
                                  preparar_aborto_6g1 as _preparar_aborto_6g1,
+                                 cerrar_verificado_6g1 as _cerrar_verificado_6g1,
+                                 runner_parcial_6g1 as _runner_parcial_6g1,
+                                 CierreNoAcreditado6G1 as _CierreNoAcreditado_6g1,
                                  sha_fd_estable_6g1 as _sha_fd_estable_6g1)
 
 from atribucion_6f import (measure, verify_wave, alignment_gate,
@@ -1340,7 +1374,8 @@ class CandidateMetrics:
 class CandidateRunner:
     def __init__(self, cand_id: str, mask_source: tuple, plan: FramePlan, channels: int, run_dir: str = None,
                  band_masks: np.ndarray = None, band_labels: list = None, guide_refs: dict = None,
-                 write_audio: bool = False, output_subtype: str = OUTPUT_SUBTYPE, out_prefix: str = "Track"):
+                 write_audio: bool = False, output_subtype: str = OUTPUT_SUBTYPE, out_prefix: str = "Track",
+                 registro_6g1: list = None):
         self.cand_id = cand_id
         self.mask_source = mask_source
         self.plan = plan
@@ -1352,22 +1387,41 @@ class CandidateRunner:
             # [PATCH 4] Nombres dinámicos
             sdv_name = f"{out_prefix} SDV.wav"
             sdi_name = f"{out_prefix} SDI.wav"
-            self.writer_sdv = sf.SoundFile(os.path.join(run_dir, sdv_name), mode="w", samplerate=REQUIRED_SAMPLE_RATE, channels=channels, subtype=output_subtype)
-            self.writer_sdi = sf.SoundFile(os.path.join(run_dir, sdi_name), mode="w", samplerate=REQUIRED_SAMPLE_RATE, channels=channels, subtype=output_subtype)
-            _registrar_propio_6g1(os.path.join(run_dir, sdv_name), estable=False)
-            _registrar_propio_6g1(os.path.join(run_dir, sdi_name), estable=False)
+            # [6G.1-R/AI-D] Construcción con limpieza determinista: cada WAV se
+            # registra como propio en cuanto se abre; si algo falla después de
+            # abrir el primero, el runner parcial se incorpora a la lista de la
+            # corrida (registro_6g1) y sus escritores se cierran de forma
+            # verificable antes de re-elevar (sin __del__ ni recolección).
+            try:
+                self.writer_sdv = sf.SoundFile(os.path.join(run_dir, sdv_name), mode="w", samplerate=REQUIRED_SAMPLE_RATE, channels=channels, subtype=output_subtype)
+                _registrar_propio_6g1(os.path.join(run_dir, sdv_name), estable=False)
+                self.writer_sdi = sf.SoundFile(os.path.join(run_dir, sdi_name), mode="w", samplerate=REQUIRED_SAMPLE_RATE, channels=channels, subtype=output_subtype)
+                _registrar_propio_6g1(os.path.join(run_dir, sdi_name), estable=False)
+            except BaseException:
+                _runner_parcial_6g1(self, registro_6g1)
+                raise
             
         self.ola_sdv = OlaStream(plan, channels, writer=self.writer_sdv, label=f"{cand_id}/SDV")
         self.ola_sdi = OlaStream(plan, channels, writer=self.writer_sdi, label=f"{cand_id}/SDI")
         self.metrics = CandidateMetrics(cand_id, plan, band_masks, band_labels, guide_refs or {}, channels)
 
     def close(self):
-        for w in (self.writer_sdv, self.writer_sdi):
+        # [6G.1-R/AI-A] Cierre VERIFICABLE: cada escritor se cierra con
+        # cerrar_verificado_6g1 (idempotente; un fallo queda marcado en el
+        # propio escritor y persiste). Las referencias NO se descartan: el
+        # protocolo de aborto debe poder verificar su estado. Un fallo eleva
+        # CierreNoAcreditado6G1: nunca se convierte en un estado "cerrado" y
+        # la corrida no puede publicarse como éxito.
+        errores = []
+        for attr in ("writer_sdv", "writer_sdi"):
+            w = getattr(self, attr, None)
             if w is not None:
-                try: w.close()
-                except Exception: pass
-        self.writer_sdv = None
-        self.writer_sdi = None
+                ok, err = _cerrar_verificado_6g1(w)
+                if not ok:
+                    errores.append("%s/%s: %s" % (self.cand_id, attr, err))
+        if errores:
+            raise _CierreNoAcreditado_6g1("cierre de escritores WAV no acreditado: "
+                                          + "; ".join(errores))
 
 # ============================================================================
 # SECCION 14: ORQUESTADOR PRINCIPAL SINGLE-PASS STREAMING (v3.1.0)
@@ -1674,7 +1728,8 @@ def run_experiment(mix_path: str, pairs: list, mode: str, opt: argparse.Namespac
                 band_masks=band_masks, band_labels=band_labels,
                 guide_refs={"vocal": [p.pair_id], "instrumental": [p.pair_id]},
                 write_audio=write_audio,
-                out_prefix=track_base
+                out_prefix=track_base,
+                registro_6g1=runners      # [6G.1-R/AI-D]
             ))
 
         for method in CONSENSUS_METHODS:
@@ -1691,7 +1746,8 @@ def run_experiment(mix_path: str, pairs: list, mode: str, opt: argparse.Namespac
                 band_masks=band_masks, band_labels=band_labels,
                 guide_refs={"vocal": all_ids, "instrumental": all_ids},
                 write_audio=write_audio,
-                out_prefix=track_base if is_default else method
+                out_prefix=track_base if is_default else method,
+                registro_6g1=runners      # [6G.1-R/AI-D]
             ))
 
         # [6G.1-R/CV] Fallo de apertura del Mix antes del DSP: protocolo único
@@ -1973,15 +2029,15 @@ def run_experiment(mix_path: str, pairs: list, mode: str, opt: argparse.Namespac
         if opt.png and MATPLOTLIB_OK:
             write_pngs(masks_dir, run_dir)
 
-        # [PATCH 4] Limpieza automática de máscaras y cierre de Tee
-        if os.path.exists(masks_dir):
-            try:
-                shutil.rmtree(masks_dir)
-                log("Directorio 'masks/' eliminado para liberar espacio.")
-            except OSError as e:
-                log(f"[WARN] No se pudo eliminar masks/: {e}")
-        
-        close_tee()  # Cierra el archivo de log correctamente
+        # [6G.1-R/AI-E] La limpieza de masks/ ([PATCH 4]) se traslada DESPUÉS
+        # de la guarda final y de la publicación: una corrida que termina
+        # abortada conserva todos sus archivos, incluidos los de masks/.
+        # [6G.1-R/AI-C] Cierre ACREDITADO del log: un fallo impide publicar
+        # (se propaga al protocolo de aborto, que lo informa con completo=False).
+        _log_ok6g1, _log_err6g1 = close_tee()  # Cierra el archivo de log correctamente
+        if not _log_ok6g1:
+            raise _CierreNoAcreditado_6g1("cierre de engine_log.txt no acreditado: %s"
+                                          % _log_err6g1)
         # [PATCH 6] Se conserva engine_log.txt para trazabilidad forense (Venice F-060)
 
         # [6G.1-R/A] Guarda final fail-closed sobre el provisional, ANTES de
@@ -1997,10 +2053,15 @@ def run_experiment(mix_path: str, pairs: list, mode: str, opt: argparse.Namespac
             ctx["container_6g"]["ruta_actual"] = dict(unchanged=False,
                                                       reason="excepcion: %s" % _exc6g1)
         finally:
+            # [6G.1-R/AI-B] el cierre del Mix se acredita: un fallo ya no se
+            # silencia; se propaga al protocolo de aborto (sin publicación).
+            _err_mix6g1 = None
             try:
                 hmix.close()
-            except Exception:
-                pass
+            except Exception as _exc_c6g1:
+                _err_mix6g1 = "%s: %s" % (type(_exc_c6g1).__name__, _exc_c6g1)
+        if _err_mix6g1 is not None:
+            raise _CierreNoAcreditado_6g1("cierre del Mix no acreditado: %s" % _err_mix6g1)
         # [6G.1-R/B] evidencia de integridad en el provisional + comprobación
         try:
             with open(os.path.join(run_dir, "input_integrity_6g.json"),
@@ -2037,6 +2098,16 @@ def run_experiment(mix_path: str, pairs: list, mode: str, opt: argparse.Namespac
             raise _FalloCorrida_6g1("PUBLICACION_SEGURA_FALLIDA",
                                     "%s: %s" % (type(_exc_pub).__name__, _exc_pub),
                                     trasladar=False)
+        # [6G.1-R/AI-E] [PATCH 4] Limpieza automática de máscaras SÓLO tras
+        # superar la guarda final fail-closed y publicar (resultado exitoso
+        # garantizado). Un fallo de limpieza sólo se advierte.
+        _masks_pub6g1 = os.path.join(run_dir_final, "masks")
+        if os.path.exists(_masks_pub6g1):
+            try:
+                shutil.rmtree(_masks_pub6g1)
+                log("Directorio 'masks/' eliminado para liberar espacio.")
+            except Exception as e:
+                log(f"[WARN] No se pudo eliminar masks/: {e}")
         log(f"Corrida finalizada exitosamente en: {run_dir_final}")
         return EXIT_OK, run_dir_final
 

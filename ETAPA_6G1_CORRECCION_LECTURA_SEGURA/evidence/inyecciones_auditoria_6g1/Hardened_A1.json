@@ -1,0 +1,330 @@
+{
+  "escenario": "A1",
+  "eventos": [
+    {
+      "n": 1,
+      "t": 1508.551460049,
+      "tipo": "lector_cerrado",
+      "ruta": "/tmp/f6g1ai/corregido/Hardened/A1/mix_copia.wav",
+      "frames": 0
+    },
+    {
+      "n": 2,
+      "t": 1508.557758834,
+      "tipo": "lector_cerrado",
+      "ruta": "/home/user/SDV-SDI_SGM/ETAPA_6G1_CORRECCION_LECTURA_SEGURA/fixtures/vocal_mix.wav",
+      "frames": 0
+    },
+    {
+      "n": 3,
+      "t": 1508.562342388,
+      "tipo": "lector_cerrado",
+      "ruta": "/home/user/SDV-SDI_SGM/ETAPA_6G1_CORRECCION_LECTURA_SEGURA/fixtures/instrumental_mix.wav",
+      "frames": 0
+    },
+    {
+      "n": 4,
+      "t": 1509.17452607,
+      "tipo": "lector_cerrado",
+      "ruta": "/home/user/SDV-SDI_SGM/ETAPA_6G1_CORRECCION_LECTURA_SEGURA/fixtures/vocal_mix.wav",
+      "frames": 0
+    },
+    {
+      "n": 5,
+      "t": 1509.174554656,
+      "tipo": "lector_cerrado",
+      "ruta": "/home/user/SDV-SDI_SGM/ETAPA_6G1_CORRECCION_LECTURA_SEGURA/fixtures/instrumental_mix.wav",
+      "frames": 0
+    },
+    {
+      "n": 6,
+      "t": 1509.174565915,
+      "tipo": "lector_cerrado",
+      "ruta": "/tmp/f6g1ai/corregido/Hardened/A1/mix_copia.wav",
+      "frames": 0
+    },
+    {
+      "n": 7,
+      "t": 1509.528695766,
+      "tipo": "inyeccion",
+      "escenario": "A1",
+      "detalle": {
+        "tipo": "cierre_escritor_fallido",
+        "ruta": "/tmp/f6g1ai/corregido/Hardened/A1/out/motorA_run_20261122_134557_partial/mix_copia SDV.wav",
+        "modo": "antes"
+      }
+    },
+    {
+      "n": 8,
+      "t": 1509.529178884,
+      "tipo": "cierre_escritor_fallido",
+      "ruta": "/tmp/f6g1ai/corregido/Hardened/A1/out/motorA_run_20261122_134557_partial/mix_copia SDV.wav",
+      "modo": "antes"
+    },
+    {
+      "n": 9,
+      "t": 1509.52969554,
+      "tipo": "escritor_cerrado",
+      "ruta": "/tmp/f6g1ai/corregido/Hardened/A1/out/motorA_run_20261122_134557_partial/mix_copia SDI.wav",
+      "frames": 88200
+    },
+    {
+      "n": 10,
+      "t": 1509.533370745,
+      "tipo": "preparar_aborto_entrada"
+    },
+    {
+      "n": 11,
+      "t": 1509.533406278,
+      "tipo": "escritor_cerrado",
+      "ruta": "/tmp/f6g1ai/corregido/Hardened/A1/out/motorA_run_20261122_134557_partial/mix_copia SDV.wav",
+      "frames": 88200
+    },
+    {
+      "n": 12,
+      "t": 1509.534786155,
+      "tipo": "lector_cerrado",
+      "ruta": "/tmp/f6g1ai/corregido/Hardened/A1/mix_copia.wav",
+      "frames": 0
+    },
+    {
+      "n": 13,
+      "t": 1509.534846904,
+      "tipo": "lector_cerrado",
+      "ruta": "/home/user/SDV-SDI_SGM/ETAPA_6G1_CORRECCION_LECTURA_SEGURA/fixtures/vocal_mix.wav",
+      "frames": 0
+    },
+    {
+      "n": 14,
+      "t": 1509.53486963,
+      "tipo": "lector_cerrado",
+      "ruta": "/home/user/SDV-SDI_SGM/ETAPA_6G1_CORRECCION_LECTURA_SEGURA/fixtures/instrumental_mix.wav",
+      "frames": 0
+    },
+    {
+      "n": 15,
+      "t": 1509.540383686,
+      "tipo": "preparar_aborto_salida",
+      "completo": false
+    },
+    {
+      "n": 16,
+      "t": 1509.542864857,
+      "tipo": "abortar_6g1_entrada",
+      "motivo": "EXCEPCION_DURANTE_EL_PROCESAMIENTO",
+      "run_dir": "/tmp/f6g1ai/corregido/Hardened/A1/out/motorA_run_20261122_134557_partial"
+    },
+    {
+      "n": 17,
+      "t": 1509.547943813,
+      "tipo": "abortar_6g1_salida",
+      "motivo": "EXCEPCION_DURANTE_EL_PROCESAMIENTO"
+    },
+    {
+      "n": 18,
+      "t": 1509.553880133,
+      "tipo": "fin_main",
+      "codigo": 2
+    }
+  ],
+  "fotos": {
+    "entrada_abortar": {
+      "etiqueta": "entrada_abortar",
+      "n_evento": 16,
+      "directorio": "/tmp/f6g1ai/corregido/Hardened/A1/out/motorA_run_20261122_134557_partial",
+      "gc_habilitado": false,
+      "identidad": [
+        65024,
+        536421
+      ],
+      "archivos": {
+        "engine_log.txt": "d399f4034eaed166b932ba021e228556dd72e1b48f0497694570ca040f9c485f",
+        "mix_copia SDV.wav": "c200422a5e496e5c678a9ace2c8259ef45e14ad62e20e68d239765f7dc60144f",
+        "mix_copia SDI.wav": "a75d61f9259439cb496e48dde6fe889259f4a078a86c7dde220172ae8a2784ef"
+      },
+      "descriptores_salida_o_entradas": [],
+      "mapeos_bajo_salida": [],
+      "escritores": [
+        {
+          "ruta": "/tmp/f6g1ai/corregido/Hardened/A1/out/motorA_run_20261122_134557_partial/mix_copia SDV.wav",
+          "cerrado": true,
+          "frames": 88200
+        },
+        {
+          "ruta": "/tmp/f6g1ai/corregido/Hardened/A1/out/motorA_run_20261122_134557_partial/mix_copia SDI.wav",
+          "cerrado": true,
+          "frames": 88200
+        }
+      ],
+      "lectores_abiertos": [],
+      "memmaps": []
+    },
+    "salida_abortar": {
+      "etiqueta": "salida_abortar",
+      "n_evento": 17,
+      "directorio": "/tmp/f6g1ai/corregido/Hardened/A1/out/motorA_run_20261122_134557_partial",
+      "gc_habilitado": false,
+      "identidad": [
+        65024,
+        536421
+      ],
+      "archivos": {
+        "engine_log.txt": "d399f4034eaed166b932ba021e228556dd72e1b48f0497694570ca040f9c485f",
+        "mix_copia SDV.wav": "c200422a5e496e5c678a9ace2c8259ef45e14ad62e20e68d239765f7dc60144f",
+        "mix_copia SDI.wav": "a75d61f9259439cb496e48dde6fe889259f4a078a86c7dde220172ae8a2784ef",
+        "ABORT_6G1.json": "fdce0c00bbcd8164571a91495dd2947645e9b316d76ec835d2c65165e009488f"
+      },
+      "descriptores_salida_o_entradas": [],
+      "mapeos_bajo_salida": [],
+      "escritores": [
+        {
+          "ruta": "/tmp/f6g1ai/corregido/Hardened/A1/out/motorA_run_20261122_134557_partial/mix_copia SDV.wav",
+          "cerrado": true,
+          "frames": 88200
+        },
+        {
+          "ruta": "/tmp/f6g1ai/corregido/Hardened/A1/out/motorA_run_20261122_134557_partial/mix_copia SDI.wav",
+          "cerrado": true,
+          "frames": 88200
+        }
+      ],
+      "lectores_abiertos": [],
+      "memmaps": []
+    },
+    "fin_proceso": {
+      "etiqueta": "fin_proceso",
+      "n_evento": 18,
+      "directorio": "/tmp/f6g1ai/corregido/Hardened/A1/out/motorA_run_20261122_134557_partial",
+      "gc_habilitado": false,
+      "identidad": [
+        65024,
+        536421
+      ],
+      "archivos": {
+        "engine_log.txt": "d399f4034eaed166b932ba021e228556dd72e1b48f0497694570ca040f9c485f",
+        "mix_copia SDV.wav": "c200422a5e496e5c678a9ace2c8259ef45e14ad62e20e68d239765f7dc60144f",
+        "mix_copia SDI.wav": "a75d61f9259439cb496e48dde6fe889259f4a078a86c7dde220172ae8a2784ef",
+        "ABORT_6G1.json": "fdce0c00bbcd8164571a91495dd2947645e9b316d76ec835d2c65165e009488f"
+      },
+      "descriptores_salida_o_entradas": [],
+      "mapeos_bajo_salida": [],
+      "escritores": [
+        {
+          "ruta": "/tmp/f6g1ai/corregido/Hardened/A1/out/motorA_run_20261122_134557_partial/mix_copia SDV.wav",
+          "cerrado": true,
+          "frames": 88200
+        },
+        {
+          "ruta": "/tmp/f6g1ai/corregido/Hardened/A1/out/motorA_run_20261122_134557_partial/mix_copia SDI.wav",
+          "cerrado": true,
+          "frames": 88200
+        }
+      ],
+      "lectores_abiertos": [],
+      "memmaps": []
+    }
+  },
+  "inyeccion": {
+    "detalle": {
+      "tipo": "cierre_escritor_fallido",
+      "ruta": "/tmp/f6g1ai/corregido/Hardened/A1/out/motorA_run_20261122_134557_partial/mix_copia SDV.wav",
+      "modo": "antes"
+    },
+    "provisional": "/tmp/f6g1ai/corregido/Hardened/A1/out/motorA_run_20261122_134557_partial",
+    "final": "/tmp/f6g1ai/corregido/Hardened/A1/out/motorA_run_20261122_134557",
+    "identidad": [
+      65024,
+      536421
+    ],
+    "archivos": {
+      "engine_log.txt": "f3925e0829db7a77296aadf1d3903371fe8fa861a54566c045d4179d1a8f7c5f",
+      "mix_copia SDV.wav": "c340496f7a9775f2caabc8804142f4f3adb150e877e4ff1fe828f15b03aa664e",
+      "mix_copia SDI.wav": "5a3b742303fe97ce268b6a06c15acb1d818bfe53e361d079e1dbbc26e141badf"
+    },
+    "n_evento": 7
+  },
+  "armado": false,
+  "gc_deshabilitado_al_inicio": true,
+  "gc_colecciones_al_deshabilitar": [
+    9,
+    0,
+    0
+  ],
+  "gc_colecciones_posteriores": [],
+  "preparar": {
+    "completo": false,
+    "errores": [
+      "escritor_wav /tmp/f6g1ai/corregido/Hardened/A1/out/motorA_run_20261122_134557_partial/mix_copia SDV.wav (close (cabecera finalizada)): cierre fallido previo: OSError: [Errno 5] inyeccion AI-A1: fallo de E/S al cerrar mix_copia SDV.wav (antes del cierre fisico)"
+    ],
+    "log_cerrado": true,
+    "escritores": 2,
+    "memmaps": 0,
+    "lectores": 3,
+    "orden": [
+      {
+        "paso": 1,
+        "tipo": "escritor_wav",
+        "recurso": "/tmp/f6g1ai/corregido/Hardened/A1/out/motorA_run_20261122_134557_partial/mix_copia SDV.wav",
+        "accion": "close (cabecera finalizada)",
+        "ok": false,
+        "error": "cierre fallido previo: OSError: [Errno 5] inyeccion AI-A1: fallo de E/S al cerrar mix_copia SDV.wav (antes del cierre fisico)"
+      },
+      {
+        "paso": 2,
+        "tipo": "escritor_wav",
+        "recurso": "/tmp/f6g1ai/corregido/Hardened/A1/out/motorA_run_20261122_134557_partial/mix_copia SDI.wav",
+        "accion": "close (cabecera finalizada)",
+        "ok": true
+      },
+      {
+        "paso": 3,
+        "tipo": "lector",
+        "recurso": "/tmp/f6g1ai/corregido/Hardened/A1/mix_copia.wav",
+        "accion": "close",
+        "ok": true
+      },
+      {
+        "paso": 4,
+        "tipo": "lector",
+        "recurso": "/home/user/SDV-SDI_SGM/ETAPA_6G1_CORRECCION_LECTURA_SEGURA/fixtures/vocal_mix.wav",
+        "accion": "close",
+        "ok": true
+      },
+      {
+        "paso": 5,
+        "tipo": "lector",
+        "recurso": "/home/user/SDV-SDI_SGM/ETAPA_6G1_CORRECCION_LECTURA_SEGURA/fixtures/instrumental_mix.wav",
+        "accion": "close",
+        "ok": true
+      }
+    ],
+    "escritura_abierta_al_registrar": []
+  },
+  "resultado_aborto": {
+    "motivo": "EXCEPCION_DURANTE_EL_PROCESAMIENTO",
+    "abort_registrado": true,
+    "trasladado": false,
+    "ruta_final": "/tmp/f6g1ai/corregido/Hardened/A1/out/motorA_run_20261122_134557_partial",
+    "traslado_solicitado": true,
+    "traslado_bloqueado": "cierre de recursos incompleto: escritor_wav /tmp/f6g1ai/corregido/Hardened/A1/out/motorA_run_20261122_134557_partial/mix_copia SDV.wav (close (cabecera finalizada)): cierre fallido previo: OSError: [Errno 5] inyeccion AI-A1: fallo de E/S al cerrar mix_copia SDV.wav (antes del cierre fisico)",
+    "motivo_conservacion": "cierre de recursos incompleto: escritor_wav /tmp/f6g1ai/corregido/Hardened/A1/out/motorA_run_20261122_134557_partial/mix_copia SDV.wav (close (cabecera finalizada)): cierre fallido previo: OSError: [Errno 5] inyeccion AI-A1: fallo de E/S al cerrar mix_copia SDV.wav (antes del cierre fisico): provisional conservado en su ubicaci\u00f3n",
+    "cierre_recursos_completo": false,
+    "escritura_abierta_al_registrar": [],
+    "salidas_invalidadas": [
+      "mix_copia SDI.wav",
+      "mix_copia SDV.wav"
+    ]
+  },
+  "retorno_run_experiment": {
+    "codigo": 2,
+    "ruta": "None",
+    "ruta_str": null
+  },
+  "codigo_main": 2,
+  "gc_habilitado_al_final": false,
+  "gc_colecciones": [
+    9,
+    0,
+    0
+  ]
+}

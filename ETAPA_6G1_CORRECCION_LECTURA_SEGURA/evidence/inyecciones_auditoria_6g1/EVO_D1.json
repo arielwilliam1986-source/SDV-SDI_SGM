@@ -1,0 +1,257 @@
+{
+  "escenario": "D1",
+  "eventos": [
+    {
+      "n": 1,
+      "t": 1534.231218448,
+      "tipo": "lector_cerrado",
+      "ruta": "/tmp/f6g1ai/corregido/EVO/D1/mix_copia.wav",
+      "frames": 0
+    },
+    {
+      "n": 2,
+      "t": 1534.237846501,
+      "tipo": "lector_cerrado",
+      "ruta": "/home/user/SDV-SDI_SGM/ETAPA_6G1_CORRECCION_LECTURA_SEGURA/fixtures/vocal_mix.wav",
+      "frames": 0
+    },
+    {
+      "n": 3,
+      "t": 1534.242947365,
+      "tipo": "lector_cerrado",
+      "ruta": "/home/user/SDV-SDI_SGM/ETAPA_6G1_CORRECCION_LECTURA_SEGURA/fixtures/instrumental_mix.wav",
+      "frames": 0
+    },
+    {
+      "n": 4,
+      "t": 1535.29655187,
+      "tipo": "lector_cerrado",
+      "ruta": "/home/user/SDV-SDI_SGM/ETAPA_6G1_CORRECCION_LECTURA_SEGURA/fixtures/vocal_mix.wav",
+      "frames": 0
+    },
+    {
+      "n": 5,
+      "t": 1535.296587021,
+      "tipo": "lector_cerrado",
+      "ruta": "/home/user/SDV-SDI_SGM/ETAPA_6G1_CORRECCION_LECTURA_SEGURA/fixtures/instrumental_mix.wav",
+      "frames": 0
+    },
+    {
+      "n": 6,
+      "t": 1535.296603917,
+      "tipo": "lector_cerrado",
+      "ruta": "/tmp/f6g1ai/corregido/EVO/D1/mix_copia.wav",
+      "frames": 0
+    },
+    {
+      "n": 7,
+      "t": 1535.29873492,
+      "tipo": "inyeccion",
+      "escenario": "D1",
+      "detalle": {
+        "tipo": "apertura_segundo_escritor_fallida",
+        "ruta": "/tmp/f6g1ai/corregido/EVO/D1/out/motorA_run_20261122_134623_partial/mix_copia SDI.wav",
+        "primer_escritor": "/tmp/f6g1ai/corregido/EVO/D1/out/motorA_run_20261122_134623_partial/mix_copia SDV.wav"
+      }
+    },
+    {
+      "n": 8,
+      "t": 1535.299057927,
+      "tipo": "escritor_cerrado",
+      "ruta": "/tmp/f6g1ai/corregido/EVO/D1/out/motorA_run_20261122_134623_partial/mix_copia SDV.wav",
+      "frames": 0
+    },
+    {
+      "n": 9,
+      "t": 1535.302568819,
+      "tipo": "preparar_aborto_entrada"
+    },
+    {
+      "n": 10,
+      "t": 1535.307280175,
+      "tipo": "preparar_aborto_salida",
+      "completo": true
+    },
+    {
+      "n": 11,
+      "t": 1535.309454275,
+      "tipo": "abortar_6g1_entrada",
+      "motivo": "EXCEPCION_DURANTE_EL_PROCESAMIENTO",
+      "run_dir": "/tmp/f6g1ai/corregido/EVO/D1/out/motorA_run_20261122_134623_partial"
+    },
+    {
+      "n": 12,
+      "t": 1535.31217107,
+      "tipo": "abortar_6g1_salida",
+      "motivo": "EXCEPCION_DURANTE_EL_PROCESAMIENTO"
+    },
+    {
+      "n": 13,
+      "t": 1535.314643408,
+      "tipo": "publicar_entrada",
+      "origen": "/tmp/f6g1ai/corregido/EVO/D1/out/motorA_run_20261122_134623_partial",
+      "destino": "/tmp/f6g1ai/corregido/EVO/D1/out/motorA_run_20261122_134623_aborted"
+    },
+    {
+      "n": 14,
+      "t": 1535.314902841,
+      "tipo": "publicar_salida",
+      "ruta": "/tmp/f6g1ai/corregido/EVO/D1/out/motorA_run_20261122_134623_aborted"
+    },
+    {
+      "n": 15,
+      "t": 1535.315977457,
+      "tipo": "fin_main",
+      "codigo": 2
+    }
+  ],
+  "fotos": {
+    "entrada_abortar": {
+      "etiqueta": "entrada_abortar",
+      "n_evento": 11,
+      "directorio": "/tmp/f6g1ai/corregido/EVO/D1/out/motorA_run_20261122_134623_partial",
+      "gc_habilitado": false,
+      "identidad": [
+        65024,
+        536636
+      ],
+      "archivos": {
+        "engine_log.txt": "65a000bcc1e17419296929d946ff55c7b0af21c6750afd8a1ad5972e11663171",
+        "mix_copia SDV.wav": "1923a4d69153ddd6886eeb92c201b587f1255a0090cdb72f6a0658b58a7014f8"
+      },
+      "descriptores_salida_o_entradas": [],
+      "mapeos_bajo_salida": [],
+      "escritores": [
+        {
+          "ruta": "/tmp/f6g1ai/corregido/EVO/D1/out/motorA_run_20261122_134623_partial/mix_copia SDV.wav",
+          "cerrado": true,
+          "frames": 0
+        }
+      ],
+      "lectores_abiertos": [],
+      "memmaps": []
+    },
+    "salida_abortar": {
+      "etiqueta": "salida_abortar",
+      "n_evento": 12,
+      "directorio": "/tmp/f6g1ai/corregido/EVO/D1/out/motorA_run_20261122_134623_partial",
+      "gc_habilitado": false,
+      "identidad": [
+        65024,
+        536636
+      ],
+      "archivos": {
+        "engine_log.txt": "65a000bcc1e17419296929d946ff55c7b0af21c6750afd8a1ad5972e11663171",
+        "mix_copia SDV.wav": "1923a4d69153ddd6886eeb92c201b587f1255a0090cdb72f6a0658b58a7014f8",
+        "ABORT_6G1.json": "e3dd566a1c0bb0bcc5e27cb6bc0269c07aeca155a64870f529064044b0608a51"
+      },
+      "descriptores_salida_o_entradas": [],
+      "mapeos_bajo_salida": [],
+      "escritores": [
+        {
+          "ruta": "/tmp/f6g1ai/corregido/EVO/D1/out/motorA_run_20261122_134623_partial/mix_copia SDV.wav",
+          "cerrado": true,
+          "frames": 0
+        }
+      ],
+      "lectores_abiertos": [],
+      "memmaps": []
+    },
+    "fin_proceso": {
+      "etiqueta": "fin_proceso",
+      "n_evento": 15,
+      "directorio": "/tmp/f6g1ai/corregido/EVO/D1/out/motorA_run_20261122_134623_aborted",
+      "gc_habilitado": false,
+      "identidad": [
+        65024,
+        536636
+      ],
+      "archivos": {
+        "engine_log.txt": "65a000bcc1e17419296929d946ff55c7b0af21c6750afd8a1ad5972e11663171",
+        "mix_copia SDV.wav": "1923a4d69153ddd6886eeb92c201b587f1255a0090cdb72f6a0658b58a7014f8",
+        "ABORT_6G1.json": "e3dd566a1c0bb0bcc5e27cb6bc0269c07aeca155a64870f529064044b0608a51"
+      },
+      "descriptores_salida_o_entradas": [],
+      "mapeos_bajo_salida": [],
+      "escritores": [
+        {
+          "ruta": "/tmp/f6g1ai/corregido/EVO/D1/out/motorA_run_20261122_134623_partial/mix_copia SDV.wav",
+          "cerrado": true,
+          "frames": 0
+        }
+      ],
+      "lectores_abiertos": [],
+      "memmaps": []
+    }
+  },
+  "inyeccion": {
+    "detalle": {
+      "tipo": "apertura_segundo_escritor_fallida",
+      "ruta": "/tmp/f6g1ai/corregido/EVO/D1/out/motorA_run_20261122_134623_partial/mix_copia SDI.wav",
+      "primer_escritor": "/tmp/f6g1ai/corregido/EVO/D1/out/motorA_run_20261122_134623_partial/mix_copia SDV.wav"
+    },
+    "provisional": "/tmp/f6g1ai/corregido/EVO/D1/out/motorA_run_20261122_134623_partial",
+    "final": "/tmp/f6g1ai/corregido/EVO/D1/out/motorA_run_20261122_134623",
+    "identidad": [
+      65024,
+      536636
+    ],
+    "archivos": {
+      "engine_log.txt": "9f696df702b995ef40c1144117bcbe9b939bb86f2a49de6e14408057af074347",
+      "mix_copia SDV.wav": "bbd3fcf8037ed5a3152f45f967a6626af1081cc60a725b7e912ba001495c8ba3"
+    },
+    "n_evento": 7
+  },
+  "armado": false,
+  "gc_deshabilitado_al_inicio": true,
+  "gc_colecciones_al_deshabilitar": [
+    9,
+    0,
+    0
+  ],
+  "gc_colecciones_posteriores": [],
+  "preparar": {
+    "completo": true,
+    "errores": [],
+    "log_cerrado": true,
+    "escritores": 1,
+    "memmaps": 0,
+    "lectores": 0,
+    "orden": [
+      {
+        "paso": 1,
+        "tipo": "escritor_wav",
+        "recurso": "/tmp/f6g1ai/corregido/EVO/D1/out/motorA_run_20261122_134623_partial/mix_copia SDV.wav",
+        "accion": "close (cabecera finalizada)",
+        "ok": true
+      }
+    ],
+    "escritura_abierta_al_registrar": []
+  },
+  "resultado_aborto": {
+    "motivo": "EXCEPCION_DURANTE_EL_PROCESAMIENTO",
+    "abort_registrado": true,
+    "trasladado": true,
+    "ruta_final": "/tmp/f6g1ai/corregido/EVO/D1/out/motorA_run_20261122_134623_aborted",
+    "traslado_solicitado": true,
+    "traslado_bloqueado": null,
+    "motivo_conservacion": null,
+    "cierre_recursos_completo": true,
+    "escritura_abierta_al_registrar": [],
+    "salidas_invalidadas": [
+      "mix_copia SDV.wav"
+    ]
+  },
+  "retorno_run_experiment": {
+    "codigo": 2,
+    "ruta": "None",
+    "ruta_str": null
+  },
+  "codigo_main": 2,
+  "gc_habilitado_al_final": false,
+  "gc_colecciones": [
+    9,
+    0,
+    0
+  ]
+}

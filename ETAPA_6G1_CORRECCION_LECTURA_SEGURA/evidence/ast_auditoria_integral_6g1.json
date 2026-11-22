@@ -1,0 +1,383 @@
+{
+  "schema": "ast-auditoria-integral-6g1/1",
+  "base": "6a93e4ece2dcb1f4d79a5a4bb1501ace080f5dcd",
+  "motores": {
+    "Hardened": {
+      "unidades_cambiadas": [
+        "CandidateRunner.__init__",
+        "CandidateRunner.close",
+        "Tee.__init__",
+        "Tee.close",
+        "close_tee",
+        "init_tee",
+        "run_experiment"
+      ],
+      "unidades_añadidas": [],
+      "unidades_eliminadas": [],
+      "unidades_sin_cambio": 95,
+      "permitidas": [
+        "CandidateRunner.__init__",
+        "CandidateRunner.close",
+        "Tee.__init__",
+        "Tee.close",
+        "close_tee",
+        "init_tee",
+        "run_experiment"
+      ],
+      "sentencias_superiores_nuevas": [
+        "_G_TEE_FALLO = None",
+        "from lectura_segura_6g1 import MixCambiado as _MixCambiado_6g1, abrir_mix as _abrir_mix_6g1, abortar_6g1 as _abortar_6g1, registrar_propio_6g1 as _registrar_propio_6g1, reiniciar_registro_6g1 as _reiniciar_registro_6g1, crear_y_acreditar_dir_6g1 as _crear_y_acreditar_dir_6g1, publicar_dir_6g1 as _publicar_dir_6g1, FalloCorrida6G1 as _FalloCorrida_6g1, abortar_corrida_6g1 as _abortar_corrida_6g1, c"
+      ],
+      "sentencias_superiores_retiradas": [
+        "from lectura_segura_6g1 import MixCambiado as _MixCambiado_6g1, abrir_mix as _abrir_mix_6g1, abortar_6g1 as _abortar_6g1, registrar_propio_6g1 as _registrar_propio_6g1, reiniciar_registro_6g1 as _reiniciar_registro_6g1, crear_y_acreditar_dir_6g1 as _crear_y_acreditar_dir_6g1, publicar_dir_6g1 as _publicar_dir_6g1, FalloCorrida6G1 as _FalloCorrida_6g1, abortar_corrida_6g1 as _abortar_corrida_6g1, c"
+      ],
+      "detalle_unidades_cambiadas": {
+        "CandidateRunner.__init__": {
+          "literales_iguales": true,
+          "llamadas_dsp_iguales": true,
+          "llamadas_dsp": []
+        },
+        "CandidateRunner.close": {
+          "literales_iguales": true,
+          "llamadas_dsp_iguales": true,
+          "llamadas_dsp": []
+        },
+        "Tee.__init__": {
+          "literales_iguales": true,
+          "llamadas_dsp_iguales": true,
+          "llamadas_dsp": []
+        },
+        "Tee.close": {
+          "literales_iguales": true,
+          "llamadas_dsp_iguales": true,
+          "llamadas_dsp": []
+        },
+        "close_tee": {
+          "literales_iguales": true,
+          "llamadas_dsp_iguales": true,
+          "llamadas_dsp": []
+        },
+        "init_tee": {
+          "literales_iguales": true,
+          "llamadas_dsp_iguales": true,
+          "llamadas_dsp": []
+        },
+        "run_experiment": {
+          "literales_iguales": true,
+          "llamadas_dsp_iguales": true,
+          "llamadas_dsp": [
+            "abs",
+            "abs",
+            "abs",
+            "abs",
+            "clip",
+            "mean",
+            "mean",
+            "mean",
+            "mean",
+            "mean",
+            "mean",
+            "stack",
+            "stack",
+            "stack"
+          ]
+        }
+      },
+      "candidate_runner": {
+        "asignaciones_estado_dsp_identicas": true,
+        "aperturas_soundfile_identicas": true,
+        "estado_dsp_comparado": [
+          "cand_id",
+          "mask_source",
+          "metrics",
+          "ola_sdi",
+          "ola_sdv",
+          "plan",
+          "write_audio"
+        ],
+        "n_aperturas": 2,
+        "cuerpo_clase_identico": true
+      },
+      "defs_dsp_identicas": {
+        "analyze_guide_scale": true,
+        "OlaStream": true,
+        "stft_span_frames": true,
+        "compute_vocal_mask": true,
+        "consensus_from_masks": true,
+        "confidence_and_disagreement": true,
+        "apply_sfumato_smoothing": true,
+        "read_span": true,
+        "mono_downmix": true,
+        "FramePlan": true,
+        "post_wav_identity": true,
+        "build_band_masks": true
+      },
+      "veredicto": "OK"
+    },
+    "EVO": {
+      "unidades_cambiadas": [
+        "CandidateRunner.__init__",
+        "CandidateRunner.close",
+        "Tee.__init__",
+        "Tee.close",
+        "close_tee",
+        "init_tee",
+        "run_experiment"
+      ],
+      "unidades_añadidas": [],
+      "unidades_eliminadas": [],
+      "unidades_sin_cambio": 98,
+      "permitidas": [
+        "CandidateRunner.__init__",
+        "CandidateRunner.close",
+        "Tee.__init__",
+        "Tee.close",
+        "close_tee",
+        "init_tee",
+        "run_experiment"
+      ],
+      "sentencias_superiores_nuevas": [
+        "_G_TEE_FALLO = None",
+        "from lectura_segura_6g1 import MixCambiado as _MixCambiado_6g1, abrir_mix as _abrir_mix_6g1, abortar_6g1 as _abortar_6g1, registrar_propio_6g1 as _registrar_propio_6g1, reiniciar_registro_6g1 as _reiniciar_registro_6g1, crear_y_acreditar_dir_6g1 as _crear_y_acreditar_dir_6g1, publicar_dir_6g1 as _publicar_dir_6g1, FalloCorrida6G1 as _FalloCorrida_6g1, abortar_corrida_6g1 as _abortar_corrida_6g1, c"
+      ],
+      "sentencias_superiores_retiradas": [
+        "from lectura_segura_6g1 import MixCambiado as _MixCambiado_6g1, abrir_mix as _abrir_mix_6g1, abortar_6g1 as _abortar_6g1, registrar_propio_6g1 as _registrar_propio_6g1, reiniciar_registro_6g1 as _reiniciar_registro_6g1, crear_y_acreditar_dir_6g1 as _crear_y_acreditar_dir_6g1, publicar_dir_6g1 as _publicar_dir_6g1, FalloCorrida6G1 as _FalloCorrida_6g1, abortar_corrida_6g1 as _abortar_corrida_6g1, c"
+      ],
+      "detalle_unidades_cambiadas": {
+        "CandidateRunner.__init__": {
+          "literales_iguales": true,
+          "llamadas_dsp_iguales": true,
+          "llamadas_dsp": []
+        },
+        "CandidateRunner.close": {
+          "literales_iguales": true,
+          "llamadas_dsp_iguales": true,
+          "llamadas_dsp": []
+        },
+        "Tee.__init__": {
+          "literales_iguales": true,
+          "llamadas_dsp_iguales": true,
+          "llamadas_dsp": []
+        },
+        "Tee.close": {
+          "literales_iguales": true,
+          "llamadas_dsp_iguales": true,
+          "llamadas_dsp": []
+        },
+        "close_tee": {
+          "literales_iguales": true,
+          "llamadas_dsp_iguales": true,
+          "llamadas_dsp": []
+        },
+        "init_tee": {
+          "literales_iguales": true,
+          "llamadas_dsp_iguales": true,
+          "llamadas_dsp": []
+        },
+        "run_experiment": {
+          "literales_iguales": true,
+          "llamadas_dsp_iguales": true,
+          "llamadas_dsp": [
+            "abs",
+            "abs",
+            "abs",
+            "abs",
+            "clip",
+            "clip",
+            "clip",
+            "mean",
+            "mean",
+            "mean",
+            "mean",
+            "mean",
+            "mean",
+            "mean",
+            "mean",
+            "median",
+            "median",
+            "stack",
+            "stack",
+            "stack",
+            "stack",
+            "stack",
+            "stack"
+          ]
+        }
+      },
+      "candidate_runner": {
+        "asignaciones_estado_dsp_identicas": true,
+        "aperturas_soundfile_identicas": true,
+        "estado_dsp_comparado": [
+          "cand_id",
+          "mask_source",
+          "metrics",
+          "ola_sdi",
+          "ola_sdv",
+          "plan",
+          "write_audio"
+        ],
+        "n_aperturas": 2,
+        "cuerpo_clase_identico": true
+      },
+      "defs_dsp_identicas": {
+        "analyze_guide_scale": true,
+        "OlaStream": true,
+        "stft_span_frames": true,
+        "compute_vocal_mask": true,
+        "consensus_from_masks": true,
+        "confidence_and_disagreement": true,
+        "apply_sfumato_smoothing": true,
+        "read_span": true,
+        "mono_downmix": true,
+        "FramePlan": true,
+        "post_wav_identity": true,
+        "build_band_masks": true
+      },
+      "veredicto": "OK"
+    },
+    "MQR": {
+      "unidades_cambiadas": [
+        "CandidateRunner.__init__",
+        "CandidateRunner.close",
+        "Tee.__init__",
+        "Tee.close",
+        "_run_core",
+        "close_tee",
+        "init_tee"
+      ],
+      "unidades_añadidas": [],
+      "unidades_eliminadas": [],
+      "unidades_sin_cambio": 123,
+      "permitidas": [
+        "CandidateRunner.__init__",
+        "CandidateRunner.close",
+        "Tee.__init__",
+        "Tee.close",
+        "_run_core",
+        "close_tee",
+        "init_tee",
+        "run_experiment"
+      ],
+      "sentencias_superiores_nuevas": [
+        "_G_TEE_FALLO = None",
+        "from lectura_segura_6g1 import MixCambiado as _MixCambiado_6g1, abrir_mix as _abrir_mix_6g1, abortar_6g1 as _abortar_6g1, VerificacionFallida6G1 as _VerifFallida_6g1, registrar_propio_6g1 as _registrar_propio_6g1, reiniciar_registro_6g1 as _reiniciar_registro_6g1, crear_y_acreditar_dir_6g1 as _crear_y_acreditar_dir_6g1, publicar_dir_6g1 as _publicar_dir_6g1, FalloCorrida6G1 as _FalloCorrida_6g1, a"
+      ],
+      "sentencias_superiores_retiradas": [
+        "from lectura_segura_6g1 import MixCambiado as _MixCambiado_6g1, abrir_mix as _abrir_mix_6g1, abortar_6g1 as _abortar_6g1, VerificacionFallida6G1 as _VerifFallida_6g1, registrar_propio_6g1 as _registrar_propio_6g1, reiniciar_registro_6g1 as _reiniciar_registro_6g1, crear_y_acreditar_dir_6g1 as _crear_y_acreditar_dir_6g1, publicar_dir_6g1 as _publicar_dir_6g1, FalloCorrida6G1 as _FalloCorrida_6g1, a"
+      ],
+      "detalle_unidades_cambiadas": {
+        "CandidateRunner.__init__": {
+          "literales_iguales": true,
+          "llamadas_dsp_iguales": true,
+          "llamadas_dsp": []
+        },
+        "CandidateRunner.close": {
+          "literales_iguales": true,
+          "llamadas_dsp_iguales": true,
+          "llamadas_dsp": []
+        },
+        "Tee.__init__": {
+          "literales_iguales": true,
+          "llamadas_dsp_iguales": true,
+          "llamadas_dsp": []
+        },
+        "Tee.close": {
+          "literales_iguales": true,
+          "llamadas_dsp_iguales": true,
+          "llamadas_dsp": []
+        },
+        "_run_core": {
+          "literales_iguales": true,
+          "llamadas_dsp_iguales": true,
+          "llamadas_dsp": [
+            "abs",
+            "abs",
+            "abs",
+            "median",
+            "stack"
+          ]
+        },
+        "close_tee": {
+          "literales_iguales": true,
+          "llamadas_dsp_iguales": true,
+          "llamadas_dsp": []
+        },
+        "init_tee": {
+          "literales_iguales": true,
+          "llamadas_dsp_iguales": true,
+          "llamadas_dsp": []
+        }
+      },
+      "candidate_runner": {
+        "asignaciones_estado_dsp_identicas": true,
+        "aperturas_soundfile_identicas": true,
+        "estado_dsp_comparado": [
+          "cand_id",
+          "mask_source",
+          "metrics",
+          "ola_sdi",
+          "ola_sdv",
+          "plan",
+          "write_audio"
+        ],
+        "n_aperturas": 2,
+        "cuerpo_clase_identico": true
+      },
+      "defs_dsp_identicas": {
+        "analyze_guide_scale": true,
+        "OlaStream": true,
+        "stft_span_frames": true,
+        "compute_vocal_mask": true,
+        "consensus_from_masks": true,
+        "confidence_and_disagreement": true,
+        "read_span": true,
+        "mono_downmix": true,
+        "FramePlan": true,
+        "post_wav_identity": true,
+        "build_band_masks": true
+      },
+      "veredicto": "OK"
+    }
+  },
+  "modulo": {
+    "unidades_añadidas": [
+      "CierreNoAcreditado6G1.<cuerpo>",
+      "MixHandle._cerrar_6g1",
+      "_estado_fisico_6g1",
+      "_marcar_fallo_cierre_6g1",
+      "cerrar_verificado_6g1",
+      "fallo_cierre_6g1",
+      "runner_parcial_6g1"
+    ],
+    "unidades_cambiadas": [
+      "MixHandle.__init__",
+      "MixHandle.close",
+      "_cerrado_6g1",
+      "_cerrar_idempotente_6g1",
+      "preparar_aborto_6g1"
+    ],
+    "unidades_eliminadas": [],
+    "autorizadas": {
+      "añadidas": [
+        "CierreNoAcreditado6G1.<cuerpo>",
+        "MixHandle._cerrar_6g1",
+        "_estado_fisico_6g1",
+        "_marcar_fallo_cierre_6g1",
+        "cerrar_verificado_6g1",
+        "fallo_cierre_6g1",
+        "runner_parcial_6g1"
+      ],
+      "cambiadas": [
+        "MixHandle.__init__",
+        "MixHandle.close",
+        "_cerrado_6g1",
+        "_cerrar_idempotente_6g1",
+        "preparar_aborto_6g1"
+      ]
+    },
+    "llamadas_dsp_nuevas": {},
+    "sentencias_superiores_nuevas": [],
+    "veredicto": "OK"
+  },
+  "veredicto": "OK"
+}

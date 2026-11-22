@@ -1,0 +1,296 @@
+{
+  "schema": "manifest-auditoria-integral-6g1/1",
+  "commit_padre": "6a93e4ece2dcb1f4d79a5a4bb1501ace080f5dcd",
+  "rama": "arena/c7719286-sdv-sdi-sgm",
+  "alcance": "Auditoría integral 6G.1 (A-E): cierre real de wrappers (CandidateRunner, MixHandle, Tee), limpieza determinista de constructores parciales y retención de masks/ en abortos; sin cambios DSP",
+  "archivos": [
+    {
+      "ruta": "ETAPA_6G1_CORRECCION_LECTURA_SEGURA/AUDITORIA_INTEGRAL_CIERRE_6G1.md",
+      "estado": "nuevo",
+      "sha256_6a93e4e": null,
+      "sha256": "e784492303d3fd8f5dc5c0f3c6316988ee3096615820ea9f541e4e0cb3f15fa3"
+    },
+    {
+      "ruta": "ETAPA_6G1_CORRECCION_LECTURA_SEGURA/DIFF_AUDITORIA_INTEGRAL_6G1_vs_6a93e4e.patch",
+      "estado": "nuevo",
+      "sha256_6a93e4e": null,
+      "sha256": "8510400118d95eea18a19f570bc4d608da0f99be495c91bd506f1068613cf2b4"
+    },
+    {
+      "ruta": "ETAPA_6G1_CORRECCION_LECTURA_SEGURA/evidence/ast_auditoria_integral_6g1.json",
+      "estado": "nuevo",
+      "sha256_6a93e4e": null,
+      "sha256": "ede8632541bd4bc09ff234e187597093ae87bf297e93ff8b1d1e3b6eecc4f140"
+    },
+    {
+      "ruta": "ETAPA_6G1_CORRECCION_LECTURA_SEGURA/evidence/inyecciones_auditoria_6g1/EVO_A1.json",
+      "estado": "nuevo",
+      "sha256_6a93e4e": null,
+      "sha256": "8e6f52da4e2b54dccc28406cf5bca18a5ea28bc064e25ce83b195faad2d457ea"
+    },
+    {
+      "ruta": "ETAPA_6G1_CORRECCION_LECTURA_SEGURA/evidence/inyecciones_auditoria_6g1/EVO_A2.json",
+      "estado": "nuevo",
+      "sha256_6a93e4e": null,
+      "sha256": "94677b4c059af8d502bf6a13717f25c0febb5c5cec0a70065fde858e5baa9037"
+    },
+    {
+      "ruta": "ETAPA_6G1_CORRECCION_LECTURA_SEGURA/evidence/inyecciones_auditoria_6g1/EVO_B1.json",
+      "estado": "nuevo",
+      "sha256_6a93e4e": null,
+      "sha256": "b405ff472b385013812308ff4a56c3c440250816896a07e6def28f73c32b0ce0"
+    },
+    {
+      "ruta": "ETAPA_6G1_CORRECCION_LECTURA_SEGURA/evidence/inyecciones_auditoria_6g1/EVO_B2.json",
+      "estado": "nuevo",
+      "sha256_6a93e4e": null,
+      "sha256": "9c360fbbcf7939a5870fcd12e4b297521a5c5c4bfcaad828ae16ebaa87faffdf"
+    },
+    {
+      "ruta": "ETAPA_6G1_CORRECCION_LECTURA_SEGURA/evidence/inyecciones_auditoria_6g1/EVO_C1.json",
+      "estado": "nuevo",
+      "sha256_6a93e4e": null,
+      "sha256": "2c6b5361284c312cc7a2bb373e9e6348f635c323ae135fcd26eb2c7a3fe34f8a"
+    },
+    {
+      "ruta": "ETAPA_6G1_CORRECCION_LECTURA_SEGURA/evidence/inyecciones_auditoria_6g1/EVO_C2.json",
+      "estado": "nuevo",
+      "sha256_6a93e4e": null,
+      "sha256": "a3b372da801a1a939883a2d136057e6d7546767fe72136017d55f2e5de265eec"
+    },
+    {
+      "ruta": "ETAPA_6G1_CORRECCION_LECTURA_SEGURA/evidence/inyecciones_auditoria_6g1/EVO_D1.json",
+      "estado": "nuevo",
+      "sha256_6a93e4e": null,
+      "sha256": "d37d0ea2cb8c9010386a72cfd5ca4836c0b3731faa83d8ec631bb7c4ffd70abd"
+    },
+    {
+      "ruta": "ETAPA_6G1_CORRECCION_LECTURA_SEGURA/evidence/inyecciones_auditoria_6g1/EVO_D2.json",
+      "estado": "nuevo",
+      "sha256_6a93e4e": null,
+      "sha256": "9ce934cc5c3480f255fa79807436990380a7c4be7b853879142aefd0746a1e23"
+    },
+    {
+      "ruta": "ETAPA_6G1_CORRECCION_LECTURA_SEGURA/evidence/inyecciones_auditoria_6g1/EVO_E1.json",
+      "estado": "nuevo",
+      "sha256_6a93e4e": null,
+      "sha256": "b1cbd97c31d00cab60c5cb208b5bd9688175d1baf19a0086cd63cf38acc4581e"
+    },
+    {
+      "ruta": "ETAPA_6G1_CORRECCION_LECTURA_SEGURA/evidence/inyecciones_auditoria_6g1/Hardened_A1.json",
+      "estado": "nuevo",
+      "sha256_6a93e4e": null,
+      "sha256": "baf238ed79478905d6abff103fa3fcc395f82de546961937980b6b6e31ed302b"
+    },
+    {
+      "ruta": "ETAPA_6G1_CORRECCION_LECTURA_SEGURA/evidence/inyecciones_auditoria_6g1/Hardened_A2.json",
+      "estado": "nuevo",
+      "sha256_6a93e4e": null,
+      "sha256": "db3a2ac46e7bfa840814c9d2d1336ed0bcab1d1e94106e58af0c89902461804e"
+    },
+    {
+      "ruta": "ETAPA_6G1_CORRECCION_LECTURA_SEGURA/evidence/inyecciones_auditoria_6g1/Hardened_B1.json",
+      "estado": "nuevo",
+      "sha256_6a93e4e": null,
+      "sha256": "5b20c171a2dc00c86b9dbcaafbdb53c6b468477a278e7c9740f1011920110cd8"
+    },
+    {
+      "ruta": "ETAPA_6G1_CORRECCION_LECTURA_SEGURA/evidence/inyecciones_auditoria_6g1/Hardened_B2.json",
+      "estado": "nuevo",
+      "sha256_6a93e4e": null,
+      "sha256": "1a62bca83944d5a068e04061bba7064c48ccc6d80f22516c97abd79932daab84"
+    },
+    {
+      "ruta": "ETAPA_6G1_CORRECCION_LECTURA_SEGURA/evidence/inyecciones_auditoria_6g1/Hardened_C1.json",
+      "estado": "nuevo",
+      "sha256_6a93e4e": null,
+      "sha256": "083a559756f5ed3daec23378e8a118dc4fca82fc28ccfdf2aaf7f1bb1fbd22ba"
+    },
+    {
+      "ruta": "ETAPA_6G1_CORRECCION_LECTURA_SEGURA/evidence/inyecciones_auditoria_6g1/Hardened_C2.json",
+      "estado": "nuevo",
+      "sha256_6a93e4e": null,
+      "sha256": "4d0606ab5634a74d6aa971e16aec4cb8f16a28b37c56015998d67b5c060769ee"
+    },
+    {
+      "ruta": "ETAPA_6G1_CORRECCION_LECTURA_SEGURA/evidence/inyecciones_auditoria_6g1/Hardened_D1.json",
+      "estado": "nuevo",
+      "sha256_6a93e4e": null,
+      "sha256": "3ff151e8de375348270be0b0fae2f10ee3842c5a90b3f909ea6eda21d48c02c9"
+    },
+    {
+      "ruta": "ETAPA_6G1_CORRECCION_LECTURA_SEGURA/evidence/inyecciones_auditoria_6g1/Hardened_D2.json",
+      "estado": "nuevo",
+      "sha256_6a93e4e": null,
+      "sha256": "c668c8a9931ac0b18e3f06011b871e44acacfe0455e4f9346637b541d856d390"
+    },
+    {
+      "ruta": "ETAPA_6G1_CORRECCION_LECTURA_SEGURA/evidence/inyecciones_auditoria_6g1/Hardened_E1.json",
+      "estado": "nuevo",
+      "sha256_6a93e4e": null,
+      "sha256": "89612dad8cb3c678a3b83cf2c9087b12dbc6f117bf16f23f301907c2eced338a"
+    },
+    {
+      "ruta": "ETAPA_6G1_CORRECCION_LECTURA_SEGURA/evidence/inyecciones_auditoria_6g1/MQR_A1.json",
+      "estado": "nuevo",
+      "sha256_6a93e4e": null,
+      "sha256": "13eddbb751139b585647dee6ba49caa129cc0390bff3b4a368efda265eb8f9ad"
+    },
+    {
+      "ruta": "ETAPA_6G1_CORRECCION_LECTURA_SEGURA/evidence/inyecciones_auditoria_6g1/MQR_A2.json",
+      "estado": "nuevo",
+      "sha256_6a93e4e": null,
+      "sha256": "5b9bdda00b1810de026cdc48fa31b39cf1e7429dc02c39f24d2e610b07259c4e"
+    },
+    {
+      "ruta": "ETAPA_6G1_CORRECCION_LECTURA_SEGURA/evidence/inyecciones_auditoria_6g1/MQR_B1.json",
+      "estado": "nuevo",
+      "sha256_6a93e4e": null,
+      "sha256": "3e608a2b2e7eafa77e947c1dd34471f346285e2ac2cbb6f242982e50fb6f284d"
+    },
+    {
+      "ruta": "ETAPA_6G1_CORRECCION_LECTURA_SEGURA/evidence/inyecciones_auditoria_6g1/MQR_B2.json",
+      "estado": "nuevo",
+      "sha256_6a93e4e": null,
+      "sha256": "70409f0a6b5511d10610e9611b47768dc1d7e930364352ccd1cd3109494e0720"
+    },
+    {
+      "ruta": "ETAPA_6G1_CORRECCION_LECTURA_SEGURA/evidence/inyecciones_auditoria_6g1/MQR_C1.json",
+      "estado": "nuevo",
+      "sha256_6a93e4e": null,
+      "sha256": "80e36e166d4653641eb5ceaea5700876bc45e593cd2b0abdf6111ea978033773"
+    },
+    {
+      "ruta": "ETAPA_6G1_CORRECCION_LECTURA_SEGURA/evidence/inyecciones_auditoria_6g1/MQR_C2.json",
+      "estado": "nuevo",
+      "sha256_6a93e4e": null,
+      "sha256": "b05fdc2e8d7f72fe309d3cb721cd3ee08a372b295618fa5e4664af60ff7178fe"
+    },
+    {
+      "ruta": "ETAPA_6G1_CORRECCION_LECTURA_SEGURA/evidence/inyecciones_auditoria_6g1/MQR_D1.json",
+      "estado": "nuevo",
+      "sha256_6a93e4e": null,
+      "sha256": "784e21b0c6af8adf1543a3bd9013d222d112887cfa96a0b9c7901940513f87bc"
+    },
+    {
+      "ruta": "ETAPA_6G1_CORRECCION_LECTURA_SEGURA/evidence/inyecciones_auditoria_6g1/MQR_D2.json",
+      "estado": "nuevo",
+      "sha256_6a93e4e": null,
+      "sha256": "a76b7f897bb320b68f5e5267aaea6732f9eff4f594e7ac0190b47a7bc29f2eb7"
+    },
+    {
+      "ruta": "ETAPA_6G1_CORRECCION_LECTURA_SEGURA/evidence/inyecciones_auditoria_6g1/MQR_E1.json",
+      "estado": "nuevo",
+      "sha256_6a93e4e": null,
+      "sha256": "bc56467bc2a0bf3f8940870b15820d8941d040e2f34a977c79dc4599b025f186"
+    },
+    {
+      "ruta": "ETAPA_6G1_CORRECCION_LECTURA_SEGURA/evidence/matriz_auditoria_cierre_6g1.csv",
+      "estado": "nuevo",
+      "sha256_6a93e4e": null,
+      "sha256": "b645b3af9c9934b9bdbc5086f56c0accd8a3a970479046415f00de8d5631c66f"
+    },
+    {
+      "ruta": "ETAPA_6G1_CORRECCION_LECTURA_SEGURA/evidence/pruebas_auditoria_cierre_6g1.json",
+      "estado": "nuevo",
+      "sha256_6a93e4e": null,
+      "sha256": "152d21bbd435f39ef75c1d107876955124c73e7bf606d7070681215a1868e4f1"
+    },
+    {
+      "ruta": "ETAPA_6G1_CORRECCION_LECTURA_SEGURA/motores/MOTOR_SEP_SDV-SDI_EVO.py",
+      "estado": "modificado",
+      "sha256_6a93e4e": "438bb7a8eb834dee0bba060c9fe3d1d5e350909cb5d51c6e0c90f40b39b2690c",
+      "sha256": "9e156cab123b5922e5ecdae48947328f7bc346aa8af9c6db270a6ac05bbcf62c"
+    },
+    {
+      "ruta": "ETAPA_6G1_CORRECCION_LECTURA_SEGURA/motores/MOTOR_SEP_SDV-SDI_v3.1.1_Hardened_Final.py",
+      "estado": "modificado",
+      "sha256_6a93e4e": "e3a0574fa6f4a35dd59968093df8a338431423d47f55f30e3114c80c272c5fe8",
+      "sha256": "0e741d57bf04fada55fc0910a41ea75f0d9637a176945fc930c2699fb6948831"
+    },
+    {
+      "ruta": "ETAPA_6G1_CORRECCION_LECTURA_SEGURA/motores/lectura_segura_6g1.py",
+      "estado": "modificado",
+      "sha256_6a93e4e": "833077a57c091f730c2e315460e9c11d768f0810e36b32f896b4ffdee85c2ff8",
+      "sha256": "b6f7d7eb2646c37fac0a912b777a83369d9e31d8e50d756f36db213a93690caf"
+    },
+    {
+      "ruta": "ETAPA_6G1_CORRECCION_LECTURA_SEGURA/motores/sdv_sdi_mqr_engine.py",
+      "estado": "modificado",
+      "sha256_6a93e4e": "41b075dfdac23b4a4ecbb543051cfcfddabc36dfa4e496d90e7cb3b27efdbaf7",
+      "sha256": "7e21f7ade20690f6c549dec13244a4f8b227d1c3a7cdbc8ff98a584354c9fbfa"
+    },
+    {
+      "ruta": "ETAPA_6G1_CORRECCION_LECTURA_SEGURA/scripts/inyeccion_auditoria_6g1/ejecutar_motor_auditoria.py",
+      "estado": "nuevo",
+      "sha256_6a93e4e": null,
+      "sha256": "f8f70cc9a293f79d7b4a73f20f502b14de6e26c0a2f4632156705c5480db67ab"
+    },
+    {
+      "ruta": "ETAPA_6G1_CORRECCION_LECTURA_SEGURA/scripts/pruebas_auditoria_cierre_6g1.py",
+      "estado": "nuevo",
+      "sha256_6a93e4e": null,
+      "sha256": "31f724b3d19b89ea9210cdd02e1d5a94bc5fd5bdfdc86e7c651c9d0acdc54852"
+    },
+    {
+      "ruta": "ETAPA_6G1_CORRECCION_LECTURA_SEGURA/scripts/verificar_ast_auditoria_integral_6g1.py",
+      "estado": "nuevo",
+      "sha256_6a93e4e": null,
+      "sha256": "1f21d981acaed6eecaaf2d1b80e7c4871ad789b8d7d727003c5a522687b24145"
+    }
+  ],
+  "resultados": {
+    "bateria_AI": {
+      "corregido": {
+        "pass_": 18,
+        "total": 27,
+        "fail_atribuibles_solo_a_F": 9,
+        "fail_no_atribuibles": 0
+      },
+      "base_6a93e4e": {
+        "pass_": 0,
+        "total": 27
+      }
+    },
+    "ast": {
+      "veredicto": "OK",
+      "base": "6a93e4ece2dcb1f4d79a5a4bb1501ace080f5dcd"
+    }
+  },
+  "hallazgo_F": {
+    "recurso": "masks/model_disagreement_map.npy",
+    "comprobaciones_afectadas": [
+      "completo_esperado",
+      "informe_sin_errores_de_cierre",
+      "log_cerrado_esperado",
+      "memmaps_liberados_al_registrar",
+      "sin_descriptores_ni_mapeos_al_registrar",
+      "sin_escritura_al_terminar"
+    ],
+    "causa": "variable de bucle `arr` de `for arr in mm.values(): arr.flush()` retiene el último memmap tras `del mm`",
+    "corregido": false,
+    "estado": "preexistente en 6a93e4e; fuera de A-E; NO corregido; pendiente de autorización",
+    "ubicacion": {
+      "Hardened": "run_experiment L1880-1881",
+      "EVO": "run_experiment L1991-1992",
+      "MQR": "_run_core L2715-2717"
+    }
+  },
+  "evidencia_previa_no_sobrescrita": [
+    "CV (c38d00d)",
+    "CR (8e773df)",
+    "CR-R1 (6a93e4e): RECTIFICACION_CR_R1_6G1.md, evidence/*_cr_r1_6g1*, MANIFEST/SHA256SUMS/patch CR-R1",
+    "prueba DSP (no_regresion_dsp_6g1.*, NO_REGRESION_DSP_6G1.md, SHA256SUMS_NOREG_DSP_FINAL.txt, ADJUDICACION_CRIS_NO_REGRESION_DSP_6G1.md)"
+  ],
+  "no_ejecutado": [
+    "batería CV",
+    "H1",
+    "C-R1",
+    "H2",
+    "baterías históricas 34/26/17/12",
+    "prueba DSP",
+    "audio real",
+    "Android/Termux"
+  ],
+  "estado": "auditoría ABIERTA: 18/27 PASS, 9 FAIL atribuibles sólo al hallazgo F (no corregido); 6G.1 NO cerrada ni autorizada para integración"
+}
