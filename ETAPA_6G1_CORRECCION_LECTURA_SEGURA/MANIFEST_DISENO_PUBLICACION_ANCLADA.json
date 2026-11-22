@@ -1,0 +1,88 @@
+{
+ "schema": "diseno-pda-1-manifest/1",
+ "fecha": "2026-11-22T16:36:39Z",
+ "rama": "arena/f1c5739f-sdv-sdi-sgm",
+ "commit_padre": "88a3ea2b9e41938db7c4a894370f2d68033ccbe8",
+ "referencia_tecnica": "9fedc5b223444e73955d2b899b6a434b0f5c670e",
+ "instruccion": "Cris 22-11-2026: I-1/D diseño de publicación anclada (NO implementar)",
+ "adjudicacion_previa": "I-1 = vulnerabilidad reproducida en el flujo real de Hardened; R1 NO aprobada; EVO/MQR pendientes de validación experimental; 6G.1 ABIERTA",
+ "alcance": "solo diseño, prototipo de diagnóstico y rectificación documental; 0 cambios de producción (motores, DSP, fixtures, validadores y lectura_segura_6g1.py intactos)",
+ "mecanismo_propuesto": "PDA-1: par anclado (fd_padre validado conservado desde la creación + nombre relativo acreditado + identidad dev/ino) con renameat2 RENAME_NOREPLACE relativo, fstatat previo y verificación post por descriptor; EXIT_OK sólo con traslado_verificado=True",
+ "respuesta_fd_solo_provisional": "NO suficiente: no existe rename por fd de objeto; re-resolución de ruta vulnerable (reproducida P7-A); linkat AT_EMPTY_PATH cerrado empíricamente sin CAP_DAC_READ_SEARCH (P7-B) y con semántica de doble nombre insuficiente",
+ "resultados": {
+  "veredictos": {
+   "P0": "PASS (publicación normal; publicado==acreditado)",
+   "P1": "PASS (sustitución intermedio antes de publicar: vulnerabilidad eliminada por diseño; árbol atacante sin publicación)",
+   "P2": "PASS (colisión: EEXIST fail-closed destino intacto; variante sufijo r001 re-verificada)",
+   "P3": "PASS (destino ajeno preexistente: fail-closed, ajeno intacto)",
+   "P4": "PASS (entrada sustituida dentro del padre validado: fstatat detecta; impostor no publicado)",
+   "P5": "PASS (inyección en microventana fstatat->renameat2, misma uid: impostor puede moverse pero traslado_verificado=False; sin éxito)",
+   "P6": "PASS (padre chmod 0777: fail-closed por privacidad perdida)",
+   "P7": "CONCLUIDO (solo fd del provisional: NO suficiente; re-resolución vulnerable reproducida; linkat AT_EMPTY_PATH cerrado empíricamente ENOENT sin CAP_DAC_READ_SEARCH, incluido O_PATH; protected_hardlinks=1)"
+  },
+  "sintesis": "8/8 escenarios del prototipo con resultado esperado; garantía fuerte para atacante de otra uid (no puede renombrar objeto distinto); residual documentado y detectado para misma uid"
+ },
+ "rectificaciones": {
+  "R1": "caso_c4rt_a1.json campo caso=C4r: defecto de etiquetado del arnes (modo no distinguido); identidad real C4rt intento 1 verificable por contenido; evidencia histórica sin alterar",
+  "R2": "commit 88a3ea2: 14 ficheros añadidos (+2295/-0), git local y API GitHub coinciden; el 13 del mensaje eran los ficheros con hash en las sumas (no auto-listadas)"
+ },
+ "no_implementado": [
+  "PDA-1/R1/R2/R3 en producción",
+  "corridas reales EVO y MQR",
+  "baterias históricas y prueba DSP",
+  "audio real, Android, Termux",
+  "atacantes con uid distinta real o root",
+  "integración (prohibida)"
+ ],
+ "estado": "diseño propuesto para adjudicación de Cris; NO IMPLEMENTADO; 6G.1 ABIERTA; parada obligatoria",
+ "archivos": [
+  {
+   "ruta": "ETAPA_6G1_CORRECCION_LECTURA_SEGURA/DISENO_PUBLICACION_ANCLADA_6G1.md",
+   "sha256": "e894d55311bd2a09536eae6038b9f6fda2ff040fdb3fd9ed19200c56259b7421"
+  },
+  {
+   "ruta": "ETAPA_6G1_CORRECCION_LECTURA_SEGURA/RECTIFICACION_DOCUMENTAL_I1_6G1.md",
+   "sha256": "6de89dfdbfaad4829e6331c261de5b6447171c385485f8076b9ce42ae0e7d7e9"
+  },
+  {
+   "ruta": "ETAPA_6G1_CORRECCION_LECTURA_SEGURA/scripts/prototipo_publicacion_anclada_6g1.py",
+   "sha256": "8d9e6b09f9141b3488a07d4e3caef39b2648f4ea3f30a15d7223158077413209"
+  },
+  {
+   "ruta": "ETAPA_6G1_CORRECCION_LECTURA_SEGURA/evidence/prototipo_publicacion_anclada_6g1/consolidado_prototipo_pda_1.json",
+   "sha256": "d71ac6c5c320b0a0355d45b42b9fff34f3e8400cb4e8e5c724f31a4fe17863d1"
+  },
+  {
+   "ruta": "ETAPA_6G1_CORRECCION_LECTURA_SEGURA/evidence/prototipo_publicacion_anclada_6g1/escenario_P0.json",
+   "sha256": "403f34a2f6d43eb76a8d87ccf556d1a7338cf62244d25b64ffbe1a2fd8cf41a8"
+  },
+  {
+   "ruta": "ETAPA_6G1_CORRECCION_LECTURA_SEGURA/evidence/prototipo_publicacion_anclada_6g1/escenario_P1.json",
+   "sha256": "c613788af7786364afbe7cc857d28223f55d84e9443e563130960c2eebb90762"
+  },
+  {
+   "ruta": "ETAPA_6G1_CORRECCION_LECTURA_SEGURA/evidence/prototipo_publicacion_anclada_6g1/escenario_P2.json",
+   "sha256": "43ae35b50ddd472cef16575ba2b1e0c1dadcdb095ce844cf76ceebc6597f24ed"
+  },
+  {
+   "ruta": "ETAPA_6G1_CORRECCION_LECTURA_SEGURA/evidence/prototipo_publicacion_anclada_6g1/escenario_P3.json",
+   "sha256": "2957eb1ddd3479d0c044d0f6d5b2e05b903e75bcedfba908c718efcf7936ad54"
+  },
+  {
+   "ruta": "ETAPA_6G1_CORRECCION_LECTURA_SEGURA/evidence/prototipo_publicacion_anclada_6g1/escenario_P4.json",
+   "sha256": "29aa79485b34a3d92bc76d1d126a164800c435ea0ac44b94f208c6cc938c7bfa"
+  },
+  {
+   "ruta": "ETAPA_6G1_CORRECCION_LECTURA_SEGURA/evidence/prototipo_publicacion_anclada_6g1/escenario_P5.json",
+   "sha256": "ebb37700310c3da05dd21140c04530db4a03cd427b6c7ab9817eb3938403baf1"
+  },
+  {
+   "ruta": "ETAPA_6G1_CORRECCION_LECTURA_SEGURA/evidence/prototipo_publicacion_anclada_6g1/escenario_P6.json",
+   "sha256": "a9fdc4707b25d1472fefa297308c7c9fec8410625f6e26428b73b3b5e393190a"
+  },
+  {
+   "ruta": "ETAPA_6G1_CORRECCION_LECTURA_SEGURA/evidence/prototipo_publicacion_anclada_6g1/escenario_P7.json",
+   "sha256": "60e5f5522120466a8e584f74e4f63714158876893c80539e35d3a1860ea2b997"
+  }
+ ]
+}

@@ -1,0 +1,75 @@
+{
+ "amenaza": "Que la publicación renombre un objeto distinto del acreditado Y lo declare éxito.",
+ "clasificacion": [
+  "limitacion_residual_atacante_misma_uid (el rename puede mover el impostor en la microventana)",
+  "comportamiento_rechazado_por_diseno (nunca se declara éxito: verificación post por descriptor -> fail-closed)"
+ ],
+ "escenario": "P5",
+ "nota": "para atacante de OTRA uid la microventana no es explotable: no puede crear/sustituir entradas dentro del padre 0700 del euid; el EXIT_OK exige traslado_verificado=True",
+ "resultado": {
+  "pasos": [
+   {
+    "fstat_padre": "OK (directorio privado, identidad de la creación)",
+    "paso": 1
+   },
+   {
+    "fstatat_entrada": "OK (identidad del provisional acreditado)",
+    "paso": 2
+   },
+   {
+    "inyector": "entrada sustituida por impostor dentro del padre validado",
+    "paso": 3
+   },
+   {
+    "destino": "run_final",
+    "paso": 4,
+    "renameat2": "OK"
+   },
+   {
+    "paso": 5,
+    "verificacion_post": {
+     "coincide": false,
+     "destino": "run_final",
+     "identidad_acreditada": {
+      "dev": 65024,
+      "ino": 535246
+     },
+     "identidad_publicada": {
+      "dev": 65024,
+      "ino": 535247
+     }
+    }
+   }
+  ],
+  "provisional_robado_conservado": true,
+  "publicacion": {
+   "destino": "run_final",
+   "exito": false,
+   "identidad_entrada_tras_inyeccion": {
+    "dev": 65024,
+    "ino": 535247
+   },
+   "inyeccion_aplicada": true,
+   "motivos": [
+    "OBJETO_PUBLICADO_DISTINTO_DEL_ACREDITADO (sustitución dentro de la microventana entre fstatat y renameat2; imposible para un atacante sin permiso de escritura sobre el padre validado; fail-closed: sin éxito declarado)"
+   ],
+   "publicado": true,
+   "traslado_verificado": false
+  },
+  "verificacion_post": {
+   "coincide": false,
+   "destino": "run_final",
+   "identidad_acreditada": {
+    "dev": 65024,
+    "ino": 535246
+   },
+   "identidad_publicada": {
+    "dev": 65024,
+    "ino": 535247
+   }
+  }
+ },
+ "schema": "prototipo-pda-1/1",
+ "titulo": "Sustitución ENTRE la comprobación y el renombrado (inyección determinista en la microventana; atacante de la misma uid)",
+ "veredicto": "PASS"
+}

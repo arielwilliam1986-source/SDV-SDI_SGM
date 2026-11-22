@@ -1,0 +1,80 @@
+{
+ "schema": "prototipo-pda-1/1",
+ "generado": "2026-11-22T16:33:08Z",
+ "mecanismo": "PDA-1 (par anclado fd_padre + nombre relativo, renameat2 RENAME_NOREPLACE relativo)",
+ "entorno": {
+  "python": "3.11.2",
+  "euid": 1001,
+  "kernel": "6.1.158+"
+ },
+ "escenarios": [
+  {
+   "escenario": "P0",
+   "veredicto": "PASS",
+   "clasificacion": [
+    "comportamiento_permitido_por_diseno"
+   ],
+   "fichero": "escenario_P0.json"
+  },
+  {
+   "escenario": "P1",
+   "veredicto": "PASS",
+   "clasificacion": [
+    "vulnerabilidad_eliminada_por_diseno",
+    "comportamiento_permitido_por_diseno"
+   ],
+   "fichero": "escenario_P1.json"
+  },
+  {
+   "escenario": "P2",
+   "veredicto": "PASS",
+   "clasificacion": [
+    "comportamiento_rechazado_por_diseno"
+   ],
+   "fichero": "escenario_P2.json"
+  },
+  {
+   "escenario": "P3",
+   "veredicto": "PASS",
+   "clasificacion": [
+    "comportamiento_rechazado_por_diseno"
+   ],
+   "fichero": "escenario_P3.json"
+  },
+  {
+   "escenario": "P4",
+   "veredicto": "PASS",
+   "clasificacion": [
+    "comportamiento_rechazado_por_diseno (detección por fstatat previo)",
+    "limitacion_residual_atacante_misma_uid"
+   ],
+   "fichero": "escenario_P4.json"
+  },
+  {
+   "escenario": "P5",
+   "veredicto": "PASS",
+   "clasificacion": [
+    "limitacion_residual_atacante_misma_uid (el rename puede mover el impostor en la microventana)",
+    "comportamiento_rechazado_por_diseno (nunca se declara éxito: verificación post por descriptor -> fail-closed)"
+   ],
+   "fichero": "escenario_P5.json"
+  },
+  {
+   "escenario": "P6",
+   "veredicto": "PASS",
+   "clasificacion": [
+    "comportamiento_rechazado_por_diseno"
+   ],
+   "fichero": "escenario_P6.json"
+  },
+  {
+   "escenario": "P7",
+   "veredicto": "CONCLUIDO",
+   "clasificacion": [
+    "resultado_experimental",
+    "DOCUMENTED_FACT (conclusión)"
+   ],
+   "fichero": "escenario_P7.json"
+  }
+ ]
+}

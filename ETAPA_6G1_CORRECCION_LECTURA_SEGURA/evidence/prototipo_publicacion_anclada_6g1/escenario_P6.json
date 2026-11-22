@@ -1,0 +1,23 @@
+{
+ "amenaza": "Que la publicación ocurra sobre un padre ya modificable por terceros.",
+ "clasificacion": [
+  "comportamiento_rechazado_por_diseno"
+ ],
+ "escenario": "P6",
+ "resultado": {
+  "modo_padre_tras_chmod": "0777 en el momento de publicar",
+  "publicacion": {
+   "destino": null,
+   "exito": false,
+   "motivos": [
+    "padre_perdio_privacidad (chmod o cambio de propietario)"
+   ],
+   "pasos": [],
+   "publicado": false,
+   "traslado_verificado": false
+  }
+ },
+ "schema": "prototipo-pda-1/1",
+ "titulo": "El padre validado pierde privacidad (chmod 0777) antes de la publicación",
+ "veredicto": "PASS"
+}

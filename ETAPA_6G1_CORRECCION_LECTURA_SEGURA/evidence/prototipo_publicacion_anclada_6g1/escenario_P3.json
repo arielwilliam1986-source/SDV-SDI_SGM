@@ -1,0 +1,32 @@
+{
+ "amenaza": "Que la publicación sobrescriba o fusione el objeto ajeno.",
+ "clasificacion": [
+  "comportamiento_rechazado_por_diseno"
+ ],
+ "escenario": "P3",
+ "resultado": {
+  "objeto_ajeno_intacto": true,
+  "publicacion": {
+   "destino": null,
+   "exito": false,
+   "motivos": [
+    "destino_colisionado (EEXIST, fail-closed sin sufijo)"
+   ],
+   "pasos": [
+    {
+     "fstat_padre": "OK (directorio privado, identidad de la creación)",
+     "paso": 1
+    },
+    {
+     "fstatat_entrada": "OK (identidad del provisional acreditado)",
+     "paso": 2
+    }
+   ],
+   "publicado": false,
+   "traslado_verificado": false
+  }
+ },
+ "schema": "prototipo-pda-1/1",
+ "titulo": "Destino sustituido por un objeto ajeno preexistente",
+ "veredicto": "PASS"
+}

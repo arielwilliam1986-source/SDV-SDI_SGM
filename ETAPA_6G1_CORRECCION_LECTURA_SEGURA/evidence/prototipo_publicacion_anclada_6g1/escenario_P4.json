@@ -1,0 +1,31 @@
+{
+ "amenaza": "Que la publicación renombre el objeto impostor.",
+ "clasificacion": [
+  "comportamiento_rechazado_por_diseno (detección por fstatat previo)",
+  "limitacion_residual_atacante_misma_uid"
+ ],
+ "escenario": "P4",
+ "nota": "imposible para atacante de OTRA uid: el padre es 0700 del euid; la detección fstatat(AT_SYMLINK_NOFOLLOW) cubre el caso",
+ "resultado": {
+  "impostor_no_publicado": true,
+  "provisional_robado_conservado": true,
+  "publicacion": {
+   "destino": null,
+   "exito": false,
+   "motivos": [
+    "entrada_nominal_identidad_distinta (sustituida dentro del padre validado)"
+   ],
+   "pasos": [
+    {
+     "fstat_padre": "OK (directorio privado, identidad de la creación)",
+     "paso": 1
+    }
+   ],
+   "publicado": false,
+   "traslado_verificado": false
+  }
+ },
+ "schema": "prototipo-pda-1/1",
+ "titulo": "Sustitución de la ENTRADA nominal dentro del padre validado (atacante de la MISMA uid) antes de la publicación",
+ "veredicto": "PASS"
+}

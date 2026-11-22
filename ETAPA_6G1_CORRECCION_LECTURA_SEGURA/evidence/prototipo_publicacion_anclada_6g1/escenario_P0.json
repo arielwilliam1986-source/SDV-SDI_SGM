@@ -1,0 +1,55 @@
+{
+ "amenaza": "Ninguna: línea base del mecanismo propuesto.",
+ "clasificacion": [
+  "comportamiento_permitido_por_diseno"
+ ],
+ "escenario": "P0",
+ "resultado": {
+  "contenido_publicado": [
+   "contenido"
+  ],
+  "destino_existe": true,
+  "provisional_desaparecio_del_padre": true,
+  "publicacion": {
+   "destino": "run_final",
+   "exito": true,
+   "motivos": [],
+   "pasos": [
+    {
+     "fstat_padre": "OK (directorio privado, identidad de la creación)",
+     "paso": 1
+    },
+    {
+     "fstatat_entrada": "OK (identidad del provisional acreditado)",
+     "paso": 2
+    },
+    {
+     "destino": "run_final",
+     "paso": 4,
+     "renameat2": "OK"
+    },
+    {
+     "paso": 5,
+     "verificacion_post": {
+      "coincide": true,
+      "destino": "run_final",
+      "identidad_acreditada": {
+       "dev": 65024,
+       "ino": 535246
+      },
+      "identidad_publicada": {
+       "dev": 65024,
+       "ino": 535246
+      }
+     }
+    }
+   ],
+   "publicado": true,
+   "traslado_verificado": true
+  },
+  "ruta_nominal_publicada": "/tmp/pda_6g1/P0/shared/user/base/run_final"
+ },
+ "schema": "prototipo-pda-1/1",
+ "titulo": "Publicación anclada normal (sin ataque)",
+ "veredicto": "PASS"
+}

@@ -1,0 +1,44 @@
+{
+ "amenaza": "Determinar si el par (fd_padre, nombre) es prescindible.",
+ "clasificacion": [
+  "resultado_experimental",
+  "DOCUMENTED_FACT (conclusión)"
+ ],
+ "escenario": "P7",
+ "resultado": {
+  "ancla_con_padre": {
+   "nota": "con (fd_padre, nombre): la operación relativa renombra la entrada correcta del padre validado (ver P1)"
+  },
+  "entorno_linkat": {
+   "cap_dac_read_search": "no (sin capacidades extrañas, euid normal)",
+   "euid": 1001,
+   "protected_hardlinks": "1"
+  },
+  "solo_fd_provisional": {
+   "conclusion": "NO es suficiente: rename* exige (dirfd_padre, nombre); sin el padre hay que re-resolver rutas (vulnerable) o usar linkat/AT_EMPTY_PATH (semántica de doble nombre, no mueve, y dependiente de privilegios/limitaciones del kernel)",
+   "via_linkat_at_empty_path": {
+    "destino_creado": false,
+    "errno": 2,
+    "errno_nombre": "No such file or directory",
+    "intentado": true,
+    "nota": "si rc==0, el inodo acreditado tendría DOS nombres: el original (en el árbol posiblemente secuestrado) y el nuevo; el atacante retiene el original y el provisional no se MUEVE",
+    "rc": -1,
+    "via": "syscall directo al kernel",
+    "via_opath": {
+     "destino_creado": false,
+     "errno": 2,
+     "errno_nombre": "No such file or directory",
+     "rc": -1
+    }
+   },
+   "via_re_resolucion_ruta": {
+    "provisional_real_conservado_en_arbol_real": true,
+    "publicado_es_acreditado": false,
+    "resultado": "renombra el objeto del atacante (vulnerabilidad reproducida)"
+   }
+  }
+ },
+ "schema": "prototipo-pda-1/1",
+ "titulo": "Análisis experimental: ¿conservar sólo el descriptor del provisional sin el descriptor del padre?",
+ "veredicto": "CONCLUIDO"
+}

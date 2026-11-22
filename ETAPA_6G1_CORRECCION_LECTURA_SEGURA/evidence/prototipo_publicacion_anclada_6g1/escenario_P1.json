@@ -1,0 +1,67 @@
+{
+ "amenaza": "Que la publicación renombre un objeto del atacante o caiga fuera del provisional acreditado.",
+ "clasificacion": [
+  "vulnerabilidad_eliminada_por_diseno",
+  "comportamiento_permitido_por_diseno"
+ ],
+ "escenario": "P1",
+ "nota": "el renombrado ocurre SIEMPRE sobre el descriptor del padre validado de la creación; la ruta nominal secuestrada no participa en la operación",
+ "resultado": {
+  "publicacion": {
+   "destino": "run_final",
+   "exito": true,
+   "motivos": [],
+   "pasos": [
+    {
+     "fstat_padre": "OK (directorio privado, identidad de la creación)",
+     "paso": 1
+    },
+    {
+     "fstatat_entrada": "OK (identidad del provisional acreditado)",
+     "paso": 2
+    },
+    {
+     "destino": "run_final",
+     "paso": 4,
+     "renameat2": "OK"
+    },
+    {
+     "paso": 5,
+     "verificacion_post": {
+      "coincide": true,
+      "destino": "run_final",
+      "identidad_acreditada": {
+       "dev": 65024,
+       "ino": 535246
+      },
+      "identidad_publicada": {
+       "dev": 65024,
+       "ino": 535246
+      }
+     }
+    }
+   ],
+   "publicado": true,
+   "traslado_verificado": true
+  },
+  "publicado_en_arbol_atacante": {
+   "contenido": null,
+   "existe": false
+  },
+  "publicado_en_arbol_real": {
+   "contenido": [
+    "contenido"
+   ],
+   "existe": true,
+   "identidad": {
+    "dev": 65024,
+    "ino": 535246
+   }
+  },
+  "ruta_nominal_que_habria_resuelto_el_motor": "/tmp/pda_6g1/P1/shared/user/base/run_final",
+  "senuelo_atacante_no_movido": true
+ },
+ "schema": "prototipo-pda-1/1",
+ "titulo": "Sustitución del componente INTERMEDIO antes de la publicación (atacante con escritura sobre el directorio del componente)",
+ "veredicto": "PASS"
+}
