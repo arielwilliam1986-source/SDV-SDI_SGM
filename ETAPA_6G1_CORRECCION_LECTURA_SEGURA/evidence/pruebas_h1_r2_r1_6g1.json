@@ -1,0 +1,48 @@
+{
+  "schema": "pruebas-h1-r2-r1-6g1/1",
+  "filas": [
+    {
+      "prueba": "R1a",
+      "motor": "lectura_segura_6g1",
+      "alcance": "modificación durante el hash: detectada por el doble fstat; sin SHA válido",
+      "veredicto": "PASS",
+      "checks_ok": 6,
+      "checks_total": 6,
+      "detalle": "todos los checks OK"
+    },
+    {
+      "prueba": "R1b",
+      "motor": "lectura_segura_6g1",
+      "alcance": "archivo estable: SHA idéntico al calculado independientemente",
+      "veredicto": "PASS",
+      "checks_ok": 3,
+      "checks_total": 3,
+      "detalle": "todos los checks OK"
+    }
+  ],
+  "detalles": {
+    "unidad": {
+      "R1a": {
+        "err": "archivo modificado durante la lectura (H1-R2-R1): SHA no acreditable",
+        "sha": null,
+        "estado": {
+          "bloques_leidos": 3,
+          "modificado_en_bloque": 1
+        },
+        "ino_antes": [
+          65024,
+          536994
+        ],
+        "ino_despues": [
+          65024,
+          536994
+        ]
+      },
+      "R1b": {
+        "err": null,
+        "sha": "4393c23052702d4fe3d388af7e6bf3603b0c56c1206e666e5cd2b0135f6f531c",
+        "sha_independiente": "4393c23052702d4fe3d388af7e6bf3603b0c56c1206e666e5cd2b0135f6f531c"
+      }
+    }
+  }
+}

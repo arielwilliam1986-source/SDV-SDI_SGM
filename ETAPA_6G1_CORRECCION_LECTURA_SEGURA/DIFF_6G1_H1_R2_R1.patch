@@ -1,0 +1,456 @@
+diff --git a/ETAPA_6G1_CORRECCION_LECTURA_SEGURA/INFORME_H1_R2_R1_6G1.md b/ETAPA_6G1_CORRECCION_LECTURA_SEGURA/INFORME_H1_R2_R1_6G1.md
+new file mode 100644
+index 0000000..0e1abac
+--- /dev/null
++++ b/ETAPA_6G1_CORRECCION_LECTURA_SEGURA/INFORME_H1_R2_R1_6G1.md
+@@ -0,0 +1,67 @@
++# INFORME H1-R2-R1 — RECTIFICACIÓN 6G.1 (VERIFICACIÓN DEL ARCHIVO DURANTE EL HASH)
++
++**Implementador**: Arena.ai · **Responsable técnico**: Cris · **Decisor final**: Will
++**Fecha**: 2026-11-21
++**HEAD obligatorio**: `2c3227f473a308fd9d7242b0b89936fd31493125` (padre directo del commit de esta entrega, verificado con `git rev-parse HEAD^`)
++**Alcance**: exclusivamente `_sha_via_descriptor_6g1()` y su prueba focalizada. Sin cambios DSP; motores originales de 6G, `main` y rama de referencia intactos; baterías históricas 34/26/17/12 no repetidas; A1/A2/A3/B1 sin cambios (dependencia indirecta cubierta por las regresiones).
++
++> **Estado**: ENTREGADA, **NO CERRADA**. No se declaran H1 ni 6G.1 cerradas: la aprobación continúa dependiendo de la auditoría independiente.
++
++---
++
++## 1. Hallazgo
++
++`_sha_via_descriptor_6g1()` obtenía `fstat()` antes de leer, pero no después: comparaba dos estados iniciales (el del `lstat` y el inicial del descriptor) sin demostrar que el archivo permaneció estable **durante toda la lectura**. Además acumulaba el contenido completo en memoria (`datos += bloque`, copias repetidas).
++
++## 2. Corrección (exclusivamente `_sha_via_descriptor_6g1()`, +36/−13)
++
++1. `fstat()` **al abrir** el descriptor (`O_NOFOLLOW` + `dir_fd`, anclado y sin rutas).
++2. Comprobación de que corresponde al **mismo archivo regular** identificado por `lstat` (identidad `st_dev/st_ino` + `S_ISREG`).
++3. SHA-256 por **actualización incremental** de `hashlib` (`h.update(bloque)`) — sin acumular el archivo completo en memoria.
++4. **Segundo `fstat()`** al terminar la lectura.
++5. Comparación de **identidad, tamaño, `mtime_ns` y `ctime_ns`** entre ambos estados (`ctime_ns` detecta también cambios de metadatos con tamaño constante; disponible desde Python 3.3 → compatible con 3.8).
++6. Si cualquier dato cambia → **(None, motivo)**: el SHA **no se acredita como válido** (motivos nuevos: `identidad cambiada durante la lectura (H1-R2-R1)` / `archivo modificado durante la lectura (H1-R2-R1): SHA no acreditable`).
++7. Se mantienen `O_NOFOLLOW`, `dir_fd` y el descriptor anclado; sin rutas.
++
++Los llamadores (`_clasificar_entrada_6g1`) y las garantías C-R1 no cambian: un SHA no acreditable clasifica la entrada como conservada con su motivo (fail-closed).
++
++## 3. Prueba focalizada — 2/2 PASS, 0 FAIL, 0 NOT_EXECUTED
++
++`evidence/matriz_h1_r2_r1_6g1.csv` · detalle: `evidence/pruebas_h1_r2_r1_6g1.json`. Verificación sobre el estado real en disco (bytes, SHA-256, inodos).
++
++| Prueba | Qué comprueba | Resultado |
++|---|---|---|
++| **R1a** | Modificación **determinista** durante el cálculo del SHA (gancho sobre `os.read`: tras el primer bloque leído se sobrescribe el archivo in situ, misma longitud, vía `pwrite` con `dir_fd` — sin sustituir el inodo): la modificación ocurre **después de comenzar la lectura** (bloque 1 de ≥2); el **descriptor siguió apuntando al mismo inodo** (inodo antes == después y el error disparado es de estabilidad, no de identidad); la **verificación posterior detectó el cambio** (`archivo modificado durante la lectura (H1-R2-R1)`); **no se devuelve SHA válido** (`sha is None`); el archivo **no se eliminó** y su contenido final es **exactamente el previsto** por la prueba (`XX` + resto original — única alteración) | PASS |
++| **R1b** | Archivo **estable**: sin error y el SHA devuelto **coincide** con el calculado independientemente (`hashlib` sobre los bytes); el archivo permanece intacto tras el hash | PASS |
++
++**Regresiones ejecutadas (sólo las autorizadas)**: batería **H1-R2** (A1/A2/A3/B1): **4/4 PASS** · batería **H1** (H1a/H1b/H1c + tres flujos de aborto + sanidad ×3): **10/10 PASS** · batería **C-R1**: **13/13 PASS** (evidencias regeneradas). Baterías históricas 34/26/17/12: no ejecutadas. Sin cambios DSP (sanidad ×3 con PCM idéntico a la campaña auditada, incluida en la regresión H1).
++
++## 4. SHA-256, DIFF y commits
++
++- `SHA256SUMS_H1_R2_R1.txt` (9 ficheros con SHA previo en comentario; verificado con `sha256sum -c`: 9/9 OK).
++- `DIFF_6G1_H1_R2_R1.patch`: diff incremental **reversible** respecto de `2c3227f473a308fd9d7242b0b89936fd31493125` (`patch -R -p1` → árbol base byte a byte; forward dry-run exit 0).
++- **Padre directo**: `2c3227f473a308fd9d7242b0b89936fd31493125` · **Nuevo commit**: hijo directo (SHA completo en el informe de ejecución).
++
++## 5. Límites respetados
++
++Sin STFT/ISTFT/FFT/hop/chunking/máscaras/fórmulas/consenso/ganancias/polaridad/parámetros DSP; los tres motores y sus parámetros **sin cambios** (la corrección es interna al módulo compartido); motores originales de 6G, carpeta 6G de referencia, `main` y otras ramas intactos; A1/A2/A3/B1 sin modificar; sin audio real, Elis/Tristania ni Android/Termux; sin fusionar ni abrir PR; baterías históricas no repetidas. **No se declaran H1 ni 6G.1 cerradas.**
++
++## 6. Enlaces (URLs completas)
++
++Informe H1-R2-R1 (este documento):
++https://github.com/arielwilliam1986-source/SDV-SDI_SGM/blob/arena/441a4bf8-sdv-sdi-sgm/ETAPA_6G1_CORRECCION_LECTURA_SEGURA/INFORME_H1_R2_R1_6G1.md
++
++Diff incremental vs 2c3227f (reversible):
++https://github.com/arielwilliam1986-source/SDV-SDI_SGM/blob/arena/441a4bf8-sdv-sdi-sgm/ETAPA_6G1_CORRECCION_LECTURA_SEGURA/DIFF_6G1_H1_R2_R1.patch
++
++SHA-256 de los archivos modificados:
++https://github.com/arielwilliam1986-source/SDV-SDI_SGM/blob/arena/441a4bf8-sdv-sdi-sgm/ETAPA_6G1_CORRECCION_LECTURA_SEGURA/SHA256SUMS_H1_R2_R1.txt
++
++Matriz H1-R2-R1:
++https://github.com/arielwilliam1986-source/SDV-SDI_SGM/blob/arena/441a4bf8-sdv-sdi-sgm/ETAPA_6G1_CORRECCION_LECTURA_SEGURA/evidence/matriz_h1_r2_r1_6g1.csv
++
++Resultados individuales por check:
++https://github.com/arielwilliam1986-source/SDV-SDI_SGM/blob/arena/441a4bf8-sdv-sdi-sgm/ETAPA_6G1_CORRECCION_LECTURA_SEGURA/evidence/pruebas_h1_r2_r1_6g1.json
++
++Módulo corregido:
++https://github.com/arielwilliam1986-source/SDV-SDI_SGM/blob/arena/441a4bf8-sdv-sdi-sgm/ETAPA_6G1_CORRECCION_LECTURA_SEGURA/motores/lectura_segura_6g1.py
+diff --git a/ETAPA_6G1_CORRECCION_LECTURA_SEGURA/evidence/matriz_h1_r2_r1_6g1.csv b/ETAPA_6G1_CORRECCION_LECTURA_SEGURA/evidence/matriz_h1_r2_r1_6g1.csv
+new file mode 100644
+index 0000000..c95a185
+--- /dev/null
++++ b/ETAPA_6G1_CORRECCION_LECTURA_SEGURA/evidence/matriz_h1_r2_r1_6g1.csv
+@@ -0,0 +1,3 @@
++prueba,motor,alcance,veredicto,checks_ok,checks_total,detalle
++R1a,lectura_segura_6g1,modificación durante el hash: detectada por el doble fstat; sin SHA válido,PASS,6,6,todos los checks OK
++R1b,lectura_segura_6g1,archivo estable: SHA idéntico al calculado independientemente,PASS,3,3,todos los checks OK
+diff --git a/ETAPA_6G1_CORRECCION_LECTURA_SEGURA/evidence/pruebas_c_r1_6g1.json b/ETAPA_6G1_CORRECCION_LECTURA_SEGURA/evidence/pruebas_c_r1_6g1.json
+index 5d4b401..c223623 100644
+--- a/ETAPA_6G1_CORRECCION_LECTURA_SEGURA/evidence/pruebas_c_r1_6g1.json
++++ b/ETAPA_6G1_CORRECCION_LECTURA_SEGURA/evidence/pruebas_c_r1_6g1.json
+@@ -275,7 +275,7 @@
+     "Hardened": {
+       "E2E": {
+         "exit": 2,
+-        "abort_dir": "/tmp/f6g1cr1/Hardened/E2E/out/motorA_run_20261122_001635_partial"
++        "abort_dir": "/tmp/f6g1cr1/Hardened/E2E/out/motorA_run_20261122_002910_partial"
+       },
+       "sanidad": {
+         "exit": 0
+@@ -284,7 +284,7 @@
+     "EVO": {
+       "E2E": {
+         "exit": 2,
+-        "abort_dir": "/tmp/f6g1cr1/EVO/E2E/out/motorA_run_20261122_001638_partial"
++        "abort_dir": "/tmp/f6g1cr1/EVO/E2E/out/motorA_run_20261122_002913_partial"
+       },
+       "sanidad": {
+         "exit": 0
+@@ -293,7 +293,7 @@
+     "MQR": {
+       "E2E": {
+         "exit": 2,
+-        "abort_dir": "/tmp/f6g1cr1/MQR/E2E/out/mqr_run_20261122_001641_partial"
++        "abort_dir": "/tmp/f6g1cr1/MQR/E2E/out/mqr_run_20261122_002915_partial"
+       },
+       "sanidad": {
+         "exit": 0
+diff --git a/ETAPA_6G1_CORRECCION_LECTURA_SEGURA/evidence/pruebas_h1_r2_6g1.json b/ETAPA_6G1_CORRECCION_LECTURA_SEGURA/evidence/pruebas_h1_r2_6g1.json
+index a368fc8..c3abc5d 100644
+--- a/ETAPA_6G1_CORRECCION_LECTURA_SEGURA/evidence/pruebas_h1_r2_6g1.json
++++ b/ETAPA_6G1_CORRECCION_LECTURA_SEGURA/evidence/pruebas_h1_r2_6g1.json
+@@ -44,7 +44,7 @@
+         "ruta": "/tmp/f6g1h1r2/A1/out/run_partial",
+         "acreditada": [
+           65024,
+-          536699
++          536997
+         ]
+       },
+       "A2": {
+diff --git a/ETAPA_6G1_CORRECCION_LECTURA_SEGURA/evidence/pruebas_h1_r2_r1_6g1.json b/ETAPA_6G1_CORRECCION_LECTURA_SEGURA/evidence/pruebas_h1_r2_r1_6g1.json
+new file mode 100644
+index 0000000..c69d82a
+--- /dev/null
++++ b/ETAPA_6G1_CORRECCION_LECTURA_SEGURA/evidence/pruebas_h1_r2_r1_6g1.json
+@@ -0,0 +1,48 @@
++{
++  "schema": "pruebas-h1-r2-r1-6g1/1",
++  "filas": [
++    {
++      "prueba": "R1a",
++      "motor": "lectura_segura_6g1",
++      "alcance": "modificación durante el hash: detectada por el doble fstat; sin SHA válido",
++      "veredicto": "PASS",
++      "checks_ok": 6,
++      "checks_total": 6,
++      "detalle": "todos los checks OK"
++    },
++    {
++      "prueba": "R1b",
++      "motor": "lectura_segura_6g1",
++      "alcance": "archivo estable: SHA idéntico al calculado independientemente",
++      "veredicto": "PASS",
++      "checks_ok": 3,
++      "checks_total": 3,
++      "detalle": "todos los checks OK"
++    }
++  ],
++  "detalles": {
++    "unidad": {
++      "R1a": {
++        "err": "archivo modificado durante la lectura (H1-R2-R1): SHA no acreditable",
++        "sha": null,
++        "estado": {
++          "bloques_leidos": 3,
++          "modificado_en_bloque": 1
++        },
++        "ino_antes": [
++          65024,
++          536994
++        ],
++        "ino_despues": [
++          65024,
++          536994
++        ]
++      },
++      "R1b": {
++        "err": null,
++        "sha": "4393c23052702d4fe3d388af7e6bf3603b0c56c1206e666e5cd2b0135f6f531c",
++        "sha_independiente": "4393c23052702d4fe3d388af7e6bf3603b0c56c1206e666e5cd2b0135f6f531c"
++      }
++    }
++  }
++}
+diff --git a/ETAPA_6G1_CORRECCION_LECTURA_SEGURA/motores/lectura_segura_6g1.py b/ETAPA_6G1_CORRECCION_LECTURA_SEGURA/motores/lectura_segura_6g1.py
+index bfefe82..d88ae6d 100644
+--- a/ETAPA_6G1_CORRECCION_LECTURA_SEGURA/motores/lectura_segura_6g1.py
++++ b/ETAPA_6G1_CORRECCION_LECTURA_SEGURA/motores/lectura_segura_6g1.py
+@@ -277,26 +277,43 @@ def crear_y_acreditar_dir_6g1(padre, nombre):
+ 
+ 
+ def _sha_via_descriptor_6g1(nombre, fd_dir, st):
+-    """[H1-R2/B] SHA-256 de un archivo del directorio anclado: se abre con
+-    `dir_fd` + `O_NOFOLLOW`, se verifica por `fstat` que el descriptor apunta
+-    a la misma identidad que el `lstat` relativo, y se re-verifica tamaño/
+-    mtime tras la lectura (sin rutas). Devuelve (sha256, None) o (None,
+-    motivo)."""
++    """[H1-R2/B, reforzado H1-R2-R1] SHA-256 de un archivo del directorio
++    anclado, con verificación de ESTABILIDAD durante toda la lectura:
++
++    1. `fstat()` al abrir el descriptor (O_NOFOLLOW + dir_fd, sin rutas) y
++       comprobación de que es el mismo archivo REGULAR identificado por el
++       `lstat` relativo (identidad st_dev/st_ino).
++    2. SHA-256 por actualización incremental de `hashlib` (sin acumular el
++       contenido completo en memoria).
++    3. SEGUNDO `fstat()` al terminar la lectura.
++    4. Comparación de identidad, tamaño, mtime y ctime entre ambos estados:
++       si cualquier dato cambia, el archivo se modificó durante la lectura y
++       el SHA NO se acredita como válido (se devuelve (None, motivo)).
++
++    Compatible con Python 3.8 (st_mtime_ns/st_ctime_ns). Devuelve
++    (sha256, None) o (None, motivo)."""
+     fd = os.open(str(nombre), os.O_RDONLY | os.O_NOFOLLOW, dir_fd=fd_dir)
+     try:
+-        st2 = os.fstat(fd)
+-        if (st2.st_dev, st2.st_ino) != (st.st_dev, st.st_ino):
++        st0 = os.fstat(fd)                                  # estado inicial
++        if not stat.S_ISREG(st0.st_mode):
++            return None, 'no_es_archivo_regular (H1-R2-R1)'
++        if (st0.st_dev, st0.st_ino) != (st.st_dev, st.st_ino):
+             return None, 'identidad_distinta'
+-        datos = b''
++        h = hashlib.sha256()                                # incremental
+         while True:
+             bloque = os.read(fd, 1 << 20)
+             if not bloque:
+                 break
+-            datos += bloque
+-        if st2.st_size != st.st_size or st2.st_mtime_ns != st.st_mtime_ns:
+-            return None, ('tamaño/mtime distintos durante la lectura '
+-                          '(H1-R2/B)')
+-        return hashlib.sha256(datos).hexdigest(), None
++            h.update(bloque)
++        st1 = os.fstat(fd)                                  # estado final
++        if (st1.st_dev, st1.st_ino) != (st0.st_dev, st0.st_ino):
++            return None, ('identidad cambiada durante la lectura '
++                          '(H1-R2-R1)')
++        if (st1.st_size, st1.st_mtime_ns, st1.st_ctime_ns) != \
++                (st0.st_size, st0.st_mtime_ns, st0.st_ctime_ns):
++            return None, ('archivo modificado durante la lectura '
++                          '(H1-R2-R1): SHA no acreditable')
++        return h.hexdigest(), None
+     finally:
+         os.close(fd)
+ 
+diff --git a/ETAPA_6G1_CORRECCION_LECTURA_SEGURA/scripts/pruebas_h1_r2_r1_6g1.py b/ETAPA_6G1_CORRECCION_LECTURA_SEGURA/scripts/pruebas_h1_r2_r1_6g1.py
+new file mode 100644
+index 0000000..31e3832
+--- /dev/null
++++ b/ETAPA_6G1_CORRECCION_LECTURA_SEGURA/scripts/pruebas_h1_r2_r1_6g1.py
+@@ -0,0 +1,209 @@
++"""Pruebas H1-R2-R1 (rectificación 6G.1 — verificación del archivo durante el hash).
++
++Ejecuta ÚNICAMENTE la prueba focalizada de este hallazgo; las regresiones
++(H1-R2, H1 y C-R1) se ejecutan con sus propias baterías. No repite las
++baterías históricas (34/26/17/12).
++
++  R1a  Modificación DETERMINISTA del contenido DURANTE el cálculo del
++       SHA-256 (gancho sobre os.read: tras el primer bloque leído se
++       sobrescribe el archivo in situ — misma longitud, mediante pwrite con
++       dir_fd, sin sustituir el inodo): la verificación posterior debe
++       detectarlo (doble fstat: identidad/tamaño/mtime/ctime entre ambos
++       estados) y NO devolver un SHA válido como si el archivo hubiera
++       permanecido estable. Comprueba además que el descriptor siguió
++       apuntando al mismo inodo (la modificación fue in situ, no una
++       sustitución), que la modificación ocurrió después de comenzar la
++       lectura, y que el archivo no se eliminó ni se alteró fuera de lo
++       previsto por la prueba (bytes exactos esperados tras la modificación).
++  R1b  Caso normal de archivo ESTABLE: el SHA devuelto coincide con el
++       calculado independientemente (hashlib sobre los bytes), sin error y
++       sin efectos sobre el archivo.
++
++Evidencia: evidence/pruebas_h1_r2_r1_6g1.json + evidence/matriz_h1_r2_r1_6g1.csv
++"""
++import csv
++import hashlib
++import json
++import os
++import shutil
++import sys
++from pathlib import Path
++
++RAIZ = Path(__file__).resolve().parent.parent
++sys.path.insert(0, str(RAIZ / 'scripts'))
++sys.path.insert(0, str(RAIZ / 'motores'))
++from comun_6g1 import sha_file, dump
++
++EV = RAIZ / 'evidence'
++TRABAJO = Path('/tmp/f6g1h1r2r1')
++
++
++def fila(prueba, motor, alcance, checks, motivo_ne=None):
++    if motivo_ne is not None:
++        return dict(prueba=prueba, motor=motor, alcance=alcance,
++                    veredicto='NOT_EXECUTED', checks_ok=0, checks_total=0,
++                    detalle=motivo_ne)
++    ok = [c for c in checks if c[1]]
++    detalle = '; '.join('%s=FALLO: %s' % (c[0], c[2]) for c in checks
++                        if not c[1]) or 'todos los checks OK'
++    return dict(prueba=prueba, motor=motor, alcance=alcance,
++                veredicto='PASS' if len(ok) == len(checks) else 'FAIL',
++                checks_ok=len(ok), checks_total=len(checks), detalle=detalle)
++
++
++def unidad():
++    filas, detalles = [], {}
++    import lectura_segura_6g1 as L
++
++    # ---- R1a: modificación del contenido DURANTE el cálculo del SHA
++    try:
++        base = TRABAJO / 'R1a'
++        shutil.rmtree(base, ignore_errors=True)
++        base.mkdir(parents=True)
++        L.reiniciar_registro_6g1()
++        nombre = 'salida.wav'
++        # >1 MiB para garantizar al menos dos bloques de lectura
++        bytes0 = b'A' * ((1 << 20) + 100)
++        (base / nombre).write_bytes(bytes0)
++        ruta = base / nombre
++        L.registrar_propio_6g1(ruta, estable=True)
++        L.acreditar_dir_6g1(base)
++        fd_dir = os.open(str(base), os.O_RDONLY | os.O_DIRECTORY
++                         | os.O_NOFOLLOW)
++        st_lstat = os.lstat(nombre, dir_fd=fd_dir)
++        ino_antes = (st_lstat.st_dev, st_lstat.st_ino)
++
++        # gancho determinista: tras el PRIMER bloque leído, se modifica el
++        # contenido in situ (misma longitud; escritura por dir_fd, sin
++        # sustituir el inodo y sin eliminar el archivo)
++        original_read = os.read
++        estado = dict(bloques_leidos=0, modificado_en_bloque=None)
++
++        def read_durante_hash(fd, n):
++            bloque = original_read(fd, n)
++            if bloque and estado['modificado_en_bloque'] is None:
++                fd_w = os.open(nombre, os.O_WRONLY, dir_fd=fd_dir)
++                try:
++                    os.pwrite(fd_w, b'XX', 0)   # sobrescribe in situ
++                finally:
++                    os.close(fd_w)
++                estado['modificado_en_bloque'] = estado['bloques_leidos'] + 1
++            estado['bloques_leidos'] += 1
++            return bloque
++
++        os.read = read_durante_hash
++        try:
++            sha, err = L._sha_via_descriptor_6g1(nombre, fd_dir, st_lstat)
++        finally:
++            os.read = original_read
++            os.close(fd_dir)
++        bytes_esperados = b'XX' + bytes0[2:]   # única alteración prevista
++        ino_despues = (os.lstat(nombre, dir_fd=0) if False else
++                       (os.lstat(str(ruta)).st_dev, os.lstat(str(ruta)).st_ino))
++        checks = [
++            ('modificacion_ocurrida_tras_comenzar_lectura',
++             estado['modificado_en_bloque'] == 1
++             and estado['bloques_leidos'] >= 2,
++             str(estado)),
++            ('descriptor_mismo_inodo_toda_la_lectura',
++             ino_antes == ino_despues
++             and err is not None
++             and 'modificado durante la lectura' in err
++             and 'identidad cambiada' not in err,
++             'ino_antes=%s ino_despues=%s err=%s'
++             % (ino_antes, ino_despues, err)),
++            ('verificacion_detecto_cambio',
++             err is not None
++             and ('modificado durante la lectura' in err
++                  or 'identidad cambiada' in err),
++             str(err)),
++            ('sha_no_devuelto_como_valido',
++             sha is None,
++             str(sha)),
++            ('archivo_no_eliminado', ruta.exists(), ''),
++            ('solo_alteracion_prevista',
++             ruta.read_bytes() == bytes_esperados,
++             ruta.read_bytes()[:8]),
++        ]
++        filas.append(fila('R1a', 'lectura_segura_6g1',
++                          'modificación durante el hash: detectada por el '
++                          'doble fstat; sin SHA válido', checks))
++        detalles['R1a'] = dict(err=err, sha=sha, estado=estado,
++                               ino_antes=ino_antes, ino_despues=ino_despues)
++        shutil.rmtree(base, ignore_errors=True)
++    except Exception as exc:
++        filas.append(fila('R1a', 'lectura_segura_6g1', 'unidad', None,
++                          motivo_ne='entorno de ensayo: %r' % exc))
++        detalles['R1a'] = dict(error=repr(exc))
++
++    # ---- R1b: archivo estable -> SHA coincidente con el independiente
++    try:
++        base = TRABAJO / 'R1b'
++        shutil.rmtree(base, ignore_errors=True)
++        base.mkdir(parents=True)
++        L.reiniciar_registro_6g1()
++        nombre = 'salida_estable.wav'
++        bytes0 = b'B' * (300 * 1024)
++        (base / nombre).write_bytes(bytes0)
++        ruta = base / nombre
++        L.registrar_propio_6g1(ruta, estable=True)
++        L.acreditar_dir_6g1(base)
++        fd_dir = os.open(str(base), os.O_RDONLY | os.O_DIRECTORY
++                         | os.O_NOFOLLOW)
++        st_lstat = os.lstat(nombre, dir_fd=fd_dir)
++        sha, err = L._sha_via_descriptor_6g1(nombre, fd_dir, st_lstat)
++        os.close(fd_dir)
++        sha_independiente = hashlib.sha256(bytes0).hexdigest()
++        checks = [
++            ('sin_error_en_archivo_estable', err is None, str(err)),
++            ('sha_coincide_con_independiente',
++             sha == sha_independiente,
++             '%s vs %s' % ((sha or '')[:16], sha_independiente[:16])),
++            ('archivo_intacto_tras_hash',
++             ruta.read_bytes() == bytes0
++             and sha_file(ruta) == sha_independiente,
++             sha_file(ruta)[:16]),
++        ]
++        filas.append(fila('R1b', 'lectura_segura_6g1',
++                          'archivo estable: SHA idéntico al calculado '
++                          'independientemente', checks))
++        detalles['R1b'] = dict(err=err, sha=sha,
++                               sha_independiente=sha_independiente)
++        shutil.rmtree(base, ignore_errors=True)
++    except Exception as exc:
++        filas.append(fila('R1b', 'lectura_segura_6g1', 'unidad', None,
++                          motivo_ne='entorno de ensayo: %r' % exc))
++        detalles['R1b'] = dict(error=repr(exc))
++
++    return filas, detalles
++
++
++def main():
++    EV.mkdir(parents=True, exist_ok=True)
++    TRABAJO.mkdir(parents=True, exist_ok=True)
++    todas, detalle_todo = [], {}
++    print('== H1-R2-R1 unidad ==')
++    fu, du = unidad()
++    todas.extend(fu)
++    detalle_todo['unidad'] = du
++    for f in fu:
++        print('  %-14s %s' % (f['veredicto'], f['detalle'][:90]))
++    dump(EV / 'pruebas_h1_r2_r1_6g1.json',
++         dict(schema='pruebas-h1-r2-r1-6g1/1', filas=todas,
++              detalles=detalle_todo))
++    with (EV / 'matriz_h1_r2_r1_6g1.csv').open('w', newline='',
++                                               encoding='utf-8') as fh:
++        w = csv.DictWriter(fh, fieldnames=('prueba', 'motor', 'alcance',
++                                           'veredicto', 'checks_ok',
++                                           'checks_total', 'detalle'),
++                           lineterminator='\n')
++        w.writeheader()
++        w.writerows(todas)
++    n = {v: sum(1 for f in todas if f['veredicto'] == v)
++         for v in ('PASS', 'FAIL', 'NOT_EXECUTED')}
++    print('RESUMEN: %d PASS, %d FAIL, %d NOT_EXECUTED de %d filas'
++          % (n['PASS'], n['FAIL'], n['NOT_EXECUTED'], len(todas)))
++
++
++if __name__ == '__main__':
++    main()

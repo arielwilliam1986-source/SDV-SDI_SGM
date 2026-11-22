@@ -277,26 +277,43 @@ def crear_y_acreditar_dir_6g1(padre, nombre):
 
 
 def _sha_via_descriptor_6g1(nombre, fd_dir, st):
-    """[H1-R2/B] SHA-256 de un archivo del directorio anclado: se abre con
-    `dir_fd` + `O_NOFOLLOW`, se verifica por `fstat` que el descriptor apunta
-    a la misma identidad que el `lstat` relativo, y se re-verifica tamaño/
-    mtime tras la lectura (sin rutas). Devuelve (sha256, None) o (None,
-    motivo)."""
+    """[H1-R2/B, reforzado H1-R2-R1] SHA-256 de un archivo del directorio
+    anclado, con verificación de ESTABILIDAD durante toda la lectura:
+
+    1. `fstat()` al abrir el descriptor (O_NOFOLLOW + dir_fd, sin rutas) y
+       comprobación de que es el mismo archivo REGULAR identificado por el
+       `lstat` relativo (identidad st_dev/st_ino).
+    2. SHA-256 por actualización incremental de `hashlib` (sin acumular el
+       contenido completo en memoria).
+    3. SEGUNDO `fstat()` al terminar la lectura.
+    4. Comparación de identidad, tamaño, mtime y ctime entre ambos estados:
+       si cualquier dato cambia, el archivo se modificó durante la lectura y
+       el SHA NO se acredita como válido (se devuelve (None, motivo)).
+
+    Compatible con Python 3.8 (st_mtime_ns/st_ctime_ns). Devuelve
+    (sha256, None) o (None, motivo)."""
     fd = os.open(str(nombre), os.O_RDONLY | os.O_NOFOLLOW, dir_fd=fd_dir)
     try:
-        st2 = os.fstat(fd)
-        if (st2.st_dev, st2.st_ino) != (st.st_dev, st.st_ino):
+        st0 = os.fstat(fd)                                  # estado inicial
+        if not stat.S_ISREG(st0.st_mode):
+            return None, 'no_es_archivo_regular (H1-R2-R1)'
+        if (st0.st_dev, st0.st_ino) != (st.st_dev, st.st_ino):
             return None, 'identidad_distinta'
-        datos = b''
+        h = hashlib.sha256()                                # incremental
         while True:
             bloque = os.read(fd, 1 << 20)
             if not bloque:
                 break
-            datos += bloque
-        if st2.st_size != st.st_size or st2.st_mtime_ns != st.st_mtime_ns:
-            return None, ('tamaño/mtime distintos durante la lectura '
-                          '(H1-R2/B)')
-        return hashlib.sha256(datos).hexdigest(), None
+            h.update(bloque)
+        st1 = os.fstat(fd)                                  # estado final
+        if (st1.st_dev, st1.st_ino) != (st0.st_dev, st0.st_ino):
+            return None, ('identidad cambiada durante la lectura '
+                          '(H1-R2-R1)')
+        if (st1.st_size, st1.st_mtime_ns, st1.st_ctime_ns) != \
+                (st0.st_size, st0.st_mtime_ns, st0.st_ctime_ns):
+            return None, ('archivo modificado durante la lectura '
+                          '(H1-R2-R1): SHA no acreditable')
+        return h.hexdigest(), None
     finally:
         os.close(fd)
 

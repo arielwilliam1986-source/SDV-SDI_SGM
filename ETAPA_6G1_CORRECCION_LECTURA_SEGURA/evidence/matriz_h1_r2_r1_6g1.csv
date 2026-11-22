@@ -1,0 +1,3 @@
+prueba,motor,alcance,veredicto,checks_ok,checks_total,detalle
+R1a,lectura_segura_6g1,modificación durante el hash: detectada por el doble fstat; sin SHA válido,PASS,6,6,todos los checks OK
+R1b,lectura_segura_6g1,archivo estable: SHA idéntico al calculado independientemente,PASS,3,3,todos los checks OK
