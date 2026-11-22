@@ -1,0 +1,11 @@
+prueba,motor,alcance,veredicto,checks_ok,checks_total,detalle
+H1a,lectura_segura_6g1,"enlace simbólico en la ruta del provisional: fail-closed, externo intacto, sin ABORT externo",PASS,11,11,todos los checks OK
+H1b,lectura_segura_6g1,"aborto normal con directorio acreditado: ABORT en el provisional real, semántica C-R1/E-R2 intacta",PASS,8,8,todos los checks OK
+H1c,lectura_segura_6g1,directorio sustituido por otro real: fail-closed por identidad distinta,PASS,6,6,todos los checks OK
+H1-CR1c-regresion,lectura_segura_6g1,ventana histórica CR1c cubierta con anclaje H1 activo,PASS,4,4,todos los checks OK
+H1-e2e,Hardened,aborto real con acreditación de create_run_dir,PASS,6,6,todos los checks OK
+sanidad,Hardened,corrida feliz tras H1,PASS,4,4,todos los checks OK
+H1-e2e,EVO,aborto real con acreditación de create_run_dir,PASS,6,6,todos los checks OK
+sanidad,EVO,corrida feliz tras H1,PASS,4,4,todos los checks OK
+H1-e2e,MQR,aborto real con acreditación de create_run_dir,PASS,6,6,todos los checks OK
+sanidad,MQR,corrida feliz tras H1,PASS,4,4,todos los checks OK

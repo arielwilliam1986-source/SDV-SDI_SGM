@@ -106,6 +106,7 @@ def unidad():
         L.reiniciar_registro_6g1()
         L.registrar_propio_6g1(run / 'salida_A.wav', estable=True)
         L.registrar_propio_6g1(run / 'salida_B.wav', estable=True)
+        L.acreditar_dir_6g1(run)  # [6G.1-R/H1] como create_run_dir
         info = L.abortar_6g1(run, 'PRUEBA_CR1a')
         ab = leer_abort(run)
         checks = [
@@ -149,6 +150,7 @@ def unidad():
         propio = run / 'propio.wav'
         propio.write_bytes(b'salida propia\n')
         L.registrar_propio_6g1(propio, estable=True)
+        L.acreditar_dir_6g1(run)  # [6G.1-R/H1] como create_run_dir
         info = L.abortar_6g1(run, 'PRUEBA_CR1b')
         ab = leer_abort(run)
         checks = [
@@ -225,6 +227,7 @@ def unidad():
             return propia, motivo
 
         L.propiedad_de_6g1 = prop_con_sustitucion
+        L.acreditar_dir_6g1(run)  # [6G.1-R/H1] como create_run_dir
         try:
             info = L.abortar_6g1(run, 'PRUEBA_CR1c')
         finally:
@@ -283,6 +286,7 @@ def unidad():
         os.symlink(str(externo), run / 'enlace.json')
         os.symlink(str(externo), run / 'analysis_link.json')
         L.reiniciar_registro_6g1()
+        L.acreditar_dir_6g1(run)  # [6G.1-R/H1] como create_run_dir
         info = L.abortar_6g1(run, 'PRUEBA_CR1d')
         ab = leer_abort(run)
         checks = [
@@ -319,6 +323,7 @@ def unidad():
         pre = run / 'ABORT_6G1.json'
         pre.write_bytes(b'{"abort_preexistente_ajeno": true}\n')
         sha_pre = sha_file(pre)
+        L.acreditar_dir_6g1(run)  # [6G.1-R/H1] como create_run_dir
         info = L.abortar_6g1(run, 'PRUEBA_CR1e')
         checks = [
             ('preexistente_intacto', sha_file(pre) == sha_pre, sha_file(pre)[:16]),
@@ -355,6 +360,7 @@ def unidad():
         sha0, mtime0 = sha_file(ruta_a), os.lstat(ruta_a).st_mtime_ns
         L.reiniciar_registro_6g1()
         L.registrar_propio_6g1(ruta_a, estable=True)
+        L.acreditar_dir_6g1(run)  # [6G.1-R/H1] como create_run_dir
         info = L.abortar_6g1(run, 'PRUEBA_CR1f')
         checks = [
             ('analysis_byte_a_byte', ruta_a.read_bytes() == contenido, ''),

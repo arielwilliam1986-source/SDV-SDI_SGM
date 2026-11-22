@@ -2,7 +2,7 @@
 
 **Implementador**: Arena.ai · **Responsable técnico**: Cris · **Decisor final**: Will
 **Fecha**: 2026-11-21
-**Commit anterior (base obligatoria)**: `71cfe4cf8b939ce5180dbdb3123c1694a0291312` (padre directo del commit de esta entrega, verificado con `git rev-parse HEAD^`)
+**Base histórica de la implementación C-R1**: `71cfe4cf8b939ce5180dbdb3123c1694a0291312` — padre directo del commit de **implementación** `8caa65bbaab2ba57961430f2891e89b34d72ec10`. El padre directo real de la **rectificación [C-R1-R]** (`4960b50c4f80b2c846a10bef5d42a86ca1971839`) es `8caa65bbaab2ba57961430f2891e89b34d72ec10` (no `71cfe4c`).
 **Alcance**: exclusivamente la seguridad de limpieza de `abortar_6g1()`. Sin cambios DSP; sin tocar motores de 6G, `main` ni la rama de referencia; sin repetir baterías históricas.
 
 > **Estado**: ENTREGADA, **NO CERRADA**. La aprobación final corresponde a Cris tras la auditoría independiente.
@@ -61,8 +61,9 @@ El significado de `salidas_invalidadas` cambió (de «eliminados» a «conservad
 
 ## 6. Identificación exacta de commits
 
-- **Commit anterior (base)**: `71cfe4cf8b939ce5180dbdb3123c1694a0291312`
-- **Nuevo commit (esta entrega)**: ver sección 8 y el informe de ejecución (padre directo verificado)
+- **Base histórica (implementación C-R1)**: `71cfe4cf8b939ce5180dbdb3123c1694a0291312`
+- **Commit de implementación C-R1**: `8caa65bbaab2ba57961430f2891e89b34d72ec10` (padre directo: `71cfe4cf…`)
+- **Commit de rectificación [C-R1-R] (evidencia CR1c)**: `4960b50c4f80b2c846a10bef5d42a86ca1971839` (padre directo real: `8caa65bbaab2ba57961430f2891e89b34d72ec10`)
 
 ## 7. Enlaces (URLs completas)
 

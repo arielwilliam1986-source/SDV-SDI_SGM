@@ -138,7 +138,9 @@
             "salida_B.wav": "salida_parcial_invalidada_y_conservada (sin eliminación; C-R1)"
           },
           "analysis_intacto": true,
-          "politica": "sin_eliminacion (C-R1): ningún archivo se elimina durante el aborto; las salidas propias registradas quedan invalidadas y conservadas; sin borrado por patrón de nombre ni por ubicación; sin escritura a través de enlaces simbólicos; analysis.json no se modifica durante el aborto (E-R2): toda la información del aborto vive en ABORT_6G1.json; un directorio con ABORT_6G1.json nunca es una corrida exitosa"
+          "directorio_acreditado": true,
+          "anclaje_directorio": "directorio_acreditado (H1)",
+          "politica": "sin_eliminacion (C-R1): ningún archivo se elimina durante el aborto; las salidas propias registradas quedan invalidadas y conservadas; sin borrado por patrón de nombre ni por ubicación; sin escritura a través de enlaces simbólicos; analysis.json no se modifica durante el aborto (E-R2): toda la información del aborto vive en ABORT_6G1.json; un directorio con ABORT_6G1.json nunca es una corrida exitosa; anclaje H1: directorio acreditado y E/S sobre el descriptor validado"
         }
       },
       "CR1b": {
@@ -163,7 +165,9 @@
             "propio.wav": "salida_parcial_invalidada_y_conservada (sin eliminación; C-R1)"
           },
           "analysis_intacto": true,
-          "politica": "sin_eliminacion (C-R1): ningún archivo se elimina durante el aborto; las salidas propias registradas quedan invalidadas y conservadas; sin borrado por patrón de nombre ni por ubicación; sin escritura a través de enlaces simbólicos; analysis.json no se modifica durante el aborto (E-R2): toda la información del aborto vive en ABORT_6G1.json; un directorio con ABORT_6G1.json nunca es una corrida exitosa"
+          "directorio_acreditado": true,
+          "anclaje_directorio": "directorio_acreditado (H1)",
+          "politica": "sin_eliminacion (C-R1): ningún archivo se elimina durante el aborto; las salidas propias registradas quedan invalidadas y conservadas; sin borrado por patrón de nombre ni por ubicación; sin escritura a través de enlaces simbólicos; analysis.json no se modifica durante el aborto (E-R2): toda la información del aborto vive en ABORT_6G1.json; un directorio con ABORT_6G1.json nunca es una corrida exitosa; anclaje H1: directorio acreditado y E/S sobre el descriptor validado"
         }
       },
       "CR1c": {
@@ -194,7 +198,9 @@
             "salida_concurrente.wav": "salida_parcial_invalidada_y_conservada (sin eliminación; C-R1)"
           },
           "analysis_intacto": true,
-          "politica": "sin_eliminacion (C-R1): ningún archivo se elimina durante el aborto; las salidas propias registradas quedan invalidadas y conservadas; sin borrado por patrón de nombre ni por ubicación; sin escritura a través de enlaces simbólicos; analysis.json no se modifica durante el aborto (E-R2): toda la información del aborto vive en ABORT_6G1.json; un directorio con ABORT_6G1.json nunca es una corrida exitosa"
+          "directorio_acreditado": true,
+          "anclaje_directorio": "directorio_acreditado (H1)",
+          "politica": "sin_eliminacion (C-R1): ningún archivo se elimina durante el aborto; las salidas propias registradas quedan invalidadas y conservadas; sin borrado por patrón de nombre ni por ubicación; sin escritura a través de enlaces simbólicos; analysis.json no se modifica durante el aborto (E-R2): toda la información del aborto vive en ABORT_6G1.json; un directorio con ABORT_6G1.json nunca es una corrida exitosa; anclaje H1: directorio acreditado y E/S sobre el descriptor validado"
         }
       },
       "CR1d": {
@@ -214,7 +220,9 @@
             "enlace.json": "enlace_simbolico_conservado (sin seguir)"
           },
           "analysis_intacto": true,
-          "politica": "sin_eliminacion (C-R1): ningún archivo se elimina durante el aborto; las salidas propias registradas quedan invalidadas y conservadas; sin borrado por patrón de nombre ni por ubicación; sin escritura a través de enlaces simbólicos; analysis.json no se modifica durante el aborto (E-R2): toda la información del aborto vive en ABORT_6G1.json; un directorio con ABORT_6G1.json nunca es una corrida exitosa"
+          "directorio_acreditado": true,
+          "anclaje_directorio": "directorio_acreditado (H1)",
+          "politica": "sin_eliminacion (C-R1): ningún archivo se elimina durante el aborto; las salidas propias registradas quedan invalidadas y conservadas; sin borrado por patrón de nombre ni por ubicación; sin escritura a través de enlaces simbólicos; analysis.json no se modifica durante el aborto (E-R2): toda la información del aborto vive en ABORT_6G1.json; un directorio con ABORT_6G1.json nunca es una corrida exitosa; anclaje H1: directorio acreditado y E/S sobre el descriptor validado"
         }
       },
       "CR1e": {
@@ -235,7 +243,9 @@
             "salida.wav": "salida_parcial_invalidada_y_conservada (sin eliminación; C-R1)"
           },
           "analysis_intacto": true,
-          "politica": "sin_eliminacion (C-R1): ningún archivo se elimina durante el aborto; las salidas propias registradas quedan invalidadas y conservadas; sin borrado por patrón de nombre ni por ubicación; sin escritura a través de enlaces simbólicos; analysis.json no se modifica durante el aborto (E-R2): toda la información del aborto vive en ABORT_6G1.json; un directorio con ABORT_6G1.json nunca es una corrida exitosa"
+          "directorio_acreditado": true,
+          "anclaje_directorio": "directorio_acreditado (H1)",
+          "politica": "sin_eliminacion (C-R1): ningún archivo se elimina durante el aborto; las salidas propias registradas quedan invalidadas y conservadas; sin borrado por patrón de nombre ni por ubicación; sin escritura a través de enlaces simbólicos; analysis.json no se modifica durante el aborto (E-R2): toda la información del aborto vive en ABORT_6G1.json; un directorio con ABORT_6G1.json nunca es una corrida exitosa; anclaje H1: directorio acreditado y E/S sobre el descriptor validado"
         }
       },
       "CR1f": {
@@ -253,7 +263,9 @@
             "analysis.json": "registro_interno_conservado"
           },
           "analysis_intacto": true,
-          "politica": "sin_eliminacion (C-R1): ningún archivo se elimina durante el aborto; las salidas propias registradas quedan invalidadas y conservadas; sin borrado por patrón de nombre ni por ubicación; sin escritura a través de enlaces simbólicos; analysis.json no se modifica durante el aborto (E-R2): toda la información del aborto vive en ABORT_6G1.json; un directorio con ABORT_6G1.json nunca es una corrida exitosa"
+          "directorio_acreditado": true,
+          "anclaje_directorio": "directorio_acreditado (H1)",
+          "politica": "sin_eliminacion (C-R1): ningún archivo se elimina durante el aborto; las salidas propias registradas quedan invalidadas y conservadas; sin borrado por patrón de nombre ni por ubicación; sin escritura a través de enlaces simbólicos; analysis.json no se modifica durante el aborto (E-R2): toda la información del aborto vive en ABORT_6G1.json; un directorio con ABORT_6G1.json nunca es una corrida exitosa; anclaje H1: directorio acreditado y E/S sobre el descriptor validado"
         }
       },
       "CR1-estatico": {
@@ -263,7 +275,7 @@
     "Hardened": {
       "E2E": {
         "exit": 2,
-        "abort_dir": "/tmp/f6g1cr1/Hardened/E2E/out/motorA_run_20261121_233936_partial"
+        "abort_dir": "/tmp/f6g1cr1/Hardened/E2E/out/motorA_run_20261121_235907_partial"
       },
       "sanidad": {
         "exit": 0
@@ -272,7 +284,7 @@
     "EVO": {
       "E2E": {
         "exit": 2,
-        "abort_dir": "/tmp/f6g1cr1/EVO/E2E/out/motorA_run_20261121_233939_partial"
+        "abort_dir": "/tmp/f6g1cr1/EVO/E2E/out/motorA_run_20261121_235910_partial"
       },
       "sanidad": {
         "exit": 0
@@ -281,7 +293,7 @@
     "MQR": {
       "E2E": {
         "exit": 2,
-        "abort_dir": "/tmp/f6g1cr1/MQR/E2E/out/mqr_run_20261121_233941_partial"
+        "abort_dir": "/tmp/f6g1cr1/MQR/E2E/out/mqr_run_20261121_235913_partial"
       },
       "sanidad": {
         "exit": 0

@@ -6,13 +6,18 @@ descriptor abierto durante toda la corrida y entrega un objeto con la misma
 interfaz que `soundfile.SoundFile`, pero respaldado por ese descriptor
 (`/proc/self/fd/N`), de modo que una ruta sustituida no puede alimentar el DSP.
 
-`abortar_6g1` (rectificado, corrección C) elimina únicamente archivos cuya
-propiedad por la corrida actual esté **acreditada**: el motor registra cada
-archivo que crea (ruta + identidad) y la limpieza verifica esa relación antes
-de borrar. Si la propiedad no puede demostrarse (archivo ajeno no registrado,
-o archivo registrado cuya identidad actual no coincide con la registrada),
-el archivo **se conserva** y se lista con el motivo. Ninguna decisión de borrado
-se toma por patrón de nombre ni por ubicación (`candidates/` incluido).
+`abortar_6g1` (rectificado C-R1) **no elimina ningún archivo**: las salidas
+propias registradas por la corrida quedan invalidadas y conservadas en el
+provisional; los archivos ajenos (incluido `candidates/` y los nombres de
+salida del motor), los registros internos y los enlaces se conservan con su
+motivo. La clasificación se basa en el dictamen de propiedad obtenido en el
+momento del barrido y nunca es una decisión de borrado. `ABORT_6G1.json`
+(schema `abort-6g1/3`) concentra toda la información del aborto y
+`analysis.json` permanece intacto (E-R2). El directorio de aborto se abre
+anclado a la identidad acreditada del provisional (H1): `O_DIRECTORY |
+O_NOFOLLOW` + verificación `fstat` contra lo registrado por
+`acreditar_dir_6g1()` en `create_run_dir()`; si no puede acreditarse, no se
+escribe nada en esa ubicación (fail-closed).
 """
 import errno
 import hashlib
@@ -159,9 +164,69 @@ def abrir_mix(path, sha_esperado=None):
 _PROPIOS_6G1 = {}
 
 
+# [6G.1-R/H1] Identidad acreditada del directorio provisional de la corrida:
+# (st_dev, st_ino) registrados por acreditar_dir_6g1() en create_run_dir() y
+# verificados con fstat() al abrir el directorio durante el aborto.
+_DIR_6G1 = {}
+
+
+def acreditar_dir_6g1(path):
+    """[H1] Acredita la identidad del directorio provisional de la corrida.
+
+    Registra (st_dev, st_ino) del directorio creado por `create_run_dir()`
+    (lstat, sin seguir enlaces). Debe llamarse inmediatamente después del
+    mkdir exclusivo del provisional. Fail-closed: si la ruta no es un
+    directorio real, eleva RuntimeError.
+    """
+    p = os.path.abspath(str(path))
+    st = os.lstat(p)
+    if not stat.S_ISDIR(st.st_mode):
+        raise RuntimeError('[H1] la ruta a acreditar no es un directorio: %s' % p)
+    _DIR_6G1[p] = dict(device=st.st_dev, inode=st.st_ino)
+    return p
+
+
+def _anclar_dir_aborto_6g1(run_dir):
+    """[H1] Abre el directorio de aborto sin seguir enlaces y verifica su
+    identidad contra la acreditada por la corrida.
+
+    Devuelve `(fd, motivo)`. Fail-closed: `fd` es None si la corrida no
+    acreditó este directorio, si la apertura segura falla (ENOENT, ELOOP por
+    enlace simbólico en la ruta, etc.), si el descriptor no es un directorio
+    o si `fstat` no coincide con la identidad acreditada. En todos esos
+    casos el llamador NO debe escribir `ABORT_6G1.json` en esa ubicación ni
+    seguir el enlace.
+    """
+    p = os.path.abspath(str(run_dir))
+    reg = _DIR_6G1.get(p)
+    if reg is None:
+        return None, ('directorio_no_acreditado_para_esta_corrida (H1): '
+                      'sin escritura en esta ubicación')
+    try:
+        fd = os.open(p, os.O_RDONLY | os.O_DIRECTORY | os.O_NOFOLLOW)
+    except OSError as exc:
+        return None, ('apertura_segura_fallo (H1): %s (un enlace simbólico '
+                      'en la ruta no se sigue)' % exc)
+    try:
+        st = os.fstat(fd)
+    except OSError as exc:
+        os.close(fd)
+        return None, 'fstat_fallo (H1): %s' % exc
+    if not stat.S_ISDIR(st.st_mode):
+        os.close(fd)
+        return None, 'no_es_directorio (H1)'
+    if (st.st_dev, st.st_ino) != (reg['device'], reg['inode']):
+        os.close(fd)
+        return None, ('identidad_distinta (H1): el directorio de la ruta no '
+                      'coincide con el provisional acreditado')
+    return fd, 'directorio_acreditado (H1)'
+
+
 def reiniciar_registro_6g1():
-    """Limpia el registro de propiedad (uso en pruebas y al iniciar corrida)."""
+    """Limpia los registros de propiedad y de directorio acreditado (uso en
+    pruebas y al iniciar corrida)."""
     _PROPIOS_6G1.clear()
+    _DIR_6G1.clear()
 
 
 def registrar_propio_6g1(path, estable=True):
@@ -255,71 +320,132 @@ def abortar_6g1(run_dir, motivo, detalle=None):
       elimina la ventana de pérdida de contenido que existía si write()/
       fsync() fallaba tras ftruncate() (hallazgo E-R2), sin reintroducir
       escrituras por nombre ni ventanas TOCTOU.
+
+    [6G.1-R/H1] Anclaje del directorio de aborto: la identidad (st_dev,
+    st_ino) del provisional queda acreditada por `acreditar_dir_6g1()` en
+    `create_run_dir()` de los tres motores; el aborto abre el directorio con
+    `O_DIRECTORY | O_NOFOLLOW` y verifica con `fstat()` que coincide. Si la
+    ruta fue sustituida por un enlace simbólico o por otro directorio, o la
+    acreditación no existe, NO se escribe `ABORT_6G1.json` en esa ubicación
+    ni se sigue el enlace: fail-closed, sin eliminaciones y sin salidas
+    válidas declaradas. El inventario y la escritura de `ABORT_6G1.json`
+    operan sobre EL MISMO descriptor de directorio ya validado (sin
+    reapertura por ruta).
     """
     run_dir = Path(run_dir)
     invalidadas, conservados, motivos = [], [], {}
-    if run_dir.exists():
-        for p in sorted(run_dir.rglob('*')):
-            rel = str(p.relative_to(run_dir))
+    # [6G.1-R/H1] Anclaje del directorio de aborto: apertura sin seguir
+    # enlaces y verificación fstat contra la identidad acreditada por
+    # create_run_dir(). Fail-closed: si el anclaje falla NO se escribe
+    # ABORT_6G1.json en esa ubicación (podría ser un enlace simbólico o un
+    # directorio sustituido), no se sigue el enlace, no se elimina nada y no
+    # se declara ninguna salida válida.
+    fd_dir, motivo_anclaje = _anclar_dir_aborto_6g1(run_dir)
+    if fd_dir is None:
+        info = dict(schema='abort-6g1/3', motivo=motivo, detalle=detalle,
+                    salidas_invalidadas=[],
+                    estado_salidas_invalidadas=('conservadas en el provisional; '
+                                                'sin eliminación (C-R1)'),
+                    resultados_validos=[],
+                    conservados=[],
+                    motivos_propiedad={},
+                    analysis_intacto=True,
+                    directorio_acreditado=False,
+                    anclaje_directorio=motivo_anclaje,
+                    politica='sin_eliminacion (C-R1): ningún archivo se elimina '
+                             'durante el aborto; anclaje H1: sin escritura de '
+                             'ABORT_6G1.json si el directorio no pudo '
+                             'acreditarse; analysis.json intacto (E-R2); un '
+                             'directorio con ABORT_6G1.json nunca es una '
+                             'corrida exitosa')
+        return info
+    try:
+        # --- inventario anclado al DESCRIPTOR validado (sin recorrer rutas):
+        # reproduce la semántica del barrido anterior (lstat por entrada;
+        # enlaces conservados sin seguir; regulares clasificados; el resto
+        # omitido) pero descendiendo sólo por directorios reales abiertos con
+        # O_NOFOLLOW, de modo que ninguna parte del aborto recorre la ruta
+        # después de la acreditación (H1).
+        def _inventariar(fd_base, prefijo=''):
             try:
-                st = os.lstat(p)
+                nombres = sorted(os.listdir(fd_base))
             except OSError:
-                continue
-            if stat.S_ISLNK(st.st_mode):
-                conservados.append(rel)
-                motivos[rel] = 'enlace_simbolico_conservado (sin seguir)'
-                continue
-            if not stat.S_ISREG(st.st_mode):
-                continue
-            if _es_registro_interno(p.name):
-                conservados.append(rel)
-                motivos[rel] = 'registro_interno_conservado'
-                continue
-            propia, motivo_p = propiedad_de_6g1(p)
-            if propia:
-                # [6G.1-R/C-R1] Sin eliminación: la salida propia registrada
-                # queda INVALIDADA y CONSERVADA en el provisional. Aunque un
-                # proceso concurrente sustituya el archivo tras este
-                # dictamen, nada se borra: el sustituto también sobrevive.
-                invalidadas.append(rel)
-                motivos[rel] = ('salida_parcial_invalidada_y_conservada '
-                                '(sin eliminación; C-R1)')
-            else:
-                conservados.append(rel)
-                motivos[rel] = motivo_p
-    # [6G.1-R/C-R1] Esquema versionado: abort-6g1/3 (la semántica de
-    # salidas_invalidadas cambia respecto de /2: quedan CONSERVADAS, no
-    # eliminadas). Consumidores actualizados en compatibilidad y documentación.
-    info = dict(schema='abort-6g1/3', motivo=motivo, detalle=detalle,
-                salidas_invalidadas=invalidadas,
-                estado_salidas_invalidadas=('conservadas en el provisional; '
-                                            'sin eliminación (C-R1)'),
-                resultados_validos=[],
-                conservados=conservados,
-                motivos_propiedad=motivos,
-                analysis_intacto=True,
-                politica='sin_eliminacion (C-R1): ningún archivo se elimina '
-                         'durante el aborto; las salidas propias registradas '
-                         'quedan invalidadas y conservadas; sin borrado por '
-                         'patrón de nombre ni por ubicación; sin escritura a '
-                         'través de enlaces simbólicos; analysis.json no se '
-                         'modifica durante el aborto (E-R2): toda la '
-                         'información del aborto vive en ABORT_6G1.json; un '
-                         'directorio con ABORT_6G1.json nunca es una corrida '
-                         'exitosa')
-    if run_dir.exists():
-        # --- ABORT_6G1.json: creación exclusiva y no-follow anclada al dirfd
+                return
+            for nombre in nombres:
+                rel = prefijo + nombre
+                try:
+                    st = os.lstat(nombre, dir_fd=fd_base)
+                except OSError:
+                    continue
+                if stat.S_ISLNK(st.st_mode):
+                    conservados.append(rel)
+                    motivos[rel] = 'enlace_simbolico_conservado (sin seguir)'
+                    continue
+                if stat.S_ISDIR(st.st_mode):
+                    try:
+                        fd_sub = os.open(nombre, os.O_RDONLY | os.O_DIRECTORY
+                                         | os.O_NOFOLLOW, dir_fd=fd_base)
+                    except OSError:
+                        continue
+                    try:
+                        _inventariar(fd_sub, rel + '/')
+                    finally:
+                        os.close(fd_sub)
+                    continue
+                if not stat.S_ISREG(st.st_mode):
+                    continue
+                if _es_registro_interno(nombre):
+                    conservados.append(rel)
+                    motivos[rel] = 'registro_interno_conservado'
+                    continue
+                propia, motivo_p = propiedad_de_6g1(os.path.join(str(run_dir),
+                                                                 rel))
+                if propia:
+                    # [6G.1-R/C-R1] Sin eliminación: la salida propia
+                    # registrada queda INVALIDADA y CONSERVADA en el
+                    # provisional (clasificación basada en el dictamen
+                    # obtenido antes de la sustitución si la hubiera; no
+                    # identifica necesariamente la identidad posterior).
+                    invalidadas.append(rel)
+                    motivos[rel] = ('salida_parcial_invalidada_y_conservada '
+                                    '(sin eliminación; C-R1)')
+                else:
+                    conservados.append(rel)
+                    motivos[rel] = motivo_p
+        _inventariar(fd_dir)
+        # [6G.1-R/C-R1] Esquema versionado: abort-6g1/3 (la semántica de
+        # salidas_invalidadas cambia respecto de /2: quedan CONSERVADAS, no
+        # eliminadas). Consumidores actualizados en compatibilidad y
+        # documentación. [H1] campos de anclaje añadidos (aditivos).
+        info = dict(schema='abort-6g1/3', motivo=motivo, detalle=detalle,
+                    salidas_invalidadas=invalidadas,
+                    estado_salidas_invalidadas=('conservadas en el provisional; '
+                                                'sin eliminación (C-R1)'),
+                    resultados_validos=[],
+                    conservados=conservados,
+                    motivos_propiedad=motivos,
+                    analysis_intacto=True,
+                    directorio_acreditado=True,
+                    anclaje_directorio=motivo_anclaje,
+                    politica='sin_eliminacion (C-R1): ningún archivo se elimina '
+                             'durante el aborto; las salidas propias registradas '
+                             'quedan invalidadas y conservadas; sin borrado por '
+                             'patrón de nombre ni por ubicación; sin escritura a '
+                             'través de enlaces simbólicos; analysis.json no se '
+                             'modifica durante el aborto (E-R2): toda la '
+                             'información del aborto vive en ABORT_6G1.json; un '
+                             'directorio con ABORT_6G1.json nunca es una corrida '
+                             'exitosa; anclaje H1: directorio acreditado y E/S '
+                             'sobre el descriptor validado')
+        # --- ABORT_6G1.json: creación exclusiva y no-follow sobre EL MISMO
+        # descriptor de directorio ya validado (H1: sin reapertura por ruta).
         try:
-            dirfd = os.open(str(run_dir), os.O_RDONLY | os.O_DIRECTORY)
-            try:
-                fd = os.open('ABORT_6G1.json',
-                             os.O_WRONLY | os.O_CREAT | os.O_EXCL | os.O_NOFOLLOW,
-                             0o644, dir_fd=dirfd)
-                with os.fdopen(fd, 'w', encoding='utf-8') as f:
-                    f.write(json.dumps(info, indent=2, ensure_ascii=False,
-                                       default=str))
-            finally:
-                os.close(dirfd)
+            fd = os.open('ABORT_6G1.json',
+                         os.O_WRONLY | os.O_CREAT | os.O_EXCL | os.O_NOFOLLOW,
+                         0o644, dir_fd=fd_dir)
+            with os.fdopen(fd, 'w', encoding='utf-8') as f:
+                f.write(json.dumps(info, indent=2, ensure_ascii=False,
+                                   default=str))
         except FileExistsError:
             motivos['ABORT_6G1.json'] = ('colision: ABORT_6G1.json preexistente '
                                          '(o enlace); sin sobrescribir')
@@ -336,6 +462,8 @@ def abortar_6g1(run_dir, motivo, detalle=None):
         # no-follow anclada al dirfd. Así la conservación de analysis.json es
         # estructural (no hay ninguna escritura dirigida a él) y no se
         # reintroducen escrituras por nombre ni ventanas TOCTOU.
+    finally:
+        os.close(fd_dir)
     return info
 
 

@@ -1,0 +1,1276 @@
+diff --git a/ETAPA_6G1_CORRECCION_LECTURA_SEGURA/INFORME_C_R1_6G1.md b/ETAPA_6G1_CORRECCION_LECTURA_SEGURA/INFORME_C_R1_6G1.md
+index 2b83576..af57cb1 100644
+--- a/ETAPA_6G1_CORRECCION_LECTURA_SEGURA/INFORME_C_R1_6G1.md
++++ b/ETAPA_6G1_CORRECCION_LECTURA_SEGURA/INFORME_C_R1_6G1.md
+@@ -2,7 +2,7 @@
+ 
+ **Implementador**: Arena.ai · **Responsable técnico**: Cris · **Decisor final**: Will
+ **Fecha**: 2026-11-21
+-**Commit anterior (base obligatoria)**: `71cfe4cf8b939ce5180dbdb3123c1694a0291312` (padre directo del commit de esta entrega, verificado con `git rev-parse HEAD^`)
++**Base histórica de la implementación C-R1**: `71cfe4cf8b939ce5180dbdb3123c1694a0291312` — padre directo del commit de **implementación** `8caa65bbaab2ba57961430f2891e89b34d72ec10`. El padre directo real de la **rectificación [C-R1-R]** (`4960b50c4f80b2c846a10bef5d42a86ca1971839`) es `8caa65bbaab2ba57961430f2891e89b34d72ec10` (no `71cfe4c`).
+ **Alcance**: exclusivamente la seguridad de limpieza de `abortar_6g1()`. Sin cambios DSP; sin tocar motores de 6G, `main` ni la rama de referencia; sin repetir baterías históricas.
+ 
+ > **Estado**: ENTREGADA, **NO CERRADA**. La aprobación final corresponde a Cris tras la auditoría independiente.
+@@ -61,8 +61,9 @@ El significado de `salidas_invalidadas` cambió (de «eliminados» a «conservad
+ 
+ ## 6. Identificación exacta de commits
+ 
+-- **Commit anterior (base)**: `71cfe4cf8b939ce5180dbdb3123c1694a0291312`
+-- **Nuevo commit (esta entrega)**: ver sección 8 y el informe de ejecución (padre directo verificado)
++- **Base histórica (implementación C-R1)**: `71cfe4cf8b939ce5180dbdb3123c1694a0291312`
++- **Commit de implementación C-R1**: `8caa65bbaab2ba57961430f2891e89b34d72ec10` (padre directo: `71cfe4cf…`)
++- **Commit de rectificación [C-R1-R] (evidencia CR1c)**: `4960b50c4f80b2c846a10bef5d42a86ca1971839` (padre directo real: `8caa65bbaab2ba57961430f2891e89b34d72ec10`)
+ 
+ ## 7. Enlaces (URLs completas)
+ 
+diff --git a/ETAPA_6G1_CORRECCION_LECTURA_SEGURA/INFORME_H1_6G1.md b/ETAPA_6G1_CORRECCION_LECTURA_SEGURA/INFORME_H1_6G1.md
+new file mode 100644
+index 0000000..df89ffa
+--- /dev/null
++++ b/ETAPA_6G1_CORRECCION_LECTURA_SEGURA/INFORME_H1_6G1.md
+@@ -0,0 +1,74 @@
++# INFORME H1 — RECTIFICACIÓN 6G.1 (ANCLAJE DEL DIRECTORIO DE ABORTO)
++
++**Implementador**: Arena.ai · **Responsable técnico**: Cris · **Decisor final**: Will
++**Fecha**: 2026-11-21
++**HEAD de partida obligatorio**: `4960b50c4f80b2c846a10bef5d42a86ca1971839` (padre directo del commit de esta entrega, verificado con `git rev-parse HEAD^`)
++**Alcance**: exclusivamente el anclaje del directorio de aborto y su documentación. Sin cambios DSP; motores originales de 6G, `main` y rama de referencia intactos; baterías históricas 34/26/17/12 no repetidas.
++
++> **Estado**: ENTREGADA, **NO CERRADA**. La aprobación final corresponde a Cris tras la auditoría independiente.
++
++---
++
++## 1. Defecto H1
++
++`abortar_6g1()` abría el directorio de aborto con `os.open(str(run_dir), os.O_RDONLY | os.O_DIRECTORY)`: **sin `O_NOFOLLOW`** y **sin acreditar** que el directorio abierto siguiera siendo el provisional creado por la corrida. Un proceso concurrente podía sustituir la ruta por un enlace simbólico antes de esa apertura; el `O_NOFOLLOW` posterior sobre `ABORT_6G1.json` no protegía contra la sustitución del directorio padre (el ABORT habría aterrizado en el objetivo externo).
++
++## 2. Solución implementada (`motores/lectura_segura_6g1.py` +3 motores)
++
++1. **Acreditación en la creación** — nueva función pública `acreditar_dir_6g1(path)`: registra `(st_dev, st_ino)` del provisional (lstat, sin seguir enlaces) en el registro por corrida. Llamada por `create_run_dir()` de **los tres motores** inmediatamente después del `mkdir` exclusivo (F). La acreditación se asocia a la corrida y se limpia con `reiniciar_registro_6g1()` (una corrida nueva no hereda la del anterior).
++2. **Apertura sin seguir enlaces** — nueva función `_anclar_dir_aborto_6g1(run_dir)`: abre con `os.O_RDONLY | os.O_DIRECTORY | os.O_NOFOLLOW` (disponible y usado en todo el módulo).
++3. **Verificación por descriptor** — `fstat(fd)` comparado contra la identidad acreditada: coincide → descriptor validado; no coincide, es un enlace (ELOOP), no es accesible (ENOENT/EACCES), no es directorio o `fstat` falla → fd cerrado y **fail-closed**.
++4. **Fail-closed sin escritura** — si el anclaje falla, `abortar_6g1()` **no escribe `ABORT_6G1.json` en esa ubicación ni sigue el enlace**; devuelve el registro `/3` con `directorio_acreditado: False`, `anclaje_directorio: <motivo>`, `salidas_invalidadas: []`, `resultados_validos: []`, `conservados: []` (nada eliminado, ninguna salida válida declarada; el motivo original del aborto se conserva en el registro devuelto al llamador).
++5. **Sin re-apertura por ruta** — cuando el anclaje es correcto, el **inventario** y la **escritura** de `ABORT_6G1.json` (`O_CREAT|O_EXCL|O_NOFOLLOW + dir_fd`) operan sobre **el mismo descriptor ya validado** (inventario recursivo con `os.listdir(fd)` + `os.lstat(…, dir_fd)` + apertura de subdirectorios con `O_NOFOLLOW` anclada al descriptor; ninguna parte del aborto recorre la ruta después de la acreditación).
++6. **Preservación íntegra de C-R1 y E-R2** — ningún archivo se elimina; `analysis.json` permanece intacto; los parciales se conservan; `resultados_validos` vacío; el esquema sigue siendo **`abort-6g1/3`** (sólo campos aditivos `directorio_acreditado` y `anclaje_directorio`).
++7. **Documentación corregida** — el docstring inicial del módulo ya no afirma que el aborto elimina archivos acreditados (ahora describe C-R1/E-R2/H1); el docstring de `abortar_6g1` incorpora el párrafo H1; el encabezado y §6 de `INFORME_C_R1_6G1.md` distinguen ahora la base histórica `71cfe4c` (padre del commit de implementación `8caa65b`) del padre directo real de la rectificación `4960b50` (`8caa65b`). **No se modificaron registros históricos de pruebas.**
++
++## 3. Pruebas focalizadas — resultados
++
++**Batería H1 (nueva, `scripts/pruebas_h1_6g1.py`): 10/10 PASS, 0 FAIL, 0 NOT_EXECUTED** (`evidence/matriz_h1_6g1.csv`; detalle: `evidence/pruebas_h1_6g1.json`). Todas las comprobaciones sobre estado real en disco (bytes, SHA-256, existencia, enlaces), no sólo códigos de retorno:
++
++| Prueba | Qué comprueba | Resultado |
++|---|---|---|
++| **H1a** (obligatoria) | Provisional real creado y acreditado; ruta sustituida por **enlace simbólico** a un directorio externo (con centinela + SHA-256 y archivo extra) antes del aborto: el enlace **no se sigue** (`apertura_segura_fallo`/ELOOP); centinela y extra **byte a byte intactos**; **sin `ABORT_6G1.json` en el externo** (ni en ninguna ruta acreditada); fail-closed registrado (`directorio_acreditado: False`, motivo de anclaje); **nada eliminado**; **sin salidas válidas** ni invalidadas ni conservados (nada se clasificó fuera del provisional real); schema /3; motivo original conservado | PASS |
++| H1b | Aborto normal con directorio acreditado: ABORT /3 en el provisional **real** con `directorio_acreditado=True`; semántica C-R1/E-R2 intacta (salida propia invalidada y conservada byte a byte; ajeno intacto; `resultados_validos==[]`) | PASS |
++| H1c | Directorio acreditado sustituido por **otro directorio real** (el provisional acreditado sigue vivo, renombrado aparte): `fstat` no coincide → fail-closed `identidad_distinta`; **sin ABORT en el nuevo directorio**; contenido ajeno intacto | PASS |
++| H1-CR1c-regresión | La ventana histórica (sustitución tras dictamen positivo) sigue cubierta con el anclaje activo: sustituto intacto, ABORT en el provisional real, clasificación por dictamen anterior | PASS |
++| H1-e2e ×3 | Aborto real (guarda final) con la acreditación de `create_run_dir`: exit 2, sin definitivo, ABORT /3 en el provisional real con `directorio_acreditado=True`, salidas propias conservadas | 3× PASS |
++| sanidad ×3 | Corrida feliz: exit 0, publicación única, integridad True, **PCM idéntico a la campaña auditada** (DSP intacto) | 3× PASS |
++
++**Batería C-R1 actualizada y re-ejecutada (13/13 PASS)** — sus 6 ensayos unitarios acreditan ahora el provisional como hace `create_run_dir()` (precondición nueva H1, necesaria porque el aborto sin acreditación es fail-closed por diseño). CR1c (ventana histórica) y CR1e (exclusividad) siguen en verde; el flujo e2e demuestra la acreditación de los motores. **Baterías históricas 34/26/17/12: no ejecutadas** (sus arneses conservan expectativas `/2` y no deben usarse como aceptación de `/3` sin actualización).
++
++**Registro de iteraciones del arnés H1** (ninguna de código de producción): (1) H1c inicial borraba el directorio acreditado antes de crear el sustituto y tmpfs reutilizó el mismo inodo → ensayo corregido para mantener el provisional vivo (renombrado), con identidad genuinamente distinta; (2) H1a no eliminaba el enlace simbólico residual de la corrida anterior → arranque robustecido. Ejecución final: 10/10.
++
++## 4. SHA-256, DIFF y commits
++
++- `SHA256SUMS_H1.txt` (11 ficheros con SHA previo en comentario; verificado con `sha256sum -c`: 11/11 OK).
++- `DIFF_6G1_H1.patch`: diff incremental **reversible** respecto de `4960b50c4f80b2c846a10bef5d42a86ca1971839` (`patch -R -p1` devuelve el árbol base byte a byte; forward dry-run exit 0).
++- **Commit anterior**: `4960b50c4f80b2c846a10bef5d42a86ca1971839` · **Nuevo commit**: hijo directo del anterior (verificado con `git rev-parse HEAD^` y contra el remoto tras el push; valores exactos en el informe de ejecución).
++
++## 5. Límites respetados
++
++Sin STFT/ISTFT/FFT/hop/chunking/máscaras/fórmulas/consenso/ganancias/polaridad/parámetros DSP (sanidad ×3 con PCM idéntico); motores originales de 6G, carpeta 6G de referencia, `main` y `arena/89d5c189-sdv-sdi-sgm` intactos; A–D/E–G/E-R1/E-R2/C-R1 intactos fuera de lo estrictamente necesario para H1 (anclaje del aborto, acreditación en `create_run_dir`, precondición de la batería C-R1 y la documentación señalada); sin canciones reales ni Elis/Tristania; sin Android/Termux; baterías históricas no repetidas; sin fusionar ramas ni abrir PR. **No se declara 6G.1 cerrada.**
++
++## 6. Enlaces (URLs completas)
++
++Informe H1 (este documento):
++https://github.com/arielwilliam1986-source/SDV-SDI_SGM/blob/arena/441a4bf8-sdv-sdi-sgm/ETAPA_6G1_CORRECCION_LECTURA_SEGURA/INFORME_H1_6G1.md
++
++Diff incremental vs 4960b50 (reversible):
++https://github.com/arielwilliam1986-source/SDV-SDI_SGM/blob/arena/441a4bf8-sdv-sdi-sgm/ETAPA_6G1_CORRECCION_LECTURA_SEGURA/DIFF_6G1_H1.patch
++
++SHA-256 de los archivos modificados:
++https://github.com/arielwilliam1986-source/SDV-SDI_SGM/blob/arena/441a4bf8-sdv-sdi-sgm/ETAPA_6G1_CORRECCION_LECTURA_SEGURA/SHA256SUMS_H1.txt
++
++Matriz H1:
++https://github.com/arielwilliam1986-source/SDV-SDI_SGM/blob/arena/441a4bf8-sdv-sdi-sgm/ETAPA_6G1_CORRECCION_LECTURA_SEGURA/evidence/matriz_h1_6g1.csv
++
++Resultados individuales por check:
++https://github.com/arielwilliam1986-source/SDV-SDI_SGM/blob/arena/441a4bf8-sdv-sdi-sgm/ETAPA_6G1_CORRECCION_LECTURA_SEGURA/evidence/pruebas_h1_6g1.json
++
++Módulo corregido:
++https://github.com/arielwilliam1986-source/SDV-SDI_SGM/blob/arena/441a4bf8-sdv-sdi-sgm/ETAPA_6G1_CORRECCION_LECTURA_SEGURA/motores/lectura_segura_6g1.py
++
++Informe C-R1 (documentación corregida):
++https://github.com/arielwilliam1986-source/SDV-SDI_SGM/blob/arena/441a4bf8-sdv-sdi-sgm/ETAPA_6G1_CORRECCION_LECTURA_SEGURA/INFORME_C_R1_6G1.md
+diff --git a/ETAPA_6G1_CORRECCION_LECTURA_SEGURA/evidence/matriz_h1_6g1.csv b/ETAPA_6G1_CORRECCION_LECTURA_SEGURA/evidence/matriz_h1_6g1.csv
+new file mode 100644
+index 0000000..9215b4c
+--- /dev/null
++++ b/ETAPA_6G1_CORRECCION_LECTURA_SEGURA/evidence/matriz_h1_6g1.csv
+@@ -0,0 +1,11 @@
++prueba,motor,alcance,veredicto,checks_ok,checks_total,detalle
++H1a,lectura_segura_6g1,"enlace simbólico en la ruta del provisional: fail-closed, externo intacto, sin ABORT externo",PASS,11,11,todos los checks OK
++H1b,lectura_segura_6g1,"aborto normal con directorio acreditado: ABORT en el provisional real, semántica C-R1/E-R2 intacta",PASS,8,8,todos los checks OK
++H1c,lectura_segura_6g1,directorio sustituido por otro real: fail-closed por identidad distinta,PASS,6,6,todos los checks OK
++H1-CR1c-regresion,lectura_segura_6g1,ventana histórica CR1c cubierta con anclaje H1 activo,PASS,4,4,todos los checks OK
++H1-e2e,Hardened,aborto real con acreditación de create_run_dir,PASS,6,6,todos los checks OK
++sanidad,Hardened,corrida feliz tras H1,PASS,4,4,todos los checks OK
++H1-e2e,EVO,aborto real con acreditación de create_run_dir,PASS,6,6,todos los checks OK
++sanidad,EVO,corrida feliz tras H1,PASS,4,4,todos los checks OK
++H1-e2e,MQR,aborto real con acreditación de create_run_dir,PASS,6,6,todos los checks OK
++sanidad,MQR,corrida feliz tras H1,PASS,4,4,todos los checks OK
+diff --git a/ETAPA_6G1_CORRECCION_LECTURA_SEGURA/evidence/pruebas_c_r1_6g1.json b/ETAPA_6G1_CORRECCION_LECTURA_SEGURA/evidence/pruebas_c_r1_6g1.json
+index 3932da1..358c43a 100644
+--- a/ETAPA_6G1_CORRECCION_LECTURA_SEGURA/evidence/pruebas_c_r1_6g1.json
++++ b/ETAPA_6G1_CORRECCION_LECTURA_SEGURA/evidence/pruebas_c_r1_6g1.json
+@@ -138,7 +138,9 @@
+             "salida_B.wav": "salida_parcial_invalidada_y_conservada (sin eliminación; C-R1)"
+           },
+           "analysis_intacto": true,
+-          "politica": "sin_eliminacion (C-R1): ningún archivo se elimina durante el aborto; las salidas propias registradas quedan invalidadas y conservadas; sin borrado por patrón de nombre ni por ubicación; sin escritura a través de enlaces simbólicos; analysis.json no se modifica durante el aborto (E-R2): toda la información del aborto vive en ABORT_6G1.json; un directorio con ABORT_6G1.json nunca es una corrida exitosa"
++          "directorio_acreditado": true,
++          "anclaje_directorio": "directorio_acreditado (H1)",
++          "politica": "sin_eliminacion (C-R1): ningún archivo se elimina durante el aborto; las salidas propias registradas quedan invalidadas y conservadas; sin borrado por patrón de nombre ni por ubicación; sin escritura a través de enlaces simbólicos; analysis.json no se modifica durante el aborto (E-R2): toda la información del aborto vive en ABORT_6G1.json; un directorio con ABORT_6G1.json nunca es una corrida exitosa; anclaje H1: directorio acreditado y E/S sobre el descriptor validado"
+         }
+       },
+       "CR1b": {
+@@ -163,7 +165,9 @@
+             "propio.wav": "salida_parcial_invalidada_y_conservada (sin eliminación; C-R1)"
+           },
+           "analysis_intacto": true,
+-          "politica": "sin_eliminacion (C-R1): ningún archivo se elimina durante el aborto; las salidas propias registradas quedan invalidadas y conservadas; sin borrado por patrón de nombre ni por ubicación; sin escritura a través de enlaces simbólicos; analysis.json no se modifica durante el aborto (E-R2): toda la información del aborto vive en ABORT_6G1.json; un directorio con ABORT_6G1.json nunca es una corrida exitosa"
++          "directorio_acreditado": true,
++          "anclaje_directorio": "directorio_acreditado (H1)",
++          "politica": "sin_eliminacion (C-R1): ningún archivo se elimina durante el aborto; las salidas propias registradas quedan invalidadas y conservadas; sin borrado por patrón de nombre ni por ubicación; sin escritura a través de enlaces simbólicos; analysis.json no se modifica durante el aborto (E-R2): toda la información del aborto vive en ABORT_6G1.json; un directorio con ABORT_6G1.json nunca es una corrida exitosa; anclaje H1: directorio acreditado y E/S sobre el descriptor validado"
+         }
+       },
+       "CR1c": {
+@@ -194,7 +198,9 @@
+             "salida_concurrente.wav": "salida_parcial_invalidada_y_conservada (sin eliminación; C-R1)"
+           },
+           "analysis_intacto": true,
+-          "politica": "sin_eliminacion (C-R1): ningún archivo se elimina durante el aborto; las salidas propias registradas quedan invalidadas y conservadas; sin borrado por patrón de nombre ni por ubicación; sin escritura a través de enlaces simbólicos; analysis.json no se modifica durante el aborto (E-R2): toda la información del aborto vive en ABORT_6G1.json; un directorio con ABORT_6G1.json nunca es una corrida exitosa"
++          "directorio_acreditado": true,
++          "anclaje_directorio": "directorio_acreditado (H1)",
++          "politica": "sin_eliminacion (C-R1): ningún archivo se elimina durante el aborto; las salidas propias registradas quedan invalidadas y conservadas; sin borrado por patrón de nombre ni por ubicación; sin escritura a través de enlaces simbólicos; analysis.json no se modifica durante el aborto (E-R2): toda la información del aborto vive en ABORT_6G1.json; un directorio con ABORT_6G1.json nunca es una corrida exitosa; anclaje H1: directorio acreditado y E/S sobre el descriptor validado"
+         }
+       },
+       "CR1d": {
+@@ -214,7 +220,9 @@
+             "enlace.json": "enlace_simbolico_conservado (sin seguir)"
+           },
+           "analysis_intacto": true,
+-          "politica": "sin_eliminacion (C-R1): ningún archivo se elimina durante el aborto; las salidas propias registradas quedan invalidadas y conservadas; sin borrado por patrón de nombre ni por ubicación; sin escritura a través de enlaces simbólicos; analysis.json no se modifica durante el aborto (E-R2): toda la información del aborto vive en ABORT_6G1.json; un directorio con ABORT_6G1.json nunca es una corrida exitosa"
++          "directorio_acreditado": true,
++          "anclaje_directorio": "directorio_acreditado (H1)",
++          "politica": "sin_eliminacion (C-R1): ningún archivo se elimina durante el aborto; las salidas propias registradas quedan invalidadas y conservadas; sin borrado por patrón de nombre ni por ubicación; sin escritura a través de enlaces simbólicos; analysis.json no se modifica durante el aborto (E-R2): toda la información del aborto vive en ABORT_6G1.json; un directorio con ABORT_6G1.json nunca es una corrida exitosa; anclaje H1: directorio acreditado y E/S sobre el descriptor validado"
+         }
+       },
+       "CR1e": {
+@@ -235,7 +243,9 @@
+             "salida.wav": "salida_parcial_invalidada_y_conservada (sin eliminación; C-R1)"
+           },
+           "analysis_intacto": true,
+-          "politica": "sin_eliminacion (C-R1): ningún archivo se elimina durante el aborto; las salidas propias registradas quedan invalidadas y conservadas; sin borrado por patrón de nombre ni por ubicación; sin escritura a través de enlaces simbólicos; analysis.json no se modifica durante el aborto (E-R2): toda la información del aborto vive en ABORT_6G1.json; un directorio con ABORT_6G1.json nunca es una corrida exitosa"
++          "directorio_acreditado": true,
++          "anclaje_directorio": "directorio_acreditado (H1)",
++          "politica": "sin_eliminacion (C-R1): ningún archivo se elimina durante el aborto; las salidas propias registradas quedan invalidadas y conservadas; sin borrado por patrón de nombre ni por ubicación; sin escritura a través de enlaces simbólicos; analysis.json no se modifica durante el aborto (E-R2): toda la información del aborto vive en ABORT_6G1.json; un directorio con ABORT_6G1.json nunca es una corrida exitosa; anclaje H1: directorio acreditado y E/S sobre el descriptor validado"
+         }
+       },
+       "CR1f": {
+@@ -253,7 +263,9 @@
+             "analysis.json": "registro_interno_conservado"
+           },
+           "analysis_intacto": true,
+-          "politica": "sin_eliminacion (C-R1): ningún archivo se elimina durante el aborto; las salidas propias registradas quedan invalidadas y conservadas; sin borrado por patrón de nombre ni por ubicación; sin escritura a través de enlaces simbólicos; analysis.json no se modifica durante el aborto (E-R2): toda la información del aborto vive en ABORT_6G1.json; un directorio con ABORT_6G1.json nunca es una corrida exitosa"
++          "directorio_acreditado": true,
++          "anclaje_directorio": "directorio_acreditado (H1)",
++          "politica": "sin_eliminacion (C-R1): ningún archivo se elimina durante el aborto; las salidas propias registradas quedan invalidadas y conservadas; sin borrado por patrón de nombre ni por ubicación; sin escritura a través de enlaces simbólicos; analysis.json no se modifica durante el aborto (E-R2): toda la información del aborto vive en ABORT_6G1.json; un directorio con ABORT_6G1.json nunca es una corrida exitosa; anclaje H1: directorio acreditado y E/S sobre el descriptor validado"
+         }
+       },
+       "CR1-estatico": {
+@@ -263,7 +275,7 @@
+     "Hardened": {
+       "E2E": {
+         "exit": 2,
+-        "abort_dir": "/tmp/f6g1cr1/Hardened/E2E/out/motorA_run_20261121_233936_partial"
++        "abort_dir": "/tmp/f6g1cr1/Hardened/E2E/out/motorA_run_20261121_235907_partial"
+       },
+       "sanidad": {
+         "exit": 0
+@@ -272,7 +284,7 @@
+     "EVO": {
+       "E2E": {
+         "exit": 2,
+-        "abort_dir": "/tmp/f6g1cr1/EVO/E2E/out/motorA_run_20261121_233939_partial"
++        "abort_dir": "/tmp/f6g1cr1/EVO/E2E/out/motorA_run_20261121_235910_partial"
+       },
+       "sanidad": {
+         "exit": 0
+@@ -281,7 +293,7 @@
+     "MQR": {
+       "E2E": {
+         "exit": 2,
+-        "abort_dir": "/tmp/f6g1cr1/MQR/E2E/out/mqr_run_20261121_233941_partial"
++        "abort_dir": "/tmp/f6g1cr1/MQR/E2E/out/mqr_run_20261121_235913_partial"
+       },
+       "sanidad": {
+         "exit": 0
+diff --git a/ETAPA_6G1_CORRECCION_LECTURA_SEGURA/evidence/pruebas_h1_6g1.json b/ETAPA_6G1_CORRECCION_LECTURA_SEGURA/evidence/pruebas_h1_6g1.json
+new file mode 100644
+index 0000000..7401886
+--- /dev/null
++++ b/ETAPA_6G1_CORRECCION_LECTURA_SEGURA/evidence/pruebas_h1_6g1.json
+@@ -0,0 +1,198 @@
++{
++  "schema": "pruebas-h1-6g1/1",
++  "filas": [
++    {
++      "prueba": "H1a",
++      "motor": "lectura_segura_6g1",
++      "alcance": "enlace simbólico en la ruta del provisional: fail-closed, externo intacto, sin ABORT externo",
++      "veredicto": "PASS",
++      "checks_ok": 11,
++      "checks_total": 11,
++      "detalle": "todos los checks OK"
++    },
++    {
++      "prueba": "H1b",
++      "motor": "lectura_segura_6g1",
++      "alcance": "aborto normal con directorio acreditado: ABORT en el provisional real, semántica C-R1/E-R2 intacta",
++      "veredicto": "PASS",
++      "checks_ok": 8,
++      "checks_total": 8,
++      "detalle": "todos los checks OK"
++    },
++    {
++      "prueba": "H1c",
++      "motor": "lectura_segura_6g1",
++      "alcance": "directorio sustituido por otro real: fail-closed por identidad distinta",
++      "veredicto": "PASS",
++      "checks_ok": 6,
++      "checks_total": 6,
++      "detalle": "todos los checks OK"
++    },
++    {
++      "prueba": "H1-CR1c-regresion",
++      "motor": "lectura_segura_6g1",
++      "alcance": "ventana histórica CR1c cubierta con anclaje H1 activo",
++      "veredicto": "PASS",
++      "checks_ok": 4,
++      "checks_total": 4,
++      "detalle": "todos los checks OK"
++    },
++    {
++      "prueba": "H1-e2e",
++      "motor": "Hardened",
++      "alcance": "aborto real con acreditación de create_run_dir",
++      "veredicto": "PASS",
++      "checks_ok": 6,
++      "checks_total": 6,
++      "detalle": "todos los checks OK"
++    },
++    {
++      "prueba": "sanidad",
++      "motor": "Hardened",
++      "alcance": "corrida feliz tras H1",
++      "veredicto": "PASS",
++      "checks_ok": 4,
++      "checks_total": 4,
++      "detalle": "todos los checks OK"
++    },
++    {
++      "prueba": "H1-e2e",
++      "motor": "EVO",
++      "alcance": "aborto real con acreditación de create_run_dir",
++      "veredicto": "PASS",
++      "checks_ok": 6,
++      "checks_total": 6,
++      "detalle": "todos los checks OK"
++    },
++    {
++      "prueba": "sanidad",
++      "motor": "EVO",
++      "alcance": "corrida feliz tras H1",
++      "veredicto": "PASS",
++      "checks_ok": 4,
++      "checks_total": 4,
++      "detalle": "todos los checks OK"
++    },
++    {
++      "prueba": "H1-e2e",
++      "motor": "MQR",
++      "alcance": "aborto real con acreditación de create_run_dir",
++      "veredicto": "PASS",
++      "checks_ok": 6,
++      "checks_total": 6,
++      "detalle": "todos los checks OK"
++    },
++    {
++      "prueba": "sanidad",
++      "motor": "MQR",
++      "alcance": "corrida feliz tras H1",
++      "veredicto": "PASS",
++      "checks_ok": 4,
++      "checks_total": 4,
++      "detalle": "todos los checks OK"
++    }
++  ],
++  "detalles": {
++    "unidad": {
++      "H1a": {
++        "info": {
++          "schema": "abort-6g1/3",
++          "motivo": "PRUEBA_H1a",
++          "detalle": null,
++          "salidas_invalidadas": [],
++          "estado_salidas_invalidadas": "conservadas en el provisional; sin eliminación (C-R1)",
++          "resultados_validos": [],
++          "conservados": [],
++          "motivos_propiedad": {},
++          "analysis_intacto": true,
++          "directorio_acreditado": false,
++          "anclaje_directorio": "apertura_segura_fallo (H1): [Errno 20] Not a directory: '/tmp/f6g1h1/H1a' (un enlace simbólico en la ruta no se sigue)",
++          "politica": "sin_eliminacion (C-R1): ningún archivo se elimina durante el aborto; anclaje H1: sin escritura de ABORT_6G1.json si el directorio no pudo acreditarse; analysis.json intacto (E-R2); un directorio con ABORT_6G1.json nunca es una corrida exitosa"
++        }
++      },
++      "H1b": {
++        "abort": {
++          "schema": "abort-6g1/3",
++          "motivo": "PRUEBA_H1b",
++          "detalle": null,
++          "salidas_invalidadas": [
++            "salida.wav"
++          ],
++          "estado_salidas_invalidadas": "conservadas en el provisional; sin eliminación (C-R1)",
++          "resultados_validos": [],
++          "conservados": [
++            "ajeno.wav"
++          ],
++          "motivos_propiedad": {
++            "ajeno.wav": "ajeno_no_registrado",
++            "salida.wav": "salida_parcial_invalidada_y_conservada (sin eliminación; C-R1)"
++          },
++          "analysis_intacto": true,
++          "directorio_acreditado": true,
++          "anclaje_directorio": "directorio_acreditado (H1)",
++          "politica": "sin_eliminacion (C-R1): ningún archivo se elimina durante el aborto; las salidas propias registradas quedan invalidadas y conservadas; sin borrado por patrón de nombre ni por ubicación; sin escritura a través de enlaces simbólicos; analysis.json no se modifica durante el aborto (E-R2): toda la información del aborto vive en ABORT_6G1.json; un directorio con ABORT_6G1.json nunca es una corrida exitosa; anclaje H1: directorio acreditado y E/S sobre el descriptor validado"
++        }
++      },
++      "H1c": {
++        "info": {
++          "schema": "abort-6g1/3",
++          "motivo": "PRUEBA_H1c",
++          "detalle": null,
++          "salidas_invalidadas": [],
++          "estado_salidas_invalidadas": "conservadas en el provisional; sin eliminación (C-R1)",
++          "resultados_validos": [],
++          "conservados": [],
++          "motivos_propiedad": {},
++          "analysis_intacto": true,
++          "directorio_acreditado": false,
++          "anclaje_directorio": "identidad_distinta (H1): el directorio de la ruta no coincide con el provisional acreditado",
++          "politica": "sin_eliminacion (C-R1): ningún archivo se elimina durante el aborto; anclaje H1: sin escritura de ABORT_6G1.json si el directorio no pudo acreditarse; analysis.json intacto (E-R2); un directorio con ABORT_6G1.json nunca es una corrida exitosa"
++        }
++      },
++      "H1-CR1c-regresion": {
++        "info": {
++          "schema": "abort-6g1/3",
++          "motivo": "PRUEBA_H1_CR1c",
++          "detalle": null,
++          "salidas_invalidadas": [
++            "salida_concurrente.wav"
++          ],
++          "estado_salidas_invalidadas": "conservadas en el provisional; sin eliminación (C-R1)",
++          "resultados_validos": [],
++          "conservados": [],
++          "motivos_propiedad": {
++            "salida_concurrente.wav": "salida_parcial_invalidada_y_conservada (sin eliminación; C-R1)"
++          },
++          "analysis_intacto": true,
++          "directorio_acreditado": true,
++          "anclaje_directorio": "directorio_acreditado (H1)",
++          "politica": "sin_eliminacion (C-R1): ningún archivo se elimina durante el aborto; las salidas propias registradas quedan invalidadas y conservadas; sin borrado por patrón de nombre ni por ubicación; sin escritura a través de enlaces simbólicos; analysis.json no se modifica durante el aborto (E-R2): toda la información del aborto vive en ABORT_6G1.json; un directorio con ABORT_6G1.json nunca es una corrida exitosa; anclaje H1: directorio acreditado y E/S sobre el descriptor validado"
++        }
++      }
++    },
++    "Hardened": {
++      "E2E": {
++        "exit": 2
++      },
++      "sanidad": {
++        "exit": 0
++      }
++    },
++    "EVO": {
++      "E2E": {
++        "exit": 2
++      },
++      "sanidad": {
++        "exit": 0
++      }
++    },
++    "MQR": {
++      "E2E": {
++        "exit": 2
++      },
++      "sanidad": {
++        "exit": 0
++      }
++    }
++  }
++}
+diff --git a/ETAPA_6G1_CORRECCION_LECTURA_SEGURA/motores/MOTOR_SEP_SDV-SDI_EVO.py b/ETAPA_6G1_CORRECCION_LECTURA_SEGURA/motores/MOTOR_SEP_SDV-SDI_EVO.py
+index a95c2d3..729ede8 100644
+--- a/ETAPA_6G1_CORRECCION_LECTURA_SEGURA/motores/MOTOR_SEP_SDV-SDI_EVO.py
++++ b/ETAPA_6G1_CORRECCION_LECTURA_SEGURA/motores/MOTOR_SEP_SDV-SDI_EVO.py
+@@ -305,6 +305,7 @@ from lectura_segura_6g1 import (MixCambiado as _MixCambiado_6g1,
+                                  abortar_6g1 as _abortar_6g1,
+                                  registrar_propio_6g1 as _registrar_propio_6g1,
+                                  reiniciar_registro_6g1 as _reiniciar_registro_6g1,
++                                 acreditar_dir_6g1 as _acreditar_dir_6g1,
+                                  publicar_dir_6g1 as _publicar_dir_6g1)
+ 
+ from atribucion_6f import (measure, verify_wave, alignment_gate,
+@@ -1339,6 +1340,7 @@ def create_run_dir(out_base: str) -> tuple:
+         partial_dir = final_dir + "_partial"
+         try:
+             os.mkdir(partial_dir)
++            _acreditar_dir_6g1(partial_dir)  # [6G.1-R/H1] anclaje del aborto
+             return partial_dir, final_dir
+         except FileExistsError:
+             intento += 1
+diff --git a/ETAPA_6G1_CORRECCION_LECTURA_SEGURA/motores/MOTOR_SEP_SDV-SDI_v3.1.1_Hardened_Final.py b/ETAPA_6G1_CORRECCION_LECTURA_SEGURA/motores/MOTOR_SEP_SDV-SDI_v3.1.1_Hardened_Final.py
+index 95df069..70e15ca 100644
+--- a/ETAPA_6G1_CORRECCION_LECTURA_SEGURA/motores/MOTOR_SEP_SDV-SDI_v3.1.1_Hardened_Final.py
++++ b/ETAPA_6G1_CORRECCION_LECTURA_SEGURA/motores/MOTOR_SEP_SDV-SDI_v3.1.1_Hardened_Final.py
+@@ -300,6 +300,7 @@ from lectura_segura_6g1 import (MixCambiado as _MixCambiado_6g1,
+                                  abortar_6g1 as _abortar_6g1,
+                                  registrar_propio_6g1 as _registrar_propio_6g1,
+                                  reiniciar_registro_6g1 as _reiniciar_registro_6g1,
++                                 acreditar_dir_6g1 as _acreditar_dir_6g1,
+                                  publicar_dir_6g1 as _publicar_dir_6g1)
+ 
+ from atribucion_6f import (measure, verify_wave, alignment_gate,
+@@ -1339,6 +1340,7 @@ def create_run_dir(out_base: str) -> tuple:
+         partial_dir = final_dir + "_partial"
+         try:
+             os.mkdir(partial_dir)
++            _acreditar_dir_6g1(partial_dir)  # [6G.1-R/H1] anclaje del aborto
+             return partial_dir, final_dir
+         except FileExistsError:
+             intento += 1
+diff --git a/ETAPA_6G1_CORRECCION_LECTURA_SEGURA/motores/lectura_segura_6g1.py b/ETAPA_6G1_CORRECCION_LECTURA_SEGURA/motores/lectura_segura_6g1.py
+index 432df73..689e965 100644
+--- a/ETAPA_6G1_CORRECCION_LECTURA_SEGURA/motores/lectura_segura_6g1.py
++++ b/ETAPA_6G1_CORRECCION_LECTURA_SEGURA/motores/lectura_segura_6g1.py
+@@ -6,13 +6,18 @@ descriptor abierto durante toda la corrida y entrega un objeto con la misma
+ interfaz que `soundfile.SoundFile`, pero respaldado por ese descriptor
+ (`/proc/self/fd/N`), de modo que una ruta sustituida no puede alimentar el DSP.
+ 
+-`abortar_6g1` (rectificado, corrección C) elimina únicamente archivos cuya
+-propiedad por la corrida actual esté **acreditada**: el motor registra cada
+-archivo que crea (ruta + identidad) y la limpieza verifica esa relación antes
+-de borrar. Si la propiedad no puede demostrarse (archivo ajeno no registrado,
+-o archivo registrado cuya identidad actual no coincide con la registrada),
+-el archivo **se conserva** y se lista con el motivo. Ninguna decisión de borrado
+-se toma por patrón de nombre ni por ubicación (`candidates/` incluido).
++`abortar_6g1` (rectificado C-R1) **no elimina ningún archivo**: las salidas
++propias registradas por la corrida quedan invalidadas y conservadas en el
++provisional; los archivos ajenos (incluido `candidates/` y los nombres de
++salida del motor), los registros internos y los enlaces se conservan con su
++motivo. La clasificación se basa en el dictamen de propiedad obtenido en el
++momento del barrido y nunca es una decisión de borrado. `ABORT_6G1.json`
++(schema `abort-6g1/3`) concentra toda la información del aborto y
++`analysis.json` permanece intacto (E-R2). El directorio de aborto se abre
++anclado a la identidad acreditada del provisional (H1): `O_DIRECTORY |
++O_NOFOLLOW` + verificación `fstat` contra lo registrado por
++`acreditar_dir_6g1()` en `create_run_dir()`; si no puede acreditarse, no se
++escribe nada en esa ubicación (fail-closed).
+ """
+ import errno
+ import hashlib
+@@ -159,9 +164,69 @@ def abrir_mix(path, sha_esperado=None):
+ _PROPIOS_6G1 = {}
+ 
+ 
++# [6G.1-R/H1] Identidad acreditada del directorio provisional de la corrida:
++# (st_dev, st_ino) registrados por acreditar_dir_6g1() en create_run_dir() y
++# verificados con fstat() al abrir el directorio durante el aborto.
++_DIR_6G1 = {}
++
++
++def acreditar_dir_6g1(path):
++    """[H1] Acredita la identidad del directorio provisional de la corrida.
++
++    Registra (st_dev, st_ino) del directorio creado por `create_run_dir()`
++    (lstat, sin seguir enlaces). Debe llamarse inmediatamente después del
++    mkdir exclusivo del provisional. Fail-closed: si la ruta no es un
++    directorio real, eleva RuntimeError.
++    """
++    p = os.path.abspath(str(path))
++    st = os.lstat(p)
++    if not stat.S_ISDIR(st.st_mode):
++        raise RuntimeError('[H1] la ruta a acreditar no es un directorio: %s' % p)
++    _DIR_6G1[p] = dict(device=st.st_dev, inode=st.st_ino)
++    return p
++
++
++def _anclar_dir_aborto_6g1(run_dir):
++    """[H1] Abre el directorio de aborto sin seguir enlaces y verifica su
++    identidad contra la acreditada por la corrida.
++
++    Devuelve `(fd, motivo)`. Fail-closed: `fd` es None si la corrida no
++    acreditó este directorio, si la apertura segura falla (ENOENT, ELOOP por
++    enlace simbólico en la ruta, etc.), si el descriptor no es un directorio
++    o si `fstat` no coincide con la identidad acreditada. En todos esos
++    casos el llamador NO debe escribir `ABORT_6G1.json` en esa ubicación ni
++    seguir el enlace.
++    """
++    p = os.path.abspath(str(run_dir))
++    reg = _DIR_6G1.get(p)
++    if reg is None:
++        return None, ('directorio_no_acreditado_para_esta_corrida (H1): '
++                      'sin escritura en esta ubicación')
++    try:
++        fd = os.open(p, os.O_RDONLY | os.O_DIRECTORY | os.O_NOFOLLOW)
++    except OSError as exc:
++        return None, ('apertura_segura_fallo (H1): %s (un enlace simbólico '
++                      'en la ruta no se sigue)' % exc)
++    try:
++        st = os.fstat(fd)
++    except OSError as exc:
++        os.close(fd)
++        return None, 'fstat_fallo (H1): %s' % exc
++    if not stat.S_ISDIR(st.st_mode):
++        os.close(fd)
++        return None, 'no_es_directorio (H1)'
++    if (st.st_dev, st.st_ino) != (reg['device'], reg['inode']):
++        os.close(fd)
++        return None, ('identidad_distinta (H1): el directorio de la ruta no '
++                      'coincide con el provisional acreditado')
++    return fd, 'directorio_acreditado (H1)'
++
++
+ def reiniciar_registro_6g1():
+-    """Limpia el registro de propiedad (uso en pruebas y al iniciar corrida)."""
++    """Limpia los registros de propiedad y de directorio acreditado (uso en
++    pruebas y al iniciar corrida)."""
+     _PROPIOS_6G1.clear()
++    _DIR_6G1.clear()
+ 
+ 
+ def registrar_propio_6g1(path, estable=True):
+@@ -255,71 +320,132 @@ def abortar_6g1(run_dir, motivo, detalle=None):
+       elimina la ventana de pérdida de contenido que existía si write()/
+       fsync() fallaba tras ftruncate() (hallazgo E-R2), sin reintroducir
+       escrituras por nombre ni ventanas TOCTOU.
++
++    [6G.1-R/H1] Anclaje del directorio de aborto: la identidad (st_dev,
++    st_ino) del provisional queda acreditada por `acreditar_dir_6g1()` en
++    `create_run_dir()` de los tres motores; el aborto abre el directorio con
++    `O_DIRECTORY | O_NOFOLLOW` y verifica con `fstat()` que coincide. Si la
++    ruta fue sustituida por un enlace simbólico o por otro directorio, o la
++    acreditación no existe, NO se escribe `ABORT_6G1.json` en esa ubicación
++    ni se sigue el enlace: fail-closed, sin eliminaciones y sin salidas
++    válidas declaradas. El inventario y la escritura de `ABORT_6G1.json`
++    operan sobre EL MISMO descriptor de directorio ya validado (sin
++    reapertura por ruta).
+     """
+     run_dir = Path(run_dir)
+     invalidadas, conservados, motivos = [], [], {}
+-    if run_dir.exists():
+-        for p in sorted(run_dir.rglob('*')):
+-            rel = str(p.relative_to(run_dir))
++    # [6G.1-R/H1] Anclaje del directorio de aborto: apertura sin seguir
++    # enlaces y verificación fstat contra la identidad acreditada por
++    # create_run_dir(). Fail-closed: si el anclaje falla NO se escribe
++    # ABORT_6G1.json en esa ubicación (podría ser un enlace simbólico o un
++    # directorio sustituido), no se sigue el enlace, no se elimina nada y no
++    # se declara ninguna salida válida.
++    fd_dir, motivo_anclaje = _anclar_dir_aborto_6g1(run_dir)
++    if fd_dir is None:
++        info = dict(schema='abort-6g1/3', motivo=motivo, detalle=detalle,
++                    salidas_invalidadas=[],
++                    estado_salidas_invalidadas=('conservadas en el provisional; '
++                                                'sin eliminación (C-R1)'),
++                    resultados_validos=[],
++                    conservados=[],
++                    motivos_propiedad={},
++                    analysis_intacto=True,
++                    directorio_acreditado=False,
++                    anclaje_directorio=motivo_anclaje,
++                    politica='sin_eliminacion (C-R1): ningún archivo se elimina '
++                             'durante el aborto; anclaje H1: sin escritura de '
++                             'ABORT_6G1.json si el directorio no pudo '
++                             'acreditarse; analysis.json intacto (E-R2); un '
++                             'directorio con ABORT_6G1.json nunca es una '
++                             'corrida exitosa')
++        return info
++    try:
++        # --- inventario anclado al DESCRIPTOR validado (sin recorrer rutas):
++        # reproduce la semántica del barrido anterior (lstat por entrada;
++        # enlaces conservados sin seguir; regulares clasificados; el resto
++        # omitido) pero descendiendo sólo por directorios reales abiertos con
++        # O_NOFOLLOW, de modo que ninguna parte del aborto recorre la ruta
++        # después de la acreditación (H1).
++        def _inventariar(fd_base, prefijo=''):
+             try:
+-                st = os.lstat(p)
++                nombres = sorted(os.listdir(fd_base))
+             except OSError:
+-                continue
+-            if stat.S_ISLNK(st.st_mode):
+-                conservados.append(rel)
+-                motivos[rel] = 'enlace_simbolico_conservado (sin seguir)'
+-                continue
+-            if not stat.S_ISREG(st.st_mode):
+-                continue
+-            if _es_registro_interno(p.name):
+-                conservados.append(rel)
+-                motivos[rel] = 'registro_interno_conservado'
+-                continue
+-            propia, motivo_p = propiedad_de_6g1(p)
+-            if propia:
+-                # [6G.1-R/C-R1] Sin eliminación: la salida propia registrada
+-                # queda INVALIDADA y CONSERVADA en el provisional. Aunque un
+-                # proceso concurrente sustituya el archivo tras este
+-                # dictamen, nada se borra: el sustituto también sobrevive.
+-                invalidadas.append(rel)
+-                motivos[rel] = ('salida_parcial_invalidada_y_conservada '
+-                                '(sin eliminación; C-R1)')
+-            else:
+-                conservados.append(rel)
+-                motivos[rel] = motivo_p
+-    # [6G.1-R/C-R1] Esquema versionado: abort-6g1/3 (la semántica de
+-    # salidas_invalidadas cambia respecto de /2: quedan CONSERVADAS, no
+-    # eliminadas). Consumidores actualizados en compatibilidad y documentación.
+-    info = dict(schema='abort-6g1/3', motivo=motivo, detalle=detalle,
+-                salidas_invalidadas=invalidadas,
+-                estado_salidas_invalidadas=('conservadas en el provisional; '
+-                                            'sin eliminación (C-R1)'),
+-                resultados_validos=[],
+-                conservados=conservados,
+-                motivos_propiedad=motivos,
+-                analysis_intacto=True,
+-                politica='sin_eliminacion (C-R1): ningún archivo se elimina '
+-                         'durante el aborto; las salidas propias registradas '
+-                         'quedan invalidadas y conservadas; sin borrado por '
+-                         'patrón de nombre ni por ubicación; sin escritura a '
+-                         'través de enlaces simbólicos; analysis.json no se '
+-                         'modifica durante el aborto (E-R2): toda la '
+-                         'información del aborto vive en ABORT_6G1.json; un '
+-                         'directorio con ABORT_6G1.json nunca es una corrida '
+-                         'exitosa')
+-    if run_dir.exists():
+-        # --- ABORT_6G1.json: creación exclusiva y no-follow anclada al dirfd
++                return
++            for nombre in nombres:
++                rel = prefijo + nombre
++                try:
++                    st = os.lstat(nombre, dir_fd=fd_base)
++                except OSError:
++                    continue
++                if stat.S_ISLNK(st.st_mode):
++                    conservados.append(rel)
++                    motivos[rel] = 'enlace_simbolico_conservado (sin seguir)'
++                    continue
++                if stat.S_ISDIR(st.st_mode):
++                    try:
++                        fd_sub = os.open(nombre, os.O_RDONLY | os.O_DIRECTORY
++                                         | os.O_NOFOLLOW, dir_fd=fd_base)
++                    except OSError:
++                        continue
++                    try:
++                        _inventariar(fd_sub, rel + '/')
++                    finally:
++                        os.close(fd_sub)
++                    continue
++                if not stat.S_ISREG(st.st_mode):
++                    continue
++                if _es_registro_interno(nombre):
++                    conservados.append(rel)
++                    motivos[rel] = 'registro_interno_conservado'
++                    continue
++                propia, motivo_p = propiedad_de_6g1(os.path.join(str(run_dir),
++                                                                 rel))
++                if propia:
++                    # [6G.1-R/C-R1] Sin eliminación: la salida propia
++                    # registrada queda INVALIDADA y CONSERVADA en el
++                    # provisional (clasificación basada en el dictamen
++                    # obtenido antes de la sustitución si la hubiera; no
++                    # identifica necesariamente la identidad posterior).
++                    invalidadas.append(rel)
++                    motivos[rel] = ('salida_parcial_invalidada_y_conservada '
++                                    '(sin eliminación; C-R1)')
++                else:
++                    conservados.append(rel)
++                    motivos[rel] = motivo_p
++        _inventariar(fd_dir)
++        # [6G.1-R/C-R1] Esquema versionado: abort-6g1/3 (la semántica de
++        # salidas_invalidadas cambia respecto de /2: quedan CONSERVADAS, no
++        # eliminadas). Consumidores actualizados en compatibilidad y
++        # documentación. [H1] campos de anclaje añadidos (aditivos).
++        info = dict(schema='abort-6g1/3', motivo=motivo, detalle=detalle,
++                    salidas_invalidadas=invalidadas,
++                    estado_salidas_invalidadas=('conservadas en el provisional; '
++                                                'sin eliminación (C-R1)'),
++                    resultados_validos=[],
++                    conservados=conservados,
++                    motivos_propiedad=motivos,
++                    analysis_intacto=True,
++                    directorio_acreditado=True,
++                    anclaje_directorio=motivo_anclaje,
++                    politica='sin_eliminacion (C-R1): ningún archivo se elimina '
++                             'durante el aborto; las salidas propias registradas '
++                             'quedan invalidadas y conservadas; sin borrado por '
++                             'patrón de nombre ni por ubicación; sin escritura a '
++                             'través de enlaces simbólicos; analysis.json no se '
++                             'modifica durante el aborto (E-R2): toda la '
++                             'información del aborto vive en ABORT_6G1.json; un '
++                             'directorio con ABORT_6G1.json nunca es una corrida '
++                             'exitosa; anclaje H1: directorio acreditado y E/S '
++                             'sobre el descriptor validado')
++        # --- ABORT_6G1.json: creación exclusiva y no-follow sobre EL MISMO
++        # descriptor de directorio ya validado (H1: sin reapertura por ruta).
+         try:
+-            dirfd = os.open(str(run_dir), os.O_RDONLY | os.O_DIRECTORY)
+-            try:
+-                fd = os.open('ABORT_6G1.json',
+-                             os.O_WRONLY | os.O_CREAT | os.O_EXCL | os.O_NOFOLLOW,
+-                             0o644, dir_fd=dirfd)
+-                with os.fdopen(fd, 'w', encoding='utf-8') as f:
+-                    f.write(json.dumps(info, indent=2, ensure_ascii=False,
+-                                       default=str))
+-            finally:
+-                os.close(dirfd)
++            fd = os.open('ABORT_6G1.json',
++                         os.O_WRONLY | os.O_CREAT | os.O_EXCL | os.O_NOFOLLOW,
++                         0o644, dir_fd=fd_dir)
++            with os.fdopen(fd, 'w', encoding='utf-8') as f:
++                f.write(json.dumps(info, indent=2, ensure_ascii=False,
++                                   default=str))
+         except FileExistsError:
+             motivos['ABORT_6G1.json'] = ('colision: ABORT_6G1.json preexistente '
+                                          '(o enlace); sin sobrescribir')
+@@ -336,6 +462,8 @@ def abortar_6g1(run_dir, motivo, detalle=None):
+         # no-follow anclada al dirfd. Así la conservación de analysis.json es
+         # estructural (no hay ninguna escritura dirigida a él) y no se
+         # reintroducen escrituras por nombre ni ventanas TOCTOU.
++    finally:
++        os.close(fd_dir)
+     return info
+ 
+ 
+diff --git a/ETAPA_6G1_CORRECCION_LECTURA_SEGURA/motores/sdv_sdi_mqr_engine.py b/ETAPA_6G1_CORRECCION_LECTURA_SEGURA/motores/sdv_sdi_mqr_engine.py
+index 3ce27e7..7e7ca26 100644
+--- a/ETAPA_6G1_CORRECCION_LECTURA_SEGURA/motores/sdv_sdi_mqr_engine.py
++++ b/ETAPA_6G1_CORRECCION_LECTURA_SEGURA/motores/sdv_sdi_mqr_engine.py
+@@ -494,6 +494,7 @@ from lectura_segura_6g1 import (MixCambiado as _MixCambiado_6g1,
+                                  VerificacionFallida6G1 as _VerifFallida_6g1,
+                                  registrar_propio_6g1 as _registrar_propio_6g1,
+                                  reiniciar_registro_6g1 as _reiniciar_registro_6g1,
++                                 acreditar_dir_6g1 as _acreditar_dir_6g1,
+                                  publicar_dir_6g1 as _publicar_dir_6g1)
+ 
+ from atribucion_6f import (measure, verify_wave, alignment_gate,
+@@ -2075,6 +2076,7 @@ def create_run_dir(out_base):
+         partial = final + "_partial"
+         try:
+             os.mkdir(partial)
++            _acreditar_dir_6g1(partial)  # [6G.1-R/H1] anclaje del aborto
+             return partial, final
+         except FileExistsError:
+             intento += 1
+diff --git a/ETAPA_6G1_CORRECCION_LECTURA_SEGURA/scripts/pruebas_c_r1_6g1.py b/ETAPA_6G1_CORRECCION_LECTURA_SEGURA/scripts/pruebas_c_r1_6g1.py
+index 2658293..3fb4708 100644
+--- a/ETAPA_6G1_CORRECCION_LECTURA_SEGURA/scripts/pruebas_c_r1_6g1.py
++++ b/ETAPA_6G1_CORRECCION_LECTURA_SEGURA/scripts/pruebas_c_r1_6g1.py
+@@ -106,6 +106,7 @@ def unidad():
+         L.reiniciar_registro_6g1()
+         L.registrar_propio_6g1(run / 'salida_A.wav', estable=True)
+         L.registrar_propio_6g1(run / 'salida_B.wav', estable=True)
++        L.acreditar_dir_6g1(run)  # [6G.1-R/H1] como create_run_dir
+         info = L.abortar_6g1(run, 'PRUEBA_CR1a')
+         ab = leer_abort(run)
+         checks = [
+@@ -149,6 +150,7 @@ def unidad():
+         propio = run / 'propio.wav'
+         propio.write_bytes(b'salida propia\n')
+         L.registrar_propio_6g1(propio, estable=True)
++        L.acreditar_dir_6g1(run)  # [6G.1-R/H1] como create_run_dir
+         info = L.abortar_6g1(run, 'PRUEBA_CR1b')
+         ab = leer_abort(run)
+         checks = [
+@@ -225,6 +227,7 @@ def unidad():
+             return propia, motivo
+ 
+         L.propiedad_de_6g1 = prop_con_sustitucion
++        L.acreditar_dir_6g1(run)  # [6G.1-R/H1] como create_run_dir
+         try:
+             info = L.abortar_6g1(run, 'PRUEBA_CR1c')
+         finally:
+@@ -283,6 +286,7 @@ def unidad():
+         os.symlink(str(externo), run / 'enlace.json')
+         os.symlink(str(externo), run / 'analysis_link.json')
+         L.reiniciar_registro_6g1()
++        L.acreditar_dir_6g1(run)  # [6G.1-R/H1] como create_run_dir
+         info = L.abortar_6g1(run, 'PRUEBA_CR1d')
+         ab = leer_abort(run)
+         checks = [
+@@ -319,6 +323,7 @@ def unidad():
+         pre = run / 'ABORT_6G1.json'
+         pre.write_bytes(b'{"abort_preexistente_ajeno": true}\n')
+         sha_pre = sha_file(pre)
++        L.acreditar_dir_6g1(run)  # [6G.1-R/H1] como create_run_dir
+         info = L.abortar_6g1(run, 'PRUEBA_CR1e')
+         checks = [
+             ('preexistente_intacto', sha_file(pre) == sha_pre, sha_file(pre)[:16]),
+@@ -355,6 +360,7 @@ def unidad():
+         sha0, mtime0 = sha_file(ruta_a), os.lstat(ruta_a).st_mtime_ns
+         L.reiniciar_registro_6g1()
+         L.registrar_propio_6g1(ruta_a, estable=True)
++        L.acreditar_dir_6g1(run)  # [6G.1-R/H1] como create_run_dir
+         info = L.abortar_6g1(run, 'PRUEBA_CR1f')
+         checks = [
+             ('analysis_byte_a_byte', ruta_a.read_bytes() == contenido, ''),
+diff --git a/ETAPA_6G1_CORRECCION_LECTURA_SEGURA/scripts/pruebas_h1_6g1.py b/ETAPA_6G1_CORRECCION_LECTURA_SEGURA/scripts/pruebas_h1_6g1.py
+new file mode 100644
+index 0000000..fc52256
+--- /dev/null
++++ b/ETAPA_6G1_CORRECCION_LECTURA_SEGURA/scripts/pruebas_h1_6g1.py
+@@ -0,0 +1,433 @@
++"""Pruebas H1 (rectificación 6G.1 — anclaje del directorio de aborto).
++
++Ejecuta ÚNICAMENTE la batería focalizada de este hallazgo; no repite las
++baterías históricas (34/26/17/12). La batería C-R1 (pruebas_c_r1_6g1.py),
++actualizada para acreditar el provisional como hace create_run_dir(), se
++re-ejecuta aparte como verificación focalizada complementaria.
++
++  H1a (obligatoria)  La ruta provisional se sustituye por un ENLACE SIMBÓLICO
++        hacia un directorio externo (después de la creación+acreditación y
++        antes de la apertura del aborto): el enlace NO se sigue (apertura
++        O_DIRECTORY|O_NOFOLLOW -> ELOOP), el centinela externo y el resto de
++        archivos externos permanecen byte a byte intactos, NO se crea ni
++        modifica ABORT_6G1.json en el directorio externo, el resultado es
++        fail-closed con el motivo de anclaje registrado, no se elimina ningún
++        archivo y no se declara ninguna salida válida. Verificación sobre el
++        estado real en disco (bytes y SHA-256), no sólo el retorno.
++  H1b  Aborto normal con directorio acreditado: ABORT_6G1.json /3 en el
++        provisional real con directorio_acreditado=True; semántica C-R1/E-R2
++        intacta (salida propia invalidada y conservada; ajeno intacto;
++        analysis.json intacto; resultados_validos vacío).
++  H1c  Identidad distinta: el directorio acreditado se sustituye por OTRO
++        directorio real (no enlace) en la misma ruta: fstat no coincide con
++        lo acreditado -> fail-closed, sin ABORT en el nuevo directorio.
++  CR1-regresión  La ventana histórica de CR1c (sustitución tras dictamen
++        positivo) sigue cubierta con el anclaje H1 activo: el sustituto queda
++        intacto y clasificado por el dictamen anterior.
++  H1-e2e ×3 motores  Aborto real (guarda final) con la acreditación de
++        create_run_dir: exit 2; sin directorio definitivo; ABORT /3 con
++        directorio_acreditado=True y anclaje_directorio correcto; salidas
++        propias conservadas en disco.
++  sanidad ×3  Corrida feliz: exit 0, publicación única, PCM idéntico a la
++        campaña auditada (DSP intacto).
++
++Evidencia: evidence/pruebas_h1_6g1.json + evidence/matriz_h1_6g1.csv
++"""
++import csv
++import json
++import os
++import shutil
++import subprocess
++import sys
++from pathlib import Path
++
++RAIZ = Path(__file__).resolve().parent.parent
++sys.path.insert(0, str(RAIZ / 'scripts'))
++sys.path.insert(0, str(RAIZ / 'motores'))
++from comun_6g1 import FIX, MOT, MOTORES, escribir_manifest, recolectar, sha_file, dump
++
++EV = RAIZ / 'evidence'
++INJ = RAIZ / 'scripts' / 'inyeccion_6g1'
++TRABAJO = Path('/tmp/f6g1h1')
++
++SALIDAS = {'Hardened': ('mix SDV.wav', 'mix SDI.wav'),
++           'EVO': ('mix SDV.wav', 'mix SDI.wav'),
++           'MQR': ('SDV.wav', 'SDI.wav')}
++PREFIJO = {'Hardened': 'motorA_run_', 'EVO': 'motorA_run_', 'MQR': 'mqr_run_'}
++
++
++def fila(prueba, motor, alcance, checks, motivo_ne=None):
++    if motivo_ne is not None:
++        return dict(prueba=prueba, motor=motor, alcance=alcance,
++                    veredicto='NOT_EXECUTED', checks_ok=0, checks_total=0,
++                    detalle=motivo_ne)
++    ok = [c for c in checks if c[1]]
++    detalle = '; '.join('%s=FALLO: %s' % (c[0], c[2]) for c in checks
++                        if not c[1]) or 'todos los checks OK'
++    return dict(prueba=prueba, motor=motor, alcance=alcance,
++                veredicto='PASS' if len(ok) == len(checks) else 'FAIL',
++                checks_ok=len(ok), checks_total=len(checks), detalle=detalle)
++
++
++def pcm_auditado(motor, cont='WAV'):
++    d = json.loads((EV / 'contenedores_6g1.json').read_text())
++    return d['casos']['%s/%s/full_processing' % (motor, cont)]['pcm']
++
++
++def dirs_definitivos(out, motor):
++    pref = PREFIJO[motor]
++    if not Path(out).exists():
++        return []
++    return [d.name for d in Path(out).iterdir()
++            if d.is_dir() and d.name.startswith(pref)
++            and not d.name.endswith('_partial')
++            and not d.name.endswith('_aborted')]
++
++
++def correr(motor, work, inject=None):
++    work = Path(work)
++    shutil.rmtree(work, ignore_errors=True)
++    work.mkdir(parents=True)
++    man = work / 'manifest.json'
++    escribir_manifest(man, dict(mix=str(FIX / 'mix.wav'),
++                                vocal=str(FIX / 'vocal_mix.wav'),
++                                instrumental=str(FIX / 'instrumental_mix.wav')))
++    out = work / 'out'
++    cmd = [sys.executable, '-B', str(MOT / MOTORES[motor]),
++           '--manifest', str(man), '--out', str(out),
++           '--mode', 'full_processing']
++    env = dict(os.environ, PYTHONPATH=str(INJ))
++    if inject:
++        env['SDVSDI_6G1_INJECT'] = inject
++        env['SDVSDI_6G1_MOTORES'] = str(MOT)
++    proc = subprocess.Popen(cmd, cwd=str(MOT), stdout=subprocess.PIPE,
++                            stderr=subprocess.STDOUT, text=True, env=env)
++    salida = proc.communicate(timeout=900)[0] or ''
++    datos = recolectar(out)
++    datos.update(exit=proc.returncode, out=str(out),
++                 stdout_tail=salida[-3000:])
++    return datos
++
++
++def unidad():
++    filas, detalles = [], {}
++    import lectura_segura_6g1 as L
++
++    # ---- H1a (obligatoria): enlace simbólico en la ruta del provisional
++    try:
++        run = TRABAJO / 'H1a'
++        if os.path.islink(run):        # restos de una corrida anterior
++            os.unlink(run)
++        shutil.rmtree(run, ignore_errors=True)
++        run.mkdir(parents=True)
++        # 1-2: provisional real + identidad acreditada (como create_run_dir)
++        L.reiniciar_registro_6g1()
++        L.acreditar_dir_6g1(run)
++        # 3: directorio externo con centinela y su SHA-256 (+ archivo extra)
++        externo = TRABAJO / 'H1a_externo'
++        shutil.rmtree(externo, ignore_errors=True)
++        externo.mkdir(parents=True)
++        bytes_cen = b'CENTINELA externo: no debe tocarse por el aborto\n'
++        (externo / 'centinela.txt').write_bytes(bytes_cen)
++        bytes_extra = b'archivo externo adicional\n'
++        (externo / 'extra_ajeno.txt').write_bytes(bytes_extra)
++        sha_cen = sha_file(externo / 'centinela.txt')
++        sha_extra = sha_file(externo / 'extra_ajeno.txt')
++        # 4: sustitución de la ruta provisional por un enlace simbólico hacia
++        # el externo, DESPUÉS de la creación y ANTES de la apertura del aborto
++        os.rmdir(run)
++        os.symlink(str(externo), run)
++        assert os.path.islink(run)
++        # 5: procedimiento de aborto
++        info = L.abortar_6g1(run, 'PRUEBA_H1a')
++        # 6: estado real en disco
++        checks = [
++            ('enlace_no_seguido', os.path.islink(run), ''),
++            ('resultado_fail_closed',
++             info.get('directorio_acreditado') is False
++             and 'H1' in str(info.get('anclaje_directorio', '')),
++             str(info.get('anclaje_directorio'))),
++            ('motivo_anclaje_enlace',
++             'apertura_segura_fallo' in str(info.get('anclaje_directorio', ''))
++             or 'enlace' in str(info.get('anclaje_directorio', '')),
++             str(info.get('anclaje_directorio'))),
++            ('centinela_byte_a_byte',
++             (externo / 'centinela.txt').read_bytes() == bytes_cen
++             and sha_file(externo / 'centinela.txt') == sha_cen,
++             sha_file(externo / 'centinela.txt')[:16]),
++            ('externo_completo_intacto',
++             (externo / 'extra_ajeno.txt').read_bytes() == bytes_extra
++             and sha_file(externo / 'extra_ajeno.txt') == sha_extra,
++             sha_file(externo / 'extra_ajeno.txt')[:16]),
++            ('sin_abort_en_externo',
++             not (externo / 'ABORT_6G1.json').exists()
++             and not os.path.islink(externo / 'ABORT_6G1.json'), ''),
++            ('sin_abort_en_ninguna_ruta_acreditada',
++             not (run / 'ABORT_6G1.json').exists(), ''),
++            ('nada_eliminado',
++             (externo / 'centinela.txt').exists()
++             and (externo / 'extra_ajeno.txt').exists(), ''),
++            ('sin_salidas_validas',
++             info.get('resultados_validos') == []
++             and info.get('salidas_invalidadas') == []
++             and info.get('conservados') == [],
++             str((info.get('salidas_invalidadas'), info.get('conservados')))),
++            ('schema_3', info.get('schema') == 'abort-6g1/3',
++             str(info.get('schema'))),
++            ('motivo_original_conservado', info.get('motivo') == 'PRUEBA_H1a',
++             str(info.get('motivo'))),
++        ]
++        filas.append(fila('H1a', 'lectura_segura_6g1',
++                          'enlace simbólico en la ruta del provisional: '
++                          'fail-closed, externo intacto, sin ABORT externo',
++                          checks))
++        detalles['H1a'] = dict(info=info)
++    except Exception as exc:
++        filas.append(fila('H1a', 'lectura_segura_6g1', 'unidad', None,
++                          motivo_ne='entorno de ensayo: %r' % exc))
++        detalles['H1a'] = dict(error=repr(exc))
++
++    # ---- H1b: aborto normal con directorio acreditado
++    try:
++        run = TRABAJO / 'H1b'
++        shutil.rmtree(run, ignore_errors=True)
++        run.mkdir(parents=True)
++        L.reiniciar_registro_6g1()
++        propio = run / 'salida.wav'
++        propio.write_bytes(b'salida propia\n')
++        L.registrar_propio_6g1(propio, estable=True)
++        ajeno = run / 'ajeno.wav'
++        ajeno.write_bytes(b'AJENO\n')
++        L.acreditar_dir_6g1(run)
++        info = L.abortar_6g1(run, 'PRUEBA_H1b')
++        ab = json.loads((run / 'ABORT_6G1.json').read_text(encoding='utf-8'))
++        checks = [
++            ('directorio_acreditado_true',
++             info.get('directorio_acreditado') is True
++             and ab.get('directorio_acreditado') is True,
++             str(info.get('anclaje_directorio'))),
++            ('abort_en_el_provisional_real', (run / 'ABORT_6G1.json').is_file(), ''),
++            ('schema_3', ab.get('schema') == 'abort-6g1/3', ''),
++            ('semantica_c_r1_intacta',
++             'salida.wav' in ab.get('salidas_invalidadas', [])
++             and propio.exists()
++             and propio.read_bytes() == b'salida propia\n',
++             str(ab.get('salidas_invalidadas'))),
++            ('ajeno_intacto', ajeno.read_bytes() == b'AJENO\n', ''),
++            ('analysis_intacto', not (run / 'analysis.json').exists(), ''),
++            ('resultados_validos_vacio', ab.get('resultados_validos') == [], ''),
++            ('anclaje_registrado', 'directorio_acreditado' in str(ab.get('anclaje_directorio')),
++             str(ab.get('anclaje_directorio'))),
++        ]
++        filas.append(fila('H1b', 'lectura_segura_6g1',
++                          'aborto normal con directorio acreditado: ABORT en '
++                          'el provisional real, semántica C-R1/E-R2 intacta',
++                          checks))
++        detalles['H1b'] = dict(abort=ab)
++    except Exception as exc:
++        filas.append(fila('H1b', 'lectura_segura_6g1', 'unidad', None,
++                          motivo_ne='entorno de ensayo: %r' % exc))
++        detalles['H1b'] = dict(error=repr(exc))
++
++    # ---- H1c: identidad distinta (otro directorio real en la misma ruta)
++    try:
++        run = TRABAJO / 'H1c'
++        shutil.rmtree(run, ignore_errors=True)
++        run.mkdir(parents=True)
++        L.reiniciar_registro_6g1()
++        L.acreditar_dir_6g1(run)
++        # sustitución por OTRO directorio real (no enlace) en la misma ruta.
++        # El provisional acreditado sigue VIVO (renombrado aparte, como en el
++        # escenario real en que el motor lo conserva): su inodo permanece
++        # ocupado, así que el nuevo directorio obtiene identidad distinta
++        # (evita la reutilización de inodo que seproduce si se borra antes).
++        original_vivo = TRABAJO / 'H1c_original_vivo'
++        shutil.rmtree(original_vivo, ignore_errors=True)
++        os.rename(run, original_vivo)
++        run.mkdir()
++        ajeno2 = run / 'ajeno_otro_dir.txt'
++        ajeno2.write_bytes(b'contenido de otro directorio\n')
++        sha2 = sha_file(ajeno2)
++        info = L.abortar_6g1(run, 'PRUEBA_H1c')
++        checks = [
++            ('fail_closed_por_identidad',
++             info.get('directorio_acreditado') is False
++             and 'identidad_distinta' in str(info.get('anclaje_directorio', '')),
++             str(info.get('anclaje_directorio'))),
++            ('sin_abort_en_el_nuevo_directorio',
++             not (run / 'ABORT_6G1.json').exists(), ''),
++            ('ajeno_otro_dir_intacto',
++             ajeno2.read_bytes() == b'contenido de otro directorio\n'
++             and sha_file(ajeno2) == sha2, sha_file(ajeno2)[:16]),
++            ('sin_salidas_validas',
++             info.get('resultados_validos') == []
++             and info.get('salidas_invalidadas') == [], ''),
++            ('schema_3', info.get('schema') == 'abort-6g1/3', ''),
++            ('provisional_acreditado_sigue_vivo',
++             (TRABAJO / 'H1c_original_vivo').is_dir(), ''),
++        ]
++        filas.append(fila('H1c', 'lectura_segura_6g1',
++                          'directorio sustituido por otro real: fail-closed '
++                          'por identidad distinta', checks))
++        detalles['H1c'] = dict(info=info)
++    except Exception as exc:
++        filas.append(fila('H1c', 'lectura_segura_6g1', 'unidad', None,
++                          motivo_ne='entorno de ensayo: %r' % exc))
++        detalles['H1c'] = dict(error=repr(exc))
++
++    # ---- regresión CR1c con anclaje H1 activo
++    try:
++        run = TRABAJO / 'H1_CR1c_regresion'
++        shutil.rmtree(run, ignore_errors=True)
++        run.mkdir(parents=True)
++        sustituto = TRABAJO / 'sustituto_H1cr1c.wav'
++        bytes_sub = b'contenido AJENO tras dictamen positivo (con H1)\n'
++        sustituto.write_bytes(bytes_sub)
++        ruta_propia = run / 'salida_concurrente.wav'
++        ruta_propia.write_bytes(b'salida propia original\n')
++        L.reiniciar_registro_6g1()
++        L.registrar_propio_6g1(ruta_propia, estable=True)
++        original_prop = L.propiedad_de_6g1
++        suceso = dict(secuencia=[])
++
++        def prop_con_sustitucion(p):
++            propia, motivo = original_prop(p)
++            if propia and os.path.abspath(str(p)) == str(ruta_propia) \
++                    and not suceso['secuencia']:
++                suceso['secuencia'].append('dictamen_positivo')
++                tmp = run / '.sust_tmp'
++                shutil.copyfile(str(sustituto), str(tmp))
++                os.replace(str(tmp), str(ruta_propia))
++                suceso['secuencia'].append('sustitucion_os_replace')
++            return propia, motivo
++
++        L.propiedad_de_6g1 = prop_con_sustitucion
++        try:
++            L.acreditar_dir_6g1(run)
++            info = L.abortar_6g1(run, 'PRUEBA_H1_CR1c')
++        finally:
++            L.propiedad_de_6g1 = original_prop
++        checks = [
++            ('secuencia_dictamen_sustitucion',
++             suceso['secuencia'] == ['dictamen_positivo',
++                                     'sustitucion_os_replace'],
++             str(suceso['secuencia'])),
++            ('sustituto_intacto_con_anclaje',
++             ruta_propia.read_bytes() == bytes_sub, ''),
++            ('abort_en_provisional_real',
++             (run / 'ABORT_6G1.json').is_file()
++             and info.get('directorio_acreditado') is True, ''),
++            ('clasificacion_por_dictamen_anterior',
++             'salida_concurrente.wav' in info.get('salidas_invalidadas', []),
++             str(info.get('salidas_invalidadas'))),
++        ]
++        filas.append(fila('H1-CR1c-regresion', 'lectura_segura_6g1',
++                          'ventana histórica CR1c cubierta con anclaje H1 '
++                          'activo', checks))
++        detalles['H1-CR1c-regresion'] = dict(info=info)
++    except Exception as exc:
++        filas.append(fila('H1-CR1c-regresion', 'lectura_segura_6g1', 'unidad',
++                          None, motivo_ne='entorno de ensayo: %r' % exc))
++        detalles['H1-CR1c-regresion'] = dict(error=repr(exc))
++
++    return filas, detalles
++
++
++def motores_h1():
++    filas, detalles = [], {}
++    for motor in MOTORES:
++        # ---- e2e: aborto real con acreditación de create_run_dir
++        try:
++            r = correr(motor, TRABAJO / motor / 'E2E', inject='verificar_raise')
++            out = Path(r['out'])
++            parcial = sorted(out.glob('*_partial'))[0]
++            ab = json.loads((parcial / 'ABORT_6G1.json').read_text(
++                encoding='utf-8'))
++            checks = [
++                ('exit_2', r['exit'] == 2, 'exit=%s' % r['exit']),
++                ('sin_dir_definitivo', not dirs_definitivos(r['out'], motor),
++                 'definitivos=%s' % dirs_definitivos(r['out'], motor)),
++                ('abort_schema_3', ab.get('schema') == 'abort-6g1/3', ''),
++                ('directorio_acreditado_true',
++                 ab.get('directorio_acreditado') is True
++                 and 'directorio_acreditado' in str(ab.get('anclaje_directorio')),
++                 str(ab.get('anclaje_directorio'))),
++                ('salidas_propias_conservadas',
++                 all((parcial / s).is_file() for s in SALIDAS[motor]), ''),
++                ('semantica_c_r1',
++                 all(s in ab.get('salidas_invalidadas', [])
++                     for s in SALIDAS[motor])
++                 and ab.get('resultados_validos') == [],
++                 str(ab.get('salidas_invalidadas'))),
++            ]
++            filas.append(fila('H1-e2e', motor,
++                              'aborto real con acreditación de create_run_dir',
++                              checks))
++            detalles.setdefault(motor, {})['E2E'] = dict(exit=r['exit'])
++        except Exception as exc:
++            filas.append(fila('H1-e2e', motor, 'end-to-end', None,
++                              motivo_ne='entorno de ensayo: %r' % exc))
++            detalles.setdefault(motor, {})['E2E'] = dict(error=repr(exc))
++        # ---- sanidad mínima
++        try:
++            r = correr(motor, TRABAJO / motor / 'sanidad')
++            pcm = {p['name']: p['pcm_sha256'] for p in r['pcm']
++                   if 'pcm_sha256' in p}
++            esperado = pcm_auditado(motor)
++            integ = r['integrity']
++            defs = dirs_definitivos(r['out'], motor)
++            checks = [
++                ('exit_0', r['exit'] == 0, 'exit=%s' % r['exit']),
++                ('publicacion_unica', len(defs) == 1, 'defs=%s' % defs),
++                ('integridad_true',
++                 integ.get('after', {}).get('unchanged') is True
++                 and integ.get('ruta_actual', {}).get('unchanged') is True, ''),
++                ('pcm_identico_a_campana_auditada', pcm == esperado,
++                 'diff=%s' % {k: pcm.get(k, '')[:12] for k in
++                              set(pcm) | set(esperado)
++                              if pcm.get(k) != esperado.get(k)}),
++            ]
++            filas.append(fila('sanidad', motor, 'corrida feliz tras H1', checks))
++            detalles.setdefault(motor, {})['sanidad'] = dict(exit=r['exit'])
++        except Exception as exc:
++            filas.append(fila('sanidad', motor, 'corrida feliz', None,
++                              motivo_ne='entorno de ensayo: %r' % exc))
++            detalles.setdefault(motor, {})['sanidad'] = dict(error=repr(exc))
++    return filas, detalles
++
++
++def main():
++    EV.mkdir(parents=True, exist_ok=True)
++    TRABAJO.mkdir(parents=True, exist_ok=True)
++    todas, detalle_todo = [], {}
++    print('== H1 unidad ==')
++    fu, du = unidad()
++    todas.extend(fu)
++    detalle_todo['unidad'] = du
++    for f in fu:
++        print('  %-18s %s' % (f['veredicto'], f['detalle'][:90]))
++    print('== H1 motores (e2e + sanidad) ==')
++    fm, dm = motores_h1()
++    todas.extend(fm)
++    detalle_todo.update(dm)
++    for f in fm:
++        print('  %-14s %-6s %-14s %s' % (f['veredicto'], f['motor'],
++                                         f['prueba'], f['detalle'][:70]))
++    dump(EV / 'pruebas_h1_6g1.json',
++         dict(schema='pruebas-h1-6g1/1', filas=todas, detalles=detalle_todo))
++    with (EV / 'matriz_h1_6g1.csv').open('w', newline='',
++                                         encoding='utf-8') as fh:
++        w = csv.DictWriter(fh, fieldnames=('prueba', 'motor', 'alcance',
++                                           'veredicto', 'checks_ok',
++                                           'checks_total', 'detalle'),
++                           lineterminator='\n')
++        w.writeheader()
++        w.writerows(todas)
++    n = {v: sum(1 for f in todas if f['veredicto'] == v)
++         for v in ('PASS', 'FAIL', 'NOT_EXECUTED')}
++    print('RESUMEN: %d PASS, %d FAIL, %d NOT_EXECUTED de %d filas'
++          % (n['PASS'], n['FAIL'], n['NOT_EXECUTED'], len(todas)))
++
++
++if __name__ == '__main__':
++    main()

@@ -300,6 +300,7 @@ from lectura_segura_6g1 import (MixCambiado as _MixCambiado_6g1,
                                  abortar_6g1 as _abortar_6g1,
                                  registrar_propio_6g1 as _registrar_propio_6g1,
                                  reiniciar_registro_6g1 as _reiniciar_registro_6g1,
+                                 acreditar_dir_6g1 as _acreditar_dir_6g1,
                                  publicar_dir_6g1 as _publicar_dir_6g1)
 
 from atribucion_6f import (measure, verify_wave, alignment_gate,
@@ -1339,6 +1340,7 @@ def create_run_dir(out_base: str) -> tuple:
         partial_dir = final_dir + "_partial"
         try:
             os.mkdir(partial_dir)
+            _acreditar_dir_6g1(partial_dir)  # [6G.1-R/H1] anclaje del aborto
             return partial_dir, final_dir
         except FileExistsError:
             intento += 1

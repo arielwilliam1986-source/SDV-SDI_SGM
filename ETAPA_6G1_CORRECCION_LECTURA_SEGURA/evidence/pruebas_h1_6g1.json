@@ -1,0 +1,198 @@
+{
+  "schema": "pruebas-h1-6g1/1",
+  "filas": [
+    {
+      "prueba": "H1a",
+      "motor": "lectura_segura_6g1",
+      "alcance": "enlace simbólico en la ruta del provisional: fail-closed, externo intacto, sin ABORT externo",
+      "veredicto": "PASS",
+      "checks_ok": 11,
+      "checks_total": 11,
+      "detalle": "todos los checks OK"
+    },
+    {
+      "prueba": "H1b",
+      "motor": "lectura_segura_6g1",
+      "alcance": "aborto normal con directorio acreditado: ABORT en el provisional real, semántica C-R1/E-R2 intacta",
+      "veredicto": "PASS",
+      "checks_ok": 8,
+      "checks_total": 8,
+      "detalle": "todos los checks OK"
+    },
+    {
+      "prueba": "H1c",
+      "motor": "lectura_segura_6g1",
+      "alcance": "directorio sustituido por otro real: fail-closed por identidad distinta",
+      "veredicto": "PASS",
+      "checks_ok": 6,
+      "checks_total": 6,
+      "detalle": "todos los checks OK"
+    },
+    {
+      "prueba": "H1-CR1c-regresion",
+      "motor": "lectura_segura_6g1",
+      "alcance": "ventana histórica CR1c cubierta con anclaje H1 activo",
+      "veredicto": "PASS",
+      "checks_ok": 4,
+      "checks_total": 4,
+      "detalle": "todos los checks OK"
+    },
+    {
+      "prueba": "H1-e2e",
+      "motor": "Hardened",
+      "alcance": "aborto real con acreditación de create_run_dir",
+      "veredicto": "PASS",
+      "checks_ok": 6,
+      "checks_total": 6,
+      "detalle": "todos los checks OK"
+    },
+    {
+      "prueba": "sanidad",
+      "motor": "Hardened",
+      "alcance": "corrida feliz tras H1",
+      "veredicto": "PASS",
+      "checks_ok": 4,
+      "checks_total": 4,
+      "detalle": "todos los checks OK"
+    },
+    {
+      "prueba": "H1-e2e",
+      "motor": "EVO",
+      "alcance": "aborto real con acreditación de create_run_dir",
+      "veredicto": "PASS",
+      "checks_ok": 6,
+      "checks_total": 6,
+      "detalle": "todos los checks OK"
+    },
+    {
+      "prueba": "sanidad",
+      "motor": "EVO",
+      "alcance": "corrida feliz tras H1",
+      "veredicto": "PASS",
+      "checks_ok": 4,
+      "checks_total": 4,
+      "detalle": "todos los checks OK"
+    },
+    {
+      "prueba": "H1-e2e",
+      "motor": "MQR",
+      "alcance": "aborto real con acreditación de create_run_dir",
+      "veredicto": "PASS",
+      "checks_ok": 6,
+      "checks_total": 6,
+      "detalle": "todos los checks OK"
+    },
+    {
+      "prueba": "sanidad",
+      "motor": "MQR",
+      "alcance": "corrida feliz tras H1",
+      "veredicto": "PASS",
+      "checks_ok": 4,
+      "checks_total": 4,
+      "detalle": "todos los checks OK"
+    }
+  ],
+  "detalles": {
+    "unidad": {
+      "H1a": {
+        "info": {
+          "schema": "abort-6g1/3",
+          "motivo": "PRUEBA_H1a",
+          "detalle": null,
+          "salidas_invalidadas": [],
+          "estado_salidas_invalidadas": "conservadas en el provisional; sin eliminación (C-R1)",
+          "resultados_validos": [],
+          "conservados": [],
+          "motivos_propiedad": {},
+          "analysis_intacto": true,
+          "directorio_acreditado": false,
+          "anclaje_directorio": "apertura_segura_fallo (H1): [Errno 20] Not a directory: '/tmp/f6g1h1/H1a' (un enlace simbólico en la ruta no se sigue)",
+          "politica": "sin_eliminacion (C-R1): ningún archivo se elimina durante el aborto; anclaje H1: sin escritura de ABORT_6G1.json si el directorio no pudo acreditarse; analysis.json intacto (E-R2); un directorio con ABORT_6G1.json nunca es una corrida exitosa"
+        }
+      },
+      "H1b": {
+        "abort": {
+          "schema": "abort-6g1/3",
+          "motivo": "PRUEBA_H1b",
+          "detalle": null,
+          "salidas_invalidadas": [
+            "salida.wav"
+          ],
+          "estado_salidas_invalidadas": "conservadas en el provisional; sin eliminación (C-R1)",
+          "resultados_validos": [],
+          "conservados": [
+            "ajeno.wav"
+          ],
+          "motivos_propiedad": {
+            "ajeno.wav": "ajeno_no_registrado",
+            "salida.wav": "salida_parcial_invalidada_y_conservada (sin eliminación; C-R1)"
+          },
+          "analysis_intacto": true,
+          "directorio_acreditado": true,
+          "anclaje_directorio": "directorio_acreditado (H1)",
+          "politica": "sin_eliminacion (C-R1): ningún archivo se elimina durante el aborto; las salidas propias registradas quedan invalidadas y conservadas; sin borrado por patrón de nombre ni por ubicación; sin escritura a través de enlaces simbólicos; analysis.json no se modifica durante el aborto (E-R2): toda la información del aborto vive en ABORT_6G1.json; un directorio con ABORT_6G1.json nunca es una corrida exitosa; anclaje H1: directorio acreditado y E/S sobre el descriptor validado"
+        }
+      },
+      "H1c": {
+        "info": {
+          "schema": "abort-6g1/3",
+          "motivo": "PRUEBA_H1c",
+          "detalle": null,
+          "salidas_invalidadas": [],
+          "estado_salidas_invalidadas": "conservadas en el provisional; sin eliminación (C-R1)",
+          "resultados_validos": [],
+          "conservados": [],
+          "motivos_propiedad": {},
+          "analysis_intacto": true,
+          "directorio_acreditado": false,
+          "anclaje_directorio": "identidad_distinta (H1): el directorio de la ruta no coincide con el provisional acreditado",
+          "politica": "sin_eliminacion (C-R1): ningún archivo se elimina durante el aborto; anclaje H1: sin escritura de ABORT_6G1.json si el directorio no pudo acreditarse; analysis.json intacto (E-R2); un directorio con ABORT_6G1.json nunca es una corrida exitosa"
+        }
+      },
+      "H1-CR1c-regresion": {
+        "info": {
+          "schema": "abort-6g1/3",
+          "motivo": "PRUEBA_H1_CR1c",
+          "detalle": null,
+          "salidas_invalidadas": [
+            "salida_concurrente.wav"
+          ],
+          "estado_salidas_invalidadas": "conservadas en el provisional; sin eliminación (C-R1)",
+          "resultados_validos": [],
+          "conservados": [],
+          "motivos_propiedad": {
+            "salida_concurrente.wav": "salida_parcial_invalidada_y_conservada (sin eliminación; C-R1)"
+          },
+          "analysis_intacto": true,
+          "directorio_acreditado": true,
+          "anclaje_directorio": "directorio_acreditado (H1)",
+          "politica": "sin_eliminacion (C-R1): ningún archivo se elimina durante el aborto; las salidas propias registradas quedan invalidadas y conservadas; sin borrado por patrón de nombre ni por ubicación; sin escritura a través de enlaces simbólicos; analysis.json no se modifica durante el aborto (E-R2): toda la información del aborto vive en ABORT_6G1.json; un directorio con ABORT_6G1.json nunca es una corrida exitosa; anclaje H1: directorio acreditado y E/S sobre el descriptor validado"
+        }
+      }
+    },
+    "Hardened": {
+      "E2E": {
+        "exit": 2
+      },
+      "sanidad": {
+        "exit": 0
+      }
+    },
+    "EVO": {
+      "E2E": {
+        "exit": 2
+      },
+      "sanidad": {
+        "exit": 0
+      }
+    },
+    "MQR": {
+      "E2E": {
+        "exit": 2
+      },
+      "sanidad": {
+        "exit": 0
+      }
+    }
+  }
+}
