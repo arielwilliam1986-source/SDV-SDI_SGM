@@ -1,35 +1,34 @@
 {
- "schema": "plan-integracion-hardened-flow14/2",
+ "schema": "plan-integracion-hardened-flow14/3",
  "generado": "2026-11-23",
- "tipo": "SOLO DISENO (rectificacion A-D; sin implementacion)",
- "autorizacion": "Cris: acepta plan v1 como base de diseno; no autoriza implementacion; rectificacion exclusivamente de diseño y documentacion",
- "padre": "cea6652893b3f790b3c47aaab430ef99554c9d00",
+ "tipo": "SOLO DISENO (consolidacion documental v2.1; sin implementacion)",
+ "autorizacion": "Cris: consolidacion documental puntual; rectificaciones A-D aceptadas sin reabrir; no autoriza implementar el plan",
+ "padre": "d7ed220c2c6a1680ece978afaaf242e0a132b965",
  "rama": "arena/f1c5739f-sdv-sdi-sgm",
  "produccion_modificada": false,
  "archivos": {
-  "PLAN_INTEGRACION_HARDENED_FLOW1_4_6G1.md": "a9c04942020622a6610d2f5c0049a329913758dae257d9281256cb6707e7ac9f",
-  "RECTIFICACION_PLAN_INTEGRACION_HARDENED_FLOW1_4_6G1.md": "be2389acf8d0727780ac34b2173a2d8b47d8b74a426532bfc7d16b6ff0f2abf9"
+  "PLAN_INTEGRACION_HARDENED_FLOW1_4_6G1.md": "0b99d4045c49bcb21fecf9f9fb8355478817e1252fbfb94f0d989330d3d2e612",
+  "RECTIFICACION_PLAN_INTEGRACION_HARDENED_FLOW1_4_6G1.md": "be2389acf8d0727780ac34b2173a2d8b47d8b74a426532bfc7d16b6ff0f2abf9",
+  "CONSOLIDACION_DOCUMENTAL_PLAN_HARDENED_FLOW1_4_6G1.md": "9b2b243942eeaa95aa4fc84e6b354edddd25b60dc9de619431f2fb4a00defd53"
  },
- "sha256sums": "ca47593701c649e26a8e6bb56e13cc49cc6b61d9deda3d8d012c4f256cdae9fa",
- "rectificaciones": {
-  "A": "secuencia de cierre/verificacion 1-8 + prohibicion escrituras post-compuerta final (P-08, R-32)",
-  "B": "fd-passthrough: sf_open_fd/closefd=False, fdopen, pread, open_memmap via /proc/self/fd/N o cabecera manual (P-03, R-29, R-34)",
-  "C": "subanclas masks/ (candidates/ no existe en Hardened) + regla de cadena acreditada componente a componente (P-01/P-09)",
-  "D": "NO atomicidad-por-identidad del renameat2 dirfd; acreditacion post-rename fstat(fd_pub)==I_run; tabla fail-closed 6 casos (P-06, R-30, R-31)"
+ "sha256sums": "0b686a2778ac7e1b2899f8e414fcc4e999054ecfcb19cb62f15c8b987ffd7021",
+ "correcciones": {
+  "obligatoriedad": "§8ter nueva: matriz determinista por (fase, flags) — masks/ OB provisional / PROH publicado; npy OB-C (--png o --keep-masks, H L1625); png/ OB-C (--png y MATPLOTLIB_OK); candidates/ PERMITIDO-C con dos niveles (H L1652-1671, R-13); nombres WAV dinamicos track_base (H L1649); eliminacion masks/ en paso 5bis con fallo->sin EXIT_OK (R-28 v2.1)",
+  "ciclo_vida": "P-08+P-09+§7 unificados: fd_masks cierra en 5bis; fd_pub/fd_candidates/fd_run/fd_padre cierran en 7; sin mutaciones post-compuerta-2 (solo ABORT si falla)",
+  "trazabilidad": "SHA256SUMS regenerados; manifiesto verificado contra los documentos publicados exactos"
  },
- "riesgos_nuevos": [
-  "R-29",
-  "R-30",
-  "R-31",
-  "R-32",
-  "R-33",
-  "R-34"
+ "contradicciones_señaladas": [
+  "masks/ dual (P-05 vs matriz FLOW-1)",
+  "candidates/ dos niveles SÍ existe en Hardened con --write-all-candidates (v2 lo negaba)",
+  "nombres WAV raiz dinamicos (v2 los fijaba como mix_sintetico)"
  ],
- "regresion_ampliada": [
-  "REG-D1-d",
-  "REG-D1-e",
-  "REG-C-d",
-  "REG-C-e",
-  "REG-B-a"
+ "riesgos_nuevos": [
+  "R-35"
+ ],
+ "regresion_nueva": [
+  "REG-M-a",
+  "REG-M-b",
+  "REG-M-c",
+  "REG-M-d"
  ]
 }
