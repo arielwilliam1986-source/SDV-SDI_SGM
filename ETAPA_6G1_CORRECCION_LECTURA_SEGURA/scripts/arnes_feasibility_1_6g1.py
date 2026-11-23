@@ -1,16 +1,42 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 """
-FEASIBILITY-1-R1 (6G.1) — Rectificación metodológica del arnés y repetición de
-las pruebas F1..F6 de validación empírica AISLADA de los mecanismos del plan
-Hardened FLOW-1..4 v2.3.
+FEASIBILITY-1-R2 (6G.1) — Rectificación final de adjudicación del arnés y
+repetición de las pruebas F1..F6 de validación empírica AISLADA de los
+mecanismos del plan Hardened FLOW-1..4 v2.3.
 
-Autorización: Cris (padre a94f50793dfa97bb7074bb3e20fe2d42c3306596).
+Autorización: Cris (padre 71d928bbf3a7ee9ebed92a94da005d120ed42de7, la
+rectificación FEASIBILITY-1-R1).
 REGLAS: este arnés NO importa ni ejecuta código de producción (motores/,
 lectura_segura_6g1.py); implementa los mecanismos de forma independiente en un
 espacio aislado (/tmp/feas1_6g1 por defecto).
 
-Correcciones R1..R6 respecto de la versión a94f507:
+Correcciones R2-A/R2-B/R2-C respecto de la versión 71d928b (R1):
+- R2-A: PRIORIDAD INEQUÍVOCA de veredictos en _agregar_veredicto:
+  (1) uno o más subpasos obligatorios fallidos => FAIL;
+  (2) sin fallos obligatorios pero condición de evaluación no disponible =>
+      UNKNOWN;
+  (3) todos los obligatorios satisfechos y ninguna condición pendiente => PASS.
+  Un UNKNOWN NUNCA oculta un subpaso obligatorio fallido. La regla se aplica y
+  se COMPRUEBA en F2 y F5 con evidencia determinista (casos sintéticos).
+- R2-B: APERTURAS NEGATIVAS y Ledger — TODA os.open() del arnés, incluidas las
+  pruebas negativas (F1 'evil'; F2 magic-link tras close; F4 nombre sustituido
+  por symlink): si falla, se registra y valida la excepción esperada; si tiene
+  éxito cuando debía fallar, el descriptor se REGISTRA en el Ledger
+  inmediatamente, se CIERRA de forma explícita y verificable y el subpaso queda
+  FALLIDO. Ningún descriptor abierto con éxito queda fuera del Ledger; ningún
+  fallo de control se oculta por una fuga o una excepción posterior.
+- R2-C: INDISPONIBILIDAD de renameat2 en F5 — si la sonda determina ENOSYS o
+  ausencia de soporte (o una sonda inconclusa), NO se continúa con los
+  escenarios dependientes de renameat2; se cierran y verifican todos los
+  descriptores abiertos; veredicto UNKNOWN salvo fallo obligatorio independiente
+  (que prevalece como FAIL); no se simula publicación satisfactoria ni se
+  presentan escenarios no ejecutados como probados. Como el entorno real SÍ
+  dispone de renameat2, la rama de indisponibilidad se ejercita además mediante
+  una PRUEBA CONTROLADA AISLADA (parche ENOSYS sobre _renameat2 en un raíz
+  separado); la rama no probada no se declara validada.
+
+Correcciones R1..R6 respecto de la versión a94f507 (conservadas):
 - R1: veredicto global AGREGADO a partir de subpasos obligatorios booleanos;
   excepción inesperada => FAIL; UNKNOWN sólo con condición explícita justificada.
 - R2: libro mayor (ledger) de TODOS los descriptores abiertos (propios,
@@ -151,15 +177,116 @@ class Ledger:
 
 
 def _agregar_veredicto(r, pasos, condicion_unknown=None, nota=''):
-    """R1: veredicto global a partir de los subpasos obligatorios."""
+    """R2-A: prioridad INEQUÍVOCA de veredictos.
+
+    1. Uno o más subpasos obligatorios fallidos => FAIL.
+    2. Ningún subpaso obligatorio fallido, pero condición de evaluación no
+       disponible => UNKNOWN.
+    3. Todos los subpasos obligatorios satisfechos y ninguna condición
+       pendiente => PASS.
+
+    Un UNKNOWN NUNCA oculta un subpaso obligatorio fallido."""
     fallidos = [p['paso'] for p in pasos if p.get('obligatorio') and not p['ok']]
     r['obligatorios_fallidos'] = fallidos
-    if condicion_unknown:
-        return r.finalizar('UNKNOWN', condicion_unknown)
-    if fallidos:
-        return r.finalizar('FAIL',
-                           'subpasos obligatorios fallidos: ' + ', '.join(fallidos))
-    return r.finalizar('PASS', nota)
+    r['condiciones_pendientes'] = [condicion_unknown] if condicion_unknown else []
+    if fallidos:                                    # (1) FAIL > UNKNOWN
+        det = 'subpasos obligatorios fallidos: ' + ', '.join(fallidos)
+        if condicion_unknown:
+            det += (' | condición de evaluación no disponible (NO oculta el '
+                    'fallo): ' + condicion_unknown)
+        return r.finalizar('FAIL', det)
+    if condicion_unknown:                           # (2) UNKNOWN
+        return r.finalizar('UNKNOWN',
+                           'condición de evaluación no disponible: '
+                           + condicion_unknown)
+    return r.finalizar('PASS', nota)                # (3) PASS
+
+
+def _evidencia_prioridad(contexto):
+    """R2-A: evidencia determinista de la prioridad FAIL > UNKNOWN > PASS,
+    mediante casos sintéticos del propio _agregar_veredicto. Se aplica y
+    comprueba en F2 y F5 (subpaso obligatorio R2A_prioridad_...)."""
+    r_u = Resultado(flujo='autotest:%s' % contexto)
+    _agregar_veredicto(r_u, [dict(paso='sintetico_ok', ok=True,
+                                  obligatorio=True)],
+                       condicion_unknown='condición sintética no disponible')
+    r_f = Resultado(flujo='autotest:%s' % contexto)
+    _agregar_veredicto(r_f, [dict(paso='sintetico_ok', ok=True,
+                                  obligatorio=True),
+                             dict(paso='sintetico_obligatorio_fallido', ok=False,
+                                  obligatorio=True)],
+                       condicion_unknown='condición sintética no disponible')
+    r_p = Resultado(flujo='autotest:%s' % contexto)
+    _agregar_veredicto(r_p, [dict(paso='sintetico_ok', ok=True,
+                                  obligatorio=True)])
+    e_u = dict(veredicto=r_u['resultado'], esperado='UNKNOWN',
+               conforme=r_u['resultado'] == 'UNKNOWN',
+               obligatorios_fallidos=r_u.get('obligatorios_fallidos'))
+    e_f = dict(veredicto=r_f['resultado'], esperado='FAIL',
+               conforme=r_f['resultado'] == 'FAIL',
+               obligatorios_fallidos=r_f.get('obligatorios_fallidos'),
+               nota=r_f.get('nota'),
+               regla='el UNKNOWN NO oculta el subpaso obligatorio fallido')
+    e_p = dict(veredicto=r_p['resultado'], esperado='PASS',
+               conforme=r_p['resultado'] == 'PASS')
+    return dict(contexto=contexto,
+                caso_desconocido_sin_fallos=e_u,
+                caso_fail_sobre_unknown=e_f,
+                caso_pass_sin_pendientes=e_p,
+                conforme=e_u['conforme'] and e_f['conforme'] and e_p['conforme'])
+
+
+def _abrir_negativo(pasos, led, etiqueta, nombre_paso, abrir,
+                    errno_esperado=None):
+    """R2-B: apertura que DEBE fallar (prueba negativa).
+
+    - Si os.open falla: registra la excepción y valida que sea la esperada
+      (errno_esperado None = cualquiera; int = exacto; conjunto = pertenencia).
+    - Si os.open TIENE ÉXITO cuando debía fallar: registra el descriptor en el
+      Ledger INMEDIATAMENTE, lo cierra de forma explícita y verificable y marca
+      el subpaso como FALLIDO. Ningún descriptor abierto con éxito queda fuera
+      del Ledger; un fallo de control no se oculta por una fuga ni por una
+      excepción posterior."""
+    if errno_esperado is None:
+        esperado_json = None
+    elif isinstance(errno_esperado, (set, frozenset)):
+        esperado_json = sorted(errno_esperado)
+    elif isinstance(errno_esperado, tuple):
+        esperado_json = list(errno_esperado)
+    else:
+        esperado_json = errno_esperado
+    try:
+        fd = abrir()
+    except OSError as exc:
+        if errno_esperado is None:
+            ok = True
+        elif isinstance(errno_esperado, (tuple, set, frozenset, list)):
+            ok = exc.errno in errno_esperado
+        else:
+            ok = exc.errno == errno_esperado
+        det = _excepcion(etiqueta, exc)
+        det['errno_esperado'] = esperado_json
+        det['errno_conforme'] = ok
+        _registrar(pasos, nombre_paso, ok, det)
+        return det
+    # éxito inesperado: registrar -> cerrar explícito -> verificar -> FALLIDO
+    led.abrir('%s_exito_inesperado' % etiqueta, fd)
+    cierre_ok, cierre_exc = True, None
+    try:
+        led.cerrar(fd)
+    except OSError as exc_c:
+        cierre_ok, cierre_exc = False, str(exc_c)
+    det = dict(exito_inesperado=True, fd=fd,
+               cerrado_explicitamente=cierre_ok,
+               existe_tras_cierre=(True if not cierre_ok else _fd_existe(fd)),
+               errno_esperado=esperado_json,
+               nota='R2-B: descriptor registrado en el Ledger y cerrado de '
+                    'forma explícita; el subpaso queda FALLIDO (la apertura '
+                    'debía fallar)')
+    if not cierre_ok:
+        det['error_al_cerrar'] = cierre_exc
+    _registrar(pasos, nombre_paso, False, det)
+    return det
 
 
 def _entorno():
@@ -239,14 +366,16 @@ def f1(raiz):
         _registrar(pasos, 'descenso_sin_rutas_e_identidades_validadas',
                    identidades_validadas,
                    dict(listado=listado, verificacion=verif))
-        # negativos: symlink rechazado al abrir con O_NOFOLLOW (errno observado)
-        try:
-            os.open('evil', os.O_RDONLY | os.O_DIRECTORY | os.O_NOFOLLOW,
-                    dir_fd=fd_cand)
-            _registrar(pasos, 'symlink_rechazado', False, 'la apertura NO falló')
-        except OSError as exc:
-            _registrar(pasos, 'symlink_rechazado', True,
-                       _excepcion('open evil (objetivo real existente)', exc))
+        # negativos: symlink rechazado al abrir con O_NOFOLLOW (R2-B: la
+        # excepción se registra y se VALIDA contra el errno esperado; un éxito
+        # inesperado se registraría en el Ledger, se cerraría de forma explícita
+        # y el subpaso quedaría FALLIDO). POSIX: O_NOFOLLOW => ELOOP;
+        # O_DIRECTORY sobre no-directorio => ENOTDIR (observado aquí: ENOTDIR).
+        _abrir_negativo(
+            pasos, led, 'open_evil_symlink', 'symlink_rechazado',
+            lambda: os.open('evil', os.O_RDONLY | os.O_DIRECTORY
+                            | os.O_NOFOLLOW, dir_fd=fd_cand),
+            errno_esperado=frozenset((errno.ENOTDIR, errno.ELOOP)))
         inesperados = sorted(n for n, v in verif.items() if v['tipo'] != 'dir')
         _registrar(pasos, 'entradas_inesperadas_clasificadas',
                    inesperados == ['evil', 'suelto.txt'],
@@ -349,13 +478,14 @@ def f2(raiz):
                        dict(leido_tras_unlink=contenido2.decode('utf-8',
                                                                 'replace')))
             led.cerrar(fd0)
-            try:
-                os.open('/proc/self/fd/%d' % fd0, os.O_RDONLY)
-                _registrar(pasos, 'A_fd_cerrado_magic_desaparece', False,
-                           'no falló')
-            except OSError as exc:
-                _registrar(pasos, 'A_fd_cerrado_magic_desaparece', True,
-                           _excepcion('open magic tras close', exc))
+            # R2-B: tras cerrar fd0, el magic-link deja de designar el objeto
+            # (apertura negativa con errno esperado ENOENT; éxito inesperado
+            # => registrar en Ledger + cerrar + subpaso FALLIDO)
+            _abrir_negativo(
+                pasos, led, 'open_magic_tras_close',
+                'A_fd_cerrado_magic_desaparece',
+                lambda: os.open('/proc/self/fd/%d' % fd0, os.O_RDONLY),
+                errno_esperado=errno.ENOENT)
         else:
             cond_unknown = ('procfs no está montado en este entorno: la parte A '
                             '(magic-link) no es probable aquí; la parte B se '
@@ -415,6 +545,11 @@ def f2(raiz):
         _registrar(pasos, 'cierre_y_verificacion_de_todos_los_fds', ok_ledger,
                    dict(fds_registrados=len(det_ledger),
                         residuos=led.pendientes()))
+        # R2-A: la prioridad FAIL > UNKNOWN > PASS se COMPRUEBA aquí con
+        # evidencia determinista (subpaso obligatorio)
+        ev_pri = _evidencia_prioridad('F2')
+        _registrar(pasos, 'R2A_prioridad_fail_sobre_unknown_comprobada',
+                   ev_pri['conforme'], ev_pri)
         _agregar_veredicto(r, pasos, cond_unknown)
     except Exception as exc:                       # noqa: BLE001
         fallos.append(_excepcion('f2', exc))
@@ -605,14 +740,14 @@ def f4(raiz):
                                errno_observado=b1_exc.get('errno')
                                if isinstance(b1_exc, dict) else None))
         # B2: apertura O_DIRECTORY|O_NOFOLLOW del nombre sustituido rechaza
-        try:
-            os.open('masks2', os.O_RDONLY | os.O_DIRECTORY | os.O_NOFOLLOW,
-                    dir_fd=fd_dir)
-            b2_ok, b2_exc = False, 'la apertura NO falló'
-        except OSError as exc:
-            b2_ok, b2_exc = True, _excepcion('open masks2 (symlink)', exc)
-        _registrar(pasos, 'B_apertura_nofollow_del_nombre_sustituido_rechaza',
-                   b2_ok, b2_exc)
+        # (R2-B: excepción validada contra el errno esperado; éxito inesperado
+        # => registrar en Ledger + cerrar explícito + subpaso FALLIDO)
+        _abrir_negativo(
+            pasos, led, 'open_masks2_symlink',
+            'B_apertura_nofollow_del_nombre_sustituido_rechaza',
+            lambda: os.open('masks2', os.O_RDONLY | os.O_DIRECTORY
+                            | os.O_NOFOLLOW, dir_fd=fd_dir),
+            errno_esperado=frozenset((errno.ENOTDIR, errno.ELOOP)))
         # B3: el REAL retenido por fd_masks2 NO se redirige
         _registrar(pasos, 'B_fd_masks2_no_redirigido',
                    sorted(os.listdir(fd_masks2)) == ['e1.npy'],
@@ -707,8 +842,84 @@ def _renameat2(src_dirfd, src, dst_dirfd, dst, flags):
     return via
 
 
+ESCENARIOS_F5 = ('publicacion_y_identidad_post_rename',
+                 'colision_eexist_destino_intacto',
+                 'sustitucion_origen_detectada_post_rename',
+                 'real_fuera_del_padre_enoent_fd_sobrevive')
+
+
+def _f5_rama_indisponibilidad_controlada(raiz):
+    """R2-C: ejercicio controlado y AISLADO de la rama de indisponibilidad de
+    renameat2 (para entornos donde la syscall SÍ existe, como este).
+
+    Parchea el símbolo de módulo _renameat2 para emular ENOSYS y ejecuta f5()
+    en un raíz SEPARADO del raíz real. Verifica que:
+    - el veredicto es UNKNOWN (sin fallo obligatorio independiente),
+    - los escenarios dependientes NO se ejecutan y se registran con
+      ejecutado=False y obligatorio=False (no se presentan como probados),
+    - todos los descriptores abiertos se cierran y verifican (0 residuos),
+    - no se simula ninguna publicación satisfactoria (dir vacío).
+    La evidencia DECLARA el parcheo: ENOSYS simulado; el entorno real dispone
+    de renameat2. Devuelve dict con 'conforme' agregado."""
+    raiz_ctrl = os.path.join(raiz, 'f5_ctrl_enosys')
+    shutil.rmtree(raiz_ctrl, ignore_errors=True)
+    os.makedirs(raiz_ctrl, 0o700)
+    global _renameat2
+    original = _renameat2
+
+    def _enosys(*_a, **_k):
+        raise OSError(errno.ENOSYS,
+                      'ENOSYS simulado (prueba controlada aislada R2-C)')
+
+    _renameat2 = _enosys
+    try:
+        res = f5(raiz_ctrl)
+    finally:
+        _renameat2 = original
+    escenarios = [p for p in res['pasos'] if p['paso'] in ESCENARIOS_F5]
+    sonda = [p for p in res['pasos'] if p['paso'] == 'renameat2_disponible']
+    ledger = res.get('ledger') or {}
+    items_ledger = ledger.get('items') or []
+    d_f5 = os.path.join(raiz_ctrl, 'f5')
+    c_ver = dict(obtenido=res.get('resultado'), esperado='UNKNOWN',
+                 conforme=res.get('resultado') == 'UNKNOWN')
+    c_obl = dict(obtenido=res.get('obligatorios_fallidos'),
+                 conforme=not res.get('obligatorios_fallidos'))
+    c_esc = dict(
+        obtenido=[dict(paso=p['paso'], ok=p['ok'],
+                       ejecutado=p['detalle'].get('ejecutado'),
+                       obligatorio=p['obligatorio']) for p in escenarios],
+        conforme=(len(escenarios) == len(ESCENARIOS_F5)
+                  and all(p['detalle'].get('ejecutado') is False
+                          and p['obligatorio'] is False for p in escenarios)))
+    c_sonda = dict(
+        obtenido=[dict(ok=p['ok'], obligatorio=p['obligatorio'],
+                       clasificacion=p['detalle'].get('clasificacion'))
+                  for p in sonda],
+        conforme=all(p['obligatorio'] is False for p in sonda))
+    c_res = dict(
+        residuos=ledger.get('residuos'),
+        conforme=(ledger.get('residuos') == []
+                  and all(not it.get('existe_tras_cierre', False)
+                          for it in items_ledger)))
+    c_pub = dict(listado=sorted(os.listdir(d_f5)),
+                 conforme=os.listdir(d_f5) == [])
+    return dict(parche=dict(simulado='ENOSYS sobre _renameat2',
+                            raiz_aislada=raiz_ctrl,
+                            nota='rama ejercida por parche controlado en raíz '
+                                 'separado; el entorno REAL dispone de '
+                                 'renameat2 (sonda ENOENT)'),
+               veredicto=c_ver, sin_fallos_obligatorios=c_obl,
+               escenarios_no_ejecutados=c_esc, sonda_no_obligatoria=c_sonda,
+               descriptores_cerrados=c_res, sin_publicacion_simulada=c_pub,
+               conforme=(c_ver['conforme'] and c_obl['conforme']
+                         and c_esc['conforme'] and c_sonda['conforme']
+                         and c_res['conforme'] and c_pub['conforme']))
+
+
 def f5(raiz):
-    """R-D: renameat2 dirfd + acreditación post-rename (R6: veredicto agregado)."""
+    """R-D: renameat2 dirfd + acreditación post-rename (R6/R2-C: veredicto
+    agregado con clasificación de indisponibilidad y prueba controlada)."""
     r = Resultado(flujo='F5', riesgo='R-D (P-06)', raiz=os.path.join(raiz, 'f5'))
     d = r['raiz']
     shutil.rmtree(d, ignore_errors=True)
@@ -732,22 +943,69 @@ def f5(raiz):
                              os.open(nombre, os.O_RDONLY | os.O_DIRECTORY
                                      | os.O_NOFOLLOW, dir_fd=fd_padre))
             return fd_p, _ident(os.fstat(fd_p))
-        # disponibilidad: la syscall se EJECUTA (ENOENT = disponible);
-        # sólo ENOSYS/arquitectura sin soporte => UNKNOWN
+        # R2-C: disponibilidad por SONDA (la syscall se EJECUTA: ENOENT =
+        # ejecutada). Clasificación inequívoca: ENOENT/EEXIST => disponible;
+        # ENOSYS o arquitectura sin soporte => NO disponible; cualquier otro
+        # errno => sonda inconclusa (no evaluable). En los dos últimos casos NO
+        # se continúa con los escenarios dependientes de renameat2.
         cond_unknown = None
         try:
             _renameat2(None, 'no_existe_a', None, 'no_existe_b', 0)
+            disponible = True
             _registrar(pasos, 'renameat2_disponible', True,
-                       dict(via='glibc/syscall (probe ENOENT = ejecutada)'))
+                       dict(via='glibc/syscall (probe ENOENT = syscall ejecutada)'))
         except OSError as exc:
             if exc.errno == errno.ENOSYS or 'indisponible' in str(exc):
-                cond_unknown = 'renameat2 no disponible en este entorno'
+                disponible = False
+                cond_unknown = ('renameat2 no disponible en este entorno '
+                                '(ENOSYS / arquitectura sin soporte)')
                 _registrar(pasos, 'renameat2_disponible', False,
-                           _excepcion('probe', exc))
-            else:
+                           dict(_excepcion('probe', exc),
+                                clasificacion='no_soportada'),
+                           obligatorio=False)
+            elif exc.errno in (errno.ENOENT, errno.EEXIST):
+                # la syscall se EJECUTÓ (el origen de la sonda no existe, así
+                # que ENOENT es el resultado esperado) => disponible
+                disponible = True
                 _registrar(pasos, 'renameat2_disponible', True,
-                           dict(via='probe con error esperado',
+                           dict(via='glibc/syscall (probe: syscall ejecutada, '
+                                    'errno %d con origen inexistente)' % exc.errno,
                                 excepcion=_excepcion('probe', exc)))
+            else:
+                disponible = False
+                cond_unknown = ('sonda de renameat2 inconclusa (errno %s): la '
+                                'disponibilidad no puede evaluarse'
+                                % exc.errno)
+                _registrar(pasos, 'renameat2_disponible', False,
+                           dict(_excepcion('probe', exc),
+                                clasificacion='sonda_inconclusa'),
+                           obligatorio=False)
+        if disponible is not True:
+            # R2-C: NO continuar con los escenarios que dependen de renameat2;
+            # no se simula publicación satisfactoria ni se presentan escenarios
+            # no ejecutados como probados.
+            for nombre_esc in ESCENARIOS_F5:
+                _registrar(pasos, nombre_esc, False,
+                           dict(ejecutado=False,
+                                razon='escenario dependiente de renameat2 NO '
+                                      'ejecutado: la sonda no confirmó '
+                                      'disponibilidad (R2-C)'),
+                           obligatorio=False)
+            # cerrar y verificar TODOS los descriptores que se hayan abierto
+            led.cerrar(fd_padre)
+            ok_ledger, det_ledger = led.verificar()
+            r['ledger'] = dict(items=det_ledger, residuos=led.pendientes())
+            _registrar(pasos, 'cierre_y_verificacion_de_todos_los_fds', ok_ledger,
+                       dict(fds_registrados=len(det_ledger),
+                            residuos=led.pendientes(),
+                            rama='indisponibilidad de renameat2 (R2-C)'))
+            ev_pri = _evidencia_prioridad('F5')
+            _registrar(pasos, 'R2A_prioridad_fail_sobre_unknown_comprobada',
+                       ev_pri['conforme'], ev_pri)
+            # veredicto: UNKNOWN salvo fallo obligatorio independiente —
+            # FAIL > UNKNOWN lo decide _agregar_veredicto (R2-A)
+            _agregar_veredicto(r, pasos, cond_unknown)
+            return r
         # (1) publicación normal + identidad post-rename
         fd_p1, I_p1 = nuevo('prov1')
         via = _renameat2(fd_padre, 'prov1', fd_padre, 'final1', _RENAME_NOREPLACE)
@@ -829,6 +1087,20 @@ def f5(raiz):
         _registrar(pasos, 'cierre_y_verificacion_de_todos_los_fds', ok_ledger,
                    dict(fds_registrados=len(det_ledger),
                         residuos=led.pendientes()))
+        # R2-A: la prioridad FAIL > UNKNOWN > PASS se COMPRUEBA con evidencia
+        # determinista (subpaso obligatorio)
+        ev_pri = _evidencia_prioridad('F5')
+        _registrar(pasos, 'R2A_prioridad_fail_sobre_unknown_comprobada',
+                   ev_pri['conforme'], ev_pri)
+        # R2-C: si llegamos aquí la sonda confirmó que el entorno REAL dispone
+        # de renameat2; la rama de indisponibilidad se ejercita entonces en una
+        # PRUEBA CONTROLADA AISLADA (parche ENOSYS sobre _renameat2, raíz
+        # separado). La rama real sólo se ejecuta si la sonda la detecta; una
+        # rama no probada nunca se declara validada.
+        ctrl = _f5_rama_indisponibilidad_controlada(raiz)
+        _registrar(pasos,
+                   'R2C_rama_indisponibilidad_ejercida_prueba_controlada_aislada',
+                   ctrl['conforme'], ctrl)
         _agregar_veredicto(r, pasos, cond_unknown)
     except Exception as exc:                       # noqa: BLE001
         fallos.append(_excepcion('f5', exc))
@@ -969,8 +1241,14 @@ def main():
     os.makedirs(ev, exist_ok=True)
     elegidas = [x.strip().upper() for x in a.pruebas.split(',') if x.strip()]
     funcs = dict(F1=f1, F2=f2, F3=f3, F4=f4, F5=f5, F6=f6)
-    consolidado = dict(schema='feasibility-1-r1/1', entorno=_entorno(),
-                       padre='a94f50793dfa97bb7074bb3e20fe2d42c3306596',
+    consolidado = dict(schema='feasibility-1-r2/1', entorno=_entorno(),
+                       padre='71d928bbf3a7ee9ebed92a94da005d120ed42de7',
+                       rectificacion=('R2-A prioridad de veredictos '
+                                      '(FAIL > UNKNOWN > PASS) / '
+                                      'R2-B aperturas negativas y Ledger / '
+                                      'R2-C indisponibilidad de renameat2 '
+                                      '(rama ejercida en prueba controlada '
+                                      'aislada)'),
                        produccion_modificada=False, produccion_ejecutada=False,
                        resultados={})
     for nombre in elegidas:
@@ -981,7 +1259,7 @@ def main():
         consolidado['resultados'][nombre] = res['resultado']
         consolidado.setdefault('obligatorios_fallidos', {})[nombre] = \
             res.get('obligatorios_fallidos', [])
-        with open(os.path.join(ev, 'feas1r1_%s.json' % nombre.lower()), 'w',
+        with open(os.path.join(ev, 'feas1r2_%s.json' % nombre.lower()), 'w',
                   encoding='utf-8') as f:
             json.dump(res, f, indent=1, ensure_ascii=False, default=_json_default)
         print('  -> %s: %s' % (nombre, res['resultado']), flush=True)
@@ -992,7 +1270,7 @@ def main():
                                                default=_json_default)), flush=True)
         for fallo in res.get('fallos', []):
             print('  FALLO: %s' % json.dumps(fallo, ensure_ascii=False), flush=True)
-    with open(os.path.join(ev, 'consolidado_feasibility_1_r1.json'), 'w',
+    with open(os.path.join(ev, 'consolidado_feasibility_1_r2.json'), 'w',
               encoding='utf-8') as f:
         json.dump(consolidado, f, indent=1, ensure_ascii=False,
                   default=_json_default)
