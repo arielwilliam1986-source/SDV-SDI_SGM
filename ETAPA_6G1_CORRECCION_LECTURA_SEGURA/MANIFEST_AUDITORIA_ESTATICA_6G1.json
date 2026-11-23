@@ -1,0 +1,52 @@
+{
+ "schema": "auditoria-estatica-manifest/1",
+ "fecha": "2026-11-23T19:13:57Z",
+ "rama": "arena/f1c5739f-sdv-sdi-sgm",
+ "commit_padre": "c005d5cb0e5b05757ba925092c9c19dc14724c0c",
+ "referencia_produccion": "9fedc5b223444e73955d2b899b6a434b0f5c670e",
+ "instruccion": "Cris 22-11-2026: AUTORIZACION DE LA SIGUIENTE FASE — auditoria estatica de integracion y diseno RG-FLOW (fase exclusivamente de lectura, analisis y diseno)",
+ "adjudicacion_previa": "C1-C4 DEMOSTRADO; C5/C6 PASS; D1 DEMOSTRADO; D2 PASS; E1 PASS (rectificacion final); F1 PASS; G1 PASS (alcance limitado analysis.json + mix SDV.wav); la aceptacion NO equivale a integracion",
+ "alcance": "solo lectura de codigo y documentos de diseno; git diff --name-status c005d5c..commit -> solo ficheros A (nuevos); cero modificaciones de produccion (motores, lectura_segura_6g1.py, DSP, formulas, fixtures, validadores byte a byte identicos); main sin tocar; sin corridas, sin audio real, sin Android/Termux, sin integracion",
+ "hallazgos_clave": [
+  "crear_y_acreditar_dir_6g1 (lectura_segura L367-415) abre y CIERRA fd_padre (L368/L415) y el fd del provisional (L401/L410): hoy NINGUN descriptor se conserva; puntos de anclaje create_run_dir H/EVO L1430 (llamada L1448) y MQR L2159 (llamada L2181)",
+  "MQR resuelto estaticamente: analysis.json se escribe UNA vez en write_reports (L3191-3195, llamada desde _run_core L2776); la relectura L3578-3579 es EXCLUSIVA del autotest T7 (run_self_test def L3419), POST-publicacion y por ruta; el pipeline NO tiene relectura interna; adaptacion propuesta del lado del autotest (identidad del publicado vs (dev,ino), patron G1)",
+  "MQR masks/ SIEMPRE obligatorio (L2469-2487 incondicionales; sin --keep-masks) -> fd_masks OBLIGATORIO en MQR; H/EVO condicional (--png/--keep-masks L1625/L1695)",
+  "MQR bifasico: run_experiment L2205 -> _run_core L2445 con recursos en ctx[_recursos_6g1] (memmaps L2465, runners L2506, lectores L2559); los anclajes deben cruzar la frontera por ctx",
+  "toda la creacion de artefactos es por ruta (brecha C aplicable a los 3 motores); sin signal.signal (solo KeyboardInterrupt)",
+  "publicacion renameat2 NOREPLACE: H L1984 / EVO L2095 / MQR L2838; cierre acreditado del log antes de publicar: H L1929 / EVO L2036-2045 / MQR L2826-2833; rmtree(masks) post-publicacion solo H L1995-2001 / EVO L2105-2112"
+ ],
+ "entregables": {
+  "informe_auditoria": "INFORME_AUDITORIA_ESTATICA_INTEGRACION_6G1.md (por motor, operaciones con archivo/funcion/lineas exactas + seccion MQR prioritaria 4.2 con las 6 preguntas resueltas)",
+  "matriz": "MATRIZ_ARTEFACTOS_6G1.md (por motor y modo: obligatorio/opcional, tipo, metodo de creacion, descriptor, lectores, condiciones de publicacion y aborto; base futura guarda E y auditoria SHA-256; NO ampliar G1)",
+  "rg_flow": "DISENO_RG_FLOW_6G1.md (FLOW-1..8 por motor con precondiciones/acciones/resultados/evidencia/PASS-FAIL; diseno NO ejecutado)",
+  "riesgos": "REGISTRO_RIESGOS_6G1.md (R-01..R-20: riesgos, incompatibilidades, no resueltos; EVO/MQR sin compatibilidad inferida)"
+ },
+ "no_resueltos": [
+  "R-11 senales SIGTERM/SIGKILL",
+  "R-12 matplotlib anclado",
+  "R-13 subdirectorios 2 niveles por descriptor",
+  "R-14 recetas no interactivas EVO/MQR",
+  "R-15 rendimiento procfs",
+  "R-18 arneses con fileobj-dup",
+  "ejecucion de RG-FLOW (requiere autorizacion)"
+ ],
+ "estado": "fase de lectura/analisis/diseno para adjudicacion de Cris; NO implementado; 6G.1 ABIERTA; parada obligatoria",
+ "archivos": [
+  {
+   "ruta": "ETAPA_6G1_CORRECCION_LECTURA_SEGURA/INFORME_AUDITORIA_ESTATICA_INTEGRACION_6G1.md",
+   "sha256": "2bc6e12650b9cc26f4c8f6bac1be44ee980e3d237fbe45723d49ee7d4f6b9e6d"
+  },
+  {
+   "ruta": "ETAPA_6G1_CORRECCION_LECTURA_SEGURA/MATRIZ_ARTEFACTOS_6G1.md",
+   "sha256": "ffed83e1bf081498914e6f9cc7add20e1844d7b78f35c4816c1f73ad122e75ee"
+  },
+  {
+   "ruta": "ETAPA_6G1_CORRECCION_LECTURA_SEGURA/DISENO_RG_FLOW_6G1.md",
+   "sha256": "a3ba2cb76e9d32c630fbeba34f5c6cc6b7b901c80648f092b1527e422e748e23"
+  },
+  {
+   "ruta": "ETAPA_6G1_CORRECCION_LECTURA_SEGURA/REGISTRO_RIESGOS_6G1.md",
+   "sha256": "904b25e573c1763bd19c2c0ae2af263594bc3a52a00c9e20a3f79d57274226c7"
+  }
+ ]
+}
