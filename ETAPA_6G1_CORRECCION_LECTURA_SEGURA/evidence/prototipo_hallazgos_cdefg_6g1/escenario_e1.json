@@ -1,5 +1,5 @@
 {
- "amenaza": "Que EXIT_OK se declare con un artefacto obligatorio ausente, sustituido, enlazado o con identidad distinta.",
+ "amenaza": "Que EXIT_OK se declare con un artefacto obligatorio ausente, sustituido, enlazado o con identidad distinta; o que la obligatoriedad condicional de masks no se aplique realmente.",
  "clasificacion": [
   "comportamiento_rechazado_por_diseno"
  ],
@@ -21,9 +21,9 @@
    "png": "opcional (matplotlib)"
   }
  },
- "nota": "la ausencia o identidad incorrecta de CUALQUIER artefacto obligatorio impide EXIT_OK; masks obligatorio en MQR (siempre) y condicional en Hardened/EVO (--png/--keep-masks); pngs y candidates opcionales según flags",
+ "nota": "masks OBLIGATORIO ausente (MQR) -> FAIL; masks OPCIONAL ausente (Hardened/EVO) -> PASS en esa dimensión con el resto completo y sus comprobaciones activas (c2: eliminar analysis.txt sigue dando FAIL); masks PRESENTE aunque opcional debe ser directorio real, no symlink (d); la ausencia se construye REAL en directorios independientes, sin ningún parámetro que desactive la comprobación",
  "resultado": {
-  "a_completo": {
+  "a_mqr_completo": {
    "detalle": {
     "analysis.json": {
      "existe": true,
@@ -70,15 +70,60 @@
    },
    "veredicto": "PASS"
   },
-  "b_eliminado": {
+  "b_mqr_masks_ausente": {
+   "masks": {
+    "esperado": "obligatorio",
+    "existe": false,
+    "ok": false,
+    "tipo": "ausente"
+   },
+   "veredicto": "FAIL"
+  },
+  "c2_hevo_otro_obligatorio_eliminado": {
    "analysis_txt": {
+    "existe": false,
+    "ok": false,
+    "tipo": "otro/ausente"
+   },
+   "masks_igual_ok": true,
+   "veredicto": "FAIL"
+  },
+  "c_hevo_masks_ausente": {
+   "masks": {
+    "esperado": "opcional",
+    "existe": false,
+    "ok": true,
+    "tipo": "ausente"
+   },
+   "resto_ok": {
+    "analysis.json": true,
+    "analysis.txt": true,
+    "engine_log.txt": true,
+    "input_integrity_6g.json": true,
+    "mix SDI.wav": true,
+    "mix SDV.wav": true
+   },
+   "veredicto": "PASS"
+  },
+  "d_masks_symlink_aun_opcional": {
+   "masks": {
+    "esperado": "opcional",
+    "existe": true,
+    "ok": false,
+    "tipo": "symlink"
+   },
+   "veredicto_obligatorio": "FAIL",
+   "veredicto_opcional": "FAIL"
+  },
+  "e1_obligatorio_eliminado": {
+   "mix_sdi": {
     "existe": false,
     "ok": false,
     "tipo": "otro/ausente"
    },
    "veredicto": "FAIL"
   },
-  "c_symlink": {
+  "e2_symlink": {
    "analysis": {
     "existe": true,
     "identidad_vs_fd": false,
@@ -87,26 +132,12 @@
    },
    "veredicto": "FAIL"
   },
-  "d_identidad_distinta": {
+  "e3_identidad_distinta": {
    "identidad_vs_fd": false,
-   "veredicto": "FAIL"
-  },
-  "e_masks_y_wav_faltantes": {
-   "masks": {
-    "esperado": "obligatorio",
-    "existe": true,
-    "ok": true,
-    "tipo": "directorio"
-   },
-   "mix_sdi": {
-    "existe": false,
-    "ok": false,
-    "tipo": "otro/ausente"
-   },
    "veredicto": "FAIL"
   }
  },
  "schema": "prototipo-cdefg-1/1",
- "titulo": "Guarda de completitud por descriptor (matriz por motor/modo): existencia, tipo, no-symlink, identidad vs fd de creación",
+ "titulo": "Guarda de completitud por descriptor (matriz por motor/modo): existencia, tipo, no-symlink, identidad vs fd de creación; rectificación: obligatoriedad de masks EFECTIVA con directorios de prueba independientes",
  "veredicto": "PASS"
 }

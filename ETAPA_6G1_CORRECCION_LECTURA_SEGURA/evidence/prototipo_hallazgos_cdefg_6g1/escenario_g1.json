@@ -1,59 +1,93 @@
 {
- "amenaza": "Que el registro no pertenezca a la corrida acreditada, no se conserved ante aborto o no sea verificable; y no presentar como inmutable un registro modificable por la misma uid.",
+ "amenaza": "Que el registro no pertenezca a la corrida acreditada, que una alteración del contenido publicado pase inadvertida, o presentar como inmutable/auténtico un registro modificable por la misma uid.",
  "clasificacion": [
   "comportamiento_permitido_por_diseno",
   "limitacion_declarada_evidencia_frente_a_misma_uid"
  ],
  "escenario": "G1",
- "proteccion_real": "otra uid no puede escribir en el acreditado (0700 del euid): el registro es fiable frente a otra uid; frente a la MISMA uid es TAMPERABLE (demostrado) -> evidencia de auditoría con coherencia lstat-vs-registro, NO inmutabilidad",
+ "proteccion_real": "otra uid no puede escribir en el acreditado (0700 del euid): el registro es fiable frente a otra uid; frente a la MISMA uid es TAMPERABLE (demostrado) -> evidencia de auditoría con coherencia verificable (inodo-vs-registro, SHA-256-vs-publicado), SIN garantías de autenticidad ni inmutabilidad; la detección de discrepancias no identifica al autor ni impide la alteración",
  "registro_en_aborto": "ante aborto, el registro forense es ABORT_6G1.json (D2), escrito por fd_run dentro del acreditado; el registro de publicación no existe si no hubo publicación",
  "resultado": {
-  "auditoria_externa": {
-   "coincide": true,
-   "contenido_publicado": [
-    "analysis.json",
-    "mix SDV.wav",
-    "publicacion_6g1.json"
-   ],
-   "ino_en_registro": 534859,
-   "ino_publicado": 534859,
-   "registro_viajo_con_el_inodo": true
-  },
-  "misma_uid": {
-   "demostracion": "la misma uid puede reescribir publicacion_6g1.json (propietario del árbol): el registro NO es evidencia inmutable frente a la misma uid",
-   "puede_reescribir_registro": true,
-   "reescribiendo": true
-  },
-  "publicacion": {
-   "destino": "run_final",
-   "exito": true,
-   "motivos": [],
-   "publicado": true,
-   "traslado_verificado": true
-  },
-  "registro": {
-   "artefactos": {
-    "analysis": "892c5c63783df8f8d9a5a61b5d26497d1a8e4699b14a1ddcb0137b448f415d34",
-    "mix_sdv": "6d18df833cf4919ad086e6bf68f5f8c9d3ec09d528726e4047674d4701623b88"
+  "a_publicar_leer_recalcular_comparar": {
+   "auditoria_integridad": {
+    "comparacion": {
+     "analysis": {
+      "almacenado": "7b8bcb0f5bc1c14badca52ea7f970cffa3087695b682f55b2fd1c7ec916cabfd",
+      "coincide": true,
+      "recalculado": "7b8bcb0f5bc1c14badca52ea7f970cffa3087695b682f55b2fd1c7ec916cabfd"
+     },
+     "mix_sdv": {
+      "almacenado": "6d18df833cf4919ad086e6bf68f5f8c9d3ec09d528726e4047674d4701623b88",
+      "coincide": true,
+      "recalculado": "6d18df833cf4919ad086e6bf68f5f8c9d3ec09d528726e4047674d4701623b88"
+     }
+    },
+    "contenido_publicado": [
+     "analysis.json",
+     "mix SDV.wav",
+     "publicacion_6g1.json"
+    ],
+    "ino_en_registro": 534912,
+    "ino_publicado": 534912,
+    "inodo_coincide": true,
+    "integridad_coincide": true,
+    "registro_leido_del_publicado": true,
+    "sha_recalculados": {
+     "analysis": "7b8bcb0f5bc1c14badca52ea7f970cffa3087695b682f55b2fd1c7ec916cabfd",
+     "mix_sdv": "6d18df833cf4919ad086e6bf68f5f8c9d3ec09d528726e4047674d4701623b88"
+    }
    },
-   "destino_solicitado": "run_final",
-   "padre": {
-    "dev": 65024,
-    "ino": 534858
+   "publicacion": {
+    "destino": "run_final",
+    "exito": true
    },
-   "politica": "el inodo del provisional se conserva en el renombrado: lstat(dir publicado) debe == provisional.ino",
-   "provisional": {
-    "dev": 65024,
-    "ino": 534859
+   "reverificacion_b2": {
+    "coincide": true
    },
-   "schema": "publicacion-6g1/1",
-   "ts": "2026-11-23T18:18:48Z"
+   "veredicto_auditoria": "PASS"
   },
-  "reverificacion_b2": {
-   "coincide": true
+  "b_alteracion_detectada": {
+   "alteracion_aplicada": "analysis.json publicado: bytes añadidos post-publicación (misma uid)",
+   "auditoria_integridad": {
+    "comparacion": {
+     "analysis": {
+      "almacenado": "d56580cbd130a5aa5482059af302c1cba6889111bf4daad2e9e28eacf2e11dca",
+      "coincide": false,
+      "recalculado": "2cdaa857cd04c3afbe90b18347d6572f648db579a6663636d93fb19c0249080c"
+     },
+     "mix_sdv": {
+      "almacenado": "6d18df833cf4919ad086e6bf68f5f8c9d3ec09d528726e4047674d4701623b88",
+      "coincide": true,
+      "recalculado": "6d18df833cf4919ad086e6bf68f5f8c9d3ec09d528726e4047674d4701623b88"
+     }
+    },
+    "contenido_publicado": [
+     "analysis.json",
+     "mix SDV.wav",
+     "publicacion_6g1.json"
+    ],
+    "ino_en_registro": 534920,
+    "ino_publicado": 534920,
+    "inodo_coincide": true,
+    "integridad_coincide": false,
+    "registro_leido_del_publicado": true,
+    "sha_recalculados": {
+     "analysis": "2cdaa857cd04c3afbe90b18347d6572f648db579a6663636d93fb19c0249080c",
+     "mix_sdv": "6d18df833cf4919ad086e6bf68f5f8c9d3ec09d528726e4047674d4701623b88"
+    }
+   },
+   "detalle_discrepancia": {
+    "analysis": false,
+    "mix_sdv": true
+   },
+   "veredicto_auditoria": "DISCREPANCIA_DETECTADA"
+  },
+  "c_registro_no_inmutable": {
+   "declaracion": "el registro es evidencia de auditoría con coherencia verificable (inodo-vs-registro, SHA-256-vs-publicado); NO es inmutable frente a la misma uid (demostrado) y NO posee garantías de autenticidad; es fiable frente a otra uid (0700 del euid)",
+   "misma_uid_reescribio_registro": true
   }
  },
  "schema": "prototipo-cdefg-1/1",
- "titulo": "Evidencia forense de publicación: registro escrito por fd_run ANTES del renombrado (viaja con el inodo), verificación externa post-B2 y límite frente a la misma uid",
+ "titulo": "Evidencia forense de publicación con verificación EFECTIVA de integridad: registro escrito por fd_run ANTES del renombrado (viaja con el inodo), auditoría externa que RECALCULA los SHA-256 de los artefactos publicados y compara, detección de alteración deliberada, y límite frente a la misma uid",
  "veredicto": "PASS"
 }

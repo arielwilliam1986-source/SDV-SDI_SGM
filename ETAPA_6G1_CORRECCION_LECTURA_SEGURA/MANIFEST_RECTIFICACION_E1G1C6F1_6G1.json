@@ -1,0 +1,98 @@
+{
+ "schema": "rectificacion-manifest/1",
+ "fecha": "2026-11-23T18:41:09Z",
+ "rama": "arena/f1c5739f-sdv-sdi-sgm",
+ "commit_padre": "b72042789dd33852dd4c3ad3ddc14a3fb9495770",
+ "referencia_tecnica": "9fedc5b223444e73955d2b899b6a434b0f5c670e",
+ "instruccion": "Cris 23-11-2026: RECTIFICACION PUNTUAL PDA-1/EA — E1, G1, C6 y F1",
+ "adjudicacion_previa": "avances de C y D reconocidos; no repetir experimentos aceptados; no modificar produccion",
+ "alcance": "cambios EXCLUSIVAMENTE en prototipo independiente, sus evidencias, informe y manifiesto (git diff: 7 M en ETAPA_6G1_CORRECCION_LECTURA_SEGURA + 3 A nuevos; 0 ficheros de produccion)",
+ "archivos_sin_cambios_byte_a_byte": [
+  "evidencias c1_c4, c5 y d2 (no afectadas por la rectificacion)",
+  "motores Hardened/EVO/MQR",
+  "lectura_segura_6g1.py",
+  "DSP, formulas, fixtures y validadores"
+ ],
+ "resultados": {
+  "veredictos": {
+   "C1_C4": "DEMOSTRADO (sin cambios)",
+   "C5": "PASS (sin cambios)",
+   "C6": "PASS (rectificado)",
+   "D1": "DEMOSTRADO (sin cambios)",
+   "D2": "PASS (sin cambios)",
+   "E1": "PASS (rectificado)",
+   "F1": "PASS (ampliado)",
+   "G1": "PASS (ampliado)"
+  },
+  "rectificaciones": {
+   "E1": "RECTIFICADO — parametro que desactivaba la comprobacion ELIMINADO; obligatoriedad de masks EFECTIVA; directorios de prueba independientes: MQR masks ausente+obligatorio FAIL; H/EVO masks ausente+opcional PASS en esa dimension con el resto completo; masks presente aun opcional debe ser directorio real no symlink (FAIL ante symlink); el resto de obligatorios sigue sometido a sus comprobaciones (c2)",
+   "G1": "AMPLIADO — auditoria de integridad EFECTIVA: publicar -> leer registro -> recalcular SHA-256 publicados -> comparar -> PASS al coincidir (integridad_coincide=True, inodo_coincide=True); escenario independiente con alteracion deliberada de analysis.json publicado -> DISCREPANCIA_DETECTADA; registro NO inmutable frente a misma uid (demostrado) y SIN garantias de autenticidad (declarado)",
+   "C6": "COMPLETADO — engine_log.txt en el experimento: creacion exclusiva O_EXCL|O_NOFOLLOW + fd_log conservado + sustitucion de la entrada nominal (unlink+symlink) + escritura por el descriptor via mecanismo compatible con Tee propuesto para produccion (objeto archivo sobre dup(fd_log); clase Tee real NO modificada) + destino ajeno SIN alterar (bytes contra centinela, 4/4) + deteccion de identidad distinta (coincide=False, es_symlink=True, 4/4); fd_log valido tras el cierre de Tee",
+   "F1": "AMPLIADO — fd_candidates correctamente creado y cerrado en su posicion; 3 fds de archivo individuales; fallo tras abrir 5 recursos (FileExistsError por symlink precolocado) con cierre completo y symlink conservado; orden inverso exacto; sin cierre prematuro (biblioteca usa su dup; fd del motor valido despues; WAV 44100 frames); 0 residuales medidos por /proc/self/fd; distincion declarada: prototipo demuestra el MECANISMO, el ciclo REAL de los motores NO queda validado (requiere integracion + RG-FLOW)"
+  },
+  "separacion": "todo es prueba de MECANISMO (prototipo independiente); RG-FLOW real por motor pendiente de autorizacion; compatibilidad EVO/MQR no inferida por similitud; diseno no declarado completo hasta resolver puntos exclusivos de MQR (relectura analysis.json L3578) en flujo real"
+ },
+ "modelo_amenazas": "sin cambios respecto a b720427: otra uid sin via conocida (0700, single-uid declarado); misma uid: sustitucion de entradas detectada, integridad de CONTENIDO fuera del modelo de prevencion; registro forense TAMPERABLE (demostrado) — evidencia de auditoria con coherencia verificable, SIN autenticidad ni inmutabilidad; post-return = limitacion de prevencion",
+ "limitaciones_no_resueltas": [
+  "contenido frente a misma uid",
+  "matplotlib por rutas ancladas (no probado)",
+  "subdirectorios de dos niveles por descriptor",
+  "Termux/Android (prohibido)",
+  "rendimiento del pathwalk procfs",
+  "RG-FLOW real por motor (pendiente de autorizacion)"
+ ],
+ "no_implementado": [
+  "todo mecanismo en produccion",
+  "corridas reales de motores",
+  "baterias historicas y prueba DSP",
+  "audio real, Android, Termux",
+  "integracion (prohibida)"
+ ],
+ "estado": "rectificacion para adjudicacion de Cris; NO implementado; 6G.1 ABIERTA; parada obligatoria",
+ "archivos": [
+  {
+   "ruta": "ETAPA_6G1_CORRECCION_LECTURA_SEGURA/INFORME_RECTIFICACION_E1G1C6F1_6G1.md",
+   "sha256": "861045deb8c537ef268532f4032af16050b7b53b05e92180ba7660f4051d00dd"
+  },
+  {
+   "ruta": "ETAPA_6G1_CORRECCION_LECTURA_SEGURA/scripts/prototipo_hallazgos_cdefg_6g1.py",
+   "sha256": "1ba843323c73f879063aec9101829b800df53f542bbc475f5fb11214aa3c5ad7"
+  },
+  {
+   "ruta": "ETAPA_6G1_CORRECCION_LECTURA_SEGURA/evidence/prototipo_hallazgos_cdefg_6g1/consolidado_prototipo_cdefg.json",
+   "sha256": "d1c70d8664c0a6ab31003dcf2ee75715a058cbfad435fee8dd279c96fb0c14b6"
+  },
+  {
+   "ruta": "ETAPA_6G1_CORRECCION_LECTURA_SEGURA/evidence/prototipo_hallazgos_cdefg_6g1/escenario_c1_c4.json",
+   "sha256": "fc661134f176498d98c8f65413f3d76c5d8ba2f2ec42cce1d08b23cfd6b4038d"
+  },
+  {
+   "ruta": "ETAPA_6G1_CORRECCION_LECTURA_SEGURA/evidence/prototipo_hallazgos_cdefg_6g1/escenario_c5.json",
+   "sha256": "ebfd214e6313269a9e78d56a52befc99ae0f6675f7a5d11d7853061c07fe87e9"
+  },
+  {
+   "ruta": "ETAPA_6G1_CORRECCION_LECTURA_SEGURA/evidence/prototipo_hallazgos_cdefg_6g1/escenario_c6.json",
+   "sha256": "7d0cc6fb899d6040421bd1c35d0fa642ce8bfd062526329869743b8737b012ea"
+  },
+  {
+   "ruta": "ETAPA_6G1_CORRECCION_LECTURA_SEGURA/evidence/prototipo_hallazgos_cdefg_6g1/escenario_d1.json",
+   "sha256": "1d4a551d17f22a8e48f7fad7e716a790e89467529938ae2d9865584dd70ebdd6"
+  },
+  {
+   "ruta": "ETAPA_6G1_CORRECCION_LECTURA_SEGURA/evidence/prototipo_hallazgos_cdefg_6g1/escenario_d2.json",
+   "sha256": "09bf5ab84975d333f3388a0b3ee2b6c2f18aea8ac50960bae1a6cf50d487f720"
+  },
+  {
+   "ruta": "ETAPA_6G1_CORRECCION_LECTURA_SEGURA/evidence/prototipo_hallazgos_cdefg_6g1/escenario_e1.json",
+   "sha256": "805f2baade0aaaead047bbf3e5ca28e312c625b17235f9ead9a2ebd12b0aafef"
+  },
+  {
+   "ruta": "ETAPA_6G1_CORRECCION_LECTURA_SEGURA/evidence/prototipo_hallazgos_cdefg_6g1/escenario_f1.json",
+   "sha256": "045a8af0eaa68d8458d452c1b73d609f412fe4a534fddee7478a62c24811ce03"
+  },
+  {
+   "ruta": "ETAPA_6G1_CORRECCION_LECTURA_SEGURA/evidence/prototipo_hallazgos_cdefg_6g1/escenario_g1.json",
+   "sha256": "9b4585c1d867157e17299d90253757341645b8a18054b1fe3acb24816e6ad881"
+  }
+ ]
+}

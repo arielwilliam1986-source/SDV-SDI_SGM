@@ -1,40 +1,51 @@
 {
- "amenaza": "Que la escritura se desvíe por el symlink de la entrada sustituida, o que una identidad distinta pase la verificación final.",
+ "amenaza": "Que la escritura se desvíe por el symlink de la entrada sustituida, que el destino ajeno reciba contenido, o que una identidad distinta pase la verificación final.",
  "clasificacion": [
   "comportamiento_permitido_por_diseno",
   "comportamiento_rechazado_por_diseno (verificación por archivo)"
  ],
  "escenario": "C6",
- "nota": "la escritura por el descriptor conservado ignora la entrada nominal (el fd designa el inodo acreditado); la verificación fstat(fd) vs fstatat(entrada, NOFOLLOW) DETECTA el swap por archivo; el symlink queda en el acreditado como entrada ajena conservada (sin eliminación), registrada por el checklist E",
+ "nota": "la escritura por el descriptor conservado ignora la entrada nominal (el fd designa el inodo acreditado); la verificación fstat(fd) vs fstatat(entrada, NOFOLLOW) DETECTA el swap por archivo (4/4, incluido engine_log.txt); el destino ajeno queda SIN ALTERAR (comparación byte a byte con el centinela previo); el symlink queda en el acreditado como entrada ajena conservada (sin eliminación), registrada por el checklist E; el log se escribe por el mecanismo compatible con Tee propuesto para producción (objeto archivo sobre dup(fd_log)), sin modificar la clase Tee real de los motores",
  "resultado": {
   "contenido_acreditado_via_fd": {
+   "log_leido_via_fd": {
+    "correcto": true,
+    "lineas": 3
+   },
    "npy_leido_via_fd": [
     32,
     4
    ],
    "wav_leido_via_fd": 44100
   },
-  "contenido_en_symlinks": {
-   "analysis": false,
-   "npy": false,
-   "wav": false
+  "destino_ajeno_sin_alterar": {
+   "objetivo_analysis.json": true,
+   "objetivo_confidence_map.npy": true,
+   "objetivo_engine_log.txt": true,
+   "objetivo_mix SDV.wav": true
   },
+  "fd_log_valido_tras_cierre_de_tee": true,
   "identidad_creacion": {
    "analysis": {
     "dev": 65024,
-    "ino": 534864
+    "ino": 534930
+   },
+   "log": {
+    "dev": 65024,
+    "ino": 534933
    },
    "npy": {
     "dev": 65024,
-    "ino": 534866
+    "ino": 534932
    },
    "wav": {
     "dev": 65024,
-    "ino": 534865
+    "ino": 534931
    }
   },
   "sustituciones": {
    "analysis.json": "unlink + symlink precolocado",
+   "engine_log.txt": "unlink + symlink precolocado",
    "masks/confidence_map.npy": "unlink + symlink precolocado",
    "mix SDV.wav": "unlink + symlink precolocado"
   },
@@ -43,41 +54,53 @@
     "coincide": false,
     "entrada": {
      "dev": 65024,
-     "ino": 534867
+     "ino": 534934
     },
     "entrada_es_symlink": true,
     "fd": {
      "dev": 65024,
-     "ino": 534864
+     "ino": 534930
+    }
+   },
+   "log": {
+    "coincide": false,
+    "entrada": {
+     "dev": 65024,
+     "ino": 534937
+    },
+    "entrada_es_symlink": true,
+    "fd": {
+     "dev": 65024,
+     "ino": 534933
     }
    },
    "npy": {
     "coincide": false,
     "entrada": {
      "dev": 65024,
-     "ino": 534869
+     "ino": 534936
     },
     "entrada_es_symlink": true,
     "fd": {
      "dev": 65024,
-     "ino": 534866
+     "ino": 534932
     }
    },
    "wav": {
     "coincide": false,
     "entrada": {
      "dev": 65024,
-     "ino": 534868
+     "ino": 534935
     },
     "entrada_es_symlink": true,
     "fd": {
      "dev": 65024,
-     "ino": 534865
+     "ino": 534931
     }
    }
   }
  },
  "schema": "prototipo-cdefg-1/1",
- "titulo": "Archivo anclado por SU PROPIO descriptor (creación exclusiva O_EXCL|O_NOFOLLOW + bibliotecas vía /proc/self/fd/<fd_archivo>), con sustitución de la entrada entre creación y escritura",
+ "titulo": "Archivo anclado por SU PROPIO descriptor (creación exclusiva O_EXCL|O_NOFOLLOW + bibliotecas vía /proc/self/fd/<fd_archivo>), con sustitución de la entrada entre creación y escritura; incluye engine_log.txt vía mecanismo compatible con Tee (clase real sin modificar) y destino ajeno verificado por bytes",
  "veredicto": "PASS"
 }

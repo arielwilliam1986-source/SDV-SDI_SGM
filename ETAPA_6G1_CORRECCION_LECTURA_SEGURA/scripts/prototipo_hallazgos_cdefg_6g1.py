@@ -16,7 +16,11 @@ Escenarios:
   C6      archivo anclado por SU PROPIO descriptor (fd_archivo conservado,
           bibliotecas vía /proc/self/fd/<fd_archivo>): sustitución de la
           entrada entre creación y escritura no desvía la escritura;
-          verificación de identidad por archivo
+          verificación de identidad por archivo. RECTIFICACIÓN (Cris): incluye
+          engine_log.txt con el mecanismo compatible con Tee propuesto para
+          producción (objeto archivo sobre dup(fd_log); clase real NO
+          modificada) y verificación por BYTES de que el destino ajeno queda
+          sin alteración
   D1      secuencia OBLIGATORIA con el módulo REAL (sin modificar):
           acreditar -> conservar -> sustituir intermedio -> abortar_6g1 real
           -> ¿puede localizar/identificar/invalidar/conservar?
@@ -25,15 +29,30 @@ Escenarios:
           descriptor, invalidación sin eliminación, con fds abiertos y en
           camino de excepción; cierre de todos los descriptores (0 residuales)
   E1      guarda de completitud (matriz por motor/modo): existencia, tipo,
-          no-symlink, identidad vs fd de creación; sub-casos (a) completo PASS,
-          (b) artefacto eliminado, (c) symlink, (d) identidad distinta,
-          (e) masks obligatorio ausente, (f) masks opcional ausente
+          no-symlink, identidad vs fd de creación. RECTIFICACIÓN (Cris): la
+          obligatoriedad de masks depende EFECTIVAMENTE de masks_obligatorio
+          (sin parámetro que desactive la comprobación): directorios de
+          prueba INDEPENDIENTES — MQR masks ausente+obligatorio -> FAIL;
+          Hardened/EVO masks ausente+opcional -> PASS en esa dimensión; masks
+          existente (aun opcional) debe ser directorio real, no symlink; el
+          resto de artefactos obligatorios sigue sometido a sus comprobaciones
   F1      ciclo de vida de descriptores: cierre EXACTO una vez, sin cierre
-          prematuro mientras la biblioteca usa el objeto, fallo en
-          construcción parcial -> 0 descriptores residuales
+          prematuro mientras la biblioteca usa el objeto, fallo tras abrir
+          VARIOS recursos -> 0 descriptores residuales. RECTIFICACIÓN (Cris):
+          fd_candidates creado CORRECTAMENTE, descriptores de archivos
+          individuales, cierre en orden inverso; distinción explícita entre
+          lo demostrado por el prototipo y lo que requiere integración en los
+          motores (el ciclo real de los motores NO queda validado aquí)
   G1      evidencia forense: publicacion_6g1.json escrito por fd_run ANTES de
           publicar (viaja con el inodo), verificación externa post-B2;
-          manipulación por la misma uid demostrada (NO inmutable, declarado)
+          manipulación por la misma uid demostrada (NO inmutable, declarado).
+          RECTIFICACIÓN (Cris): verificación EFECTIVA de integridad —
+          publicar -> leer el registro -> RECALCULAR los SHA-256 de los
+          artefactos publicados -> comparar -> PASS al coincidir; escenario
+          INDEPENDIENTE con alteración deliberada de un artefacto publicado
+          -> la auditoría detecta la discrepancia; se mantiene la declaración
+          de que el registro NO es inmutable frente a la misma uid y NO se le
+          atribuyen garantías de autenticidad que no posee
 
 Uso:
   python -B scripts/prototipo_hallazgos_cdefg_6g1.py \
@@ -266,6 +285,41 @@ def escenario_c5(work, outdir):
                         'acreditado (fail-closed ante precolocación)'))
 
 
+class TeeAnclado6g1:
+    """Mecanismo compatible con Tee PROPUESTO PARA PRODUCCIÓN (sólo prototipo).
+
+    La clase Tee real (motores, NO modificada) consume un objeto archivo
+    `self._file` con la interfaz write/flush/close. La propuesta es construir
+    ESE objeto sobre `os.fdopen(os.dup(fd_log), 'w')`, donde fd_log es el
+    descriptor conservado de la creación EXCLUSIVA de engine_log.txt
+    (O_CREAT|O_EXCL|O_NOFOLLOW relativo a fd_run). Esta clase replica la misma
+    interfaz y semántica de error de cierre (error_cierre_6g1) para demostrar
+    el mecanismo sin importar ni modificar el módulo real del motor.
+    """
+
+    def __init__(self, fd_log):
+        self._file = os.fdopen(os.dup(fd_log), 'w', encoding='utf-8')
+        self.error_cierre_6g1 = None
+
+    def write(self, data):
+        self._file.write(data)
+        self._file.flush()
+
+    def flush(self):
+        self._file.flush()
+
+    def close(self):
+        try:
+            self._file.close()
+        except Exception as exc:
+            if self.error_cierre_6g1 is None:
+                self.error_cierre_6g1 = '%s: %s' % (type(exc).__name__, exc)
+            raise
+        finally:
+            if getattr(self._file, 'closed', False) is True:
+                self._file = None
+
+
 def escenario_c6(work, outdir):
     """C6: archivo anclado por SU PROPIO descriptor; sustitución de la
     entrada entre creación y escritura; verificación de identidad final."""
@@ -275,7 +329,20 @@ def escenario_c6(work, outdir):
     os.mkdir('masks', 0o700, dir_fd=fd_run)
     fd_masks = os.open('masks', os.O_RDONLY | os.O_DIRECTORY | os.O_NOFOLLOW,
                        dir_fd=fd_run)
+    # destinos AJENOS del atacante (fuera del acreditado) con contenido
+    # centinela conocido ANTES de la sustitución; tras el experimento deben
+    # seguir byte a byte idénticos (la escritura NO debió desviarse)
+    centinelas = {
+        'objetivo_analysis.json': b'{"ajeno": true}\n',
+        'objetivo_mix SDV.wav': b'AJENO-WAV-SENTINEL\n',
+        'objetivo_confidence_map.npy': b'AJENO-NPY-SENTINEL\n',
+        'objetivo_engine_log.txt': b'LINEA AJENA PREVIA\n'}
+    for nombre_c, contenido_c in centinelas.items():
+        with open(os.path.join(r['raiz'], nombre_c), 'wb') as f:
+            f.write(contenido_c)
     # creación EXCLUSIVA + conservación del descriptor de cada archivo
+    # (engine_log.txt incluido: mecanismo compatible con Tee, clase real
+    # sin modificar)
     fd_json = os.open('analysis.json', os.O_CREAT | os.O_EXCL | os.O_WRONLY
                       | os.O_NOFOLLOW, 0o600, dir_fd=fd_run)
     fd_wav = os.open('mix SDV.wav', os.O_CREAT | os.O_EXCL | os.O_WRONLY
@@ -283,13 +350,16 @@ def escenario_c6(work, outdir):
     fd_npy = os.open('confidence_map.npy',
                      os.O_CREAT | os.O_EXCL | os.O_RDWR | os.O_NOFOLLOW,
                      0o600, dir_fd=fd_masks)
+    fd_log = os.open('engine_log.txt', os.O_CREAT | os.O_EXCL | os.O_WRONLY
+                     | os.O_NOFOLLOW, 0o600, dir_fd=fd_run)
     identidad_creacion = dict(
         analysis=ino_de_fd(fd_json), wav=ino_de_fd(fd_wav),
-        npy=ino_de_fd(fd_npy))
+        npy=ino_de_fd(fd_npy), log=ino_de_fd(fd_log))
     # --- el atacante (misma uid) sustituye las ENTRADAS entre creación y
     #     escritura: unlink + symlink con el mismo nombre ---
     sustituciones = {}
-    for nombre in ['analysis.json', 'mix SDV.wav', 'masks/confidence_map.npy']:
+    for nombre in ['analysis.json', 'mix SDV.wav', 'masks/confidence_map.npy',
+                   'engine_log.txt']:
         sub, _, base_n = nombre.rpartition('/')
         dirfd = fd_masks if sub else fd_run
         os.unlink(base_n, dir_fd=dirfd)
@@ -305,15 +375,24 @@ def escenario_c6(work, outdir):
     mm[:] = 0.5
     mm.flush()
     del mm
-    contenido_en_symlinks = dict(
-        analysis=('caso' in open(os.path.join(r['raiz'], 'objetivo_analysis.json'),
-                                 encoding='utf-8').read()
-                  if os.path.exists(os.path.join(r['raiz'],
-                                                 'objetivo_analysis.json'))
-                  else False),
-        wav=os.path.exists(os.path.join(r['raiz'], 'objetivo_mix SDV.wav')),
-        npy=os.path.exists(os.path.join(r['raiz'],
-                                        'objetivo_confidence_map.npy')))
+    # log vía el mecanismo compatible con Tee (objeto archivo sobre
+    # dup(fd_log)); el cierre de Tee cierra su DUP, no el fd del motor
+    tee = TeeAnclado6g1(fd_log)
+    for i in range(3):
+        tee.write('[Motor] linea de log %d escrita por el descriptor anclado\n'
+                  % i)
+    tee.close()
+    try:
+        os.fstat(fd_log)
+        fd_log_valido_tras_tee = True
+    except OSError:
+        fd_log_valido_tras_tee = False
+    # verificación del destino ajeno SIN ALTERACIÓN (comparación byte a byte
+    # contra el centinela previo a la sustitución)
+    destino_ajeno_sin_alterar = {}
+    for nombre_c, contenido_c in centinelas.items():
+        with open(os.path.join(r['raiz'], nombre_c), 'rb') as f:
+            destino_ajeno_sin_alterar[nombre_c] = f.read() == contenido_c
     # --- verificación de identidad POR ARCHIVO: fd vs entrada nominal ---
     verificacion = dict(
         analysis=dict(fd=ino_de_fd(fd_json),
@@ -321,7 +400,9 @@ def escenario_c6(work, outdir):
         wav=dict(fd=ino_de_fd(fd_wav),
                  entrada=ino_entrada(fd_run, 'mix SDV.wav')),
         npy=dict(fd=ino_de_fd(fd_npy),
-                 entrada=ino_entrada(fd_masks, 'confidence_map.npy')))
+                 entrada=ino_entrada(fd_masks, 'confidence_map.npy')),
+        log=dict(fd=ino_de_fd(fd_log),
+                 entrada=ino_entrada(fd_run, 'engine_log.txt')))
     for k, v in verificacion.items():
         v['coincide'] = (v['entrada'] is not None
                          and (v['fd']['dev'], v['fd']['ino'])
@@ -330,45 +411,65 @@ def escenario_c6(work, outdir):
     for nombre, dirfd, clave in [('analysis.json', fd_run, 'analysis'),
                                  ('mix SDV.wav', fd_run, 'wav'),
                                  ('masks/confidence_map.npy', fd_masks,
-                                  'npy')]:
+                                  'npy'),
+                                 ('engine_log.txt', fd_run, 'log')]:
         st = os.stat(nombre.rpartition('/')[2], dir_fd=dirfd,
                      follow_symlinks=False)
         verificacion[clave]['entrada_es_symlink'] = bool(
             stat.S_ISLNK(st.st_mode))
+    with open(proc(fd_log), 'rb') as f:
+        contenido_log = f.read().decode('utf-8')
     contenido_acreditado = dict(
         wav_leido_via_fd=sf.read(proc(fd_wav), dtype='float64')[0].shape[0],
-        npy_leido_via_fd=list(np.load(proc(fd_npy)).shape))
-    for f in (fd_json, fd_wav, fd_npy):
+        npy_leido_via_fd=list(np.load(proc(fd_npy)).shape),
+        log_leido_via_fd=dict(
+            lineas=contenido_log.count('\n'),
+            correcto=all('[Motor] linea de log %d' % i in contenido_log
+                         for i in range(3))))
+    for f in (fd_json, fd_wav, fd_npy, fd_log):
         os.close(f)
     os.close(fd_masks)
     os.close(fd_run)
     os.close(ancla['fd_padre'])
     limpiar(r['raiz'])
-    ok = (not any(contenido_en_symlinks.values())
+    ok = (all(destino_ajeno_sin_alterar.values())
           and all(not v['coincide'] and v['entrada_es_symlink']
                   for v in verificacion.values())
           and contenido_acreditado['wav_leido_via_fd'] == SR
-          and contenido_acreditado['npy_leido_via_fd'] == [32, 4])
+          and contenido_acreditado['npy_leido_via_fd'] == [32, 4]
+          and contenido_acreditado['log_leido_via_fd']['lineas'] == 3
+          and contenido_acreditado['log_leido_via_fd']['correcto']
+          and fd_log_valido_tras_tee)
     return nuevo(
         'C6', 'Archivo anclado por SU PROPIO descriptor (creación exclusiva '
         'O_EXCL|O_NOFOLLOW + bibliotecas vía /proc/self/fd/<fd_archivo>), '
-        'con sustitución de la entrada entre creación y escritura',
+        'con sustitución de la entrada entre creación y escritura; incluye '
+        'engine_log.txt vía mecanismo compatible con Tee (clase real sin '
+        'modificar) y destino ajeno verificado por bytes',
         'Que la escritura se desvíe por el symlink de la entrada sustituida, '
-        'o que una identidad distinta pase la verificación final.',
+        'que el destino ajeno reciba contenido, o que una identidad distinta '
+        'pase la verificación final.',
         ['comportamiento_permitido_por_diseno',
          'comportamiento_rechazado_por_diseno (verificación por archivo)'],
         dict(identidad_creacion=identidad_creacion,
              sustituciones=sustituciones,
-             contenido_en_symlinks=contenido_en_symlinks,
+             destino_ajeno_sin_alterar=destino_ajeno_sin_alterar,
+             fd_log_valido_tras_cierre_de_tee=fd_log_valido_tras_tee,
              verificacion_identidad_por_archivo=verificacion,
              contenido_acreditado_via_fd=contenido_acreditado),
         extra=dict(veredicto='PASS' if ok else 'REVIEW',
                    nota='la escritura por el descriptor conservado ignora la '
                         'entrada nominal (el fd designa el inodo acreditado); '
                         'la verificación fstat(fd) vs fstatat(entrada, '
-                        'NOFOLLOW) DETECTA el swap por archivo; el symlink '
-                        'queda en el acreditado como entrada ajena conservada '
-                        '(sin eliminación), registrada por el checklist E'))
+                        'NOFOLLOW) DETECTA el swap por archivo (4/4, incluido '
+                        'engine_log.txt); el destino ajeno queda SIN ALTERAR '
+                        '(comparación byte a byte con el centinela previo); '
+                        'el symlink queda en el acreditado como entrada ajena '
+                        'conservada (sin eliminación), registrada por el '
+                        'checklist E; el log se escribe por el mecanismo '
+                        'compatible con Tee propuesto para producción '
+                        '(objeto archivo sobre dup(fd_log)), sin modificar '
+                        'la clase Tee real de los motores'))
 
 
 def sf_write_wav_fd(fd, datos):
@@ -648,10 +749,12 @@ DIF_MOTOR = {
 }
 
 
-def checklist_completitud(fd_run, fds_archivos, masks_obligatorio,
-                          masks_presente_esperado=True):
+def checklist_completitud(fd_run, fds_archivos, masks_obligatorio):
     """Guarda de completitud por descriptor: existencia, tipo, no-symlink e
-    identidad vs fd de creación. Devuelve (veredicto, detalles)."""
+    identidad vs fd de creación. RECTIFICACIÓN Cris: la obligatoriedad de
+    masks depende EFECTIVAMENTE de masks_obligatorio (no existe parámetro que
+    desactive la comprobación); si masks EXISTE (aunque sea opcional) debe ser
+    un directorio REAL, no un symlink. Devuelve (veredicto, detalles)."""
     det, ok = {}, True
     for nombre, spec in SPEC_COMUN.items():
         st = fstatat_nofollow(fd_run, nombre)
@@ -675,91 +778,144 @@ def checklist_completitud(fd_run, fds_archivos, masks_obligatorio,
                    else 'directorio' if st_m and stat.S_ISDIR(st_m.st_mode)
                    else 'regular/ausente' if st_m else 'ausente'),
              esperado=('obligatorio' if masks_obligatorio else 'opcional'))
-    m['ok'] = ((st_m is not None and stat.S_ISDIR(st_m.st_mode)
-                and not stat.S_ISLNK(st_m.st_mode))
-               if masks_presente_esperado else True)
+    if st_m is None:
+        m['ok'] = not masks_obligatorio   # ausente: sólo vale si es OPCIONAL
+    else:
+        # presente (obligatorio u opcional): directorio REAL, no symlink
+        m['ok'] = (stat.S_ISDIR(st_m.st_mode)
+                   and not stat.S_ISLNK(st_m.st_mode))
     ok = ok and m['ok']
     det['masks'] = m
     return ('PASS' if ok else 'FAIL'), det
 
 
-def escenario_e1(work, outdir):
-    """E1: guarda de completitud con sus sub-casos deterministas."""
-    resultados = {}
-    # (a) completo -> PASS
-    ancla, r = _estructura(work, 'E1a')
+def _dir_e1(work, etiqueta, con_masks=True, masks_symlink=False):
+    """Directorio de prueba INDEPENDIENTE para E1: provisional acreditado con
+    todos los artefactos comunes y masks (o su ausencia, o symlink) según el
+    sub-caso. Sin simulaciones por parámetro: la ausencia es REAL."""
+    ancla, r = _estructura(work, etiqueta)
     fd_run = os.open(ancla['nombre'], os.O_RDONLY | os.O_DIRECTORY
                      | os.O_NOFOLLOW, dir_fd=ancla['fd_padre'])
     fds = {}
     for nombre in SPEC_COMUN:
         fds[nombre] = os.open(nombre, os.O_CREAT | os.O_EXCL | os.O_WRONLY
                               | os.O_NOFOLLOW, 0o600, dir_fd=fd_run)
-    os.mkdir('masks', 0o700, dir_fd=fd_run)
-    v, det = checklist_completitud(fd_run, fds, masks_obligatorio=True)
-    resultados['a_completo'] = dict(veredicto=v, detalle=det)
-    # (b) artefacto obligatorio eliminado -> FAIL
-    os.unlink('analysis.txt', dir_fd=fd_run)
-    v2, det2 = checklist_completitud(fd_run, fds, masks_obligatorio=True)
-    resultados['b_eliminado'] = dict(veredicto=v2,
-                                     analysis_txt=det2['analysis.txt'])
-    # (c) analysis.json sustituido por symlink -> FAIL (debe re-crearse en
-    #     el escenario: se elimina y se precoloca el symlink)
-    os.unlink('analysis.json', dir_fd=fd_run)
-    os.symlink(os.path.join(r['raiz'], 'ajeno.json'), 'analysis.json',
-               dir_fd=fd_run)
-    v3, det3 = checklist_completitud(fd_run, fds, masks_obligatorio=True)
-    resultados['c_symlink'] = dict(veredicto=v3, analysis=det3['analysis.json'])
-    # (d) identidad distinta (regular recreado por la misma uid) -> FAIL
-    os.unlink('analysis.json', dir_fd=fd_run)
+    if masks_symlink:
+        os.symlink(os.path.join(r['raiz'], 'ajeno_masks'), 'masks',
+                   dir_fd=fd_run)
+    elif con_masks:
+        os.mkdir('masks', 0o700, dir_fd=fd_run)
+    return ancla, r, fd_run, fds
+
+
+def escenario_e1(work, outdir):
+    """E1: guarda de completitud con directorios de prueba INDEPENDIENTES
+    (rectificación Cris: sin parámetro que desactive la comprobación)."""
+    resultados = {}
+    # (a) MQR completo (masks presente y obligatorio) -> PASS
+    ancla_a, r_a, fd_a, fds_a = _dir_e1(work, 'E1a-mqr-completo')
+    v, det = checklist_completitud(fd_a, fds_a, masks_obligatorio=True)
+    resultados['a_mqr_completo'] = dict(veredicto=v, detalle=det)
+    # (b) MQR: masks AUSENTE (real, dir independiente sin masks) y
+    #     OBLIGATORIO -> FAIL por esa dimensión
+    ancla_b, r_b, fd_b, fds_b = _dir_e1(work, 'E1b-mqr-masks-ausente',
+                                        con_masks=False)
+    v2, det2 = checklist_completitud(fd_b, fds_b, masks_obligatorio=True)
+    resultados['b_mqr_masks_ausente'] = dict(veredicto=v2, masks=det2['masks'])
+    # (c) Hardened/EVO: masks AUSENTE (real) y OPCIONAL, resto completo ->
+    #     PASS respecto a esa dimensión (los demás artefactos obligatorios
+    #     pasan SUS comprobaciones)
+    ancla_c, r_c, fd_c, fds_c = _dir_e1(work, 'E1c-hevo-masks-opcional',
+                                        con_masks=False)
+    v3, det3 = checklist_completitud(fd_c, fds_c, masks_obligatorio=False)
+    resultados['c_hevo_masks_ausente'] = dict(
+        veredicto=v3, masks=det3['masks'],
+        resto_ok={k: det3[k]['ok'] for k in det3 if k != 'masks'})
+    # (c2) en el MISMO directorio H/EVO: se elimina analysis.txt (real) ->
+    #      FAIL: el resto de artefactos obligatorios SIGUE sometido a sus
+    #      propias comprobaciones aunque masks sea opcional
+    os.unlink('analysis.txt', dir_fd=fd_c)
+    v3b, det3b = checklist_completitud(fd_c, fds_c, masks_obligatorio=False)
+    resultados['c2_hevo_otro_obligatorio_eliminado'] = dict(
+        veredicto=v3b, analysis_txt=det3b['analysis.txt'],
+        masks_igual_ok=det3b['masks']['ok'])
+    # (d) masks EXISTE pero es symlink, aun OPCIONAL -> FAIL (debe ser
+    #     directorio real)
+    ancla_d, r_d, fd_d, fds_d = _dir_e1(work, 'E1d-masks-symlink',
+                                        masks_symlink=True)
+    v4, det4 = checklist_completitud(fd_d, fds_d, masks_obligatorio=False)
+    v4b, _ = checklist_completitud(fd_d, fds_d, masks_obligatorio=True)
+    resultados['d_masks_symlink_aun_opcional'] = dict(
+        veredicto_opcional=v4, veredicto_obligatorio=v4b,
+        masks=det4['masks'])
+    # (e) fallos genéricos en dir MQR independiente: (e1) obligatorio
+    #     eliminado, (e2) symlink, (e3) identidad distinta
+    ancla_e, r_e, fd_e, fds_e = _dir_e1(work, 'E1e-fallos-genericos')
+    os.unlink('mix SDI.wav', dir_fd=fd_e)
+    v5, det5 = checklist_completitud(fd_e, fds_e, masks_obligatorio=True)
+    resultados['e1_obligatorio_eliminado'] = dict(
+        veredicto=v5, mix_sdi=det5['mix SDI.wav'])
+    os.unlink('analysis.json', dir_fd=fd_e)
+    os.symlink(os.path.join(r_e['raiz'], 'ajeno.json'), 'analysis.json',
+               dir_fd=fd_e)
+    v6, det6 = checklist_completitud(fd_e, fds_e, masks_obligatorio=True)
+    resultados['e2_symlink'] = dict(veredicto=v6,
+                                    analysis=det6['analysis.json'])
+    os.unlink('analysis.json', dir_fd=fd_e)
     fd_imp = os.open('analysis.json', os.O_CREAT | os.O_EXCL | os.O_WRONLY
-                     | os.O_NOFOLLOW, 0o600, dir_fd=fd_run)
+                     | os.O_NOFOLLOW, 0o600, dir_fd=fd_e)
     os.close(fd_imp)
-    v4, det4 = checklist_completitud(fd_run, fds, masks_obligatorio=True)
-    resultados['d_identidad_distinta'] = dict(
-        veredicto=v4,
-        identidad_vs_fd=det4['analysis.json'].get('identidad_vs_fd'))
-    # (e) masks obligatorio ausente -> FAIL
-    os.unlink('mix SDI.wav', dir_fd=fd_run)   # además falta un WAV
-    # reconstruir masks fuera: mover masks -> fuera del fd_run no es posible
-    # sin eliminación; se demuestra con un fd_run nuevo sin masks:
-    v5, det5 = checklist_completitud(fd_run, {k: fds[k] for k in fds
-                                              if k != 'mix SDI.wav'},
-                                     masks_obligatorio=True,
-                                     masks_presente_esperado=False)
-    resultados['e_masks_y_wav_faltantes'] = dict(veredicto=v5,
-                                                 masks=det5['masks'],
-                                                 mix_sdi=det5['mix SDI.wav'])
-    # (f) masks opcional ausente -> PASS (modo sin masks)
-    v6, det6 = checklist_completitud(fd_run, {}, masks_obligatorio=False,
-                                     masks_presente_esperado=False)
-    # nota: en (f) faltan otros artefactos porque el escenario (b-e) los
-    # eliminó; se evalúa SOLO la dimensión masks (veredicto por artefacto)
-    for f in fds.values():
-        os.close(f)
-    os.close(fd_run)
-    os.close(ancla['fd_padre'])
-    ok = (resultados['a_completo']['veredicto'] == 'PASS'
-          and resultados['b_eliminado']['veredicto'] == 'FAIL'
-          and resultados['c_symlink']['veredicto'] == 'FAIL'
-          and resultados['d_identidad_distinta']['veredicto'] == 'FAIL'
-          and resultados['e_masks_y_wav_faltantes']['veredicto'] == 'FAIL'
-          and resultados['e_masks_y_wav_faltantes']['masks']['ok'] is True
-          and resultados['e_masks_y_wav_faltantes']['mix_sdi']['ok'] is False
-          and det6['masks']['ok'] is True)
-    limpiar(r['raiz'])
+    v7, det7 = checklist_completitud(fd_e, fds_e, masks_obligatorio=True)
+    resultados['e3_identidad_distinta'] = dict(
+        veredicto=v7,
+        identidad_vs_fd=det7['analysis.json'].get('identidad_vs_fd'))
+    for fds_x, fdx, ax in ((fds_a, fd_a, ancla_a), (fds_b, fd_b, ancla_b),
+                           (fds_c, fd_c, ancla_c), (fds_d, fd_d, ancla_d),
+                           (fds_e, fd_e, ancla_e)):
+        for f in fds_x.values():
+            os.close(f)
+        os.close(fdx)
+        os.close(ax['fd_padre'])
+    ok = (resultados['a_mqr_completo']['veredicto'] == 'PASS'
+          and resultados['b_mqr_masks_ausente']['veredicto'] == 'FAIL'
+          and resultados['b_mqr_masks_ausente']['masks']['ok'] is False
+          and resultados['b_mqr_masks_ausente']['masks']['esperado']
+          == 'obligatorio'
+          and resultados['c_hevo_masks_ausente']['veredicto'] == 'PASS'
+          and resultados['c_hevo_masks_ausente']['masks']['ok'] is True
+          and resultados['c_hevo_masks_ausente']['masks']['esperado']
+          == 'opcional'
+          and all(resultados['c_hevo_masks_ausente']['resto_ok'].values())
+          and resultados['c2_hevo_otro_obligatorio_eliminado']['veredicto']
+          == 'FAIL'
+          and resultados['d_masks_symlink_aun_opcional']
+          ['veredicto_opcional'] == 'FAIL'
+          and resultados['d_masks_symlink_aun_opcional']['masks']['tipo']
+          == 'symlink'
+          and resultados['e1_obligatorio_eliminado']['veredicto'] == 'FAIL'
+          and resultados['e2_symlink']['veredicto'] == 'FAIL'
+          and resultados['e3_identidad_distinta']['veredicto'] == 'FAIL')
+    limpiar(r_a['raiz']); limpiar(r_b['raiz']); limpiar(r_c['raiz'])
+    limpiar(r_d['raiz']); limpiar(r_e['raiz'])
     return nuevo(
         'E1', 'Guarda de completitud por descriptor (matriz por motor/modo): '
-        'existencia, tipo, no-symlink, identidad vs fd de creación',
+        'existencia, tipo, no-symlink, identidad vs fd de creación; '
+        'rectificación: obligatoriedad de masks EFECTIVA con directorios de '
+        'prueba independientes',
         'Que EXIT_OK se declare con un artefacto obligatorio ausente, '
-        'sustituido, enlazado o con identidad distinta.',
+        'sustituido, enlazado o con identidad distinta; o que la '
+        'obligatoriedad condicional de masks no se aplique realmente.',
         ['comportamiento_rechazado_por_diseno'], resultados,
         extra=dict(veredicto='PASS' if ok else 'REVIEW',
                    matriz_motores=DIF_MOTOR,
-                   nota='la ausencia o identidad incorrecta de CUALQUIER '
-                        'artefacto obligatorio impide EXIT_OK; masks '
-                        'obligatorio en MQR (siempre) y condicional en '
-                        'Hardened/EVO (--png/--keep-masks); pngs y '
-                        'candidates opcionales según flags'))
+                   nota='masks OBLIGATORIO ausente (MQR) -> FAIL; masks '
+                        'OPCIONAL ausente (Hardened/EVO) -> PASS en esa '
+                        'dimensión con el resto completo y sus comprobaciones '
+                        'activas (c2: eliminar analysis.txt sigue dando '
+                        'FAIL); masks PRESENTE aunque opcional debe ser '
+                        'directorio real, no symlink (d); la ausencia se '
+                        'construye REAL en directorios independientes, sin '
+                        'ningún parámetro que desactive la comprobación'))
 
 
 # ---------------------------------------------------------------------------
@@ -792,13 +948,16 @@ class RegistroFds:
 
 
 def escenario_f1(work, outdir):
-    """F1: ciclo de vida — cierre exacto, sin cierre prematuro y fallo en
-    construcción parcial."""
+    """F1: ciclo de vida — fd_candidates correctamente creado, descriptores
+    de archivos individuales, fallo DESPUÉS de abrir varios recursos, cierre
+    exacto en orden inverso, sin cierre prematuro y 0 residuales
+    (rectificación Cris)."""
     def medir_fds():
         return sorted(int(x) for x in os.listdir('/proc/self/fd'))
 
     resultados = {}
-    # (a) cierre exacto una vez + idempotencia + orden inverso
+    # (a) ciclo COMPLETO con éxito: fd_padre, fd_run, fd_masks y fd_candidates
+    #     creados CORRECTAMENTE + tres descriptores de archivos individuales
     ancla, r = _estructura(work, 'F1a')
     antes = medir_fds()
     reg = RegistroFds()
@@ -806,67 +965,130 @@ def escenario_f1(work, outdir):
     fd_run = reg.registrar('fd_run', os.open(
         ancla['nombre'], os.O_RDONLY | os.O_DIRECTORY | os.O_NOFOLLOW,
         dir_fd=fd_padre))
-    fd_masks = reg.registrar('fd_masks', os.open(
+    os.mkdir('masks', 0o700, dir_fd=fd_run)
+    reg.registrar('fd_masks', os.open(
         'masks', os.O_RDONLY | os.O_DIRECTORY | os.O_NOFOLLOW,
-        dir_fd=fd_run)) if (os.mkdir('masks', 0o700, dir_fd=fd_run) or True) \
-        else None
+        dir_fd=fd_run))
+    os.mkdir('candidates', 0o700, dir_fd=fd_run)
+    reg.registrar('fd_candidates', os.open(     # creado CORRECTAMENTE
+        'candidates', os.O_RDONLY | os.O_DIRECTORY | os.O_NOFOLLOW,
+        dir_fd=fd_run))
     fd_wav = reg.registrar('wav', os.open(
         'mix SDV.wav', os.O_CREAT | os.O_EXCL | os.O_WRONLY | os.O_NOFOLLOW,
         0o600, dir_fd=fd_run))
-    # biblioteca usando el objeto ANTES del cierre (sin cierre prematuro)
+    fd_json = reg.registrar('json', os.open(
+        'analysis.json', os.O_CREAT | os.O_EXCL | os.O_WRONLY | os.O_NOFOLLOW,
+        0o600, dir_fd=fd_run))
+    fd_log = reg.registrar('log', os.open(
+        'engine_log.txt', os.O_CREAT | os.O_EXCL | os.O_WRONLY | os.O_NOFOLLOW,
+        0o600, dir_fd=fd_run))
+    # bibliotecas usando los objetos ANTES del cierre (sin cierre prematuro):
+    # soundfile escribe el WAV; el escritor de JSON y el de log usan su DUP
+    # (lo cierran ellos); el fd del MOTOR permanece válido después
     sf_write_wav_fd(fd_wav, datos_wav())
+    with os.fdopen(os.dup(fd_json), 'w', encoding='utf-8') as f:
+        json.dump({'caso': 'F1a'}, f)
+    with os.fdopen(os.dup(fd_log), 'w', encoding='utf-8') as f:
+        f.write('[Motor] F1a\n')
+    try:
+        os.fstat(fd_log)
+        fds_archivo_validos_tras_biblioteca = True
+    except OSError:
+        fds_archivo_validos_tras_biblioteca = False
     frames_antes = sf.read(proc(fd_wav), dtype='float64')[0].shape[0]
     cerrados, duplicados = reg.cerrar_todos()
-    reg.cerrar_todos()   # segunda llamada: nada que cerrar
+    reg.cerrar_todos()   # segunda llamada: nada que cerrar (idempotente)
     despues = medir_fds()
-    resultados['a_cierre_exacto'] = dict(
+    resultados['a_ciclo_completo'] = dict(
+        recursos_registrados=['fd_padre', 'fd_run', 'fd_masks',
+                              'fd_candidates', 'wav', 'json', 'log'],
         orden_cerrados=cerrados, cierres_duplicados=duplicados,
         frames_wav_antes_del_cierre=frames_antes,
+        fds_archivo_validos_tras_biblioteca=fds_archivo_validos_tras_biblioteca,
         fds_residuales=[f for f in despues if f not in antes])
     limpiar(r['raiz'])
-    # (b) fallo en construcción parcial -> cierra lo abierto, 0 residuales
+    # (b) fallo DESPUÉS de abrir VARIOS recursos: la creación exclusiva de
+    #     'analysis.json' choca con un symlink precolocado por el atacante
+    #     (FileExistsError, C5) -> el registro cierra lo abierto, 0 residuales
     ancla, r = _estructura(work, 'F1b')
     antes = medir_fds()
     reg = RegistroFds()
     reg.registrar('fd_padre', ancla['fd_padre'])
-    reg.registrar('fd_run', os.open(
+    fd_run = reg.registrar('fd_run', os.open(
         ancla['nombre'], os.O_RDONLY | os.O_DIRECTORY | os.O_NOFOLLOW,
         dir_fd=ancla['fd_padre']))
+    os.mkdir('masks', 0o700, dir_fd=fd_run)
+    reg.registrar('fd_masks', os.open(
+        'masks', os.O_RDONLY | os.O_DIRECTORY | os.O_NOFOLLOW, dir_fd=fd_run))
+    os.mkdir('candidates', 0o700, dir_fd=fd_run)
+    reg.registrar('fd_candidates', os.open(
+        'candidates', os.O_RDONLY | os.O_DIRECTORY | os.O_NOFOLLOW,
+        dir_fd=fd_run))
+    reg.registrar('wav', os.open(
+        'mix SDV.wav', os.O_CREAT | os.O_EXCL | os.O_WRONLY | os.O_NOFOLLOW,
+        0o600, dir_fd=fd_run))
+    os.symlink(os.path.join(r['raiz'], 'ajeno.json'), 'analysis.json',
+               dir_fd=fd_run)     # atacante precoloca la entrada
     error = None
     try:
-        # 'candidates' no existe -> apertura falla (construcción parcial)
-        reg.registrar('fd_candidates', os.open(
-            'candidates', os.O_RDONLY | os.O_DIRECTORY | os.O_NOFOLLOW,
-            dir_fd=reg._pila[1][1]))
+        reg.registrar('json', os.open(
+            'analysis.json',
+            os.O_CREAT | os.O_EXCL | os.O_WRONLY | os.O_NOFOLLOW,
+            0o600, dir_fd=fd_run))
     except OSError as exc:
         error = '%s (%s)' % (type(exc).__name__, exc)
+        st_aj = os.stat('analysis.json', dir_fd=fd_run,
+                        follow_symlinks=False)
         cerrados, dup = reg.cerrar_todos()
     despues = medir_fds()
-    resultados['b_construccion_parcial'] = dict(
+    resultados['b_fallo_tras_varios_recursos'] = dict(
+        recursos_abiertos_al_fallar=5,
         error=error, cerrados=cerrados,
+        symlink_precolocado_conservado=bool(stat.S_ISLNK(st_aj.st_mode)),
         fds_residuales=[f for f in despues if f not in antes])
-    ok = (not resultados['a_cierre_exacto']['fds_residuales']
-          and resultados['a_cierre_exacto']['cierres_duplicados'] == 0
-          and resultados['a_cierre_exacto']['orden_cerrados'] ==
-          ['wav', 'fd_masks', 'fd_run', 'fd_padre']
-          and resultados['a_cierre_exacto']['frames_wav_antes_del_cierre']
+    ok = (not resultados['a_ciclo_completo']['fds_residuales']
+          and resultados['a_ciclo_completo']['cierres_duplicados'] == 0
+          and resultados['a_ciclo_completo']['orden_cerrados'] ==
+          ['log', 'json', 'wav', 'fd_candidates', 'fd_masks', 'fd_run',
+           'fd_padre']
+          and resultados['a_ciclo_completo']['frames_wav_antes_del_cierre']
           == SR
-          and not resultados['b_construccion_parcial']['fds_residuales'])
+          and resultados['a_ciclo_completo']
+          ['fds_archivo_validos_tras_biblioteca']
+          and not resultados['b_fallo_tras_varios_recursos']['fds_residuales']
+          and resultados['b_fallo_tras_varios_recursos']['error']
+          .startswith('FileExistsError')
+          and resultados['b_fallo_tras_varios_recursos']['cerrados'] ==
+          ['wav', 'fd_candidates', 'fd_masks', 'fd_run', 'fd_padre']
+          and resultados['b_fallo_tras_varios_recursos']
+          ['symlink_precolocado_conservado'])
     limpiar(r['raiz'])
     return nuevo(
-        'F1', 'Ciclo de vida de descriptores: cierre EXACTO una vez, sin '
-        'cierre prematuro mientras la biblioteca usa el objeto, y fallo en '
-        'construcción parcial',
-        'Que queden descriptores residuales, se cierren dos veces o se '
-        'cierren mientras una biblioteca los usa.',
+        'F1', 'Ciclo de vida de descriptores: fd_candidates creado '
+        'correctamente, descriptores de archivos individuales, fallo después '
+        'de abrir varios recursos, cierre EXACTO en orden inverso, sin '
+        'cierre prematuro y 0 residuales',
+        'Que queden descriptores residuales, se cierren dos veces, se '
+        'cierren en orden incorrecto, se cierren mientras una biblioteca los '
+        'usa, o que un fallo tardío deje recursos abiertos.',
         ['comportamiento_permitido_por_diseno'], resultados,
         extra=dict(veredicto='PASS' if ok else 'REVIEW',
-                   orden_propuesto='archivos -> subdirectorios (fd_masks, '
-                                   'fd_candidates) -> fd_run -> fd_padre; '
-                                   'integración: registrar en el mismo '
-                                   'registro que usa preparar_aborto_6g1 '
-                                   '(cerrar_recursos_corrida_6g1 ampliado) y '
-                                   'en el cierre normal acreditado'))
+                   demostrado_por_prototipo='fd_candidates creado '
+                   '(mkdir+openat) y cerrado en posición correcta; 3 fds de '
+                   'archivo individuales (wav/json/log); fallo tras abrir '
+                   'CINCO recursos con cierre completo de los mismos; orden '
+                   'inverso exacto (archivos -> fd_candidates -> fd_masks -> '
+                   'fd_run -> fd_padre); sin cierre prematuro (la biblioteca '
+                   'usa su dup y el fd del motor queda válido después; el '
+                   'WAV conserva sus frames antes del cierre); 0 residuales '
+                   'medidos por /proc/self/fd',
+                   pendiente_de_integracion_en_motores='el ciclo REAL de los '
+                   'motores NO queda validado aquí: la integración exige que '
+                   'cada motor registre sus descriptores en este registro en '
+                   'sus tres caminos (éxito/excepción/interrupción) junto a '
+                   'preparar_aborto_6g1 (cerrar_recursos_corrida_6g1 '
+                   'ampliado) y el cierre acreditado normal; se validará con '
+                   'RG-FLOW por motor (pendiente de autorización)'))
 
 
 # ---------------------------------------------------------------------------
@@ -882,10 +1104,18 @@ def sha_archivo_via_fd(fd):
         return None
 
 
-def escenario_g1(work, outdir):
-    """G1: evidencia forense — registro ANTES de publicar (viaja con el
-    inodo), verificación externa post-B2, manipulación por misma uid."""
-    ancla, r = _estructura(work, 'G1')
+def sha_archivo_por_ruta(p):
+    with open(p, 'rb') as f:
+        return hashlib.sha256(f.read()).hexdigest()
+
+
+_MAPA_ARTEFACTOS = dict(mix_sdv='mix SDV.wav', analysis='analysis.json')
+
+
+def _publicar_con_registro(work, etiqueta):
+    """Provisional acreditado con artefactos + registro forense escrito por
+    fd_run ANTES de publicar + publicación (el registro viaja con el inodo)."""
+    ancla, r = _estructura(work, etiqueta)
     fd_run = os.open(ancla['nombre'], os.O_RDONLY | os.O_DIRECTORY
                      | os.O_NOFOLLOW, dir_fd=ancla['fd_padre'])
     fd_wav = os.open('mix SDV.wav', os.O_CREAT | os.O_EXCL | os.O_WRONLY
@@ -894,12 +1124,11 @@ def escenario_g1(work, outdir):
                       | os.O_NOFOLLOW, 0o600, dir_fd=fd_run)
     sf_write_wav_fd(fd_wav, datos_wav())
     with os.fdopen(os.dup(fd_json), 'w', encoding='utf-8') as f:
-        json.dump({'caso': 'G1'}, f)
+        json.dump({'caso': etiqueta}, f)
     hashes = dict(mix_sdv=sha_archivo_via_fd(fd_wav),
                   analysis=sha_archivo_via_fd(fd_json))
     os.close(fd_wav)
     os.close(fd_json)
-    # registro forense ANTES de publicar (viaja con el inodo al publicarse)
     registro = dict(
         schema='publicacion-6g1/1',
         ts=time.strftime('%Y-%m-%dT%H:%M:%SZ', time.gmtime()),
@@ -910,61 +1139,127 @@ def escenario_g1(work, outdir):
         destino_solicitado='run_final',
         artefactos=hashes,
         politica='el inodo del provisional se conserva en el renombrado: '
-                 'lstat(dir publicado) debe == provisional.ino')
+                 'lstat(dir publicado) debe == provisional.ino; los SHA-256 '
+                 'permiten verificar la integridad del CONTENIDO publicado')
     fd_reg = os.open('publicacion_6g1.json', os.O_CREAT | os.O_EXCL
                      | os.O_WRONLY | os.O_NOFOLLOW, 0o600, dir_fd=fd_run)
     os.write(fd_reg, json.dumps(registro, indent=1).encode('utf-8'))
     os.close(fd_reg)
-    # publicación + verificación post + B2
     res = publicar_anclada(ancla, 'run_final')
-    st_final = fstatat_nofollow(ancla['fd_padre'], res['destino'])
-    b2 = dict(coincide=bool(st_final) and (st_final.st_dev, st_final.st_ino)
-              == (ancla['identidad']['dev'], ancla['identidad']['ino']))
-    # auditoría EXTERNA (independiente del proceso): lstat del publicado vs
-    # el registro que VIAJÓ con el inodo
     publicado = os.path.join(r['base'], res['destino'])
+    return dict(ancla=ancla, r=r, fd_run=fd_run, registro=registro, res=res,
+                publicado=publicado)
+
+
+def _auditar_integridad(ctx):
+    """Auditoría EXTERNA de integridad: lee el registro del directorio
+    publicado, RECALCULA los SHA-256 de los artefactos publicados por ruta y
+    los compara con los almacenados; contrasta además el inodo publicado con
+    el registrado (coherencia, NO autenticidad)."""
+    publicado = ctx['publicado']
+    rec = json.load(open(os.path.join(publicado, 'publicacion_6g1.json'),
+                         encoding='utf-8'))
+    recalculados, comparacion = {}, {}
+    for clave, nombre in _MAPA_ARTEFACTOS.items():
+        sha_r = sha_archivo_por_ruta(os.path.join(publicado, nombre))
+        recalculados[clave] = sha_r
+        comparacion[clave] = dict(
+            almacenado=rec['artefactos'][clave], recalculado=sha_r,
+            coincide=sha_r == rec['artefactos'][clave])
     st_ext = os.lstat(publicado)
-    rec_leido = json.load(open(os.path.join(publicado,
-                                            'publicacion_6g1.json'),
-                               encoding='utf-8'))
-    auditoria = dict(
-        ino_publicado=st_ext.st_ino, ino_en_registro=rec_leido['provisional']['ino'],
-        coincide=st_ext.st_ino == rec_leido['provisional']['ino'],
-        registro_viajo_con_el_inodo=True,
+    return dict(
+        registro_leido_del_publicado=True,
+        sha_recalculados=recalculados,
+        comparacion=comparacion,
+        integridad_coincide=all(c['coincide']
+                                for c in comparacion.values()),
+        ino_publicado=st_ext.st_ino,
+        ino_en_registro=rec['provisional']['ino'],
+        inodo_coincide=st_ext.st_ino == rec['provisional']['ino'],
         contenido_publicado=sorted(os.listdir(publicado)))
-    # manipulación por la MISMA uid (declarada NO inmutable)
-    mismo_uid = dict(
-        puede_reescribir_registro=True,
-        demostracion='la misma uid puede reescribir publicacion_6g1.json '
-                     '(propietario del árbol): el registro NO es evidencia '
-                     'inmutable frente a la misma uid')
-    with open(os.path.join(publicado, 'publicacion_6g1.json'), 'w',
-              encoding='utf-8') as f:
-        rec_leido['provisional']['ino'] = 1
-        json.dump(rec_leido, f)
-    mismo_uid['reescribiendo'] = json.load(
-        open(os.path.join(publicado, 'publicacion_6g1.json'),
-             encoding='utf-8'))['provisional']['ino'] == 1
-    os.close(fd_run)
-    os.close(ancla['fd_padre'])
-    ok = (res['exito'] and b2['coincide'] and auditoria['coincide']
-          and auditoria['registro_viajo_con_el_inodo']
-          and mismo_uid['puede_reescribir_registro']
-          and mismo_uid['reescribiendo'])
-    limpiar(r['raiz'])
+
+
+def escenario_g1(work, outdir):
+    """G1: evidencia forense — registro ANTES de publicar (viaja con el
+    inodo); verificación EFECTIVA de integridad: publicar -> leer registro ->
+    recalcular SHA-256 publicados -> comparar -> PASS al coincidir; escenario
+    INDEPENDIENTE con alteración deliberada -> la auditoría detecta la
+    discrepancia; el registro NO es inmutable frente a la misma uid
+    (rectificación Cris)."""
+    resultados = {}
+    # (a) ciclo completo: publicar -> leer registro -> recalcular -> comparar
+    ctx = _publicar_con_registro(work, 'G1a')
+    st_final = fstatat_nofollow(ctx['ancla']['fd_padre'],
+                                ctx['res']['destino'])
+    b2 = dict(coincide=bool(st_final)
+              and (st_final.st_dev, st_final.st_ino)
+              == (ctx['ancla']['identidad']['dev'],
+                  ctx['ancla']['identidad']['ino']))
+    aud = _auditar_integridad(ctx)
+    resultados['a_publicar_leer_recalcular_comparar'] = dict(
+        publicacion=dict(exito=ctx['res']['exito'],
+                         destino=ctx['res']['destino']),
+        reverificacion_b2=b2,
+        auditoria_integridad=aud,
+        veredicto_auditoria='PASS' if (aud['integridad_coincide']
+                                       and aud['inodo_coincide'])
+        else 'FAIL')
+    # (b) escenario INDEPENDIENTE: alterar deliberadamente un artefacto
+    #     publicado (misma uid, post-publicación: residual declarado) ->
+    #     la auditoría DETECTA la discrepancia
+    ctx2 = _publicar_con_registro(work, 'G1b')
+    with open(os.path.join(ctx2['publicado'], 'analysis.json'), 'ab') as f:
+        f.write(b'\nALTERACION DELIBERADA POST-PUBLICACION\n')
+    aud2 = _auditar_integridad(ctx2)
+    resultados['b_alteracion_detectada'] = dict(
+        alteracion_aplicada='analysis.json publicado: bytes añadidos '
+                            'post-publicación (misma uid)',
+        auditoria_integridad=aud2,
+        veredicto_auditoria=('DISCREPANCIA_DETECTADA'
+                             if not aud2['integridad_coincide']
+                             else 'PASS (INESPERADO)'),
+        detalle_discrepancia={k: v['coincide']
+                              for k, v in aud2['comparacion'].items()})
+    # (c) el registro NO es inmutable frente a la misma uid (declaración
+    #     mantenida; sin garantías de autenticidad)
+    ruta_reg = os.path.join(ctx2['publicado'], 'publicacion_6g1.json')
+    rec3 = json.load(open(ruta_reg, encoding='utf-8'))
+    with open(ruta_reg, 'w', encoding='utf-8') as f:
+        rec3['provisional']['ino'] = 1
+        json.dump(rec3, f)
+    reescribiendo = json.load(open(ruta_reg,
+                                   encoding='utf-8'))['provisional']['ino'] == 1
+    resultados['c_registro_no_inmutable'] = dict(
+        misma_uid_reescribio_registro=reescribiendo,
+        declaracion='el registro es evidencia de auditoría con coherencia '
+                    'verificable (inodo-vs-registro, SHA-256-vs-publicado); '
+                    'NO es inmutable frente a la misma uid (demostrado) y NO '
+                    'posee garantías de autenticidad; es fiable frente a '
+                    'otra uid (0700 del euid)')
+    for ctx_x in (ctx, ctx2):
+        os.close(ctx_x['fd_run'])
+        os.close(ctx_x['ancla']['fd_padre'])
+    ok = (resultados['a_publicar_leer_recalcular_comparar']
+          ['publicacion']['exito']
+          and b2['coincide']
+          and resultados['a_publicar_leer_recalcular_comparar']
+          ['veredicto_auditoria'] == 'PASS'
+          and resultados['b_alteracion_detectada']['veredicto_auditoria']
+          == 'DISCREPANCIA_DETECTADA'
+          and reescribiendo)
+    limpiar(ctx['r']['raiz'])
+    limpiar(ctx2['r']['raiz'])
     return nuevo(
-        'G1', 'Evidencia forense de publicación: registro escrito por fd_run '
-        'ANTES del renombrado (viaja con el inodo), verificación externa '
-        'post-B2 y límite frente a la misma uid',
-        'Que el registro no pertenezca a la corrida acreditada, no se '
-        'conserved ante aborto o no sea verificable; y no presentar como '
-        'inmutable un registro modificable por la misma uid.',
+        'G1', 'Evidencia forense de publicación con verificación EFECTIVA de '
+        'integridad: registro escrito por fd_run ANTES del renombrado (viaja '
+        'con el inodo), auditoría externa que RECALCULA los SHA-256 de los '
+        'artefactos publicados y compara, detección de alteración '
+        'deliberada, y límite frente a la misma uid',
+        'Que el registro no pertenezca a la corrida acreditada, que una '
+        'alteración del contenido publicado pase inadvertida, o presentar '
+        'como inmutable/auténtico un registro modificable por la misma uid.',
         ['comportamiento_permitido_por_diseno',
-         'limitacion_declarada_evidencia_frente_a_misma_uid'], dict(
-             registro=registro, publicacion={k: v for k, v in res.items()
-                                             if k != 'pasos'},
-             reverificacion_b2=b2, auditoria_externa=auditoria,
-             misma_uid=mismo_uid),
+         'limitacion_declarada_evidencia_frente_a_misma_uid'], resultados,
         extra=dict(veredicto='PASS' if ok else 'REVIEW',
                    registro_en_aborto='ante aborto, el registro forense es '
                                       'ABORT_6G1.json (D2), escrito por '
@@ -976,7 +1271,11 @@ def escenario_g1(work, outdir):
                                    'es fiable frente a otra uid; frente a la '
                                    'MISMA uid es TAMPERABLE (demostrado) -> '
                                    'evidencia de auditoría con coherencia '
-                                   'lstat-vs-registro, NO inmutabilidad'))
+                                   'verificable (inodo-vs-registro, '
+                                   'SHA-256-vs-publicado), SIN garantías de '
+                                   'autenticidad ni inmutabilidad; la '
+                                   'detección de discrepancias no identifica '
+                                   'al autor ni impide la alteración'))
 
 
 def main():

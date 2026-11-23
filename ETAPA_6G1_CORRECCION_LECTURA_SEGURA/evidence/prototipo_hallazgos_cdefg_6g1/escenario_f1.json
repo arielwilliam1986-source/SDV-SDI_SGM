@@ -1,32 +1,51 @@
 {
- "amenaza": "Que queden descriptores residuales, se cierren dos veces o se cierren mientras una biblioteca los usa.",
+ "amenaza": "Que queden descriptores residuales, se cierren dos veces, se cierren en orden incorrecto, se cierren mientras una biblioteca los usa, o que un fallo tardío deje recursos abiertos.",
  "clasificacion": [
   "comportamiento_permitido_por_diseno"
  ],
+ "demostrado_por_prototipo": "fd_candidates creado (mkdir+openat) y cerrado en posición correcta; 3 fds de archivo individuales (wav/json/log); fallo tras abrir CINCO recursos con cierre completo de los mismos; orden inverso exacto (archivos -> fd_candidates -> fd_masks -> fd_run -> fd_padre); sin cierre prematuro (la biblioteca usa su dup y el fd del motor queda válido después; el WAV conserva sus frames antes del cierre); 0 residuales medidos por /proc/self/fd",
  "escenario": "F1",
- "orden_propuesto": "archivos -> subdirectorios (fd_masks, fd_candidates) -> fd_run -> fd_padre; integración: registrar en el mismo registro que usa preparar_aborto_6g1 (cerrar_recursos_corrida_6g1 ampliado) y en el cierre normal acreditado",
+ "pendiente_de_integracion_en_motores": "el ciclo REAL de los motores NO queda validado aquí: la integración exige que cada motor registre sus descriptores en este registro en sus tres caminos (éxito/excepción/interrupción) junto a preparar_aborto_6g1 (cerrar_recursos_corrida_6g1 ampliado) y el cierre acreditado normal; se validará con RG-FLOW por motor (pendiente de autorización)",
  "resultado": {
-  "a_cierre_exacto": {
+  "a_ciclo_completo": {
    "cierres_duplicados": 0,
+   "fds_archivo_validos_tras_biblioteca": true,
    "fds_residuales": [],
    "frames_wav_antes_del_cierre": 44100,
    "orden_cerrados": [
+    "log",
+    "json",
     "wav",
+    "fd_candidates",
     "fd_masks",
     "fd_run",
     "fd_padre"
+   ],
+   "recursos_registrados": [
+    "fd_padre",
+    "fd_run",
+    "fd_masks",
+    "fd_candidates",
+    "wav",
+    "json",
+    "log"
    ]
   },
-  "b_construccion_parcial": {
+  "b_fallo_tras_varios_recursos": {
    "cerrados": [
+    "wav",
+    "fd_candidates",
+    "fd_masks",
     "fd_run",
     "fd_padre"
    ],
-   "error": "FileNotFoundError ([Errno 2] No such file or directory: 'candidates')",
-   "fds_residuales": []
+   "error": "FileExistsError ([Errno 17] File exists: 'analysis.json')",
+   "fds_residuales": [],
+   "recursos_abiertos_al_fallar": 5,
+   "symlink_precolocado_conservado": true
   }
  },
  "schema": "prototipo-cdefg-1/1",
- "titulo": "Ciclo de vida de descriptores: cierre EXACTO una vez, sin cierre prematuro mientras la biblioteca usa el objeto, y fallo en construcción parcial",
+ "titulo": "Ciclo de vida de descriptores: fd_candidates creado correctamente, descriptores de archivos individuales, fallo después de abrir varios recursos, cierre EXACTO en orden inverso, sin cierre prematuro y 0 residuales",
  "veredicto": "PASS"
 }
