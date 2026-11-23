@@ -1,0 +1,52 @@
+{
+ "schema": "rect-doc-rgflow-manifest/1",
+ "fecha": "2026-11-23T19:26:15Z",
+ "rama": "arena/f1c5739f-sdv-sdi-sgm",
+ "commit_padre": "28b91187dda1bd79b701970fdede87641044acae",
+ "referencia_produccion": "9fedc5b223444e73955d2b899b6a434b0f5c670e",
+ "instruccion": "Cris 22-11-2026: RECTIFICACION DOCUMENTAL DEL DISENO RG-FLOW (A alcance G1/MQR, B receta EVO, C TOCTOU autotest T7)",
+ "autorizacion": "exclusivamente lectura, analisis y modificacion de documentos de diseno; prohibido implementar, ejecutar motores/RG-FLOW, audio real, Android/Termux, integrar, modificar main",
+ "rectificaciones": {
+  "A": "G1 permanece limitado a analysis.json + mix SDV.wav (nombres H/EVO); NO equiparar SDV.wav (MQR L2115/L2120) con mix SDV.wav; G1 sin ampliar ni reescribir; FLOW-6 separado por motor: MQR valida publicacion/identidad/colisiones SIN enunciados G1; tres matrices explicitamente distintas (R-22)",
+  "B": "EVO resuelto POR CODIGO: rama if args.manifest L2358-2391 sin input(); interactivo excluyente L2392-2395 (interactive_collect_inputs L518-540); load_manifest L488-515 (claves documentadas); receta: python MOTOR_SEP_SDV-SDI_EVO.py --mode full_processing --manifest <json> --out <base>; EOFError->EXIT_VALIDATION L2396-2398; verificacion empirica = primer paso futuro; MQR BLOQUEADO (--mode obligatorio: L3763 + _interactive_mode L3727-3735 prompta)",
+  "C": "TOCTOU reconocido: lstat previo + open por ruta NO elimina la ventana; solucion documentada RG-FLOW 6b: identidad atestiguada por la corrida (run_experiment hoy devuelve solo ruta, CV-B L2368-2375; adaptacion futura sin ampliar G1) -> UNA apertura por ruta O_NOFOLLOW -> fstat vs identidad atestiguada (distinta = fail-closed) -> apertura de analysis.json relativa al descriptor (dir_fd, O_NOFOLLOW) -> fstat del archivo -> lectura desde el descriptor sin re-resolver la ruta; limites declarados (acotada por identidad, no prevencion del ciclo, misma uid post-return residual B1)"
+ },
+ "entregables": {
+  "modificados": [
+   "DISENO_RG_FLOW_6G1.md (precondiciones por motor, FLOW-1, FLOW-6 separado, 6b lectura segura T7, matriz de exigencia con estados)",
+   "REGISTRO_RIESGOS_6G1.md (R-08 TOCTOU, R-14 parcialmente resuelto EVO/MQR, R-21 nuevo, R-22 nuevo, consolidado actualizado)"
+  ],
+  "nuevos": [
+   "INFORME_RECTIFICACION_DOCUMENTAL_RG_FLOW_6G1.md",
+   "MANIFEST_RECT_DOC_RG_FLOW_6G1.json",
+   "SHA256SUMS_RECT_DOC_RG_FLOW_6G1.txt"
+  ],
+  "historicos_intactos": "informes anteriores, matriz, prototipos, evidencias: sin modificacion ni eliminacion",
+  "produccion": "CERO cambios (motores, lectura_segura_6g1.py, DSP, formulas, fixtures, validadores byte a byte identicos); main sin tocar"
+ },
+ "flujos": {
+  "habilitados": "Hardened FLOW-1..8 (autorizacion pendiente); EVO FLOW-1..8 (receta por codigo, verificacion empirica como primer paso)",
+  "bloqueados": "MQR FLOW-1..8 (R-14-MQR)"
+ },
+ "no_resueltos": [
+  "R-14-MQR receta",
+  "atestacion (dev,ino) para T7 (run_experiment devuelve solo ruta)",
+  "R-11, R-12, R-13, R-15, R-18, R-05/R-06",
+  "ejecucion integra de RG-FLOW"
+ ],
+ "estado": "rectificacion documental para adjudicacion de Cris; NO implementado; 6G.1 ABIERTA; parada obligatoria",
+ "archivos": [
+  {
+   "ruta": "ETAPA_6G1_CORRECCION_LECTURA_SEGURA/DISENO_RG_FLOW_6G1.md",
+   "sha256": "c9726c16d5715d92e7d1100678f108a1e7c4facdeb1d76b4c4fcb9d2efa083c3"
+  },
+  {
+   "ruta": "ETAPA_6G1_CORRECCION_LECTURA_SEGURA/REGISTRO_RIESGOS_6G1.md",
+   "sha256": "70179c9b6728133d326c452f5595cb8999cf0a09a61b631fe56a04ac01521b71"
+  },
+  {
+   "ruta": "ETAPA_6G1_CORRECCION_LECTURA_SEGURA/INFORME_RECTIFICACION_DOCUMENTAL_RG_FLOW_6G1.md",
+   "sha256": "731cc44a116d63d6c18d9a13438dbd5484495138d41cfc7392f5bf3160483b97"
+  }
+ ]
+}
