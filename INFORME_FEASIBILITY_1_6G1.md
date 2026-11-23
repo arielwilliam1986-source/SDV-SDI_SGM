@@ -1,119 +1,124 @@
-# FEASIBILITY-1 (6G.1) — VALIDACIÓN EMPÍRICA AISLADA DE LOS MECANISMOS DEL PLAN HARDENED v2.3
+# FEASIBILITY-1 (6G.1) — VALIDACIÓN EMPÍRICA AISLADA — v2 (RECTIFICACIÓN FEASIBILITY-1-R1)
 
 - **Destinatario:** Cris (ChatGPT), responsable técnico y adjudicador. **Agente ejecutor:** Arena.
-- **Naturaleza:** fase de **validación empírica aislada** de los mecanismos propuestos en el plan v2.3. **NO implementa ni integra** el diseño en los motores. Cero modificaciones de producción; cero ejecución de motores; cero audio real; cero Android/Termux; cero FLOW-5..8; cero EVO/MQR; cero `main`; sin merge ni cherry-pick; PR #2 intacto.
-- **Fecha de ejecución:** 2026-11-23 (ts de la corrida final: `2026-11-23T23:01:31Z`).
-- **Rama:** `arena/f1c5739f-sdv-sdi-sgm`.
+- **Naturaleza:** validación empírica **aislada** de los mecanismos del plan v2.3. **NO implementa ni integra** el diseño en los motores. Cero modificaciones de producción; cero ejecución de motores; cero audio real; cero Android/Termux; cero FLOW-5..8; cero EVO/MQR; cero `main`; sin merge ni cherry-pick; PR #2 intacto.
+- **Historial:** v1 de este informe + arnés publicados en `a94f50793dfa97bb7074bb3e20fe2d42c3306596` (hijo de `2274862…`). **v2 = rectificación FEASIBILITY-1-R1** (hijo directo de `a94f507…`): sólo los dos archivos autorizados (`scripts/arnes_feasibility_1_6g1.py` y este informe). Los resultados de la ejecución anterior **se conservan íntegros en §10** (sin borrar ni ocultar).
+- **Corrida final R1:** ts `2026-11-23T23:18:18Z` (run A) + corrida de reproducibilidad `23:18:31Z` aprox (run B, `--raiz /tmp/feas1_6g1_b`).
 
 ---
 
 ## 1. Commit padre exacto
 
-`22748622830d1579d7814c51b1f048c58b121110` — verificado ANTES de trabajar: local = origin = `gh api` = `2274862…` CONFORME, árbol limpio.
+- **FEASIBILITY-1 (v1):** `22748622830d1579d7814c51b1f048c58b121110` (verificado local = origin = `gh api`).
+- **FEASIBILITY-1-R1 (esta fase):** `a94f50793dfa97bb7074bb3e20fe2d42c3306596` — verificado ANTES de trabajar: local = origin = `gh api` = `a94f507…` CONFORME, árbol limpio.
 
 ## 2. Commit final y archivos modificados
 
-- **Commit de esta fase:** hijo directo de `2274862…`; SHA completo declarado en el informe de entrega (un commit no puede contener su propio hash) y verificable vía `git`/`gh api`.
-- **Archivos del commit (2; nada de producción, según la autorización §6 «únicamente el arnés aislado y su informe de resultados»):**
-  - `ETAPA_6G1_CORRECCION_LECTURA_SEGURA/scripts/arnes_feasibility_1_6g1.py` (A) — arnés aislado; **no importa ni ejecuta** ningún módulo de producción.
-  - `INFORME_FEASIBILITY_1_6G1.md` (A) — este informe.
-- La evidencia JSON cruda (`feas1_f{1..6}.json` + `consolidado_feasibility_1.json`) permanece en el espacio aislado `/tmp/feas1_6g1/evidence/` (efímero por diseño); este informe es el registro y el arnés regenera todo de forma reproducible.
+- **Commit de esta rectificación:** hijo directo de `a94f507…`; SHA completo en el informe de entrega (verificable vía `git`/`gh api`).
+- **Archivos (exactamente los 2 autorizados):**
+  - `ETAPA_6G1_CORRECCION_LECTURA_SEGURA/scripts/arnes_feasibility_1_6g1.py` (M) — arnés rectificado R1..R6.
+  - `INFORME_FEASIBILITY_1_6G1.md` (M) — este informe.
+- Evidencia JSON cruda: `/tmp/feas1_6g1/evidence/feas1r1_f{1..6}.json` + `consolidado_feasibility_1_r1.json` (run A) y `/tmp/feas1_6g1_b/evidence/…` (run B, reproducibilidad). El arnés regenera todo.
 
-## 3. Entorno
+## 3. Entorno y versiones exactas
 
-| Componente | Valor observado |
+| Componente | Valor |
 |---|---|
-| Plataforma | `Linux-6.1.158+-x86_64-with-glibc2.36` (sandbox Arena; euid 1001, single-uid) |
+| Plataforma | `Linux-6.1.158+-x86_64-with-glibc2.36` (sandbox Arena; euid 1001) |
 | Kernel | `6.1.158+` (x86_64) |
 | Python | `3.11.2` (`/tmp/venv_i1/bin/python`) |
 | numpy | `1.26.4` |
 | soundfile | `0.13.1` (libsndfile `1.2.2`) |
-| glibc | 2.36 (con símbolo `renameat2` disponible) |
+| glibc | 2.36 (símbolo `renameat2` disponible) |
 
-**No se extrapola a Android/Termux ni a ningún otro entorno:** los veredictos son válidos para ESTE entorno y estas condiciones.
+Veredictos válidos para ESTE entorno y condiciones; sin extrapolación a Android/Termux ni a otros entornos.
 
-## 4. Comandos y procedimientos reproducibles
+## 4. Comando reproducible
 
 ```
-# venv (si el sandbox lo limpia):
-python3 -m venv /tmp/venv_i1 && /tmp/venv_i1/bin/pip install numpy==1.26.4 scipy==1.13.1 soundfile==0.13.1
-# corrida completa (F1..F6):
 /tmp/venv_i1/bin/python -B ETAPA_6G1_CORRECCION_LECTURA_SEGURA/scripts/arnes_feasibility_1_6g1.py --raiz /tmp/feas1_6g1
-# corrida parcial (p. ej. sólo F5):
-/tmp/venv_i1/bin/python -B ETAPA_6G1_CORRECCION_LECTURA_SEGURA/scripts/arnes_feasibility_1_6g1.py --raiz /tmp/feas1_6g1 --pruebas F5
+/tmp/venv_i1/bin/python -B ETAPA_6G1_CORRECCION_LECTURA_SEGURA/scripts/arnes_feasibility_1_6g1.py --raiz /tmp/feas1_6g1_b   # reproducibilidad
 ```
 
-El arnés (`--pruebas F1..F6`) ejecuta experimentos independientes en subdirectorios limpios de `/tmp/feas1_6g1/f{1..6}/`, con `-B`, sin importar código de producción, y emite JSON por prueba + consolidado. Procedimiento por prueba (resumen; detalle exacto en el código, que es el procedimiento):
+## 5. Fixtures sintéticos (sin cambios de fondo; una corrección metodológica en F3)
 
-- **F1 (R-13):** base acreditada (`O_DIRECTORY|O_NOFOLLOW`+fstat) → `candidates/` creado con `mkdir(dir_fd)` y abierto/acreditado → dos grupos de DOS niveles creados/apiertos componente a componente (`individual_gp01`, `consensus_confidence_weighted_mean`) con fstat y archivo vía `openat O_EXCL` → descenso por `listdir(fd)+lstat(dir_fd)` clasificando tipos → symlink con objetivo real existente + archivo suelto como inesperados → sustitución misma-uid del nombre de un grupo (rename+recrear) y comparación identidad del fd vs lstat del nombre → cierre ordenado (grupos→candidates→base) y comprobación de fugas por `stat` directo de `/proc/self/fd/N`.
-- **F2 (R-29):** disponibilidad de `/proc/self/fd` → el magic-link designa el objeto del fd (fstat igual; lectura igual) → el objeto sigue vivo tras `unlink` del nombre nominal → tras cerrar el fd el magic-link desaparece (ENOENT) → alternativa sin procfs: cabecera `.npy` con `np.lib.format.write_array_header_1_0` sobre `os.fdopen(fd,'r+b')` + `np.memmap(file object, mode='r+', offset, shape)` + verificación de identidad y contenido.
-- **F3 (R-34):** escritor WAV por descriptor (`closefd=False`) → identidad antes/después → lector por descriptor (formato auto-detectado) con verificación de frames/canales → comportamiento observado con `closefd=True` (el fd propio queda cerrado por libsndfile) → `open_memmap` vía `/proc/self/fd/<fd retenido>` con verificación de identidad y valor → snapshot final de fds.
-- **F4 (P-08/R-28):** `masks/` abierto por descriptor → el nombre nominal sustituido por symlink NO redirige las operaciones por fd (contenido vía fd intacto) → `unlinkat` de entradas relativas a `fd_masks` → errores documentados (ENOENT, ENOTEMPTY) → `rmdir` relativo al padre cuando vacío → symlink sustituto intacto y no seguido.
-- **F5 (R-D):** disponibilidad de `renameat2` (glibc; la sonda con nombres inexistentes devuelve ENOENT = syscall ejecutada) → publicación `renameat2(fd_padre, 'prov', fd_padre, 'final', RENAME_NOREPLACE)` + `fstat(fd_pub)` == identidad registrada → colisión → EEXIST con destino intacto → sustitución de la entrada origen (mismo-uid): el impostor es renombrado y **detectado** por `fstat(fd_pub) != identidad` (R-31 observado); el real sigue localizable por su descriptor → real movido fuera del padre: ENOENT y el fd del real sobrevive.
-- **F6 (cierre):** apertura en orden del plan (anclas→log→2 writers→2 memmaps→2 lectores; 9 fds) → anclas conservadas (fstat) durante las comprobaciones → cierre en orden P-08 (writers→memmaps→lectores→aux→anclas en orden inverso de apertura) con verificación por etapas del desaparecimiento de fds → cero residuos.
+- WAV: ruido blanco PRNG (`20261122` F3; `19480720` F6), 0.30, estéreo, PCM_16, 44100/8000 Hz. **F3 v2:** la señal se recorta a `[-0.999, 0.999]` ANTES de escribir (justificación: libsndfile **recorta** muestras float >1.0 al convertir a PCM_16 — observado en la rectificación, §9.2); el esperado de la comparación es la señal recortada.
+- NPY float32 `(1024,2048)` / `(256,512)` con valores sembrados; payloads ASCII. Cero audio real.
 
-## 5. Fixtures sintéticos utilizados
+## 6. Correcciones R1..R6 aplicadas al arnés
 
-- WAV sintético: ruido blanco PRNG (`np.random.default_rng(20261122)` en F3; `19480720` en F6), amplitud 0.30, 44100 Hz (F3) / 8000 Hz (F6), estéreo, `PCM_16` (escritura por descriptor), 1 s.
-- NPY sintéticos: `float32`, formas `(1024,2048)` (F3), `(256,512)` (F2/F6), con valores sembrados y verificados por re-lectura.
-- Payload ASCII `payload-feas1` (F2), archivos `dato.txt`/`salida.wav`/`sentinela.txt` de contenido sintético (F1/F4/F5).
-- Ningún audio real; fixtures 100 % sintéticos y aislados de los archivos de producción.
+| ID | Corrección | Implementación |
+|---|---|---|
+| **R1** | Agregación real de veredictos | cada subpaso lleva `obligatorio=True/False` + booleano; `_agregar_veredicto` calcula el veredicto global: PASS ⇔ 0 obligatorios fallidos; excepción inesperada ⇒ FAIL (capturada con traceback); UNKNOWN sólo con condición explícita (F2 procfs ausente; F5 renameat2 indisponible). `obligatorios_fallidos` queda registrado en cada JSON. |
+| **R2** | Cierre y contabilización | clase `Ledger`: TODOS los `os.open` pasan por `led.abrir(etiqueta, fd, tipo)` — tipos `propio` / `duplicado` / `fdopen_cierra` / `biblioteca_cierra`; cierres por `led.cerrar` o `led.marcar_cerrado`; verificación final por `os.stat('/proc/self/fd/N')` directo (sin fd de listado) de CADA descriptor registrado; paso obligatorio `cierre_y_verificacion_de_todos_los_fds` en F2..F6 y `cierre_ordenado_y_sin_fugas` en F1. |
+| **R3** | F2 separado | Parte A (procfs: 3 subpasos obligatorios) sólo si `/proc/self/fd` está montado; si no, condición UNKNOWN explícita. Parte B (variante sin procfs) se ejecuta SIEMPRE bajo **guardián runtime**: `os.open/os.stat/os.listdir` parcheados para rechazar cualquier ruta `/proc/self/fd`; subpaso obligatorio `B_variante_sin_consultar_procfs_guardian` registra si el guardián disparó. Escenario «procfs realmente ausente» registrado como NO reproducible (subpaso no obligatorio, ok=False, declarado en evidencia). |
+| **R4** | F3 contenido | comparación muestra a muestra contra la señal esperada (recortada) con tolerancia **1 LSB PCM_16 = 1/32768** (justificada: redondeo ≤ medio LSB = 1/65536; cota conservadora); `max_abs_diff` registrado; se mantienen `closefd=False` (identidad antes/después) y el comportamiento observado de `closefd=True` (EBADF). |
+| **R5** | F4 en escenarios | **A: limpieza nominal v2.3** (masks con 3 entradas → `unlinkat` vía `fd_masks` → `rmdir` vía descriptor del PADRE acreditado — `fd_dir` asume el rol de `fd_pub`, declarado en la evidencia); **B: sustitución por symlink** (el nombre `masks2` → symlink a directorio AJENO: rmdir sobre el nombre falla seguro y el ajeno queda intacto; apertura O_NOFOLLOW rechaza; el real retenido por `fd_masks2` no se redirige; eliminación por fd del real; unlinkat del enlace elimina EL ENLACE, no el destino); **C: errores** (ENOTEMPTY, ENOENT). Ya no se presenta `masks_real` como equivalente de la secuencia nominal. |
+| **R6** | Coherencia F1/F5 | F1: el descenso valida identidades (`identidades_validadas` obligatorio) y las entradas inesperadas se clasifican contra el conjunto exacto esperado. F5: los 4 controles (publicación, colisión, sustitución, fuera-del-padre) + disponibilidad + cierre son obligatorios. R-31 conservado como observación («la detección es POST-rename; NO es garantía de publicación atómica»). |
 
-## 6. Resultado individual PASS / FAIL / UNKNOWN
+## 7. Resultados R1 — subpasos individuales y veredictos globales calculados
 
-| Prueba | Riesgo/mecanismo | Veredicto | Sub-pasos |
-|---|---|---|---|
-| **F1** | R-13 (subdirectorios dos niveles por descriptores) | **PASS** | 9/9 ok (creación/acreditación candidates y grupos; descenso sin rutas; symlink rechazado; sustitución detectada por identidad; inesperados clasificados; cierre sin fugas) |
-| **F2** | R-29 (procfs + alternativa sin procfs) | **PASS** | 5/5 ok (magic-link designa objeto; vivo tras unlink; desaparece al cerrar; alternativa np.memmap(fileobj) viable con identidad y contenido verificados) |
-| **F3** | R-34 (soundfile/numpy por descriptor) | **PASS** | 5/5 ok (escritor closefd=False con identidad conservada; lector por fd con contenido esperado; closefd=True cierra el fd propio — observado; open_memmap vía procfs; snapshot) |
-| **F4** | P-08/R-28 (limpieza masks por descriptores) | **PASS** | 7/7 ok (fd no redirigido por symlink; unlinkat completo; ENOENT y ENOTEMPTY documentados; rmdir por descriptor del padre; symlink sustituto intacto) |
-| **F5** | R-D/P-06 (renameat2 dirfd + acreditación post-rename) | **PASS** | 5/5 ok (disponible vía glibc; publicación con identidad verificada; colisión EEXIST sin tocar destino; sustitución origen detectada; real fuera del padre ENOENT con fd sobreviviente) |
-| **F6** | P-08/P-09 (cierre ordenado y fugas) | **PASS** | 8/8 ok (apertura en orden; anclas conservadas; cierre por etapas con desaparición verificada; cero residuos) |
+**Run A (ts `2026-11-23T23:18:18Z`): 45/45 subpasos obligatorios OK · 60 descriptores registrados · 0 residuales · 6/6 PASS. Run B: idéntico 6/6 PASS (reproducibilidad confirmada).** `obligatorios_fallidos=[]` en las 6 pruebas.
 
-**No hay FAIL ni UNKNOWN en el entorno ensayado.** Un FAIL local no sería garantía universal y un PASS local **no se extrapola**: los veredictos valen para el entorno de §3 y las condiciones declaradas.
+**F1 — R-13 → PASS** (9 pasos; 9 obligatorios; 9 fds registrados; 0 residuos): base acreditada → candidates creado/acreditado → 2 grupos dos niveles (identidad fstat) → descenso sin rutas + **identidades validadas** → symlink rechazado (ENOTDIR observado) → inesperados clasificados (`['evil','suelto.txt']`) → sustitución detectada por identidad (fd≠nombre) → cierre ordenado sin fugas.
 
-## 7. Evidencia de los fallos y excepciones (todas documentadas, ninguna silenciada)
+**F2 — R-29 → PASS** (8 pasos; 6 obligatorios; 6 fds; 0 residuos): procfs disponible (no obligatorio) → A: magic-link designa el objeto / vivo tras unlink / desaparece al cerrar (ENOENT) → B: guardián sin disparos (0 consultas procfs) / alternativa con contenido e identidad verificados → `escenario_procfs_realemente_ausente`: **NO reproducible** (no obligatorio; declarado). Veredicto global PASS con procfs presente; si procfs no estuviera montado, la parte A produciría UNKNOWN (condición explícita) y la parte B se ejecutaría igualmente.
 
-Excepciones observadas y registradas (en la corrida final forman parte de sub-pasos ok; en iteraciones previas del arnés provocaron ajustes documentados en §9):
+**F3 — R-34 → PASS** (6 pasos; 6 obligatorios; 7 fds; 0 residuos): escritor por fd `closefd=False` con identidad conservada (`format='WAV'` exigido por fd) → lector por fd (forma 44100×2) → **contenido: `max_abs_diff=3.0514e-05 ≤ 3.0518e-05` (1 LSB PCM_16, cota conservadora)** → `closefd=True` cierra el fd propio (EBADF observado, marcado `biblioteca_cierra`) → open_memmap vía procfs (identidad + valor 3.25) → ledger completo.
 
-| Excepción observada | errno | Dónde | Lectura |
-|---|---|---|---|
-| `NotADirectoryError: Not a directory: 'evil'` | 20 | F1, `open(O_DIRECTORY\|O_NOFOLLOW)` sobre symlink | rechazo garantizado; errno **ENOTDIR** (no ELOOP) con O_DIRECTORY en este kernel |
-| `PermissionError: Permission denied` | 13 | F2, `mmap` sobre fd abierto **O_WRONLY** | mmap ACCESS_WRITE exige fd **O_RDWR** (hallazgo → precisión de diseño) |
-| `OSError: Bad file descriptor` | 9 | F3, `fstat` tras `sf.close()` con `closefd=True` | libsndfile **cierra el fd propio** con closefd=True (el diseño fija closefd=False) |
-| `FileNotFoundError: '/proc/self/fd/6'` | 2 | F2, magic-link tras cerrar el fd | el magic-link vive mientras el fd vive |
-| `TypeError: No format specified…: 14` | — | F3/F6 (iteración previa), SoundFile por fd en **escritura** | por fd **exige `format='WAV'`** (no hay extensión que inferir) |
-| `TypeError: Not allowed for existing files…` | — | F3/F6 (iteración previa), SoundFile por fd en **lectura** | en lectura **no se permite** format/samplerate/channels (auto-detección de cabecera) |
-| `FileExistsError: destino existente: 'final2'` | 17 | F5, colisión | RENAME_NOREPLACE: EEXIST, destino intacto (sentinela verificada) |
-| `FileNotFoundError: 'prov4' -> 'final4'` | 2 | F5, real movido fuera del padre | ENOENT; el descriptor del real sobrevive (identidad verificada) |
-| `FileNotFoundError: 'no_esta.npy'` | 2 | F4, unlink inexistente | ENOENT documentado |
-| `OSError: Directory not empty: 'masks_real'` | 39 | F4, rmdir con contenido | ENOTEMPTY documentado |
+**F4 — P-08/R-28 → PASS** (11 pasos; 11 obligatorios; 11 fds; 0 residuos): A nominal (unlinkat vía `fd_masks` + rmdir vía padre acreditado + verificación de eliminación) → B: rmdir sobre nombre-symlink **falla seguro** (errno 20 observado) y ajeno intacto / apertura O_NOFOLLOW rechaza / real no redirigido / eliminación por fd del real / symlink presente y no seguido / unlinkat del enlace NO del destino / ajeno intacto → C: ENOTEMPTY + ENOENT → ledger.
 
-## 8. Limitaciones y amenazas no cubiertas
+**F5 — R-D → PASS** (6 pasos; 6 obligatorios; 18 fds; 0 residuos): renameat2 disponible → publicación con `fstat(fd_pub)==identidad` → colisión EEXIST con destino intacto → sustitución origen: impostor publicado, **detectado post-rename** (R-31: «NO es garantía de publicación atómica») y real localizable por fd → real fuera del padre: ENOENT con fd sobreviviente → ledger.
 
-1. **Entorno único:** todo veredicto PASS es válido para Linux 6.1.158+/x86_64/glibc 2.36/Python 3.11.2/numpy 1.26.4/soundfile 0.13.1, euid 1001. No se probó Android/Termux, ni kernels sin `renameat2`, ni `/proc` ausente (la variante sin procfs SÍ se probó, F2).
-2. **Atacante same-uid:** los experimentos simulan sustituciones misma-uid controladas; no cubren root, post-return sobre publicados, DoS (disco/renames/fd exhaustion) ni señales.
-3. **R-31 observado empíricamente (F5):** ante sustitución de la entrada origen, el impostor queda renombrado al nombre final; la detección es POST-rename (`fstat(fd_pub)`) — sin esa verificación, el comportamiento sería indetectable.
-4. **R-13:** los experimentos validan el MECANISMO por descriptores en un arnés aislado; la observación NOTORIA (motor real con `candidates/<grupo>/`) sigue pendiente de una fase con motor autorizado — este resultado no la sustituye.
-5. **Fugas:** la ausencia de fugas se verificó para los casos ensayados (F1/F6), no como propiedad general del diseño.
-6. **Rendimiento:** no medido (fuera de alcance de esta fase; R-15 sigue abierto).
+**F6 — cierre → PASS** (7 pasos; 7 obligatorios; 9 fds: 2 anclas, 1 log, 2 writers, 2 memmaps, 2 lectores; 0 residuos): apertura en orden registrada → anclas conservadas → etapas de cierre (writers→memmaps→lectores→log→anclas inversas) verificando **por fd conocido** (stat directo) que cada cierre desaparece y que los demás PERMANECEN.
 
-## 9. Diferencias entre comportamiento documentado (plan v2.3) y comportamiento observado
+## 8. Descriptores abiertos, cerrados y residuos (R2)
 
-Estas diferencias son precisión de diseño, NO contradicciones funcionales; el plan no se modifica en esta fase (quedan registradas para la siguiente adjudicación):
+| Prueba | Registrados (tipos) | Cerrados explícitos | Cerrados por biblioteca/fdopen | Residuos |
+|---|---|---|---|---|
+| F1 | 9 (propios) | 9 | 0 | 0 |
+| F2 | 6 (propios + 1 duplicado) | 4 + fd_dir | 1 (dup→fdopen) | 0 |
+| F3 | 7 (propios + 1 duplicado) | 5 | 1 (dup→fdopen) + 1 (`closefd=True` de libsndfile) | 0 |
+| F4 | 11 (propios) | 11 | 0 | 0 |
+| F5 | 18 (propios) | 18 | 0 | 0 |
+| F6 | 9 (propios; log vía fdopen) | 8 + log | 1 (fdopen) | 0 |
+| **Total** | **60** | — | — | **0** |
 
-1. **soundfile por descriptor en ESCRITURA exige `format='WAV'`** (el plan P-03 no lo explicitaba: `sf.SoundFile(fd, mode='w', …)` sin format eleva TypeError). Precisión: `format='WAV'` + `subtype` obligatorios al escribir por fd.
-2. **soundfile por descriptor en LECTURA NO acepta `format`/`samplerate`/`channels`** (TypeError «Not allowed for existing files»): la lectura por fd auto-detecta el formato de la cabecera — aún más anclado que por ruta.
-3. **`closefd=True` cierra el fd propio del motor** (EBADF observado tras `sf.close()`): confirma que el diseño debe fijar **`closefd=False`** para retener y acreditar el fd (como ya establecía P-03; ahora con evidencia).
-4. **`np.memmap(file object)` exige fd O_RDWR** (EACCES con O_WRONLY): la precisión de P-03 para la variante sin procfs debe especificar `openat(..., O_RDWR)` para los fds destinados a memmap por file object. La variante `open_memmap('/proc/self/fd/N')` NO exige O_RDWR en el fd retenido (numpy abre su propio fd vía magic-link; se verificó).
-5. **El errno de rechazo de symlink con `O_DIRECTORY|O_NOFOLLOW` es ENOTDIR (20) en este kernel**, no ELOOP: el rechazo fail-closed se mantiene (la apertura NUNCA sigue el enlace), pero las condiciones de error documentadas del plan deben citar ENOTDIR como errno observado aquí.
-6. **La verificación de fugas por listado de `/proc/self/fd` produce falsos positivos** (el propio listado abre un fd transitorio que puede reusar un número cerrado): el arnés usó `os.stat('/proc/self/fd/N')` (syscall directo, sin fd). Precisión metodológica para los arneses futuros.
-7. Confirmaciones sin diferencia: identidad (dev,ino) conservada en todas las operaciones por descriptor; magic-link designa el objeto; renameat2 RENAME_NOREPLACE atómico con EEXIST; detección post-rename; orden de cierre verificable por etapas.
+En modo fd, libsndfile opera sobre NUESTRO descriptor (no se observaron fds internos adicionales de biblioteca; la verificación por etapas de F6 lo muestra: cada etapa elimina exactamente sus fds). No se declaran «sin fugas» más allá de los descriptores contabilizados; el ledger de cada prueba exige 0 residuos registrados y su verificación es un subpaso obligatorio.
 
-**Alcance de las veredictos de identidad/hashes:** las identidades comparadas en esta fase fueron pares `(st_dev, st_ino)` por `fstat` y contenidos por re-lectura exacta (F2/F3); **no se calcularon ni compararon SHA-256** (el mecanismo de hash G1 no forma parte de F1..F6) — no se declara verificación de hashes.
+## 9. Excepciones observadas y diferencias documento↔probado
 
-## 10. Declaración expresa
+**9.1 Excepciones observadas en la corrida final** (todas esperadas y documentadas): ENOTDIR(20) open/rmdir sobre symlink-nombre con O_DIRECTORY/O_NOFOLLOW; ENOENT(2) magic-link tras close, real fuera del padre, unlink inexistente, lstat tras rmdir; EEXIST(17) colisión; EBADF(9) fstat tras `sf.close()` con `closefd=True`; ENOTEMPTY(39) rmdir con contenido.
 
-**No se modificó ni ejecutó producción.** El arnés no importa ningún módulo de producción (`motores/`, `lectura_segura_6g1.py`); ningún archivo bajo `motores/` fue tocado (acreditado por `gh api` en el commit: 0 archivos bajo `motores/`); ningún motor fue ejecutado; no hubo audio real, Android/Termux, FLOW-5..8, EVO/MQR, `main`, merge ni cherry-pick; PR #2 intacto; el plan v2.3 y los documentos de adjudicación anteriores NO fueron modificados en este commit.
+**9.2 Fallos del PROPIO arnés detectados por la agregación R1 durante la rectificación** (evidencia de que la metodología corregida funciona; NO son hallazgos sobre producción): (a) F1 v1 registraba `symlink_rechazado ok=False` sin afectar el veredicto (PASS injustificado) — corregido; (b) dup con offset compartido → EOF de `read_array` — corregido con `lseek(0)`; (c) **libsndfile recorta muestras >1.0 en PCM_16** (max_abs_diff 0.416 con fixture sin acotar) — fixture acotado a ±0.999 y comparación contra la señal recortada; (d) doble cierre / fstat tras cerrar (EBADF) por orden de evaluación — corregido; (e) `fd_padre` (F5), `fd_base` (F3/F4) y writers/memmaps/lectores (F6) sin contabilizar/cerrar — corregidos con ledger.
 
-— Fin del informe FEASIBILITY-1. Parada obligatoria: se detiene tras publicar y queda a la espera de la auditoría de Cris.
+**9.3 Diferencias documento↔probado (precisiones para la próxima adjudicación; el plan v2.3 NO se modifica aquí):**
+1. Escritura por fd exige `format='WAV'` (P-03 no lo explicitaba); lectura por fd NO acepta format/samplerate/channels (auto-detección).
+2. `closefd=True` cierra el fd propio (EBADF): el diseño fija `closefd=False` — ahora con evidencia.
+3. `np.memmap(file object)` exige fd **O_RDWR** (EACCES con O_WRONLY); `open_memmap('/proc/self/fd/N')` no lo exige sobre el fd retenido (numpy abre su propio fd por magic-link).
+4. El errno de rechazo de symlink es **ENOTDIR (20)** en este kernel (no ELOOP); el rechazo fail-closed se mantiene.
+5. **libsndfile recorta a ±1.0 en PCM_16**: para la fase de implementación, los fixtures/validaciones de contenido deben acotar el rango.
+6. Un `os.dup` comparte offset con el original: cualquier relectura por duplicado debe rebobinar (o usar `pread`).
+7. La detección de fugas por listado de `/proc/self/fd` produce falsos positivos (fd transitorio del listado): el ledger usa `os.stat` por fd conocido.
+8. Confirmaciones sin diferencia: identidad (dev,ino) conservada en todas las operaciones por descriptor; magic-link designa el objeto; RENAME_NOREPLACE atómico (EEXIST); detección post-rename (R-31); orden de cierre verificable por etapas.
+
+**9.4 Separación evidencia observada vs deducción:** lo OBSERVADO son los subpasos de §7 con sus valores (identidades `(dev,ino)`, errno, max_abs_diff, disparos del guardián, etapas de cierre). Son DEDUCCIÓN (y se etiquetan como tales): la generalización a entornos no probados, la ausencia de fugas «en general», y cualquier afirmación del plan no ejercitada aquí (hashes G1, compuertas del motor real, R-13 con motor).
+
+## 10. Trazabilidad de la ejecución anterior (a94f507) — conservada
+
+La corrida v1 (ts `2026-11-23T23:01:31Z`, commit `a94f507`) produjo **6/6 PASS** con la metodología v1: F1 (9 pasos) · F2 (5) · F3 (5) · F4 (7) · F5 (5) · F6 (8). Sus resultados **no se retiran**: se reevalúan bajo la metodología R1, que identificó estas deficiencias metodológicas (corregidas en v2): veredictos no agregados sobre todos los subpasos obligatorios (p. ej. F1 `symlink_rechazado ok=False` no impedía PASS); ledger de descriptores incompleto (fds auxiliares sin registrar: `fd_base` en F3/F4, `fd_padre` en F5; writers/memmaps/lectores cerrados sin actualizar el ledger en F6); F2 dependía de procfs para ejecutar la variante alternativa sin guardián; F3 verificaba sólo forma, no contenido; F4 presentaba `masks_real` como equivalente de la secuencia nominal. La evidencia v1 (`/tmp/feas1_6g1/evidence/feas1_f*.json`) fue regenerada por la corrida R1 en el mismo arnés (los JSON v1 no se conservan en disco; sus resultados quedan registrados en este informe y en el commit a94f507).
+
+## 11. Limitaciones y escenarios no reproducidos
+
+1. **Escenario «procfs realmente ausente»: NO reproducible en este sandbox** (procfs montado). Lo probado es el mecanismo B SIN CONSULTAR procfs (guardián runtime), que **NO equivale** a ejecutar con procfs ausente (R3). Este escenario queda UNKNOWN/declarado, no PASS.
+2. Entorno único (Linux 6.1.158+/x86_64/glibc 2.36); no Android/Termux, no kernels sin `renameat2`, no euid≠1001.
+3. Atacante same-uid simulado en ventanas controladas; no root, no post-return sobre publicados, no DoS, no señales.
+4. R-13: el MECANISMO por descriptores pasa en el arnés; la observación con motor real (`candidates/<grupo>/`) sigue pendiente de fase autorizada.
+5. Rendimiento no medido (R-15). Hashes G1 no ejercitados aquí (mecanismo de P-05, fuera de F1..F6) — no se declara verificación de hashes.
+6. F4 asimilación declarada: `fd_dir` de la prueba juega el rol de `fd_pub` del plan (no hay publicación real en F4).
+
+## 12. Declaración expresa
+
+**No se modificó ni ejecutó producción.** El arnés no importa ningún módulo de producción; `gh api` del commit acredita 0 archivos bajo `ETAPA_6G1_CORRECCION_LECTURA_SEGURA/motores/` y que sólo los 2 archivos autorizados cambiaron; `lectura_segura_6g1.py` intacto; ningún motor ejecutado; cero audio real, Android/Termux, FLOW-5..8, EVO/MQR, `main`, merge/cherry-pick; PR #2 intacto; el plan v2.3 y los documentos de adjudicación anteriores sin cambios. **No se declara verificación de hashes G1** (no formó parte de F1..F6); las identidades comparadas son `(st_dev, st_ino)` por `fstat` y contenidos por re-lectura exacta.
+
+— Fin del informe FEASIBILITY-1-R1. Parada obligatoria: publicado y detenido a la espera de la adjudicación de Cris. Esta fase valida mecanismos aislados; NO autoriza implementación, integración ni ejecución de motores.
