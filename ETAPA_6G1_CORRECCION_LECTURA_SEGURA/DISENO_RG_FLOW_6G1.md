@@ -67,10 +67,24 @@ Contexto: T7 (`run_self_test`, def L3419) relee `analysis.json` del directorio p
 5. **Verificación del archivo abierto:** `fstat(fd_file)`: regular, no-symlink, propiedad del euid; si existe referencia de identidad/hash atestiguada por la corrida, contrastarla; si no, el contraste se limita a tipo/propiedad (declarado).
 6. **Lectura desde el descriptor verificado:** `os.read`/`os.fdopen(os.dup(fd_file))` — sin re-resolver la ruta nominal en ningún punto posterior.
 
+**Identidad frente a integridad (rectificación final — precisión obligatoria):** los tres conceptos son DISTINTOS y no deben confundirse:
+1. **Identidad del DIRECTORIO publicado** — `fstat(fd_pub)` vs identidad atestiguada `(dev,ino)`: garantiza que el objeto abierto es el objeto publicado/acreditado (sujeto a la ventana ACOTADA del paso 3).
+2. **Identidad del ARCHIVO abierto** — `fstat(fd_file)` (regular, no-symlink, propietario euid; `(dev,ino)` vs atestación si existe): garantiza que la entrada relativa al descriptor designa el objeto esperado; **NO garantiza nada sobre su CONTENIDO**.
+3. **Integridad del CONTENIDO** — sólo puede afirmarse contrastando los bytes leídos contra una referencia CONFIABLE del contenido (hash atestiguado independientemente de la corrida).
+
+**Declaración explícita:** `O_NOFOLLOW`, `dir_fd` y `fstat` **NO impiden modificaciones del CONTENIDO por procesos de la MISMA UID** (el inodo verificado permanece escribible por su propietario: la misma uid puede reescribirlo antes, durante o después de la lectura anclada).
+
+**Clasificación obligatoria del resultado de la secuencia §6b:**
+- **SIN hash o identidad de archivo atestiguada independientemente:** el resultado se clasifica como **LECTURA ANCLADA** — garantiza que se leyó el objeto designado por el descriptor verificado — **NUNCA como "contenido íntegro"**.
+- **CON hash esperado CONFIABLE** (atestiguado independientemente de la corrida, p.ej. registro forense G creado por `fd_run` antes del renombrado — alcance vigente de G1, SIN ampliar): documentar la comparación — recalcular el SHA-256 sobre los bytes leídos desde el descriptor y contrastarlo. Garantiza que el contenido NO cambió respecto a la atestación del hash. **Límites de esa comparación:** (i) la propia referencia del hash es TAMPERABLE por la misma uid (registro NO inmutable, declarado en G1) → el contraste es coherencia, NO autenticación; (ii) una carrera de contenido simultánea a la lectura no es detectable en general; (iii) post-return, la misma uid puede modificar el contenido después de la comparación.
+
+La comprobación de **TIPO y PROPIETARIO** (regular, no-symlink, euid) **NO constituye autenticación del contenido**: sólo descarta sustituciones estructurales (symlink u otro objeto); no distingue contenido legítimo de contenido reescrito en el mismo tipo de objeto.
+
 **Límites del modelo de amenazas (declaración explícita):**
 - **Protección DENTRO del ciclo de ejecución:** dominio del modelo de prevención (EA/PDA-1, guardas E/D/G con descriptores) — NO activo hasta integración autorizada.
 - **Auditoría POSTERIOR a la publicación:** el autotest T7 es auditoría externa post-publicación; la secuencia 1–6 cierra la ventana ENTRE retorno y lectura (detecta el impostor antes de leer), pero NO es prevención del ciclo.
 - **Limitaciones post-return y misma uid:** la misma uid puede alterar el directorio o el archivo DESPUÉS de la verificación del autotest (residual inalienable, B1); si no hay identidad atestiguada (2), el contraste degrada a tipo/propiedad (weaker, declarado); SIGTERM/SIGKILL y el dominio post-return permanecen fuera del modelo de prevención. **G1 NO se amplía para resolver este punto** (alcance histórico intacto).
+- **Identidad ≠ integridad (rectificación final):** las comprobaciones de identidad (directorio/archivo) y de tipo/propietario NO autentican el CONTENIDO y no impiden su modificación por la misma uid; sin hash atestiguado independiente el resultado se clasifica **LECTURA ANCLADA**; con hash confiable se documenta la coherencia del contenido con los límites declarados (referencia tamperable, carreras, post-return).
 
 ## 7. FLOW-7 — Aborto acreditado (D2 integrada)
 
@@ -86,12 +100,37 @@ Contexto: T7 (`run_self_test`, def L3419) relee `analysis.json` del directorio p
 - **Resultado esperado:** orden inverso exacto (archivos → `fd_candidates` → `fd_masks` → `fd_run` → `fd_padre`); cierre exacto una vez (idempotente); sin cierre prematuro (bibliotecas usan su dup; WAV con frames íntegros antes del cierre); 0 residuales en los tres caminos.
 - **Evidencia:** informe de cierre con orden + medición de `/proc`. **PASS si:** 0 residuales + orden correcto + duplicados=0. **FAIL si:** cualquier descriptor residual o cierre prematuro detectable (frames corruptos).
 
-## 9. Matriz de exigencia por motor (estado tras la rectificación documental)
+## 9. Matriz de habilitación real (rectificación final — sustituye cualquier habilitación global previa)
+
+**Leyenda de estados:**
+- **DD** = Diseñado documentalmente (sólo existe el diseño; requiere autorización de IMPLEMENTACIÓN).
+- **LA** = Listo para solicitar autorización (todas las dependencias documentales resueltas; falta exclusivamente la autorización de Cris).
+- **BD** = Bloqueado por dependencia NO resuelta (se indica cuál).
+- **PE** = Pendiente de prueba empírica (la ejecución futura valida la dependencia).
 
 | Flujo | Hardened | EVO | MQR |
 |---|---|---|---|
-| FLOW-1..8 | **HABILITADOS** para futura autorización (receta `--manifest` verificada empíricamente) | **HABILITADOS** para futura autorización con receta demostrada POR CÓDIGO (rectificación B); verificación empírica de la receta como primer paso de la ejecución; corrida EVO REAL propia (no se hereda de H) | **BLOQUEADOS por R-14** (receta no interactiva no confirmada: `--mode` obligatorio explícito, L3763/L3727–3735); al habilitarse, FLOW-6 MQR valida publicación/identidad/colisiones SIN enunciados G1 (rectificación A) y FLOW-5/6 incorporan la lectura segura T7 de la sección 6b (rectificación C) |
+| FLOW-1 éxito — SIN adaptación (documenta el flujo vigente) | **LA** | **PE** (verificación empírica de la receta; clasificación vigente DOCUMENTED_FACT) | **BD** (R-14-MQR) |
+| FLOW-2 excepción tras varios recursos — SIN adaptación (protocolo CV vigente) | **LA** | **PE** (ídem) | **BD** (R-14-MQR) |
+| FLOW-3 interrupción SIGINT — SIN adaptación | **LA** | **PE** (ídem) | **BD** (R-14-MQR) |
+| FLOW-4 sustitución de entrada — SIN adaptación (documenta la brecha vigente: D1 ciego + C sin cerrar) | **LA** | **PE** (ídem) | **BD** (R-14-MQR) |
+| FLOW-1..4 CON adaptación EA/E/G (garantías del diseño) | **DD** | **DD** + PE receta | **BD** (R-14-MQR) + DD |
+| FLOW-5 identidad de TODOS los artefactos (EXIGE adaptación E1 integrada) | **BD**: implementación no autorizada + R-13 (candidates de 2 niveles) | **BD**: ídem + PE receta | **BD**: R-14-MQR + implementación + R-13 |
+| FLOW-6 publicación acreditada (EXIGE adaptación PDA-1/registro G) | **BD**: implementación no autorizada | **BD**: ídem + PE receta | **BD**: R-14-MQR + implementación; SIN enunciados G1 (rectificación A) |
+| FLOW-6-MQR/T7 lectura segura §6b | n/a (autotest propio de MQR) | n/a | **BD**: atestación `(dev,ino)` (run_experiment devuelve sólo la ruta, CV-B L2368–2375) + R-14-MQR + implementación |
+| FLOW-7 aborto anclado D2 (EXIGE adaptación) | **BD**: implementación + R-06 (`locals().get`) | **BD**: ídem + PE receta | **BD**: implementación + R-05 (ctx bifásico) + R-14-MQR |
+| FLOW-8 cierre inverso y 0 residuales (EXIGE adaptación F1) | **BD**: implementación + R-06; cobertura R-13/R-18 parcial | **BD**: ídem + PE receta | **BD**: implementación + R-05 + R-13 (2 niveles) + R-14-MQR |
 
-Los flujos 2/3/7 requieren la inyección documentada por puntos concretos (L1456/L1398/L2190/L2776, handlers L2036/L2115/L2413, etc.); la inyección NO modifica los ficheros de producción en disco.
+**Dependencias y su alcance:**
+- **R-12 (PNG/matplotlib anclado):** NO bloquea ningún FLOW obligatorio — los PNG son artefactos OPCionales; sólo afecta corridas con `--png` dentro de FLOW-1 (UNKNOWN declarado, a resolver durante la ejecución autorizada).
+- **R-13 (subdirectorios de 2 niveles por descriptor):** dependencia de FLOW-5/FLOW-8 para la cobertura completa de `candidates/<grupo>/` (patrón MQR L2510–2512; prototipo probó un nivel).
+- **R-18 (arneses y `fileobj-dup`):** afecta SOLO a los flujos CON adaptación (los escritores anclados deben atravesar los arneses/baterías); no afecta FLOW-1..4 sin adaptación.
+- **R-05/R-06 (integración específica):** dependencias de FLOW-7/FLOW-8 con adaptación (anclajes por `ctx` en MQR bifásico; recursos por `locals().get` en H/EVO).
+- **R-14-MQR + atestación T7:** bloqueos de todos los flujos MQR y de la lectura segura §6b.
+- **Inyección (FLOW-2/3/7):** puntos documentados (L1456/L1398/L2190/L2776, handlers L2036/L2115/L2413); la inyección en memoria del arnés NO modifica los ficheros de producción en disco.
 
-*Fin del diseño RG-FLOW (rectificado documentalmente — ver INFORME_RECTIFICACION_DOCUMENTAL_RG_FLOW_6G1.md). Agente en parada tras publicar.*
+**Clasificación de la receta EVO:** DOCUMENTED_FACT (respaldada por el código: L2358–2391 sin `input()`, L488–515); **NUNCA EXPERIMENTAL_RESULT** hasta su verificación empírica, que será el primer paso de cualquier ejecución autorizada.
+
+**Conclusión de habilitación:** **NINGÚN conjunto FLOW-1..8 se declara globalmente habilitado.** En estado LA (sólo falta autorización) están únicamente FLOW-1..4 SIN adaptación en Hardened. EVO requiere primero la verificación empírica de su receta (PE). MQR permanece BD (R-14-MQR). Todas las variantes CON adaptación permanecen DD/BD hasta que Cris autorice expresamente la implementación. Los flujos 2/3/7 requieren la inyección documentada por puntos concretos; la inyección NO modifica los ficheros de producción en disco.
+
+*Fin del diseño RG-FLOW (rectificación documental + rectificación final de adjudicación: ver INFORME_RECTIFICACION_DOCUMENTAL_RG_FLOW_6G1.md e INFORME_RECTIFICACION_FINAL_RG_FLOW_6G1.md). Agente en parada tras publicar.*

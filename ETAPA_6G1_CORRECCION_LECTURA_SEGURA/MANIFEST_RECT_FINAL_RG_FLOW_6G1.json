@@ -1,0 +1,64 @@
+{
+ "schema": "rect-final-rgflow-manifest/1",
+ "fecha": "2026-11-23T19:33:44Z",
+ "rama": "arena/f1c5739f-sdv-sdi-sgm",
+ "commit_padre": "504e2b9c6d35c1fb24b979c75aab0bec1ccb52a3",
+ "referencia_produccion": "9fedc5b223444e73955d2b899b6a434b0f5c670e",
+ "instruccion": "Cris 22-11-2026: RECTIFICACION FINAL DE ADJUDICACION RG-FLOW (precision T7 identidad/integridad + matriz de habilitacion real)",
+ "adjudicacion_previa": "A (separacion alcance G1/MQR) y B (receta EVO por codigo, verificacion empirica pendiente) aceptados documentalmente; C aceptado PARCIALMENTE con precision obligatoria",
+ "autorizacion": "solo documentos de diseno; prohibido modificar produccion, implementar adaptaciones, ejecutar motores o RG-FLOW, audio real, Android/Termux, integrar/merge/main",
+ "rectificacion_T7": {
+  "conceptos_distintos": [
+   "identidad del DIRECTORIO publicado (fstat(fd_pub) vs atestacion (dev,ino))",
+   "identidad del ARCHIVO abierto (fstat regular/no-symlink/propietario; NO garantiza contenido)",
+   "integridad del CONTENIDO (solo con referencia confiable: hash atestiguado independientemente)"
+  ],
+  "declaracion": "O_NOFOLLOW, dir_fd y fstat NO impiden modificaciones del contenido por procesos de la MISMA UID",
+  "clasificacion": "sin hash/identidad atestiguada independiente -> LECTURA ANCLADA (nunca contenido integro); con hash esperado confiable -> comparacion SHA-256 sobre bytes leidos desde el descriptor con limites declarados (referencia tamperable por misma uid, carreras de contenido, post-return)",
+  "tipo_propietario": "NO constituye autenticacion del contenido (solo descarta sustituciones estructurales)",
+  "post_return": "limite post-return y amenaza de misma uid expresamente declarados; G1 NO ampliado"
+ },
+ "matriz_habilitacion": {
+  "estados": "DD (diseñado documentalmente) / LA (listo para solicitar autorizacion) / BD (bloqueado por dependencia) / PE (pendiente de prueba empirica)",
+  "conclusion": "NINGUN conjunto FLOW-1..8 declarado globalmente habilitado",
+  "LA": "FLOW-1..4 sin adaptacion en Hardened (solo falta autorizacion)",
+  "PE": "EVO: verificacion empirica de la receta (clasificacion DOCUMENTED_FACT, NUNCA EXPERIMENTAL_RESULT hasta ejecutarla)",
+  "BD": "MQR todos (R-14-MQR); FLOW-5..8 en los 3 motores (implementacion no autorizada + R-13/R-18/R-05/R-06); FLOW-6-MQR/T7 (atestacion dev,ino)",
+  "dependencias": "R-12 no bloquea flujos obligatorios (PNG opcional); R-13/R-18/R-05/R-06 dependencias de flujos con adaptacion (RG-FLOW 9)"
+ },
+ "entregables": {
+  "modificados": [
+   "DISENO_RG_FLOW_6G1.md (6b: identidad/integridad + clasificacion; 9 reemplazada por matriz de habilitacion real)",
+   "REGISTRO_RIESGOS_6G1.md (R-21 precision final, R-08 clasificacion, nota de dependencias de la matriz)"
+  ],
+  "nuevos": [
+   "INFORME_RECTIFICACION_FINAL_RG_FLOW_6G1.md",
+   "MANIFEST_RECT_FINAL_RG_FLOW_6G1.json",
+   "SHA256SUMS_RECT_FINAL_RG_FLOW_6G1.txt"
+  ],
+  "historicos": "informes y evidencias anteriores intactos",
+  "produccion": "CERO cambios"
+ },
+ "no_resueltos": [
+  "atestacion (dev,ino) T7",
+  "R-14-MQR",
+  "verificacion empirica receta EVO",
+  "R-11, R-12, R-13, R-15, R-18",
+  "ejecucion RG-FLOW"
+ ],
+ "estado": "rectificacion final para adjudicacion de Cris; NO implementado; 6G.1 ABIERTA; parada obligatoria",
+ "archivos": [
+  {
+   "ruta": "ETAPA_6G1_CORRECCION_LECTURA_SEGURA/DISENO_RG_FLOW_6G1.md",
+   "sha256": "99e10eaa2dffef9ae8354906ba0ee0a32949fba9f0a144ea5c45e6fe5a45ea1e"
+  },
+  {
+   "ruta": "ETAPA_6G1_CORRECCION_LECTURA_SEGURA/REGISTRO_RIESGOS_6G1.md",
+   "sha256": "b82f599c36b04859573b2fd10263b100b2445cbb016ce5a3466ea44b9d27ef1d"
+  },
+  {
+   "ruta": "ETAPA_6G1_CORRECCION_LECTURA_SEGURA/INFORME_RECTIFICACION_FINAL_RG_FLOW_6G1.md",
+   "sha256": "955b8a1ade3122bd41ada9dd72e7383f8b44141a157c1118f3e658abe0228649"
+  }
+ ]
+}
