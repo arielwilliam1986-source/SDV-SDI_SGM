@@ -1,0 +1,22 @@
+{
+ "schema": "plan-integracion-hardened-flow14/1",
+ "generado": "2026-11-23",
+ "tipo": "SOLO DISENO (sin implementacion)",
+ "autorizacion": "Cris: autorizacion exclusivamente de diseño",
+ "padre": "292274b28dd4bef4b68055d5f0d1869c0aa0a02f",
+ "rama": "arena/f1c5739f-sdv-sdi-sgm",
+ "produccion_modificada": false,
+ "archivos": {
+  "PLAN_INTEGRACION_HARDENED_FLOW1_4_6G1.md": "fe96ad9fd56eafad55ed786ab173fcc1283093211890c88e8cc2cd8cc5447036"
+ },
+ "sha256sums": "1314b0edafb835295f212ade07fc9f6cf5bf62ef400301594ef274b6f679230c",
+ "entregables": [
+  "1 plan de integracion P-01..P-09",
+  "2 matriz por flujo",
+  "3 diagrama ciclo de vida de descriptores",
+  "4 diseño publicacion+aborto",
+  "5 diseño regresion D1/C (6 casos, NO ejecutado)",
+  "6 riesgos R-23..R-28 (propuestos)",
+  "7 manifiesto+SHA256"
+ ]
+}
