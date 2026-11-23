@@ -1,0 +1,26 @@
+{
+ "amenaza": "Que el protocolo vigente localice/identifique/invalidar/conservar el directorio original sin confiar en la ruta sustituida.",
+ "clasificacion": [
+  "vulnerabilidad_reproducida_del_protocolo_vigente_frente_a_sustitucion_de_intermedio (fail-closed: no escribe nada, pero NO localiza el provisional acreditado ni registra el aborto en él)",
+  "resultado_experimental"
+ ],
+ "escenario": "D1",
+ "nota": "el protocolo vigente actúa fail-closed (sin ABORT en ubicación no acreditada) pero no puede llegar al provisional real: se requiere aborto relativo a descriptores (D2)",
+ "resultado": {
+  "abort_en_acreditado_real": false,
+  "abort_en_atacante": false,
+  "anclaje_directorio": "identidad_distinta (H1): el directorio de la ruta no coincide con el provisional acreditado",
+  "contenido_acreditado": [
+   "analysis.json"
+  ],
+  "directorio_acreditado": false,
+  "identidad_acreditada": {
+   "dev": 65024,
+   "ino": 534859
+  },
+  "politica": "sin_eliminacion (C-R1): ningún archivo se elimina durante el aborto; anclaje H1: sin escritura de ABORT_6G1.json si el d"
+ },
+ "schema": "prototipo-cdefg-1/1",
+ "titulo": "Secuencia OBLIGATORIA con el protocolo REAL vigente (abortar_6g1 sin modificar): acreditar -> conservar fd_run -> sustituir intermedio -> excepción -> aborto",
+ "veredicto": "DEMOSTRADO"
+}

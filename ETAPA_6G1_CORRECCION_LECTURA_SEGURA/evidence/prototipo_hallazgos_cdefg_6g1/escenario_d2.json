@@ -1,0 +1,42 @@
+{
+ "amenaza": "Que el aborto no pueda registrar/inventariar/conservar el provisional acreditado sin confiar en la ruta sustituida, o que queden descriptores residuales.",
+ "clasificacion": [
+  "comportamiento_permitido_por_diseno (propuesta)",
+  "vulnerabilidad_eliminada_por_diseno (anclaje por descriptor)"
+ ],
+ "escenario": "D2",
+ "nota": "ABORT_6G1.json exclusivo y no-follow creado DENTRO del acreditado real vía openat(dir_fd=fd_run); inventario por descriptor sin seguir enlaces; salidas propias invalidadas y conservadas (sin eliminación); el árbol del atacante no recibe ABORT; 0 fds residuales",
+ "resultado": {
+  "ab_anclaje": "fd_run (descriptor del provisional acreditado, sin rutas)",
+  "ab_motivo": "EXCEPCION_DURANTE_EL_PROCESAMIENTO",
+  "ab_resultados_validos": [],
+  "ab_salidas_invalidadas": [
+   "analysis.json",
+   "mix SDV.wav"
+  ],
+  "ab_schema": "abort-6g1/3",
+  "aborto": {
+   "abort_verificado": true,
+   "anclaje": "fd_run/fd_padre (relativo, sin rutas)",
+   "conservados": [],
+   "motivo": "EXCEPCION_DURANTE_EL_PROCESAMIENTO",
+   "motivo_verificacion": "escrito y verificado sobre fd_run",
+   "ninguna_eliminacion": true,
+   "salidas_invalidadas": [
+    "analysis.json",
+    "mix SDV.wav"
+   ]
+  },
+  "atacante_sin_abort": true,
+  "contenido_acreditado_tras_aborto": [
+   "ABORT_6G1.json",
+   "analysis.json",
+   "masks",
+   "mix SDV.wav"
+  ],
+  "fds_residuales": []
+ },
+ "schema": "prototipo-cdefg-1/1",
+ "titulo": "Aborto anclado relativo a fd_run/fd_padre (propuesta): secuencia obligatoria completa con fds abiertos, excepción e intermedio sustituido, más cierre de todos los descriptores",
+ "veredicto": "PASS"
+}

@@ -1,0 +1,86 @@
+{
+ "schema": "cdefg-manifest/1",
+ "fecha": "2026-11-23T18:21:12Z",
+ "rama": "arena/f1c5739f-sdv-sdi-sgm",
+ "commit_padre": "09961a42f19756a9d748126d3b87a037eb9349bd",
+ "referencia_tecnica": "9fedc5b223444e73955d2b899b6a434b0f5c670e",
+ "instruccion": "Cris 22-11-2026: PDA-1/EA cierre de garantias pendientes (Hallazgos C, D, E, F, G)",
+ "adjudicacion_previa": "A y B demostrados; PDA-1 base arquitectonica; EA prometedor; B2 valido; NO implementar",
+ "alcance": "solo informe de diseno, prototipo independiente y evidencia; cero cambios de produccion (solo ficheros nuevos: verificado con git diff --name-status)",
+ "resultados": {
+  "veredictos": {
+   "C1-C4": "DEMOSTRADO (brecha: la ruta procfs del directorio NO protege la entrada final; 4 APIs escriben fuera del acreditado; explotable sólo por la misma uid)",
+   "C5": "PASS (O_CREAT|O_EXCL|O_NOFOLLOW rechaza symlink y regular precolocados: EEXIST)",
+   "C6": "PASS (archivo anclado por su fd: escrituras inmunes al swap de la entrada; verificacion de identidad por archivo detecta 3/3 swaps; contenido integro)",
+   "D1": "DEMOSTRADO (modulo REAL sin modificar: abortar_6g1 con intermedio sustituido queda fail-closed y CIEGO: no localiza el provisional acreditado, sin ABORT en ningun sitio)",
+   "D2": "PASS (aborto anclado por fd_run/fd_padre: ABORT_6G1.json exclusivo no-follow dentro del acreditado real, invalidadas conservadas sin eliminacion, atacante sin ABORT, 0 fds residuales)",
+   "E1": "PASS (checklist por descriptor: (a) PASS (b) eliminado FAIL (c) symlink FAIL (d) identidad distinta FAIL (e) faltantes FAIL (f) masks opcional ok)",
+   "F1": "PASS (cierre exacto una vez, orden inverso, sin cierre prematuro, construccion parcial: 0 residuales)",
+   "G1": "PASS (registro forense viaja con el inodo, auditoria externa coincide; misma uid lo reescribe: NO inmutable, declarado)"
+  },
+  "sintesis": "C: la brecha de la entrada final es real (misma uid) y se cierra con creacion exclusiva O_EXCL|O_NOFOLLOW + fd_archivo conservado + verificacion de identidad por archivo; D: el protocolo vigente es ciego ante sustitucion de intermedios (D1, modulo real) y se propone aborto anclado por descriptores (D2, demostrado); E: guarda de completitud por descriptor con matriz por motor/modo (masks SIEMPRE en MQR); F: ciclo de vida con cierre exacto, sin cierre prematuro y construccion parcial (0 residuales); G: registro forense dentro del provisional que viaja con el inodo, TAMPERABLE por la misma uid (declarado NO inmutable)"
+ },
+ "modelo_amenazas": "otra uid: sin via conocida (razonado por permisos, entorno single-uid declarado); sustitucion de componentes de ruta: cubierta por EA/PDA-1; misma uid: sustitucion de ENTRADAS detectada (verificacion por archivo + checklist), integridad de CONTENIDO fuera del modelo de prevencion (/proc/<pid>/fd accesible por la misma uid), registro forense TAMPERABLE (demostrado): evidencia de auditoria, no inmutabilidad; garantia post-return: limitacion de prevencion",
+ "limitaciones_no_resueltas": [
+  "contenido frente a misma uid",
+  "matplotlib por rutas ancladas (no probado)",
+  "subdirectorios de dos niveles por descriptor",
+  "Termux/Android (prohibido)",
+  "rendimiento del pathwalk procfs",
+  "RG-FLOW real por motor (pendiente de autorizacion)"
+ ],
+ "no_implementado": [
+  "todo mecanismo en produccion",
+  "corridas reales de motores (RG-FLOW)",
+  "baterias historicas y prueba DSP",
+  "audio real, Android, Termux",
+  "integracion (prohibida)"
+ ],
+ "estado": "informe para adjudicacion de Cris; NO implementado; 6G.1 ABIERTA; parada obligatoria",
+ "archivos": [
+  {
+   "ruta": "ETAPA_6G1_CORRECCION_LECTURA_SEGURA/INFORME_PDA1_HALLAZGOS_CDEFG_6G1.md",
+   "sha256": "2bdac14c412735839bff37bc508322e5080ab8cc9d9f769dcbedc807086d31d8"
+  },
+  {
+   "ruta": "ETAPA_6G1_CORRECCION_LECTURA_SEGURA/scripts/prototipo_hallazgos_cdefg_6g1.py",
+   "sha256": "ffc32d21a66cf1998506c425ceec678c7e815820dab56c2760807f1217d7abbf"
+  },
+  {
+   "ruta": "ETAPA_6G1_CORRECCION_LECTURA_SEGURA/evidence/prototipo_hallazgos_cdefg_6g1/consolidado_prototipo_cdefg.json",
+   "sha256": "85d5cc055a803ced0efe03ab009c29ca4d9d26c83c3b286f53b1f547352735ff"
+  },
+  {
+   "ruta": "ETAPA_6G1_CORRECCION_LECTURA_SEGURA/evidence/prototipo_hallazgos_cdefg_6g1/escenario_c1_c4.json",
+   "sha256": "fc661134f176498d98c8f65413f3d76c5d8ba2f2ec42cce1d08b23cfd6b4038d"
+  },
+  {
+   "ruta": "ETAPA_6G1_CORRECCION_LECTURA_SEGURA/evidence/prototipo_hallazgos_cdefg_6g1/escenario_c5.json",
+   "sha256": "ebfd214e6313269a9e78d56a52befc99ae0f6675f7a5d11d7853061c07fe87e9"
+  },
+  {
+   "ruta": "ETAPA_6G1_CORRECCION_LECTURA_SEGURA/evidence/prototipo_hallazgos_cdefg_6g1/escenario_c6.json",
+   "sha256": "1c719c30fad8916c2177724445e91133578513468b1a312437b63fc07e880f27"
+  },
+  {
+   "ruta": "ETAPA_6G1_CORRECCION_LECTURA_SEGURA/evidence/prototipo_hallazgos_cdefg_6g1/escenario_d1.json",
+   "sha256": "f4fcf580f9792d5c442dde24b7d4fcc23c5826959304672a3837c54cb3c22781"
+  },
+  {
+   "ruta": "ETAPA_6G1_CORRECCION_LECTURA_SEGURA/evidence/prototipo_hallazgos_cdefg_6g1/escenario_d2.json",
+   "sha256": "09bf5ab84975d333f3388a0b3ee2b6c2f18aea8ac50960bae1a6cf50d487f720"
+  },
+  {
+   "ruta": "ETAPA_6G1_CORRECCION_LECTURA_SEGURA/evidence/prototipo_hallazgos_cdefg_6g1/escenario_e1.json",
+   "sha256": "9b0a09d42281a9396a6282bb7e6c1b90940d030fbfd65d851dfa897458cc4cb3"
+  },
+  {
+   "ruta": "ETAPA_6G1_CORRECCION_LECTURA_SEGURA/evidence/prototipo_hallazgos_cdefg_6g1/escenario_f1.json",
+   "sha256": "be2f38418c5b3ce957a2b47745431f59c9096b7ab634239cea8b30048c0e7323"
+  },
+  {
+   "ruta": "ETAPA_6G1_CORRECCION_LECTURA_SEGURA/evidence/prototipo_hallazgos_cdefg_6g1/escenario_g1.json",
+   "sha256": "63e3daad02f88b51dcee706578a2b9e28dd46ad9fef003358d700177468fe90c"
+  }
+ ]
+}

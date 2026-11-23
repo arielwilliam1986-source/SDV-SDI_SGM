@@ -1,0 +1,82 @@
+{
+ "schema": "prototipo-cdefg-1/1",
+ "generado": "2026-11-23T18:18:48Z",
+ "entorno": {
+  "python": "3.11.2",
+  "numpy": "1.26.4",
+  "soundfile": "0.13.1",
+  "libsndfile": "1.2.2",
+  "euid": 1001
+ },
+ "escenarios": [
+  {
+   "escenario": "C1-C4",
+   "veredicto": "DEMOSTRADO",
+   "clasificacion": [
+    "vulnerabilidad_reproducida_para_misma_uid",
+    "comportamiento_rechazado_para_otra_uid (por construcción del padre 0700: no puede precolocar la entrada)"
+   ],
+   "fichero": "escenario_c1_c4.json"
+  },
+  {
+   "escenario": "C5",
+   "veredicto": "PASS",
+   "clasificacion": [
+    "comportamiento_rechazado_por_diseno"
+   ],
+   "fichero": "escenario_c5.json"
+  },
+  {
+   "escenario": "C6",
+   "veredicto": "PASS",
+   "clasificacion": [
+    "comportamiento_permitido_por_diseno",
+    "comportamiento_rechazado_por_diseno (verificación por archivo)"
+   ],
+   "fichero": "escenario_c6.json"
+  },
+  {
+   "escenario": "D1",
+   "veredicto": "DEMOSTRADO",
+   "clasificacion": [
+    "vulnerabilidad_reproducida_del_protocolo_vigente_frente_a_sustitucion_de_intermedio (fail-closed: no escribe nada, pero NO localiza el provisional acreditado ni registra el aborto en él)",
+    "resultado_experimental"
+   ],
+   "fichero": "escenario_d1.json"
+  },
+  {
+   "escenario": "D2",
+   "veredicto": "PASS",
+   "clasificacion": [
+    "comportamiento_permitido_por_diseno (propuesta)",
+    "vulnerabilidad_eliminada_por_diseno (anclaje por descriptor)"
+   ],
+   "fichero": "escenario_d2.json"
+  },
+  {
+   "escenario": "E1",
+   "veredicto": "PASS",
+   "clasificacion": [
+    "comportamiento_rechazado_por_diseno"
+   ],
+   "fichero": "escenario_e1.json"
+  },
+  {
+   "escenario": "F1",
+   "veredicto": "PASS",
+   "clasificacion": [
+    "comportamiento_permitido_por_diseno"
+   ],
+   "fichero": "escenario_f1.json"
+  },
+  {
+   "escenario": "G1",
+   "veredicto": "PASS",
+   "clasificacion": [
+    "comportamiento_permitido_por_diseno",
+    "limitacion_declarada_evidencia_frente_a_misma_uid"
+   ],
+   "fichero": "escenario_g1.json"
+  }
+ ]
+}

@@ -1,0 +1,112 @@
+{
+ "amenaza": "Que EXIT_OK se declare con un artefacto obligatorio ausente, sustituido, enlazado o con identidad distinta.",
+ "clasificacion": [
+  "comportamiento_rechazado_por_diseno"
+ ],
+ "escenario": "E1",
+ "matriz_motores": {
+  "EVO": {
+   "candidatos": "condicional (--write-all-candidates)",
+   "masks": "condicional (--png/--keep-masks)",
+   "png": "opcional (matplotlib)"
+  },
+  "Hardened": {
+   "candidatos": "condicional (--write-all-candidates)",
+   "masks": "condicional (--png/--keep-masks)",
+   "png": "opcional (matplotlib)"
+  },
+  "MQR": {
+   "candidatos": "condicional (--write-all-candidates)",
+   "masks": "SIEMPRE obligatorio",
+   "png": "opcional (matplotlib)"
+  }
+ },
+ "nota": "la ausencia o identidad incorrecta de CUALQUIER artefacto obligatorio impide EXIT_OK; masks obligatorio en MQR (siempre) y condicional en Hardened/EVO (--png/--keep-masks); pngs y candidates opcionales según flags",
+ "resultado": {
+  "a_completo": {
+   "detalle": {
+    "analysis.json": {
+     "existe": true,
+     "identidad_vs_fd": true,
+     "ok": true,
+     "tipo": "regular"
+    },
+    "analysis.txt": {
+     "existe": true,
+     "identidad_vs_fd": true,
+     "ok": true,
+     "tipo": "regular"
+    },
+    "engine_log.txt": {
+     "existe": true,
+     "identidad_vs_fd": true,
+     "ok": true,
+     "tipo": "regular"
+    },
+    "input_integrity_6g.json": {
+     "existe": true,
+     "identidad_vs_fd": true,
+     "ok": true,
+     "tipo": "regular"
+    },
+    "masks": {
+     "esperado": "obligatorio",
+     "existe": true,
+     "ok": true,
+     "tipo": "directorio"
+    },
+    "mix SDI.wav": {
+     "existe": true,
+     "identidad_vs_fd": true,
+     "ok": true,
+     "tipo": "regular"
+    },
+    "mix SDV.wav": {
+     "existe": true,
+     "identidad_vs_fd": true,
+     "ok": true,
+     "tipo": "regular"
+    }
+   },
+   "veredicto": "PASS"
+  },
+  "b_eliminado": {
+   "analysis_txt": {
+    "existe": false,
+    "ok": false,
+    "tipo": "otro/ausente"
+   },
+   "veredicto": "FAIL"
+  },
+  "c_symlink": {
+   "analysis": {
+    "existe": true,
+    "identidad_vs_fd": false,
+    "ok": false,
+    "tipo": "symlink"
+   },
+   "veredicto": "FAIL"
+  },
+  "d_identidad_distinta": {
+   "identidad_vs_fd": false,
+   "veredicto": "FAIL"
+  },
+  "e_masks_y_wav_faltantes": {
+   "masks": {
+    "esperado": "obligatorio",
+    "existe": true,
+    "ok": true,
+    "tipo": "directorio"
+   },
+   "mix_sdi": {
+    "existe": false,
+    "ok": false,
+    "tipo": "otro/ausente"
+   },
+   "veredicto": "FAIL"
+  }
+ },
+ "schema": "prototipo-cdefg-1/1",
+ "titulo": "Guarda de completitud por descriptor (matriz por motor/modo): existencia, tipo, no-symlink, identidad vs fd de creación",
+ "veredicto": "PASS"
+}

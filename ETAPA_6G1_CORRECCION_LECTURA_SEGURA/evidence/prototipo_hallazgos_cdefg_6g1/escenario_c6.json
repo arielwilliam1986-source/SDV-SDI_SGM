@@ -1,0 +1,83 @@
+{
+ "amenaza": "Que la escritura se desvíe por el symlink de la entrada sustituida, o que una identidad distinta pase la verificación final.",
+ "clasificacion": [
+  "comportamiento_permitido_por_diseno",
+  "comportamiento_rechazado_por_diseno (verificación por archivo)"
+ ],
+ "escenario": "C6",
+ "nota": "la escritura por el descriptor conservado ignora la entrada nominal (el fd designa el inodo acreditado); la verificación fstat(fd) vs fstatat(entrada, NOFOLLOW) DETECTA el swap por archivo; el symlink queda en el acreditado como entrada ajena conservada (sin eliminación), registrada por el checklist E",
+ "resultado": {
+  "contenido_acreditado_via_fd": {
+   "npy_leido_via_fd": [
+    32,
+    4
+   ],
+   "wav_leido_via_fd": 44100
+  },
+  "contenido_en_symlinks": {
+   "analysis": false,
+   "npy": false,
+   "wav": false
+  },
+  "identidad_creacion": {
+   "analysis": {
+    "dev": 65024,
+    "ino": 534864
+   },
+   "npy": {
+    "dev": 65024,
+    "ino": 534866
+   },
+   "wav": {
+    "dev": 65024,
+    "ino": 534865
+   }
+  },
+  "sustituciones": {
+   "analysis.json": "unlink + symlink precolocado",
+   "masks/confidence_map.npy": "unlink + symlink precolocado",
+   "mix SDV.wav": "unlink + symlink precolocado"
+  },
+  "verificacion_identidad_por_archivo": {
+   "analysis": {
+    "coincide": false,
+    "entrada": {
+     "dev": 65024,
+     "ino": 534867
+    },
+    "entrada_es_symlink": true,
+    "fd": {
+     "dev": 65024,
+     "ino": 534864
+    }
+   },
+   "npy": {
+    "coincide": false,
+    "entrada": {
+     "dev": 65024,
+     "ino": 534869
+    },
+    "entrada_es_symlink": true,
+    "fd": {
+     "dev": 65024,
+     "ino": 534866
+    }
+   },
+   "wav": {
+    "coincide": false,
+    "entrada": {
+     "dev": 65024,
+     "ino": 534868
+    },
+    "entrada_es_symlink": true,
+    "fd": {
+     "dev": 65024,
+     "ino": 534865
+    }
+   }
+  }
+ },
+ "schema": "prototipo-cdefg-1/1",
+ "titulo": "Archivo anclado por SU PROPIO descriptor (creación exclusiva O_EXCL|O_NOFOLLOW + bibliotecas vía /proc/self/fd/<fd_archivo>), con sustitución de la entrada entre creación y escritura",
+ "veredicto": "PASS"
+}

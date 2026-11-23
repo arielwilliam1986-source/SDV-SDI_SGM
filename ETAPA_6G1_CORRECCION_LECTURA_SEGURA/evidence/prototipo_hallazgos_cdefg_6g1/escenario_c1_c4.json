@@ -1,0 +1,41 @@
+{
+ "amenaza": "Que una escritura termine FUERA del directorio acreditado pese al anclaje del directorio.",
+ "clasificacion": [
+  "vulnerabilidad_reproducida_para_misma_uid",
+  "comportamiento_rechazado_para_otra_uid (por construcción del padre 0700: no puede precolocar la entrada)"
+ ],
+ "escenario": "C1-C4",
+ "nota": "no atribuir a EA protecciones de la entrada final que no ofrece: la ruta procfs del directorio sigue el componente final con semántica open normal",
+ "resultado": {
+  "C1": {
+   "acreditado_contiene_archivo_regular": false,
+   "api": "analysis.json (open builtin)",
+   "entrada_final_es_symlink": true,
+   "fuera_del_acreditado": true,
+   "respuesta": "ESCRITURA FUERA DEL ACREDITADO (brecha confirmada): la ruta procfs del DIRECTORIO protege los componentes intermedios pero NO la entrada final; aplicable a la MISMA uid (una uid distinta no puede crear entradas dentro de un 0700 del euid)"
+  },
+  "C2": {
+   "api": "mix SDV.wav (sf.SoundFile)",
+   "frames_en_objetivo_ajeno": 44100,
+   "fuera_del_acreditado": true,
+   "respuesta": "ESCRITURA FUERA DEL ACREDITADO (brecha confirmada): la ruta procfs del DIRECTORIO protege los componentes intermedios pero NO la entrada final; aplicable a la MISMA uid (una uid distinta no puede crear entradas dentro de un 0700 del euid)"
+  },
+  "C3": {
+   "api": "masks.npy (np.open_memmap)",
+   "fuera_del_acreditado": true,
+   "respuesta": "ESCRITURA FUERA DEL ACREDITADO (brecha confirmada): la ruta procfs del DIRECTORIO protege los componentes intermedios pero NO la entrada final; aplicable a la MISMA uid (una uid distinta no puede crear entradas dentro de un 0700 del euid)",
+   "shape_en_objetivo_ajeno": [
+    32,
+    4
+   ]
+  },
+  "C4": {
+   "api": "engine_log.txt (Tee/open)",
+   "fuera_del_acreditado": true,
+   "respuesta": "ESCRITURA FUERA DEL ACREDITADO (brecha confirmada): la ruta procfs del DIRECTORIO protege los componentes intermedios pero NO la entrada final; aplicable a la MISMA uid (una uid distinta no puede crear entradas dentro de un 0700 del euid)"
+  }
+ },
+ "schema": "prototipo-cdefg-1/1",
+ "titulo": "Symlink en la ENTRADA FINAL de cada artefacto, con el mecanismo EA anterior (ruta procfs del directorio anclado)",
+ "veredicto": "DEMOSTRADO"
+}

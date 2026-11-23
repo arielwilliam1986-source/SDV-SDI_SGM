@@ -1,0 +1,32 @@
+{
+ "amenaza": "Que queden descriptores residuales, se cierren dos veces o se cierren mientras una biblioteca los usa.",
+ "clasificacion": [
+  "comportamiento_permitido_por_diseno"
+ ],
+ "escenario": "F1",
+ "orden_propuesto": "archivos -> subdirectorios (fd_masks, fd_candidates) -> fd_run -> fd_padre; integración: registrar en el mismo registro que usa preparar_aborto_6g1 (cerrar_recursos_corrida_6g1 ampliado) y en el cierre normal acreditado",
+ "resultado": {
+  "a_cierre_exacto": {
+   "cierres_duplicados": 0,
+   "fds_residuales": [],
+   "frames_wav_antes_del_cierre": 44100,
+   "orden_cerrados": [
+    "wav",
+    "fd_masks",
+    "fd_run",
+    "fd_padre"
+   ]
+  },
+  "b_construccion_parcial": {
+   "cerrados": [
+    "fd_run",
+    "fd_padre"
+   ],
+   "error": "FileNotFoundError ([Errno 2] No such file or directory: 'candidates')",
+   "fds_residuales": []
+  }
+ },
+ "schema": "prototipo-cdefg-1/1",
+ "titulo": "Ciclo de vida de descriptores: cierre EXACTO una vez, sin cierre prematuro mientras la biblioteca usa el objeto, y fallo en construcción parcial",
+ "veredicto": "PASS"
+}

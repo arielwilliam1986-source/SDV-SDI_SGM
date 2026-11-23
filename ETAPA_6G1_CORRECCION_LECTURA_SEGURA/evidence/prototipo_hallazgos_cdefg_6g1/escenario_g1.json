@@ -1,0 +1,59 @@
+{
+ "amenaza": "Que el registro no pertenezca a la corrida acreditada, no se conserved ante aborto o no sea verificable; y no presentar como inmutable un registro modificable por la misma uid.",
+ "clasificacion": [
+  "comportamiento_permitido_por_diseno",
+  "limitacion_declarada_evidencia_frente_a_misma_uid"
+ ],
+ "escenario": "G1",
+ "proteccion_real": "otra uid no puede escribir en el acreditado (0700 del euid): el registro es fiable frente a otra uid; frente a la MISMA uid es TAMPERABLE (demostrado) -> evidencia de auditoría con coherencia lstat-vs-registro, NO inmutabilidad",
+ "registro_en_aborto": "ante aborto, el registro forense es ABORT_6G1.json (D2), escrito por fd_run dentro del acreditado; el registro de publicación no existe si no hubo publicación",
+ "resultado": {
+  "auditoria_externa": {
+   "coincide": true,
+   "contenido_publicado": [
+    "analysis.json",
+    "mix SDV.wav",
+    "publicacion_6g1.json"
+   ],
+   "ino_en_registro": 534859,
+   "ino_publicado": 534859,
+   "registro_viajo_con_el_inodo": true
+  },
+  "misma_uid": {
+   "demostracion": "la misma uid puede reescribir publicacion_6g1.json (propietario del árbol): el registro NO es evidencia inmutable frente a la misma uid",
+   "puede_reescribir_registro": true,
+   "reescribiendo": true
+  },
+  "publicacion": {
+   "destino": "run_final",
+   "exito": true,
+   "motivos": [],
+   "publicado": true,
+   "traslado_verificado": true
+  },
+  "registro": {
+   "artefactos": {
+    "analysis": "892c5c63783df8f8d9a5a61b5d26497d1a8e4699b14a1ddcb0137b448f415d34",
+    "mix_sdv": "6d18df833cf4919ad086e6bf68f5f8c9d3ec09d528726e4047674d4701623b88"
+   },
+   "destino_solicitado": "run_final",
+   "padre": {
+    "dev": 65024,
+    "ino": 534858
+   },
+   "politica": "el inodo del provisional se conserva en el renombrado: lstat(dir publicado) debe == provisional.ino",
+   "provisional": {
+    "dev": 65024,
+    "ino": 534859
+   },
+   "schema": "publicacion-6g1/1",
+   "ts": "2026-11-23T18:18:48Z"
+  },
+  "reverificacion_b2": {
+   "coincide": true
+  }
+ },
+ "schema": "prototipo-cdefg-1/1",
+ "titulo": "Evidencia forense de publicación: registro escrito por fd_run ANTES del renombrado (viaja con el inodo), verificación externa post-B2 y límite frente a la misma uid",
+ "veredicto": "PASS"
+}

@@ -1,0 +1,16 @@
+{
+ "amenaza": "Que una entrada precolocada (symlink o regular ajeno) sea seguida por la creación.",
+ "clasificacion": [
+  "comportamiento_rechazado_por_diseno"
+ ],
+ "escenario": "C5",
+ "nota": "O_EXCL|O_CREAT|O_NOFOLLOW: EEXIST ante symlink precolocado (no lo sigue y no lo reemplaza) y ante regular preexistente; el motor no crea el archivo si no es el PRIMERO con ese nombre dentro del acreditado (fail-closed ante precolocación)",
+ "resultado": {
+  "a_symlink_precolocado": "FileExistsError (EEXIST): rechazado",
+  "b_regular_precolocado": "FileExistsError (EEXIST): rechazado",
+  "c_nombre_libre": "creado (descriptor exclusivo)"
+ },
+ "schema": "prototipo-cdefg-1/1",
+ "titulo": "Creación EXCLUSIVA de cada archivo con openat(O_CREAT|O_EXCL|O_NOFOLLOW) relativo a fd_run",
+ "veredicto": "PASS"
+}
