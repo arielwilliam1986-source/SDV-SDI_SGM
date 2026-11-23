@@ -16,7 +16,7 @@
   "directorio_acreditado": false,
   "identidad_acreditada": {
    "dev": 65024,
-   "ino": 534921
+   "ino": 534947
   },
   "politica": "sin_eliminacion (C-R1): ningún archivo se elimina durante el aborto; anclaje H1: sin escritura de ABORT_6G1.json si el d"
  },

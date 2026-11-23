@@ -1,5 +1,5 @@
 {
- "amenaza": "Que EXIT_OK se declare con un artefacto obligatorio ausente, sustituido, enlazado o con identidad distinta; o que la obligatoriedad condicional de masks no se aplique realmente.",
+ "amenaza": "Que un artefacto obligatorio pase la guarda sin descriptor válido y coincidente (PASS por defecto), o que la identidad del directorio masks no se contraste con el descriptor del directorio acreditado.",
  "clasificacion": [
   "comportamiento_rechazado_por_diseno"
  ],
@@ -21,123 +21,110 @@
    "png": "opcional (matplotlib)"
   }
  },
- "nota": "masks OBLIGATORIO ausente (MQR) -> FAIL; masks OPCIONAL ausente (Hardened/EVO) -> PASS en esa dimensión con el resto completo y sus comprobaciones activas (c2: eliminar analysis.txt sigue dando FAIL); masks PRESENTE aunque opcional debe ser directorio real, no symlink (d); la ausencia se construye REAL en directorios independientes, sin ningún parámetro que desactive la comprobación",
+ "nota": "E1-A: item.get(\"identidad_vs_fd\", True) ELIMINADO — la ausencia del descriptor es FAIL (nunca PASS por defecto); E1-B: masks presente exige (st_dev, st_ino) == fstat(fd_masks) además de directorio real y no symlink; masks opcional ausente sigue siendo válido (E1-B3) y obligatorio ausente FAIL (E1-B4); E1-B2 demuestra la detección de la sustitución por OTRO DIRECTORIO REAL (nuevo inodo, mismo nombre) gracias al contraste con fd_masks; ningún parámetro desactiva comprobaciones: ausencias, sustituciones y symlinks son reales en provisionales acreditados independientes",
  "resultado": {
-  "a_mqr_completo": {
-   "detalle": {
-    "analysis.json": {
-     "existe": true,
-     "identidad_vs_fd": true,
-     "ok": true,
-     "tipo": "regular"
-    },
-    "analysis.txt": {
-     "existe": true,
-     "identidad_vs_fd": true,
-     "ok": true,
-     "tipo": "regular"
-    },
-    "engine_log.txt": {
-     "existe": true,
-     "identidad_vs_fd": true,
-     "ok": true,
-     "tipo": "regular"
-    },
-    "input_integrity_6g.json": {
-     "existe": true,
-     "identidad_vs_fd": true,
-     "ok": true,
-     "tipo": "regular"
-    },
-    "masks": {
-     "esperado": "obligatorio",
-     "existe": true,
-     "ok": true,
-     "tipo": "directorio"
-    },
-    "mix SDI.wav": {
-     "existe": true,
-     "identidad_vs_fd": true,
-     "ok": true,
-     "tipo": "regular"
-    },
-    "mix SDV.wav": {
-     "existe": true,
-     "identidad_vs_fd": true,
-     "ok": true,
-     "tipo": "regular"
-    }
+  "E1-A1": {
+   "analysis": {
+    "descriptor_presente": true,
+    "existe": true,
+    "identidad_vs_fd": true,
+    "ok": true,
+    "tipo": "regular"
    },
+   "masks": {
+    "descriptor_presente": true,
+    "esperado": "obligatorio",
+    "existe": true,
+    "identidad_vs_fd": true,
+    "ok": true,
+    "tipo": "directorio"
+   },
+   "situacion": "todos los artefactos obligatorios presentes con descriptores correctos (incluido fd_masks)",
    "veredicto": "PASS"
   },
-  "b_mqr_masks_ausente": {
+  "E1-A2": {
+   "analysis": {
+    "descriptor_presente": false,
+    "existe": true,
+    "identidad_vs_fd": false,
+    "ok": false,
+    "tipo": "regular"
+   },
+   "situacion": "analysis.json presente pero su descriptor fue omitido del registro (el fd sigue abierto en el motor)",
+   "veredicto": "FAIL"
+  },
+  "E1-A3": {
+   "analysis": {
+    "descriptor_presente": true,
+    "existe": true,
+    "identidad_vs_fd": false,
+    "ok": false,
+    "tipo": "regular"
+   },
+   "situacion": "analysis.json sustituido por otro regular con identidad distinta (el descriptor del registro apunta al original)",
+   "veredicto": "FAIL"
+  },
+  "E1-B1": {
    "masks": {
+    "descriptor_presente": true,
     "esperado": "obligatorio",
-    "existe": false,
-    "ok": false,
-    "tipo": "ausente"
+    "existe": true,
+    "identidad_vs_fd": true,
+    "ok": true,
+    "tipo": "directorio"
    },
-   "veredicto": "FAIL"
+   "situacion": "masks presente (directorio real) y coincide con fd_masks",
+   "veredicto": "PASS"
   },
-  "c2_hevo_otro_obligatorio_eliminado": {
-   "analysis_txt": {
-    "existe": false,
-    "ok": false,
-    "tipo": "otro/ausente"
-   },
-   "masks_igual_ok": true,
-   "veredicto": "FAIL"
-  },
-  "c_hevo_masks_ausente": {
+  "E1-B2": {
    "masks": {
+    "descriptor_presente": true,
+    "esperado": "obligatorio",
+    "existe": true,
+    "identidad_vs_fd": false,
+    "ok": false,
+    "tipo": "directorio"
+   },
+   "situacion": "masks sustituido por otro directorio REAL con identidad distinta (fd_masks conserva el inodo original)",
+   "veredicto": "FAIL"
+  },
+  "E1-B3": {
+   "masks": {
+    "descriptor_presente": false,
     "esperado": "opcional",
     "existe": false,
     "ok": true,
     "tipo": "ausente"
    },
-   "resto_ok": {
-    "analysis.json": true,
-    "analysis.txt": true,
-    "engine_log.txt": true,
-    "input_integrity_6g.json": true,
-    "mix SDI.wav": true,
-    "mix SDV.wav": true
-   },
+   "situacion": "masks AUSENTE (real, sin simulación) en modo Hardened/EVO sin masks",
    "veredicto": "PASS"
   },
-  "d_masks_symlink_aun_opcional": {
+  "E1-B4": {
    "masks": {
-    "esperado": "opcional",
-    "existe": true,
-    "ok": false,
-    "tipo": "symlink"
-   },
-   "veredicto_obligatorio": "FAIL",
-   "veredicto_opcional": "FAIL"
-  },
-  "e1_obligatorio_eliminado": {
-   "mix_sdi": {
+    "descriptor_presente": false,
+    "esperado": "obligatorio",
     "existe": false,
     "ok": false,
-    "tipo": "otro/ausente"
+    "tipo": "ausente"
    },
+   "situacion": "masks AUSENTE (real, sin simulación) en modo MQR (siempre obligatorio)",
    "veredicto": "FAIL"
   },
-  "e2_symlink": {
-   "analysis": {
+  "E1-B5": {
+   "masks": {
+    "descriptor_presente": false,
+    "esperado": "obligatorio",
     "existe": true,
     "identidad_vs_fd": false,
     "ok": false,
     "tipo": "symlink"
    },
-   "veredicto": "FAIL"
-  },
-  "e3_identidad_distinta": {
-   "identidad_vs_fd": false,
-   "veredicto": "FAIL"
+   "situacion": "masks precolocado como symlink por el atacante (aun opcional debe ser directorio real)",
+   "veredicto": "FAIL",
+   "veredicto_si_opcional": "FAIL"
   }
  },
  "schema": "prototipo-cdefg-1/1",
- "titulo": "Guarda de completitud por descriptor (matriz por motor/modo): existencia, tipo, no-symlink, identidad vs fd de creación; rectificación: obligatoriedad de masks EFECTIVA con directorios de prueba independientes",
+ "titulo": "Guarda de completitud por descriptor: existencia, tipo, no-symlink e identidad vs fd de creación; RECTIFICACIÓN FINAL: descriptor ausente -> FAIL (sin PASS por defecto) e identidad del directorio masks vs fd_masks, con 8 escenarios independientes",
  "veredicto": "PASS"
 }

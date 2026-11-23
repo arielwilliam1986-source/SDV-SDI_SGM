@@ -1,0 +1,111 @@
+{
+ "schema": "rectificacion-final-manifest/1",
+ "fecha": "2026-11-23T18:58:15Z",
+ "rama": "arena/f1c5739f-sdv-sdi-sgm",
+ "commit_padre": "a4139af556ec3a72b3d4063cb678143debda6d95",
+ "referencia_tecnica": "9fedc5b223444e73955d2b899b6a434b0f5c670e",
+ "instruccion": "Cris 23-11-2026: RECTIFICACION FINAL DE E1 — identidad de descriptores y directorio masks (+ delimitacion del alcance documental de G1)",
+ "hallazgos_auditoria_aceptados": {
+  "E1_A": "la expresion item.get(\"identidad_vs_fd\", True) aceptaba un regular sin descriptor correspondiente (PASS por defecto)",
+  "E1_B": "la guarda no contrastaba la identidad de masks con el descriptor del directorio acreditado (fd_masks)"
+ },
+ "alcance_g1": "delimitado: SHA-256 demostrado SOLO sobre mix SDV.wav y analysis.json; NO se afirma verificacion de todos los artefactos de produccion; no se amplia sin la matriz real por motor y modo (hallazgo E)",
+ "resultados": {
+  "veredictos": {
+   "C1_C4": "DEMOSTRADO (sin cambios)",
+   "C5": "PASS (sin cambios)",
+   "C6": "PASS (sin cambios)",
+   "D1": "DEMOSTRADO (sin cambios)",
+   "D2": "PASS (sin cambios)",
+   "E1": "PASS (rectificacion final: 8/8 escenarios exigidos)",
+   "F1": "PASS (sin cambios)",
+   "G1": "PASS (alcance delimitado)"
+  },
+  "E1": {
+   "E1_A": "RECTIFICADO — item.get(\"identidad_vs_fd\", True) ELIMINADO: identidad_vs_fd solo es True con entrada existente + descriptor presente + (st_dev,st_ino) coincidentes; campo descriptor_presente por artefacto; item ok exige existe+regular+no-symlink+descriptor presente+identidad; descriptor AUSENTE -> FAIL (nunca PASS por defecto)",
+   "E1_B": "RECTIFICADO — masks presente exige (st_dev,st_ino) de la entrada nominal == fstat(fd_masks), ademas de directorio real y no symlink; masks presente sin descriptor -> FAIL; masks opcional ausente sigue valido; masks obligatorio ausente -> FAIL",
+   "escenarios": {
+    "E1_A1": "archivo obligatorio presente y descriptor correcto -> PASS",
+    "E1_A2": "archivo presente pero descriptor OMITIDO del registro -> FAIL (descriptor_presente=False, identidad_vs_fd=False)",
+    "E1_A3": "archivo sustituido por otro regular con identidad distinta -> FAIL",
+    "E1_B1": "masks presente y coincide con fd_masks -> PASS",
+    "E1_B2": "masks sustituido por OTRO DIRECTORIO REAL con identidad distinta (rmdir+mkdir, nuevo inodo) -> FAIL detectado por contraste con fd_masks",
+    "E1_B3": "masks ausente y OPCIONAL -> PASS en esa dimension",
+    "E1_B4": "masks ausente y OBLIGATORIO -> FAIL",
+    "E1_B5": "masks presente como symlink -> FAIL (tambien declarandolo opcional)"
+   },
+   "metodo": "provisionales acreditados INDEPENDIENTES (crear_y_anclar por sub-caso); ausencias, sustituciones y symlinks REALES; ningun parametro desactiva comprobaciones"
+  },
+  "separacion": "prueba de MECANISMO; RG-FLOW real por motor pendiente de autorizacion; compatibilidad EVO/MQR no inferida por similitud; diseno no declarado completo hasta resolver puntos exclusivos de MQR (relectura analysis.json L3578) en flujo real"
+ },
+ "archivos_modificados": {
+  "prototype": "scripts/prototipo_hallazgos_cdefg_6g1.py (M; main() NO modificado)",
+  "evidencias_regen": "escenario_e1.json (8 sub-casos nuevos), escenario_g1.json (alcance), c6/d1/consolidado (re-ejecucion: (dev,ino)/ts reales varian; veredictos sin cambio)",
+  "evidencias_byte_identicas": [
+   "escenario_c1_c4.json",
+   "escenario_c5.json",
+   "escenario_d2.json",
+   "escenario_f1.json"
+  ],
+  "nuevos": [
+   "INFORME_RECTIFICACION_FINAL_E1_6G1.md",
+   "MANIFEST_RECTIFICACION_FINAL_E1_6G1.json",
+   "SHA256SUMS_RECTIFICACION_FINAL_E1_6G1.txt"
+  ],
+  "produccion": "CERO cambios: motores Hardened/EVO/MQR, lectura_segura_6g1.py, DSP, formulas, fixtures y validadores byte a byte identicos"
+ },
+ "no_implementado": [
+  "todo mecanismo en produccion",
+  "corridas reales de motores",
+  "baterias historicas y prueba DSP",
+  "audio real, Android, Termux",
+  "integracion (prohibida)"
+ ],
+ "estado": "rectificacion final para adjudicacion de Cris; NO implementado; 6G.1 ABIERTA; parada obligatoria",
+ "archivos": [
+  {
+   "ruta": "ETAPA_6G1_CORRECCION_LECTURA_SEGURA/INFORME_RECTIFICACION_FINAL_E1_6G1.md",
+   "sha256": "7d7d2a826fd11f1511b022c0f019e6596347c6a910934d634e07d15651884630"
+  },
+  {
+   "ruta": "ETAPA_6G1_CORRECCION_LECTURA_SEGURA/scripts/prototipo_hallazgos_cdefg_6g1.py",
+   "sha256": "26371444b0baa464cb8b69818b197ff0cb61086822037c8698bda236051748f7"
+  },
+  {
+   "ruta": "ETAPA_6G1_CORRECCION_LECTURA_SEGURA/evidence/prototipo_hallazgos_cdefg_6g1/consolidado_prototipo_cdefg.json",
+   "sha256": "3c4189d89082fba980b0d08931908d38e6564e25ca97780e4294dc424fecdd68"
+  },
+  {
+   "ruta": "ETAPA_6G1_CORRECCION_LECTURA_SEGURA/evidence/prototipo_hallazgos_cdefg_6g1/escenario_c1_c4.json",
+   "sha256": "fc661134f176498d98c8f65413f3d76c5d8ba2f2ec42cce1d08b23cfd6b4038d"
+  },
+  {
+   "ruta": "ETAPA_6G1_CORRECCION_LECTURA_SEGURA/evidence/prototipo_hallazgos_cdefg_6g1/escenario_c5.json",
+   "sha256": "ebfd214e6313269a9e78d56a52befc99ae0f6675f7a5d11d7853061c07fe87e9"
+  },
+  {
+   "ruta": "ETAPA_6G1_CORRECCION_LECTURA_SEGURA/evidence/prototipo_hallazgos_cdefg_6g1/escenario_c6.json",
+   "sha256": "7210b899c181bbcc03da8931082542e3b320ea29b8ff2e766ce628bca1c6e726"
+  },
+  {
+   "ruta": "ETAPA_6G1_CORRECCION_LECTURA_SEGURA/evidence/prototipo_hallazgos_cdefg_6g1/escenario_d1.json",
+   "sha256": "a54b9d2c82eefdd910a50345f6574e47232d26bcdad416e79eaaaece82d0d225"
+  },
+  {
+   "ruta": "ETAPA_6G1_CORRECCION_LECTURA_SEGURA/evidence/prototipo_hallazgos_cdefg_6g1/escenario_d2.json",
+   "sha256": "09bf5ab84975d333f3388a0b3ee2b6c2f18aea8ac50960bae1a6cf50d487f720"
+  },
+  {
+   "ruta": "ETAPA_6G1_CORRECCION_LECTURA_SEGURA/evidence/prototipo_hallazgos_cdefg_6g1/escenario_e1.json",
+   "sha256": "63aff4f3b5e325e3945f32297edb36db3e69d5359b5fac0be43d2abe4466b731"
+  },
+  {
+   "ruta": "ETAPA_6G1_CORRECCION_LECTURA_SEGURA/evidence/prototipo_hallazgos_cdefg_6g1/escenario_f1.json",
+   "sha256": "045a8af0eaa68d8458d452c1b73d609f412fe4a534fddee7478a62c24811ce03"
+  },
+  {
+   "ruta": "ETAPA_6G1_CORRECCION_LECTURA_SEGURA/evidence/prototipo_hallazgos_cdefg_6g1/escenario_g1.json",
+   "sha256": "de7153c441b01560b574cdcac8f9246ec0a8a981676c4dbfb06c5c966f7457d5"
+  }
+ ]
+}

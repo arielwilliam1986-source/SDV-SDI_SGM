@@ -29,7 +29,11 @@ Escenarios:
           descriptor, invalidación sin eliminación, con fds abiertos y en
           camino de excepción; cierre de todos los descriptores (0 residuales)
   E1      guarda de completitud (matriz por motor/modo): existencia, tipo,
-          no-symlink, identidad vs fd de creación. RECTIFICACIÓN (Cris): la
+          no-symlink, identidad vs fd de creación. RECTIFICACIÓN FINAL
+          (Cris): E1-A todo artefacto obligatorio EXIGE descriptor válido y
+          coincidente (descriptor ausente -> FAIL, sin PASS por defecto);
+          E1-B masks presente exige identidad (dev,ino) == fstat(fd_masks).
+          RECTIFICACIÓN previa: la
           obligatoriedad de masks depende EFECTIVAMENTE de masks_obligatorio
           (sin parámetro que desactive la comprobación): directorios de
           prueba INDEPENDIENTES — MQR masks ausente+obligatorio -> FAIL;
@@ -46,7 +50,9 @@ Escenarios:
   G1      evidencia forense: publicacion_6g1.json escrito por fd_run ANTES de
           publicar (viaja con el inodo), verificación externa post-B2;
           manipulación por la misma uid demostrada (NO inmutable, declarado).
-          RECTIFICACIÓN (Cris): verificación EFECTIVA de integridad —
+          RECTIFICACIÓN FINAL (Cris): verificación EFECTIVA de integridad con
+          alcance documental DELIMITADO (mix SDV.wav y analysis.json; NO se
+          afirma la verificación de todos los artefactos de producción) —
           publicar -> leer el registro -> RECALCULAR los SHA-256 de los
           artefactos publicados -> comparar -> PASS al coincidir; escenario
           INDEPENDIENTE con alteración deliberada de un artefacto publicado
@@ -749,12 +755,17 @@ DIF_MOTOR = {
 }
 
 
-def checklist_completitud(fd_run, fds_archivos, masks_obligatorio):
+def checklist_completitud(fd_run, fds_archivos, masks_obligatorio,
+                          fd_masks=None):
     """Guarda de completitud por descriptor: existencia, tipo, no-symlink e
-    identidad vs fd de creación. RECTIFICACIÓN Cris: la obligatoriedad de
-    masks depende EFECTIVAMENTE de masks_obligatorio (no existe parámetro que
-    desactive la comprobación); si masks EXISTE (aunque sea opcional) debe ser
-    un directorio REAL, no un symlink. Devuelve (veredicto, detalles)."""
+    identidad vs fd de creación. RECTIFICACIÓN FINAL Cris (E1-A/E1-B):
+    E1-A: todo artefacto obligatorio EXIGE un descriptor válido y coincidente;
+    la AUSENCIA del descriptor produce FAIL (nunca PASS por defecto: se
+    elimina el valor por defecto True de item.get('identidad_vs_fd', True)).
+    E1-B: si masks EXISTE, su identidad nominal (st_dev, st_ino) debe
+    coincidir con fstat(fd_masks); masks presente sin descriptor -> FAIL.
+    masks opcional y ausente sigue siendo válido; obligatorio y ausente ->
+    FAIL. Devuelve (veredicto, detalles)."""
     det, ok = {}, True
     for nombre, spec in SPEC_COMUN.items():
         st = fstatat_nofollow(fd_run, nombre)
@@ -762,14 +773,18 @@ def checklist_completitud(fd_run, fds_archivos, masks_obligatorio):
                     tipo=('symlink' if st and stat.S_ISLNK(st.st_mode)
                           else 'regular' if st and stat.S_ISREG(st.st_mode)
                           else 'directorio' if st and stat.S_ISDIR(st.st_mode)
-                          else 'otro/ausente'))
+                          else 'otro/ausente'),
+                    descriptor_presente=nombre in fds_archivos)
         fd = fds_archivos.get(nombre)
         if st is not None and fd is not None:
             item['identidad_vs_fd'] = (st.st_dev, st.st_ino) == \
                 (os.fstat(fd).st_dev, os.fstat(fd).st_ino)
+        else:
+            item['identidad_vs_fd'] = False
         item['ok'] = (st is not None and stat.S_ISREG(st.st_mode)
                       and not stat.S_ISLNK(st.st_mode)
-                      and item.get('identidad_vs_fd', True))
+                      and fd is not None
+                      and item['identidad_vs_fd'])
         ok = ok and item['ok']
         det[nombre] = item
     st_m = fstatat_nofollow(fd_run, 'masks')
@@ -777,13 +792,21 @@ def checklist_completitud(fd_run, fds_archivos, masks_obligatorio):
              tipo=('symlink' if st_m and stat.S_ISLNK(st_m.st_mode)
                    else 'directorio' if st_m and stat.S_ISDIR(st_m.st_mode)
                    else 'regular/ausente' if st_m else 'ausente'),
-             esperado=('obligatorio' if masks_obligatorio else 'opcional'))
+             esperado=('obligatorio' if masks_obligatorio else 'opcional'),
+             descriptor_presente=fd_masks is not None)
     if st_m is None:
         m['ok'] = not masks_obligatorio   # ausente: sólo vale si es OPCIONAL
     else:
-        # presente (obligatorio u opcional): directorio REAL, no symlink
+        # presente (obligatorio u opcional): directorio REAL, no symlink y
+        # con IDENTIDAD coincidente con fd_masks (E1-B); descriptor ausente
+        # -> FAIL (nunca PASS por defecto)
+        m['identidad_vs_fd'] = (fd_masks is not None
+                                and (st_m.st_dev, st_m.st_ino)
+                                == (os.fstat(fd_masks).st_dev,
+                                    os.fstat(fd_masks).st_ino))
         m['ok'] = (stat.S_ISDIR(st_m.st_mode)
-                   and not stat.S_ISLNK(st_m.st_mode))
+                   and not stat.S_ISLNK(st_m.st_mode)
+                   and m['identidad_vs_fd'])
     ok = ok and m['ok']
     det['masks'] = m
     return ('PASS' if ok else 'FAIL'), det
@@ -791,8 +814,10 @@ def checklist_completitud(fd_run, fds_archivos, masks_obligatorio):
 
 def _dir_e1(work, etiqueta, con_masks=True, masks_symlink=False):
     """Directorio de prueba INDEPENDIENTE para E1: provisional acreditado con
-    todos los artefactos comunes y masks (o su ausencia, o symlink) según el
-    sub-caso. Sin simulaciones por parámetro: la ausencia es REAL."""
+    todos los artefactos comunes y masks (real / ausente / symlink) según el
+    sub-caso. Devuelve (ancla, r, fd_run, fds, fd_masks). Sin simulaciones por
+    parámetro que desactiven comprobaciones: la ausencia, el symlink o la
+    sustitución son REALES en cada directorio."""
     ancla, r = _estructura(work, etiqueta)
     fd_run = os.open(ancla['nombre'], os.O_RDONLY | os.O_DIRECTORY
                      | os.O_NOFOLLOW, dir_fd=ancla['fd_padre'])
@@ -800,122 +825,158 @@ def _dir_e1(work, etiqueta, con_masks=True, masks_symlink=False):
     for nombre in SPEC_COMUN:
         fds[nombre] = os.open(nombre, os.O_CREAT | os.O_EXCL | os.O_WRONLY
                               | os.O_NOFOLLOW, 0o600, dir_fd=fd_run)
+    fd_masks = None
     if masks_symlink:
         os.symlink(os.path.join(r['raiz'], 'ajeno_masks'), 'masks',
                    dir_fd=fd_run)
     elif con_masks:
         os.mkdir('masks', 0o700, dir_fd=fd_run)
-    return ancla, r, fd_run, fds
+        fd_masks = os.open('masks', os.O_RDONLY | os.O_DIRECTORY
+                           | os.O_NOFOLLOW, dir_fd=fd_run)
+    return ancla, r, fd_run, fds, fd_masks
+
+
+def _cerrar_dir_e1(ancla_x, fd_run_x, fds_x, fd_masks_x, raiz_x):
+    for f in fds_x.values():
+        os.close(f)
+    if fd_masks_x is not None:
+        os.close(fd_masks_x)
+    os.close(fd_run_x)
+    os.close(ancla_x['fd_padre'])
+    limpiar(raiz_x)
 
 
 def escenario_e1(work, outdir):
-    """E1: guarda de completitud con directorios de prueba INDEPENDIENTES
-    (rectificación Cris: sin parámetro que desactive la comprobación)."""
+    """E1 (rectificación FINAL Cris): identidad de descriptores (E1-A) y del
+    directorio masks (E1-B) — 8 escenarios nuevos con provisionales
+    acreditados independientes; sin simulaciones por parámetro."""
     resultados = {}
-    # (a) MQR completo (masks presente y obligatorio) -> PASS
-    ancla_a, r_a, fd_a, fds_a = _dir_e1(work, 'E1a-mqr-completo')
-    v, det = checklist_completitud(fd_a, fds_a, masks_obligatorio=True)
-    resultados['a_mqr_completo'] = dict(veredicto=v, detalle=det)
-    # (b) MQR: masks AUSENTE (real, dir independiente sin masks) y
-    #     OBLIGATORIO -> FAIL por esa dimensión
-    ancla_b, r_b, fd_b, fds_b = _dir_e1(work, 'E1b-mqr-masks-ausente',
-                                        con_masks=False)
-    v2, det2 = checklist_completitud(fd_b, fds_b, masks_obligatorio=True)
-    resultados['b_mqr_masks_ausente'] = dict(veredicto=v2, masks=det2['masks'])
-    # (c) Hardened/EVO: masks AUSENTE (real) y OPCIONAL, resto completo ->
-    #     PASS respecto a esa dimensión (los demás artefactos obligatorios
-    #     pasan SUS comprobaciones)
-    ancla_c, r_c, fd_c, fds_c = _dir_e1(work, 'E1c-hevo-masks-opcional',
-                                        con_masks=False)
-    v3, det3 = checklist_completitud(fd_c, fds_c, masks_obligatorio=False)
-    resultados['c_hevo_masks_ausente'] = dict(
-        veredicto=v3, masks=det3['masks'],
-        resto_ok={k: det3[k]['ok'] for k in det3 if k != 'masks'})
-    # (c2) en el MISMO directorio H/EVO: se elimina analysis.txt (real) ->
-    #      FAIL: el resto de artefactos obligatorios SIGUE sometido a sus
-    #      propias comprobaciones aunque masks sea opcional
-    os.unlink('analysis.txt', dir_fd=fd_c)
-    v3b, det3b = checklist_completitud(fd_c, fds_c, masks_obligatorio=False)
-    resultados['c2_hevo_otro_obligatorio_eliminado'] = dict(
-        veredicto=v3b, analysis_txt=det3b['analysis.txt'],
-        masks_igual_ok=det3b['masks']['ok'])
-    # (d) masks EXISTE pero es symlink, aun OPCIONAL -> FAIL (debe ser
-    #     directorio real)
-    ancla_d, r_d, fd_d, fds_d = _dir_e1(work, 'E1d-masks-symlink',
-                                        masks_symlink=True)
-    v4, det4 = checklist_completitud(fd_d, fds_d, masks_obligatorio=False)
-    v4b, _ = checklist_completitud(fd_d, fds_d, masks_obligatorio=True)
-    resultados['d_masks_symlink_aun_opcional'] = dict(
-        veredicto_opcional=v4, veredicto_obligatorio=v4b,
-        masks=det4['masks'])
-    # (e) fallos genéricos en dir MQR independiente: (e1) obligatorio
-    #     eliminado, (e2) symlink, (e3) identidad distinta
-    ancla_e, r_e, fd_e, fds_e = _dir_e1(work, 'E1e-fallos-genericos')
-    os.unlink('mix SDI.wav', dir_fd=fd_e)
-    v5, det5 = checklist_completitud(fd_e, fds_e, masks_obligatorio=True)
-    resultados['e1_obligatorio_eliminado'] = dict(
-        veredicto=v5, mix_sdi=det5['mix SDI.wav'])
-    os.unlink('analysis.json', dir_fd=fd_e)
-    os.symlink(os.path.join(r_e['raiz'], 'ajeno.json'), 'analysis.json',
-               dir_fd=fd_e)
-    v6, det6 = checklist_completitud(fd_e, fds_e, masks_obligatorio=True)
-    resultados['e2_symlink'] = dict(veredicto=v6,
-                                    analysis=det6['analysis.json'])
-    os.unlink('analysis.json', dir_fd=fd_e)
+    # E1-A1: archivo obligatorio presente y descriptor correcto -> PASS
+    an, r_x, fr, fds, fm = _dir_e1(work, 'E1-A1')
+    v, det = checklist_completitud(fr, fds, masks_obligatorio=True,
+                                   fd_masks=fm)
+    resultados['E1-A1'] = dict(
+        situacion='todos los artefactos obligatorios presentes con '
+                  'descriptores correctos (incluido fd_masks)',
+        veredicto=v, analysis=det['analysis.json'], masks=det['masks'])
+    _cerrar_dir_e1(an, fr, fds, fm, r_x['raiz'])
+    # E1-A2: archivo obligatorio presente pero descriptor OMITIDO -> FAIL
+    an, r_x, fr, fds, fm = _dir_e1(work, 'E1-A2')
+    fd_omitido = fds.pop('analysis.json')   # el registro omite ese descriptor
+    v, det = checklist_completitud(fr, fds, masks_obligatorio=True,
+                                   fd_masks=fm)
+    resultados['E1-A2'] = dict(
+        situacion='analysis.json presente pero su descriptor fue omitido del '
+                  'registro (el fd sigue abierto en el motor)',
+        veredicto=v, analysis=det['analysis.json'])
+    os.close(fd_omitido)
+    _cerrar_dir_e1(an, fr, fds, fm, r_x['raiz'])
+    # E1-A3: archivo sustituido por otro regular con identidad distinta -> FAIL
+    an, r_x, fr, fds, fm = _dir_e1(work, 'E1-A3')
+    os.unlink('analysis.json', dir_fd=fr)
     fd_imp = os.open('analysis.json', os.O_CREAT | os.O_EXCL | os.O_WRONLY
-                     | os.O_NOFOLLOW, 0o600, dir_fd=fd_e)
+                     | os.O_NOFOLLOW, 0o600, dir_fd=fr)  # impostor (misma uid)
     os.close(fd_imp)
-    v7, det7 = checklist_completitud(fd_e, fds_e, masks_obligatorio=True)
-    resultados['e3_identidad_distinta'] = dict(
-        veredicto=v7,
-        identidad_vs_fd=det7['analysis.json'].get('identidad_vs_fd'))
-    for fds_x, fdx, ax in ((fds_a, fd_a, ancla_a), (fds_b, fd_b, ancla_b),
-                           (fds_c, fd_c, ancla_c), (fds_d, fd_d, ancla_d),
-                           (fds_e, fd_e, ancla_e)):
-        for f in fds_x.values():
-            os.close(f)
-        os.close(fdx)
-        os.close(ax['fd_padre'])
-    ok = (resultados['a_mqr_completo']['veredicto'] == 'PASS'
-          and resultados['b_mqr_masks_ausente']['veredicto'] == 'FAIL'
-          and resultados['b_mqr_masks_ausente']['masks']['ok'] is False
-          and resultados['b_mqr_masks_ausente']['masks']['esperado']
-          == 'obligatorio'
-          and resultados['c_hevo_masks_ausente']['veredicto'] == 'PASS'
-          and resultados['c_hevo_masks_ausente']['masks']['ok'] is True
-          and resultados['c_hevo_masks_ausente']['masks']['esperado']
-          == 'opcional'
-          and all(resultados['c_hevo_masks_ausente']['resto_ok'].values())
-          and resultados['c2_hevo_otro_obligatorio_eliminado']['veredicto']
-          == 'FAIL'
-          and resultados['d_masks_symlink_aun_opcional']
-          ['veredicto_opcional'] == 'FAIL'
-          and resultados['d_masks_symlink_aun_opcional']['masks']['tipo']
-          == 'symlink'
-          and resultados['e1_obligatorio_eliminado']['veredicto'] == 'FAIL'
-          and resultados['e2_symlink']['veredicto'] == 'FAIL'
-          and resultados['e3_identidad_distinta']['veredicto'] == 'FAIL')
-    limpiar(r_a['raiz']); limpiar(r_b['raiz']); limpiar(r_c['raiz'])
-    limpiar(r_d['raiz']); limpiar(r_e['raiz'])
+    v, det = checklist_completitud(fr, fds, masks_obligatorio=True,
+                                   fd_masks=fm)
+    resultados['E1-A3'] = dict(
+        situacion='analysis.json sustituido por otro regular con identidad '
+                  'distinta (el descriptor del registro apunta al original)',
+        veredicto=v, analysis=det['analysis.json'])
+    _cerrar_dir_e1(an, fr, fds, fm, r_x['raiz'])
+    # E1-B1: masks presente y coincide con fd_masks -> PASS
+    an, r_x, fr, fds, fm = _dir_e1(work, 'E1-B1')
+    v, det = checklist_completitud(fr, fds, masks_obligatorio=True,
+                                   fd_masks=fm)
+    resultados['E1-B1'] = dict(
+        situacion='masks presente (directorio real) y coincide con fd_masks',
+        veredicto=v, masks=det['masks'])
+    _cerrar_dir_e1(an, fr, fds, fm, r_x['raiz'])
+    # E1-B2: masks sustituido por OTRO DIRECTORIO REAL con identidad distinta
+    an, r_x, fr, fds, fm = _dir_e1(work, 'E1-B2')
+    os.rmdir('masks', dir_fd=fr)          # el atacante (misma uid) sustituye
+    os.mkdir('masks', 0o700, dir_fd=fr)   # nuevo inodo, mismo nombre
+    v, det = checklist_completitud(fr, fds, masks_obligatorio=True,
+                                   fd_masks=fm)  # fd_masks: inodo ORIGINAL
+    resultados['E1-B2'] = dict(
+        situacion='masks sustituido por otro directorio REAL con identidad '
+                  'distinta (fd_masks conserva el inodo original)',
+        veredicto=v, masks=det['masks'])
+    _cerrar_dir_e1(an, fr, fds, fm, r_x['raiz'])
+    # E1-B3: masks ausente y OPCIONAL -> PASS en esa dimensión
+    an, r_x, fr, fds, fm = _dir_e1(work, 'E1-B3', con_masks=False)
+    v, det = checklist_completitud(fr, fds, masks_obligatorio=False,
+                                   fd_masks=None)
+    resultados['E1-B3'] = dict(
+        situacion='masks AUSENTE (real, sin simulación) en modo Hardened/EVO '
+                  'sin masks', veredicto=v, masks=det['masks'])
+    _cerrar_dir_e1(an, fr, fds, fm, r_x['raiz'])
+    # E1-B4: masks ausente y OBLIGATORIO -> FAIL
+    an, r_x, fr, fds, fm = _dir_e1(work, 'E1-B4', con_masks=False)
+    v, det = checklist_completitud(fr, fds, masks_obligatorio=True,
+                                   fd_masks=None)
+    resultados['E1-B4'] = dict(
+        situacion='masks AUSENTE (real, sin simulación) en modo MQR '
+                  '(siempre obligatorio)', veredicto=v, masks=det['masks'])
+    _cerrar_dir_e1(an, fr, fds, fm, r_x['raiz'])
+    # E1-B5: masks presente como symlink -> FAIL
+    an, r_x, fr, fds, fm = _dir_e1(work, 'E1-B5', masks_symlink=True)
+    v, det = checklist_completitud(fr, fds, masks_obligatorio=True,
+                                   fd_masks=None)
+    v2, det2 = checklist_completitud(fr, fds, masks_obligatorio=False,
+                                     fd_masks=None)
+    resultados['E1-B5'] = dict(
+        situacion='masks precolocado como symlink por el atacante (aun '
+                  'opcional debe ser directorio real)',
+        veredicto=v, veredicto_si_opcional=v2, masks=det['masks'])
+    _cerrar_dir_e1(an, fr, fds, fm, r_x['raiz'])
+    ok = (resultados['E1-A1']['veredicto'] == 'PASS'
+          and resultados['E1-A1']['masks']['identidad_vs_fd'] is True
+          and resultados['E1-A1']['analysis']['ok'] is True
+          and resultados['E1-A2']['veredicto'] == 'FAIL'
+          and resultados['E1-A2']['analysis']['ok'] is False
+          and resultados['E1-A2']['analysis']['descriptor_presente'] is False
+          and resultados['E1-A2']['analysis']['identidad_vs_fd'] is False
+          and resultados['E1-A3']['veredicto'] == 'FAIL'
+          and resultados['E1-A3']['analysis']['ok'] is False
+          and resultados['E1-A3']['analysis']['identidad_vs_fd'] is False
+          and resultados['E1-B1']['veredicto'] == 'PASS'
+          and resultados['E1-B1']['masks']['identidad_vs_fd'] is True
+          and resultados['E1-B2']['veredicto'] == 'FAIL'
+          and resultados['E1-B2']['masks']['identidad_vs_fd'] is False
+          and resultados['E1-B2']['masks']['tipo'] == 'directorio'
+          and resultados['E1-B3']['veredicto'] == 'PASS'
+          and resultados['E1-B3']['masks']['ok'] is True
+          and resultados['E1-B3']['masks']['esperado'] == 'opcional'
+          and resultados['E1-B4']['veredicto'] == 'FAIL'
+          and resultados['E1-B4']['masks']['ok'] is False
+          and resultados['E1-B4']['masks']['esperado'] == 'obligatorio'
+          and resultados['E1-B5']['veredicto'] == 'FAIL'
+          and resultados['E1-B5']['veredicto_si_opcional'] == 'FAIL'
+          and resultados['E1-B5']['masks']['tipo'] == 'symlink')
     return nuevo(
-        'E1', 'Guarda de completitud por descriptor (matriz por motor/modo): '
-        'existencia, tipo, no-symlink, identidad vs fd de creación; '
-        'rectificación: obligatoriedad de masks EFECTIVA con directorios de '
-        'prueba independientes',
-        'Que EXIT_OK se declare con un artefacto obligatorio ausente, '
-        'sustituido, enlazado o con identidad distinta; o que la '
-        'obligatoriedad condicional de masks no se aplique realmente.',
+        'E1', 'Guarda de completitud por descriptor: existencia, tipo, '
+        'no-symlink e identidad vs fd de creación; RECTIFICACIÓN FINAL: '
+        'descriptor ausente -> FAIL (sin PASS por defecto) e identidad del '
+        'directorio masks vs fd_masks, con 8 escenarios independientes',
+        'Que un artefacto obligatorio pase la guarda sin descriptor válido y '
+        'coincidente (PASS por defecto), o que la identidad del directorio '
+        'masks no se contraste con el descriptor del directorio acreditado.',
         ['comportamiento_rechazado_por_diseno'], resultados,
         extra=dict(veredicto='PASS' if ok else 'REVIEW',
                    matriz_motores=DIF_MOTOR,
-                   nota='masks OBLIGATORIO ausente (MQR) -> FAIL; masks '
-                        'OPCIONAL ausente (Hardened/EVO) -> PASS en esa '
-                        'dimensión con el resto completo y sus comprobaciones '
-                        'activas (c2: eliminar analysis.txt sigue dando '
-                        'FAIL); masks PRESENTE aunque opcional debe ser '
-                        'directorio real, no symlink (d); la ausencia se '
-                        'construye REAL en directorios independientes, sin '
-                        'ningún parámetro que desactive la comprobación'))
+                   nota='E1-A: item.get("identidad_vs_fd", True) ELIMINADO — '
+                        'la ausencia del descriptor es FAIL (nunca PASS por '
+                        'defecto); E1-B: masks presente exige (st_dev, '
+                        'st_ino) == fstat(fd_masks) además de directorio real '
+                        'y no symlink; masks opcional ausente sigue siendo '
+                        'válido (E1-B3) y obligatorio ausente FAIL (E1-B4); '
+                        'E1-B2 demuestra la detección de la sustitución por '
+                        'OTRO DIRECTORIO REAL (nuevo inodo, mismo nombre) '
+                        'gracias al contraste con fd_masks; ningún parámetro '
+                        'desactiva comprobaciones: ausencias, sustituciones y '
+                        'symlinks son reales en provisionales acreditados '
+                        'independientes'))
 
 
 # ---------------------------------------------------------------------------
@@ -1176,7 +1237,13 @@ def _auditar_integridad(ctx):
         ino_publicado=st_ext.st_ino,
         ino_en_registro=rec['provisional']['ino'],
         inodo_coincide=st_ext.st_ino == rec['provisional']['ino'],
-        contenido_publicado=sorted(os.listdir(publicado)))
+        contenido_publicado=sorted(os.listdir(publicado)),
+        alcance=dict(
+            artefactos_verificados=sorted(_MAPA_ARTEFACTOS.values()),
+            cobertura='demostración DELIMITADA del mecanismo de comparación '
+                      'SHA-256; NO constituye la verificación de TODOS los '
+                      'artefactos de producción (exige la matriz real de '
+                      'artefactos por motor y modo, hallazgo E)'))
 
 
 def escenario_g1(work, outdir):
@@ -1220,6 +1287,18 @@ def escenario_g1(work, outdir):
                              else 'PASS (INESPERADO)'),
         detalle_discrepancia={k: v['coincide']
                               for k, v in aud2['comparacion'].items()})
+    # alcance documental DELIMITADO (rectificación final Cris, punto 3):
+    # la auditoría demuestra el mecanismo SHA-256 sobre los artefactos del
+    # registro; NO se afirma la verificación de TODOS los artefactos de
+    # producción ni se amplía la prueba sin la matriz real por motor/modo
+    resultados['alcance_documental'] = dict(
+        artefactos_con_sha_verificado=sorted(_MAPA_ARTEFACTOS.values()),
+        declaracion='ALCANCE DELIMITADO: los resultados SHA-256 aceptados '
+                    'corresponden a mix SDV.wav y analysis.json; NO se '
+                    'afirma que se hayan verificado TODOS los artefactos de '
+                    'producción; ampliar la prueba a otros ficheros exige '
+                    'definir antes la matriz real de artefactos por motor y '
+                    'modo (hallazgo E)')
     # (c) el registro NO es inmutable frente a la misma uid (declaración
     #     mantenida; sin garantías de autenticidad)
     ruta_reg = os.path.join(ctx2['publicado'], 'publicacion_6g1.json')

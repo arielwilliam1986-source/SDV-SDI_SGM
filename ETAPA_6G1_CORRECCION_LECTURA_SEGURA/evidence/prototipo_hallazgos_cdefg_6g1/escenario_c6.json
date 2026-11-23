@@ -28,19 +28,19 @@
   "identidad_creacion": {
    "analysis": {
     "dev": 65024,
-    "ino": 534930
+    "ino": 534956
    },
    "log": {
     "dev": 65024,
-    "ino": 534933
+    "ino": 534959
    },
    "npy": {
     "dev": 65024,
-    "ino": 534932
+    "ino": 534958
    },
    "wav": {
     "dev": 65024,
-    "ino": 534931
+    "ino": 534957
    }
   },
   "sustituciones": {
@@ -54,48 +54,48 @@
     "coincide": false,
     "entrada": {
      "dev": 65024,
-     "ino": 534934
+     "ino": 534960
     },
     "entrada_es_symlink": true,
     "fd": {
      "dev": 65024,
-     "ino": 534930
+     "ino": 534956
     }
    },
    "log": {
     "coincide": false,
     "entrada": {
      "dev": 65024,
-     "ino": 534937
+     "ino": 534963
     },
     "entrada_es_symlink": true,
     "fd": {
      "dev": 65024,
-     "ino": 534933
+     "ino": 534959
     }
    },
    "npy": {
     "coincide": false,
     "entrada": {
      "dev": 65024,
-     "ino": 534936
+     "ino": 534962
     },
     "entrada_es_symlink": true,
     "fd": {
      "dev": 65024,
-     "ino": 534932
+     "ino": 534958
     }
    },
    "wav": {
     "coincide": false,
     "entrada": {
      "dev": 65024,
-     "ino": 534935
+     "ino": 534961
     },
     "entrada_es_symlink": true,
     "fd": {
      "dev": 65024,
-     "ino": 534931
+     "ino": 534957
     }
    }
   }

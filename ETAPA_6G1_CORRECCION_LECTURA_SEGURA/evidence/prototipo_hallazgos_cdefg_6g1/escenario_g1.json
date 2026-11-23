@@ -10,6 +10,13 @@
  "resultado": {
   "a_publicar_leer_recalcular_comparar": {
    "auditoria_integridad": {
+    "alcance": {
+     "artefactos_verificados": [
+      "analysis.json",
+      "mix SDV.wav"
+     ],
+     "cobertura": "demostración DELIMITADA del mecanismo de comparación SHA-256; NO constituye la verificación de TODOS los artefactos de producción (exige la matriz real de artefactos por motor y modo, hallazgo E)"
+    },
     "comparacion": {
      "analysis": {
       "almacenado": "7b8bcb0f5bc1c14badca52ea7f970cffa3087695b682f55b2fd1c7ec916cabfd",
@@ -27,8 +34,8 @@
      "mix SDV.wav",
      "publicacion_6g1.json"
     ],
-    "ino_en_registro": 534912,
-    "ino_publicado": 534912,
+    "ino_en_registro": 534947,
+    "ino_publicado": 534947,
     "inodo_coincide": true,
     "integridad_coincide": true,
     "registro_leido_del_publicado": true,
@@ -46,9 +53,23 @@
    },
    "veredicto_auditoria": "PASS"
   },
+  "alcance_documental": {
+   "artefactos_con_sha_verificado": [
+    "analysis.json",
+    "mix SDV.wav"
+   ],
+   "declaracion": "ALCANCE DELIMITADO: los resultados SHA-256 aceptados corresponden a mix SDV.wav y analysis.json; NO se afirma que se hayan verificado TODOS los artefactos de producción; ampliar la prueba a otros ficheros exige definir antes la matriz real de artefactos por motor y modo (hallazgo E)"
+  },
   "b_alteracion_detectada": {
    "alteracion_aplicada": "analysis.json publicado: bytes añadidos post-publicación (misma uid)",
    "auditoria_integridad": {
+    "alcance": {
+     "artefactos_verificados": [
+      "analysis.json",
+      "mix SDV.wav"
+     ],
+     "cobertura": "demostración DELIMITADA del mecanismo de comparación SHA-256; NO constituye la verificación de TODOS los artefactos de producción (exige la matriz real de artefactos por motor y modo, hallazgo E)"
+    },
     "comparacion": {
      "analysis": {
       "almacenado": "d56580cbd130a5aa5482059af302c1cba6889111bf4daad2e9e28eacf2e11dca",
@@ -66,8 +87,8 @@
      "mix SDV.wav",
      "publicacion_6g1.json"
     ],
-    "ino_en_registro": 534920,
-    "ino_publicado": 534920,
+    "ino_en_registro": 534955,
+    "ino_publicado": 534955,
     "inodo_coincide": true,
     "integridad_coincide": false,
     "registro_leido_del_publicado": true,
