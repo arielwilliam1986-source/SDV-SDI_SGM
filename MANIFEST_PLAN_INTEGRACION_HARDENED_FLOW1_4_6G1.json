@@ -1,22 +1,23 @@
 {
- "schema": "plan-integracion-hardened-flow14/4",
+ "schema": "plan-integracion-hardened-flow14/5",
  "generado": "2026-11-23",
- "tipo": "SOLO DISENO (ultima rectificacion de coherencia; sin implementacion)",
- "autorizacion": "Cris: correccion documental puntual; A-D y matriz 8ter aceptadas sin reabrir; no permite implementar el plan",
- "padre": "fc399ece21d59bfe598c3c4058f59ced999f31bd",
+ "tipo": "SOLO DISENO (rectificacion final de precision G1 y nomenclatura; sin implementacion)",
+ "autorizacion": "Cris: correccion documental puntual; rectificacion de candidates/ aceptada sin reabrir; no permite implementar el plan",
+ "padre": "84fa356d8261c9be7c4d57783f389898f522bc1b",
  "rama": "arena/f1c5739f-sdv-sdi-sgm",
  "produccion_modificada": false,
  "archivos": {
-  "PLAN_INTEGRACION_HARDENED_FLOW1_4_6G1.md": "eef7a827742ca5e1f11c745f203fdc5138e4ff73771503f36478214497684625",
+  "PLAN_INTEGRACION_HARDENED_FLOW1_4_6G1.md": "525f83b184e0896edd32bffc8d207a9168577842b5a8bac2c887ade83cfd2065",
   "RECTIFICACION_PLAN_INTEGRACION_HARDENED_FLOW1_4_6G1.md": "be2389acf8d0727780ac34b2173a2d8b47d8b74a426532bfc7d16b6ff0f2abf9",
   "CONSOLIDACION_DOCUMENTAL_PLAN_HARDENED_FLOW1_4_6G1.md": "9b2b243942eeaa95aa4fc84e6b354edddd25b60dc9de619431f2fb4a00defd53",
-  "RECTIFICACION_COHERENCIA_PLAN_HARDENED_FLOW1_4_6G1.md": "bc247288727d61257fb220bc86d7a46e74d5c1c12619b1cbbbf2671ef2344276"
+  "RECTIFICACION_COHERENCIA_PLAN_HARDENED_FLOW1_4_6G1.md": "bc247288727d61257fb220bc86d7a46e74d5c1c12619b1cbbbf2671ef2344276",
+  "RECTIFICACION_FINAL_G1_NOMENCLATURA_PLAN_HARDENED_FLOW1_4_6G1.md": "16aa80a991dc67985445d4ad45a2392040dde2f2e17cb9585ba592d8c8f2abec"
  },
- "sha256sums": "162c35ff3ffd196b389660e013955b3e66b86785b0861492646fe802d285a2cb",
+ "sha256sums": "28a8ca4e15ca023ecb61d7a581661674aa1fe6362cd76c03779f6b30e0bc2f8f",
+ "version": "v2.3",
  "correcciones": {
-  "candidates": "ciclo de vida completo (creacion mkdir dir_fd=fd_run, apertura+acreditacion fd_candidates y fd_cand_<grupo>, retencion en ambas compuertas, descenso por descriptores, cierre TODOS fd_cand_<grupo> antes de fd_candidates en paso 7; R-13 sigue DESCONOCIDO)",
-  "hash_g1": "mecanismo exacto: reapertura en lectura openat(dir_fd acreditado, O_RDONLY|O_NOFOLLOW) + fstat contra registro propio + SHA desde fd_h + close(fd_h) inmediato (escritores ya cerrados; sin ruta nominal; sin escritores abiertos en compuertas; alcance G1 sin ampliacion)",
-  "limpieza": "Fin del plan v2.2; §11 PROPUESTO con R-23..R-35 y 15 casos; comprobada no-contradiccion P-08/P-09/§7/§11"
- },
- "version": "v2.2"
+  "A": "nomenclatura G1: analysis.json + <track_base> SDV.wav en §4 y §10 (paréntesis de trazabilidad de la línea base); revisión completa: 0 sentencias de alcance con el nombre antiguo; alcance sin ampliación",
+  "B": "hash = huella de bytes OBSERVADOS durante la lectura; NO inmutabilidad ni integridad frente a same-UID; distinción exacta: cierre del escritor propio / identidad del inode por fstat / lectura por fd_h / modificación concurrente residual declarada",
+  "C": "SIN comparación de hashes gate-1↔gate-2: huellas registradas (memoria + consola directa; detalle en ABORT si falla); diferencia NO provoca rechazo; gate-2 re-verifica identidad, no contenido; comparación futura exige adjudicación expresa"
+ }
 }
