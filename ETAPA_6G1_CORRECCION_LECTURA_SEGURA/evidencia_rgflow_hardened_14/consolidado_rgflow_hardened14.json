@@ -1,0 +1,11 @@
+{
+ "schema": "rgflow-hardened-14/1",
+ "generado": "2026-11-23T20:55:51Z",
+ "autorizacion": "Cris 22-11-2026: solo FLOW-1..4 Hardened sin adaptacion, fixtures sinteticos",
+ "resultados": {
+  "FLOW-1": "PASS",
+  "FLOW-2": "PASS",
+  "FLOW-3": "PASS",
+  "FLOW-4": "OBSERVADO (caracterizacion): documenta el comportamiento VIGENTE ante sustituciones de misma uid; NO es un veredicto de seguridad ni presupone deteccion"
+ }
+}

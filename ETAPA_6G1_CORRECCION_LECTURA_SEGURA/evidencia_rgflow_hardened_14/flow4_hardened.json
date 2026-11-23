@@ -1,0 +1,239 @@
+{
+ "flujos": "FLOW-4 (a1/a2 intermedio D1 con timings; b entrada final C)",
+ "motor": "Hardened sin adaptacion",
+ "ts": "2026-11-23T20:55:51Z",
+ "casos": {
+  "a1_intermedio_inmediato": {
+   "modo_ataque": "intermedio",
+   "delay_s": 0.05,
+   "returncode": 2,
+   "atacante": {
+    "modo": "intermedio",
+    "delay_s": 0.05,
+    "eventos": [
+     {
+      "accion": "sustitucion_intermedio",
+      "ts": 1795467328.684374,
+      "parcial": "motorA_run_20261123_205528_partial",
+      "user_orig": "/tmp/rgflow_h1/f4_a1_intermedio_inmediato/user.orig",
+      "recreated": "/tmp/rgflow_h1/f4_a1_intermedio_inmediato/user/base/motorA_run_20261123_205528_partial"
+     }
+    ],
+    "ts": 1795467321.4582155,
+    "ejecutado": true
+   },
+   "arbol_real": {
+    "existe": true,
+    "niveles": [
+     "motorA_run_20261123_205528_partial"
+    ],
+    "analisis": null,
+    "engine_log": {
+     "dir": "motorA_run_20261123_205528_partial",
+     "bytes": 1906
+    },
+    "abort": null
+   },
+   "arbol_atacante": {
+    "existe": true,
+    "niveles": [
+     "motorA_run_20261123_205528_partial"
+    ],
+    "analisis": null,
+    "engine_log": null,
+    "abort": null
+   },
+   "publicado_en": null,
+   "impostor": {
+    "sha256": "ee559ac3809137233ae54b8a57c59b556d973334de4cc753fcc59db9f8985836",
+    "contenido": "{\"impostor\": true}\n"
+   },
+   "publicacion_fail_open": false,
+   "abort_escrito_en_algun_arbol": false,
+   "anclaje_h1": "sin_ABORT_en_ningun_arbol (D1: identidad_distinta impide escribir en el impostor y el protocolo no localiza el real)",
+   "flujo_interrumpido_o_detectado": true,
+   "clasificacion": "EXPERIMENTAL_RESULT (caracterizacion, no veredicto de seguridad)"
+  },
+  "a2_intermedio_procesamiento": {
+   "modo_ataque": "intermedio",
+   "delay_s": 4.0,
+   "returncode": 0,
+   "atacante": {
+    "modo": "intermedio",
+    "delay_s": 4.0,
+    "eventos": [
+     {
+      "accion": "sustitucion_intermedio",
+      "ts": 1795467342.7702103,
+      "parcial": "motorA_run_20261123_205538_partial",
+      "user_orig": "/tmp/rgflow_h1/f4_a2_intermedio_procesamiento/user.orig",
+      "recreated": "/tmp/rgflow_h1/f4_a2_intermedio_procesamiento/user/base/motorA_run_20261123_205538_partial"
+     }
+    ],
+    "ts": 1795467331.5943885,
+    "ejecutado": true
+   },
+   "arbol_real": {
+    "existe": true,
+    "niveles": [
+     "motorA_run_20261123_205538"
+    ],
+    "analisis": {
+     "dir": "motorA_run_20261123_205538",
+     "tipo": "regular",
+     "destino": null
+    },
+    "engine_log": {
+     "dir": "motorA_run_20261123_205538",
+     "bytes": 454
+    },
+    "abort": null
+   },
+   "arbol_atacante": {
+    "existe": true,
+    "niveles": [
+     "motorA_run_20261123_205538_partial"
+    ],
+    "analisis": null,
+    "engine_log": null,
+    "abort": null
+   },
+   "publicado_en": {
+    "arbol": "user.orig",
+    "dir": "motorA_run_20261123_205538",
+    "analisis": {
+     "dir": "motorA_run_20261123_205538",
+     "tipo": "regular",
+     "destino": null
+    },
+    "engine_log": {
+     "dir": "motorA_run_20261123_205538",
+     "bytes": 454
+    }
+   },
+   "impostor": {
+    "sha256": "ee559ac3809137233ae54b8a57c59b556d973334de4cc753fcc59db9f8985836",
+    "contenido": "{\"impostor\": true}\n"
+   },
+   "publicacion_fail_open": false,
+   "abort_escrito_en_algun_arbol": false,
+   "anclaje_h1": "sin_ABORT_en_ningun_arbol (D1: identidad_distinta impide escribir en el impostor y el protocolo no localiza el real)",
+   "flujo_interrumpido_o_detectado": false,
+   "clasificacion": "EXPERIMENTAL_RESULT (caracterizacion, no veredicto de seguridad)"
+  },
+  "b_entrada_final": {
+   "modo_ataque": "entrada_final",
+   "mecanismo": "inyeccion en memoria del arnes en la frontera de publicacion (mismo uid; motor sin modificar)",
+   "returncode": 0,
+   "duracion_s": 8.69,
+   "dirs_en_base": [
+    "motorA_run_20261123_205548"
+   ],
+   "publicado": "/tmp/rgflow_h1/f4_b_entrada_final/user/base/motorA_run_20261123_205548",
+   "inventario_publicado": [
+    {
+     "rel": "analysis.json",
+     "tipo": "symlink",
+     "dev": 65024,
+     "ino": 535023,
+     "size": 56,
+     "destino": "/tmp/rgflow_h1/f4_b_entrada_final/objetivo/impostor.json"
+    },
+    {
+     "rel": "analysis.txt",
+     "tipo": "regular",
+     "dev": 65024,
+     "ino": 535024,
+     "size": 2313
+    },
+    {
+     "rel": "engine_log.txt",
+     "tipo": "regular",
+     "dev": 65024,
+     "ino": 535019,
+     "size": 442
+    },
+    {
+     "rel": "input_integrity_6g.json",
+     "tipo": "regular",
+     "dev": 65024,
+     "ino": 535025,
+     "size": 1311
+    },
+    {
+     "rel": "mix_sintetico SDI.wav",
+     "tipo": "regular",
+     "dev": 65024,
+     "ino": 535022,
+     "size": 10584088
+    },
+    {
+     "rel": "mix_sintetico SDV.wav",
+     "tipo": "regular",
+     "dev": 65024,
+     "ino": 535021,
+     "size": 10584088
+    }
+   ],
+   "analisis_publicado": {
+    "tipo": "symlink",
+    "destino": "/tmp/rgflow_h1/f4_b_entrada_final/objetivo/impostor.json",
+    "apunta_al_impostor": true
+   },
+   "sustitucion": {
+    "ejecutado": true,
+    "ts": 1795467351.6763105,
+    "ino_original": 535023,
+    "destino_symlink": "/tmp/rgflow_h1/f4_b_entrada_final/objetivo/impostor.json",
+    "ventana": "pre-publicacion (frontera publicar_dir_6g1)"
+   },
+   "impostor": {
+    "sha256": "ee559ac3809137233ae54b8a57c59b556d973334de4cc753fcc59db9f8985836",
+    "contenido": "{\"impostor\": true}\n"
+   },
+   "symlink_publicado": true,
+   "exit_ok_con_symlink": true,
+   "impostor_sin_alterar": true,
+   "resultado": "OBSERVADO (caracterizacion C: brecha de la entrada final vigente; NO es un veredicto de seguridad)",
+   "clasificacion": "EXPERIMENTAL_RESULT (caracterizacion)"
+  }
+ },
+ "resultado": "OBSERVADO (caracterizacion): documenta el comportamiento VIGENTE ante sustituciones de misma uid; NO es un veredicto de seguridad ni presupone deteccion",
+ "criterio": "registro fiel de: deteccion/interrupcion por el motor, continuidad del flujo, arbol que recibe los artefactos, ABORT_6G1.json presente/ausente en cada arbol, estado del analysis.json publicado e integridad del impostor",
+ "clasificacion": "EXPERIMENTAL_RESULT",
+ "resultado_por_caso": {
+  "a1_intermedio_inmediato": {
+   "returncode": 2,
+   "ejecutado": true,
+   "deteccion_o_interrupcion": true,
+   "publicado_en": null,
+   "abort": null
+  },
+  "a2_intermedio_procesamiento": {
+   "returncode": 0,
+   "ejecutado": true,
+   "deteccion_o_interrupcion": false,
+   "publicado_en": {
+    "arbol": "user.orig",
+    "dir": "motorA_run_20261123_205538",
+    "analisis": {
+     "dir": "motorA_run_20261123_205538",
+     "tipo": "regular",
+     "destino": null
+    },
+    "engine_log": {
+     "dir": "motorA_run_20261123_205538",
+     "bytes": 454
+    }
+   },
+   "abort": null
+  },
+  "b_entrada_final": {
+   "returncode": 0,
+   "ejecutado": true,
+   "deteccion_o_interrupcion": null,
+   "publicado_en": "/tmp/rgflow_h1/f4_b_entrada_final/user/base/motorA_run_20261123_205548",
+   "abort": null
+  }
+ }
+}

@@ -1,0 +1,146 @@
+{
+ "flujos": "FLOW-2",
+ "motor": "Hardened sin adaptacion (inyeccion en memoria)",
+ "ts": "2026-11-23T20:54:53Z",
+ "argv": [
+  "--manifest",
+  "/tmp/rgflow_h1/f2/fixtures/MANIFEST_RGFLOW.json",
+  "--mode",
+  "full_processing",
+  "--out",
+  "/tmp/rgflow_h1/f2/out",
+  "--keep-masks",
+  "--allow-misaligned"
+ ],
+ "config": {
+  "duracion_s": 30.0,
+  "keep_masks": true,
+  "punto_inyeccion": "2o sf.SoundFile modo w (L1398), monopatch en memoria"
+ },
+ "escrituras_soundfile_vistas": [
+  "/tmp/rgflow_h1/f2/out/motorA_run_20261123_205453_partial/mix_sintetico SDV.wav",
+  "/tmp/rgflow_h1/f2/out/motorA_run_20261123_205453_partial/mix_sintetico SDI.wav"
+ ],
+ "returncode_inprocess": 2,
+ "duracion_s": 6.32,
+ "dirs_en_out": [
+  "motorA_run_20261123_205453_aborted"
+ ],
+ "dir_objetivo": "/tmp/rgflow_h1/f2/out/motorA_run_20261123_205453_aborted",
+ "inventario": [
+  {
+   "rel": "ABORT_6G1.json",
+   "tipo": "regular",
+   "dev": 65024,
+   "ino": 534912,
+   "size": 2158
+  },
+  {
+   "rel": "engine_log.txt",
+   "tipo": "regular",
+   "dev": 65024,
+   "ino": 534903,
+   "size": 1396
+  },
+  {
+   "rel": "masks",
+   "tipo": "directorio",
+   "dev": 65024,
+   "ino": 534904,
+   "size": 4096
+  },
+  {
+   "rel": "masks/confidence_map.npy",
+   "tipo": "regular",
+   "dev": 65024,
+   "ino": 534909,
+   "size": 10605752
+  },
+  {
+   "rel": "masks/consensus_instrumental_confidence_weighted_mean.npy",
+   "tipo": "regular",
+   "dev": 65024,
+   "ino": 534908,
+   "size": 10605752
+  },
+  {
+   "rel": "masks/consensus_vocal_confidence_weighted_mean.npy",
+   "tipo": "regular",
+   "dev": 65024,
+   "ino": 534907,
+   "size": 10605752
+  },
+  {
+   "rel": "masks/mask_gp01_instrumental.npy",
+   "tipo": "regular",
+   "dev": 65024,
+   "ino": 534906,
+   "size": 10605752
+  },
+  {
+   "rel": "masks/mask_gp01_vocal.npy",
+   "tipo": "regular",
+   "dev": 65024,
+   "ino": 534905,
+   "size": 10605752
+  },
+  {
+   "rel": "masks/model_disagreement_map.npy",
+   "tipo": "regular",
+   "dev": 65024,
+   "ino": 534910,
+   "size": 10605752
+  },
+  {
+   "rel": "mix_sintetico SDV.wav",
+   "tipo": "regular",
+   "dev": 65024,
+   "ino": 534911,
+   "size": 88
+  }
+ ],
+ "abort_6g1": {
+  "schema": "abort-6g1/3",
+  "motivo": "EXCEPCION_DURANTE_EL_PROCESAMIENTO",
+  "detalle": "RuntimeError: INYECTOR_FLOW2: excepcion controlada en el 2o sf.SoundFile de escritura (punto documentado L1398)",
+  "salidas_invalidadas": [
+   "masks/confidence_map.npy",
+   "masks/consensus_instrumental_confidence_weighted_mean.npy",
+   "masks/consensus_vocal_confidence_weighted_mean.npy",
+   "masks/mask_gp01_instrumental.npy",
+   "masks/mask_gp01_vocal.npy",
+   "masks/model_disagreement_map.npy",
+   "mix_sintetico SDV.wav"
+  ],
+  "estado_salidas_invalidadas": "conservadas en el provisional; sin eliminación (C-R1)",
+  "resultados_validos": [],
+  "conservados": [
+   "engine_log.txt"
+  ],
+  "motivos_propiedad": {
+   "engine_log.txt": "registro_interno_conservado",
+   "masks/confidence_map.npy": "salida_parcial_invalidada_y_conservada (sin eliminación; C-R1)",
+   "masks/consensus_instrumental_confidence_weighted_mean.npy": "salida_parcial_invalidada_y_conservada (sin eliminación; C-R1)",
+   "masks/consensus_vocal_confidence_weighted_mean.npy": "salida_parcial_invalidada_y_conservada (sin eliminación; C-R1)",
+   "masks/mask_gp01_instrumental.npy": "salida_parcial_invalidada_y_conservada (sin eliminación; C-R1)",
+   "masks/mask_gp01_vocal.npy": "salida_parcial_invalidada_y_conservada (sin eliminación; C-R1)",
+   "masks/model_disagreement_map.npy": "salida_parcial_invalidada_y_conservada (sin eliminación; C-R1)",
+   "mix_sintetico SDV.wav": "salida_parcial_invalidada_y_conservada (sin eliminación; C-R1)"
+  },
+  "analysis_intacto": true,
+  "directorio_acreditado": true,
+  "anclaje_directorio": "directorio_acreditado (H1)",
+  "politica": "sin_eliminacion (C-R1): ningún archivo se elimina durante el aborto; las salidas propias registradas quedan invalidadas y conservadas; sin borrado por patrón de nombre ni por ubicación; sin escritura a través de enlaces simbólicos; analysis.json no se modifica durante el aborto (E-R2): toda la información del aborto vive en ABORT_6G1.json; un directorio con ABORT_6G1.json nunca es una corrida exitosa; anclaje H1: directorio acreditado y E/S sobre el descriptor validado"
+ },
+ "log_cierre_6g1": [
+  "[     6.33s] [6G.1-R/CR] cierre de recursos previo al aborto: escritores=1 memmaps=6 lectores=0 completo=True errores=0\n",
+  "[     6.33s] [6G.1-R/CR] se cierra engine_log.txt; a continuación se registra el aborto\n"
+ ],
+ "log_fatal": [],
+ "publicacion_indebida": [],
+ "fds_residuales_proceso": [],
+ "fds_antes": [],
+ "resultado": "PASS",
+ "criterio": "EXIT_PROCESSING + ABORT_6G1.json (schema abort-6g1/3, resultados_validos=[]) + cierre [6G.1-R/CR] en log + sin publicacion + 0 descriptores residuales del proceso bajo out; recursos adquiridos al inyectar: engine_log.txt (Tee), masks/ y memmaps (--keep-masks) y writer_sdv abierto",
+ "clasificacion": "EXPERIMENTAL_RESULT"
+}

@@ -1,0 +1,14 @@
+{
+ "source_mix_file": "mix_sintetico.wav",
+ "guide_pairs": [
+  {
+   "pair_id": "gp01",
+   "vocal_guide": "vocal.wav",
+   "instrumental_guide": "instrumental.wav",
+   "family": "SYNTH",
+   "variant": "ARENA_6G1",
+   "configuration": "standard"
+  }
+ ],
+ "calibration_parameters": {}
+}

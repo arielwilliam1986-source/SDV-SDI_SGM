@@ -1,0 +1,118 @@
+{
+ "flujos": "FLOW-1",
+ "motor": "Hardened sin adaptacion",
+ "ts": "2026-11-23T20:54:46Z",
+ "comando": [
+  "/tmp/venv_i1/bin/python",
+  "-B",
+  "/home/user/SDV-SDI_SGM/ETAPA_6G1_CORRECCION_LECTURA_SEGURA/motores/MOTOR_SEP_SDV-SDI_v3.1.1_Hardened_Final.py",
+  "--manifest",
+  "/tmp/rgflow_h1/f1/fixtures/MANIFEST_RGFLOW.json",
+  "--mode",
+  "full_processing",
+  "--out",
+  "/tmp/rgflow_h1/f1/out",
+  "--allow-misaligned"
+ ],
+ "config": {
+  "duracion_s": 30.0,
+  "flags": "--mode full_processing",
+  "keep_masks": false
+ },
+ "returncode": 0,
+ "duracion_s": 10.56,
+ "dir_parcial": {
+  "ruta": "/tmp/rgflow_h1/f1/out/motorA_run_20261123_205443_partial",
+  "dev": 65024,
+  "ino": 534881
+ },
+ "dir_publicado": {
+  "ruta": "/tmp/rgflow_h1/f1/out/motorA_run_20261123_205443",
+  "dev": 65024,
+  "ino": 534881
+ },
+ "identidad_conservada": true,
+ "inventario_publicado": [
+  {
+   "rel": "analysis.json",
+   "tipo": "regular",
+   "dev": 65024,
+   "ino": 534895,
+   "size": 71287
+  },
+  {
+   "rel": "analysis.txt",
+   "tipo": "regular",
+   "dev": 65024,
+   "ino": 534896,
+   "size": 2313
+  },
+  {
+   "rel": "engine_log.txt",
+   "tipo": "regular",
+   "dev": 65024,
+   "ino": 534890,
+   "size": 420
+  },
+  {
+   "rel": "input_integrity_6g.json",
+   "tipo": "regular",
+   "dev": 65024,
+   "ino": 535027,
+   "size": 1295
+  },
+  {
+   "rel": "mix_sintetico SDI.wav",
+   "tipo": "regular",
+   "dev": 65024,
+   "ino": 534894,
+   "size": 10584088
+  },
+  {
+   "rel": "mix_sintetico SDV.wav",
+   "tipo": "regular",
+   "dev": 65024,
+   "ino": 534893,
+   "size": 10584088
+  }
+ ],
+ "artefactos_obligatorios": {
+  "analysis.json": true,
+  "analysis.txt": true,
+  "input_integrity_6g.json": true,
+  "engine_log.txt": true,
+  "mix_sintetico SDV.wav": true,
+  "mix_sintetico SDI.wav": true
+ },
+ "abort_en_publicado": false,
+ "masks_en_publicado": false,
+ "log_lineas_6g1": [],
+ "log_cola": [
+  "[     7.13s] Iniciando pipeline v3.1.0 en: /tmp/rgflow_h1/f1/out/motorA_run_20261123_205443_partial",
+  "[     7.13s] Configuración: consensus_order=magnitudes_first | smoothing=none | mask_mode=mono | residuals=False",
+  "[     7.14s] Procesando 1294 tramas en 6 chunks de 256 tramas...",
+  "[    10.08s]   Chunk 06/6 [100.0%] completado (Tramas 1280-1293)",
+  "[    10.18s] Post-WAV Identity SNR: 155.48 dB (Estado: PASS_EXACT_IDENTITY)"
+ ],
+ "consola_cola": [
+  "[     7.04s] [PERMISO] continuación explícita: cli_allow_misaligned (diagnóstico intacto).",
+  "[     7.13s] Iniciando pipeline v3.1.0 en: /tmp/rgflow_h1/f1/out/motorA_run_20261123_205443_partial",
+  "[     7.13s] Configuración: consensus_order=magnitudes_first | smoothing=none | mask_mode=mono | residuals=False",
+  "[     7.14s] Procesando 1294 tramas en 6 chunks de 256 tramas...",
+  "[    10.08s]   Chunk 06/6 [100.0%] completado (Tramas 1280-1293)",
+  "[    10.18s] Post-WAV Identity SNR: 155.48 dB (Estado: PASS_EXACT_IDENTITY)",
+  "[    10.20s] Directorio 'masks/' eliminado para liberar espacio.",
+  "[    10.20s] Corrida finalizada exitosamente en: /tmp/rgflow_h1/f1/out/motorA_run_20261123_205443",
+  "",
+  "============================================================================",
+  "\u001b[92m[✓] SEPARACIÓN MOTOR A v3.1.0 COMPLETADA CON ÉXITO (SNR > 140 dB)\u001b[0m",
+  "Directorio de Resultados : \u001b[96m/tmp/rgflow_h1/f1/out/motorA_run_20261123_205443\u001b[0m",
+  "Artefactos Generados     : mix_sintetico SDV.wav | mix_sintetico SDI.wav | analysis.json | analysis.txt",
+  "============================================================================",
+  ""
+ ],
+ "resultado": "PASS",
+ "criterio": "EXIT_OK + todos los artefactos obligatorios regulares en el publicado + identidad (dev,ino) conservada parcial->publicado + sin ABORT_6G1.json + masks eliminadas post-publicacion (comportamiento vigente)",
+ "clasificacion": "EXPERIMENTAL_RESULT",
+ "alcance": "caracterizacion del comportamiento VIGENTE; NO es una afirmacion de seguridad ni valida adaptaciones"
+}
