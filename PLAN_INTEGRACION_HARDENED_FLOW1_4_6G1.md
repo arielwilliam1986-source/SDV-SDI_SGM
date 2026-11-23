@@ -77,7 +77,7 @@ Motor: `ETAPA_6G1_CORRECCION_LECTURA_SEGURA/motores/MOTOR_SEP_SDV-SDI_v3.1.1_Har
 | **C/D** (protección de archivos y protocolo de aborto por descriptores) | ABORT exclusivo/no-follow **vía dirfd** (vigente tras el ancla); extensión propuesta: ancla directa por descriptor retenido (sin re-apertura de ruta) | vigente parcialmente + propuesta |
 | **E1** (`INFORME_RECTIFICACION_FINAL_E1_6G1.md`) | obligatoriedad + identidad por artefacto: identidad vs fd, sin PASS por defecto ante fd ausente (E1-A/E1-B) | prototipo adjudicado; no integrado |
 | **F1** (`CIERRE_RECURSOS_6G1.md` / `CORRECCION_F_6G1.md`) | ciclo de vida y cierre determinista verificable (`preparar_aborto_6g1`, `cerrar_recursos_corrida_6g1`) | vigente en producción |
-| **G1** (alcance delimitado) | comparación SHA-256 **sólo** `analysis.json` y `<track_base> SDV.wav` (en la línea base: `mix_sintetico SDV.wav`); **sin ampliación** | demostrado delimitado; no integrado |
+| **G1** (alcance delimitado) | SHA-256 **sólo** `analysis.json` y `<track_base> SDV.wav` (en la línea base: `mix_sintetico SDV.wav`); **sin ampliación**; se calcula y registra como **huella independiente en cada compuerta**; **NO existe comparación gate-1/gate-2**; los hashes **NO** constituyen un criterio comparativo de aceptación; los **errores de apertura, lectura o identidad SÍ pueden provocar rechazo** (P-05 [v2.3]) | demostrado delimitado; no integrado |
 
 **Advertencia explícita:** PDA-1/EA/E1 son **prototipos adjudicados**. Este plan los **propone** como base de integración; **no declara** que la integración esté conseguida. La producción permanece en el estado de `cea6652` (= `292274b` en producción: los commits de diseño no tocan código).
 
@@ -363,7 +363,7 @@ Clasificación: **PROPUESTO** (diseño); su ejecución requiere nueva autorizaci
 
 ## §12 [ENTREGABLE 7] Manifiesto y SHA-256
 
-`MANIFEST_PLAN_INTEGRACION_HARDENED_FLOW1_4_6G1.json` + `SHA256SUMS_PLAN_INTEGRACION_HARDENED_FLOW1_4_6G1.txt` (**regenerados para v2.2**; incluyen el plan, el informe de rectificación A–D, el informe de consolidación y el informe de rectificación de coherencia; el manifiesto se verifica contra los documentos publicados exactos).
+`MANIFEST_PLAN_INTEGRACION_HARDENED_FLOW1_4_6G1.json` + `SHA256SUMS_PLAN_INTEGRACION_HARDENED_FLOW1_4_6G1.txt` (**regenerados para v2.3**; incluyen EXACTAMENTE estos 5 documentos: el plan, el informe de rectificación A–D, el informe de consolidación, el informe de rectificación de coherencia y el informe `RECTIFICACION_FINAL_G1_NOMENCLATURA_PLAN_HARDENED_FLOW1_4_6G1.md`; el manifiesto se verifica contra los documentos publicados exactos).
 
 ## §13 Restricciones y parada
 
