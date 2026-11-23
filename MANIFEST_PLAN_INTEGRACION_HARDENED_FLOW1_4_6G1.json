@@ -1,22 +1,35 @@
 {
- "schema": "plan-integracion-hardened-flow14/1",
+ "schema": "plan-integracion-hardened-flow14/2",
  "generado": "2026-11-23",
- "tipo": "SOLO DISENO (sin implementacion)",
- "autorizacion": "Cris: autorizacion exclusivamente de diseño",
- "padre": "292274b28dd4bef4b68055d5f0d1869c0aa0a02f",
+ "tipo": "SOLO DISENO (rectificacion A-D; sin implementacion)",
+ "autorizacion": "Cris: acepta plan v1 como base de diseno; no autoriza implementacion; rectificacion exclusivamente de diseño y documentacion",
+ "padre": "cea6652893b3f790b3c47aaab430ef99554c9d00",
  "rama": "arena/f1c5739f-sdv-sdi-sgm",
  "produccion_modificada": false,
  "archivos": {
-  "PLAN_INTEGRACION_HARDENED_FLOW1_4_6G1.md": "fe96ad9fd56eafad55ed786ab173fcc1283093211890c88e8cc2cd8cc5447036"
+  "PLAN_INTEGRACION_HARDENED_FLOW1_4_6G1.md": "a9c04942020622a6610d2f5c0049a329913758dae257d9281256cb6707e7ac9f",
+  "RECTIFICACION_PLAN_INTEGRACION_HARDENED_FLOW1_4_6G1.md": "be2389acf8d0727780ac34b2173a2d8b47d8b74a426532bfc7d16b6ff0f2abf9"
  },
- "sha256sums": "1314b0edafb835295f212ade07fc9f6cf5bf62ef400301594ef274b6f679230c",
- "entregables": [
-  "1 plan de integracion P-01..P-09",
-  "2 matriz por flujo",
-  "3 diagrama ciclo de vida de descriptores",
-  "4 diseño publicacion+aborto",
-  "5 diseño regresion D1/C (6 casos, NO ejecutado)",
-  "6 riesgos R-23..R-28 (propuestos)",
-  "7 manifiesto+SHA256"
+ "sha256sums": "ca47593701c649e26a8e6bb56e13cc49cc6b61d9deda3d8d012c4f256cdae9fa",
+ "rectificaciones": {
+  "A": "secuencia de cierre/verificacion 1-8 + prohibicion escrituras post-compuerta final (P-08, R-32)",
+  "B": "fd-passthrough: sf_open_fd/closefd=False, fdopen, pread, open_memmap via /proc/self/fd/N o cabecera manual (P-03, R-29, R-34)",
+  "C": "subanclas masks/ (candidates/ no existe en Hardened) + regla de cadena acreditada componente a componente (P-01/P-09)",
+  "D": "NO atomicidad-por-identidad del renameat2 dirfd; acreditacion post-rename fstat(fd_pub)==I_run; tabla fail-closed 6 casos (P-06, R-30, R-31)"
+ },
+ "riesgos_nuevos": [
+  "R-29",
+  "R-30",
+  "R-31",
+  "R-32",
+  "R-33",
+  "R-34"
+ ],
+ "regresion_ampliada": [
+  "REG-D1-d",
+  "REG-D1-e",
+  "REG-C-d",
+  "REG-C-e",
+  "REG-B-a"
  ]
 }
