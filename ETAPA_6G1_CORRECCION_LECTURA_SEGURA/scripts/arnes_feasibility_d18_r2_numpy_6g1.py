@@ -96,6 +96,28 @@ CORRECCIÓN FINAL R4 (FEASIBILITY-D18-R2-R4, autorizada por Cris):
         distinción evidencia real/hipótesis/UNKNOWN; sin garantías
         universales de gc.collect().
 
+CORRECCIÓN FINAL R5 (FEASIBILITY-D18-R2-R5, autorizada por Cris):
+  R5-A  Registro del fallo de cierre final: el finally de
+        fds_with_identity() NO descarta silenciosamente errores de
+        os.close(dirfd). Si el cierre falla, registra fase ("cierre"),
+        descriptor, tipo de excepción, errno y contexto; el inventario
+        queda complete=False; ningún escenario dependiente puede
+        convertirlo en PASS (propagación UNKNOWN, salvo FAIL independiente
+        probado); NO se afirma que el descriptor quedó cerrado; NO se
+        realizan reintentos ciegos de close().
+  R5-B  Prueba controlada R2-C13: fuerza un error de cierre en el finally
+        tras enumeración e inspección correctas y verifica las seis
+        propiedades independientes (modo dirfd, cierre intentado, error
+        registrado con contexto, inventario incompleto, controlador
+        dependiente -> UNKNOWN, no PASS ni cierre efectivo afirmado),
+        diferenciando este escenario del fallo de listdir(dirfd) de
+        R2-C11.
+  R5-C  Regresión: reejecución de R2-C11, R2-C12, R3-A..E y del conjunto
+        completo D18-R2; se mantienen precedencia FAIL>UNKNOWN>PASS, C5
+        como FAIL histórico, ENOENT+fdinfo ausente -> UNKNOWN_CAUSE,
+        modo dirfd anclado / modo path no anclado y ausencia de
+        garantías universales de gc.collect().
+
 Restricciones: entorno aislado, fixtures sintéticos, sin motores/, sin
 lectura_segura_6g1.py, sin plan v2.3/diseño v5/adjudicación final, sin
 integración Hardened/EVO/MQR, sin audio real, sin Android/Termux, sin D-16,
@@ -454,10 +476,19 @@ def fds_with_identity(st, fd_dir="/proc/self/fd"):
     modo "path" es un recorrido NO anclado: no se le atribuyen las
     garantías del modo dirfd (si una prueba exige anclaje y no se obtiene,
     el resultado es UNKNOWN).
+
+    R5-A (registro del fallo de cierre final): si os.close(dirfd) en el
+    finally FALLA, el error se registra (phase="cierre", descriptor,
+    tipo de excepción, errno, contexto) y el inventario queda
+    complete=False: ningún escenario dependiente puede convertirlo en
+    PASS (propagación UNKNOWN, salvo FAIL independiente demostrado). NO
+    se afirma que el descriptor quedó cerrado y NO se realizan
+    reintentos ciegos de close().
     """
     target = identity_of(st)
     matched, errors = [], []
     complete = True
+    inv = None
 
     dirfd, enum_mode = None, None
     try:
@@ -508,16 +539,33 @@ def fds_with_identity(st, fd_dir="/proc/self/fd"):
                         fd_dir, "inspeccion", cls, ctx,
                         note="nombre no entero en inventario de fds"))
                     complete = False
-        return FdInventory(matched, errors, complete, dirfd, enum_mode)
+        inv = FdInventory(matched, errors, complete, dirfd, enum_mode)
+        return inv
     finally:
-        # R4-B: cerrar el descriptor al finalizar, tanto en éxito como en
-        # error (la responsabilidad de cierre tras return exitoso es de
+        # R4-B/R5-A: cerrar el descriptor al finalizar, tanto en éxito como
+        # en error (la responsabilidad de cierre tras return exitoso es de
         # esta función; el llamante recibe el inventario ya cerrado).
         if dirfd is not None:
             try:
                 os.close(dirfd)
-            except OSError:
-                pass
+            except OSError as e:
+                # R5-A: NO descartar silenciosamente errores de cierre. Si
+                # el cierre final FALLA, se registra fase, descriptor, tipo
+                # de excepción, errno y contexto; el inventario queda
+                # complete=False y NO se afirma que el descriptor quedó
+                # cerrado. No se realizan reintentos ciegos de close()
+                # (podrían cerrar un descriptor distinto por reutilización
+                # del número).
+                cls, ctx = _classify_fd_error(dirfd, e, fd_dir, "cierre")
+                errors.append(_error_record(
+                    dirfd, e, fd_dir, "cierre", cls, ctx,
+                    note=f"cierre final de dirfd fallido (descriptor "
+                         f"{dirfd}); no se afirma que quedó cerrado"))
+                complete = False
+                if inv is not None:
+                    # inv.errors comparte la lista; solo complete requiere
+                    # actualización explícita.
+                    inv.complete = False
 
 
 def close_fd_quiet(fd):
@@ -1831,6 +1879,113 @@ def test_r2c12_anchored_vs_path_and_close():
     shutil.rmtree(d, ignore_errors=True)
 
 
+def test_r2c13_final_close_failure():
+    """R2-C13 / R5-B: registro del fallo de cierre FINAL de dirfd.
+
+    Se forza un error de os.close(dirfd) en el finally DEPOIS de una
+    enumeración e inspección correctas. Se verifican independientemente:
+    (1) la inspección se ejecutó en modo dirfd; (2) el cierre fue
+    intentado; (3) el error quedó registrado con su contexto (phase=
+    "cierre", descriptor, tipo, errno); (4) el inventario resultó
+    incompleto; (5) el controlador dependiente asignó UNKNOWN;
+    (6) no se declara PASS ni cierre efectivo cuando el descriptor no
+    pudo acreditarse como cerrado. Se distingue de R2-C11 (fallo de
+    listdir(dirfd), fase=enumeracion, sin inspección ejecutada).
+    """
+    import unittest.mock as _m
+    d = tempfile.mkdtemp(prefix="feas_r2c_")
+    f5 = os.path.join(d, "5")
+    open(f5, "w").close()
+    st = os.stat(f5)
+    real_open, real_stat, real_close = os.open, os.stat, os.close
+    opened_fds, stat_calls = [], []
+    dirfd_target, closed_attempted = None, []
+
+    def spy_open(path, *a, **k):
+        fd = real_open(path, *a, **k)
+        opened_fds.append(fd)
+        return fd
+
+    def spy_stat(path, *a, **k):
+        stat_calls.append((path, k.get("dir_fd", None)))
+        return real_stat(path, *a, **k)
+
+    def close_fail_target(fd):
+        nonlocal dirfd_target
+        if dirfd_target is None and fd in opened_fds:
+            dirfd_target = fd
+        if fd == dirfd_target and not closed_attempted:
+            closed_attempted.append(fd)
+            raise OSError(errno.EBADF, "cierre final forzado fallido")
+        return real_close(fd)
+
+    inv = None
+    try:
+        with _m.patch.object(os, "open", spy_open), \
+                _m.patch.object(os, "stat", spy_stat), \
+                _m.patch.object(os, "close", close_fail_target):
+            inv = fds_with_identity(st, fd_dir=d)
+    finally:
+        # Limpieza: el descriptor quedó abierto (el cierre fue forzado a
+        # fallar); cerrarlo con el close real para no fugar fds.
+        if dirfd_target is not None:
+            try:
+                real_close(dirfd_target)
+            except OSError:
+                pass
+
+    # (1) inspección en modo dirfd
+    p1 = (inv.enum_mode == "dirfd" and dirfd_target is not None
+          and any(c[1] == dirfd_target for c in stat_calls))
+    # (2) cierre intentado
+    p2 = bool(closed_attempted)
+    # (3) error registrado con contexto
+    close_errs = [e for e in inv.errors if e.get("phase") == "cierre"]
+    p3 = (len(close_errs) == 1
+          and close_errs[0].get("errno") == errno.EBADF
+          and close_errs[0].get("exception_type") == "OSError"
+          and close_errs[0].get("context", {}).get("entry")
+          == dirfd_target
+          and close_errs[0].get("name") == dirfd_target)
+    # (4) inventario incompleto
+    p4 = not inv.complete
+    # (5) controlador dependiente -> UNKNOWN (nunca PASS)
+    v_contr = "UNKNOWN" if not inv.complete else "PASS"
+    p5 = v_contr == "UNKNOWN"
+    # (6) no PASS ni cierre efectivo afirmado
+    note = (close_errs[0].get("note") or "") if close_errs else ""
+    p6 = (v_contr != "PASS" and "no se afirma que quedó cerrado" in note)
+    # diferenciación con R2-C11: inspección ejecutADA (matched populado)
+    # y fallo de fase "cierre", no de enumeración.
+    p7 = (inv.matched == [5]
+          and not any(e.get("phase") == "enumeracion" for e in inv.errors))
+
+    ok = all([p1, p2, p3, p4, p5, p6, p7])
+    verdict = "PASS" if ok else "FAIL"
+    record("R2-C13", "R2-C",
+           "Registro del fallo de cierre final de dirfd (R5-B)",
+           "dir sintético con entrada '5'; os.close forzado a fallar con "
+           "OSError(EBADF) en el finally, tras enumeración e inspección "
+           "correctas.",
+           "Verificar: (1) inspección en modo dirfd; (2) cierre intentado; "
+           "(3) error registrado con contexto; (4) inventario incompleto; "
+           "(5) controlador dependiente -> UNKNOWN; (6) no PASS ni cierre "
+           "efectivo afirmado. Diferencia del fallo de listdir(dirfd) de "
+           "R2-C11.",
+           f"P1_modo_dirfd={p1}; P2_cierre_intentando={p2}; "
+           f"P3_error_registrado={p3}; P4_incompleto={p4}; "
+           f"P5_controlador_UNKNOWN={p5} (verdict={v_contr}); "
+           f"P6_no_PASS_ni_cierre_afirmado={p6}; "
+           f"P7_distinto_de_R2-C11={p7}; errors={inv.errors}; "
+           f"matched={inv.matched}",
+           "R5-A/R5-B: un fallo de cierre final se registra (no se descarta "
+           "silenciosamente), el inventario queda incompleto y ningún "
+           "escenario dependiente lo convierte en PASS; no se afirma que "
+           "el descriptor quedó cerrado cuando el cierre falló.",
+           verdict)
+    shutil.rmtree(d, ignore_errors=True)
+
+
 # ---------------------------------------------------------------- R1-A (controladas)
 def _synthetic_maps_lines(target_path, match, unparseable):
     """Construye el contenido de un /proc/self/maps sintético.
@@ -2007,14 +2162,16 @@ def main():
     print(f"Entorno: Python {env['python']} | NumPy {env['numpy']} | "
           f"{env['kernel']} | euid {env['euid']}")
     print(f"Workdir aislado: {WORKDIR}\n")
-    print("CORRECCIONES METODOLÓGICAS R1 + R2 + R3 + R4 activas: "
+    print("CORRECCIONES METODOLÓGICAS R1 + R2 + R3 + R4 + R5 activas: "
           "count_maps()/parse_maps() distinguen COMPLETA/INCOMPLETA/"
           "ILEGIBLE; fds_with_identity() captura errores de enumeración y de "
           "inspección, clasifica (DESAPARECIDO/INACCESIBLE/ERROR_PROCFS/"
           "UNKNOWN_CAUSE, con ENOENT conservador R3-D), cierra el dirfd ante "
-          "fallo de enumeración (R4-A) e inspecciona anclado al dirfd "
-          "(R4-B), propaga UNKNOWN desde inventario incompleto, verificado "
-          "sobre escenarios reales (R1-A/B/C + R2-A/B/C + R3-A..F + R4-A/B/C).\n")
+          "fallo de enumeración (R4-A), inspecciona anclado al dirfd "
+          "(R4-B) y registra fallos de cierre final sin reintentos "
+          "(R5-A), propaga UNKNOWN desde inventario incompleto, verificado "
+          "sobre escenarios reales (R1-A/B/C + R2-A/B/C + R3-A..F + "
+          "R4-A/B/C + R5-A/B/C).\n")
 
     tests = [test_a1, test_a2, test_a3, test_a4, test_a5, test_a6,
              test_b1, test_b2, test_b3, test_b4, test_b5, test_b6,
@@ -2027,6 +2184,7 @@ def main():
              test_r2c10_real_scenarios_propagation,
              test_r2c11_listdir_fail_closes_dirfd,
              test_r2c12_anchored_vs_path_and_close,
+             test_r2c13_final_close_failure,
              test_r1a_complete_match, test_r1a_complete_nomatch,
              test_r1a_unparseable, test_r1a_unreadable,
              test_r1b_complete, test_r1b_incomplete]
@@ -2051,10 +2209,11 @@ def main():
 
     os.makedirs(EVIDENCE_DIR, exist_ok=True)
     out = {"harness": "arnes_feasibility_d18_r2_numpy_6g1.py",
-           "scope": "FEASIBILITY-D18-R2 + R1 + R2 + R3 + R4 (corrección "
+           "scope": "FEASIBILITY-D18-R2 + R1 + R2 + R3 + R4 + R5 (corrección "
                     "metodológica del arnés: R1-A/B/C/D, rectificación "
                     "final R2-A/B/C/D, rectificación final de verificación "
-                    "R3-A..F y corrección de ciclo de vida/anclaje R4-A/B/C)",
+                    "R3-A..F, corrección de ciclo de vida/anclaje R4-A/B/C "
+                    "y registro del fallo de cierre final R5-A/B/C)",
            "r1_correction": {
                "R1-A": "count_maps/parse_maps no descartan líneas no "
                        "interpretables; distinguen COMPLETA/INCOMPLETA/"
@@ -2144,6 +2303,30 @@ def main():
                        "clasificación conservadora ENOENT+fdinfo ausente -> "
                        "UNKNOWN_CAUSE; distinción evidencia real/hipótesis/"
                        "UNKNOWN; sin garantías universales de gc.collect().",
+           },
+           "r5_correction": {
+               "R5-A": "el finally de fds_with_identity() NO descarta "
+                       "silenciosamente errores de os.close(dirfd): si el "
+                       "cierre final falla, registra fase ('cierre'), "
+                       "descriptor, tipo de excepción, errno y contexto; el "
+                       "inventario queda complete=False; ningún escenario "
+                       "dependiente lo convierte en PASS (propagación "
+                       "UNKNOWN, salvo FAIL independiente probado); no se "
+                       "afirma que el descriptor quedó cerrado; no se "
+                       "realizar reintentos ciegos de close().",
+               "R5-B": "prueba controlada R2-C13: fuerza un error de cierre "
+                       "en el finally tras enumeración e inspección "
+                       "correctas; verifica 6 propiedades independientes "
+                       "(modo dirfd, cierre intentado, error registrado con "
+                       "contexto, inventario incompleto, controlador -> "
+                       "UNKNOWN, no PASS ni cierre efectivo afirmado) y "
+                       "diferencia del fallo de listdir(dirfd) de R2-C11.",
+               "R5-C": "regresión: reejecución de R2-C11, R2-C12, R3-A..E y "
+                       "del conjunto D18-R2 completo; precedencia "
+                       "FAIL>UNKNOWN>PASS; C5 histórico; ENOENT+fdinfo "
+                       "ausente -> UNKNOWN_CAUSE; modo dirfd anclado / "
+                       "modo path no anclado; sin garantías universales de "
+                       "gc.collect().",
            },
            "conserva_c5": "C5 (SIGSEGV al cerrar _mmap con array vivo) es "
                           "hallazgo histórico de FEASIBILITY-D18-R1; NO se "
