@@ -120,15 +120,23 @@ def make_file(name, size=16384, fill=b"\x00"):
     return path
 
 
-def accredit_identity(entries, st, maps_available=True):
-    """Lógica de decisión de acreditación (D18-E4).
+def accredit_identity(entries, st, maps_available=True, unparseable=None):
+    """Lógica de decisión de acreditación (D18-E4 / R1-D).
 
     - maps no disponible -> UNKNOWN (nunca PASS por defecto).
-    - maps disponible y hay entradas por identidad -> PASS.
-    - maps disponible, sin entradas, pero el mapeo debería existir
-      (lo decide el llamante) -> FAIL (falso negativo del mecanismo).
+    - barrido con líneas no interpretables (integridad del barrido no
+      asegurada) -> UNKNOWN.
+    - barrido completo y hay entradas por identidad -> PASS.
+    - barrido completo y NO hay entradas cuando el mapeo debería seguir
+      vivo -> FAIL (falso negativo del mecanismo).
+
+    `unparseable` es la lista de líneas que parse_maps() no pudo
+    interpretar; si no está vacía, el barrido no puede considerarse
+    íntegro y la acreditación es UNKNOWN (nunca PASS por omisión).
     """
     if not maps_available:
+        return "UNKNOWN"
+    if unparseable:
         return "UNKNOWN"
     return "PASS" if entries_for_identity(entries, st) else "FAIL"
 
@@ -536,46 +544,68 @@ def test_c5():
         close_exc = f"{type(e).__name__}: {e}"
     entries, _ = parse_maps()
     after = len(entries_for_identity(entries, st))
-    # Acceso al array tras cerrar el mmap subyacente: subproceso aislado
-    # (riesgo teórico de SEGV en el camino ndarray->buffer).
-    code = textwrap.dedent("""
-        import sys, numpy as np
-        arr = np.memmap(sys.argv[1], dtype="uint8", mode="r+")
-        arr._mmap.close()
-        print("BEFORE_ACCESS", flush=True)
-        try:
-            v = int(arr[0])
-            print("ACCESS_OK", v)
-        except Exception as e:
-            print("ACCESS_EXC", type(e).__name__, str(e))
-        print("DONE")
-    """)
-    r = subprocess.run([sys.executable, "-c", code, p],
-                       capture_output=True, text=True, timeout=30)
-    segv = r.returncode < 0
-    controlled = ("ACCESS_EXC" in r.stdout and "ValueError" in r.stdout
-                  and r.returncode == 0)
+    # Escenario adversarial: acceso al array tras cerrar el mmap
+    # subyacente. TRES ejecuciones independientes (R1-C); cada SIGSEGV
+    # queda confinado a su subproceso. Se escribe un script auxiliar para
+    # evitar problemas de quoting.
+    probe = os.path.join(WORKDIR, "c5_probe.py")
+    with open(probe, "w") as fh:
+        fh.write(textwrap.dedent("""
+            import sys, numpy as np
+            arr = np.memmap(sys.argv[1], dtype="uint8", mode="r+")
+            arr._mmap.close()
+            print("BEFORE_ACCESS", flush=True)
+            try:
+                v = int(arr[0])
+                print("ACCESS_OK", v)
+            except Exception as e:
+                print("ACCESS_EXC", type(e).__name__, str(e))
+            print("DONE")
+        """))
+    runs = []
+    for i in range(3):
+        r = subprocess.run([sys.executable, probe, p],
+                           capture_output=True, text=True, timeout=30)
+        runs.append({"i": i, "rc": r.returncode,
+                     "stdout": r.stdout.strip(),
+                     "stderr": r.stderr.strip()[:200],
+                     "segv": r.returncode < 0})
+    segv_count = sum(1 for x in runs if x["segv"])
     del arr
     gc.collect()
-    ok = (before == 1 and after == 0 and not has_close
-          and close_exc is None and controlled and not segv)
+    # Veredicto individual de C5 (R1-C): el FAIL se fundamenta en el
+    # SIGSEGV reproducible. Si no todas las ejecuciones lo reproducen, se
+    # refleja exactamente y se revisa el veredicto.
+    if segv_count == 3:
+        verdict = "FAIL"
+        note = "SIGSEGV reproducible 3/3 (crash exacto en arr[0])"
+    elif segv_count == 0:
+        verdict = "UNKNOWN"
+        note = ("SIGSEGV NO reproducido en 3/3: la afirmación de SEGV no "
+                "queda demostrada en esta corrida")
+    else:
+        verdict = "FAIL"
+        note = (f"SIGSEGV reproducido en {segv_count}/3 (no determinista "
+                f"en este entorno): peligro confirmado pero intermitente")
+    ok = (before == 1 and after == 0 and not has_close and close_exc is None)
     record("D18-C5", "C", "NumPy memmap: sin close(); _mmap.close()",
-           "np.memmap por ruta (mode r+); array vivo.",
+           "np.memmap por ruta (mode r+); array vivo; TRES ejecuciones "
+           "independientes del escenario adversarial en subprocesos "
+           "aislados.",
            "Verificar ausencia de close() en el array; cerrar el mmap "
            "subyacente con el array vivo; verificar desaparición en "
-           "maps; acceso posterior en subproceso aislado.",
+           "maps; acceso posterior en 3 subprocesos aislados (cada SEGV "
+           "confinado).",
            f"hasattr close={has_close}; excepción al cerrar={close_exc}; "
-           f"entradas antes={before} después={after}; subproceso rc="
-           f"{r.returncode} stdout={r.stdout.strip()!r} "
-           f"stderr={r.stderr.strip()[:200]!r}",
+           f"entradas antes={before} después={after}; "
+           f"check_estructural={ok}; segv_count={segv_count}/3; runs={runs}",
            "sin BufferError con el array vivo (el ndarray no mantiene "
            "exportación activa); el acceso posterior al array tras "
-           "_mmap.close() provoca SIGSEGV (rc=-11, reproducible 3/3, "
-           "crash exactamente en arr[0]): cerrar el mmap subyacente con "
+           "_mmap.close() provoca SIGSEGV: cerrar el mmap subyacente con "
            "el array vivo NO es seguro; el cierre efectivo seguro es "
            "liberar el array (del+gc) y acreditar la desaparición en "
-           "maps",
-           "FAIL" if segv else ("PASS" if ok else "FAIL"))
+           "maps. " + note,
+           verdict)
 
 
 def test_c6():
@@ -637,6 +667,60 @@ def test_c7():
            "close implica visibilidad de los datos escritos (page "
            "cache); doble close idempotente; flush tras close falla",
            "PASS" if ok else "FAIL")
+
+
+def test_c8():
+    """R1-A: el descriptor duplicado que mmap.mmap crea internamente es un
+    dup() de la misma descripción de archivo abierto, NO una reapertura
+    independiente. Se demuestra empíricamente con os.lseek: mover el
+    offset de uno de los fds debe reflejarse en el otro (offset
+    compartido)."""
+    p = make_file("c8.bin")
+    st = os.stat(p)
+    fd = os.open(p, os.O_RDWR)
+    m = mmap.mmap(fd, 4096, access=mmap.ACCESS_WRITE)
+    try:
+        fds = fds_with_identity(st)
+        extra = [x for x in fds if x != fd]
+        if len(extra) != 1:
+            record("D18-C8", "C",
+                   "Descriptor duplicado de mmap.mmap comparte el offset (dup)",
+                   "mmap.mmap sobre fd propio; identificar ambos fds por "
+                   "(dev,ino).",
+                   "Localizar el fd duplicado; registrar offset de ambos; "
+                   "mover el offset de uno con os.lseek; verificar que el "
+                   "otro refleja el mismo offset (descripción compartida).",
+                   f"fds={fds}; fd original={fd}; duplicado={extra}",
+                   "no se pudo aislar exactamente un único fd duplicado",
+                   "FAIL")
+            return
+        dup_fd = extra[0]
+        before_orig = os.lseek(fd, 0, os.SEEK_CUR)
+        before_dup = os.lseek(dup_fd, 0, os.SEEK_CUR)
+        os.lseek(fd, 1234, os.SEEK_SET)  # mover el original
+        after_orig = os.lseek(fd, 0, os.SEEK_CUR)
+        after_dup = os.lseek(dup_fd, 0, os.SEEK_CUR)
+        shared = (before_orig == before_dup == 0
+                  and after_orig == after_dup == 1234)
+        record("D18-C8", "C",
+               "Descriptor duplicado de mmap.mmap comparte el offset (dup)",
+               "mmap.mmap sobre fd propio; identificar ambos fds por "
+               "(dev,ino).",
+               "Localizar el fd duplicado; registrar offset de ambos; "
+               "mover el offset de uno con os.lseek; verificar que el "
+               "otro refleja el mismo offset (descripción compartida).",
+               f"fds={fds}; fd original={fd}; duplicado={dup_fd}; "
+               f"offset antes orig={before_orig} dup={before_dup}; "
+               f"tras lseek(1234) orig={after_orig} dup={after_dup}",
+               "el fd duplicado de mmap.mmap es un dup() de la misma "
+               "descripción de archivo abierto: comparte el offset del fd "
+               "original (comprobado con os.lseek); por eso "
+               "fds_with_identity cuenta dos fds con la misma identidad "
+               "(ver D18-D-A/B/C y hallazgo §9.2 del informe)",
+               "PASS" if shared else "FAIL")
+    finally:
+        m.close()
+        close_fd_quiet(fd)
 
 
 # ---------------------------------------------------------------- D18-D
@@ -839,8 +923,9 @@ def test_e4():
     fd = os.open(p, os.O_RDWR)
     m = mmap.mmap(fd, 4096, access=mmap.ACCESS_WRITE)
     try:
-        entries, _ = parse_maps()
-        v_present = accredit_identity(entries, st, maps_available=True)
+        entries, unp = parse_maps()
+        v_present = accredit_identity(entries, st, maps_available=True,
+                                      unparseable=unp)
         v_absent = accredit_identity(entries, st, maps_available=False)
         v_missing = accredit_identity([], st, maps_available=True)
         ok = (v_present == "PASS" and v_absent == "UNKNOWN"
@@ -897,6 +982,41 @@ def test_e6():
            "PASS" if ok else "FAIL", exception=err)
 
 
+def test_e7():
+    """R1-D: combina una entrada válida coincidente con líneas no
+    interpretables. La función de acreditación NO debe otorgar PASS a un
+    barrido incompleto: la integridad del barrido no está asegurada."""
+    p = make_file("e7.bin")
+    st = os.stat(p)
+    maj, min_ = os.major(st.st_dev), os.minor(st.st_dev)
+    dev_hex = f"{maj:02x}:{min_:02x}"
+    fake = os.path.join(WORKDIR, "maps_e7")
+    with open(fake, "w") as fh:
+        fh.write("\n")  # línea vacía
+        fh.write("esto no es una línea de maps\n")
+        fh.write(f"7f0000000000-7f0000001000 rw-p 00000000 {dev_hex} "
+                 f"{st.st_ino} /ruta/real/e7.bin\n")
+        fh.write("zz:zz nohex\n")
+    entries, unp = parse_maps(fake)
+    verdict = accredit_identity(entries, st, maps_available=True,
+                                unparseable=unp)
+    ok = (len(entries) == 1 and len(unp) >= 1 and verdict == "UNKNOWN")
+    record("D18-E7", "E",
+           "Barrido incompleto (entrada válida + no interpretables) ⇒ UNKNOWN",
+           "Archivo maps sintético con UNA entrada válida coincidente y "
+           "varias líneas no interpretables.",
+           "parsear; acreditar identidad con el listado de no "
+           "interpretables; verificar que NO se otorga PASS a un barrido "
+           "incompleto.",
+           f"entradas válidas={len(entries)} no_interpretables="
+           f"{len(unp)} líneas={sorted(u['line'] for u in unp)}; "
+           f"acreditación={verdict}",
+           "una entrada coincidente no basta si el barrido tiene líneas "
+           "no interpretables: la integridad del barrido no está "
+           "asegurada ⇒ UNKNOWN (no PASS por omisión)",
+           "PASS" if ok else "FAIL")
+
+
 # ---------------------------------------------------------------- main
 def main():
     global WORKDIR
@@ -923,8 +1043,10 @@ def main():
     tests = [test_a1, test_a2, test_a3, test_a4, test_a5, test_a6,
              test_b1, test_b2, test_b3,
              test_c1, test_c2, test_c3, test_c4, test_c5, test_c6, test_c7,
+             test_c8,
              test_d_a, test_d_b, test_d_c,
-             test_e1, test_e2, test_e3, test_e4, test_e5, test_e6]
+             test_e1, test_e2, test_e3, test_e4, test_e5, test_e6,
+             test_e7]
     for t in tests:
         try:
             t()
