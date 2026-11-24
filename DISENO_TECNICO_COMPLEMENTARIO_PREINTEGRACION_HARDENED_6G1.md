@@ -1,7 +1,8 @@
-# DISEÑO TÉCNICO COMPLEMENTARIO PREINTEGRACIÓN — HARDENED 6G.1 — v1
+# DISEÑO TÉCNICO COMPLEMENTARIO PREINTEGRACIÓN — HARDENED 6G.1 — v2 (RECTIFICACIÓN D-13)
 
 - **Destinatario:** Cris (ChatGPT), responsable técnica y adjudicadora. **Ejecutor:** Arena.
-- **Naturaleza:** documento de **diseño y documentación exclusivamente**. No modifica el motor, `lectura_segura_6g1.py`, el plan v2.3 ni ningún archivo; no ejecuta ni importa producción; no ejecuta pruebas, arneses ni fixtures; cero audio. **No implementa nada**: todo mecanismo futuro queda **PROPOSED** hasta su adjudicación.
+- **Historial:** **v1** publicada en `981c29c29367b2f4ec3928f9d3fadd930edb5eb0` (hijo de `1b9f5be…`). **v2 = rectificación documental** (hijo directo de `981c29c…`; único archivo modificado: este documento): incorpora la adjudicación **D-13** (SR-EI-1 en ambos modos), separa expresamente los invariantes de `single_pair` (ordinarios vs adversariales), añade la sección de **recursos transitorios de `single_pair`** (B.7) y precisa el **contrato de cierre de `GuiaHandle`** (A.4.1). Las secciones v1 no afectadas no se reescriben; la trazabilidad completa queda en el historial Git.
+- **Naturaleza:** documento de **diseño y documentación exclusivamente**. No modifica el motor, `lectura_segura_6g1.py`, el plan v2.3 ni ningún archivo; no ejecuta ni importa producción; no ejecuta pruebas, arneses ni fixtures; cero audio. **No implementa nada**: todo mecanismo futuro queda **PROPOSED** hasta su adjudicación. **D-16 continúa PENDIENTE DE AUTORIZACIÓN**: no se ejecutan regresiones ni pruebas.
 - **Informe base:** `INFORME_AUDITORIA_ESTATICA_CORRESPONDENCIA_MOTOR_PLAN_6G1.md` (`2438559…`) y `COMPLEMENTO_ADJUDICACION_AUDITORIA_MOTOR_PLAN_6G1.md` (`1b9f5be…`). Este documento RESUELVE decisiones de diseño pendientes señaladas en el §8 de la auditoría, sin reescribirlos.
 - **Etiquetas (esquema de 4, vigente desde el complemento):** **DOCUMENTED_FACT** (código vigente, con líneas) · **ADJUDICACIÓN** (decisión expresa de Cris) · **PROPOSED** (diseño futuro, no implementado) · **UNKNOWN** (sin evidencia).
 - **Contexto aceptado:** plan v2.3 consolidado; FEASIBILITY-1-R2 aceptada (entorno Linux documentado); auditoría estática aceptada; complemento de adjudicación aceptado; alcance P-01..P-09 y FLOW-1..4 = `full_processing` exclusivamente; `single_pair` fuera con comportamiento preservado; SR-EI-1 adjudicado, PROPOSED y no implementado.
@@ -30,6 +31,8 @@
 
 Contenedor propuesto: **`GuiaHandle`** que replica el contrato ya vigente de `MixHandle` (LS L127-288): `fd` propio + lector soundfile + `__getattr__` delegando la API + `close()` verificable idempotente con `_cierre_fallido_6g1` persistente (el primer fallo nunca se convierte en estado «cerrado»). Alternativa mínima: conservar el dict `handles` y añadir los fds a un registro paralelo de la corrida — rechazada en el diseño por dispersar la propiedad (riesgo de fuga en aborto). La forma EXACTA de `GuiaHandle` (firma, campos, mensajes) queda para la fase de implementación autorizada.
 
+**Aplicabilidad a ambos modos (ADJUDICACIÓN D-13, incorporada en esta rectificación):** la secuencia S1-S8 se ejecuta en la **región compartida ANTES de la bifurcación de modos** (posición vigente H L1695-1698, posterior a `abrir_mix` L1687 y anterior al DSP y a la bifurcación final de §B.1) ⇒ **SR-EI-1 aplica tanto a `full_processing` como a `single_pair`**. La verificación de identidad de las guías **ocurre antes del DSP y es independiente de las compuertas P-05**: no desciende de ningún dirfd de compuerta, no consulta la matriz §8ter y no depende de anclas retenidas. **Una sustitución detectada produce rechazo fail-closed en AMBOS modos** (A.5); la rama `else` de publicación de `single_pair` conserva su comportamiento vigente pero **no puede eludir SR-EI-1**.
+
 ### A.3 Semántica REAL del mecanismo de entrega en soundfile 0.13.1 (DOCUMENTED_FACT por fuentes + arnés; explicación exigida)
 
 soundfile 0.13.1 tiene **tres rutas de entrega** en `_open` (fuente `soundfile.py` L1240-1258, inspeccionada en fases previas; comportamiento observado además en el arnés FEASIBILITY-1 F3, espacio AISLADO):
@@ -52,6 +55,18 @@ Observaciones empíricas del arnés que sustentan S6 (FEASIBILITY-1, espacio AIS
 | Fallo S2-S5 | motor | cierre determinista del fd antes de re-elevar (nunca llega al llamador abierto — patrón MixHandle L178-183) |
 
 Punto de diseño conservado: las guías son ENTRADAS — su fd NO forma parte de las anclas de compuertas (no se retiene hasta gate-1/gate-2 ni hasta el paso 7 de P-08); su vida es exactamente el DSP. Esto delimita SR-EI-1 respecto de P-08/P-09 (los writers/memmaps/anclas SÍ permanecen).
+
+### A.4.1 Contrato de cierre de `GuiaHandle` (precisado en la rectificación v2)
+
+**PROPOSED** — el patrón equivalente SÍ es vigente para `MixHandle` (DOCUMENTED_FACT, LS L199-245), pero `GuiaHandle` NO existe y este contrato **NO está probado en el motor**:
+
+1. **Intentar finalizar el lector SoundFile** (`rd.close()` — libsndfile finaliza el archivo lógico; idempotente y seguro de reintentar; la referencia se conserva mientras el objeto no conste cerrado físicamente).
+2. **Intentar SIEMPRE cerrar el descriptor propio, incluso si el cierre del lector falla.** Antes del primer intento de `os.close(fd)`, el campo pasa a `None` (nunca se reintenta `os.close` sobre el mismo número: en Linux el descriptor queda liberado aunque close() falle y el número puede haberse reasignado — mismo argumento de MixHandle, LS L206-212).
+3. **Registrar de forma persistente cualquier fallo:** el PRIMER fallo (del lector o del fd) queda en `_cierre_fallido_6g1` y no se sobrescribe (LS L234-235); un recurso con fallo de cierre nunca se acredita como cerrado, aunque sus referencias queden en None.
+4. **No declarar el recurso completamente cerrado si el cierre no puede acreditarse:** estado físico = (lector `closed` True **Y** campo `fd` es None) — análogo a `_estado_fisico_6g1` para MixHandle (LS L1157-1159); el dictamen OK exige estado físico acreditado Y ningún fallo persistente (patrón `_cerrado_6g1`, LS L1164-1173).
+5. **Integración con el mecanismo vigente:** el cierre en ruta de éxito se acredita con `cerrar_verificado_6g1` (LS L1176-1201) — `GuiaHandle` debe exponer el estado físico que esa función sabe leer (delegación `.closed` + lógica fd, detalle de implementación); en aborto, `GuiaHandle` entra en `lectores=` de `preparar_aborto_6g1` junto a `hmix` y `handles` (H L2016-2017/L2029-2032/L2046-2050); un fallo de cierre marca `completo=False` ⇒ aborto registrado SIN traslado.
+
+**Estado (DOCUMENTED_FACT / PROPOSED):** lo vigente es el patrón MixHandle y el circuito `cerrar_verificado_6g1`/`preparar_aborto`; lo PROPOSED es `GuiaHandle` y la aplicación de ese contrato a las guías. **No se afirma que este comportamiento esté probado en el motor** — su verificación pertenece a una fase de implementación autorizada (y a la regresión B.6 si se adjudica D-16).
 
 ### A.5 Errores y rechazo fail-closed (PROPOSED)
 
@@ -81,7 +96,7 @@ Los `motivo` exactos son PROPOSED y quedan sujetos a la convención de `FalloCor
 1. **Demostrado en FEASIBILITY-1 (espacio AISLADO, commits `a94f507`/`71d928b`/`ef90a45`):** lectura y escritura por fd int con `sf_open_fd` y `closefd=False` (identidad conservada); exigencia `format='WAV'` en escritura por fd; auto-detección en lectura por fd (TypeError con `format`); `closefd=True` cierra el fd propio (EBADF); contenido PCM_16 verificado con cota 1 LSB. **NO demostrado ahí:** FLAC por fd; comportamiento con `single_pair`; nada sobre el motor real.
 2. **Observado en el motor actual (DOCUMENTED_FACT):** probe por descriptor con identidad conservada (L372/L383); reapertura de guías por ruta sin verificación (L1697-1698); patrón Mix/`MixHandle` con identidad exigida (L1687; LS L152-158); consumo vía `read_span` (L841-857/L1720-1721); cierre L1878; aborto con lectores (H L2016-2017).
 3. **Propuesta de integración (PROPOSED):** secuencia S1-S8, `GuiaHandle`, ruta int fd + `closefd=False`, taxonomía de fallos A.5, propiedad A.4.
-4. **Pendiente de prueba o decisión (UNKNOWN):** lectura de FLAC por fd; ejecución de la invariancia en el motor real; texto final de motivos de `FalloCorrida6G1`; forma exacta de `GuiaHandle`; si SR-EI-1 aplica también a `single_pair` (D, decisión P-2).
+4. **Pendiente de prueba o decisión (UNKNOWN):** lectura de FLAC por fd; ejecución de la invariancia en el motor real; texto final de motivos de `FalloCorrida6G1`; forma exacta de `GuiaHandle`. [v2: el alcance de SR-EI-1 a ambos modos ya está ADJUDICADO (D-13) — ya no es una incertidumbre.]
 
 ## B. Aislamiento de `full_processing` y `single_pair`
 
@@ -90,6 +105,7 @@ Los `motivo` exactos son PROPOSED y quedan sujetos a la convención de `FalloCor
 - Base: `full_mode = (mode == MODE_FULL_PROCESSING or mode == MODE_SINGLE_PAIR)` (H L1622) — hoy AMBOS modos recorren la misma ruta de escritura/publicación.
 - Diseño propuesto: **UN ÚNICO punto de bifurcación** al final de `run_experiment`, delimitando los pasos NUEVOS de P-08/P-05: `if mode == MODE_FULL_PROCESSING: <secuencia P-08 con gate-1/5bis/gate-2/EXIT_OK condicionado>` `else: <secuencia vigente intacta (publicación por rutas L1984, rmtree masks con WARN L1994-2000, EXIT_OK incondicionado L2002)>`. El resto del flujo (creación, escrituras, DSP, guarda del mix, input_integrity) permanece compartido con adaptación mecánica (B.2).
 - Justificación: minimizar la superficie de bifurcación (un solo `if` de modo en la secuencia final) y hacer verificable por diff que la rama `else` conserva las líneas vigentes.
+- **Límite de la rama `else` (ADJUDICACIÓN D-13, v2):** la rama `else` de publicación de `single_pair` **puede conservar su comportamiento vigente** (publicación por rutas, rmtree con WARN, EXIT_OK incondicionado) **pero NO puede eludir SR-EI-1**: la verificación de identidad de guías ocurre en la región compartida ANTERIOR a la bifurcación (§A.2 Aplicabilidad), por lo que es anterior a cualquier decisión de publicación y es **independiente de las compuertas P-05** (no consulta §8ter ni dirfds de compuerta).
 
 ### B.2 Clasificación de funciones compartidas (PROPOSED)
 
@@ -101,7 +117,7 @@ Los `motivo` exactos son PROPOSED y quedan sujetos a la convención de `FalloCor
 | Compuertas P-05 (gate-1/gate-2), hash G1, matriz §8ter (`L_acept`), paso 5bis | **RAMIFICADO**: sólo en la rama `full_processing`; `L_acept` NO se deriva para `single_pair` (la derivación queda detrás del `if`) | NO hereda §8ter ni P-05 |
 | Publicación P-06 (`_v2` por anclas + `fstat(fd_pub)==I_run`) | **RAMIFICADO**: rama `full_processing`; `single_pair` conserva `publicar_dir_6g1` vigente por rutas (L1984) | NO hereda P-06 |
 | Aborto P-02 (`abortar_corrida_6g1_v2(fd_dir, fd_padre)`) | **RAMIFICADO**: handlers pasan anclas sólo si existen (rama `full_processing`); si `single_pair` no retiene anclas (B.2 primera fila), los handlers usan el protocolo VIGENTE por rutas | NO hereda P-02 |
-| SR-EI-1 (guías) | compartido POR DEFECTO (requisito de integridad de entradas, no es compuerta) — **decisión pendiente** D/P-2 | propuesta: aplicar (fallo fail-closed sólo si hubo sustitución); pendiente adjudicación |
+| SR-EI-1 (guías) | **ADJUDICADO (D-13, v2): aplica a AMBOS modos** — región compartida antes del DSP, independiente de P-05; sustitución ⇒ rechazo fail-closed en ambos modos | aplicar (fallo fail-closed si hubo sustitución — cambio de seguridad deliberado, no regresión) |
 
 ### B.3 Evitar herencia inadvertida de §8ter/P-05 (PROPOSED)
 
@@ -109,12 +125,19 @@ Los `motivo` exactos son PROPOSED y quedan sujetos a la convención de `FalloCor
 - El paso 5bis y la condición de EXIT_OK quedan dentro de la misma rama; la rama `else` mantiene literalmente el código vigente (L1984-L2002).
 - `preparar_aborto_6g1`/`abortar_corrida_6g1` reciben anclas SÓLO si el modo las retuvo (los `locals().get(...)` vigentes ya toleran ausencia); la variante `_v2` de P-02 se invoca sólo con anclas presentes.
 
-### B.4 Comportamiento de `single_pair` a preservar (invariantes observables, PROPOSED)
+### B.4 Comportamiento de `single_pair` a preservar (RECTIFICADO v2 — separación expresamente exigida)
+
+**1. Escenarios ORDINARIOS** (entradas válidas y sin sustitución) — invariantes de equivalencia, PROPOSED:
 
 1. Mismos artefactos y nombres (`<track_base> SDV/SDI.wav` en raíz, `candidates/…` con `--write-all-candidates`, `analysis.json/.txt`, `engine_log.txt`, `input_integrity_6g.json`, `masks/` según `--png/--keep-masks`, `png/` condicionado, publicación con sufijos `_r%03d`, `masks/` eliminada del publicado con WARN si falla).
-2. Mismo `rc` en cada escenario (éxito/validación/procesamiento/aborto) y misma semántica de `ABORT_6G1.json` (schema abort-6g1/3).
+2. Mismo `rc` en cada escenario ordinario (éxito/validación/procesamiento/aborto) y misma semántica de `ABORT_6G1.json` (schema abort-6g1/3).
 3. Mismo contenido científico (`analysis.json` campo a campo).
-4. Cambios PERMITIDOS (no observables): mecanismo interno de fds (P-03/P-04), registro por identidad, orden interno de cierre con acreditación — mientras los invariantes 1-3 se mantengan.
+4. Cambios PERMITIDOS (no observables): mecanismo interno de fds (P-03/P-04), registro por identidad, orden interno de cierre con acreditación, anclas transitorias (B.7) — mientras los invariantes 1-3 se mantengan.
+
+**2. Escenarios ADVERSARIALES de sustitución de guía** — NO son regresión de equivalencia:
+
+- El rechazo fail-closed de SR-EI-1 (`GUIA_SUSTITUIDA_ANTES_DEL_DSP`, rc≠0, sin publicación) es un **CAMBIO DE SEGURIDAD DELIBERADO adjudicado** (D-13): hoy el motor vigente lee el sustituto SILENCIOSAMENTE (H L1697-1698 sin verificación); después de la integración, ese mismo escenario produce aborto en **AMBOS modos**.
+- **NO se afirma que los códigos de retorno deban permanecer idénticos ante una sustitución de entrada**: en los escenarios de sustitución, la comparación correcta es contra el comportamiento NUEVO esperado (fail-closed), no contra el vigente (B.6).
 
 ### B.5 Riesgos de bifurcar funciones o duplicar rutas (PROPOSED; mitigación)
 
@@ -124,11 +147,44 @@ Los `motivo` exactos son PROPOSED y quedan sujetos a la convención de `FalloCor
 | Duplicación de helpers (dos implementaciones de publicación/limpieza) | P-06 `_v2` y 5bis son funciones NUEVAS llamadas sólo desde la rama nueva; las vigentes (`publicar_dir_6g1`, `shutil.rmtree`) permanecen para `single_pair` sin modificar |
 | Parámetro `retener_anclas` mal propagado → `single_pair` retiene anclas sin usarlas (fuga) o `full_processing` no las retiene (P-01 roto) | valor por defecto `False` (comportamiento vigente); el paso de `True` ocurre en un único punto (`run_experiment`); verificación de residuos de fds en la regresión B.6 |
 | `full_mode` compartido oculta diferencias futuras | documentar en la propia rama el motivo del `if` (referencia a la ADJUDICACIÓN A del complemento) |
-| SR-EI-1 cambia `single_pair` en el escenario de sustitución (antes silencioso, ahora aborto) | decisión explícita requerida (D/P-2) — no se introduce por defecto sin adjudicación |
+| SR-EI-1 cambia `single_pair` en el escenario de sustitución (antes silencioso, ahora aborto) | **COMPORTAMIENTO DELIBERADO ADJUDICADO (D-13, v2)**: cambio de seguridad, no regresión; el protocolo B.6 verifica los escenarios de sustitución contra el comportamiento NUEVO esperado |
 
 ### B.6 Verificación comparativa pre/post para `single_pair` (PROPOSED — **PENDIENTE DE AUTORIZACIÓN; NO EJECUTADA**)
 
-Protocolo propuesto (sólo diseño): (1) ejecutar el motor vigente en `--mode single_pair` con fixture sintético fijo (sin audio real) y capturar: `rc`, árbol de artefactos, `analysis.json`, `engine_log.txt`, `input_integrity_6g.json`, hashes de WAV, presencia/ausencia de `masks/` publicado, formato de `ABORT_6G1.json` en un escenario de aborto; (2) repetir idéntico tras la integración; (3) comparar campo a campo (los campos temporales/`(dev,ino)`/timestamps varían por diseño). **Este protocolo NO se ejecutó aquí y NO se autoriza por este documento** — requiere adjudicación expresa de Cris (fixtures, entorno, momento). Hasta entonces, la preservación de `single_pair` es un requisito de diseño (PROPOSED) con verificación UNKNOWN.
+Protocolo propuesto (sólo diseño): (1) ejecutar el motor vigente en `--mode single_pair` con fixture sintético fijo (sin audio real) y capturar: `rc`, árbol de artefactos, `analysis.json`, `engine_log.txt`, `input_integrity_6g.json`, hashes de WAV, presencia/ausencia de `masks/` publicado, formato de `ABORT_6G1.json` en un escenario de aborto; (2) repetir idéntico tras la integración; (3) comparar campo a campo (los campos temporales/`(dev,ino)`/timestamps varían por diseño).
+
+**Alcance rectificado (v2, consecuencia de D-13):** la comparación de equivalencia campo a campo del punto (3) aplica a los **escenarios ORDINARIOS** (B.4.1). Los **escenarios adversariales de sustitución de guía** se comparan contra el comportamiento NUEVO esperado (rechazo fail-closed con motivo específico y rc≠0 — B.4.2), NO contra el vigente. **Este protocolo NO se ejecutó aquí y NO se autoriza por este documento** — D-16 continúa PENDIENTE DE AUTORIZACIÓN — requiere adjudicación expresa de Cris (fixtures, entorno, momento). Hasta entonces, la preservación de `single_pair` en escenarios ordinarios es un requisito de diseño (PROPOSED) con verificación UNKNOWN.
+
+### B.7 Recursos transitorios de `single_pair` — P-03/P-04 sin anclas retenidas de P-01 (añadido v2)
+
+**Problema:** en `single_pair` NO se retienen anclas (D-10: `retener_anclas=False` por defecto). Las adaptaciones mecánicas de P-03/P-04 necesitan dirfds acreditados para crear archivos componente a componente. **Restricción de diseño (exigida): NO se introducen rutas nominales como solución implícita al anclaje.**
+
+**Mecanismo propuesto — ANCLA TRANSITORIA (PROPOSED):** patrón «abrir → fstat contra identidad registrada → usar → cerrar inmediatamente». La identidad del provisional es CONOCIDA sin fd retenido: `crear_y_acreditar_dir_6g1` la registra en `_DIR_6G1` (LS L410, clave por ruta — registro vigente) y `create_run_dir` conoce la ruta. La reapertura se hace con `os.open(ruta, O_RDONLY|O_DIRECTORY|O_NOFOLLOW)` + `fstat` comparado contra la identidad registrada — el mismo patrón H1 vigente de `_anclar_dir_aborto_6g1` (LS L331-364). Esto es **re-acreditación por identidad en cada uso**, no resolución nominal de un objeto no acreditado; los ficheros se crean y abren SIEMPRE por `openat` relativo al dirfd re-acreditado (P-03, prohibición de rutas multi-componente mantenida).
+
+**Aplicación por recurso (todo PROPOSED):**
+
+| Recurso | Secuencia con ancla transitoria en `single_pair` | Descriptor que sobrevive |
+|---|---|---|
+| `candidates/` y grupos (con flag) | `fd_run_t` (re-acreditado) → `mkdir("candidates", dir_fd=fd_run_t)` → `fd_cand_t = openat` + fstat → `mkdir(grupo, dir_fd=fd_cand_t)` → `fd_grupo_t = openat` + fstat → `openat(WAV, O_CREAT\|O_EXCL\|O_NOFOLLOW, dir_fd=fd_grupo_t)` → **fd del WAV entregado a `sf.SoundFile(fd, 'w', closefd=False)`** (P-03) → cierre INMEDIATO de `fd_run_t`, `fd_cand_t`, `fd_grupo_t` | fd del WAV (propiedad del motor hasta su cierre acreditado) |
+| `masks/` y memmaps | `fd_run_t` (re-acreditado) → `mkdir("masks", dir_fd=fd_run_t)` → `fd_masks_t = openat` + fstat → `openat(npy, O_CREAT\|O_EXCL\|O_NOFOLLOW, dir_fd=fd_masks_t)` → **fd_mm (motor)** + creación del mapeo vía magic-link del fd_mm o cabecera manual (P-03/R-29) → cierre de `fd_run_t` y `fd_masks_t` tras crear los npy | `fd_mm` de cada memmap, mientras el mapeo vive (cierre verificable al final del DSP) |
+| Tee / engine_log, `analysis.json/.txt`, `input_integrity_6g.json` | `fd_run_t` (re-acreditado) → `openat(O_CREAT\|O_EXCL\|O_NOFOLLOW)` → `os.fdopen(fd)` (P-03/P-04) → cierre de `fd_run_t` tras la creación | fd propio del recurso (cerrado por fdopen según contrato R-17) |
+| `post_wav` (P-04c) | ancla transitoria re-acreditada del run dir → `openat(nombre, O_RDONLY\|O_NOFOLLOW, dir_fd=fd_run_t)` + fstat → `sf.SoundFile(fd, closefd=False)` → lectura → cierres | ninguno (transitorios por lectura) |
+| SR-EI-1 (guías) | NO usa ancla de run: se abre el archivo de guía directamente (S2) y se compara contra `FileInfo` (S4) — independiente de P-01/P-05 | fd del lector durante el DSP |
+
+**Cierre verificable y ausencia de fugas (PROPOSED):** cada apertura transitoria tiene su cierre EMPAREJADO en el mismo bloque (patrón ledger validado en el arnés FEASIBILITY-1, F1-F6: toda apertura registrada, todo cierre verificado); los dirfds transitorios se cierran antes de continuar; los barridos procfs vigentes de `preparar_aborto_6g1` (LS L1115/L1362/L1404) detectarían cualquier escritura abierta bajo el provisional. **UNKNOWN:** la prueba exhaustiva de ausencia de fugas en `single_pair` requiere la regresión B.6 (D-16, pendiente); el barrido procfs presupone procfs montado (R-29).
+
+**Diferenciación expresamente exigida (v2):**
+
+| | `single_pair` | `full_processing` |
+|---|---|---|
+| Anclas (`fd_run`/`fd_padre`/`fd_masks`/`fd_candidates`/grupos) | **TRANSITORIAS**: abrir→fstat→usar→cerrar; ninguna sobrevive a su bloque | **RETENIDAS** toda la corrida (P-01); cierre ordenado paso 5bis/paso 7 |
+| Compuertas P-05 / matriz §8ter / hashes G1 | **NO** (no se derivan; detrás de la bifurcación) | **SÍ** (gate-1/5bis/gate-2 exclusivos) |
+| Publicación | vigente por rutas (rama `else`) | P-06 `_v2` por anclas + `fstat(fd_pub)==I_run` |
+| P-03/P-04 | sí, con anclas transitorias (B.7) | sí, con anclas retenidas |
+| SR-EI-1 | **SÍ** (D-13) | **SÍ** (D-13) |
+| Aborto | protocolo vigente por rutas (P-02 NO retenido) | P-02 `_v2` con anclas retenidas |
+
+**Estado:** todo el mecanismo de ancla transitoria es PROPOSED y NO ha sido ejercitado ni en arnés ni en el motor (la re-acreditación por ruta+identidad SÍ es vigente en el aborto H1, DOCUMENTED_FACT). Si en la fase de implementación alguna operación resultara no garantizable con anclas transitorias (p. ej. un descenso reiterado con coste R-15), se clasificaría UNKNOWN y se propondría el mecanismo pendiente — sin recurrir a rutas nominales.
 
 ## C. Integración con P-01..P-09 (secuencia coherente)
 
@@ -163,6 +219,8 @@ El aislamiento de modos (§B) es transversal: se define ANTES del paso 1 como de
 | fd del mix (`hmix.fd`) | vigente (LS L142) | DSP + guarda final | vigente (acreditado, L1950) — sin cambios |
 | handles de guías vigentes → `GuiaHandle` | S6 | `read_span` | S8 |
 
+**Nota v2 (alcance de la tabla):** el ciclo de vida descrito corresponde a `full_processing` (anclas retenidas). En `single_pair`, las filas de anclas (`fd_padre`/`fd_run`/`fd_masks`/`fd_candidates`/grupos) se sustituyen por el patrón de **ancla transitoria** de B.7 (abrir→fstat→usar→cerrar; sin compuertas ni 5bis ni `fd_pub`); las filas de writers/memmaps/Tee/JSON/guías/mix son iguales en ambos modos (P-03/P-04/SR-EI-1, ADJUDICACIÓN D-13).
+
 ### C.3 Relación SR-EI-1 ↔ P-03/P-04 (sin confusión)
 
 | Aspecto | P-03 | P-04 | SR-EI-1 |
@@ -187,20 +245,22 @@ SR-EI-1 usa el mismo MECANISMO de entrega que P-03 pero para entradas y con comp
 | D-6 | Taxonomía de fallos (`GUIA_NO_ABIERTA/SUSTITUIDA_ANTES_DEL_DSP`, `trasladar=False`) | PROPOSED (A.5); texto final de motivos pendiente de implementación |
 | D-7 | Invariancia DSP/acústica (mismo inodo, misma API, `read_span` sin cambios) | PROPOSED como invariante; UNKNOWN como hecho ejecutado |
 | D-8 | FLAC por fd | UNKNOWN (no ejercitado ni en arnés ni en motor) |
-| D-9 | Bifurcación única al final de `run_experiment`; `L_acept`/5bis/P-06/P-02 sólo en rama `full_processing`; `else` = código vigente | PROPOSED (B.1-B.3) |
+| D-9 | Bifurcación única al final de `run_experiment`; `L_acept`/5bis/P-06/P-02 sólo en rama `full_processing`; `else` = código vigente **sin poder eludir SR-EI-1** (D-13) | PROPOSED (B.1-B.3) |
 | D-10 | `retener_anclas=False` por defecto en `create_run_dir` (P-01 no se extiende a `single_pair`) | PROPOSED (B.2) |
 | D-11 | Adaptación mecánica compartida de writers/memmaps/Tee/JSON (P-03/P-04) con invariantes observables preservados | PROPOSED (B.2/B.4) |
 | D-12 | Protocolo de verificación comparativa `single_pair` pre/post | PROPOSED y **PENDIENTE DE AUTORIZACIÓN** — NO ejecutado (B.6) |
-| D-13 | **¿SR-EI-1 aplica también a `single_pair`?** (recomendación de diseño: sí, por ser integridad de entradas y no compuerta; cambiaría el escenario de sustitución de silencioso a aborto) | **DESCISIÓN ABIERTA — requiere adjudicación de Cris** |
+| D-13 | **SR-EI-1 aplica tanto a `full_processing` como a `single_pair`**: verificación de identidad antes del DSP, independiente de las compuertas P-05; sustitución detectada ⇒ rechazo fail-closed en AMBOS modos; la rama `else` de publicación de `single_pair` conserva su comportamiento vigente pero NO puede eludir SR-EI-1; el aborto por sustitución es cambio de seguridad deliberado, NO regresión de equivalencia | **ADJUDICACIÓN** (adjudicada por Cris; incorporada en esta rectificación v2 — §A.2 Aplicabilidad, B.1, B.2, B.4, B.5, B.6) |
 | D-14 | **Forma exacta de `GuiaHandle`** (firma/campos/mensajes) | PENDIENTE — fase de implementación autorizada |
 | D-15 | **Textos finales de motivos de `FalloCorrida6G1`** para guías | PENDIENTE — fase de implementación autorizada |
 | D-16 | **Autorización para ejecutar la regresión B.6 y/o pruebas con motor** | PENDIENTE — adjudicación expresa |
 | D-17 | Todo el contenido de P-01..P-09 (secuencia C) | PROPOSED (plan v2.3; nada implementado) |
 
-**Decisiones que todavía requieren adjudicación de Cris (explícitas):** D-13 (alcance de SR-EI-1 a `single_pair`), D-16 (autorización de regresión/pruebas), y tras la auditoría de este documento: la aceptación del diseño D-3/D-4/D-9 como base para la futura fase de implementación. No se cierra ninguna incertidumbre por suposición: D-7/D-8 quedan UNKNOWN hasta evidencia.
+**Decisiones que todavía requieren adjudicación de Cris (explícitas, v2):** D-16 (autorización de la regresión comparativa/pruebas — continúa PENDIENTE), y tras la auditoría de este documento: la aceptación del diseño D-3/D-4/D-9/B.7 como base para la futura fase de implementación. **Resueltas en esta rectificación:** D-13 (ADJUDICACIÓN — SR-EI-1 en ambos modos). No se cierra ninguna incertidumbre por suposición: D-7/D-8 y la verificación del mecanismo de ancla transitoria B.7 quedan UNKNOWN hasta evidencia.
 
 ## Declaración expresa y parada
 
-Documento de diseño y documentación exclusivamente: no modifica `motores/`, `lectura_segura_6g1.py`, el plan v2.3 ni ningún archivo existente; no ejecuta ni importa producción; no ejecuta pruebas, arneses ni fixtures; cero audio real y cero Android/Termux; no toca DSP, fórmulas, parámetros, máscaras ni reconstrucción; no integra FLOW-1..4 ni P-01..P-09 ni SR-EI-1; no interviene EVO/MQR, FLOW-5..8, `main` ni PR #2; sin merge ni cherry-pick. El único archivo de este commit es este documento. Las líneas citadas corresponden a los SHA256 de la auditoría (§1 de `2438559…`) sobre el padre `1b9f5be…`.
+Documento de diseño y documentación exclusivamente: esta rectificación v2 modifica ÚNICAMENTE este documento (M) — no modifica `motores/`, `lectura_segura_6g1.py`, el plan v2.3 ni ningún otro archivo; no ejecuta ni importa producción; no ejecuta pruebas, arneses ni fixtures; cero audio real y cero Android/Termux; no toca DSP, fórmulas, parámetros, máscaras ni reconstrucción; no integra FLOW-1..4 ni P-01..P-09 ni SR-EI-1; no interviene EVO/MQR, FLOW-5..8, `main` ni PR #2; sin merge ni cherry-pick. D-16 continúa PENDIENTE DE AUTORIZACIÓN: no se ejecutaron regresiones ni pruebas. Las propuestas siguen siendo propuestas: D-13 queda ADJUDICADA como decisión, no como implementación. Las líneas citadas corresponden a los SHA256 de la auditoría (§1 de `2438559…`) sobre el padre `981c29c…`.
+
+— Fin del documento. Parada obligatoria: publicado y detenido — se espera la auditoría y adjudicación de Cris. No se implementa nada.
 
 — Fin del documento. Parada obligatoria: publicado y detenido — se espera la auditoría y adjudicación de Cris. No se implementa nada.
