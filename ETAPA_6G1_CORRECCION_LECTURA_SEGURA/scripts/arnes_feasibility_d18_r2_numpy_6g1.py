@@ -118,6 +118,24 @@ CORRECCIÓN FINAL R5 (FEASIBILITY-D18-R2-R5, autorizada por Cris):
         modo dirfd anclado / modo path no anclado y ausencia de
         garantías universales de gc.collect().
 
+RECTIFICACIÓN METODOLÓGICA R6 (FEASIBILITY-D18-R2-R6, autorizada por Cris):
+  R6-A  Eliminación del cálculo manual de P5 en R2-C13 (`v_contr = ...`):
+        el controlador del arnés (`run_controller` / `aggregate_verdicts`)
+        se extrae de `main()` y se ejecuta realmente.
+  R6-B  Inyección real de fallo de `os.close(dirfd)` dentro de
+        `fds_with_identity()` tanto en `fd_dir` sintético (con contraste
+        limpio completo) como a través del flujo real de los 7 escenarios
+        A, B y C que consumen `fds_with_identity()` (`test_a1`, `test_b1`,
+        `test_b2`, `test_b5`, `test_c_a`, `test_c_b`, `test_c_c`),
+        verificando preservación exacta de identidad (`id(inv)`) sin
+        sustitución por inventarios simulados ni falsificación de `/proc`.
+  R6-C  Contraste real A/B/C sin fallo de `os.close(dirfd)` y criterio
+        estricto FAIL > UNKNOWN > PASS: si el entorno (p. ej. entrada
+        fantasma R2-C8 en `/proc/self/fd`) ya vuelve incompleto el
+        inventario en el contraste de A/B/C e impide aislar el fallo de
+        cierre con contraste PASS sin alterar su semántica, R2-C13 se
+        adjudica conservadoramente como UNKNOWN (no se eleva a PASS).
+
 Restricciones: entorno aislado, fixtures sintéticos, sin motores/, sin
 lectura_segura_6g1.py, sin plan v2.3/diseño v5/adjudicación final, sin
 integración Hardened/EVO/MQR, sin audio real, sin Android/Termux, sin D-16,
@@ -1880,19 +1898,37 @@ def test_r2c12_anchored_vs_path_and_close():
 
 
 def test_r2c13_final_close_failure():
-    """R2-C13 / R5-B: registro del fallo de cierre FINAL de dirfd.
+    """R2-C13 / R5-B + rectificación R6: fallo de cierre FINAL de dirfd
+    propagado por escenarios reales A/B/C y controlador real.
 
-    Se forza un error de os.close(dirfd) en el finally DEPOIS de una
-    enumeración e inspección correctas. Se verifican independientemente:
-    (1) la inspección se ejecutó en modo dirfd; (2) el cierre fue
-    intentado; (3) el error quedó registrado con su contexto (phase=
-    "cierre", descriptor, tipo, errno); (4) el inventario resultó
-    incompleto; (5) el controlador dependiente asignó UNKNOWN;
-    (6) no se declara PASS ni cierre efectivo cuando el descriptor no
-    pudo acreditarse como cerrado. Se distingue de R2-C11 (fallo de
-    listdir(dirfd), fase=enumeracion, sin inspección ejecutada).
+    Elimina el cálculo manual de P5 (`v_contr = "UNKNOWN" if not
+    inv.complete else "PASS"`):
+    - Etapa 1 (fd_dir sintético): verifica P1 (modo dirfd), P2 (cierre
+      intentado), P3 (error phase="cierre", errno=EBADF, contexto), P4
+      (complete=False con contraste limpio inv_clean.complete=True en d),
+      P6 (nota "no se afirma que quedó cerrado") y P7 (distinto de R2-C11).
+    - Etapa 2 (flujo real A/B/C + controlador real `run_controller`):
+      inyecta fallo real de os.close(dirfd) dentro de fds_with_identity()
+      mientras se ejecutan los 7 escenarios reales A, B y C que consumen
+      fds_with_identity() (test_a1, test_b1, test_b2, test_b5, test_c_a,
+      test_c_b, test_c_c). Un espía transparente preserva y registra la
+      identidad exacta del objeto FdInventory devuelto (`id(inv)`) sin
+      sustituirlo ni fabricarlo. Verifica: complete=False, error
+      phase="cierre" en cada objeto, 7/7 escenarios -> UNKNOWN (nunca PASS
+      ni FAIL artificial) y controlador real -> global_verdict=UNKNOWN.
+    - Etapa 3 (contraste real A/B/C sin fallo de os.close): ejecuta los
+      mismos 7 escenarios reales sin inyección de fallo en os.close(dirfd).
+      Si el entorno ya hace incompleto `/proc/self/fd` en contraste (p.ej.
+      fantasma R2-C8 en sandbox), no se puede aislar el fallo de cierre
+      como causa única con contraste PASS sin alterar su semántica ->
+      veredicto conservador UNKNOWN (FAIL si falla P1..P4, P5, P6, P7 o
+      el contraste en fd_dir sintético; PASS solo si también el contraste
+      real A/B/C en /proc/self/fd produce complete=True y PASS).
     """
     import unittest.mock as _m
+    this_module = sys.modules[__name__]
+
+    # --- Etapa 1: inyección aislada en fd_dir sintético + contraste ------
     d = tempfile.mkdtemp(prefix="feas_r2c_")
     f5 = os.path.join(d, "5")
     open(f5, "w").close()
@@ -1901,12 +1937,12 @@ def test_r2c13_final_close_failure():
     opened_fds, stat_calls = [], []
     dirfd_target, closed_attempted = None, []
 
-    def spy_open(path, *a, **k):
+    def spy_open_d(path, *a, **k):
         fd = real_open(path, *a, **k)
         opened_fds.append(fd)
         return fd
 
-    def spy_stat(path, *a, **k):
+    def spy_stat_d(path, *a, **k):
         stat_calls.append((path, k.get("dir_fd", None)))
         return real_stat(path, *a, **k)
 
@@ -1921,67 +1957,244 @@ def test_r2c13_final_close_failure():
 
     inv = None
     try:
-        with _m.patch.object(os, "open", spy_open), \
-                _m.patch.object(os, "stat", spy_stat), \
+        with _m.patch.object(os, "open", spy_open_d), \
+                _m.patch.object(os, "stat", spy_stat_d), \
                 _m.patch.object(os, "close", close_fail_target):
             inv = fds_with_identity(st, fd_dir=d)
     finally:
-        # Limpieza: el descriptor quedó abierto (el cierre fue forzado a
-        # fallar); cerrarlo con el close real para no fugar fds.
         if dirfd_target is not None:
             try:
                 real_close(dirfd_target)
             except OSError:
                 pass
 
+    inv_clean = fds_with_identity(st, fd_dir=d)
+    clean_d_contrast_ok = (inv_clean.complete and not inv_clean.errors
+                           and inv_clean.matched == [5]
+                           and inv_clean.enum_mode == "dirfd")
+
     # (1) inspección en modo dirfd
-    p1 = (inv.enum_mode == "dirfd" and dirfd_target is not None
+    p1 = (inv is not None and inv.enum_mode == "dirfd"
+          and dirfd_target is not None
           and any(c[1] == dirfd_target for c in stat_calls))
     # (2) cierre intentado
     p2 = bool(closed_attempted)
     # (3) error registrado con contexto
-    close_errs = [e for e in inv.errors if e.get("phase") == "cierre"]
+    close_errs = ([e for e in inv.errors if e.get("phase") == "cierre"]
+                  if inv else [])
     p3 = (len(close_errs) == 1
           and close_errs[0].get("errno") == errno.EBADF
           and close_errs[0].get("exception_type") == "OSError"
           and close_errs[0].get("context", {}).get("entry")
           == dirfd_target
           and close_errs[0].get("name") == dirfd_target)
-    # (4) inventario incompleto
-    p4 = not inv.complete
-    # (5) controlador dependiente -> UNKNOWN (nunca PASS)
-    v_contr = "UNKNOWN" if not inv.complete else "PASS"
-    p5 = v_contr == "UNKNOWN"
-    # (6) no PASS ni cierre efectivo afirmado
-    note = (close_errs[0].get("note") or "") if close_errs else ""
-    p6 = (v_contr != "PASS" and "no se afirma que quedó cerrado" in note)
-    # diferenciación con R2-C11: inspección ejecutADA (matched populado)
-    # y fallo de fase "cierre", no de enumeración.
-    p7 = (inv.matched == [5]
+    # (4) inventario incompleto (vs contraste limpio en d)
+    p4 = (inv is not None and not inv.complete and clean_d_contrast_ok)
+    # (7) diferenciación con R2-C11: inspección ejecutada (matched=[5])
+    # y fallo en fase "cierre", sin error en fase "enumeracion".
+    p7 = (inv is not None and inv.matched == [5]
           and not any(e.get("phase") == "enumeracion" for e in inv.errors))
+    note_d = (close_errs[0].get("note") or "") if close_errs else ""
 
-    ok = all([p1, p2, p3, p4, p5, p6, p7])
-    verdict = "PASS" if ok else "FAIL"
+    # --- Etapa 2: inyección real dentro de A/B/C + controlador real ------
+    abc_scenarios = [test_a1, test_b1, test_b2, test_b5,
+                     test_c_a, test_c_b, test_c_c]
+    real_fds_fn = fds_with_identity
+    in_fds_acq = 0
+    tracked_dirfds = set()
+    close_pending_fail = set()
+    injected_close_events = []
+    inj_calls = []
+    inj_refs = []  # mantiene vivos los FdInventory para verificar id() único
+
+    def spy_open_abc(path, *a, **k):
+        fd = real_open(path, *a, **k)
+        if in_fds_acq > 0:
+            tracked_dirfds.add(fd)
+            close_pending_fail.add(fd)
+        return fd
+
+    def inject_close_abc(fd):
+        if fd in close_pending_fail:
+            close_pending_fail.discard(fd)
+            injected_close_events.append(fd)
+            raise OSError(errno.EBADF,
+                          "cierre final forzado fallido en A/B/C")
+        return real_close(fd)
+
+    def spy_fds_inj(st_arg, fd_dir="/proc/self/fd"):
+        nonlocal in_fds_acq
+        caller = sys._getframe(1).f_code.co_name
+        before_tracked = set(tracked_dirfds)
+        in_fds_acq += 1
+        try:
+            inv_real = real_fds_fn(st_arg, fd_dir=fd_dir)
+        finally:
+            in_fds_acq -= 1
+            new_fds = tracked_dirfds - before_tracked
+            for fd in sorted(new_fds):
+                close_pending_fail.discard(fd)
+                tracked_dirfds.discard(fd)
+                try:
+                    real_close(fd)
+                except OSError:
+                    pass
+        inj_refs.append(inv_real)
+        c_errs = [e for e in inv_real.errors if e.get("phase") == "cierre"]
+        inj_calls.append({
+            "caller": caller,
+            "obj_id": id(inv_real),
+            "fd_dir": fd_dir,
+            "enum_mode": inv_real.enum_mode,
+            "enum_dirfd": inv_real.enum_dirfd,
+            "complete": inv_real.complete,
+            "matched": list(inv_real.matched),
+            "error_phases": [e.get("phase") for e in inv_real.errors],
+            "error_errnos": [e.get("errno") for e in inv_real.errors],
+            "close_errors": c_errs,
+        })
+        return inv_real
+
+    with _m.patch.object(os, "open", spy_open_abc), \
+            _m.patch.object(os, "close", inject_close_abc), \
+            _m.patch.object(this_module, "fds_with_identity", spy_fds_inj):
+        inj_produced, inj_counts, inj_global = run_controller(
+            abc_scenarios, collect_isolated=True)
+
+    expected_ids = ["R2-A1", "R2-B1", "R2-B2", "R2-B5",
+                    "R2-C-A", "R2-C-B", "R2-C-C"]
+    expected_call_count = 13  # 2 por A1/B1/B5/C-A/C-B/C-C + 1 por B2
+    all_calls_injected = (
+        len(inj_calls) == expected_call_count
+        and len({c["obj_id"] for c in inj_calls}) == expected_call_count
+        and len(injected_close_events) == expected_call_count
+        and all(
+            c["enum_mode"] == "dirfd"
+            and (not c["complete"])
+            and len(c["close_errors"]) == 1
+            and c["close_errors"][0].get("errno") == errno.EBADF
+            and c["close_errors"][0].get("exception_type") == "OSError"
+            and c["close_errors"][0].get("context", {}).get("entry")
+            == c["enum_dirfd"]
+            and c["close_errors"][0].get("name") == c["enum_dirfd"]
+            and "no se afirma que quedó cerrado"
+            in (c["close_errors"][0].get("note") or "")
+            for c in inj_calls
+        )
+    )
+    abc_all_unknown = (
+        [r["id"] for r in inj_produced] == expected_ids
+        and all(r["verdict"] == "UNKNOWN" and r["exception"] is None
+                for r in inj_produced)
+        and inj_counts == {"PASS": 0, "FAIL": 0, "UNKNOWN": 7}
+        and inj_global == "UNKNOWN"
+    )
+    # (5) P5 real (sin cálculo manual): el controlador real + los 7
+    # escenarios reales A/B/C reciben el mismo FdInventory afectado y
+    # devuelven UNKNOWN sin PASS ni FAIL artificial.
+    p5_real = all_calls_injected and abc_all_unknown
+    # (6) no PASS ni cierre efectivo afirmado (en d ni en A/B/C)
+    p6 = (inj_counts["PASS"] == 0 and inj_global != "PASS"
+          and "no se afirma que quedó cerrado" in note_d
+          and all_calls_injected)
+
+    # --- Etapa 3: contraste real sobre A/B/C sin fallo de os.close -------
+    contrast_calls = []
+    contrast_refs = []
+
+    def spy_fds_contrast(st_arg, fd_dir="/proc/self/fd"):
+        caller = sys._getframe(1).f_code.co_name
+        inv_real = real_fds_fn(st_arg, fd_dir=fd_dir)
+        contrast_refs.append(inv_real)
+        contrast_calls.append({
+            "caller": caller,
+            "obj_id": id(inv_real),
+            "enum_mode": inv_real.enum_mode,
+            "complete": inv_real.complete,
+            "error_phases": [e.get("phase") for e in inv_real.errors],
+            "error_errnos": [e.get("errno") for e in inv_real.errors],
+        })
+        return inv_real
+
+    with _m.patch.object(this_module, "fds_with_identity", spy_fds_contrast):
+        con_produced, con_counts, con_global = run_controller(
+            abc_scenarios, collect_isolated=True)
+
+    contrast_all_complete = (
+        len(contrast_calls) == expected_call_count
+        and all(c["complete"] for c in contrast_calls)
+    )
+    contrast_all_pass = (
+        [r["id"] for r in con_produced] == expected_ids
+        and con_counts == {"PASS": 7, "FAIL": 0, "UNKNOWN": 0}
+        and con_global == "PASS"
+    )
+
+    core_ok = all([p1, p2, p3, p4, p5_real, p6, p7, clean_d_contrast_ok])
+    if not core_ok:
+        verdict = "FAIL"
+    elif not (contrast_all_complete and contrast_all_pass):
+        # Limitación ambiental honesta: en /proc/self/fd del sandbox
+        # existe la entrada fantasma R2-C8 (ENOENT sin fdinfo) que ya
+        # marca complete=False durante la inspección antes del finally; el
+        # contraste real A/B/C sin fallo de close() devuelve UNKNOWN y no
+        # PASS. No puede aislarse el fallo de cierre como causa única en
+        # A/B/C sobre /proc/self/fd sin alterar su semántica -> UNKNOWN.
+        verdict = "UNKNOWN"
+    else:
+        verdict = "PASS"
+
+    abc_summary = {r["id"]: r["verdict"] for r in inj_produced}
+    con_summary = {r["id"]: r["verdict"] for r in con_produced}
+    inv_ids_sample = [(c["caller"], c["obj_id"], c["enum_dirfd"],
+                       c["error_phases"], c["error_errnos"])
+                      for c in inj_calls]
+    con_sample = [(c["caller"], c["complete"], c["error_phases"],
+                   c["error_errnos"]) for c in contrast_calls]
+
     record("R2-C13", "R2-C",
-           "Registro del fallo de cierre final de dirfd (R5-B)",
-           "dir sintético con entrada '5'; os.close forzado a fallar con "
-           "OSError(EBADF) en el finally, tras enumeración e inspección "
-           "correctas.",
-           "Verificar: (1) inspección en modo dirfd; (2) cierre intentado; "
-           "(3) error registrado con contexto; (4) inventario incompleto; "
-           "(5) controlador dependiente -> UNKNOWN; (6) no PASS ni cierre "
-           "efectivo afirmado. Diferencia del fallo de listdir(dirfd) de "
-           "R2-C11.",
-           f"P1_modo_dirfd={p1}; P2_cierre_intentando={p2}; "
-           f"P3_error_registrado={p3}; P4_incompleto={p4}; "
-           f"P5_controlador_UNKNOWN={p5} (verdict={v_contr}); "
-           f"P6_no_PASS_ni_cierre_afirmado={p6}; "
-           f"P7_distinto_de_R2-C11={p7}; errors={inv.errors}; "
-           f"matched={inv.matched}",
-           "R5-A/R5-B: un fallo de cierre final se registra (no se descarta "
-           "silenciosamente), el inventario queda incompleto y ningún "
-           "escenario dependiente lo convierte en PASS; no se afirma que "
-           "el descriptor quedó cerrado cuando el cierre falló.",
+           "Propagación real del fallo de cierre final de dirfd en A/B/C "
+           "y controlador (R5-B/R6)",
+           "Etapa 1: dir sintético con entrada '5' y contraste limpio. "
+           "Etapa 2: los 7 escenarios reales A/B/C (test_a1, test_b1, "
+           "test_b2, test_b5, test_c_a, test_c_b, test_c_c) con fallo real "
+           "inyectado de os.close(dirfd) en fds_with_identity() ejecutados "
+           "vía run_controller(). Etapa 3: contraste real A/B/C sin fallo "
+           "de os.close(dirfd).",
+           "Eliminar el cálculo manual de P5; verificar: (1) modo dirfd; "
+           "(2) cierre intentado; (3) error phase='cierre' con contexto; "
+           "(4) inventario complete=False vs contraste limpio en d; "
+           "(5) propagación del mismo objeto FdInventory (id único) a los "
+           "7 escenarios reales A/B/C y run_controller() -> UNKNOWN sin PASS "
+           "ni FAIL artificial; (6) no PASS ni cierre efectivo afirmado; "
+           "(7) diferenciación de R2-C11; y contraste real A/B/C en /proc.",
+           f"P1_modo_dirfd={p1}; P2_cierre_intentado={p2}; "
+           f"P3_error_registrado={p3}; P4_incompleto_y_contraste_d={p4}; "
+           f"P5_propagacion_real_ABC={p5_real} (calls={len(inj_calls)}, "
+           f"unique_ids={len({c['obj_id'] for c in inj_calls})}, "
+           f"close_injections={len(injected_close_events)}, "
+           f"verdictos_ABC={abc_summary}, counts={inj_counts}, "
+           f"global={inj_global}); P6_no_PASS_ni_cierre_afirmado={p6}; "
+           f"P7_distinto_de_R2-C11={p7}; "
+           f"Etapa3_contraste_real_ABC={{'all_complete': "
+           f"{contrast_all_complete}, 'counts': {con_counts}, "
+           f"'global': '{con_global}', 'verdictos': {con_summary}, "
+           f"'calls': {con_sample}}}; "
+           f"traza_inyeccion_ABC={inv_ids_sample}; "
+           f"errors_d={inv.errors if inv else None}; "
+           f"matched_d={inv.matched if inv else None}",
+           "R5-A/R5-B/R6: inyección real de os.close(dirfd) dentro de "
+           "fds_with_identity() y propagación comprobada sin sustitución "
+           "a los 7 escenarios reales A/B/C y al controlador real "
+           "(global=UNKNOWN, 0 PASS, 0 FAIL). En fd_dir sintético d el "
+           "contraste limpio demuestra complete=True vs False por cierre. "
+           "Limitación ambiental en /proc/self/fd del sandbox: la entrada "
+           "fantasma R2-C8 (ENOENT sin fdinfo) ya vuelve complete=False "
+           "durante la inspección antes del finally y el contraste real A/B/C "
+           "sin fallo de close() también devuelve UNKNOWN, por lo que no "
+           "puede aislarse causalmente el cierre fallido como causa única "
+           "con contraste PASS en A/B/C sin alterar su semántica -> UNKNOWN "
+           "conservador (precedencia FAIL > UNKNOWN > PASS).",
            verdict)
     shutil.rmtree(d, ignore_errors=True)
 
@@ -2145,7 +2358,44 @@ def test_r1b_incomplete():
     shutil.rmtree(d, ignore_errors=True)
 
 
-# ---------------------------------------------------------------- main
+# ---------------------------------------------------------------- controller & main
+def aggregate_verdicts(records):
+    """Calcula conteos y veredicto global con precedencia FAIL > UNKNOWN > PASS."""
+    counts = {"PASS": 0, "FAIL": 0, "UNKNOWN": 0}
+    for r in records:
+        counts[r["verdict"]] += 1
+    if counts["FAIL"]:
+        global_verdict = "FAIL"
+    elif counts["UNKNOWN"]:
+        global_verdict = "UNKNOWN"
+    else:
+        global_verdict = "PASS"
+    return counts, global_verdict
+
+
+def run_controller(tests, collect_isolated=False):
+    """Controlador real del arnés: ejecuta escenarios, captura excepciones
+    como FAIL y agrega resultados bajo FAIL > UNKNOWN > PASS.
+    """
+    start = len(RESULTS)
+    try:
+        for t in tests:
+            try:
+                t()
+            except Exception:
+                import traceback
+                record(t.__name__, "?",
+                       f"excepción no controlada en {t.__name__}",
+                       "-", "-", traceback.format_exc(limit=3).strip(),
+                       "traceback en evidencia", "FAIL")
+        produced = list(RESULTS[start:])
+        counts, global_verdict = aggregate_verdicts(produced)
+        return produced, counts, global_verdict
+    finally:
+        if collect_isolated:
+            del RESULTS[start:]
+
+
 def main():
     global WORKDIR
     WORKDIR = tempfile.mkdtemp(prefix="feas_d18_r2_")
@@ -2162,16 +2412,17 @@ def main():
     print(f"Entorno: Python {env['python']} | NumPy {env['numpy']} | "
           f"{env['kernel']} | euid {env['euid']}")
     print(f"Workdir aislado: {WORKDIR}\n")
-    print("CORRECCIONES METODOLÓGICAS R1 + R2 + R3 + R4 + R5 activas: "
+    print("CORRECCIONES METODOLÓGICAS R1 + R2 + R3 + R4 + R5 + R6 activas: "
           "count_maps()/parse_maps() distinguen COMPLETA/INCOMPLETA/"
           "ILEGIBLE; fds_with_identity() captura errores de enumeración y de "
           "inspección, clasifica (DESAPARECIDO/INACCESIBLE/ERROR_PROCFS/"
           "UNKNOWN_CAUSE, con ENOENT conservador R3-D), cierra el dirfd ante "
           "fallo de enumeración (R4-A), inspecciona anclado al dirfd "
           "(R4-B) y registra fallos de cierre final sin reintentos "
-          "(R5-A), propaga UNKNOWN desde inventario incompleto, verificado "
-          "sobre escenarios reales (R1-A/B/C + R2-A/B/C + R3-A..F + "
-          "R4-A/B/C + R5-A/B/C).\n")
+          "(R5-A), propaga UNKNOWN desde inventario incompleto mediante "
+          "escenarios reales A/B/C y controlador real sin cálculo manual "
+          "(R1-A/B/C + R2-A/B/C + R3-A..F + R4-A/B/C + R5-A/B/C + "
+          "R6-A/B/C).\n")
 
     tests = [test_a1, test_a2, test_a3, test_a4, test_a5, test_a6,
              test_b1, test_b2, test_b3, test_b4, test_b5, test_b6,
@@ -2188,32 +2439,17 @@ def main():
              test_r1a_complete_match, test_r1a_complete_nomatch,
              test_r1a_unparseable, test_r1a_unreadable,
              test_r1b_complete, test_r1b_incomplete]
-    for t in tests:
-        try:
-            t()
-        except Exception:
-            import traceback
-            record(t.__name__, "?", f"excepción no controlada en {t.__name__}",
-                   "-", "-", traceback.format_exc(limit=3).strip(),
-                   "traceback en evidencia", "FAIL")
-
-    counts = {"PASS": 0, "FAIL": 0, "UNKNOWN": 0}
-    for r in RESULTS:
-        counts[r["verdict"]] += 1
-    if counts["FAIL"]:
-        global_verdict = "FAIL"
-    elif counts["UNKNOWN"]:
-        global_verdict = "UNKNOWN"
-    else:
-        global_verdict = "PASS"
+    _, counts, global_verdict = run_controller(tests)
 
     os.makedirs(EVIDENCE_DIR, exist_ok=True)
     out = {"harness": "arnes_feasibility_d18_r2_numpy_6g1.py",
-           "scope": "FEASIBILITY-D18-R2 + R1 + R2 + R3 + R4 + R5 (corrección "
-                    "metodológica del arnés: R1-A/B/C/D, rectificación "
-                    "final R2-A/B/C/D, rectificación final de verificación "
-                    "R3-A..F, corrección de ciclo de vida/anclaje R4-A/B/C "
-                    "y registro del fallo de cierre final R5-A/B/C)",
+           "scope": "FEASIBILITY-D18-R2 + R1 + R2 + R3 + R4 + R5 + R6 "
+                    "(corrección metodológica del arnés: R1-A/B/C/D, "
+                    "rectificación final R2-A/B/C/D, rectificación final de "
+                    "verificación R3-A..F, corrección de ciclo de "
+                    "vida/anclaje R4-A/B/C, registro del fallo de cierre "
+                    "final R5-A/B/C y rectificación metodológica R5-B / "
+                    "D18-R2-R6 sin cálculo manual en P5)",
            "r1_correction": {
                "R1-A": "count_maps/parse_maps no descartan líneas no "
                        "interpretables; distinguen COMPLETA/INCOMPLETA/"
@@ -2327,6 +2563,29 @@ def main():
                        "ausente -> UNKNOWN_CAUSE; modo dirfd anclado / "
                        "modo path no anclado; sin garantías universales de "
                        "gc.collect().",
+           },
+           "r6_correction": {
+               "R6-A": "eliminación del cálculo manual `v_contr = 'UNKNOWN' "
+                       "if not inv.complete else 'PASS'` en R2-C13; extracción "
+                       "de `run_controller()` / `aggregate_verdicts()` desde "
+                       "`main()` para ejecutar el controlador real del arnés.",
+               "R6-B": "inyección real de fallo de `os.close(dirfd)` dentro de "
+                       "`fds_with_identity()` en `fd_dir` sintético (con "
+                       "contraste limpio completo) y durante la ejecución real "
+                       "de los 7 escenarios A, B y C (`test_a1`, `test_b1`, "
+                       "`test_b2`, `test_b5`, `test_c_a`, `test_c_b`, "
+                       "`test_c_c`) vía `run_controller()`, verificando "
+                       "identidad `id(inv)` preservada sin sustitución, "
+                       "complete=False, error phase='cierre' registrado y "
+                       "veredicto UNKNOWN en todos ellos.",
+               "R6-C": "contraste real A/B/C sin fallo de `os.close(dirfd)` y "
+                       "criterio conservador: en `/proc/self/fd` del sandbox "
+                       "la entrada fantasma R2-C8 ya produce complete=False "
+                       "antes del finally y el contraste real A/B/C devuelve "
+                       "UNKNOWN, impidiendo aislar causalmente el cierre con "
+                       "contraste PASS sin alterar su semántica -> R2-C13 = "
+                       "UNKNOWN (precedencia FAIL>UNKNOWN>PASS; C5 histórico "
+                       "FAIL intacto).",
            },
            "conserva_c5": "C5 (SIGSEGV al cerrar _mmap con array vivo) es "
                           "hallazgo histórico de FEASIBILITY-D18-R1; NO se "
