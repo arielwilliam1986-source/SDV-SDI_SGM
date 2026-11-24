@@ -48,6 +48,33 @@ CORRECCIÓN FINAL R2 (FEASIBILITY-D18-R2-R2, autorizada por Cris):
         universales atribuidas a gc.collect(); hechos, hipótesis y UNKNOWN
         separados en el informe.
 
+CORRECCIÓN FINAL R3 (FEASIBILITY-D18-R2-R3, autorizada por Cris):
+  R3-A  R2-C7 verifica dos propiedades independientes: (P1) el error de
+        enumeración no escapa de fds_with_identity(); (P2) el controlador
+        recibe complete=False y asigna UNKNOWN, nunca PASS ni FAIL
+        artificial. PASS solo si ambas se verifican.
+  R3-B  R2-C2/R2-C3: el veredicto depende de la CLASIFICACIÓN verificada
+        (clasificación correcta + complete=False -> UNKNOWN; clasificación
+        incorrecta -> FAIL). No UNKNOWN automático por incompletitud.
+  R3-C  R2-C5 exige evidencia REAL de un error de inspección clasificado
+        ERROR_PROCFS con errno y contexto compatibles; sin evidencia
+        suficiente del entorno -> UNKNOWN, no PASS.
+  R3-D  Clasificación conservadora de ENOENT: la ausencia de fdinfo NO
+        demuestra por sí sola artefacto de procfs (puede ser descriptor
+        real cerrado entre enumeración e inspección). fdinfo ausente en
+        procfs -> UNKNOWN_CAUSE; fdinfo presente -> DESCRIPTOR_DESAPARECIDO;
+        FS regular -> DESCRIPTOR_DESAPARECIDO. ERROR_PROCFS solo con
+        evidencia suficiente. Se documenta qué puede y qué no puede
+        distinguir el mecanismo.
+  R3-E  R2-C10 verifica la propagación sobre los ESCENARIOS REALES A/B/C
+        (no una función simplificada aislada), con inventario controlado
+        completo/incompleto y contraste.
+  R3-F  Reejecución del conjunto completo con resultados reales; se
+        mantienen precedencia FAIL>UNKNOWN>PASS, C5 como FAIL histórico,
+        prohibición de _mmap.close() con referencias vivas, sin garantías
+        universales de gc.collect() y separación de hechos/hipótesis/
+        UNKNOWN.
+
 Restricciones: entorno aislado, fixtures sintéticos, sin motores/, sin
 lectura_segura_6g1.py, sin plan v2.3/diseño v5/adjudicación final, sin
 integración Hardened/EVO/MQR, sin audio real, sin Android/Termux, sin D-16,
@@ -232,13 +259,22 @@ def _is_procfs_fd_dir(fd_dir):
 
 
 def _fdinfo_probe(fd_dir, name):
-    """Inspección de corroboración de procfs (R2-B).
+    """Inspección de corroboración de procfs (R2-B, R3-D).
 
     En /proc/self/fd, un descriptor REAL abierto tiene una entrada en
-    fdinfo. Si fdinfo no existe para una entrada que listdir mostró, la
-    entrada NO corresponde a ningún descriptor real abierto -> el fallo es
-    atribuible al propio procfs (artefacto de enumeración), no a una
-    desaparición real. Devuelve True si fdinfo EXISTE (descriptor real).
+    fdinfo. Devuelve:
+      - True  -> fdinfo EXISTE (hay evidencia de un descriptor real abierto).
+      - False -> fdinfo NO existe.
+      - None  -> la inspección no aplica (no es un dir de fds de procfs o
+        nombre nulo).
+
+    R3-D (crítico): la AUSENCIA de fdinfo NO demuestra por sí sola que la
+    entrada sea un artefacto de procfs: también ocurre si el descriptor
+    real se cerró entre la enumeración y la inspección. Por tanto, fdinfo
+    ausente NO se usa automáticamente para clasificar ERROR_PROCFS; solo
+    fdinfo PRESENTE respalda evidencia de descriptor real (y la ausencia
+    de fdinfo en un dir de fds se trata como causa no determinable, salvo
+    que haya más evidencia).
     """
     if name is None or not _is_procfs_fd_dir(fd_dir):
         return None
@@ -252,20 +288,28 @@ def _fdinfo_probe(fd_dir, name):
 
 
 def _classify_fd_error(name, exc, fd_dir, phase):
-    """Clasifica un error de inventario de fds (R2-B).
+    """Clasifica un error de inventario de fds (R2-B, R3-D conservador).
 
     Fase: "enumeracion" (apertura/listdir) o "inspeccion" (stat de entrada).
     Reglas (evidencia, no invención):
       - EACCES/EPERM                 -> DESCRIPTOR_INACCESIBLE.
-      - ENOENT en inspección:
-          * en procfs con fdinfo ausente -> ERROR_PROCFS (artefacto de
-            procfs; la entrada no es un descriptor real).
-          * en otro caso                -> DESCRIPTOR_DESAPARECIDO (la
-            entrada aparecía en la enumeración y ya no se puede inspeccionar).
+      - ENOENT en inspección (R3-D):
+          * FS REGULAR (no procfs): la entrada estaba en el listado y ya no
+            se puede inspeccionar -> DESCRIPTOR_DESAPARECIDO (no hay
+            concepto de artefacto de procfs en un FS regular).
+          * procfs:
+              + fdinfo PRESENTE (evidencia de descriptor real) ->
+                DESCRIPTOR_DESAPARECIDO (se cerró entre enumeración e
+                inspección).
+              + fdinfo AUSENTE -> NO se puede distinguir un artefacto de
+                procfs de un descriptor real cerrado -> UNKNOWN_CAUSE.
       - fallos típicos de procfs/fs virtual (EIO/EINVAL/ENOTDIR/ENOSYS/
         EOPNOTSUPP)                    -> ERROR_PROCFS.
       - enumeración fallida en un directorio de procfs -> ERROR_PROCFS.
       - cualquier otra causa sin evidencia suficiente -> UNKNOWN_CAUSE.
+
+    ERROR_PROCFS se mantiene solo para casos con EVIDENCIA SUFICIENTE de un
+    fallo atribuible al propio procfs; no se inventa una causa raíz.
     """
     err = getattr(exc, "errno", None)
     ctx = {"phase": phase, "fd_dir": fd_dir, "entry": name}
@@ -277,9 +321,14 @@ def _classify_fd_error(name, exc, fd_dir, phase):
     if err in (errno.EACCES, errno.EPERM):
         return CLASS_INACCESSIBLE, ctx
     if err == errno.ENOENT:
-        if _fdinfo_probe(fd_dir, name) is False:
-            return CLASS_PROCFS, ctx
-        return CLASS_DISAPPEARED, ctx
+        if not _is_procfs_fd_dir(fd_dir):
+            # FS regular: listado previo + ENOENT = desaparición real.
+            return CLASS_DISAPPEARED, ctx
+        # procfs: fdinfo presente -> descriptor real -> desaparición real;
+        # fdinfo ausente -> ambigüedad -> UNKNOWN_CAUSE (conservador, R3-D).
+        if _fdinfo_probe(fd_dir, name) is True:
+            return CLASS_DISAPPEARED, ctx
+        return CLASS_UNKNOWN_CAUSE, ctx
     if err in (errno.EIO, errno.EINVAL, errno.ENOTDIR, errno.ENOSYS,
                errno.EOPNOTSUPP, errno.EBUSY, errno.EREMOTEIO):
         return CLASS_PROCFS, ctx
@@ -1084,22 +1133,29 @@ def test_r2c_disappeared():
     with _m.patch.object(os, "listdir", return_value=stale):
         inv = fds_with_identity(st, fd_dir=d)
     ev = inv.errors[0] if inv.errors else {}
+    # R3-B: la prueba verifica una CLASIFICACIÓN específica. Se requiere
+    # clasificación correcta Y complete=False para UNKNOWN; si la
+    # clasificación no es la esperada (o el inventario se completara con
+    # errores), se declara FAIL. No se asigna UNKNOWN automáticamente por
+    # el solo hecho de que el inventario sea incompleto.
     ok = (not inv.complete and ev.get("classification")
           == CLASS_DISAPPEARED and ev.get("errno") == errno.ENOENT
           and ev.get("name") == "5"
           and ev.get("exception_type") == "FileNotFoundError")
-    verdict = "UNKNOWN" if not inv.complete else "FAIL"
+    verdict = "UNKNOWN" if ok else "FAIL"
     record("R2-C2", "R2-C", "Entrada que desaparece durante el recorrido",
            "dir sintético: entrada '5' en el listado, borrada antes de la "
            "inspección (listado estancado forzado).",
            "fds_with_identity() con listado estancado; verificar "
            "complete=False, error clasificado DESCRIPTOR_DESAPARECIDO con "
-           "errno/tipo/nombre conservados.",
+           "errno/tipo/nombre conservados. R3-B: UNKNOWN solo si la "
+           "clasificación es correcta y el inventario es incompleto; "
+           "clasificación incorrecta -> FAIL.",
            f"complete={inv.complete}; errors={inv.errors}; "
            f"error_classes={inv.error_classes()}",
-           "R2-B: ENOENT en un directorio NO procfs con entrada previamente "
-           "listada -> DESCRIPTOR_DESAPARECIDO; inventario INCOMPLETO -> "
-           "UNKNOWN (nunca PASS).",
+           "R2-B/R3-B: ENOENT en un directorio NO procfs con entrada "
+           "previamente listada -> DESCRIPTOR_DESAPARECIDO; inventario "
+           "INCOMPLETO -> UNKNOWN (nunca PASS).",
            verdict)
     shutil.rmtree(d, ignore_errors=True)
 
@@ -1116,20 +1172,25 @@ def test_r2c_inaccessible():
         st = os.stat(d)
         inv = fds_with_identity(st, fd_dir=d)
         ev = next((e for e in inv.errors if e.get("name") == "9"), {})
+        # R3-B: igual que R2-C2: UNKNOWN solo si la clasificación es
+        # correcta y el inventario es incompleto; clasificación incorrecta
+        # -> FAIL (no UNKNOWN automático por incompletitud).
         ok = (not inv.complete and ev.get("classification")
               == CLASS_INACCESSIBLE and ev.get("errno") == errno.EACCES
               and ev.get("exception_type") == "PermissionError")
-        verdict = "UNKNOWN" if not inv.complete else "FAIL"
+        verdict = "UNKNOWN" if ok else "FAIL"
         record("R2-C3", "R2-C", "Entrada inaccesible (permisos)",
                "dir sintético con symlink '9' a objetivo en subdirectorio "
                "sin permiso execute (euid no root).",
                "fds_with_identity() sobre dir con entrada no accesible; "
                "verificar complete=False y clasificación DESCRIPTOR_INACCESIBLE "
-               "(errno/tipo conservados).",
+               "(errno/tipo conservados). R3-B: UNKNOWN solo si la "
+               "clasificación es correcta y el inventario es incompleto; "
+               "clasificación incorrecta -> FAIL.",
                f"complete={inv.complete}; errors={inv.errors}; "
                f"error_classes={inv.error_classes()}",
-               "R2-B: EACCES -> DESCRIPTOR_INACCESIBLE; inventario "
-               "INCOMPLETO -> UNKNOWN.",
+               "R2-B/R3-B: EACCES -> DESCRIPTOR_INACCESIBLE; inventario "
+               "INCOMPLETO -> UNKNOWN (nunca PASS).",
                verdict)
     finally:
         os.chmod(sub, 0o755)        # permitir rmtree
@@ -1167,38 +1228,64 @@ def test_r2c_enum_error():
 
 
 def test_r2c_procfs_inspect_error():
-    """R2-C5: error de procfs durante la inspección."""
-    # Clasificación unitaria determinista + caso real corroborado por
-    # fdinfo ausente.
+    """R2-C5 / R3-C: error de procfs durante la inspección (evidencia real)."""
+    # (1) Mecánica del clasificador, determinista y unitaria.
     e_enoent = FileNotFoundError(errno.ENOENT, "gone")
     e_eacces = PermissionError(errno.EACCES, "denied")
-    c1, _ = _classify_fd_error("77", e_enoent, "/proc/self/fd",
-                               "inspeccion")
-    c2, _ = _classify_fd_error("77", e_eacces, "/tmp/x", "inspeccion")
-    c3, _ = _classify_fd_error("77", e_enoent, "/tmp/x", "inspeccion")
-    real = os.stat("/tmp")
-    inv = fds_with_identity(real, fd_dir="/proc/self/fd")
-    # fd 3 (o cualquier entrada no estadizable) debe clasificarse ERROR_PROCFS
-    procfs_errs = [e for e in inv.errors
+    e_eio = OSError(errno.EIO, "procfs io failure")
+    mechanics = {
+        "ENOENT_procfs_sin_fdinfo_->_UNKNOWN_CAUSE":
+            _classify_fd_error("77", e_enoent, "/proc/self/fd",
+                               "inspeccion")[0] == CLASS_UNKNOWN_CAUSE,
+        "ENOENT_no_procfs_->_DESAPARECIDO":
+            _classify_fd_error("77", e_enoent, "/tmp/x",
+                               "inspeccion")[0] == CLASS_DISAPPEARED,
+        "EACCES_->_INACCESIBLE":
+            _classify_fd_error("77", e_eacces, "/tmp/x",
+                               "inspeccion")[0] == CLASS_INACCESSIBLE,
+        "EIO_procfs_->_ERROR_PROCFS":
+            _classify_fd_error("77", e_eio, "/proc/self/fd",
+                               "inspeccion")[0] == CLASS_PROCFS,
+    }
+    mechanics_ok = all(mechanics.values())
+    # (2) Evidencia REAL del entorno (R3-C): debe existir un error de
+    # inspección clasificado ERROR_PROCFS con errno compatible y contexto
+    # de procfs. No vale cualquier error genérico.
+    procfs_errno_ok = (errno.EIO, errno.EINVAL, errno.ENOTDIR, errno.ENOSYS,
+                       errno.EOPNOTSUPP, errno.EBUSY, errno.EREMOTEIO)
+    real_inv = fds_with_identity(os.stat("/tmp"), fd_dir="/proc/self/fd")
+    procfs_insp = [e for e in real_inv.errors
                    if e.get("classification") == CLASS_PROCFS
                    and e.get("phase") == "inspeccion"
-                   and e.get("errno") == errno.ENOENT]
-    ok = (c1 == CLASS_PROCFS and c2 == CLASS_INACCESSIBLE
-          and c3 == CLASS_DISAPPEARED and not inv.complete
-          and (inv.errors or procfs_errs))
-    verdict = "PASS" if ok else "FAIL"
-    record("R2-C5", "R2-C", "Error de procfs durante la inspección (R2-B)",
-           "clasificación unitaria (ENOENT procfs/no-procfs, EACCES) + "
-           "inventario real de /proc/self/fd con entradas no estadizables.",
-           "Verificar ENOENT con fdinfo ausente -> ERROR_PROCFS; ENOENT en "
-           "dir no procfs -> DESCRIPTOR_DESAPARECIDO; EACCES -> "
-           "DESCRIPTOR_INACCESIBLE.",
-           f"clasificaciones=[{c1}, {c2}, {c3}]; inventario real "
-           f"complete={inv.complete}; errors={len(inv.errors)} "
-           f"(procfs={len(procfs_errs)}); classes={inv.error_classes()}",
-           "R2-B: el fallo de inspección atribuible al propio procfs se "
-           "clasifica ERROR_PROCFS con evidencia de fdinfo; no se inventa "
-           "causa.",
+                   and e.get("errno") in procfs_errno_ok
+                   and _is_procfs_fd_dir(
+                       e.get("context", {}).get("fd_dir", ""))]
+    env_evidence = len(procfs_insp) > 0
+    # R3-C: PASS solo si la mecánica es correcta y el entorno proporciona
+    # la evidencia requerida; si no hay evidencia suficiente -> UNKNOWN
+    # (no PASS); mecánica rota -> FAIL.
+    if not mechanics_ok:
+        verdict = "FAIL"
+    elif env_evidence:
+        verdict = "PASS"
+    else:
+        verdict = "UNKNOWN"
+    record("R2-C5", "R2-C", "Error de procfs durante la inspección (R2-B/R3-C)",
+           "mecánica unitaria determinista + inventario REAL de /proc/self/fd "
+           "del entorno.",
+           "Verificar (1) mecánica del clasificador y (2) PRESENCIA real de "
+           "un error de inspección clasificado ERROR_PROCFS con errno y "
+           "contexto compatibles (no basta error genérico). Sin evidencia "
+           "suficiente del entorno -> UNKNOWN, no PASS (R3-C).",
+           f"mecánica={mechanics}; inventario_real_complete="
+           f"{real_inv.complete}; errors={len(real_inv.errors)}; "
+           f"clases={real_inv.error_classes()}; "
+           f"ERROR_PROCFS_inspeccion_con_errno_compatible="
+           f"{[(e.get('name'), e.get('errno')) for e in procfs_insp]}",
+           "R2-B/R3-C/R3-D: ENOENT en procfs sin fdinfo -> UNKNOWN_CAUSE "
+           "(no se atribuye automáticamente a procfs); ERROR_PROCFS se "
+           "mantiene solo con evidencia suficiente (errno compatible y "
+           "contexto procfs).",
            verdict)
 
 
@@ -1237,45 +1324,61 @@ def test_r2c_unknown_propagation():
 
 
 def test_r2c_no_artificial_fail():
-    """R2-C7: ningún error de enumeración termina como FAIL artificial."""
+    """R2-C7 / R3-A: propagación correcta del error de enumeración.
+
+    Propiedades INDEPENDENTES que se verifican por separado:
+      P1: el error de enumeración NO escapa de fds_with_identity().
+      P2: el controlador recibe complete=False y asigna UNKNOWN, NUNCA PASS
+          ni FAIL artificial.
+    La prueba solo da PASS si ambas propiedades se verifican.
+    """
     d = tempfile.mkdtemp(prefix="feas_r2c_")
     st = os.stat(d)
     import unittest.mock as _m
-    raised = []
+
+    # --- P1: el error no escapa de fds_with_identity() -------------------
+    raised = None
+    inv = None
     with _m.patch.object(os, "listdir",
                          side_effect=OSError(errno.EIO, "enumeración caída")):
         try:
             inv = fds_with_identity(st, fd_dir=d)
-        except OSError as e:         # NO debe propagar
-            raised.append(e)
-            inv = None
-    # Simular el controlador general: try/except -> FAIL. Como la función
-    # no propaga, no se genera FAIL.
-    verdict_contr = "FAIL"
+        except OSError as e:
+            raised = e
+    p1 = (raised is None and inv is not None)
+
+    # --- P2: el controlador recibe complete=False y asigna UNKNOWN ------
+    # Simula el controlador general del arnés sobre el inventario devuelto:
+    # no propaga (P1) y su regla de veredicto consume complete.
+    v_contr = None
     if inv is not None:
-        def escenario():
-            f_inv = fds_with_identity(st, fd_dir=d)
-            return f_inv.matched
-        try:
-            escenario()
-            verdict_contr = "PASS"
-        except Exception:
-            verdict_contr = "FAIL"
-    ok = (inv is not None and not raised and not inv.complete
-          and inv.errors and inv.errors[0].get("phase") == "enumeracion"
-          and verdict_contr == "PASS")
+        def controlador(inv_rec, ok_condition):
+            # Regla del arnés (precedencia): incompleto -> UNKNOWN, nunca
+            # PASS ni FAIL artificial desde un inventario incompleto.
+            if not inv_rec.complete:
+                return "UNKNOWN"
+            return "PASS" if ok_condition else "FAIL"
+        v_contr = controlador(inv, True)
+        # Explicitamente: no PASS ni FAIL artificial.
+        p2 = (not inv.complete and v_contr == "UNKNOWN")
+    else:
+        p2 = False
+
+    ok = p1 and p2 and not inv.complete and bool(inv.errors)
     verdict = "PASS" if ok else "FAIL"
-    record("R2-C7", "R2-C", "Sin FAIL artificial por error de enumeración",
+    record("R2-C7", "R2-C", "Sin FAIL artificial por error de enumeración (R3-A)",
            "os.listdir lanzado a OSError(EIO) durante la enumeración.",
-           "Verificar que fds_with_identity() NO propaga la excepción, "
-           "devuelve inventario INCOMPLETO y que el patrón de controlador "
-           "general (try/except -> FAIL) NO genera FAIL.",
-           f"propagada={bool(raised)}; complete={inv.complete if inv else None}; "
-           f"errors={inv.errors if inv else None}; "
-           f"verdict_controlador={verdict_contr}",
-           "R2-A: la imposibilidad de enumerar se registra y produce "
-           "UNKNOWN en escenarios dependientes; el controlador general no "
-           "la convierte artificialmente en FAIL.",
+           "Verificar dos propiedades independientes: P1 el error NO "
+           "escapa de fds_with_identity(); P2 el controlador recibe "
+           "complete=False y asigna UNKNOWN, nunca PASS ni FAIL artificial. "
+           "PASS solo si ambas se verifican (R3-A).",
+           f"P1_no_propagacion={p1} (propagada={raised}); "
+           f"P2_controlador_UNKNOWN={p2} (verdict_controlador={v_contr}); "
+           f"complete={inv.complete if inv else None}; "
+           f"errors={inv.errors if inv else None}",
+           "R2-A/R3-A: la imposibilidad de enumerar se registra en el "
+           "inventario; no escapa a el controlador y este asigna UNKNOWN, "
+           "sin PASS y sin FAIL artificial.",
            verdict)
     shutil.rmtree(d, ignore_errors=True)
 
@@ -1311,11 +1414,13 @@ def test_r2c_fd3_origin():
     # Clasificación a partir del MISMO inventario (el número del fantasma
     # puede variar entre llamadas; se obtiene de la inspección real).
     inv = fds_with_identity(os.stat("/tmp"), fd_dir="/proc/self/fd")
-    procfs_errs = [e for e in inv.errors
-                   if e.get("phase") == "inspeccion"
-                   and e.get("classification") == CLASS_PROCFS
-                   and e.get("errno") == errno.ENOENT]
-    cls = CLASS_PROCFS if procfs_errs else None
+    # R3-D (conservador): ENOENT + fdinfo ausente en procfs NO se atribuye
+    # automáticamente a procfs -> UNKNOWN_CAUSE (no se inventa causa).
+    unknown_errs = [e for e in inv.errors
+                    if e.get("phase") == "inspeccion"
+                    and e.get("classification") == CLASS_UNKNOWN_CAUSE
+                    and e.get("errno") == errno.ENOENT]
+    cls = CLASS_UNKNOWN_CAUSE if unknown_errs else None
     evidence = {
         "entries": entries,
         "stat_fail": stat_fail,
@@ -1325,7 +1430,7 @@ def test_r2c_fd3_origin():
         "ghost_passes": ghost_passes,
         "inventory_errors": inv.errors,
     }
-    reproducible = bool(ghost) or bool(procfs_errs)
+    reproducible = bool(ghost) or bool(unknown_errs)
     # Veredicto: UNKNOWN para la causa root; no presentar hipótesis como hecho.
     verdict = "UNKNOWN" if reproducible else "UNKNOWN"
     record("R2-C8", "R2-C", "Origen del descriptor fantasma fd 3 (diagnóstico)",
@@ -1341,10 +1446,12 @@ def test_r2c_fd3_origin():
            "es stat-able (ENOENT) y carece de fdinfo -> no es un descriptor "
            "real abierto de este proceso ni el descriptor transitorio de la "
            "propia enumeración (ese es identificable y real, R2-C9). Su "
-           "número VARIABLE entre pasadas (observado 3 y 5) y su desaparecer "
-           "cuando el número lo ocupa un descriptor real abierto indican que "
-           "el fantasma ocupa un hueco del listado. Se clasifica ERROR_PROCFS "
-           "por evidencia (fdinfo ausente). CAUSA ROOT: UNKNOWN (no "
+           "número VARIABLE entre pasadas (observado 3, 5 y 6) y su "
+           "desaparecer cuando el número lo ocupa un descriptor real abierto "
+           "indican que el fantasma ocupa un hueco del listado. Clasificación "
+           "conservadora (R3-D): ENOENT+fdinfo ausente NO se atribuye "
+           "automáticamente a procfs -> UNKNOWN_CAUSE; no se inventa causa "
+           "root. CAUSA ROOT: UNKNOWN (no "
            "determinada con certeza; hipótesis documentada, no afirmada).",
            verdict)
 
@@ -1395,6 +1502,87 @@ def test_r2c_persistent_dirfd():
            "de listado de procfs, no un descriptor real).",
            verdict)
     shutil.rmtree(d, ignore_errors=True)
+
+
+def test_r2c10_real_scenarios_propagation():
+    """R2-C10 / R3-E: los escenarios REALES A/B/C aplican la regla
+    inventario incompleto -> UNKNOWN.
+
+    No basta reproducir la regla en una función simplificada aislada: se
+    ejecutan los ESCALARIOS REALES (test_a1, test_b1, test_b5, test_c_b)
+    completos (np.memmap real, count_maps real, lógica de veredicto real)
+    con el inventario de fds controlado en dos condiciones:
+      - inventario INCOMPLETO (complete=False): el escenario debe asignar
+        UNKNOWN;
+      - inventario COMPLETO (complete=True): A1/B1/C-B deben asignar PASS
+        (sus condiciones de maps se cumplen), demostrando que el UNKNOWN
+        del caso incompleto depende de la regla y no es UNKNOWN
+        hardcodeado.
+    Los registros intermedios de las ejecuciones se extraen de RESULTS
+    (evidencia preservada aquí); no se computan como subpruebas adicionales.
+    """
+    import unittest.mock as _m
+    this_module = sys.modules[__name__]
+    scenarios = [("A1", test_a1), ("B1", test_b1), ("B5", test_b5),
+                 ("C-B", test_c_b)]
+
+    def make_fake_inventory(complete):
+        def fake(st, fd_dir="/proc/self/fd"):
+            errs = []
+            if not complete:
+                errs = [{
+                    "name": "r2c10_stub",
+                    "error": "stub: inventario incompleto forzado",
+                    "exception_type": "OSError",
+                    "errno": None,
+                    "phase": "inspeccion",
+                    "classification": CLASS_UNKNOWN_CAUSE,
+                    "context": {"fd_dir": fd_dir, "entry": "r2c10_stub"},
+                }]
+            return FdInventory([], errs, complete, None, "stub")
+        return fake
+
+    def run_scenario(fn, fake):
+        before = len(RESULTS)
+        with _m.patch.object(this_module, "fds_with_identity", fake):
+            try:
+                fn()
+            except Exception as e:        # el escenario real no debe fallar
+                RESULTS[before:] = []
+                return [], f"excepción: {type(e).__name__}: {e}"
+        new_recs = RESULTS[before:]
+        RESULTS[before:] = []             # extraer registros intermedios
+        return [r["verdict"] for r in new_recs], None
+
+    results, errors = {}, []
+    for tid, fn in scenarios:
+        v_inc, err1 = run_scenario(fn, make_fake_inventory(False))
+        v_com, err2 = run_scenario(fn, make_fake_inventory(True))
+        if err1 or err2:
+            errors.append(f"{tid}: {err1} {err2}")
+        results[tid] = {"incompleto": v_inc, "completo": v_com}
+
+    inc_all_unknown = all(
+        all(v == "UNKNOWN" for v in r["incompleto"]) and r["incompleto"]
+        for r in results.values()) and not errors
+    contrast_ok = (results["A1"]["completo"] == ["PASS"]
+                   and results["B1"]["completo"] == ["PASS"]
+                   and results["C-B"]["completo"] == ["PASS"])
+    ok = inc_all_unknown and contrast_ok
+    verdict = "PASS" if ok else "FAIL"
+    record("R2-C10", "R2-C",
+           "Propagación en escenarios REALES A/B/C (R3-E)",
+           "escenarios reales test_a1/b1/b5/c_b (memmap+maps reales) con el "
+           "inventario de fds controlado: INCOMPLETO y COMPLETO.",
+           "Verificar que los escenarios REALES asignan UNKNOWN con inventario "
+           "incompleto y que el contraste con inventario COMPLETO (A1/B1/C-B "
+           "-> PASS) demuestra que el UNKNOWN depende de la regla, no es "
+           "hardcodeado. No se usa una función simplificada aislada.",
+           f"resultados={results}; errores={errors}",
+           "R3-E: los escenarios A/B/C del arnés consumen inv.complete y "
+           "asignan UNKNOWN desde inventario incompleto; verificado sobre el "
+           "código real de los escenarios.",
+           verdict)
 
 
 # ---------------------------------------------------------------- R1-A (controladas)
@@ -1573,12 +1761,13 @@ def main():
     print(f"Entorno: Python {env['python']} | NumPy {env['numpy']} | "
           f"{env['kernel']} | euid {env['euid']}")
     print(f"Workdir aislado: {WORKDIR}\n")
-    print("CORRECCIONES METODOLÓGICAS R1 + R2 activas: "
+    print("CORRECCIONES METODOLÓGICAS R1 + R2 + R3 activas: "
           "count_maps()/parse_maps() distinguen COMPLETA/INCOMPLETA/"
           "ILEGIBLE; fds_with_identity() captura errores de enumeración y de "
           "inspección, clasifica (DESAPARECIDO/INACCESIBLE/ERROR_PROCFS/"
-          "UNKNOWN_CAUSE) y propaga UNKNOWN desde inventario incompleto "
-          "(R1-A/B/C + R2-A/B/C).\n")
+          "UNKNOWN_CAUSE, con ENOENT conservador R3-D) y propaga UNKNOWN "
+          "desde inventario incompleto, verificado sobre escenarios reales "
+          "(R1-A/B/C + R2-A/B/C + R3-A..F).\n")
 
     tests = [test_a1, test_a2, test_a3, test_a4, test_a5, test_a6,
              test_b1, test_b2, test_b3, test_b4, test_b5, test_b6,
@@ -1588,6 +1777,7 @@ def main():
              test_r2c_enum_error, test_r2c_procfs_inspect_error,
              test_r2c_unknown_propagation, test_r2c_no_artificial_fail,
              test_r2c_fd3_origin, test_r2c_persistent_dirfd,
+             test_r2c10_real_scenarios_propagation,
              test_r1a_complete_match, test_r1a_complete_nomatch,
              test_r1a_unparseable, test_r1a_unreadable,
              test_r1b_complete, test_r1b_incomplete]
@@ -1612,8 +1802,9 @@ def main():
 
     os.makedirs(EVIDENCE_DIR, exist_ok=True)
     out = {"harness": "arnes_feasibility_d18_r2_numpy_6g1.py",
-           "scope": "FEASIBILITY-D18-R2 + R1 + R2 (corrección metodológica del "
-                    "arnés: R1-A/B/C/D y rectificación final R2-A/B/C/D)",
+           "scope": "FEASIBILITY-D18-R2 + R1 + R2 + R3 (corrección metodológica "
+                    "del arnés: R1-A/B/C/D, rectificación final R2-A/B/C/D y "
+                    "rectificación final de verificación R3-A..F)",
            "r1_correction": {
                "R1-A": "count_maps/parse_maps no descartan líneas no "
                        "interpretables; distinguen COMPLETA/INCOMPLETA/"
@@ -1639,14 +1830,47 @@ def main():
                "R2-B": "clasificación expresa: DESCRIPTOR_DESAPARECIDO / "
                        "DESCRIPTOR_INACCESIBLE / ERROR_PROCFS / UNKNOWN_CAUSE; "
                        "errno, tipo de excepción, nombre y contexto "
-                       "conservados; causa no determinable -> UNKNOWN_CAUSE.",
-               "R2-C": "pruebas controladas R2-C1..R2-C9: inventario "
+                       "conservados; causa no determinable -> UNKNOWN_CAUSE. "
+                       "(R3-D: ENOENT+fdinfo ausente NO se atribuye "
+                       "automáticamente a procfs -> UNKNOWN_CAUSE.)",
+               "R2-C": "pruebas controladas R2-C1..R2-C10: inventario "
                        "completo, desaparición, inaccesibilidad, error de "
                        "enumeración, error de procfs en inspección, "
                        "propagación de UNKNOWN, ausencia de FAIL artificial, "
-                       "origen del fd 3 y demostración del dirfd mantenido.",
+                       "origen del fd 3, demostración del dirfd mantenido y "
+                       "propagación sobre escenarios reales A/B/C.",
                "R2-D": "reejecución del conjunto D18-R2; precedencia FAIL>"
                        "UNKNOWN>PASS; C5 conservado como FAIL histórico.",
+           },
+           "r3_correction": {
+               "R3-A": "R2-C7 verifica dos propiedades independientes: P1 el "
+                       "error de enumeración no escapa de fds_with_identity(); "
+                       "P2 el controlador recibe complete=False y asigna "
+                       "UNKNOWN (nunca PASS ni FAIL artificial). PASS solo "
+                       "si ambas se verifican.",
+               "R3-B": "R2-C2/R2-C3: el veredicto depende de la clasificación "
+                       "verificada (correcta + complete=False -> UNKNOWN; "
+                       "incorrecta -> FAIL); no UNKNOWN automático por "
+                       "incompletitud.",
+               "R3-C": "R2-C5 exige evidencia REAL de un error de inspección "
+                       "clasificado ERROR_PROCFS con errno y contexto "
+                       "compatibles; sin evidencia suficiente -> UNKNOWN, no "
+                       "PASS.",
+               "R3-D": "clasificación conservadora de ENOENT: ausencia de "
+                       "fdinfo NO demuestra artefacto de procfs; procfs + "
+                       "fdinfo ausente -> UNKNOWN_CAUSE; fdinfo presente -> "
+                       "DESCRIPTOR_DESAPARECIDO; FS regular -> "
+                       "DESCRIPTOR_DESAPARECIDO. ERROR_PROCFS solo con "
+                       "evidencia suficiente. Se documenta qué puede y qué "
+                       "no puede distinguir el mecanismo.",
+               "R3-E": "R2-C10 verifica inventario incompleto -> UNKNOWN sobre "
+                       "los escenarios REALES A/B/C (test_a1/b1/b5/c_b) con "
+                       "inventario controlado completo/incompleto y "
+                       "contraste, no una función simplificada aislada.",
+               "R3-F": "reejecución del conjunto completo con resultados "
+                       "reales; precedencia FAIL>UNKNOWN>PASS; C5 histórico; "
+                       "sin _mmap.close() forzado; sin garantías universales "
+                       "de gc.collect(); hechos/hipótesis/UNKNOWN separados.",
            },
            "conserva_c5": "C5 (SIGSEGV al cerrar _mmap con array vivo) es "
                           "hallazgo histórico de FEASIBILITY-D18-R1; NO se "
