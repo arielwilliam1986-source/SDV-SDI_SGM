@@ -1,14 +1,16 @@
-# ADJUDICACIÓN FINAL DEL DISEÑO PREINTEGRACIÓN — HARDENED 6G.1 — v1
+# ADJUDICACIÓN FINAL DEL DISEÑO PREINTEGRACIÓN — HARDENED 6G.1 — v2
 
 - **Auditor y adjudicador:** Cris (ChatGPT). **Ejecutor documental:** Arena.
 - **Naturaleza:** resolución que CONSOLIDA las decisiones de Cris y establece la frontera inequívoca entre diseño aceptado, requisitos obligatorios para una implementación futura, incertidumbres técnicas pendientes, autorizaciones todavía inexistentes y actividades expresamente prohibidas. **Exclusivamente documental**: no implementa, no ejecuta, no modifica el plan v2.3 ni el documento v5 ni ningún archivo existente.
 - **Etiquetas (esquema de 4, sin mezclar):** **DOCUMENTED_FACT** (comportamiento comprobable en el código, con archivo y línea) · **ADJUDICACIÓN** (decisión expresa de Cris registrada aquí) · **PROPOSED** (mecanismo futuro, no implementado) · **UNKNOWN** (sin evidencia; no se presenta como comprobado nada que no tenga evidencia).
+- **Rectificación v2 (esta revisión):** distinción explícita entre **R2** (§3.C/§4) — requisito adjudicado: anclaje de directorios y operaciones relativas a descriptores acreditados, que **NO** exige recorrer todos los componentes de la ruta desde su origen — y **D-19** (§3.D/§5) — recorrido componente a componente de la ruta completa para pureza de symlinks en componentes intermedios, que permanece **PROPOSED** y **NO** es obligatorio. Las adjudicaciones A-E de §3 conservan su contenido.
 
 ## 1. Identidad Git y padre directo
 
 - **Repositorio:** `arielwilliam1986-source/SDV-SDI_SGM`; **rama:** `arena/f1c5739f-sdv-sdi-sgm`.
 - **Padre directo obligatorio, verificado ANTES de trabajar:** `e4eec2e9283b6b9551ca09ead03af99d185803f8` — HEAD local = origin = GitHub API CONFORMES; árbol limpio.
-- Este documento se publica como commit único hijo directo del padre, con EXACTAMENTE un archivo nuevo (este documento).
+- Este documento se publicó (v1) como commit único hijo directo del padre `e4eec2e9283b6b9551ca09ead03af99d185803f8`, con EXACTAMENTE un archivo nuevo (este documento).
+- **Rectificación v2:** padre directo obligatorio, verificado ANTES de trabajar: `739877abdadb4e523ba8b9762d5e9dcb48a2dae7` (el commit v1 de este documento). La rectificación se publica como commit único hijo directo, modificando EXACTAMENTE este archivo, sin archivos nuevos y sin cambios de código.
 - **SHA256 reales de las fuentes documentales, calculados sobre el árbol en `e4eec2e…`:**
 
 | Fuente | SHA256 |
@@ -48,7 +50,7 @@ Quedan aceptadas como base documental de diseño las fuentes 1-4 de §2, más FE
 Se conservan como REQUISITOS de diseño vinculantes (su implementación concreta es PROPOSED hasta fase autorizada; ver matriz §4):
 
 1. **Identidad continua de entradas mediante SR-EI-1** (reapertura controlada + fstat + comparación `(dev,ino)` contra FileInfo + rechazo fail-closed + entrega del mismo descriptor a soundfile vía int fd, sin re-resolver la ruta nominal).
-2. **Anclaje de directorios y operaciones relativas a descriptores** (componente a componente; prohibición de rutas multi-componente para abrir).
+2. **Anclaje de directorios y operaciones relativas a descriptores acreditados.** Las operaciones sobre subdirectorios se realizan desde sus descriptores padre, evitando volver a resolver rutas nominales completas cuando el diseño exige identidad anclada. **Esta obligación NO se interpreta como una exigencia de recorrer todos los componentes de la ruta desde su origen**: ese recorrido componente a componente —para garantizar la ausencia de symlinks en componentes intermedios— es **D-19**, permanece **PROPOSED** y NO se convierte en obligatorio mediante esta redacción ni mediante la fila R2 de §4.
 3. **Entrega de descriptores a bibliotecas sin reabrir rutas nominales cuando el requisito exige identidad continua** (fd-passthrough: `sf_open_fd` closefd=False, `fdopen`, magic-link o cabecera manual).
 4. **Gestión explícita del ciclo de vida de writers, lectores, memmaps y descriptores** (creación/acreditación/entrega/cierre emparejados; fallo persistente registrado; sin declarar cerrado sin acreditación).
 5. **Cierre efectivo de memmaps antes de publicar** (condición VERIFICABLE, no liberación de referencias; B.7.2).
@@ -63,7 +65,7 @@ Queda expresamente prohibido presentar cualquiera de los siguientes puntos como 
 
 - **D-16:** PENDIENTE de autorización (regresión comparativa `single_pair` y pruebas con motor).
 - **D-18:** UNKNOWN — no existe evidencia de integración de la acreditación de mapeos por identidad `(dev,ino)` (el barrido vigente casa por nombre: DOCUMENTED_FACT, LS L1094-1112).
-- **D-19:** PROPOSED — NO se convierte en requisito adjudicado (la apertura componente a componente para pureza de symlink de la ruta completa sigue sin ser exigible).
+- **D-19:** PROPOSED — NO se convierte en requisito adjudicado (el recorrido componente a componente de la ruta completa para pureza de symlinks en componentes intermedios sigue sin ser exigible; la redacción de R2 en §3.C/§4 NO lo convierte en obligatorio — R2 exige anclaje y operaciones relativas a descriptores acreditados, no pureza del recorrido).
 - **D-8:** FLAC por descriptor — UNKNOWN.
 - **Integración de memmaps A/B/C en el motor:** PROPOSED, sin validación.
 - **Anclas transitorias de `single_pair` (B.7):** PROPOSED, sin validación exhaustiva.
@@ -97,7 +99,7 @@ No existe autorización para:
 | # | Requisito obligatorio (ADJUDICACIÓN) | Fuente del diseño (PROPOSED su implementación) | Modo |
 |---|---|---|---|
 | R1 | Identidad continua de entradas (SR-EI-1) | v5 §A (S1-S8, GuiaHandle, ruta int fd) | AMBOS |
-| R2 | Anclaje por descriptores, componente a componente | plan P-01 [R-C]; v5 B.7/B.7.0 | full_processing (anclas retenidas) / ambos para aperturas relativas |
+| R2 | Anclaje de directorios y operaciones relativas a descriptores acreditados (NO exige recorrer todos los componentes de la ruta desde su origen; ese recorrido es D-19, PROPOSED) | plan P-01 [R-C]; v5 B.7/B.7.0 | full_processing (anclas retenidas) / ambos para aperturas relativas |
 | R3 | fd-passthrough sin reabrir rutas nominales donde exige identidad continua | plan P-03/§8bis; v5 A.3 | AMBOS |
 | R4 | Ciclo de vida explícito writers/lectores/memmaps/fds | plan P-08/P-09; v5 B.7.1/B.7.2, C.2 | AMBOS (ramas diferenciadas) |
 | R5 | Cierre efectivo de memmaps antes de publicar (condición verificable) | v5 B.7.2 | AMBOS |
@@ -112,7 +114,7 @@ No existe autorización para:
 |---|---|---|---|
 | D-16 | Regresión comparativa `single_pair` y pruebas con motor | PENDIENTE de autorización | Adjudicación expresa de Cris (protocolo B.6 de v5: escenarios ordinarios = equivalencia; adversariales = fail-closed nuevo) |
 | D-18 | Acreditación de mapeos por identidad `(dev,ino)` | UNKNOWN | Implementación + prueba del mecanismo en fase autorizada (no existe hoy: DOCUMENTED_FACT) |
-| D-19 | Recorrido componente a componente (pureza symlink de la ruta completa) | PROPOSED | Decisión expresa de Cris sobre si se convierte en requisito obligatorio |
+| D-19 | Recorrido componente a componente de la ruta completa para pureza de symlinks en componentes intermedios (distinto de R2: R2 no lo exige) | PROPOSED | Decisión expresa de Cris sobre si se convierte en requisito obligatorio |
 | D-8 | FLAC por descriptor (lectura) | UNKNOWN | Prueba autorizada |
 | Memmaps A/B/C | Integración en el motor | PROPOSED, sin validación | Fase de implementación + pruebas autorizadas |
 | Anclas transitorias B.7 | Mecanismo de `single_pair` | PROPOSED, sin validación exhaustiva | Fase de implementación + regresión autorizada |
@@ -156,6 +158,6 @@ FEASIBILITY-1-R2 queda aceptada **exclusivamente como evidencia empírica aislad
 
 ## 10. Declaración de parada
 
-Resolución exclusivamente documental: este commit contiene EXACTAMENTE un archivo nuevo (este documento); cero modificaciones de código; cero modificaciones del plan v2.3 y del documento v5; sin pruebas, arneses, fixtures, importaciones ni ejecución de producción; sin audio real ni Android/Termux; sin DSP/fórmulas/parámetros/máscaras/reconstrucción tocados; sin EVO/MQR, FLOW-5..8, `main`; sin merge ni cherry-pick; PR #2 intacto. Los SHA256 de §1 fueron calculados realmente sobre el árbol en el padre `e4eec2e…` (no se afirma hash alguno no calculado). Después de publicar, **parada**: no se inicia implementación, pruebas ni otra fase — se espera la auditoría y adjudicación de Cris.
+Resolución exclusivamente documental: el commit v1 (hijo directo de `e4eec2e9283b6b9551ca09ead03af99d185803f8`) contuvo EXACTAMENTE un archivo nuevo (este documento); la rectificación v2 se publica como commit único hijo directo del commit v1 (`739877abdadb4e523ba8b9762d5e9dcb48a2dae7`), modificando EXACTAMENTE este archivo y sin archivos nuevos; cero modificaciones de código; cero modificaciones del plan v2.3 y del documento v5; sin pruebas, arneses, fixtures, importaciones ni ejecución de producción; sin audio real ni Android/Termux; sin DSP/fórmulas/parámetros/máscaras/reconstrucción tocados; sin EVO/MQR, FLOW-5..8, `main`; sin merge ni cherry-pick; PR #2 intacto. Los SHA256 de §1 fueron calculados realmente sobre el árbol en el padre `e4eec2e…` (no se afirma hash alguno no calculado). Después de publicar, **parada**: no se inicia implementación, pruebas ni otra fase — se espera la auditoría y adjudicación de Cris.
 
-— Fin de la adjudicación final del diseño preintegración. v1.
+— Fin de la adjudicación final del diseño preintegración. v2.
