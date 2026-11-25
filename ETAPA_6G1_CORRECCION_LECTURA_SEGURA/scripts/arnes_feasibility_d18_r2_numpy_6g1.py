@@ -136,6 +136,21 @@ RECTIFICACIÓN METODOLÓGICA R6 (FEASIBILITY-D18-R2-R6, autorizada por Cris):
         cierre con contraste PASS sin alterar su semántica, R2-C13 se
         adjudica conservadoramente como UNKNOWN (no se eleva a PASS).
 
+CORRECCIÓN PUNTUAL R6-R1 (autorizada por Cris):
+  R6-R1-A Adjudicación local estricta de R2-C13 mediante
+          `adjudicate_r2c13_verdict(...)`, usando `con_counts`,
+          `con_global`, `con_produced` y `contrast_all_complete`: si
+          `core_ok=False` o el controlador del contraste real devuelve
+          `FAIL` (aun con incompletitud o UNKNOWN concomitantes), el
+          veredicto es `FAIL`; sin `FAIL`, si el contraste es incompleto
+          o `UNKNOWN`, es `UNKNOWN`; solo es `PASS` cuando `core_ok`,
+          contraste completo y todos los escenarios esperados en `PASS`.
+  R6-R1-B Prueba de regresión reproducible `R2-C14` que ejercita
+          `run_controller()` + `adjudicate_r2c13_verdict(...)` (la
+          misma función real usada por R2-C13) sobre toda la matriz
+          `FAIL|PASS`, `PASS|FAIL`, `PASS|FAIL+incompleto/UNKNOWN`,
+          `PASS|UNKNOWN`, `PASS|PASS incompleto` y `PASS|PASS completo`.
+
 Restricciones: entorno aislado, fixtures sintéticos, sin motores/, sin
 lectura_segura_6g1.py, sin plan v2.3/diseño v5/adjudicación final, sin
 integración Hardened/EVO/MQR, sin audio real, sin Android/Termux, sin D-16,
@@ -1897,6 +1912,49 @@ def test_r2c12_anchored_vs_path_and_close():
     shutil.rmtree(d, ignore_errors=True)
 
 
+def adjudicate_r2c13_verdict(core_ok, contrast_all_complete,
+                             con_produced, con_counts, con_global,
+                             expected_ids):
+    """Adjudicación local estricta de R2-C13 bajo FAIL > UNKNOWN > PASS.
+
+    Utiliza los resultados reales del controlador del contraste real A/B/C
+    (`con_counts`, `con_global`, `con_produced`) y la completitud de sus
+    adquisiciones (`contrast_all_complete`):
+      1. Si falla la validación central (`not core_ok`) -> FAIL.
+      2. Si el controlador del contraste real devuelve FAIL (`con_global ==
+         "FAIL"`, `con_counts.get("FAIL", 0) > 0`, o algún escenario en
+         `con_produced` con `verdict == "FAIL"` o excepción), incluso si
+         coexiste con adquisiciones incompletas o UNKNOWN -> FAIL.
+      3. Si no existe FAIL, pero el contraste es incompleto
+         (`not contrast_all_complete`), falta algún escenario esperado o
+         el controlador devuelve UNKNOWN -> UNKNOWN.
+      4. Solo devuelve PASS si `core_ok`, `contrast_all_complete`, todos
+         los `expected_ids` presentes y `con_global == "PASS"` con
+         `con_counts == {"PASS": len(expected_ids), "FAIL": 0, "UNKNOWN": 0}`.
+    """
+    has_contrast_fail = (
+        con_global == "FAIL"
+        or con_counts.get("FAIL", 0) > 0
+        or any(r.get("verdict") == "FAIL" or r.get("exception") is not None
+               for r in con_produced)
+    )
+    if not core_ok or has_contrast_fail:
+        return "FAIL"
+
+    expected_n = len(expected_ids)
+    all_expected_pass = (
+        [r.get("id") for r in con_produced] == list(expected_ids)
+        and con_counts == {"PASS": expected_n, "FAIL": 0, "UNKNOWN": 0}
+        and con_global == "PASS"
+        and all(r.get("verdict") == "PASS" and r.get("exception") is None
+                for r in con_produced)
+    )
+    if (not contrast_all_complete) or (not all_expected_pass):
+        return "UNKNOWN"
+
+    return "PASS"
+
+
 def test_r2c13_final_close_failure():
     """R2-C13 / R5-B + rectificación R6: fallo de cierre FINAL de dirfd
     propagado por escenarios reales A/B/C y controlador real.
@@ -2124,25 +2182,16 @@ def test_r2c13_final_close_failure():
         len(contrast_calls) == expected_call_count
         and all(c["complete"] for c in contrast_calls)
     )
-    contrast_all_pass = (
-        [r["id"] for r in con_produced] == expected_ids
-        and con_counts == {"PASS": 7, "FAIL": 0, "UNKNOWN": 0}
-        and con_global == "PASS"
-    )
 
     core_ok = all([p1, p2, p3, p4, p5_real, p6, p7, clean_d_contrast_ok])
-    if not core_ok:
-        verdict = "FAIL"
-    elif not (contrast_all_complete and contrast_all_pass):
-        # Limitación ambiental honesta: en /proc/self/fd del sandbox
-        # existe la entrada fantasma R2-C8 (ENOENT sin fdinfo) que ya
-        # marca complete=False durante la inspección antes del finally; el
-        # contraste real A/B/C sin fallo de close() devuelve UNKNOWN y no
-        # PASS. No puede aislarse el fallo de cierre como causa única en
-        # A/B/C sobre /proc/self/fd sin alterar su semántica -> UNKNOWN.
-        verdict = "UNKNOWN"
-    else:
-        verdict = "PASS"
+    # Adjudicación local estricta bajo precedencia FAIL > UNKNOWN > PASS
+    # usando los resultados reales del controlador del contraste
+    # (`con_counts` y `con_global`): un FAIL en el contraste prevalece
+    # sobre cualquier UNKNOWN o adquisición incompleta.
+    verdict = adjudicate_r2c13_verdict(
+        core_ok, contrast_all_complete,
+        con_produced, con_counts, con_global, expected_ids,
+    )
 
     abc_summary = {r["id"]: r["verdict"] for r in inj_produced}
     con_summary = {r["id"]: r["verdict"] for r in con_produced}
@@ -2197,6 +2246,107 @@ def test_r2c13_final_close_failure():
            "conservador (precedencia FAIL > UNKNOWN > PASS).",
            verdict)
     shutil.rmtree(d, ignore_errors=True)
+
+
+def test_r2c14_r2c13_precedence_regression():
+    """R2-C14 / R6-R1: regresión reproducible de adjudicación local de R2-C13.
+
+    Ejercita la función real `adjudicate_r2c13_verdict()` utilizada por
+    `R2-C13` alimentada por ejecuciones reales de `run_controller()` (sin
+    copia independiente ni cálculo manual de veredictos) sobre la matriz
+    mínima exigida y variantes concomitantes:
+      1) core_ok=False | contraste PASS completo -> FAIL
+      2) core_ok=True  | contraste FAIL completo -> FAIL
+      3) core_ok=True  | contraste FAIL + UNKNOWN + incompleto -> FAIL
+      4) core_ok=True  | contraste FAIL por excepción + incompleto -> FAIL
+      5) core_ok=True  | contraste UNKNOWN completo -> UNKNOWN
+      6) core_ok=True  | contraste UNKNOWN incompleto -> UNKNOWN
+      7) core_ok=True  | contraste PASS incompleto -> UNKNOWN
+      8) core_ok=True  | contraste PASS completo -> PASS
+    """
+    expected_ids = ["R2-A1", "R2-B1", "R2-B2", "R2-B5",
+                    "R2-C-A", "R2-C-B", "R2-C-C"]
+
+    def _make_contrast_scenarios(verdict_map, raise_id=None):
+        fns = []
+        for sid in expected_ids:
+            v = verdict_map[sid]
+
+            def _fn(sid=sid, v=v, raise_id=raise_id):
+                if sid == raise_id:
+                    raise RuntimeError(f"fallo forzado en contraste {sid}")
+                record(sid, "R6-R1-CTRL", f"contraste {sid}={v}",
+                       "-", "-", f"verdict={v}", "regresión R6-R1", v)
+
+            _fn.__name__ = f"ctrl_stub_{sid}"
+            fns.append(_fn)
+        return fns
+
+    all_pass_map = {sid: "PASS" for sid in expected_ids}
+    one_fail_map = dict(all_pass_map, **{"R2-B5": "FAIL"})
+    fail_with_unk_map = {sid: "UNKNOWN" for sid in expected_ids}
+    fail_with_unk_map["R2-A1"] = "PASS"
+    fail_with_unk_map["R2-B5"] = "FAIL"
+    one_unk_map = dict(all_pass_map, **{"R2-A1": "UNKNOWN"})
+    all_unk_map = {sid: "UNKNOWN" for sid in expected_ids}
+
+    matrix = [
+        ("C1_core_FAIL_contraste_PASS",
+         False, True, all_pass_map, None, "FAIL"),
+        ("C2_core_PASS_contraste_FAIL",
+         True, True, one_fail_map, None, "FAIL"),
+        ("C3_core_PASS_contraste_FAIL_incompleto_y_UNKNOWN",
+         True, False, fail_with_unk_map, None, "FAIL"),
+        ("C4_core_PASS_contraste_FAIL_excepcion_e_incompleto",
+         True, False, all_pass_map, "R2-C-B", "FAIL"),
+        ("C5_core_PASS_contraste_UNKNOWN_completo",
+         True, True, one_unk_map, None, "UNKNOWN"),
+        ("C6_core_PASS_contraste_UNKNOWN_incompleto",
+         True, False, all_unk_map, None, "UNKNOWN"),
+        ("C7_core_PASS_contraste_PASS_incompleto",
+         True, False, all_pass_map, None, "UNKNOWN"),
+        ("C8_core_PASS_contraste_PASS_completo",
+         True, True, all_pass_map, None, "PASS"),
+    ]
+
+    case_results = []
+    all_ok = True
+    for name, core_ok, complete, vmap, raise_id, expected in matrix:
+        scenarios = _make_contrast_scenarios(vmap, raise_id=raise_id)
+        produced, counts, c_global = run_controller(
+            scenarios, collect_isolated=True)
+        got = adjudicate_r2c13_verdict(
+            core_ok, complete, produced, counts, c_global, expected_ids)
+        ok = (got == expected)
+        if not ok:
+            all_ok = False
+        case_results.append({
+            "case": name,
+            "core_ok": core_ok,
+            "contrast_all_complete": complete,
+            "con_counts": counts,
+            "con_global": c_global,
+            "expected": expected,
+            "got": got,
+            "ok": ok,
+        })
+
+    verdict = "PASS" if all_ok else "FAIL"
+    record("R2-C14", "R2-C",
+           "Regresión de precedencia local FAIL > UNKNOWN > PASS de R2-C13 "
+           "(R6-R1)",
+           "Invoca run_controller() + adjudicate_r2c13_verdict() (función "
+           "real de adjudicación de R2-C13) sobre 8 combinaciones de "
+           "core_ok, contrast_all_complete, con_counts y con_global.",
+           "Demostrar FAIL|PASS->FAIL, PASS|FAIL->FAIL (completo e "
+           "incompleto+UNKNOWN y excepción), PASS|UNKNOWN->UNKNOWN, "
+           "PASS|PASS incompleto->UNKNOWN y PASS|PASS completo->PASS.",
+           f"all_ok={all_ok}; cases={case_results}",
+           "R6-R1: adjudicate_r2c13_verdict() respeta estrictamente "
+           "FAIL > UNKNOWN > PASS usando los resultados reales del "
+           "controlador (`con_counts` y `con_global`), sin ignorar FAIL por "
+           "incompletitud ni requerir copia separada de la regla.",
+           verdict)
 
 
 # ---------------------------------------------------------------- R1-A (controladas)
@@ -2412,7 +2562,7 @@ def main():
     print(f"Entorno: Python {env['python']} | NumPy {env['numpy']} | "
           f"{env['kernel']} | euid {env['euid']}")
     print(f"Workdir aislado: {WORKDIR}\n")
-    print("CORRECCIONES METODOLÓGICAS R1 + R2 + R3 + R4 + R5 + R6 activas: "
+    print("CORRECCIONES METODOLÓGICAS R1 + R2 + R3 + R4 + R5 + R6 + R6-R1 activas: "
           "count_maps()/parse_maps() distinguen COMPLETA/INCOMPLETA/"
           "ILEGIBLE; fds_with_identity() captura errores de enumeración y de "
           "inspección, clasifica (DESAPARECIDO/INACCESIBLE/ERROR_PROCFS/"
@@ -2421,8 +2571,9 @@ def main():
           "(R4-B) y registra fallos de cierre final sin reintentos "
           "(R5-A), propaga UNKNOWN desde inventario incompleto mediante "
           "escenarios reales A/B/C y controlador real sin cálculo manual "
+          "con adjudicación estricta FAIL > UNKNOWN > PASS en R2-C13 "
           "(R1-A/B/C + R2-A/B/C + R3-A..F + R4-A/B/C + R5-A/B/C + "
-          "R6-A/B/C).\n")
+          "R6-A/B/C + R6-R1).\n")
 
     tests = [test_a1, test_a2, test_a3, test_a4, test_a5, test_a6,
              test_b1, test_b2, test_b3, test_b4, test_b5, test_b6,
@@ -2436,6 +2587,7 @@ def main():
              test_r2c11_listdir_fail_closes_dirfd,
              test_r2c12_anchored_vs_path_and_close,
              test_r2c13_final_close_failure,
+             test_r2c14_r2c13_precedence_regression,
              test_r1a_complete_match, test_r1a_complete_nomatch,
              test_r1a_unparseable, test_r1a_unreadable,
              test_r1b_complete, test_r1b_incomplete]
@@ -2443,13 +2595,14 @@ def main():
 
     os.makedirs(EVIDENCE_DIR, exist_ok=True)
     out = {"harness": "arnes_feasibility_d18_r2_numpy_6g1.py",
-           "scope": "FEASIBILITY-D18-R2 + R1 + R2 + R3 + R4 + R5 + R6 "
+           "scope": "FEASIBILITY-D18-R2 + R1 + R2 + R3 + R4 + R5 + R6 + R6-R1 "
                     "(corrección metodológica del arnés: R1-A/B/C/D, "
                     "rectificación final R2-A/B/C/D, rectificación final de "
                     "verificación R3-A..F, corrección de ciclo de "
                     "vida/anclaje R4-A/B/C, registro del fallo de cierre "
-                    "final R5-A/B/C y rectificación metodológica R5-B / "
-                    "D18-R2-R6 sin cálculo manual en P5)",
+                    "final R5-A/B/C, rectificación metodológica R5-B / "
+                    "D18-R2-R6 sin cálculo manual en P5 y corrección "
+                    "puntual de precedencia R6-R1 en R2-C13)",
            "r1_correction": {
                "R1-A": "count_maps/parse_maps no descartan líneas no "
                        "interpretables; distinguen COMPLETA/INCOMPLETA/"
@@ -2586,6 +2739,21 @@ def main():
                        "contraste PASS sin alterar su semántica -> R2-C13 = "
                        "UNKNOWN (precedencia FAIL>UNKNOWN>PASS; C5 histórico "
                        "FAIL intacto).",
+           },
+           "r6_r1_correction": {
+               "R6-R1-A": "adjudicación local estricta de R2-C13 extraída a "
+                          "`adjudicate_r2c13_verdict(...)` usando "
+                          "`con_counts`, `con_global`, `con_produced` y "
+                          "`contrast_all_complete`: FAIL > UNKNOWN > PASS "
+                          "(un FAIL del controlador del contraste real nunca "
+                          "queda degradado a UNKNOWN aunque coexista con "
+                          "incompletitud o UNKNOWN).",
+               "R6-R1-B": "subprueba reproducible `R2-C14` que valida "
+                          "`run_controller()` + `adjudicate_r2c13_verdict()` "
+                          "sobre la matriz completa (FAIL|PASS, PASS|FAIL, "
+                          "PASS|FAIL+incompleto+UNKNOWN, PASS|FAIL excepción, "
+                          "PASS|UNKNOWN completo/incompleto, PASS|PASS "
+                          "incompleto, PASS|PASS completo).",
            },
            "conserva_c5": "C5 (SIGSEGV al cerrar _mmap con array vivo) es "
                           "hallazgo histórico de FEASIBILITY-D18-R1; NO se "

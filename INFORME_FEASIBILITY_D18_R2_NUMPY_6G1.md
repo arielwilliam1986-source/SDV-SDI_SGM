@@ -1,25 +1,25 @@
-# FEASIBILITY-D18-R2 + R1 + R2 + R3 + R4 + R5 + R6 — CICLO DE VIDA SEGURO DE NUMPY.MEMMAP (rectificación metodológica de R5-B: propagación real en A/B/C y controlador)
+# FEASIBILITY-D18-R2 + R1 + R2 + R3 + R4 + R5 + R6 + R6-R1 — CICLO DE VIDA SEGURO DE NUMPY.MEMMAP (rectificación de R5-B y corrección puntual de precedencia en R2-C13)
 
-- **Destinatario:** Cris (ChatGPT), responsable técnico y adjudicador. **Agente ejecutor:** Arena (sesión `arena/83102fa6-sdv-sdi-sgm`, PR hacia `arena/9a32cda8-sdv-sdi-sgm`).
+- **Destinatario:** Cris (ChatGPT), responsable técnico y adjudicador. **Agente ejecutor:** Arena (sesión `arena/83102fa6-sdv-sdi-sgm`, PR #3 abierto hacia `arena/9a32cda8-sdv-sdi-sgm`).
 - **Naturaleza:** validación empírica **aislada** del ciclo de vida **seguro** de `numpy.memmap` (liberación de recursos **sin** invocar `arr._mmap.close()` mientras existan arrays/vistas vivas). **NO implementa ni integra** el diseño en los motores. Cero modificaciones de producción (`motores/`, `lectura_segura_6g1.py`, plan v2.3, diseño v5, adjudicación final intactos); cero ejecución de motores; cero audio real; cero Android/Termux; cero DSP/algoritmos; cero `main`; sin merge ni cherry-pick; PR #1 y PR #2 intactos.
-- **Alcance de ESTA entrega (autorización D18-R2-R6):** **rectificación metodológica de R5-B (`R2-C13`)**, eliminando el cálculo manual de P5 y ejecutando la inyección real de `os.close(dirfd)` dentro de `fds_with_identity()` a través de los escenarios reales A, B y C y del controlador real del arnés (`run_controller`), sin sustituir ni fabricar el inventario devuelto. No se amplía el alcance a referencias retenidas ni a nuevas estrategias de liberación.
-- **Relación con D-18 / R1 / R2 / R3 / R4 / R5:** D-18 permanece **FAIL**. El hallazgo **C5** (SIGSEGV al cerrar `arr._mmap` con el array vivo, reproducible 3/3) es de FEASIBILITY-D18-R1 y se **conserva como histórico e independiente**; R2..R6 **no lo re-ejecutan ni lo ocultan**.
-- **Veredicto global R2+R1+R2+R3+R4+R5+R6:** **UNKNOWN** (precedencia FAIL > UNKNOWN > PASS). 20 PASS · 0 FAIL · 18 UNKNOWN (38 subpruebas). El camino seguro **funciona** cuando se liberan TODAS las referencias + `gc.collect()`, pero **no puede garantizarse incondicionalmente** (una referencia retenida, o un inventario de `/proc` incompleto, impiden acreditar la liberación → UNKNOWN/fallo cerrado).
+- **Alcance de ESTA entrega (autorización puntual R6-R1 sobre D18-R2-R6):** corrige la adjudicación local de `R2-C13` mediante `adjudicate_r2c13_verdict(...)` para respetar estrictamente `FAIL > UNKNOWN > PASS` sobre los resultados reales del controlador del contraste real A/B/C (`con_counts` y `con_global`) e incorpora la prueba reproducible `R2-C14` sobre la matriz completa de precedencia. No altera la inyección de cierre, los escenarios A/B/C, la adquisición de inventarios ni la semántica de las pruebas anteriores.
+- **Relación con D-18 / R1..R6:** D-18 permanece **FAIL**. El hallazgo **C5** (SIGSEGV al cerrar `arr._mmap` con el array vivo, reproducible 3/3) es de FEASIBILITY-D18-R1 y se **conserva como histórico e independiente**; R2..R6-R1 **no lo re-ejecutan ni lo ocultan**.
+- **Veredicto global R2+R1+R2+R3+R4+R5+R6+R6-R1:** **UNKNOWN** (precedencia FAIL > UNKNOWN > PASS). 21 PASS · 0 FAIL · 18 UNKNOWN (39 subpruebas). El camino seguro **funciona** cuando se liberan TODAS las referencias + `gc.collect()`, pero **no puede garantizarse incondicionalmente** (una referencia retenida, o un inventario de `/proc` incompleto, impiden acreditar la liberación → UNKNOWN/fallo cerrado).
 
 ---
 
 ## 1. Commit padre exacto
 
-- **Padre obligatorio de esta fase (FEASIBILITY-D18-R2-R6):** `ac82b6c3cc46f6f5202c1a14c4aa70c7a67c87e2` (FEASIBILITY-D18-R2-R5).
-- Verificado ANTES de trabajar: HEAD = `ac82b6c3cc46f6f5202c1a14c4aa70c7a67c87e2`, rama activa `arena/83102fa6-sdv-sdi-sgm`, árbol limpio (`git status --porcelain` vacío), y rama destino del PR `arena/9a32cda8-sdv-sdi-sgm` apuntando en GitHub a `ac82b6c3cc46f6f5202c1a14c4aa70c7a67c87e2`. **TODO CONFORME**.
-- **Nuevo commit:** hijo directo único de `ac82b6c3...` sobre `arena/83102fa6-sdv-sdi-sgm`; **exactamente 2 archivos modificados** (los dos autorizados). SHA completo en el mensaje de commit y en la entrega a Cris (verificable vía `git`/`gh api`).
+- **Padre obligatorio de R6-R1:** `779485acf4b9116a2f1e055f320382beb2c51799` (FEASIBILITY-D18-R2-R6, hijo directo de `ac82b6c3cc46f6f5202c1a14c4aa70c7a67c87e2` FEASIBILITY-D18-R2-R5).
+- Verificado ANTES de trabajar: HEAD = `779485acf4b9116a2f1e055f320382beb2c51799`, rama activa `arena/83102fa6-sdv-sdi-sgm`, árbol limpio (`git status --porcelain` vacío), rama destino `arena/9a32cda8-sdv-sdi-sgm` apuntando en GitHub a `ac82b6c3cc46f6f5202c1a14c4aa70c7a67c87e2`, y PR #3 abierto y sin fusionar. **TODO CONFORME**.
+- **Secuencia en PR #3 desde base R5 (`ac82b6c3...`):** exactamente **2 commits** (`R6 = 779485a...` conservado intacto + `R6-R1` como hijo directo único); **exactamente 2 archivos modificados** (los dos autorizados). SHA completo en el mensaje de commit y en la entrega a Cris (verificable vía `git`/`gh api`).
 
 ## 2. Archivos modificados (exactamente los 2 autorizados, ambos existentes)
 
 | Archivo | Rol | Cambio |
 |---|---|---|
-| `ETAPA_6G1_CORRECCION_LECTURA_SEGURA/scripts/arnes_feasibility_d18_r2_numpy_6g1.py` | Arnés R2+R1+R2+R3+R4+R5+R6 (38 subpruebas: 19 R2 + 13 R2-C controladas + 6 R1 controladas) | Extrae `run_controller()` / `aggregate_verdicts()`, rectifica `R2-C13` eliminando el cálculo manual de P5 e inyecta fallo real de `os.close(dirfd)` en A/B/C reales |
-| `INFORME_FEASIBILITY_D18_R2_NUMPY_6G1.md` | Este informe | Actualiza método (R6), recuentos (`20 PASS · 0 FAIL · 18 UNKNOWN`), evidencias de propagación en A/B/C, limitaciones ambientales y trazabilidad |
+| `ETAPA_6G1_CORRECCION_LECTURA_SEGURA/scripts/arnes_feasibility_d18_r2_numpy_6g1.py` | Arnés R2+R1..R6+R6-R1 (39 subpruebas: 19 R2 + 14 R2-C controladas + 6 R1 controladas) | Extrae `adjudicate_r2c13_verdict(...)` (precedencia estricta `FAIL > UNKNOWN > PASS` usando `con_counts`/`con_global`) y añade `test_r2c14_r2c13_precedence_regression()` (`R2-C14`) |
+| `INFORME_FEASIBILITY_D18_R2_NUMPY_6G1.md` | Este informe | Actualiza método (R6-R1), recuentos (`21 PASS · 0 FAIL · 18 UNKNOWN`), tabla de regresión `R2-C14`, limitaciones y trazabilidad |
 
 Evidencia JSON cruda: `/tmp/feas_d18_r2_evidence/evidence_d18_r2.json` (efímera en `/tmp`; el arnés la regenera). Entorno Python efímero: `/tmp/feas_d18_venv` (`numpy==1.26.4`). SHA-256 de los dos archivos en la entrega a Cris (no autocalculados dentro del propio informe para evitar autorreferencia).
 
@@ -52,9 +52,18 @@ Veredictos válidos para ESTE entorno y condiciones; **sin extrapolación** a An
 2. **Etapa 1 (en `fd_dir` sintético limpio `d`, sin fantasma):** `fds_with_identity(st, fd_dir=d)` con fallo real inyectado de `os.close(dirfd)` (`OSError(EBADF)`) verifica P1 (modo `dirfd`), P2 (cierre intentado), P3 (`phase="cierre"`, `errno=9`, `entry=dirfd` en contexto), P4 (`complete=False` frente a contraste limpio `inv_clean.complete=True` con `matched=[5]` en ambos), P6 (nota `"no se afirma que quedó cerrado"`) y P7 (diferenciación frente a `R2-C11`).
 3. **Etapa 2 (en los 7 escenarios reales A/B/C + `run_controller()`):** se inyecta `OSError(EBADF)` en `os.close(dirfd)` dentro de `fds_with_identity()` durante la ejecución real de los 7 escenarios A, B y C que consumen el inventario (`test_a1`, `test_b1`, `test_b2`, `test_b5`, `test_c_a`, `test_c_b`, `test_c_c` — 13 adquisiciones en total). Un espía transparente registra cada instancia `FdInventory` (`id(inv)` único en las 13 llamadas, `inv.complete == False`, `phase="cierre"` con `errno=9`) y la devuelve **intacta sin sustitución**. Los 7 escenarios reales producen `UNKNOWN` (0 `PASS`, 0 `FAIL` artificial, 0 excepciones) y `run_controller()` devuelve `global_verdict == "UNKNOWN"`.
 4. **Etapa 3 (contraste real A/B/C sin fallo de `os.close(dirfd)` y criterio conservador):** se ejecutan los mismos 7 escenarios reales sobre `/proc/self/fd` sin inyectar fallo en `os.close(dirfd)`. En este sandbox, `/proc/self/fd` ya contiene la entrada fantasma `R2-C8` (`ENOENT` sin `fdinfo` en fase `"inspeccion"`), por lo que en el contraste real las 13 llamadas ya tienen `complete=False` y los 7 escenarios ya devuelven `UNKNOWN` (0 `PASS`). Por rigor metodológico (no alterar `/proc/self/fd` ni simular un contraste `PASS` inexistente), `R2-C13` adjudica **`UNKNOWN`** en este entorno (`FAIL` si fallara cualquier propiedad P1–P4, P5, P6, P7 o el contraste en `d`; `PASS` únicamente si además el contraste real A/B/C sobre `/proc/self/fd` diera `complete=True` y `PASS`).
-5. **Regresión completa (38 subpruebas):** se mantienen intactos los otros 37 escenarios, la precedencia `FAIL > UNKNOWN > PASS`, `C5` histórico como `FAIL` (sin forzar `_mmap.close()`), `ENOENT` + `fdinfo` ausente → `UNKNOWN_CAUSE`, modo `dirfd` anclado / modo `path` no anclado y ausencia de garantías universales de `gc.collect()`.
+5. **Regresión completa (38 subpruebas previas):** se mantienen intactos los otros 37 escenarios, la precedencia `FAIL > UNKNOWN > PASS`, `C5` histórico como `FAIL` (sin forzar `_mmap.close()`), `ENOENT` + `fdinfo` ausente → `UNKNOWN_CAUSE`, modo `dirfd` anclado / modo `path` no anclado y ausencia de garantías universales de `gc.collect()`.
 
-## 5. Resultados individuales (38 subpruebas)
+### R6-R1 — Corrección puntual de precedencia en `R2-C13` (`FAIL > UNKNOWN > PASS`)
+1. **Hallazgo corregido:** en R6, la adjudicación local de `R2-C13` evaluaba `elif not (contrast_all_complete and contrast_all_pass): verdict = "UNKNOWN"` después de `if not core_ok: verdict = "FAIL"`, lo que ante `core_ok=True` y un `FAIL` en el controlador del contraste real A/B/C habría degradado el resultado a `UNKNOWN`.
+2. **Función real `adjudicate_r2c13_verdict(core_ok, contrast_all_complete, con_produced, con_counts, con_global, expected_ids)`:**
+   - Si `not core_ok` → **`FAIL`**.
+   - Si el controlador del contraste real devuelve `FAIL` (`con_global == "FAIL"`, `con_counts.get("FAIL", 0) > 0`, o algún escenario con `verdict == "FAIL"` / excepción no controlada), **incluso si coexiste con adquisiciones incompletas o `UNKNOWN`** → **`FAIL`**.
+   - Si no existe `FAIL`, pero `not contrast_all_complete`, faltan escenarios esperados o el controlador devuelve `UNKNOWN` → **`UNKNOWN`**.
+   - Solo devuelve **`PASS`** cuando `core_ok=True`, `contrast_all_complete=True`, todos los `expected_ids` están presentes, `con_global == "PASS"` y `con_counts == {"PASS": 7, "FAIL": 0, "UNKNOWN": 0}`.
+3. **Prueba reproducible `R2-C14` (`test_r2c14_r2c13_precedence_regression()`):** ejercita `run_controller()` + `adjudicate_r2c13_verdict()` (la misma función real usada por `R2-C13`, sin copia separada) en 8 combinaciones, cubriendo íntegramente la matriz mínima exigida (`FAIL|PASS -> FAIL`, `PASS|FAIL -> FAIL`, `PASS|FAIL+incompleto+UNKNOWN -> FAIL`, `PASS|FAIL excepción+incompleto -> FAIL`, `PASS|UNKNOWN -> UNKNOWN` completo/incompleto, `PASS|PASS incompleto -> UNKNOWN`, `PASS|PASS completo -> PASS`).
+
+## 5. Resultados individuales (39 subpruebas)
 
 ### R2-A — Liberación de referencias
 
@@ -119,9 +128,10 @@ Veredictos válidos para ESTE entorno y condiciones; **sin extrapolación** a An
 | R2-C10 | Propagación en escenarios REALES A/B/C (R3-E) | incompleto → UNKNOWN en A1/B1/B5/C-B; completo → A1/B1/C-B = PASS | PASS |
 | R2-C11 | Cierre de dirfd ante error de enumeración (R4-A) | no hay fuga (descriptor cerrado, EBADF al fstat); inventario INCOMPLETO; nota de cierre fallido registrada | PASS |
 | R2-C12 | Inspección relativa al dirfd vs recorrido por ruta (R4-B) | modo dirfd: inspecciones relativas (dir_fd, nombre sin resolver), descriptor cerrado; modo path: no anclado | PASS |
-| R2-C13 | Propagación real del fallo de cierre final de dirfd en A/B/C y controlador (R5-B/R6) | Etapa 1 (`fd_dir=d`): dirfd+cierre+error `cierre` (`errno=9`)+contraste limpio (`complete=True`). Etapa 2 (7 escenarios reales A/B/C vía `run_controller`, 13 llamadas con `id(inv)` único preservado): `complete=False`, `phase=cierre`, `0 PASS / 0 FAIL / 7 UNKNOWN`, `global=UNKNOWN`. Etapa 3 (contraste A/B/C sin fallo `close`): `/proc/self/fd` ya incompleto por fantasma `R2-C8` (`0 PASS / 7 UNKNOWN`) → limitación ambiental documentada | **UNKNOWN** |
+| R2-C13 | Propagación real del fallo de cierre final de dirfd en A/B/C y controlador (R5-B/R6/R6-R1) | Etapa 1 (`fd_dir=d`): dirfd+cierre+error `cierre` (`errno=9`)+contraste limpio (`complete=True`). Etapa 2 (7 escenarios reales A/B/C vía `run_controller`, 13 llamadas con `id(inv)` único preservado): `complete=False`, `phase=cierre`, `0 PASS / 0 FAIL / 7 UNKNOWN`, `global=UNKNOWN`. Etapa 3 (contraste A/B/C sin fallo `close`): `/proc/self/fd` ya incompleto por fantasma `R2-C8` (`0 PASS / 7 UNKNOWN`) → adjudicado vía `adjudicate_r2c13_verdict()` | **UNKNOWN** |
+| R2-C14 | Regresión de precedencia local `FAIL > UNKNOWN > PASS` de R2-C13 (R6-R1) | `run_controller()` + `adjudicate_r2c13_verdict()` en 8 casos (`FAIL\|PASS→FAIL`, `PASS\|FAIL→FAIL`, `PASS\|FAIL+incompleto+UNKNOWN→FAIL`, `PASS\|FAIL exc→FAIL`, `PASS\|UNKNOWN→UNKNOWN` completo/incompleto, `PASS\|PASS incompleto→UNKNOWN`, `PASS\|PASS completo→PASS`): `all_ok=True` (8/8) | PASS |
 
-**R2-C1..R2-C13 demuestran** el mecanismo R2-A/R2-B/R3/R4/R5/R6: enumeración e inspección capturadas; ciclo de vida completo del descriptor (cierre ante error de enumeración, inspección anclada, registro del fallo de cierre final); propagación real del objeto `FdInventory` afectado por el fallo de `os.close(dirfd)` en los escenarios A/B/C y controlador real sin sustitución ni cálculo manual; inventarios completos permiten acreditar; cualquier incompletitud fuerza UNKNOWN; nunca PASS ni FAIL artificial; clasificación conservadora sin inventar causas.
+**R2-C1..R2-C14 demuestran** el mecanismo R2-A/R2-B/R3/R4/R5/R6/R6-R1: enumeración e inspección capturadas; ciclo de vida completo del descriptor (cierre ante error de enumeración, inspección anclada, registro del fallo de cierre final); propagación real del objeto `FdInventory` afectado por el fallo de `os.close(dirfd)` en los escenarios A/B/C y controlador real sin sustitución ni cálculo manual; precedencia estricta `FAIL > UNKNOWN > PASS` tanto global como local en `R2-C13`; inventarios completos permiten acreditar; cualquier incompletitud fuerza UNKNOWN; nunca PASS ni FAIL artificial; clasificación conservadora sin inventar causas.
 
 ### R1 controladas (conservadas)
 
@@ -137,15 +147,15 @@ Veredictos válidos para ESTE entorno y condiciones; **sin extrapolación** a An
 ## 6. Conteos y veredicto global
 
 ```
-Subpruebas: 38 (19 R2 + 13 R2-C controladas + 6 R1 controladas)
-Conteos:    PASS=20 FAIL=0 UNKNOWN=18
+Subpruebas: 39 (19 R2 + 14 R2-C controladas + 6 R1 controladas)
+Conteos:    PASS=21 FAIL=0 UNKNOWN=18
 VEREDICTO GLOBAL (precedencia FAIL>UNKNOWN>PASS): UNKNOWN
 ```
 
-Desglose de PASS (20): A2,A3,A4,A5,A6 · B3,B4 · D3,D4 · R2-C1,R2-C4,R2-C6,R2-C7,R2-C9,R2-C10,R2-C11,R2-C12 · R1-A1,R1-A2 · R1-B1.
+Desglose de PASS (21): A2,A3,A4,A5,A6 · B3,B4 · D3,D4 · R2-C1,R2-C4,R2-C6,R2-C7,R2-C9,R2-C10,R2-C11,R2-C12,R2-C14 · R1-A1,R1-A2 · R1-B1.
 Desglose de UNKNOWN (18): A1,B1,B2,B5,B6 · C-A,C-B,C-C · D1,D2 · R2-C2,R2-C3,R2-C5,R2-C8,R2-C13 · R1-A3,R1-A4 · R1-B2.
 
-**Evolución respecto a R5 (21 PASS · 17 UNKNOWN):** los 37 escenarios previos conservan **exactamente** sus veredictos (regresión intacta). `R2-C13` pasa de `PASS` (con cálculo manual en P5 en R5) a **`UNKNOWN`** en **R6**: se verifican P1–P4, P5 real (inyección en A/B/C + `run_controller`, `id(inv)` único en 13/13 llamadas, `0 PASS / 0 FAIL / 7 UNKNOWN`), P6, P7 y contraste limpio en `fd_dir=d`, pero en el contraste real A/B/C sobre `/proc/self/fd` la entrada fantasma `R2-C8` del sandbox ya produce `complete=False -> UNKNOWN` antes del `finally`, impidiendo aislar causalmente el fallo de cierre con contraste `PASS` en A/B/C sin alterar su semántica.
+**Evolución respecto a R6 (20 PASS · 0 FAIL · 18 UNKNOWN):** todas las 38 subpruebas previas conservan **exactamente** sus veredictos (incluido `R2-C13 = UNKNOWN`, ahora adjudicado mediante `adjudicate_r2c13_verdict()` con precedencia estricta `FAIL > UNKNOWN > PASS`). **R6-R1** añade **`R2-C14` (`PASS`)**, validando las 8 combinaciones de precedencia sobre `run_controller()` + `adjudicate_r2c13_verdict()`.
 
 ## 7. Hallazgos (observado vs garantía documentada vs hipótesis)
 
@@ -170,6 +180,7 @@ Desglose de UNKNOWN (18): A1,B1,B2,B5,B6 · C-A,C-B,C-C · D1,D2 · R2-C2,R2-C3,
   - Un fallo real inyectado de `os.close(dirfd)` en el `finally` dentro de `fds_with_identity()` se registra (`phase="cierre"`, `errno=9`), deja `complete=False`, conserva la identidad exacta `id(inv)` hasta los 7 escenarios reales A/B/C (`R2-A1`, `R2-B1`, `R2-B2`, `R2-B5`, `R2-C-A`, `R2-C-B`, `R2-C-C`) y hace que `run_controller()` devuelva `UNKNOWN` (`0 PASS`, `0 FAIL`), sin cálculo manual en P5 (R2-C13).
   - En `fd_dir` sintético limpio `d`, el contraste sin fallo de `os.close(dirfd)` devuelve `complete=True`, `errors=[]`, `matched=[5]` (R2-C13 Etapa 1).
   - En `/proc/self/fd` del sandbox, incluso sin fallo de `os.close(dirfd)`, las 13 llamadas en el contraste real A/B/C devuelven `complete=False` por la entrada fantasma `R2-C8` (`ENOENT` sin `fdinfo`), generando `UNKNOWN` en los 7 escenarios (R2-C13 Etapa 3).
+  - `adjudicate_r2c13_verdict()` ejecutada con resultados reales de `run_controller()` cumple estrictamente `FAIL > UNKNOWN > PASS` en los 8 casos probados (`FAIL|PASS→FAIL`, `PASS|FAIL→FAIL`, `PASS|FAIL+incompleto+UNKNOWN→FAIL`, `PASS|FAIL exc+incompleto→FAIL`, `PASS|UNKNOWN→UNKNOWN`, `PASS|PASS incompleto→UNKNOWN`, `PASS|PASS completo→PASS`) (R2-C14, `R6-R1`).
   - `/proc/self/fd` tiene exactamente una entrada no stat-able, sin `fdinfo`, de número variable, que cede ante un descriptor real abierto (R2-C8).
 - **HIPÓTESIS DE DISEÑO (no afirmadas como hechos):**
   - Para que el cierre sea efectivo en producción, el motor debe rastrear y liberar CADA referencia al mmap, y contar con un inventario de fds completo; de lo contrario la liberación no es acreditable.
@@ -192,33 +203,35 @@ Desglose de UNKNOWN (18): A1,B1,B2,B5,B6 · C-A,C-B,C-C · D1,D2 · R2-C2,R2-C3,
 - **La acreditación por `/proc` es frágil:** depende de que `/proc/self/maps` sea totalmente interpretable y `/proc/self/fd` totalmente estadizable. R3-D lo reconoce explícitamente y convierte la ambigüedad en UNKNOWN_CAUSE en lugar de atribuir ERROR_PROCFS sin evidencia.
 - **Mecanismo de clasificación (R3-D) — límites documentados:** puede distinguir permisos, desapariciones en FS regular, descriptores reales en procfs (fdinfo presente) y fallos de enumeración/inspección con errno típico; **no puede distinguir** entre artefacto de procfs y descriptor real cerrado para ENOENT+fdinfo ausente, que se registra como UNKNOWN_CAUSE.
 - **Modo "path" del enumerador:** recorrido no anclado (caída cuando O_DIRECTORY no está disponible); no se le atribuyen las garantías del modo dirfd.
-- **Cierre final (R5-A/R6):** el registro del fallo de cierre garantiza que el inventario no se declare acreditado; **NO garantiza** que el descriptor quede cerrado cuando el cierre falla (no se afirma); no se realizan reintentos por reutilización de número. En el entorno `/proc/self/fd` del sandbox, la entrada fantasma `R2-C8` impide obtener un contraste real `PASS` en A/B/C que aísle por sí solo el fallo de cierre sin simular `/proc/self/fd`, razón por la cual `R2-C13` permanece en **UNKNOWN**.
+- **Cierre final (R5-A/R6/R6-R1):** el registro del fallo de cierre garantiza que el inventario no se declare acreditado; **NO garantiza** que el descriptor quede cerrado cuando el cierre falla (no se afirma); no se realizan reintentos por reutilización de número. En el entorno `/proc/self/fd` del sandbox, la entrada fantasma `R2-C8` impide obtener un contraste real `PASS` en A/B/C que aísle por sí solo el fallo de cierre sin simular `/proc/self/fd`, razón por la cual `R2-C13` permanece en **UNKNOWN** aunque la lógica local `adjudicate_r2c13_verdict()` sí respeta estrictamente `FAIL > UNKNOWN > PASS` (`R2-C14`).
 - **Hashes:** los sha256 de los dos archivos modificados se calculan realmente y se entregan en el mensaje de commit y en la entrega a Cris (no se afirman aquí valores no calculados).
 
 ## 10. Declaración expresa
 
-- Este informe y su arnés son validación empírica aislada de D-18-R2 **con correcciones R1, R2, R3, R4, R5 y R6**. **No autorizan, ni implementan, ni integran** cambios en `motores/`, `lectura_segura_6g1.py`, el plan v2.3, el diseño v5 ni la adjudicación final. El árbol de producción permanece intacto.
-- D-18 sigue **FAIL** (C5 histórico). R2..R6 añaden: existe un ciclo de vida SEGURO (referencias + `gc.collect()`) que evita el SIGSEGV, **pero condicionado** a (i) liberar todas las referencias y (ii) disponer de un inventario de `/proc` completo; con referencia retenida o inventario incompleto la liberación no se acredita (UNKNOWN). Veredicto global: **UNKNOWN**.
-- La decisión sobre D-18 / el mecanismo de cierre seguro de NumPy corresponde a Cris. La fase siguiente requiere **nueva adjudicación expresa** de Cris. **Esta autorización no adjudica D18 como PASS, no cierra D18-R2-R5 ni D18-R2, y no autoriza integración en producción.**
+- Este informe y su arnés son validación empírica aislada de D-18-R2 **con correcciones R1, R2, R3, R4, R5, R6 y R6-R1**. **No autorizan, ni implementan, ni integran** cambios en `motores/`, `lectura_segura_6g1.py`, el plan v2.3, el diseño v5 ni la adjudicación final. El árbol de producción permanece intacto.
+- D-18 sigue **FAIL** (C5 histórico). R2..R6-R1 añaden: existe un ciclo de vida SEGURO (referencias + `gc.collect()`) que evita el SIGSEGV, **pero condicionado** a (i) liberar todas las referencias y (ii) disponer de un inventario de `/proc` completo; con referencia retenida o inventario incompleto la liberación no se acredita (UNKNOWN). Veredicto global: **UNKNOWN**.
+- La decisión sobre D-18 / el mecanismo de cierre seguro de NumPy corresponde a Cris. La fase siguiente requiere **nueva adjudicación expresa** de Cris. **Esta autorización no adjudica D18 como PASS, no cierra D18-R2-R5 ni D18-R2, no aprueba el merge del PR #3 y no autoriza integración en producción.**
 
 ## 11. Trazabilidad
 
-- Padre obligatorio: `ac82b6c3cc46f6f5202c1a14c4aa70c7a67c87e2` (FEASIBILITY-D18-R2-R5), hijo directo de `e412d561b50cf358d21609d76646fc4a361cd0fb` (FEASIBILITY-D18-R2-R4).
-- Rama de trabajo y publicación: `arena/83102fa6-sdv-sdi-sgm` (PR dirigido a `arena/9a32cda8-sdv-sdi-sgm`, sin fusionar ni modificar la rama de destino).
-- Arnés: `ETAPA_6G1_CORRECCION_LECTURA_SEGURA/scripts/arnes_feasibility_d18_r2_numpy_6g1.py` (modificado: R6).
-- Informe: `INFORME_FEASIBILITY_D18_R2_NUMPY_6G1.md` (modificado: R6).
+- Base del PR #3: `ac82b6c3cc46f6f5202c1a14c4aa70c7a67c87e2` (FEASIBILITY-D18-R2-R5).
+- Commit R6 (conservado intacto): `779485acf4b9116a2f1e055f320382beb2c51799`.
+- Padre obligatorio del commit R6-R1: `779485acf4b9116a2f1e055f320382beb2c51799` (secuencia total de 2 commits en PR #3 desde `ac82b6c3...`).
+- Rama de trabajo y publicación: `arena/83102fa6-sdv-sdi-sgm` (PR #3 abierto hacia `arena/9a32cda8-sdv-sdi-sgm`, sin fusionar ni modificar la rama de destino).
+- Arnés: `ETAPA_6G1_CORRECCION_LECTURA_SEGURA/scripts/arnes_feasibility_d18_r2_numpy_6g1.py` (modificado: R6-R1).
+- Informe: `INFORME_FEASIBILITY_D18_R2_NUMPY_6G1.md` (modificado: R6-R1).
 - Evidencia cruda: `/tmp/feas_d18_r2_evidence/evidence_d18_r2.json` (efímera en `/tmp`).
-- Archivos históricos D18 / D18-R1 / D18-R2 / D18-R2-R2 / D18-R2-R3 / D18-R2-R4 / D18-R2-R5 previos: **no modificados** (se actualiza el mismo informe D18-R2 con la rectificación R6).
-- Commit hijo directo único de `ac82b6c3...`: SHA en mensaje de commit e informe de entrega; verificable vía `git`/`gh api`.
+- Archivos históricos D18 / D18-R1 / D18-R2 / D18-R2-R2 / D18-R2-R3 / D18-R2-R4 / D18-R2-R5 previos: **no modificados**.
 - SHA-256 de los dos archivos modificados: en el mensaje de commit y en la entrega a Cris.
 
 ## 12. Enlaces de GitHub (para auditoría de Cris)
 
 - Repositorio: https://github.com/arielwilliam1986-source/SDV-SDI_SGM
-- Rama de trabajo R6 (`arena/83102fa6-sdv-sdi-sgm`): https://github.com/arielwilliam1986-source/SDV-SDI_SGM/tree/arena/83102fa6-sdv-sdi-sgm
+- Pull Request #3 (R6 + R6-R1, abierto sin fusionar): https://github.com/arielwilliam1986-source/SDV-SDI_SGM/pull/3
+- Rama de trabajo (`arena/83102fa6-sdv-sdi-sgm`): https://github.com/arielwilliam1986-source/SDV-SDI_SGM/tree/arena/83102fa6-sdv-sdi-sgm
 - Rama destino del PR / base R5 (`arena/9a32cda8-sdv-sdi-sgm`, HEAD = `ac82b6c3...`): https://github.com/arielwilliam1986-source/SDV-SDI_SGM/tree/arena/9a32cda8-sdv-sdi-sgm
-- Commit padre obligatorio `ac82b6c3` (R5): https://github.com/arielwilliam1986-source/SDV-SDI_SGM/commit/ac82b6c3cc46f6f5202c1a14c4aa70c7a67c87e2
-- Commit antecesor `e412d56` (R4): https://github.com/arielwilliam1986-source/SDV-SDI_SGM/commit/e412d561b50cf358d21609d76646fc4a361cd0fb
+- Commit R6 conservado (`779485a...`): https://github.com/arielwilliam1986-source/SDV-SDI_SGM/commit/779485acf4b9116a2f1e055f320382beb2c51799
+- Commit padre de R6 (`ac82b6c3`, R5): https://github.com/arielwilliam1986-source/SDV-SDI_SGM/commit/ac82b6c3cc46f6f5202c1a14c4aa70c7a67c87e2
 - `main` intacta (`b64f15ae`): https://github.com/arielwilliam1986-source/SDV-SDI_SGM/commit/b64f15ae8b28e46eef3c024dc62c85fe27c69494
-- Arnés R2+R1+R2+R3+R4+R5+R6 (raw en `arena/83102fa6-sdv-sdi-sgm`): https://raw.githubusercontent.com/arielwilliam1986-source/SDV-SDI_SGM/arena/83102fa6-sdv-sdi-sgm/ETAPA_6G1_CORRECCION_LECTURA_SEGURA/scripts/arnes_feasibility_d18_r2_numpy_6g1.py
-- Informe R2+R1+R2+R3+R4+R5+R6 (raw en `arena/83102fa6-sdv-sdi-sgm`, este archivo): https://raw.githubusercontent.com/arielwilliam1986-source/SDV-SDI_SGM/arena/83102fa6-sdv-sdi-sgm/INFORME_FEASIBILITY_D18_R2_NUMPY_6G1.md
+- Arnés (raw en `arena/83102fa6-sdv-sdi-sgm`): https://raw.githubusercontent.com/arielwilliam1986-source/SDV-SDI_SGM/arena/83102fa6-sdv-sdi-sgm/ETAPA_6G1_CORRECCION_LECTURA_SEGURA/scripts/arnes_feasibility_d18_r2_numpy_6g1.py
+- Informe (raw en `arena/83102fa6-sdv-sdi-sgm`, este archivo): https://raw.githubusercontent.com/arielwilliam1986-source/SDV-SDI_SGM/arena/83102fa6-sdv-sdi-sgm/INFORME_FEASIBILITY_D18_R2_NUMPY_6G1.md
