@@ -198,6 +198,16 @@ CORRECCIÓN R6-R4 (autorizada por Cris, corrección metodológica de R2-C9):
           controladores A/B/C, `R2-C13`, `R2-C14`, la precedencia
           `FAIL > UNKNOWN > PASS` y el fallo histórico `C5`.
 
+  R6-R4-C Adjudicación precisa de errores inesperados en `R2-C9`:
+          solo `EBADF` durante el `fstat` posterior acredita como
+          `FAIL` que el descriptor ya no es válido. Una discrepancia
+          de identidad, la persistencia de la ruta tras una comprobación
+          completada o un fallo del cierre explícito también son `FAIL`.
+          Los demás errores inesperados, incluidos los ocurridos durante
+          `rmtree`, la comprobación de ruta o un `fstat` posterior con
+          errno distinto de `EBADF`, quedan `UNKNOWN`. Ninguna excepción
+          inesperada se convierte en `PASS`.
+
 Restricciones: entorno aislado, fixtures sintéticos, sin motores/, sin
 lectura_segura_6g1.py, sin plan v2.3/diseño v5/adjudicación final, sin
 integración Hardened/EVO/MQR, sin audio real, sin D-16, sin main/PR#2/merge.
@@ -1927,10 +1937,18 @@ def test_r2c_persistent_dirfd():
         # La ruta sigue existiendo tras la eliminación, probado.
         verdict = "FAIL"
     elif unexpected_error is not None:
-        # Error inesperado en fstat posterior (o en una fase ya
-        # acreditada): el descriptor no persiste identificando el
-        # objeto. No se ignora ni se convierte en PASS.
-        verdict = "FAIL"
+        # Una excepción inesperada no demuestra por sí sola que el
+        # descriptor haya perdido su identidad. Solo EBADF durante
+        # el fstat posterior acredita que el fd ya no es válido.
+        # Los errores durante rmtree, verificación de ruta u otros
+        # errores de fstat quedan UNKNOWN.
+        error_phase = unexpected_error.get("phase")
+        error_number = unexpected_error.get("errno")
+        if (error_phase == "fstat_posterior"
+                and error_number == errno.EBADF):
+            verdict = "FAIL"
+        else:
+            verdict = "UNKNOWN"
     else:
         verdict = "UNKNOWN"
     record("R2-C9", "R2-C",
@@ -1962,9 +1980,10 @@ def test_r2c_persistent_dirfd():
            "descriptor abierto). PASS exige las cinco condiciones; "
            "si la apertura/identidad inicial no puede acreditarse se "
            "aplica UNKNOWN conservador; si la identidad difiere, la "
-           "ruta persiste, el fstat posterior falla o el cierre "
-           "falla, es FAIL probado. Ninguna excepción inesperada se "
-           "convierte en PASS.",
+           "ruta persiste tras una comprobación completada, hay EBADF "
+           "en el fstat posterior o falla el cierre explícito, es FAIL "
+           "probado. Los demás errores inesperados dejan UNKNOWN; "
+           "ninguna excepción se convierte en PASS.",
            verdict)
 
 

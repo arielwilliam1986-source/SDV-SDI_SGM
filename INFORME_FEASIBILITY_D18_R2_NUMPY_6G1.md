@@ -303,10 +303,12 @@ Se conserva el identificador `R2-C9` y su función demostrativa, y se sustituye 
 **Adjudicación conservadora de la nueva R2-C9:**
 
 - `PASS` solo si se acreditan **todas** las condiciones: apertura válida, identidad inicial válida (`st_ino > 0`), desaparición efectiva de la ruta, `fstat` posterior exitoso con la misma identidad y cierre explícito correcto, sin error inesperado.
-- `UNKNOWN` si la apertura o la identidad inicial no pueden acreditarse (p. ej. `O_DIRECTORY` no disponible en el entorno): tratamiento conservador, sin inventar garantías de portabilidad.
-- `FAIL` probado si la identidad difiere, la ruta persiste tras la eliminación, el `fstat` posterior falla o el cierre falla.
+- `UNKNOWN` si la apertura o la identidad inicial no pueden acreditarse; si ocurre un error inesperado durante `rmtree` o la comprobación de ruta; o si el `fstat` posterior falla con un errno distinto de `EBADF`. En esos casos la prueba no permite concluir que el descriptor haya perdido su identidad.
+- `FAIL` probado si la identidad difiere, la ruta persiste tras una comprobación de ruta completada, el `fstat` posterior devuelve específicamente `EBADF`, o falla el cierre explícito.
 
 La enumeración anclada mientras el directorio sigue existiendo permanece cubierta por `R2-C8`/`R2-C12`; `R2-C9` ya no la duplica (se eliminó su comprobación de inventario `fds_with_identity()` sobre `/tmp`, sin modificar la implementación de `fds_with_identity()`).
+
+La regla para errores inesperados es deliberadamente estricta: una excepción durante la eliminación o la comprobación de ruta no demuestra por sí sola que el descriptor haya dejado de identificar el objeto. Solo `EBADF` en el `fstat` posterior acredita que el descriptor ya no es válido.
 
 **Elementos intactos (verificados por diff):** `fds_with_identity()`, `_supports_anchored_scandir()`, estrategia `os.scandir(dirfd)` en línea, fallback `path`, clasificación `R3-D`, registro de cierre `R5-A`, controladores reales A/B/C, `R2-C13`, `R2-C14`, precedencia `FAIL > UNKNOWN > PASS`, fallo histórico `C5` y cualquier prueba distinta de `R2-C9` (salvo docstring del módulo y registro `main()`/`scope`/`r6_r4_correction`, ajustes estrictamente necesarios de documentación).
 
@@ -351,3 +353,23 @@ La enumeración anclada mientras el directorio sigue existiendo permanece cubier
 - Commits: R6-R3 `c80f7f11651e08267a4929527b3035ae40c39e13` (padre del commit R6-R4) → R6-R4 `bbc1aab50ab1487f81c03697a7f10390088302e5`. La corrección de trazabilidad de §13.4 (valores `st_dev`/`st_ino` por ejecución y URL del PR) se añade como segundo commit de documentación sobre la misma rama; ambos tienen a `c80f7f1...`/`bbc1aab...` como padres directos respectivos, sin reescribir ningún commit anterior.
 - Únicos 2 archivos modificados en R6-R4 (los autorizados): `ETAPA_6G1_CORRECCION_LECTURA_SEGURA/scripts/arnes_feasibility_d18_r2_numpy_6g1.py` e `INFORME_FEASIBILITY_D18_R2_NUMPY_6G1.md` (este archivo). Sin archivos auxiliares versionados, sin cambios de producción, sin integración Hardened.
 - SHA-256 de ambos archivos en el mensaje de commit R6-R4 y en la entrega a Cris.
+
+### 13.7 Validación posterior en Android/Termux
+
+Esta sección registra resultados obtenidos después de la validación Linux de Arena descrita en las secciones anteriores. Por tanto, las referencias de las secciones 8, 9, 10 y 13.5 a una validación Android/Termux pendiente describen el estado histórico de aquel momento y no el estado posterior documentado aquí. No se reescriben esos registros históricos.
+
+Se realizaron tres ejecuciones completas e independientes de la batería D18-R2 en Android/Termux. Cada repetición obtuvo:
+
+- **30 PASS**
+- **0 FAIL**
+- **9 UNKNOWN**
+
+En las tres repeticiones, `R2-C9`, `R2-C10`, `R2-C13` y `R2-C14` obtuvieron `PASS`. Los nueve casos `UNKNOWN` permanecieron semánticamente iguales entre las tres ejecuciones. En consecuencia, el resultado global de D18-R2 continúa siendo **UNKNOWN**; estos resultados no autorizan a convertir los nueve casos pendientes en `PASS`.
+
+Entorno comunicado para estas ejecuciones: Android 16 (API 36), ARM64/aarch64, Python 3.14.6 y NumPy 2.5.4, bajo Termux.
+
+Los tres JSON de evidencia se conservaron fuera del repositorio y no se incorporan a este commit. Sus SHA-256 fueron comunicados y comparados por el usuario con las copias de respaldo; Arena no tuvo acceso directo al almacenamiento Android ni recalculó independientemente esos hashes. Por ello, este informe distingue entre la evidencia local ejecutada por el usuario y la revisión documental realizada en el entorno de Arena.
+
+La copia bajo `/storage/emulated/0/Download/...` constituye una segunda ubicación lógica de almacenamiento. No acredita por sí sola independencia física de dispositivo o medio.
+
+Se conserva sin cambios el fallo histórico de D18-R1 C5. No se repitió esa prueba destructiva. Esta adenda tampoco constituye integración Hardened, validación de producción ni prueba con audio real.
