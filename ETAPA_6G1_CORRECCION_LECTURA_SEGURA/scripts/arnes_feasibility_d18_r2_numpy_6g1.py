@@ -3163,8 +3163,10 @@ def main():
                           "PASS solo con las cinco condiciones; "
                           "UNKNOWN conservador si apertura/identidad "
                           "inicial no acreditables; FAIL probado si "
-                          "identidad difiere, ruta persiste, fstat "
-                          "posterior o cierre fallan.",
+                          "identidad difiere, ruta persiste tras "
+                          "comprobación completada, fstat posterior "
+                          "devuelve EBADF o falla el cierre explícito; "
+                          "los demás errores inesperados quedan UNKNOWN.",
            },
            "conserva_c5": "C5 (SIGSEGV al cerrar _mmap con array vivo) es "
                           "hallazgo histórico de FEASIBILITY-D18-R1; NO se "
