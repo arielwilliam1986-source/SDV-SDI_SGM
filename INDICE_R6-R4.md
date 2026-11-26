@@ -2,18 +2,18 @@
 
 **Fecha:** 2026-11-25 (UTC).
 **Naturaleza:** documento de navegación y trazabilidad. **Solo lectura** respecto de los cuatro documentos que indexa.
-**Estado:** archivo nuevo, **sin commit**.
-**Ubicación:** raíz del repositorio.
+**Estado:** versionado en la rama de la PR #4 mediante el commit `9c986bc547c82f7897bfb8cb8ade4350d253ca3e` (base de esta actualización documental).
+**Ubicación:** raíz del repositorio, rama `arena/a2d9ac2e-sdv-sdi-sgm`.
 
 ---
 
 ## 0. Advertencia de lectura — leer antes de usar cualquier documento
 
-> **Los cuatro documentos del paquete R6-R4 deben leerse conjuntamente.**
+> **Los cuatro documentos de auditoría y sus tres artefactos de trazabilidad deben leerse conjuntamente.**
 >
 > El documento principal **no contiene internamente ninguna señal** de que fue corregido posteriormente. Un lector que abra únicamente `AUDITORIA_DE_RESOLUBILIDAD_UNKNOWN_R6-R4.md` encontrará en él **siete formulaciones que ya no son válidas** en los términos en que están escritas (§4 de este índice).
 >
-> Este índice es el único mecanismo que declara esas correcciones. **No modifica los documentos originales**; no puede hacerlo (§9).
+> Este índice documenta esas correcciones y su precedencia. **Los cuatro documentos originales se conservan sin modificación**; las aclaraciones se hacen aquí, no reescribiendo sus textos.
 
 **Regla de lectura:**
 
@@ -36,13 +36,13 @@ Este índice existe para resolver un problema concreto detectado en la auditorí
 
 **Alcance incluido:** identificar los cuatro documentos, su orden, sus correcciones recíprocas, sus puntos de prevalencia y el estado de la cadena.
 
-**Alcance excluido expresamente:** modificar, renombrar, reformatear o anotar cualquiera de los cuatro documentos; alterar veredictos; ejecutar pruebas; crear el manifiesto definitivo de evidencias; crear commits o ramas.
+**Alcance excluido expresamente:** modificar, renombrar, reformatear o anotar cualquiera de los cuatro documentos originales; alterar veredictos; ejecutar pruebas; incorporar los seis JSON externos; certificar su conservación.
 
 ---
 
 ## 2. Identificación de los cuatro documentos
 
-Los cuatro archivos existen en la raíz del repositorio, **no versionados**, y sus SHA-256 fueron **recalculados en Arena** y coinciden con los previamente comunicados.
+Los cuatro documentos originales y los tres artefactos de trazabilidad están versionados en la raíz del repositorio. Los cuatro originales conservan sus SHA-256 históricos; el contenido de los siete archivos fue verificado en los blobs del commit de incorporación `9c986bc547c82f7897bfb8cb8ade4350d253ca3e`.
 
 | Orden | Rol | Archivo | Líneas | Bytes | SHA-256 | Fecha declarada |
 |---|---|---|---|---|---|---|
@@ -170,7 +170,7 @@ Los cuatro documentos **no modifican ningún veredicto**. Este índice lo declar
 | **`D18`** | **`FAIL`** — hallazgo histórico `C5` (`SIGSEGV`, 3/3) | Rectificación §5.7 · Principal §9.2 |
 | **`C5`** | **`FAIL` histórico, intacto** | Rectificación §5.7 |
 | **`D18-R2` global en Linux** | **`UNKNOWN`** (30/0/9, R6-R3) | Rectificación §5.6–§5.7 |
-| **`D18-R2` global en Android/Termux** | **`UNKNOWN`** (30/0/9 comunicado, 3 repeticiones) | Complementaria §7.1 · Final §5.4 |
+| **`D18-R2` global en Android/Termux** | **`UNKNOWN`** (30 PASS / 0 FAIL / 9 UNKNOWN en cada una de 3 repeticiones; hashes y copias verificados previamente por el usuario) | Complementaria §7.1 · Final §5.4 |
 | **`FAIL` de `R2-C9`** | Pertenece a **R6-R3 Android/Termux**, no a R6-R4 | Rectificación §5.5 |
 
 > **Declaración expresa:** **ninguno de los nueve `UNKNOWN` ha sido convertido a `PASS`**, ni por los documentos del paquete ni por este índice. Las categorías de la auditoría (`ADJUDICABLE_CON_EVIDENCIA_EXISTENTE`, `UNKNOWN_CORRECTO_POR_EVIDENCIA_INSUFICIENTE`, `LIMITACION_DEL_ENTORNO_DOCUMENTADA`, `REQUIERE_NUEVA_EVIDENCIA_NO_DESTRUCTIVA`) describen **el grado de explicación documental alcanzado**, no el veredicto. Seis casos son `ADJUDICABLE_CON_EVIDENCIA_EXISTENTE` y **los seis siguen siendo `UNKNOWN`**.
@@ -200,7 +200,7 @@ Debe distinguirse con precisión:
 |---|---|
 | **Cadena documental** (auditoría + correcciones) | **CERRADA** |
 | **Adjudicación de los nueve `UNKNOWN`** | **NO CERRADA** — los nueve siguen `UNKNOWN`; requiere decisión del responsable |
-| **Validación Android/Termux de R6-R4** | **PENDIENTE** — el informe en HEAD (§13.5) la sigue declarando pendiente; las tres repeticiones constan como **comunicadas**, no certificadas |
+| **Ejecuciones Android/Termux de R6-R4** | **Tres repeticiones completas comunicadas y previamente verificadas por el usuario en Termux** (30 PASS / 0 FAIL / 9 UNKNOWN cada una; R2-C9 PASS). Arena no tuvo acceso a los JSON ni recalculó sus hashes. La certificación independiente por un tercero y la incorporación de los JSON siguen pendientes. |
 | **D18 / D18-R2 global** | **NO RESUELTO** — `D18` sigue `FAIL`; `D18-R2` global sigue `UNKNOWN` |
 | **Conservación de las evidencias** | **ABIERTA** — las tres vías de la Complementaria §12 siguen sin decidir |
 | **PR #3 y PR #4** | **ABIERTOS, sin fusionar** — decisión exclusiva del responsable |
@@ -265,17 +265,11 @@ Un hash **no** es una copia: `SHA256SUMS_AUDITORIA_R6-R4.txt` permite **detectar
 2. **No ejecutarlo sin evaluación previa del riesgo y autorización expresa** (§8.2).
 3. **`git clean` y todas sus variantes** —incluidas `git clean -fd`, `git clean -fdx` y cualquier forma de limpieza— **eliminan archivos no versionados por diseño** y **permanecen prohibidas en esta fase**.
 
-**Aplicado a este paquete:** los cuatro documentos de auditoría, este índice, el manifiesto de evidencias y `SHA256SUMS_AUDITORIA_R6-R4.txt` **no están versionados**. Un `reset --hard` que necesitara escribir en sus rutas **podría destruirlos**, y `git clean -fd` **los destruiría con certeza**. Ninguna de las dos operaciones es segura para este paquete, y ninguna de las dos está autorizada.
+**Aplicado al historial de este paquete:** antes del commit `9c986bc` los siete archivos enumerados estaban sin versionar y expuestos a las operaciones descritas. Desde ese commit, los siete están versionados en la rama de la PR #4. Esto no elimina el riesgo general de `reset --hard` sobre otros archivos no versionados ni autoriza `git clean`.
 
 ### 8.4 Riesgo específico de este paquete
 
-Los cuatro documentos de auditoría, este índice, el manifiesto de evidencias y el archivo `SHA256SUMS` están **sin commit**. En consecuencia:
-
-- **no están protegidos por Git**;
-- **no son recuperables desde el remoto**;
-- su protección exige **dos cosas a la vez**:
-  1. **no ejecutar operaciones destructivas** (§8.2 y §8.3), y
-  2. **mantener una copia recuperable fuera del árbol de trabajo** (§8.3).
+Los siete artefactos documentales están **versionados en la rama de la PR #4** desde el commit `9c986bc`. Sus versiones publicadas son recuperables desde ese historial remoto. Esta protección Git no sustituye las copias externas de los seis JSON de evidencia, que siguen sin versionar y cuya conservación física no está certificada por Arena. Para cualquier archivo no versionado que se genere en fases futuras, siguen aplicándose íntegramente las precauciones de §8.2 y §8.3.
 
 > **El `SHA256SUMS` no sustituye una copia.** Permite **detectar** una alteración o pérdida; **no permite recuperarla**. Por sí solo, **no constituye una protección**: una pérdida detectada sin copia sigue siendo una pérdida definitiva.
 
@@ -289,9 +283,9 @@ Los cuatro documentos de auditoría, este índice, el manifiesto de evidencias y
 | 2 | **No invalida** los SHA-256 previamente comunicados: los cuatro hashes de §2 son **los mismos** que se comunicaron y fueron recalculados en Arena. |
 | 3 | **No altera** ningún veredicto. Los nueve `UNKNOWN` siguen `UNKNOWN`; `D18` sigue `FAIL`; `C5` sigue `FAIL`. |
 | 4 | **No convierte** ninguna categoría de auditoría en veredicto. |
-| 5 | **No incorpora** evidencias al repositorio ni crea el manifiesto definitivo. |
+| 5 | **No incorpora** los seis JSON externos al repositorio. El manifiesto descriptivo sí está versionado; no convierte esos JSON en evidencia Git ni certifica su conservación. |
 | 6 | **No ejecuta** pruebas ni recalcula los hashes de las evidencias externas. |
-| 7 | **No crea** commits, ramas ni modifica PR #3 ni PR #4. |
+| 7 | Este índice no crea commits ni ramas. La incorporación documental se realizó posteriormente en `9c986bc`; la descripción de PR #4 se actualiza en esta misma fase. PR #3 permanece intacta. |
 | 8 | **No declara** `D18` ni `D18-R2` globalmente `PASS`. |
 | 9 | **No autoriza** ninguna fase posterior (R6-R5, Hardened, producción, audio real). |
 
@@ -310,13 +304,14 @@ Ese archivo incluye **exclusivamente** los seis documentos del paquete documenta
 ## 10. Enlaces
 
 - Repositorio: https://github.com/arielwilliam1986-source/SDV-SDI_SGM
-- Rama y HEAD de referencia (`0ae2c10`): https://github.com/arielwilliam1986-source/SDV-SDI_SGM/tree/arena/a2d9ac2e-sdv-sdi-sgm
+- Rama y HEAD de referencia del paquete documental (`9c986bc`): https://github.com/arielwilliam1986-source/SDV-SDI_SGM/tree/arena/a2d9ac2e-sdv-sdi-sgm
 - Commit funcional R6-R4 (`bbc1aab`): https://github.com/arielwilliam1986-source/SDV-SDI_SGM/commit/bbc1aab50ab1487f81c03697a7f10390088302e5
-- Arnés R6-R4: https://github.com/arielwilliam1986-source/SDV-SDI_SGM/blob/0ae2c10c472e2e9941320fa1dd2727f1a044701c/ETAPA_6G1_CORRECCION_LECTURA_SEGURA/scripts/arnes_feasibility_d18_r2_numpy_6g1.py
-- Informe de evidencia D18-R2: https://github.com/arielwilliam1986-source/SDV-SDI_SGM/blob/0ae2c10c472e2e9941320fa1dd2727f1a044701c/INFORME_FEASIBILITY_D18_R2_NUMPY_6G1.md
+- Commit de incorporación documental (`9c986bc`): https://github.com/arielwilliam1986-source/SDV-SDI_SGM/commit/9c986bc547c82f7897bfb8cb8ade4350d253ca3e
+- Arnés R6-R4: https://github.com/arielwilliam1986-source/SDV-SDI_SGM/blob/9c986bc547c82f7897bfb8cb8ade4350d253ca3e/ETAPA_6G1_CORRECCION_LECTURA_SEGURA/scripts/arnes_feasibility_d18_r2_numpy_6g1.py
+- Informe de evidencia D18-R2: https://github.com/arielwilliam1986-source/SDV-SDI_SGM/blob/9c986bc547c82f7897bfb8cb8ade4350d253ca3e/INFORME_FEASIBILITY_D18_R2_NUMPY_6G1.md
 - PR #3 (abierto, sin fusionar): https://github.com/arielwilliam1986-source/SDV-SDI_SGM/pull/3
 - PR #4 (abierto, sin fusionar): https://github.com/arielwilliam1986-source/SDV-SDI_SGM/pull/4
 
 ---
 
-**Fin del índice. No se modificó ninguno de los cuatro documentos originales. No se ejecutaron pruebas. No se alteró ningún veredicto `UNKNOWN`. No se creó ningún commit ni rama. No se modificó ningún PR. La cadena documental queda CERRADA; las decisiones de adjudicación, conservación de evidencias e integración quedan reservadas a Cris y al usuario.**
+**Fin del índice.** Los cuatro documentos originales permanecen intactos. La cadena documental está CERRADA y sus siete artefactos de trazabilidad están versionados en la rama de la PR #4. No se ejecutaron pruebas ni se alteró ningún veredicto `UNKNOWN`. Los seis JSON de evidencia externa siguen fuera del repositorio. La PR #4 continúa abierta y sin fusionar; la PR #3 permanece intacta. Las decisiones de adjudicación, política permanente de conservación e integración siguen reservadas a Cris y al usuario.

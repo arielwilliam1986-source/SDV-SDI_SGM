@@ -6,24 +6,19 @@
   "commit_referencia": "0ae2c10c472e2e9941320fa1dd2727f1a044701c",
   "commit_funcional": "bbc1aab50ab1487f81c03697a7f10390088302e5",
   "rama_referencia": "arena/a2d9ac2e-sdv-sdi-sgm",
-
   "advertencia_integridad": "Los SHA-256 registrados en este manifiesto permiten comprobar la integridad de los seis archivos cuando se disponga de ellos. NO sustituyen su conservación, NO acreditan por sí solos su procedencia y NO demuestran que los archivos sigan existiendo. Su función es exclusivamente permitir la comparación futura contra los valores aquí fijados.",
-
   "advertencia_atribucion": "Los tres valores SHA-256 constan como COMUNICADOS POR EL USUARIO y VERIFICADOS PREVIAMENTE POR ÉL EN TERMUX. No fueron recalculados por Arena: el sandbox de esta sesión no tiene acceso al dispositivo Android ni a su almacenamiento. En consecuencia, ningún registro de este manifiesto puede llevar el estado 'VERIFICADO_POR_ARENA'.",
-
   "advertencia_alcance_verificacion": "Ninguno de los seis archivos fue localizado en el entorno Arena. Se verificó, eso sí y de forma independiente, que ninguno de los tres hashes aparece en el árbol versionado del repositorio ni en su historial, y que ninguno de los seis nombres de archivo está versionado. Persistir en el dispositivo no es lo mismo que estar versionado, y este manifiesto no afirma lo contrario.",
-
   "advertencia_independencia_fisica": "Las dos ubicaciones de almacenamiento son árboles de directorios distintos: el directorio privado de la aplicación Termux y el almacenamiento compartido de Android. Su INDEPENDENCIA FÍSICA NO ESTÁ ACREDITADA: no se dispone de evidencia sobre la disposición de particiones del dispositivo del usuario. No debe leerse este manifiesto como si acreditara la existencia de dos soportes físicos independientes.",
-
   "vocabulario_estados": {
     "COMUNICADO_POR_USUARIO": "El dato procede de un mensaje del usuario y no ha sido comprobado de forma independiente por Arena.",
     "VERIFICADO_PREVIAMENTE_EN_TERMUX": "El usuario informa que él mismo lo comprobó en su dispositivo Termux en una sesión anterior. Arena no lo ha re-verificado.",
     "NO_RECALCULADO_POR_ARENA": "Arena no ha podido recalcular el valor; no se presenta como recalculado.",
     "NO_ACCESIBLE_DESDE_ARENA": "Arena no tiene acceso a la ruta indicada en esta sesión. Se declara la ausencia de acceso, no la inexistencia del archivo.",
     "NO_VERSIONADO": "El archivo no está incorporado como contenido versionado en el repositorio Git de referencia.",
-    "VERIFICADO_POR_ARENA": "Reservado. NO SE USA en ningún registro de este manifiesto."
+    "VERIFICADO_POR_ARENA": "Reservado. NO SE USA en ningún registro de este manifiesto.",
+    "VERSIONADO_EN_REPOSITORIO": "El artefacto descriptivo está incorporado como contenido versionado en la rama Git indicada; este estado no se aplica a los seis JSON externos."
   },
-
   "evidencias": [
     {
       "id": "R6R4-EV-ORIG-1",
@@ -218,7 +213,6 @@
       ]
     }
   ],
-
   "resumen": {
     "registros_totales": 6,
     "originales": 3,
@@ -230,7 +224,6 @@
     "versionados_en_repositorio": 0,
     "bytes_conocidos": 0
   },
-
   "verificaciones_independientes_realizadas_por_arena": [
     {
       "verificacion": "Ninguno de los seis nombres de archivo está versionado en el commit de referencia",
@@ -253,24 +246,59 @@
       "resultado": "Linux, uid 1001, /storage inexistente, 0 resultados en ambas búsquedas"
     }
   ],
-
   "resultados_comunicados_asociados": {
     "estado": "COMUNICADO_POR_USUARIO",
     "no_verificado_por_arena": true,
     "nota": "Los veredictos siguientes corresponden a las tres repeticiones R6-R4 en Android/Termux y constan como comunicados. Este manifiesto los registra para trazabilidad; NO los certifica y NO modifica el veredicto global de D18-R2.",
     "repeticiones": [
-      { "repeticion": "R1", "PASS": 30, "FAIL": 0, "UNKNOWN": 9, "R2_C9": "PASS", "global_verdict": "UNKNOWN", "evidencia_original": "R6R4-EV-ORIG-1", "evidencia_copia": "R6R4-EV-COPY-1" },
-      { "repeticion": "R2", "PASS": 30, "FAIL": 0, "UNKNOWN": 9, "R2_C9": "PASS", "global_verdict": "UNKNOWN", "evidencia_original": "R6R4-EV-ORIG-2", "evidencia_copia": "R6R4-EV-COPY-2" },
-      { "repeticion": "R3", "PASS": 30, "FAIL": 0, "UNKNOWN": 9, "R2_C9": "PASS", "global_verdict": "UNKNOWN", "evidencia_original": "R6R4-EV-ORIG-3", "evidencia_copia": "R6R4-EV-COPY-3" }
+      {
+        "repeticion": "R1",
+        "PASS": 30,
+        "FAIL": 0,
+        "UNKNOWN": 9,
+        "R2_C9": "PASS",
+        "global_verdict": "UNKNOWN",
+        "evidencia_original": "R6R4-EV-ORIG-1",
+        "evidencia_copia": "R6R4-EV-COPY-1"
+      },
+      {
+        "repeticion": "R2",
+        "PASS": 30,
+        "FAIL": 0,
+        "UNKNOWN": 9,
+        "R2_C9": "PASS",
+        "global_verdict": "UNKNOWN",
+        "evidencia_original": "R6R4-EV-ORIG-2",
+        "evidencia_copia": "R6R4-EV-COPY-2"
+      },
+      {
+        "repeticion": "R3",
+        "PASS": 30,
+        "FAIL": 0,
+        "UNKNOWN": 9,
+        "R2_C9": "PASS",
+        "global_verdict": "UNKNOWN",
+        "evidencia_original": "R6R4-EV-ORIG-3",
+        "evidencia_copia": "R6R4-EV-COPY-3"
+      }
     ]
   },
-
   "veredictos_invariantes": {
     "declaracion": "Este manifiesto no altera ningún veredicto.",
     "unknown_d18_r2": {
       "total": 9,
       "estado": "SIGUEN_SIENDO_UNKNOWN",
-      "casos": ["R2-B6", "R2-D1", "R2-D2", "R2-C2", "R2-C3", "R2-C5", "R1-A3", "R1-A4", "R1-B2"]
+      "casos": [
+        "R2-B6",
+        "R2-D1",
+        "R2-D2",
+        "R2-C2",
+        "R2-C3",
+        "R2-C5",
+        "R1-A3",
+        "R1-A4",
+        "R1-B2"
+      ]
     },
     "D18": "FAIL",
     "C5": "FAIL_HISTORICO_INTACTO",
@@ -280,19 +308,18 @@
     "ningun_unknown_convertido_a_pass": true,
     "D18_o_D18_R2_declarados_PASS_global": false
   },
-
   "que_no_hace_este_manifiesto": [
-    "No incorpora los seis archivos al repositorio.",
-    "No acredita que los seis archivos sigan existiendo.",
-    "No acredita la procedencia de los archivos ni su cadena de custodia.",
-    "No acredita la independencia física de los dos soportes de almacenamiento.",
-    "No certifica los resultados de las tres repeticiones como evidencia reproducible.",
-    "No sustituye la conservación de los archivos: un hash detecta una pérdida, no la repara.",
+    "No incorpora los seis JSON externos al repositorio; los seis registros describen evidencias fuera de Git.",
+    "No certifica que los seis archivos sigan existiendo ni sustituye su conservación.",
+    "No acredita la procedencia ni una cadena de custodia independiente de los seis archivos.",
+    "No acredita la independencia física de las dos ubicaciones de almacenamiento.",
+    "No certifica los resultados de las tres repeticiones como evidencia reproducible por un tercero.",
+    "No convierte los hashes comunicados en archivos recuperables.",
     "No declara ningún veredicto PASS ni modifica los nueve UNKNOWN.",
-    "No constituye el manifiesto definitivo: queda pendiente de revisión del responsable."
+    "No constituye un manifiesto de cadena de custodia; documenta el estado y los límites de verificación disponibles."
   ],
-
-  "estado": "PROPUESTO_SIN_COMMIT_PENDIENTE_DE_REVISION",
-  "decision_reservada": "La decisión sobre el versionado de este manifiesto y sobre la política permanente de conservación de evidencias queda reservada a Cris y al usuario.",
-  "nota_autorreferencia": "Este archivo no contiene su propio SHA-256 por imposibilidad de autorreferencia sin invalidación. Su hash se registra en SHA256SUMS_AUDITORIA_R6-R4.txt."
+  "estado": "VERSIONADO_EN_REPOSITORIO_CON_EVIDENCIAS_EXTERNAS_NO_VERSIONADAS",
+  "decision_reservada": "La decisión sobre la política permanente de conservación, custodia y eventual incorporación de los seis JSON externos queda reservada a Cris y al usuario.",
+  "nota_autorreferencia": "Este archivo no contiene su propio SHA-256 por imposibilidad de autorreferencia sin invalidación. Su hash se registra en SHA256SUMS_AUDITORIA_R6-R4.txt.",
+  "nota_commit_referencia": "commit_referencia (0ae2c10...) identifica el HEAD usado como base de la auditoría de resolubilidad y de las verificaciones iniciales de ausencia de los JSON en Git; no es el HEAD actual de la rama."
 }
