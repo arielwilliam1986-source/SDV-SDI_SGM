@@ -1,0 +1,298 @@
+{
+  "schema": "manifest-r6-r4/1",
+  "etapa": "D18-R2-R6-R4 — manifiesto de evidencias externas de las tres repeticiones Android/Termux",
+  "fecha_manifiesto": "2026-11-25",
+  "documento_que_lo_crea": "Preparación del paquete documental R6-R4 — fase de política de conservación y trazabilidad",
+  "commit_referencia": "0ae2c10c472e2e9941320fa1dd2727f1a044701c",
+  "commit_funcional": "bbc1aab50ab1487f81c03697a7f10390088302e5",
+  "rama_referencia": "arena/a2d9ac2e-sdv-sdi-sgm",
+
+  "advertencia_integridad": "Los SHA-256 registrados en este manifiesto permiten comprobar la integridad de los seis archivos cuando se disponga de ellos. NO sustituyen su conservación, NO acreditan por sí solos su procedencia y NO demuestran que los archivos sigan existiendo. Su función es exclusivamente permitir la comparación futura contra los valores aquí fijados.",
+
+  "advertencia_atribucion": "Los tres valores SHA-256 constan como COMUNICADOS POR EL USUARIO y VERIFICADOS PREVIAMENTE POR ÉL EN TERMUX. No fueron recalculados por Arena: el sandbox de esta sesión no tiene acceso al dispositivo Android ni a su almacenamiento. En consecuencia, ningún registro de este manifiesto puede llevar el estado 'VERIFICADO_POR_ARENA'.",
+
+  "advertencia_alcance_verificacion": "Ninguno de los seis archivos fue localizado en el entorno Arena. Se verificó, eso sí y de forma independiente, que ninguno de los tres hashes aparece en el árbol versionado del repositorio ni en su historial, y que ninguno de los seis nombres de archivo está versionado. Persistir en el dispositivo no es lo mismo que estar versionado, y este manifiesto no afirma lo contrario.",
+
+  "advertencia_independencia_fisica": "Las dos ubicaciones de almacenamiento son árboles de directorios distintos: el directorio privado de la aplicación Termux y el almacenamiento compartido de Android. Su INDEPENDENCIA FÍSICA NO ESTÁ ACREDITADA: no se dispone de evidencia sobre la disposición de particiones del dispositivo del usuario. No debe leerse este manifiesto como si acreditara la existencia de dos soportes físicos independientes.",
+
+  "vocabulario_estados": {
+    "COMUNICADO_POR_USUARIO": "El dato procede de un mensaje del usuario y no ha sido comprobado de forma independiente por Arena.",
+    "VERIFICADO_PREVIAMENTE_EN_TERMUX": "El usuario informa que él mismo lo comprobó en su dispositivo Termux en una sesión anterior. Arena no lo ha re-verificado.",
+    "NO_RECALCULADO_POR_ARENA": "Arena no ha podido recalcular el valor; no se presenta como recalculado.",
+    "NO_ACCESIBLE_DESDE_ARENA": "Arena no tiene acceso a la ruta indicada en esta sesión. Se declara la ausencia de acceso, no la inexistencia del archivo.",
+    "NO_VERSIONADO": "El archivo no está incorporado como contenido versionado en el repositorio Git de referencia.",
+    "VERIFICADO_POR_ARENA": "Reservado. NO SE USA en ningún registro de este manifiesto."
+  },
+
+  "evidencias": [
+    {
+      "id": "R6R4-EV-ORIG-1",
+      "repeticion": "R1",
+      "tipo": "original",
+      "host": "Dispositivo del usuario — Android / Termux",
+      "entorno_almacenamiento": "Directorio privado de la aplicación Termux ($HOME de Termux = /data/data/com.termux/files/home)",
+      "ruta_comunicada": "/data/data/com.termux/files/home/feas_d18_r2_r4_repeat_1/evidence_d18_r2.json",
+      "ruta_comunicada_literal": "$HOME/feas_d18_r2_r4_repeat_1/evidence_d18_r2.json",
+      "nombre_archivo": "evidence_d18_r2.json",
+      "bytes": null,
+      "bytes_estado": "NO_COMUNICADO",
+      "sha256_comunicado": "e438b19c1ffd15945538132392e5b62f274d8aee4a58074d8ed0129e6a32f653",
+      "estado_verificacion": {
+        "existencia": "COMUNICADO_POR_USUARIO",
+        "sha256": "COMUNICADO_POR_USUARIO",
+        "recalculo_en_arena": "NO_RECALCULADO_POR_ARENA",
+        "verificacion_previa_en_dispositivo": "VERIFICADO_PREVIAMENTE_EN_TERMUX",
+        "versionado_en_repositorio": "NO_VERSIONADO"
+      },
+      "relacion_con_archivo_correspondiente": "Original del par R1. Su copia correspondiente es 'R6R4-EV-COPY-1' (R6R4_repeat_1.json). La identidad byte a byte entre ambos fue COMPROBADA PREVIAMENTE POR EL USUARIO en el dispositivo; NO fue re-verificada por Arena, que carece de acceso a las dos rutas.",
+      "accesibilidad_desde_arena": "NO_ACCESIBLE_DESDE_ARENA",
+      "accesibilidad_detalle": "Comprobado en esta sesión: el sandbox es Linux (uid 1001), $HOME = /home/user, y /storage no existe. find / -maxdepth 8 -name 'evidence_d18_r2.json' devuelve 0 resultados.",
+      "commit_referencia": "0ae2c10c472e2e9941320fa1dd2727f1a044701c",
+      "limitaciones_verificacion": [
+        "Arena no tiene acceso al sistema de archivos del dispositivo Android del usuario.",
+        "El hash no fue recalculado por Arena; se registra el valor comunicado.",
+        "El tamaño en bytes no fue comunicado y no puede medirse desde Arena.",
+        "La fecha exacta de la verificación en el dispositivo no consta de forma precisa en el material disponible.",
+        "La mera persistencia local no acredita reproducibilidad independiente.",
+        "No se acredita que el archivo siga existiendo en la fecha de este manifiesto."
+      ]
+    },
+    {
+      "id": "R6R4-EV-COPY-1",
+      "repeticion": "R1",
+      "tipo": "copia",
+      "host": "Dispositivo del usuario — Android (almacenamiento compartido)",
+      "entorno_almacenamiento": "Almacenamiento compartido de Android, gestionado por el framework (FUSE/sdcardfs//mnt/user/0 según versión). Ubicación lógica distinta del directorio privado de Termux; la disposición física no está acreditada.",
+      "ruta_comunicada": "/storage/emulated/0/Download/GitHub Store/lab_sgm/Proyecto SDV-SDI_SGM Diciembre/R6R4_repeat_1.json",
+      "ruta_comunicada_literal": "/storage/emulated/0/Download/GitHub Store/lab_sgm/Proyecto SDV-SDI_SGM Diciembre/R6R4_repeat_1.json",
+      "nombre_archivo": "R6R4_repeat_1.json",
+      "bytes": null,
+      "bytes_estado": "NO_COMUNICADO",
+      "sha256_comunicado": "e438b19c1ffd15945538132392e5b62f274d8aee4a58074d8ed0129e6a32f653",
+      "estado_verificacion": {
+        "existencia": "COMUNICADO_POR_USUARIO",
+        "sha256": "COMUNICADO_POR_USUARIO",
+        "recalculo_en_arena": "NO_RECALCULADO_POR_ARENA",
+        "verificacion_previa_en_dispositivo": "VERIFICADO_PREVIAMENTE_EN_TERMUX",
+        "versionado_en_repositorio": "NO_VERSIONADO"
+      },
+      "relacion_con_archivo_correspondiente": "Copia de respaldo del original 'R6R4-EV-ORIG-1' (feas_d18_r2_r4_repeat_1/evidence_d18_r2.json). Comparte con él el SHA-256 comunicado, lo que es coherente con una copia idéntica; la igualdad efectiva fue COMPROBADA PREVIAMENTE POR EL USUARIO y NO re-verificada por Arena.",
+      "accesibilidad_desde_arena": "NO_ACCESIBLE_DESDE_ARENA",
+      "accesibilidad_detalle": "Comprobado en esta sesión: /storage no existe en el sandbox (ls: cannot access '/storage': No such file or directory). find / -maxdepth 8 -name 'R6R4_repeat_*.json' devuelve 0 resultados.",
+      "commit_referencia": "0ae2c10c472e2e9941320fa1dd2727f1a044701c",
+      "limitaciones_verificacion": [
+        "Arena no tiene acceso al almacenamiento compartido de Android.",
+        "El hash no fue recalculado por Arena; se registra el valor comunicado.",
+        "El tamaño en bytes no fue comunicado y no puede medirse desde Arena.",
+        "Compartir directorio con otros proyectos ('GitHub Store/lab_sgm/') implica riesgo de sustitución o edición accidental por terceros procesos; no se acredita que exista protección contra escritura.",
+        "La copia protege frente al borrado del directorio privado de la app; NO se acredita que proteja frente a un fallo del medio físico.",
+        "No se acredita que el archivo siga existiendo en la fecha de este manifiesto."
+      ]
+    },
+    {
+      "id": "R6R4-EV-ORIG-2",
+      "repeticion": "R2",
+      "tipo": "original",
+      "host": "Dispositivo del usuario — Android / Termux",
+      "entorno_almacenamiento": "Directorio privado de la aplicación Termux ($HOME de Termux = /data/data/com.termux/files/home)",
+      "ruta_comunicada": "/data/data/com.termux/files/home/feas_d18_r2_r4_repeat_2/evidence_d18_r2.json",
+      "ruta_comunicada_literal": "$HOME/feas_d18_r2_r4_repeat_2/evidence_d18_r2.json",
+      "nombre_archivo": "evidence_d18_r2.json",
+      "bytes": null,
+      "bytes_estado": "NO_COMUNICADO",
+      "sha256_comunicado": "7bef8eb2d474b920ef558128ed8efcccd32af81ad7a07aa659ed8c147226407e",
+      "estado_verificacion": {
+        "existencia": "COMUNICADO_POR_USUARIO",
+        "sha256": "COMUNICADO_POR_USUARIO",
+        "recalculo_en_arena": "NO_RECALCULADO_POR_ARENA",
+        "verificacion_previa_en_dispositivo": "VERIFICADO_PREVIAMENTE_EN_TERMUX",
+        "versionado_en_repositorio": "NO_VERSIONADO"
+      },
+      "relacion_con_archivo_correspondiente": "Original del par R2. Su copia correspondiente es 'R6R4-EV-COPY-2' (R6R4_repeat_2.json). La identidad byte a byte entre ambos fue COMPROBADA PREVIAMENTE POR EL USUARIO en el dispositivo; NO fue re-verificada por Arena.",
+      "accesibilidad_desde_arena": "NO_ACCESIBLE_DESDE_ARENA",
+      "accesibilidad_detalle": "Comprobado en esta sesión: el sandbox es Linux (uid 1001), $HOME = /home/user, y /storage no existe. find / -maxdepth 8 -name 'evidence_d18_r2.json' devuelve 0 resultados.",
+      "commit_referencia": "0ae2c10c472e2e9941320fa1dd2727f1a044701c",
+      "limitaciones_verificacion": [
+        "Arena no tiene acceso al sistema de archivos del dispositivo Android del usuario.",
+        "El hash no fue recalculado por Arena; se registra el valor comunicado.",
+        "El tamaño en bytes no fue comunicado y no puede medirse desde Arena.",
+        "La fecha exacta de la verificación en el dispositivo no consta de forma precisa en el material disponible.",
+        "La mera persistencia local no acredita reproducibilidad independiente.",
+        "No se acredita que el archivo siga existiendo en la fecha de este manifiesto."
+      ]
+    },
+    {
+      "id": "R6R4-EV-COPY-2",
+      "repeticion": "R2",
+      "tipo": "copia",
+      "host": "Dispositivo del usuario — Android (almacenamiento compartido)",
+      "entorno_almacenamiento": "Almacenamiento compartido de Android, gestionado por el framework (FUSE/sdcardfs//mnt/user/0 según versión). Ubicación lógica distinta del directorio privado de Termux; la disposición física no está acreditada.",
+      "ruta_comunicada": "/storage/emulated/0/Download/GitHub Store/lab_sgm/Proyecto SDV-SDI_SGM Diciembre/R6R4_repeat_2.json",
+      "ruta_comunicada_literal": "/storage/emulated/0/Download/GitHub Store/lab_sgm/Proyecto SDV-SDI_SGM Diciembre/R6R4_repeat_2.json",
+      "nombre_archivo": "R6R4_repeat_2.json",
+      "bytes": null,
+      "bytes_estado": "NO_COMUNICADO",
+      "sha256_comunicado": "7bef8eb2d474b920ef558128ed8efcccd32af81ad7a07aa659ed8c147226407e",
+      "estado_verificacion": {
+        "existencia": "COMUNICADO_POR_USUARIO",
+        "sha256": "COMUNICADO_POR_USUARIO",
+        "recalculo_en_arena": "NO_RECALCULADO_POR_ARENA",
+        "verificacion_previa_en_dispositivo": "VERIFICADO_PREVIAMENTE_EN_TERMUX",
+        "versionado_en_repositorio": "NO_VERSIONADO"
+      },
+      "relacion_con_archivo_correspondiente": "Copia de respaldo del original 'R6R4-EV-ORIG-2' (feas_d18_r2_r4_repeat_2/evidence_d18_r2.json). Comparte con él el SHA-256 comunicado, lo que es coherente con una copia idéntica; la igualdad efectiva fue COMPROBADA PREVIAMENTE POR EL USUARIO y NO re-verificada por Arena.",
+      "accesibilidad_desde_arena": "NO_ACCESIBLE_DESDE_ARENA",
+      "accesibilidad_detalle": "Comprobado en esta sesión: /storage no existe en el sandbox. find / -maxdepth 8 -name 'R6R4_repeat_*.json' devuelve 0 resultados.",
+      "commit_referencia": "0ae2c10c472e2e9941320fa1dd2727f1a044701c",
+      "limitaciones_verificacion": [
+        "Arena no tiene acceso al almacenamiento compartido de Android.",
+        "El hash no fue recalculado por Arena; se registra el valor comunicado.",
+        "El tamaño en bytes no fue comunicado y no puede medirse desde Arena.",
+        "Compartir directorio con otros proyectos ('GitHub Store/lab_sgm/') implica riesgo de sustitución o edición accidental por terceros procesos; no se acredita que exista protección contra escritura.",
+        "La copia protege frente al borrado del directorio privado de la app; NO se acredita que proteja frente a un fallo del medio físico.",
+        "No se acredita que el archivo siga existiendo en la fecha de este manifiesto."
+      ]
+    },
+    {
+      "id": "R6R4-EV-ORIG-3",
+      "repeticion": "R3",
+      "tipo": "original",
+      "host": "Dispositivo del usuario — Android / Termux",
+      "entorno_almacenamiento": "Directorio privado de la aplicación Termux ($HOME de Termux = /data/data/com.termux/files/home)",
+      "ruta_comunicada": "/data/data/com.termux/files/home/feas_d18_r2_r4_repeat_3/evidence_d18_r2.json",
+      "ruta_comunicada_literal": "$HOME/feas_d18_r2_r4_repeat_3/evidence_d18_r2.json",
+      "nombre_archivo": "evidence_d18_r2.json",
+      "bytes": null,
+      "bytes_estado": "NO_COMUNICADO",
+      "sha256_comunicado": "e5c9cab23ec32d7125405a2863d8ab9ebe6b6e0feb278ccd990b75518123fd23",
+      "estado_verificacion": {
+        "existencia": "COMUNICADO_POR_USUARIO",
+        "sha256": "COMUNICADO_POR_USUARIO",
+        "recalculo_en_arena": "NO_RECALCULADO_POR_ARENA",
+        "verificacion_previa_en_dispositivo": "VERIFICADO_PREVIAMENTE_EN_TERMUX",
+        "versionado_en_repositorio": "NO_VERSIONADO"
+      },
+      "relacion_con_archivo_correspondiente": "Original del par R3. Su copia correspondiente es 'R6R4-EV-COPY-3' (R6R4_repeat_3.json). La identidad byte a byte entre ambos fue COMPROBADA PREVIAMENTE POR EL USUARIO en el dispositivo; NO fue re-verificada por Arena.",
+      "accesibilidad_desde_arena": "NO_ACCESIBLE_DESDE_ARENA",
+      "accesibilidad_detalle": "Comprobado en esta sesión: el sandbox es Linux (uid 1001), $HOME = /home/user, y /storage no existe. find / -maxdepth 8 -name 'evidence_d18_r2.json' devuelve 0 resultados.",
+      "commit_referencia": "0ae2c10c472e2e9941320fa1dd2727f1a044701c",
+      "limitaciones_verificacion": [
+        "Arena no tiene acceso al sistema de archivos del dispositivo Android del usuario.",
+        "El hash no fue recalculado por Arena; se registra el valor comunicado.",
+        "El tamaño en bytes no fue comunicado y no puede medirse desde Arena.",
+        "La fecha exacta de la verificación en el dispositivo no consta de forma precisa en el material disponible.",
+        "La mera persistencia local no acredita reproducibilidad independiente.",
+        "No se acredita que el archivo siga existiendo en la fecha de este manifiesto."
+      ]
+    },
+    {
+      "id": "R6R4-EV-COPY-3",
+      "repeticion": "R3",
+      "tipo": "copia",
+      "host": "Dispositivo del usuario — Android (almacenamiento compartido)",
+      "entorno_almacenamiento": "Almacenamiento compartido de Android, gestionado por el framework (FUSE/sdcardfs//mnt/user/0 según versión). Ubicación lógica distinta del directorio privado de Termux; la disposición física no está acreditada.",
+      "ruta_comunicada": "/storage/emulated/0/Download/GitHub Store/lab_sgm/Proyecto SDV-SDI_SGM Diciembre/R6R4_repeat_3.json",
+      "ruta_comunicada_literal": "/storage/emulated/0/Download/GitHub Store/lab_sgm/Proyecto SDV-SDI_SGM Diciembre/R6R4_repeat_3.json",
+      "nombre_archivo": "R6R4_repeat_3.json",
+      "bytes": null,
+      "bytes_estado": "NO_COMUNICADO",
+      "sha256_comunicado": "e5c9cab23ec32d7125405a2863d8ab9ebe6b6e0feb278ccd990b75518123fd23",
+      "estado_verificacion": {
+        "existencia": "COMUNICADO_POR_USUARIO",
+        "sha256": "COMUNICADO_POR_USUARIO",
+        "recalculo_en_arena": "NO_RECALCULADO_POR_ARENA",
+        "verificacion_previa_en_dispositivo": "VERIFICADO_PREVIAMENTE_EN_TERMUX",
+        "versionado_en_repositorio": "NO_VERSIONADO"
+      },
+      "relacion_con_archivo_correspondiente": "Copia de respaldo del original 'R6R4-EV-ORIG-3' (feas_d18_r2_r4_repeat_3/evidence_d18_r2.json). Comparte con él el SHA-256 comunicado, lo que es coherente con una copia idéntica; la igualdad efectiva fue COMPROBADA PREVIAMENTE POR EL USUARIO y NO re-verificada por Arena.",
+      "accesibilidad_desde_arena": "NO_ACCESIBLE_DESDE_ARENA",
+      "accesibilidad_detalle": "Comprobado en esta sesión: /storage no existe en el sandbox. find / -maxdepth 8 -name 'R6R4_repeat_*.json' devuelve 0 resultados.",
+      "commit_referencia": "0ae2c10c472e2e9941320fa1dd2727f1a044701c",
+      "limitaciones_verificacion": [
+        "Arena no tiene acceso al almacenamiento compartido de Android.",
+        "El hash no fue recalculado por Arena; se registra el valor comunicado.",
+        "El tamaño en bytes no fue comunicado y no puede medirse desde Arena.",
+        "Compartir directorio con otros proyectos ('GitHub Store/lab_sgm/') implica riesgo de sustitución o edición accidental por terceros procesos; no se acredita que exista protección contra escritura.",
+        "La copia protege frente al borrado del directorio privado de la app; NO se acredita que proteja frente a un fallo del medio físico.",
+        "No se acredita que el archivo siga existiendo en la fecha de este manifiesto."
+      ]
+    }
+  ],
+
+  "resumen": {
+    "registros_totales": 6,
+    "originales": 3,
+    "copias": 3,
+    "hashes_distintos": 3,
+    "verificados_por_arena": 0,
+    "recalculados_por_arena": 0,
+    "accesibles_desde_arena": 0,
+    "versionados_en_repositorio": 0,
+    "bytes_conocidos": 0
+  },
+
+  "verificaciones_independientes_realizadas_por_arena": [
+    {
+      "verificacion": "Ninguno de los seis nombres de archivo está versionado en el commit de referencia",
+      "metodo": "git ls-tree -r --name-only 0ae2c10 filtrado por 'evidence_d18_r2', 'R6R4_repeat' y 'feas_d18_r2'",
+      "resultado": "0 coincidencias"
+    },
+    {
+      "verificacion": "Ninguno de los tres hashes aparece en el árbol versionado",
+      "metodo": "git grep de cada hash sobre HEAD",
+      "resultado": "0 coincidencias en los tres casos"
+    },
+    {
+      "verificacion": "Ninguno de los tres hashes corresponde a un JSON versionado",
+      "metodo": "Recálculo de sha256 de todos los archivos *.json versionados en el commit de referencia y comparación con los tres hashes",
+      "resultado": "0 coincidencias"
+    },
+    {
+      "verificacion": "Las rutas declaradas no son accesibles desde el entorno Arena",
+      "metodo": "uname -s; id -u; ls -d /storage; find / -maxdepth 8 -name 'R6R4_repeat_*.json'; find / -maxdepth 8 -name 'evidence_d18_r2.json'",
+      "resultado": "Linux, uid 1001, /storage inexistente, 0 resultados en ambas búsquedas"
+    }
+  ],
+
+  "resultados_comunicados_asociados": {
+    "estado": "COMUNICADO_POR_USUARIO",
+    "no_verificado_por_arena": true,
+    "nota": "Los veredictos siguientes corresponden a las tres repeticiones R6-R4 en Android/Termux y constan como comunicados. Este manifiesto los registra para trazabilidad; NO los certifica y NO modifica el veredicto global de D18-R2.",
+    "repeticiones": [
+      { "repeticion": "R1", "PASS": 30, "FAIL": 0, "UNKNOWN": 9, "R2_C9": "PASS", "global_verdict": "UNKNOWN", "evidencia_original": "R6R4-EV-ORIG-1", "evidencia_copia": "R6R4-EV-COPY-1" },
+      { "repeticion": "R2", "PASS": 30, "FAIL": 0, "UNKNOWN": 9, "R2_C9": "PASS", "global_verdict": "UNKNOWN", "evidencia_original": "R6R4-EV-ORIG-2", "evidencia_copia": "R6R4-EV-COPY-2" },
+      { "repeticion": "R3", "PASS": 30, "FAIL": 0, "UNKNOWN": 9, "R2_C9": "PASS", "global_verdict": "UNKNOWN", "evidencia_original": "R6R4-EV-ORIG-3", "evidencia_copia": "R6R4-EV-COPY-3" }
+    ]
+  },
+
+  "veredictos_invariantes": {
+    "declaracion": "Este manifiesto no altera ningún veredicto.",
+    "unknown_d18_r2": {
+      "total": 9,
+      "estado": "SIGUEN_SIENDO_UNKNOWN",
+      "casos": ["R2-B6", "R2-D1", "R2-D2", "R2-C2", "R2-C3", "R2-C5", "R1-A3", "R1-A4", "R1-B2"]
+    },
+    "D18": "FAIL",
+    "C5": "FAIL_HISTORICO_INTACTO",
+    "D18_R2_global_linux": "UNKNOWN (30/0/9, R6-R3)",
+    "D18_R2_global_android_termux": "UNKNOWN (30/0/9 comunicado, 3 repeticiones)",
+    "R2_C9_FAIL": "PERTENECE_A_R6_R3_ANDROID_TERMUX",
+    "ningun_unknown_convertido_a_pass": true,
+    "D18_o_D18_R2_declarados_PASS_global": false
+  },
+
+  "que_no_hace_este_manifiesto": [
+    "No incorpora los seis archivos al repositorio.",
+    "No acredita que los seis archivos sigan existiendo.",
+    "No acredita la procedencia de los archivos ni su cadena de custodia.",
+    "No acredita la independencia física de los dos soportes de almacenamiento.",
+    "No certifica los resultados de las tres repeticiones como evidencia reproducible.",
+    "No sustituye la conservación de los archivos: un hash detecta una pérdida, no la repara.",
+    "No declara ningún veredicto PASS ni modifica los nueve UNKNOWN.",
+    "No constituye el manifiesto definitivo: queda pendiente de revisión del responsable."
+  ],
+
+  "estado": "PROPUESTO_SIN_COMMIT_PENDIENTE_DE_REVISION",
+  "decision_reservada": "La decisión sobre el versionado de este manifiesto y sobre la política permanente de conservación de evidencias queda reservada a Cris y al usuario.",
+  "nota_autorreferencia": "Este archivo no contiene su propio SHA-256 por imposibilidad de autorreferencia sin invalidación. Su hash se registra en SHA256SUMS_AUDITORIA_R6-R4.txt."
+}
