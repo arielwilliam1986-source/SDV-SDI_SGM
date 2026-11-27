@@ -118,10 +118,68 @@ CORRECCIÓN FINAL R5 (FEASIBILITY-D18-R2-R5, autorizada por Cris):
         modo dirfd anclado / modo path no anclado y ausencia de
         garantías universales de gc.collect().
 
+RECTIFICACIÓN METODOLÓGICA R6 (FEASIBILITY-D18-R2-R6, autorizada por Cris):
+  R6-A  Eliminación del cálculo manual de P5 en R2-C13 (`v_contr = ...`):
+        el controlador del arnés (`run_controller` / `aggregate_verdicts`)
+        se extrae de `main()` y se ejecuta realmente.
+  R6-B  Inyección real de fallo de `os.close(dirfd)` dentro de
+        `fds_with_identity()` tanto en `fd_dir` sintético (con contraste
+        limpio completo) como a través del flujo real de los 7 escenarios
+        A, B y C que consumen `fds_with_identity()` (`test_a1`, `test_b1`,
+        `test_b2`, `test_b5`, `test_c_a`, `test_c_b`, `test_c_c`),
+        verificando preservación exacta de identidad (`id(inv)`) sin
+        sustitución por inventarios simulados ni falsificación de `/proc`.
+  R6-C  Contraste real A/B/C sin fallo de `os.close(dirfd)` y criterio
+        estricto FAIL > UNKNOWN > PASS: si el entorno (p. ej. entrada
+        fantasma R2-C8 en `/proc/self/fd`) ya vuelve incompleto el
+        inventario en el contraste de A/B/C e impide aislar el fallo de
+        cierre con contraste PASS sin alterar su semántica, R2-C13 se
+        adjudica conservadoramente como UNKNOWN (no se eleva a PASS).
+
+CORRECCIÓN PUNTUAL R6-R1 (autorizada por Cris):
+  R6-R1-A Adjudicación local estricta de R2-C13 mediante
+          `adjudicate_r2c13_verdict(...)`, usando `con_counts`,
+          `con_global`, `con_produced` y `contrast_all_complete`: si
+          `core_ok=False` o el controlador del contraste real devuelve
+          `FAIL` (aun con incompletitud o UNKNOWN concomitantes), el
+          veredicto es `FAIL`; sin `FAIL`, si el contraste es incompleto
+          o `UNKNOWN`, es `UNKNOWN`; solo es `PASS` cuando `core_ok`,
+          contraste completo y todos los escenarios esperados en `PASS`.
+  R6-R1-B Prueba de regresión reproducible `R2-C14` que ejercita
+          `run_controller()` + `adjudicate_r2c13_verdict(...)` (la
+          misma función real usada por R2-C13) sobre toda la matriz
+          `FAIL|PASS`, `PASS|FAIL`, `PASS|FAIL+incompleto/UNKNOWN`,
+          `PASS|UNKNOWN`, `PASS|PASS incompleto` y `PASS|PASS completo`.
+
+CORRECCIÓN R6-R3 (autorizada por Cris, prioridad Android/Termux):
+  R6-R3-A Reemplazo de `os.listdir()` por enumeración + inspección en
+          línea mediante `os.scandir(dirfd)` dentro de
+          `fds_with_identity()`, manteniendo abierto el iterador (y su
+          descriptor interno `dup_fd`) durante `os.stat(name,
+          dir_fd=dirfd)` para evitar el cierre prematuro antes de la
+          inspección que causaba la entrada fantasma `ENOENT` en
+          `/proc/self/fd` (diagnóstico R6-R2). Sin `list(it)`, sin
+          filtrado por número de descriptor y sin ignorar `ENOENT`.
+  R6-R3-B Portabilidad Android/Termux como prioridad 1: uso exclusivo de
+          API estándar Python (`os.scandir(dirfd)` respaldado en Android
+          por Bionic `fdopendir`/`readdir`/`closedir`, sin `ctypes`,
+          syscalls ni ABI dependiente de ARM64/x86_64) con comprobación
+          de `os.supports_fd`/`os.supports_dir_fd` y fallback explícito
+          al modo no anclado `"path"`. Se conservan intactos `R4-A`,
+          `R4-B`, `R5-A`, `R6`, `R6-R1` y la clasificación conservadora
+          `R3-D`.
+  R6-R3-C Regresión completa `R2-C1..R2-C14` con Caso A (ausencia de
+          falso `UNKNOWN` por descriptor transitorio de enumeración en
+          `R2-C8`) y Caso B (detección y clasificación conservadora de
+          desaparición real concurrente en FS regular y en `/proc/self/fd`
+          en `R2-C2`), además del contraste real A/B/C en `R2-C13`.
+
 Restricciones: entorno aislado, fixtures sintéticos, sin motores/, sin
 lectura_segura_6g1.py, sin plan v2.3/diseño v5/adjudicación final, sin
-integración Hardened/EVO/MQR, sin audio real, sin Android/Termux, sin D-16,
-sin main/PR#2/merge.
+integración Hardened/EVO/MQR, sin audio real, sin D-16, sin main/PR#2/merge.
+Nota de validación móvil: la compatibilidad Android/Termux de `os.scandir(fd)`
+se diseña y documenta aquí; su ejecución en dispositivo Termux real debe
+validarse por separado en el dispositivo objetivo.
 
 Precedencia de veredictos (global): FAIL > UNKNOWN > PASS.
 Evidencia JSON: /tmp/feas_d18_r2_evidence/evidence_d18_r2.json
@@ -409,81 +467,74 @@ def _close_dirfd(dirfd):
         return f"cierre fallido: {type(e).__name__}: {e}"
 
 
-def _enumerate_fd_dir(fd_dir):
-    """Enumera fd_dir con un descriptor de directorio mantenido abierto (R2-A/R4-A).
+_REAL_OS_SCANDIR = os.scandir
+_REAL_OS_STAT = os.stat
 
-    Estrategia investigada: abrir el directorio con O_DIRECTORY y enumerar
-    vía el descriptor, manteniéndolo abierto durante toda la inspección, para
-    que el descriptor propio de la enumeración sea estable e identificable
-    (no se confunda con una desaparición externa). Se retorna
-    (names, dirfd, mode) con mode en {"dirfd", "path"}.
 
-    R4-A (propiedades de ciclo de vida del descriptor):
-      - Si os.open() falla, se cae al camino por ruta (mode="path").
-      - Si os.open() SUCCEE pero os.listdir(dirfd) falla, el descriptor se
-        CIERRA ANTES de propagar el error: no se deja ningún descriptor
-        abierto fuera de la propiedad de la función llamante.
-      - Si la función devuelve correctamente (names, dirfd, "dirfd"), la
-        RESPONSABILIDAD DE CIERRE es inequívocamente del LLAMANTE.
-      - Los fallos de cierre se registran (nota adjunta al error) y no se
-        ocultan; el inventario no se declara acreditado.
+def _supports_anchored_scandir():
+    """Comprueba soporte real de os.scandir(dirfd) y os.stat(..., dir_fd=dirfd).
+
+    Consulta `os.supports_fd` y `os.supports_dir_fd` usando las referencias
+    nativas capturadas en carga del módulo para que wrappers/spies de
+    prueba sobre `os.scandir` u `os.stat` no oculten la capacidad del S.O.
     """
-    try:
-        dirfd = os.open(fd_dir, os.O_RDONLY | os.O_DIRECTORY)
-    except OSError:
-        # Camino por ruta como alternativa (no asumir que la alternativa
-        # resuelva el problema; se documenta el modo usado).
-        names = os.listdir(fd_dir)
-        return names, None, "path"
-    try:
-        names = os.listdir(dirfd)
-    except OSError as e:
-        # R4-A: cerrar el descriptor antes de propagar; no dejar descriptor
-        # abierto fuera de la propiedad del llamante. El fallo de cierre,
-        # si lo hay, se registra en la nota adherida (no se oculta).
-        close_note = _close_dirfd(dirfd)
-        e.r4_dirfd_close_note = close_note
-        raise
-    return names, dirfd, "dirfd"
+    return (_REAL_OS_SCANDIR in getattr(os, "supports_fd", ())
+            and _REAL_OS_STAT in getattr(os, "supports_dir_fd", ()))
 
 
 def fds_with_identity(st, fd_dir="/proc/self/fd"):
-    """Inventario de /proc/self/fd para la identidad de 'st' (R1-B/R2-A/R2-B/R4).
+    """Inventario de /proc/self/fd para la identidad de 'st' (R1-B/R2/R4/R5/R6-R3).
 
     R1-B: los errores de stat (descriptor que desapareció durante el
     recorrido, inaccesible, error de procfs) NO se ignoran: se registran
     (con clasificación) y fuerzan complete=False.
 
-    R2-A: los errores de os.listdir(fd_dir) (apertura/enumeración) se
-    capturan igual: inventario INCOMPLETO, error+contexto registrados. La
-    función NO propaga la excepción, para que el controlador general no la
-    convierta artificialmente en FAIL. La imposibilidad de completar el
-    inventario produce UNKNOWN en cualquier escenario dependiente y NUNCA
-    PASS ni cero descriptores desde un inventario incompleto.
+    R2-A / R6-R3: los errores de apertura/enumeración (`os.open`,
+    `os.scandir`, iteración `ScandirIterator`) se capturan igual:
+    inventario INCOMPLETO, error+contexto registrados. La función NO
+    propaga la excepción, para que el controlador general no la convierta
+    artificialmente en FAIL. La imposibilidad de completar el inventario
+    produce UNKNOWN en cualquier escenario dependiente y NUNCA PASS ni
+    cero descriptores desde un inventario incompleto.
 
-    R2-A (investigación): la enumeración usa un descriptor de directorio
-    mantenido abierto durante la inspección (ver R2-C9). Esto NO se asume
-    como solución del artefacto fd 3; se demuestra por pruebas (R2-C8).
+    R6-R3 (enumeración e inspección en línea con `os.scandir`):
+      - Sustituye `os.listdir()`, que en CPython duplica el descriptor
+        (`fcntl(F_DUPFD_CLOEXEC)` / `fdopendir`), lee las entradas (donde
+        aparece el propio `dup_fd` en `/proc/self/fd`) y ejecuta
+        `closedir(dup_fd)` ANTES de retornar la lista, causando un `ENOENT`
+        determinista al inspeccionar posteriormente (diagnóstico R6-R2).
+      - Con `with os.scandir(scan_target) as it:`, cada entrada se
+        inspecciona dentro del mismo bucle `for entry in it:` ANTES de que
+        el iterador se agote y cierre su descriptor interno. NO se
+        materializa `list(it)`, NO se filtra ningún fd por número y NO se
+        ignora `ENOENT`: cualquier desaparición concurrente real entre
+        enumeración e inspección sigue fallando en `os.stat` y se clasifica
+        conservadoramente (`R3-D`).
+      - Prioridad Android/Termux: usa únicamente API estándar Python
+        (`os.scandir(dirfd)` respaldado por Bionic `fdopendir`/`readdir`/
+        `closedir` desde Python 3.7+), sin `ctypes`, syscalls ni ABI
+        dependiente de ARM64/x86_64. Si la plataforma no soporta `dirfd` o
+        `os.open(fd_dir, O_RDONLY | O_DIRECTORY)` falla, cae explícitamente
+        al modo `"path"` no anclado.
 
-    R4-A: si la apertura OK pero la enumeración falla, el descriptor se
-    cerra antes de propagar (la nota de cierre se registra en el error).
+    R4-A: si `os.open()` abrió `dirfd` pero `os.scandir(dirfd)` o su
+    iteración falla en fase de enumeración, `dirfd` se cierra antes de
+    retornar (y cualquier fallo de cierre se registra en `note`).
 
-    R4-B (inspección anclada): cuando enum_mode == "dirfd", cada entrada se
-    inspecciona con una operación RELIVA al descriptor (os.stat(name,
-    dir_fd=dirfd)); NO se resuelve de nuevo os.path.join(fd_dir, name).
-    El descriptor se mantiene abierto durante toda la enumeración e
-    inspección y se cierra al finalizar, tanto en éxito como en error. El
-    modo "path" es un recorrido NO anclado: no se le atribuyen las
-    garantías del modo dirfd (si una prueba exige anclaje y no se obtiene,
-    el resultado es UNKNOWN).
+    R4-B (inspección anclada): cuando `enum_mode == "dirfd"`, cada entrada
+    se inspecciona RELATIVO al descriptor (`os.stat(name, dir_fd=dirfd)`);
+    NO se resuelve de nuevo `os.path.join(fd_dir, name)`. El descriptor
+    `dirfd` permanece abierto durante toda la enumeración e inspección y se
+    cierra al finalizar, tanto en éxito como en error. El modo `"path"` es
+    un recorrido NO anclado: no se le atribuyen las garantías del modo dirfd.
 
-    R5-A (registro del fallo de cierre final): si os.close(dirfd) en el
-    finally FALLA, el error se registra (phase="cierre", descriptor,
+    R5-A (registro del fallo de cierre final): si `os.close(dirfd)` en el
+    `finally` FALLA, el error se registra (`phase="cierre"`, descriptor,
     tipo de excepción, errno, contexto) y el inventario queda
-    complete=False: ningún escenario dependiente puede convertirlo en
-    PASS (propagación UNKNOWN, salvo FAIL independiente demostrado). NO
-    se afirma que el descriptor quedó cerrado y NO se realizan
-    reintentos ciegos de close().
+    `complete=False`: ningún escenario dependiente puede convertirlo en
+    PASS (propagación UNKNOWN, salvo FAIL independiente demostrado). NO se
+    afirma que el descriptor quedó cerrado y NO se realizan reintentos
+    ciegos de `close()`.
     """
     target = identity_of(st)
     matched, errors = [], []
@@ -492,53 +543,68 @@ def fds_with_identity(st, fd_dir="/proc/self/fd"):
 
     dirfd, enum_mode = None, None
     try:
-        # Apertura + enumeración del directorio (R2-A): cualquier OSError
-        # aquí se registra y produce inventario INCOMPLETO.
+        # Apertura anclada de fd_dir cuando la plataforma soporta scandir(fd)
+        # y stat(..., dir_fd=fd); en caso contrario o si O_DIRECTORY falla,
+        # fallback explícito al modo "path" (no anclado, R4-B).
+        if _supports_anchored_scandir():
+            try:
+                dirfd = os.open(fd_dir, os.O_RDONLY | os.O_DIRECTORY)
+                enum_mode = "dirfd"
+            except OSError:
+                dirfd = None
+                enum_mode = "path"
+        else:
+            enum_mode = "path"
+
+        anchored = (enum_mode == "dirfd" and dirfd is not None)
+        scan_target = dirfd if anchored else fd_dir
+
+        # R6-R3: enumeración + inspección EN LÍNEA mientras el ScandirIterator
+        # mantiene su descriptor interno abierto (prohibido list(it)).
         try:
-            names, dirfd, enum_mode = _enumerate_fd_dir(fd_dir)
+            with os.scandir(scan_target) as it:
+                for entry in it:
+                    name = entry.name
+                    try:
+                        if anchored:
+                            s = os.stat(name, dir_fd=dirfd)
+                        else:
+                            s = os.stat(os.path.join(fd_dir, name))
+                    except OSError as e:
+                        # Descriptor que desapareció durante el recorrido,
+                        # inaccesible o error de procfs: se registra (R2-B /
+                        # R3-D) y marca incompleto (nunca se ignora ENOENT).
+                        cls, ctx = _classify_fd_error(
+                            name, e, fd_dir, "inspeccion")
+                        errors.append(_error_record(
+                            name, e, fd_dir, "inspeccion", cls, ctx))
+                        complete = False
+                        continue
+                    if identity_of(s) == target:
+                        try:
+                            matched.append(int(name))
+                        except ValueError:
+                            cls = (CLASS_PROCFS if _is_procfs_fd_dir(fd_dir)
+                                   else CLASS_UNKNOWN_CAUSE)
+                            ctx = {"phase": "inspeccion", "fd_dir": fd_dir,
+                                   "entry": name}
+                            errors.append(_error_record(
+                                name, ValueError(f"fd no entero: {name!r}"),
+                                fd_dir, "inspeccion", cls, ctx,
+                                note="nombre no entero en inventario de fds"))
+                            complete = False
         except OSError as e:
+            # R4-A: si os.open() abrió dirfd pero os.scandir(dirfd) o la
+            # iteración falla en enumeración, cerrar dirfd antes de retornar
+            # (registrando cualquier fallo de cierre en note).
+            close_note = _close_dirfd(dirfd) if dirfd is not None else None
+            dirfd = None
             cls, ctx = _classify_fd_error(None, e, fd_dir, "enumeracion")
-            # R4-A: la nota de cierre (si el cierre falló) se registra; no
-            # se oculta y el inventario no se declara acreditado.
             errors.append(_error_record(None, e, fd_dir, "enumeracion",
-                                        cls, ctx,
-                                        note=getattr(e, "r4_dirfd_close_note",
-                                                     None)))
+                                        cls, ctx, note=close_note))
             complete = False
             return FdInventory(matched, errors, complete, None, None)
 
-        # Inspección de cada entrada. R4-B: con enum_mode == "dirfd" se
-        # inspecciona RELATIVO al descriptor (no se resuelve de nuevo la
-        # ruta nominal); el descriptor se mantiene abierto durante toda la
-        # inspección.
-        anchored = (enum_mode == "dirfd" and dirfd is not None)
-        for name in names:
-            try:
-                if anchored:
-                    s = os.stat(name, dir_fd=dirfd)
-                else:
-                    s = os.stat(os.path.join(fd_dir, name))
-            except OSError as e:
-                # Descriptor que desapareció durante el recorrido, inaccesible
-                # o error de procfs: se registra (R2-B) y marca incompleto.
-                cls, ctx = _classify_fd_error(name, e, fd_dir, "inspeccion")
-                errors.append(_error_record(name, e, fd_dir, "inspeccion",
-                                            cls, ctx))
-                complete = False
-                continue
-            if identity_of(s) == target:
-                try:
-                    matched.append(int(name))
-                except ValueError:
-                    cls = (CLASS_PROCFS if _is_procfs_fd_dir(fd_dir)
-                           else CLASS_UNKNOWN_CAUSE)
-                    ctx = {"phase": "inspeccion", "fd_dir": fd_dir,
-                           "entry": name}
-                    errors.append(_error_record(
-                        name, ValueError(f"fd no entero: {name!r}"),
-                        fd_dir, "inspeccion", cls, ctx,
-                        note="nombre no entero en inventario de fds"))
-                    complete = False
         inv = FdInventory(matched, errors, complete, dirfd, enum_mode)
         return inv
     finally:
@@ -1246,40 +1312,108 @@ def test_r2c_complete():
 
 
 def test_r2c_disappeared():
-    """R2-C2: entrada que desaparece durante el recorrido."""
+    """R2-C2: entrada real que desaparece entre enumeración e inspección (Caso B)."""
+    import unittest.mock as _m
     d = tempfile.mkdtemp(prefix="feas_r2c_")
     real = os.path.join(d, "5")
     open(real, "w").close()
-    stale = os.listdir(d)            # la entrada 5 está en el listado
-    os.unlink(real)                  # desaparece ANTES de la inspección
     st = os.stat(d)                  # identidad cualquiera (solo se inspeccionan fds)
-    import unittest.mock as _m
-    with _m.patch.object(os, "listdir", return_value=stale):
+
+    # Subcaso B1 (directorio regular): os.scandir real enumera '5' y el
+    # archivo desaparece justo antes de os.stat("5", dir_fd=dirfd).
+    real_scandir = os.scandir
+
+    def scandir_unlink_before_stat(path="."):
+        it = real_scandir(path)
+
+        class _UnlinkingScan:
+            def __enter__(self):
+                it.__enter__()
+                return self
+
+            def __exit__(self, *args):
+                return it.__exit__(*args)
+
+            def __iter__(self):
+                for entry in it:
+                    if entry.name == "5" and os.path.exists(real):
+                        os.unlink(real)
+                    yield entry
+
+        return _UnlinkingScan()
+
+    with _m.patch.object(os, "scandir", new=scandir_unlink_before_stat):
         inv = fds_with_identity(st, fd_dir=d)
     ev = inv.errors[0] if inv.errors else {}
-    # R3-B: la prueba verifica una CLASIFICACIÓN específica. Se requiere
-    # clasificación correcta Y complete=False para UNKNOWN; si la
-    # clasificación no es la esperada (o el inventario se completara con
-    # errores), se declara FAIL. No se asigna UNKNOWN automáticamente por
-    # el solo hecho de que el inventario sea incompleto.
-    ok = (not inv.complete and ev.get("classification")
-          == CLASS_DISAPPEARED and ev.get("errno") == errno.ENOENT
-          and ev.get("name") == "5"
-          and ev.get("exception_type") == "FileNotFoundError")
+    ok_fs = (not inv.complete
+             and len(inv.errors) == 1
+             and ev.get("classification") == CLASS_DISAPPEARED
+             and ev.get("errno") == errno.ENOENT
+             and ev.get("name") == "5"
+             and ev.get("exception_type") == "FileNotFoundError")
+
+    # Subcaso B2 (Caso B sobre /proc/self/fd REAL):
+    # Se abre un descriptor real (victim_fd) y se cierra concurrentemente
+    # en la primera llamada a os.stat() que no sea el propio victim_fd,
+    # demostrando que: (1) la corrección con os.scandir(dirfd) NO oculta ni
+    # ignora ENOENT reales; (2) el error se detecta y clasifica
+    # conservadoramente (UNKNOWN_CAUSE en procfs sin fdinfo -> complete=False);
+    # (3) el único error registrado corresponde a victim_fd (0 falsos positivos
+    # del descriptor interno de scandir).
+    guard_fd = os.open("/dev/null", os.O_RDONLY)
+    victim_fd = os.open("/dev/null", os.O_RDONLY)
+    closed_victim = False
+    real_stat = os.stat
+
+    def stat_close_victim_on_other(path, *a, **k):
+        nonlocal closed_victim
+        if not closed_victim and path != str(victim_fd):
+            closed_victim = True
+            os.close(victim_fd)
+        return real_stat(path, *a, **k)
+
+    inv_proc = None
+    try:
+        with _m.patch.object(os, "stat", new=stat_close_victim_on_other):
+            inv_proc = fds_with_identity(st, fd_dir="/proc/self/fd")
+    finally:
+        if not closed_victim:
+            close_fd_quiet(victim_fd)
+        close_fd_quiet(guard_fd)
+
+    ev_proc = inv_proc.errors[0] if (inv_proc and inv_proc.errors) else {}
+    ok_proc = (closed_victim
+               and inv_proc is not None
+               and not inv_proc.complete
+               and len(inv_proc.errors) == 1
+               and ev_proc.get("name") == str(victim_fd)
+               and ev_proc.get("errno") == errno.ENOENT
+               and ev_proc.get("exception_type") == "FileNotFoundError"
+               and ev_proc.get("classification") == CLASS_UNKNOWN_CAUSE)
+
+    # R3-B: la prueba verifica la CLASIFICACIÓN específica y detección real
+    # (FS regular -> DESCRIPTOR_DESAPARECIDO; procfs -> UNKNOWN_CAUSE) +
+    # complete=False -> UNKNOWN; si falla o se oculta ENOENT -> FAIL.
+    ok = ok_fs and ok_proc
     verdict = "UNKNOWN" if ok else "FAIL"
-    record("R2-C2", "R2-C", "Entrada que desaparece durante el recorrido",
-           "dir sintético: entrada '5' en el listado, borrada antes de la "
-           "inspección (listado estancado forzado).",
-           "fds_with_identity() con listado estancado; verificar "
-           "complete=False, error clasificado DESCRIPTOR_DESAPARECIDO con "
-           "errno/tipo/nombre conservados. R3-B: UNKNOWN solo si la "
-           "clasificación es correcta y el inventario es incompleto; "
-           "clasificación incorrecta -> FAIL.",
-           f"complete={inv.complete}; errors={inv.errors}; "
-           f"error_classes={inv.error_classes()}",
-           "R2-B/R3-B: ENOENT en un directorio NO procfs con entrada "
-           "previamente listada -> DESCRIPTOR_DESAPARECIDO; inventario "
-           "INCOMPLETO -> UNKNOWN (nunca PASS).",
+    record("R2-C2", "R2-C", "Entrada que desaparece durante el recorrido (Caso B)",
+           "B1: dir sintético con os.scandir real y unlink de '5' antes de "
+           "os.stat(). B2: /proc/self/fd real cerrando victim_fd="
+           f"{victim_fd} durante la inspección.",
+           "fds_with_identity() con os.scandir(dirfd) en línea; verificar "
+           "detección real de ENOENT sin ocultamiento, complete=False y "
+           "clasificación conservadora (B1 DESCRIPTOR_DESAPARECIDO; B2 "
+           "UNKNOWN_CAUSE sobre exactamente victim_fd). R3-B: UNKNOWN solo si "
+           "todo se verifica; ocultamiento o clasificación errónea -> FAIL.",
+           f"B1_fs_ok={ok_fs} (complete={inv.complete}, errors={inv.errors}, "
+           f"classes={inv.error_classes()}); "
+           f"B2_proc_real_ok={ok_proc} (victim_fd={victim_fd}, "
+           f"closed_victim={closed_victim}, "
+           f"complete={inv_proc.complete if inv_proc else None}, "
+           f"errors={inv_proc.errors if inv_proc else None})",
+           "R2-B/R3-B/R6-R3 (Caso B): ENOENT no se ignora ni se filtra; en FS "
+           "regular -> DESCRIPTOR_DESAPARECIDO y en /proc/self/fd real con "
+           "cierre concurrente -> UNKNOWN_CAUSE + complete=False -> UNKNOWN.",
            verdict)
     shutil.rmtree(d, ignore_errors=True)
 
@@ -1344,7 +1478,7 @@ def test_r2c_enum_error():
            "verificar que NO lanza, devuelve inventario INCOMPLETO y "
            "registra phase=enumeracion con clasificación adecuada.",
            f"casos={results}",
-           "R2-A: el error de os.listdir se captura (no propaga), el "
+           "R2-A: el error de enumeración se captura (no propaga), el "
            "inventario es INCOMPLETO -> escenarios dependientes van a "
            "UNKNOWN, nunca FAIL artificial. R2-B: procfs -> ERROR_PROCFS; "
            "sin evidencia suficiente -> UNKNOWN_CAUSE.",
@@ -1418,11 +1552,30 @@ def test_r2c_unknown_propagation():
     d = tempfile.mkdtemp(prefix="feas_r2c_")
     real = os.path.join(d, "3")
     open(real, "w").close()
-    stale = os.listdir(d)
-    os.unlink(real)                  # inventario incompleto forzado
     st = os.stat(d)
     import unittest.mock as _m
-    with _m.patch.object(os, "listdir", return_value=stale):
+    real_scandir = os.scandir
+
+    def scandir_unlink_3(path="."):
+        it = real_scandir(path)
+
+        class _UnlinkingScan:
+            def __enter__(self):
+                it.__enter__()
+                return self
+
+            def __exit__(self, *args):
+                return it.__exit__(*args)
+
+            def __iter__(self):
+                for entry in it:
+                    if entry.name == "3" and os.path.exists(real):
+                        os.unlink(real)
+                    yield entry
+
+        return _UnlinkingScan()
+
+    with _m.patch.object(os, "scandir", new=scandir_unlink_3):
         inv = fds_with_identity(st, fd_dir=d)
     # Replicar la regla de acreditación de A1/B1/B5 (y de cualquier
     # escenario dependiente): incompleto -> UNKNOWN, nunca PASS.
@@ -1437,7 +1590,8 @@ def test_r2c_unknown_propagation():
           and v_c == "UNKNOWN")
     verdict = "PASS" if ok else "FAIL"
     record("R2-C6", "R2-C", "Propagación de UNKNOWN a escenarios dependientes",
-           "inventario FORZADAMENTE incompleto (entrada borrada post-listado).",
+           "inventario FORZADAMENTE incompleto (os.scandir real + unlink de "
+           "'3' antes de inspección).",
            "Aplicar la regla de acreditación de A1/B1/B5 sobre el inventario "
            "incompleto; verificar que A/B/C van a UNKNOWN y no a PASS.",
            f"complete={inv.complete}; verdictos=[{v_a}, {v_b}, {v_c}]",
@@ -1461,21 +1615,55 @@ def test_r2c_no_artificial_fail():
     import unittest.mock as _m
 
     # --- P1: el error no escapa de fds_with_identity() -------------------
+    # Caso 1: fallo al abrir os.scandir(dirfd).
+    open(os.path.join(d, "3"), "w").close()
     raised = None
     inv = None
-    with _m.patch.object(os, "listdir",
+    with _m.patch.object(os, "scandir",
                          side_effect=OSError(errno.EIO, "enumeración caída")):
         try:
             inv = fds_with_identity(st, fd_dir=d)
         except OSError as e:
             raised = e
-    p1 = (raised is None and inv is not None)
+
+    # Caso 2: os.scandir abre el iterador y falla durante next(it).
+    real_scandir = os.scandir
+
+    def scandir_mid_iter_fail(path="."):
+        it = real_scandir(path)
+
+        class _MidFailScan:
+            def __enter__(self):
+                it.__enter__()
+                return self
+
+            def __exit__(self, *args):
+                return it.__exit__(*args)
+
+            def __iter__(self):
+                for entry in it:
+                    yield entry
+                    raise OSError(errno.EIO, "readdir mid-iter fallo")
+
+        return _MidFailScan()
+
+    raised_mid = None
+    inv_mid = None
+    with _m.patch.object(os, "scandir", new=scandir_mid_iter_fail):
+        try:
+            inv_mid = fds_with_identity(st, fd_dir=d)
+        except OSError as e:
+            raised_mid = e
+
+    p1 = (raised is None and inv is not None
+          and raised_mid is None and inv_mid is not None)
 
     # --- P2: el controlador recibe complete=False y asigna UNKNOWN ------
-    # Simula el controlador general del arnés sobre el inventario devuelto:
+    # Simula el controlador general del arnés sobre los inventarios devueltos:
     # no propaga (P1) y su regla de veredicto consume complete.
     v_contr = None
-    if inv is not None:
+    v_contr_mid = None
+    if inv is not None and inv_mid is not None:
         def controlador(inv_rec, ok_condition):
             # Regla del arnés (precedencia): incompleto -> UNKNOWN, nunca
             # PASS ni FAIL artificial desde un inventario incompleto.
@@ -1483,32 +1671,38 @@ def test_r2c_no_artificial_fail():
                 return "UNKNOWN"
             return "PASS" if ok_condition else "FAIL"
         v_contr = controlador(inv, True)
+        v_contr_mid = controlador(inv_mid, True)
         # Explicitamente: no PASS ni FAIL artificial.
-        p2 = (not inv.complete and v_contr == "UNKNOWN")
+        p2 = (not inv.complete and v_contr == "UNKNOWN"
+              and not inv_mid.complete and v_contr_mid == "UNKNOWN")
     else:
         p2 = False
 
-    ok = p1 and p2 and not inv.complete and bool(inv.errors)
+    ok = (p1 and p2
+          and not inv.complete and bool(inv.errors)
+          and not inv_mid.complete and bool(inv_mid.errors))
     verdict = "PASS" if ok else "FAIL"
     record("R2-C7", "R2-C", "Sin FAIL artificial por error de enumeración (R3-A)",
-           "os.listdir lanzado a OSError(EIO) durante la enumeración.",
+           "os.scandir(dirfd) lanzado a OSError(EIO) al abrir y a mitad "
+           "de iteración durante la enumeración.",
            "Verificar dos propiedades independientes: P1 el error NO "
            "escapa de fds_with_identity(); P2 el controlador recibe "
            "complete=False y asigna UNKNOWN, nunca PASS ni FAIL artificial. "
            "PASS solo si ambas se verifican (R3-A).",
-           f"P1_no_propagacion={p1} (propagada={raised}); "
-           f"P2_controlador_UNKNOWN={p2} (verdict_controlador={v_contr}); "
-           f"complete={inv.complete if inv else None}; "
+           f"P1_no_propagacion={p1} (propagada={raised}, mid={raised_mid}); "
+           f"P2_controlador_UNKNOWN={p2} (verdict={v_contr}, mid={v_contr_mid}); "
+           f"complete={inv.complete if inv else None}, "
+           f"mid_complete={inv_mid.complete if inv_mid else None}; "
            f"errors={inv.errors if inv else None}",
-           "R2-A/R3-A: la imposibilidad de enumerar se registra en el "
-           "inventario; no escapa a el controlador y este asigna UNKNOWN, "
-           "sin PASS y sin FAIL artificial.",
+           "R2-A/R3-A/R6-R3: la imposibilidad de enumerar (apertura o "
+           "iteración) se registra en el inventario; no escapa al controlador "
+           "y este asigna UNKNOWN, sin PASS y sin FAIL artificial.",
            verdict)
     shutil.rmtree(d, ignore_errors=True)
 
 
 def test_r2c_fd3_origin():
-    """R2-C8: origen del descriptor fantasma fd 3 (diagnóstico real)."""
+    """R2-C8: origen del descriptor fantasma y eliminación en Caso A (R6-R2/R6-R3)."""
     entries = []
     stat_fail, readlink_fail, fdinfo_missing = [], [], []
     ghost_passes = []
@@ -1535,48 +1729,76 @@ def test_r2c_fd3_origin():
                     fdinfo_missing.append((n, e3.errno))
         ghost_passes.append(ghosts)
     ghost = sorted({n for n, _ in stat_fail})
-    # Clasificación a partir del MISMO inventario (el número del fantasma
-    # puede variar entre llamadas; se obtiene de la inspección real).
+
+    # Comparador 2 (diagnóstico R6-R2): os.open("/proc/self/fd") + os.listdir(dirfd)
+    # reproduce igualmente la entrada fantasma porque os.listdir(dirfd) llama
+    # internamente a fcntl(F_DUPFD_CLOEXEC)/fdopendir -> readdir -> closedir(dup_fd)
+    # antes de devolver la lista.
+    dirfd_ghosts = []
+    cmp_dirfd = os.open("/proc/self/fd", os.O_RDONLY | os.O_DIRECTORY)
+    try:
+        for n in sorted(os.listdir(cmp_dirfd),
+                        key=lambda x: int(x) if x.isdigit() else 999):
+            try:
+                os.stat(n, dir_fd=cmp_dirfd)
+            except OSError as e:
+                dirfd_ghosts.append((n, e.errno))
+    finally:
+        close_fd_quiet(cmp_dirfd)
+
+    # Caso A (R6-R3): fds_with_identity() con os.scandir(dirfd) e inspección
+    # EN LÍNEA mantiene vivo el descriptor interno del iterador durante todo
+    # el bucle -> 0 falsos ENOENT del mecanismo de enumeración.
     inv = fds_with_identity(os.stat("/tmp"), fd_dir="/proc/self/fd")
-    # R3-D (conservador): ENOENT + fdinfo ausente en procfs NO se atribuye
-    # automáticamente a procfs -> UNKNOWN_CAUSE (no se inventa causa).
-    unknown_errs = [e for e in inv.errors
-                    if e.get("phase") == "inspeccion"
-                    and e.get("classification") == CLASS_UNKNOWN_CAUSE
-                    and e.get("errno") == errno.ENOENT]
-    cls = CLASS_UNKNOWN_CAUSE if unknown_errs else None
+
+    listdir_repro = (len(stat_fail) == 3
+                     and all(err == errno.ENOENT for _, err in stat_fail)
+                     and all(err == errno.ENOENT for _, err in fdinfo_missing))
+    dirfd_listdir_repro = (len(dirfd_ghosts) == 1
+                           and dirfd_ghosts[0][1] == errno.ENOENT)
+    caso_a_ok = (inv.enum_mode == "dirfd"
+                 and inv.complete is True
+                 and inv.errors == [])
+
     evidence = {
         "entries": entries,
-        "stat_fail": stat_fail,
-        "readlink_fail": readlink_fail,
-        "fdinfo": fdinfo_missing,
-        "ghost_observed": ghost,
-        "ghost_passes": ghost_passes,
-        "inventory_errors": inv.errors,
+        "listdir_path_stat_fail": stat_fail,
+        "listdir_path_readlink_fail": readlink_fail,
+        "listdir_path_fdinfo": fdinfo_missing,
+        "listdir_path_ghost_observed": ghost,
+        "listdir_path_ghost_passes": ghost_passes,
+        "listdir_dirfd_ghost": dirfd_ghosts,
+        "scandir_inline_enum_mode": inv.enum_mode,
+        "scandir_inline_complete": inv.complete,
+        "scandir_inline_errors": inv.errors,
     }
-    reproducible = bool(ghost) or bool(unknown_errs)
-    # Veredicto: UNKNOWN para la causa root; no presentar hipótesis como hecho.
-    verdict = "UNKNOWN" if reproducible else "UNKNOWN"
-    record("R2-C8", "R2-C", "Origen del descriptor fantasma fd 3 (diagnóstico)",
-           "entorno real: /proc/self/fd del sandbox (Python 3.11.2, kernel "
-           "6.1.158+, euid 1001), 3 iteraciones de diagnóstico + inventario "
-           "del mismo proceso.",
-           "Recopilar evidencia: entradas listadas, fallos de stat/readlink, "
-           "presencia de fdinfo, variabilidad del número del fantasma entre "
-           "pasadas y clasificación del error de inspección en el inventario.",
+    if inv.errors and inv.complete:
+        verdict = "FAIL"
+    elif listdir_repro and dirfd_listdir_repro and caso_a_ok:
+        verdict = "PASS"
+    else:
+        verdict = "UNKNOWN"
+    record("R2-C8", "R2-C",
+           "Origen del descriptor fantasma y eliminación Caso A (R6-R2/R6-R3)",
+           "entorno real: /proc/self/fd; comparadores os.listdir(path) (3x) y "
+           "os.listdir(dirfd) (1x) frente a fds_with_identity() corregido con "
+           "os.scandir(dirfd) en línea.",
+           "Verificar (1) reproducción determinista de la entrada transitoria "
+           "ENOENT en os.listdir(path) y os.listdir(dirfd); (2) Caso A en "
+           "fds_with_identity() (enum_mode='dirfd', complete=True, errors=[]) "
+           "sin ignorar ENOENT ni filtrar descriptores.",
            f"evidencia={json.dumps(evidence, ensure_ascii=False)}; "
-           f"clasificacion={cls}",
-           "HECHOS OBSERVADOS: exactamente una entrada de /proc/self/fd no "
-           "es stat-able (ENOENT) y carece de fdinfo -> no es un descriptor "
-           "real abierto de este proceso ni el descriptor transitorio de la "
-           "propia enumeración (ese es identificable y real, R2-C9). Su "
-           "número VARIABLE entre pasadas (observado 3, 5 y 6) y su "
-           "desaparecer cuando el número lo ocupa un descriptor real abierto "
-           "indican que el fantasma ocupa un hueco del listado. Clasificación "
-           "conservadora (R3-D): ENOENT+fdinfo ausente NO se atribuye "
-           "automáticamente a procfs -> UNKNOWN_CAUSE; no se inventa causa "
-           "root. CAUSA ROOT: UNKNOWN (no "
-           "determinada con certeza; hipótesis documentada, no afirmada).",
+           f"listdir_repro={listdir_repro}; "
+           f"dirfd_listdir_repro={dirfd_listdir_repro}; "
+           f"caso_a_ok={caso_a_ok}",
+           "HECHO DEMOSTRADO (R6-R2/R6-R3): el antiguo 'fd 3/5/6/9/10' no "
+           "era un fallo de procfs sino el descriptor interno (opendir o "
+           "dup_fd=F_DUPFD_CLOEXEC) creado por os.listdir(), leído por "
+           "readdir() y cerrado con closedir() ANTES de retornar la lista. "
+           "Con os.scandir(dirfd) + inspección en línea antes de agotar el "
+           "iterador, dup_fd sigue vivo durante os.stat(name, dir_fd=dirfd) "
+           "y Caso A queda resuelto (complete=True, errors=[]) conservando "
+           "detección de desapariciones reales (ver R2-C2 Caso B).",
            verdict)
 
 
@@ -1621,9 +1843,10 @@ def test_r2c_persistent_dirfd():
            f"enum_dirfd={inv.enum_dirfd}",
            "R2-A: la enumeración por descriptor mantenido hace explícito y "
            "estable el descriptor propio de la enumeración, diferenciando "
-           "desaherencias externas. SE DEMUESTRA por esta prueba; NO se "
-           "asume que elimine el artefacto fd 3 (ver R2-C8: es un artefacto "
-           "de listado de procfs, no un descriptor real).",
+           "desapariciones externas. SE DEMUESTRA por esta prueba; el "
+           "origen del antiguo artefacto fd 3 era el cierre prematuro de "
+           "os.listdir(), resuelto en R6-R3 mediante os.scandir(dirfd) en "
+           "línea (ver R2-C8).",
            verdict)
     shutil.rmtree(d, ignore_errors=True)
 
@@ -1710,20 +1933,22 @@ def test_r2c10_real_scenarios_propagation():
 
 
 def test_r2c11_listdir_fail_closes_dirfd():
-    """R2-C11 / R4-A: fallo de os.listdir(dirfd) tras apertura OK -> cierre.
+    """R2-C11 / R4-A: fallo de enumeración (os.scandir(dirfd)) tras apertura -> cierre.
 
     Se provoca el fallo de la enumeración TRAS una apertura exitosa y se
     verifica que: (1) la excepción no se propaga a fuera; (2) el
     descriptor abierto por os.open() se CIERRA realmente (no hay fuga);
     (3) el inventario se declara INCOMPLETO (no acreditable); (4) si el
-    cierre mismo falla, el fallo se registra (no se oculta).
+    cierre mismo falla, el fallo se registra (no se oculta). Se prueba
+    tanto fallo al abrir `os.scandir(dirfd)` como fallo a mitad de
+    iteración (`next(it)`).
     """
     import unittest.mock as _m
     d = tempfile.mkdtemp(prefix="feas_r2c_")
     f5 = os.path.join(d, "5")
     open(f5, "w").close()
     st = os.stat(f5)
-    real_open, real_listdir = os.open, os.listdir
+    real_open, real_scandir, real_close = os.open, os.scandir, os.close
     opened_fds = []
 
     def spy_open(path, *a, **k):
@@ -1731,15 +1956,41 @@ def test_r2c11_listdir_fail_closes_dirfd():
         opened_fds.append(fd)
         return fd
 
-    def listdir_raise_on_fd(path="."):
+    def scandir_raise_on_fd(path="."):
         if isinstance(path, int):          # enumeración por descriptor
-            raise OSError(errno.EIO, "listdir(dirfd) fallo forzado")
-        return real_listdir(path)
+            raise OSError(errno.EIO, "scandir(dirfd) fallo forzado")
+        return real_scandir(path)
 
-    # (1)-(3): cierre normal tras fallo de enumeración.
+    def scandir_mid_iter_raise_on_fd(path="."):
+        it = real_scandir(path)
+        if not isinstance(path, int):
+            return it
+
+        class _MidFailScan:
+            def __enter__(self):
+                it.__enter__()
+                return self
+
+            def __exit__(self, *args):
+                return it.__exit__(*args)
+
+            def __iter__(self):
+                for entry in it:
+                    yield entry
+                    raise OSError(errno.EIO, "scandir(dirfd) mid-iter fallo")
+
+        return _MidFailScan()
+
+    # (1)-(3a): cierre normal tras fallo al abrir os.scandir(dirfd).
     with _m.patch.object(os, "open", spy_open), \
-            _m.patch.object(os, "listdir", new=listdir_raise_on_fd):
+            _m.patch.object(os, "scandir", new=scandir_raise_on_fd):
         inv = fds_with_identity(st, fd_dir=d)
+
+    # (1)-(3b): cierre normal tras fallo a mitad de iteración de ScandirIterator.
+    with _m.patch.object(os, "open", spy_open), \
+            _m.patch.object(os, "scandir", new=scandir_mid_iter_raise_on_fd):
+        inv_mid = fds_with_identity(st, fd_dir=d)
+
     leaked = []
     for fd in opened_fds:
         try:
@@ -1750,10 +2001,12 @@ def test_r2c11_listdir_fail_closes_dirfd():
     p_close = (not inv.complete
                and inv.errors
                and inv.errors[0].get("phase") == "enumeracion"
+               and not inv_mid.complete
+               and inv_mid.errors
+               and inv_mid.errors[0].get("phase") == "enumeracion"
                and not leaked)
 
     # (4): fallo de CIERRE registrado (no oculto).
-    real_close = os.close
     close_failed_for = set()
 
     def close_fail_once(fd):
@@ -1763,30 +2016,39 @@ def test_r2c11_listdir_fail_closes_dirfd():
         return real_close(fd)
 
     note_ok = False
-    with _m.patch.object(os, "open", spy_open), \
-            _m.patch.object(os, "listdir", new=listdir_raise_on_fd), \
-            _m.patch.object(os, "close", new=close_fail_once):
-        inv2 = fds_with_identity(st, fd_dir=d)
-    if inv2.errors:
-        note = inv2.errors[0].get("note") or ""
-        note_ok = "cierre fallido" in note
+    try:
+        with _m.patch.object(os, "open", spy_open), \
+                _m.patch.object(os, "scandir", new=scandir_raise_on_fd), \
+                _m.patch.object(os, "close", new=close_fail_once):
+            inv2 = fds_with_identity(st, fd_dir=d)
+        if inv2.errors:
+            note = inv2.errors[0].get("note") or ""
+            note_ok = "cierre fallido" in note
+    finally:
+        # Limpiar cualquier descriptor retenido únicamente por el fallo
+        # simulado de close() para no contaminar pruebas posteriores.
+        for fd in list(close_failed_for):
+            try:
+                real_close(fd)
+            except OSError:
+                pass
 
     ok = p_close and note_ok
     verdict = "PASS" if ok else "FAIL"
     record("R2-C11", "R2-C",
            "Cierre de dirfd ante error de enumeración (R4-A)",
-           "os.open() OK; os.listdir(dirfd) lanzado a OSError(EIO); "
-           "segunda pasada con os.close forzado a fallar.",
+           "os.open() OK; os.scandir(dirfd) lanzado a OSError(EIO) al abrir "
+           "y a mitad de iteración; tercera pasada con os.close forzado a fallar.",
            "Verificar que no hay fuga de descriptor (el dirfd abierto se "
            "cierra tras el fallo de enumeración), que el inventario es "
            "INCOMPLETO y que un fallo de cierre se registra (no se oculta).",
            f"dirfds_abiertos={opened_fds}; descriptores_sin_cerrar="
-           f"{leaked}; complete={inv.complete}; errors={inv.errors}; "
-           f"nota_cierre_registrada={note_ok}",
-           "R4-A: si la apertura OK y la enumeración falla, el descriptor "
-           "se cierra antes de propagar; no queda descriptor abierto fuera "
-           "de la propiedad del llamante; los fallos de cierre se "
-           "registran y el inventario no se declara acreditado.",
+           f"{leaked}; complete={inv.complete}; mid_complete={inv_mid.complete}; "
+           f"errors={inv.errors}; nota_cierre_registrada={note_ok}",
+           "R4-A: si la apertura OK y la enumeración (apertura o iteración de "
+           "os.scandir(dirfd)) falla, el descriptor se cierra antes de retornar; "
+           "no queda descriptor abierto fuera de la propiedad del llamante; los "
+           "fallos de cierre se registran y el inventario no se declara acreditado.",
            verdict)
     shutil.rmtree(d, ignore_errors=True)
 
@@ -1879,20 +2141,81 @@ def test_r2c12_anchored_vs_path_and_close():
     shutil.rmtree(d, ignore_errors=True)
 
 
-def test_r2c13_final_close_failure():
-    """R2-C13 / R5-B: registro del fallo de cierre FINAL de dirfd.
+def adjudicate_r2c13_verdict(core_ok, contrast_all_complete,
+                             con_produced, con_counts, con_global,
+                             expected_ids):
+    """Adjudicación local estricta de R2-C13 bajo FAIL > UNKNOWN > PASS.
 
-    Se forza un error de os.close(dirfd) en el finally DEPOIS de una
-    enumeración e inspección correctas. Se verifican independientemente:
-    (1) la inspección se ejecutó en modo dirfd; (2) el cierre fue
-    intentado; (3) el error quedó registrado con su contexto (phase=
-    "cierre", descriptor, tipo, errno); (4) el inventario resultó
-    incompleto; (5) el controlador dependiente asignó UNKNOWN;
-    (6) no se declara PASS ni cierre efectivo cuando el descriptor no
-    pudo acreditarse como cerrado. Se distingue de R2-C11 (fallo de
-    listdir(dirfd), fase=enumeracion, sin inspección ejecutada).
+    Utiliza los resultados reales del controlador del contraste real A/B/C
+    (`con_counts`, `con_global`, `con_produced`) y la completitud de sus
+    adquisiciones (`contrast_all_complete`):
+      1. Si falla la validación central (`not core_ok`) -> FAIL.
+      2. Si el controlador del contraste real devuelve FAIL (`con_global ==
+         "FAIL"`, `con_counts.get("FAIL", 0) > 0`, o algún escenario en
+         `con_produced` con `verdict == "FAIL"` o excepción), incluso si
+         coexiste con adquisiciones incompletas o UNKNOWN -> FAIL.
+      3. Si no existe FAIL, pero el contraste es incompleto
+         (`not contrast_all_complete`), falta algún escenario esperado o
+         el controlador devuelve UNKNOWN -> UNKNOWN.
+      4. Solo devuelve PASS si `core_ok`, `contrast_all_complete`, todos
+         los `expected_ids` presentes y `con_global == "PASS"` con
+         `con_counts == {"PASS": len(expected_ids), "FAIL": 0, "UNKNOWN": 0}`.
+    """
+    has_contrast_fail = (
+        con_global == "FAIL"
+        or con_counts.get("FAIL", 0) > 0
+        or any(r.get("verdict") == "FAIL" or r.get("exception") is not None
+               for r in con_produced)
+    )
+    if not core_ok or has_contrast_fail:
+        return "FAIL"
+
+    expected_n = len(expected_ids)
+    all_expected_pass = (
+        [r.get("id") for r in con_produced] == list(expected_ids)
+        and con_counts == {"PASS": expected_n, "FAIL": 0, "UNKNOWN": 0}
+        and con_global == "PASS"
+        and all(r.get("verdict") == "PASS" and r.get("exception") is None
+                for r in con_produced)
+    )
+    if (not contrast_all_complete) or (not all_expected_pass):
+        return "UNKNOWN"
+
+    return "PASS"
+
+
+def test_r2c13_final_close_failure():
+    """R2-C13 / R5-B + rectificación R6: fallo de cierre FINAL de dirfd
+    propagado por escenarios reales A/B/C y controlador real.
+
+    Elimina el cálculo manual de P5 (`v_contr = "UNKNOWN" if not
+    inv.complete else "PASS"`):
+    - Etapa 1 (fd_dir sintético): verifica P1 (modo dirfd), P2 (cierre
+      intentado), P3 (error phase="cierre", errno=EBADF, contexto), P4
+      (complete=False con contraste limpio inv_clean.complete=True en d),
+      P6 (nota "no se afirma que quedó cerrado") y P7 (distinto de R2-C11).
+    - Etapa 2 (flujo real A/B/C + controlador real `run_controller`):
+      inyecta fallo real de os.close(dirfd) dentro de fds_with_identity()
+      mientras se ejecutan los 7 escenarios reales A, B y C que consumen
+      fds_with_identity() (test_a1, test_b1, test_b2, test_b5, test_c_a,
+      test_c_b, test_c_c). Un espía transparente preserva y registra la
+      identidad exacta del objeto FdInventory devuelto (`id(inv)`) sin
+      sustituirlo ni fabricarlo. Verifica: complete=False, error
+      phase="cierre" en cada objeto, 7/7 escenarios -> UNKNOWN (nunca PASS
+      ni FAIL artificial) y controlador real -> global_verdict=UNKNOWN.
+    - Etapa 3 (contraste real A/B/C sin fallo de os.close): ejecuta los
+      mismos 7 escenarios reales sin inyección de fallo en os.close(dirfd).
+      Si el entorno ya hace incompleto `/proc/self/fd` en contraste (p.ej.
+      fantasma R2-C8 en sandbox), no se puede aislar el fallo de cierre
+      como causa única con contraste PASS sin alterar su semántica ->
+      veredicto conservador UNKNOWN (FAIL si falla P1..P4, P5, P6, P7 o
+      el contraste en fd_dir sintético; PASS solo si también el contraste
+      real A/B/C en /proc/self/fd produce complete=True y PASS).
     """
     import unittest.mock as _m
+    this_module = sys.modules[__name__]
+
+    # --- Etapa 1: inyección aislada en fd_dir sintético + contraste ------
     d = tempfile.mkdtemp(prefix="feas_r2c_")
     f5 = os.path.join(d, "5")
     open(f5, "w").close()
@@ -1901,12 +2224,12 @@ def test_r2c13_final_close_failure():
     opened_fds, stat_calls = [], []
     dirfd_target, closed_attempted = None, []
 
-    def spy_open(path, *a, **k):
+    def spy_open_d(path, *a, **k):
         fd = real_open(path, *a, **k)
         opened_fds.append(fd)
         return fd
 
-    def spy_stat(path, *a, **k):
+    def spy_stat_d(path, *a, **k):
         stat_calls.append((path, k.get("dir_fd", None)))
         return real_stat(path, *a, **k)
 
@@ -1921,69 +2244,346 @@ def test_r2c13_final_close_failure():
 
     inv = None
     try:
-        with _m.patch.object(os, "open", spy_open), \
-                _m.patch.object(os, "stat", spy_stat), \
+        with _m.patch.object(os, "open", spy_open_d), \
+                _m.patch.object(os, "stat", spy_stat_d), \
                 _m.patch.object(os, "close", close_fail_target):
             inv = fds_with_identity(st, fd_dir=d)
     finally:
-        # Limpieza: el descriptor quedó abierto (el cierre fue forzado a
-        # fallar); cerrarlo con el close real para no fugar fds.
         if dirfd_target is not None:
             try:
                 real_close(dirfd_target)
             except OSError:
                 pass
 
+    inv_clean = fds_with_identity(st, fd_dir=d)
+    clean_d_contrast_ok = (inv_clean.complete and not inv_clean.errors
+                           and inv_clean.matched == [5]
+                           and inv_clean.enum_mode == "dirfd")
+
     # (1) inspección en modo dirfd
-    p1 = (inv.enum_mode == "dirfd" and dirfd_target is not None
+    p1 = (inv is not None and inv.enum_mode == "dirfd"
+          and dirfd_target is not None
           and any(c[1] == dirfd_target for c in stat_calls))
     # (2) cierre intentado
     p2 = bool(closed_attempted)
     # (3) error registrado con contexto
-    close_errs = [e for e in inv.errors if e.get("phase") == "cierre"]
+    close_errs = ([e for e in inv.errors if e.get("phase") == "cierre"]
+                  if inv else [])
     p3 = (len(close_errs) == 1
           and close_errs[0].get("errno") == errno.EBADF
           and close_errs[0].get("exception_type") == "OSError"
           and close_errs[0].get("context", {}).get("entry")
           == dirfd_target
           and close_errs[0].get("name") == dirfd_target)
-    # (4) inventario incompleto
-    p4 = not inv.complete
-    # (5) controlador dependiente -> UNKNOWN (nunca PASS)
-    v_contr = "UNKNOWN" if not inv.complete else "PASS"
-    p5 = v_contr == "UNKNOWN"
-    # (6) no PASS ni cierre efectivo afirmado
-    note = (close_errs[0].get("note") or "") if close_errs else ""
-    p6 = (v_contr != "PASS" and "no se afirma que quedó cerrado" in note)
-    # diferenciación con R2-C11: inspección ejecutADA (matched populado)
-    # y fallo de fase "cierre", no de enumeración.
-    p7 = (inv.matched == [5]
+    # (4) inventario incompleto (vs contraste limpio en d)
+    p4 = (inv is not None and not inv.complete and clean_d_contrast_ok)
+    # (7) diferenciación con R2-C11: inspección ejecutada (matched=[5])
+    # y fallo en fase "cierre", sin error en fase "enumeracion".
+    p7 = (inv is not None and inv.matched == [5]
           and not any(e.get("phase") == "enumeracion" for e in inv.errors))
+    note_d = (close_errs[0].get("note") or "") if close_errs else ""
 
-    ok = all([p1, p2, p3, p4, p5, p6, p7])
-    verdict = "PASS" if ok else "FAIL"
+    # --- Etapa 2: inyección real dentro de A/B/C + controlador real ------
+    abc_scenarios = [test_a1, test_b1, test_b2, test_b5,
+                     test_c_a, test_c_b, test_c_c]
+    real_fds_fn = fds_with_identity
+    in_fds_acq = 0
+    tracked_dirfds = set()
+    close_pending_fail = set()
+    injected_close_events = []
+    inj_calls = []
+    inj_refs = []  # mantiene vivos los FdInventory para verificar id() único
+
+    def spy_open_abc(path, *a, **k):
+        fd = real_open(path, *a, **k)
+        if in_fds_acq > 0:
+            tracked_dirfds.add(fd)
+            close_pending_fail.add(fd)
+        return fd
+
+    def inject_close_abc(fd):
+        if fd in close_pending_fail:
+            close_pending_fail.discard(fd)
+            injected_close_events.append(fd)
+            raise OSError(errno.EBADF,
+                          "cierre final forzado fallido en A/B/C")
+        return real_close(fd)
+
+    def spy_fds_inj(st_arg, fd_dir="/proc/self/fd"):
+        nonlocal in_fds_acq
+        caller = sys._getframe(1).f_code.co_name
+        before_tracked = set(tracked_dirfds)
+        in_fds_acq += 1
+        try:
+            inv_real = real_fds_fn(st_arg, fd_dir=fd_dir)
+        finally:
+            in_fds_acq -= 1
+            new_fds = tracked_dirfds - before_tracked
+            for fd in sorted(new_fds):
+                close_pending_fail.discard(fd)
+                tracked_dirfds.discard(fd)
+                try:
+                    real_close(fd)
+                except OSError:
+                    pass
+        inj_refs.append(inv_real)
+        c_errs = [e for e in inv_real.errors if e.get("phase") == "cierre"]
+        inj_calls.append({
+            "caller": caller,
+            "obj_id": id(inv_real),
+            "fd_dir": fd_dir,
+            "enum_mode": inv_real.enum_mode,
+            "enum_dirfd": inv_real.enum_dirfd,
+            "complete": inv_real.complete,
+            "matched": list(inv_real.matched),
+            "error_phases": [e.get("phase") for e in inv_real.errors],
+            "error_errnos": [e.get("errno") for e in inv_real.errors],
+            "close_errors": c_errs,
+        })
+        return inv_real
+
+    with _m.patch.object(os, "open", spy_open_abc), \
+            _m.patch.object(os, "close", inject_close_abc), \
+            _m.patch.object(this_module, "fds_with_identity", spy_fds_inj):
+        inj_produced, inj_counts, inj_global = run_controller(
+            abc_scenarios, collect_isolated=True)
+
+    expected_ids = ["R2-A1", "R2-B1", "R2-B2", "R2-B5",
+                    "R2-C-A", "R2-C-B", "R2-C-C"]
+    expected_call_count = 13  # 2 por A1/B1/B5/C-A/C-B/C-C + 1 por B2
+    all_calls_injected = (
+        len(inj_calls) == expected_call_count
+        and len({c["obj_id"] for c in inj_calls}) == expected_call_count
+        and len(injected_close_events) == expected_call_count
+        and all(
+            c["enum_mode"] == "dirfd"
+            and (not c["complete"])
+            and len(c["close_errors"]) == 1
+            and c["close_errors"][0].get("errno") == errno.EBADF
+            and c["close_errors"][0].get("exception_type") == "OSError"
+            and c["close_errors"][0].get("context", {}).get("entry")
+            == c["enum_dirfd"]
+            and c["close_errors"][0].get("name") == c["enum_dirfd"]
+            and "no se afirma que quedó cerrado"
+            in (c["close_errors"][0].get("note") or "")
+            for c in inj_calls
+        )
+    )
+    abc_all_unknown = (
+        [r["id"] for r in inj_produced] == expected_ids
+        and all(r["verdict"] == "UNKNOWN" and r["exception"] is None
+                for r in inj_produced)
+        and inj_counts == {"PASS": 0, "FAIL": 0, "UNKNOWN": 7}
+        and inj_global == "UNKNOWN"
+    )
+    # (5) P5 real (sin cálculo manual): el controlador real + los 7
+    # escenarios reales A/B/C reciben el mismo FdInventory afectado y
+    # devuelven UNKNOWN sin PASS ni FAIL artificial.
+    p5_real = all_calls_injected and abc_all_unknown
+    # (6) no PASS ni cierre efectivo afirmado (en d ni en A/B/C)
+    p6 = (inj_counts["PASS"] == 0 and inj_global != "PASS"
+          and "no se afirma que quedó cerrado" in note_d
+          and all_calls_injected)
+
+    # --- Etapa 3: contraste real sobre A/B/C sin fallo de os.close -------
+    contrast_calls = []
+    contrast_refs = []
+
+    def spy_fds_contrast(st_arg, fd_dir="/proc/self/fd"):
+        caller = sys._getframe(1).f_code.co_name
+        inv_real = real_fds_fn(st_arg, fd_dir=fd_dir)
+        contrast_refs.append(inv_real)
+        contrast_calls.append({
+            "caller": caller,
+            "obj_id": id(inv_real),
+            "enum_mode": inv_real.enum_mode,
+            "complete": inv_real.complete,
+            "error_phases": [e.get("phase") for e in inv_real.errors],
+            "error_errnos": [e.get("errno") for e in inv_real.errors],
+        })
+        return inv_real
+
+    with _m.patch.object(this_module, "fds_with_identity", spy_fds_contrast):
+        con_produced, con_counts, con_global = run_controller(
+            abc_scenarios, collect_isolated=True)
+
+    contrast_all_complete = (
+        len(contrast_calls) == expected_call_count
+        and all(c["complete"] for c in contrast_calls)
+    )
+
+    core_ok = all([p1, p2, p3, p4, p5_real, p6, p7, clean_d_contrast_ok])
+    # Adjudicación local estricta bajo precedencia FAIL > UNKNOWN > PASS
+    # usando los resultados reales del controlador del contraste
+    # (`con_counts` y `con_global`): un FAIL en el contraste prevalece
+    # sobre cualquier UNKNOWN o adquisición incompleta.
+    verdict = adjudicate_r2c13_verdict(
+        core_ok, contrast_all_complete,
+        con_produced, con_counts, con_global, expected_ids,
+    )
+
+    abc_summary = {r["id"]: r["verdict"] for r in inj_produced}
+    con_summary = {r["id"]: r["verdict"] for r in con_produced}
+    inv_ids_sample = [(c["caller"], c["obj_id"], c["enum_dirfd"],
+                       c["error_phases"], c["error_errnos"])
+                      for c in inj_calls]
+    con_sample = [(c["caller"], c["complete"], c["error_phases"],
+                   c["error_errnos"]) for c in contrast_calls]
+
+    if verdict == "PASS":
+        conclusion_txt = (
+            "R5-A/R5-B/R6/R6-R3: inyección real de os.close(dirfd) dentro de "
+            "fds_with_identity() y propagación comprobada sin sustitución "
+            "a los 7 escenarios reales A/B/C y al controlador real "
+            "(global=UNKNOWN, 0 PASS, 0 FAIL, phase='cierre' como causa única). "
+            "En Etapa 3, el contraste real A/B/C sobre /proc/self/fd sin fallo "
+            "de close() logra inventario completo (13/13 complete=True) y "
+            "7/7 PASS tras la corrección R6-R3 (os.scandir(dirfd) en línea), "
+            "aislando causalmente el fallo de cierre final -> PASS.")
+    else:
+        conclusion_txt = (
+            "R5-A/R5-B/R6: inyección real de os.close(dirfd) dentro de "
+            "fds_with_identity() y propagación comprobada sin sustitución "
+            "a los 7 escenarios reales A/B/C y al controlador real "
+            "(global=UNKNOWN, 0 PASS, 0 FAIL). Contraste real A/B/C en este "
+            "entorno incompleto o con fallo/UNKNOWN -> adjudicación estricta "
+            "FAIL > UNKNOWN > PASS.")
+
     record("R2-C13", "R2-C",
-           "Registro del fallo de cierre final de dirfd (R5-B)",
-           "dir sintético con entrada '5'; os.close forzado a fallar con "
-           "OSError(EBADF) en el finally, tras enumeración e inspección "
-           "correctas.",
-           "Verificar: (1) inspección en modo dirfd; (2) cierre intentado; "
-           "(3) error registrado con contexto; (4) inventario incompleto; "
-           "(5) controlador dependiente -> UNKNOWN; (6) no PASS ni cierre "
-           "efectivo afirmado. Diferencia del fallo de listdir(dirfd) de "
-           "R2-C11.",
-           f"P1_modo_dirfd={p1}; P2_cierre_intentando={p2}; "
-           f"P3_error_registrado={p3}; P4_incompleto={p4}; "
-           f"P5_controlador_UNKNOWN={p5} (verdict={v_contr}); "
-           f"P6_no_PASS_ni_cierre_afirmado={p6}; "
-           f"P7_distinto_de_R2-C11={p7}; errors={inv.errors}; "
-           f"matched={inv.matched}",
-           "R5-A/R5-B: un fallo de cierre final se registra (no se descarta "
-           "silenciosamente), el inventario queda incompleto y ningún "
-           "escenario dependiente lo convierte en PASS; no se afirma que "
-           "el descriptor quedó cerrado cuando el cierre falló.",
+           "Propagación real del fallo de cierre final de dirfd en A/B/C "
+           "y controlador (R5-B/R6)",
+           "Etapa 1: dir sintético con entrada '5' y contraste limpio. "
+           "Etapa 2: los 7 escenarios reales A/B/C (test_a1, test_b1, "
+           "test_b2, test_b5, test_c_a, test_c_b, test_c_c) con fallo real "
+           "inyectado de os.close(dirfd) en fds_with_identity() ejecutados "
+           "vía run_controller(). Etapa 3: contraste real A/B/C sin fallo "
+           "de os.close(dirfd).",
+           "Eliminar el cálculo manual de P5; verificar: (1) modo dirfd; "
+           "(2) cierre intentado; (3) error phase='cierre' con contexto; "
+           "(4) inventario complete=False vs contraste limpio en d; "
+           "(5) propagación del mismo objeto FdInventory (id único) a los "
+           "7 escenarios reales A/B/C y run_controller() -> UNKNOWN sin PASS "
+           "ni FAIL artificial; (6) no PASS ni cierre efectivo afirmado; "
+           "(7) diferenciación de R2-C11; y contraste real A/B/C en /proc.",
+           f"P1_modo_dirfd={p1}; P2_cierre_intentado={p2}; "
+           f"P3_error_registrado={p3}; P4_incompleto_y_contraste_d={p4}; "
+           f"P5_propagacion_real_ABC={p5_real} (calls={len(inj_calls)}, "
+           f"unique_ids={len({c['obj_id'] for c in inj_calls})}, "
+           f"close_injections={len(injected_close_events)}, "
+           f"verdictos_ABC={abc_summary}, counts={inj_counts}, "
+           f"global={inj_global}); P6_no_PASS_ni_cierre_afirmado={p6}; "
+           f"P7_distinto_de_R2-C11={p7}; "
+           f"Etapa3_contraste_real_ABC={{'all_complete': "
+           f"{contrast_all_complete}, 'counts': {con_counts}, "
+           f"'global': '{con_global}', 'verdictos': {con_summary}, "
+           f"'calls': {con_sample}}}; "
+           f"traza_inyeccion_ABC={inv_ids_sample}; "
+           f"errors_d={inv.errors if inv else None}; "
+           f"matched_d={inv.matched if inv else None}",
+           conclusion_txt,
            verdict)
     shutil.rmtree(d, ignore_errors=True)
+
+
+def test_r2c14_r2c13_precedence_regression():
+    """R2-C14 / R6-R1: regresión reproducible de adjudicación local de R2-C13.
+
+    Ejercita la función real `adjudicate_r2c13_verdict()` utilizada por
+    `R2-C13` alimentada por ejecuciones reales de `run_controller()` (sin
+    copia independiente ni cálculo manual de veredictos) sobre la matriz
+    mínima exigida y variantes concomitantes:
+      1) core_ok=False | contraste PASS completo -> FAIL
+      2) core_ok=True  | contraste FAIL completo -> FAIL
+      3) core_ok=True  | contraste FAIL + UNKNOWN + incompleto -> FAIL
+      4) core_ok=True  | contraste FAIL por excepción + incompleto -> FAIL
+      5) core_ok=True  | contraste UNKNOWN completo -> UNKNOWN
+      6) core_ok=True  | contraste UNKNOWN incompleto -> UNKNOWN
+      7) core_ok=True  | contraste PASS incompleto -> UNKNOWN
+      8) core_ok=True  | contraste PASS completo -> PASS
+    """
+    expected_ids = ["R2-A1", "R2-B1", "R2-B2", "R2-B5",
+                    "R2-C-A", "R2-C-B", "R2-C-C"]
+
+    def _make_contrast_scenarios(verdict_map, raise_id=None):
+        fns = []
+        for sid in expected_ids:
+            v = verdict_map[sid]
+
+            def _fn(sid=sid, v=v, raise_id=raise_id):
+                if sid == raise_id:
+                    raise RuntimeError(f"fallo forzado en contraste {sid}")
+                record(sid, "R6-R1-CTRL", f"contraste {sid}={v}",
+                       "-", "-", f"verdict={v}", "regresión R6-R1", v)
+
+            _fn.__name__ = f"ctrl_stub_{sid}"
+            fns.append(_fn)
+        return fns
+
+    all_pass_map = {sid: "PASS" for sid in expected_ids}
+    one_fail_map = dict(all_pass_map, **{"R2-B5": "FAIL"})
+    fail_with_unk_map = {sid: "UNKNOWN" for sid in expected_ids}
+    fail_with_unk_map["R2-A1"] = "PASS"
+    fail_with_unk_map["R2-B5"] = "FAIL"
+    one_unk_map = dict(all_pass_map, **{"R2-A1": "UNKNOWN"})
+    all_unk_map = {sid: "UNKNOWN" for sid in expected_ids}
+
+    matrix = [
+        ("C1_core_FAIL_contraste_PASS",
+         False, True, all_pass_map, None, "FAIL"),
+        ("C2_core_PASS_contraste_FAIL",
+         True, True, one_fail_map, None, "FAIL"),
+        ("C3_core_PASS_contraste_FAIL_incompleto_y_UNKNOWN",
+         True, False, fail_with_unk_map, None, "FAIL"),
+        ("C4_core_PASS_contraste_FAIL_excepcion_e_incompleto",
+         True, False, all_pass_map, "R2-C-B", "FAIL"),
+        ("C5_core_PASS_contraste_UNKNOWN_completo",
+         True, True, one_unk_map, None, "UNKNOWN"),
+        ("C6_core_PASS_contraste_UNKNOWN_incompleto",
+         True, False, all_unk_map, None, "UNKNOWN"),
+        ("C7_core_PASS_contraste_PASS_incompleto",
+         True, False, all_pass_map, None, "UNKNOWN"),
+        ("C8_core_PASS_contraste_PASS_completo",
+         True, True, all_pass_map, None, "PASS"),
+    ]
+
+    case_results = []
+    all_ok = True
+    for name, core_ok, complete, vmap, raise_id, expected in matrix:
+        scenarios = _make_contrast_scenarios(vmap, raise_id=raise_id)
+        produced, counts, c_global = run_controller(
+            scenarios, collect_isolated=True)
+        got = adjudicate_r2c13_verdict(
+            core_ok, complete, produced, counts, c_global, expected_ids)
+        ok = (got == expected)
+        if not ok:
+            all_ok = False
+        case_results.append({
+            "case": name,
+            "core_ok": core_ok,
+            "contrast_all_complete": complete,
+            "con_counts": counts,
+            "con_global": c_global,
+            "expected": expected,
+            "got": got,
+            "ok": ok,
+        })
+
+    verdict = "PASS" if all_ok else "FAIL"
+    record("R2-C14", "R2-C",
+           "Regresión de precedencia local FAIL > UNKNOWN > PASS de R2-C13 "
+           "(R6-R1)",
+           "Invoca run_controller() + adjudicate_r2c13_verdict() (función "
+           "real de adjudicación de R2-C13) sobre 8 combinaciones de "
+           "core_ok, contrast_all_complete, con_counts y con_global.",
+           "Demostrar FAIL|PASS->FAIL, PASS|FAIL->FAIL (completo e "
+           "incompleto+UNKNOWN y excepción), PASS|UNKNOWN->UNKNOWN, "
+           "PASS|PASS incompleto->UNKNOWN y PASS|PASS completo->PASS.",
+           f"all_ok={all_ok}; cases={case_results}",
+           "R6-R1: adjudicate_r2c13_verdict() respeta estrictamente "
+           "FAIL > UNKNOWN > PASS usando los resultados reales del "
+           "controlador (`con_counts` y `con_global`), sin ignorar FAIL por "
+           "incompletitud ni requerir copia separada de la regla.",
+           verdict)
 
 
 # ---------------------------------------------------------------- R1-A (controladas)
@@ -2145,7 +2745,44 @@ def test_r1b_incomplete():
     shutil.rmtree(d, ignore_errors=True)
 
 
-# ---------------------------------------------------------------- main
+# ---------------------------------------------------------------- controller & main
+def aggregate_verdicts(records):
+    """Calcula conteos y veredicto global con precedencia FAIL > UNKNOWN > PASS."""
+    counts = {"PASS": 0, "FAIL": 0, "UNKNOWN": 0}
+    for r in records:
+        counts[r["verdict"]] += 1
+    if counts["FAIL"]:
+        global_verdict = "FAIL"
+    elif counts["UNKNOWN"]:
+        global_verdict = "UNKNOWN"
+    else:
+        global_verdict = "PASS"
+    return counts, global_verdict
+
+
+def run_controller(tests, collect_isolated=False):
+    """Controlador real del arnés: ejecuta escenarios, captura excepciones
+    como FAIL y agrega resultados bajo FAIL > UNKNOWN > PASS.
+    """
+    start = len(RESULTS)
+    try:
+        for t in tests:
+            try:
+                t()
+            except Exception:
+                import traceback
+                record(t.__name__, "?",
+                       f"excepción no controlada en {t.__name__}",
+                       "-", "-", traceback.format_exc(limit=3).strip(),
+                       "traceback en evidencia", "FAIL")
+        produced = list(RESULTS[start:])
+        counts, global_verdict = aggregate_verdicts(produced)
+        return produced, counts, global_verdict
+    finally:
+        if collect_isolated:
+            del RESULTS[start:]
+
+
 def main():
     global WORKDIR
     WORKDIR = tempfile.mkdtemp(prefix="feas_d18_r2_")
@@ -2162,16 +2799,19 @@ def main():
     print(f"Entorno: Python {env['python']} | NumPy {env['numpy']} | "
           f"{env['kernel']} | euid {env['euid']}")
     print(f"Workdir aislado: {WORKDIR}\n")
-    print("CORRECCIONES METODOLÓGICAS R1 + R2 + R3 + R4 + R5 activas: "
+    print("CORRECCIONES METODOLÓGICAS R1..R6-R3 activas: "
           "count_maps()/parse_maps() distinguen COMPLETA/INCOMPLETA/"
-          "ILEGIBLE; fds_with_identity() captura errores de enumeración y de "
+          "ILEGIBLE; fds_with_identity() enumera e inspecciona en línea vía "
+          "os.scandir(dirfd) (portabilidad Android/Termux, sin descriptor "
+          "cerrado antes de stat), captura errores de enumeración y de "
           "inspección, clasifica (DESAPARECIDO/INACCESIBLE/ERROR_PROCFS/"
           "UNKNOWN_CAUSE, con ENOENT conservador R3-D), cierra el dirfd ante "
           "fallo de enumeración (R4-A), inspecciona anclado al dirfd "
           "(R4-B) y registra fallos de cierre final sin reintentos "
-          "(R5-A), propaga UNKNOWN desde inventario incompleto, verificado "
-          "sobre escenarios reales (R1-A/B/C + R2-A/B/C + R3-A..F + "
-          "R4-A/B/C + R5-A/B/C).\n")
+          "(R5-A), propaga UNKNOWN desde inventario incompleto mediante "
+          "escenarios reales A/B/C y controlador real sin cálculo manual "
+          "con adjudicación estricta FAIL > UNKNOWN > PASS en R2-C13 "
+          "(R1..R6 + R6-R1 + R6-R3).\n")
 
     tests = [test_a1, test_a2, test_a3, test_a4, test_a5, test_a6,
              test_b1, test_b2, test_b3, test_b4, test_b5, test_b6,
@@ -2185,35 +2825,18 @@ def main():
              test_r2c11_listdir_fail_closes_dirfd,
              test_r2c12_anchored_vs_path_and_close,
              test_r2c13_final_close_failure,
+             test_r2c14_r2c13_precedence_regression,
              test_r1a_complete_match, test_r1a_complete_nomatch,
              test_r1a_unparseable, test_r1a_unreadable,
              test_r1b_complete, test_r1b_incomplete]
-    for t in tests:
-        try:
-            t()
-        except Exception:
-            import traceback
-            record(t.__name__, "?", f"excepción no controlada en {t.__name__}",
-                   "-", "-", traceback.format_exc(limit=3).strip(),
-                   "traceback en evidencia", "FAIL")
-
-    counts = {"PASS": 0, "FAIL": 0, "UNKNOWN": 0}
-    for r in RESULTS:
-        counts[r["verdict"]] += 1
-    if counts["FAIL"]:
-        global_verdict = "FAIL"
-    elif counts["UNKNOWN"]:
-        global_verdict = "UNKNOWN"
-    else:
-        global_verdict = "PASS"
+    _, counts, global_verdict = run_controller(tests)
 
     os.makedirs(EVIDENCE_DIR, exist_ok=True)
     out = {"harness": "arnes_feasibility_d18_r2_numpy_6g1.py",
-           "scope": "FEASIBILITY-D18-R2 + R1 + R2 + R3 + R4 + R5 (corrección "
-                    "metodológica del arnés: R1-A/B/C/D, rectificación "
-                    "final R2-A/B/C/D, rectificación final de verificación "
-                    "R3-A..F, corrección de ciclo de vida/anclaje R4-A/B/C "
-                    "y registro del fallo de cierre final R5-A/B/C)",
+           "scope": "FEASIBILITY-D18-R2 + R1 + R2 + R3 + R4 + R5 + R6 + R6-R1 "
+                    "+ R6-R3 (corrección metodológica del arnés: R1..R6-R1 y "
+                    "corrección de enumeración os.scandir(dirfd) en línea con "
+                    "prioridad Android/Termux R6-R3)",
            "r1_correction": {
                "R1-A": "count_maps/parse_maps no descartan líneas no "
                        "interpretables; distinguen COMPLETA/INCOMPLETA/"
@@ -2327,6 +2950,64 @@ def main():
                        "ausente -> UNKNOWN_CAUSE; modo dirfd anclado / "
                        "modo path no anclado; sin garantías universales de "
                        "gc.collect().",
+           },
+           "r6_correction": {
+               "R6-A": "eliminación del cálculo manual `v_contr = 'UNKNOWN' "
+                       "if not inv.complete else 'PASS'` en R2-C13; extracción "
+                       "de `run_controller()` / `aggregate_verdicts()` desde "
+                       "`main()` para ejecutar el controlador real del arnés.",
+               "R6-B": "inyección real de fallo de `os.close(dirfd)` dentro de "
+                       "`fds_with_identity()` en `fd_dir` sintético (con "
+                       "contraste limpio completo) y durante la ejecución real "
+                       "de los 7 escenarios A, B y C (`test_a1`, `test_b1`, "
+                       "`test_b2`, `test_b5`, `test_c_a`, `test_c_b`, "
+                       "`test_c_c`) vía `run_controller()`, verificando "
+                       "identidad `id(inv)` preservada sin sustitución, "
+                       "complete=False, error phase='cierre' registrado y "
+                       "veredicto UNKNOWN en todos ellos.",
+               "R6-C": "contraste real A/B/C sin fallo de `os.close(dirfd)` y "
+                       "criterio conservador: en `/proc/self/fd` del sandbox "
+                       "la entrada fantasma R2-C8 ya produce complete=False "
+                       "antes del finally y el contraste real A/B/C devuelve "
+                       "UNKNOWN, impidiendo aislar causalmente el cierre con "
+                       "contraste PASS sin alterar su semántica -> R2-C13 = "
+                       "UNKNOWN (precedencia FAIL>UNKNOWN>PASS; C5 histórico "
+                       "FAIL intacto).",
+           },
+           "r6_r1_correction": {
+               "R6-R1-A": "adjudicación local estricta de R2-C13 extraída a "
+                          "`adjudicate_r2c13_verdict(...)` usando "
+                          "`con_counts`, `con_global`, `con_produced` y "
+                          "`contrast_all_complete`: FAIL > UNKNOWN > PASS "
+                          "(un FAIL del controlador del contraste real nunca "
+                          "queda degradado a UNKNOWN aunque coexista con "
+                          "incompletitud o UNKNOWN).",
+               "R6-R1-B": "subprueba reproducible `R2-C14` que valida "
+                          "`run_controller()` + `adjudicate_r2c13_verdict()` "
+                          "sobre la matriz completa (FAIL|PASS, PASS|FAIL, "
+                          "PASS|FAIL+incompleto+UNKNOWN, PASS|FAIL excepción, "
+                          "PASS|UNKNOWN completo/incompleto, PASS|PASS "
+                          "incompleto, PASS|PASS completo).",
+           },
+           "r6_r3_correction": {
+               "R6-R3-A": "reemplazo de `os.listdir()` por enumeración e "
+                          "inspección en línea mediante `with os.scandir(...)` "
+                          "dentro de `fds_with_identity()` (sin `list(it)`, "
+                          "sin filtrado de fds y sin ignorar `ENOENT`), "
+                          "evitando el cierre prematuro del descriptor de "
+                          "enumeración antes de `os.stat()`.",
+               "R6-R3-B": "prioridad Android/Termux: solo API estándar Python "
+                          "(`os.scandir(dirfd)` / Bionic `fdopendir`), sin "
+                          "`ctypes`/syscalls ni ABI ARM64/x86_64; comprobación "
+                          "de `os.supports_fd`/`os.supports_dir_fd` y fallback "
+                          "a modo `path`; preservación de R4-A/R4-B/R5-A/R6/"
+                          "R6-R1; validación real en Termux pendiente en "
+                          "dispositivo objetivo.",
+               "R6-R3-C": "regresión completa R2-C1..R2-C14 con Caso A "
+                          "(R2-C8 sin falso UNKNOWN por descriptor transitorio) "
+                          "y Caso B (R2-C2 detección conservadora de "
+                          "desaparición concurrente real en FS regular y en "
+                          "`/proc/self/fd`).",
            },
            "conserva_c5": "C5 (SIGSEGV al cerrar _mmap con array vivo) es "
                           "hallazgo histórico de FEASIBILITY-D18-R1; NO se "
