@@ -1,0 +1,15 @@
+CONTROL ESTATICO SOBRE LOS TRES MOTORES REALES
+Solo lectura y parseo. NO se ejecuta ningun motor.
+
+  EVO       CONCLUYENTE_TRUE   aperturas=8  con_secuencia=['run_experiment']
+      run_experiment           CONCLUYENTE_TRUE   del_en=[1993]
+  Hardened  CONCLUYENTE_TRUE   aperturas=8  con_secuencia=['run_experiment']
+      run_experiment           CONCLUYENTE_TRUE   del_en=[1882]
+  MQR       CONCLUYENTE_TRUE   aperturas=9  con_secuencia=['_run_core']
+      _run_core                CONCLUYENTE_TRUE   del_en=[2718]
+
+  GLOBAL              : CONCLUYENTE_TRUE
+  motivo              : los motores analizados muestran la secuencia completa
+  validacion_dinamica : PENDIENTE
+
+NOTA: un resultado estatico positivo NO es validacion dinamica.

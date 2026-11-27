@@ -1,0 +1,26 @@
+   1 ruta valida fuera de ambos repos               esperado=True  obtenido=True  OK   
+   2 destino dentro del repositorio oficial         esperado=False obtenido=False OK   work-root: destino dentro de la raiz oficial (/home/user/SDV-SDI_SGM/tmp_ai)
+   3 destino IGUAL a la raiz oficial                esperado=False obtenido=False OK   work-root: el destino ya existe y es preexistente (/home/user/SDV-SDI_SGM)
+   4 destino dentro de la copia desechable          esperado=False obtenido=False OK   work-root: destino dentro de la copia desechable (/tmp/t6g1_2re99xkg/copia/wor
+   5 directorio preexistente                        esperado=False obtenido=False OK   work-root: el destino ya existe y es preexistente (/tmp/t6g1_2re99xkg/ya)
+   6 symlink que apunta al oficial                  esperado=False obtenido=False OK   work-root: destino dentro de la raiz oficial (/tmp/t6g1_2re99xkg/lnk_of/work2)
+   7 enlace simbolico roto                          esperado=False obtenido=False OK   work-root: el destino ya existe y es enlace simbolico (/tmp/t6g1_2re99xkg/lnk_
+   8 ruta historica /tmp/f6g1ai                     esperado=False obtenido=False OK   work-root: destino historico prohibido /tmp/f6g1ai (/tmp/f6g1ai)
+   9 work-root igual a evidence-dir                 esperado=False obtenido=False OK   work-root: el destino ya existe y es preexistente (/tmp/t6g1_2re99xkg)
+  10 work-root dentro de evidence-dir               esperado=False obtenido=False OK   work-root y evidence-dir se solapan (/tmp/t6g1_2re99xkg/e/w / /tmp/t6g1_2re99x
+  11 /tmp/ab y /tmp/abc: no es anidamiento          esperado=True  obtenido=True  OK   
+  12 raiz-oficial sin .git: se rechaza              esperado=False obtenido=False OK   raiz-oficial: no es un repositorio, falta .git (/tmp/t6g1_2re99xkg/falso)
+  13 raiz-oficial inexistente                       esperado=False obtenido=False OK   raiz-oficial: no es un directorio (/tmp/t6g1_2re99xkg/nada)
+  14 ruta relativa                                  esperado=False obtenido=False OK   work-root: no es absoluta (relativa/x)
+  15 ruta con ".."                                  esperado=False obtenido=False OK   work-root: contiene ".." (/tmp/t6g1_2re99xkg/w/../w2)
+  16 --base dentro del repositorio oficial          esperado=False obtenido=False OK   base: dentro de la raiz oficial (/home/user/SDV-SDI_SGM/ETAPA_6G1_CORRECCION_L
+  17 --base fuera (copia desechable)                esperado=False obtenido=False OK   base: dentro de la copia desechable (/tmp/t6g1_2re99xkg/copia)
+  18 --base valida fuera de ambos                   esperado=True  obtenido=True  OK   
+  19 evidence-dir dentro del oficial                esperado=False obtenido=False OK   evidence-dir: destino dentro de la raiz oficial (/home/user/SDV-SDI_SGM/ev)
+  20 work y ev iguales dentro de /tmp protegido     esperado=False obtenido=False OK   work-root: destino historico prohibido /tmp/f6g1ai (/tmp/f6g1ai/x)
+  21 ancestro enlazado al oficial                   esperado=False obtenido=False OK   work-root: el destino ya existe y es enlace simbolico (/tmp/t6g1_2re99xkg/lnk_
+  22 nombre que empieza como el oficial             esperado=True  obtenido=True  OK   
+  23 copia igual a la raiz oficial                  esperado=False obtenido=False OK   copia: la copia ES la raiz oficial (/home/user/SDV-SDI_SGM)
+
+RESULTADO: 23/23 correctos
+arbol temporal eliminado: True

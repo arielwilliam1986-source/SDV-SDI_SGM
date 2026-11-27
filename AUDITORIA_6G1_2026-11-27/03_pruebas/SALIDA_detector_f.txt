@@ -1,0 +1,30 @@
+  ID   caso                                                  esperado       obtenido       res
+  ---  ----------------------------------------------------  -------------  -------------  ----
+  R1   liberacion DESPUES del ultimo flush (patron real)    C_TRUE         C_TRUE         PASS
+  R2   liberacion ANTES del ultimo flush (caso 16)          NO_CONCLUYENTE  NO_CONCLUYENTE  PASS
+  R3   reenganche de arr despues de arr = None              NO_CONCLUYENTE  NO_CONCLUYENTE  PASS
+  A1   alias b = arr ANTES de liberar, b sobrevive (fuga)   C_FALSE        C_FALSE        PASS
+  A2   alias ANTES de liberar, b liberado despues de arr (c C_TRUE         C_TRUE         PASS
+  A3   alias DESPUES de liberar: arr ya es None, b no retie NO_CONCLUYENTE  NO_CONCLUYENTE  PASS
+  A4   alias en cadena: b = arr; c = b; solo b liberado     C_FALSE        C_FALSE        PASS
+  B1   if/else: una rama libera, otra no                    C_FALSE        C_FALSE        PASS
+  B2   if/else: ambas ramas liberan y borran                C_TRUE         C_TRUE         PASS
+  B3   liberacion condicional sin `del` asociado            NO_CONCLUYENTE  NO_CONCLUYENTE  PASS
+  D1   segundo del mm sin liberar entre medias              C_FALSE        C_FALSE        PASS
+  D2   dos del mm, ambos con secuencia completa             C_TRUE         C_TRUE         PASS
+  T1   flush dentro de try, del en finally                  NO_CONCLUYENTE  NO_CONCLUYENTE  PASS
+  T2   flush dentro de try, del fuera                       NO_CONCLUYENTE  NO_CONCLUYENTE  PASS
+  H1   referencia transferida a una funcion                 NO_CONCLUYENTE  NO_CONCLUYENTE  PASS
+  H2   liberacion en una funcion distinta                   C_FALSE        C_FALSE        PASS
+  X1   sintaxis invalida                                    C_FALSE        C_FALSE        PASS
+  X2   sin del mm                                           NO_CONCLUYENTE  NO_CONCLUYENTE  PASS
+  X3   guardián vacío (cero aperturas y cero liberaciones)  NO_CONCLUYENTE  NO_CONCLUYENTE  PASS
+  X4   contenedor reenganchado tras liberar                 C_FALSE        C_FALSE        PASS
+  C1   secuencia correcta simple (legado 1)                 C_TRUE         C_TRUE         PASS
+  C2   ausencia de arr = None (legado 2)                    C_FALSE        C_FALSE        PASS
+  C3   arr = None solo en una rama (legado 3)               C_FALSE        C_FALSE        PASS
+  C4   aperturas de mm dentro de bucles (legado 6)          C_TRUE         C_TRUE         PASS
+  C5   arr = None antes del bucle (legado 16 corregido)     NO_CONCLUYENTE  NO_CONCLUYENTE  PASS
+  C6   alias b = arr sin liberar, b sobrevive (legado 8)    C_FALSE        C_FALSE        PASS
+
+TOTAL: 26/26 PASS
