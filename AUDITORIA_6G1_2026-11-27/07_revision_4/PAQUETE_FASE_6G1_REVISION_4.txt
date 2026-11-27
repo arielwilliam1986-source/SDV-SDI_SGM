@@ -1,0 +1,548 @@
+```text
+================================================================================
+FASE 6G.1 - REVISION 4
+Cierre conservador de formas AST no soportadas
+Bajo las entregas 1, 2 y 3, sin modificarlas
+================================================================================
+
+ESTADO: PENDIENTE_REVISION_CRIS
+FECHA:  2026-11-27
+RAMA:   auditoria-6g1-propuesta
+PADRE:  9142e404adb937f0a00955392c994dd1feaaf050  (entrega 3, INTACTA)
+
+--------------------------------------------------------------------------------
+0. RESUMEN EJECUTIVO
+--------------------------------------------------------------------------------
+
+El encargo pide que NINGUNA construccion Python capaz de conservar la
+referencia al memmap pase inadvertida y permita emitir CONCLUYENTE_TRUE.
+El punto 4 es el central: "no basta con ampliar una lista de patrones si el
+resto de los nodos sigue ignorandose silenciosamente".
+
+SE SUSTITUYE LA LISTA DE PATRONES POR UN MODELO DE CONTEXTO CON FALLO CERRADO:
+
+  Antes (rev.3):  una lista CERRADA de formas a BUSCAR. Lo que no estaba en
+                  la lista se ignoraba en silencio.
+  Ahora (rev.4):  se recorren TODAS las apariciones del alias y se examina su
+                  nodo PADRE. Solo se declara inocuo un conjunto cerrado y
+                  pequeno de contextos demostrablemente incapaces de retener
+                  la referencia (lectura de atributo, lectura de subindice,
+                  y una lista cerrada de llamadas puras). Cualquier otro
+                  contexto -> NO_CONCLUYENTE.
+
+Y APARECIERON TRES DEFECTOS MAS, DOS DE ELLOS GRAVES Y NO REPORTADOS:
+
+  HALLAZGO 1 (grave): `with` y `match` NO se recorrian en absoluto.
+     _caminos() solo explotaba If y Try. El cuerpo de un `with` y los `case`
+     de un `match` caian en _simple(), que no los reconoce y devuelve lista
+     VACIA: sus eventos se perdian por completo.
+
+     Reproducido con la propuesta de la revision 3:
+         with ctx() as q:
+             b = arr            <-- el alias se crea aqui
+         arr = None
+         del mm
+         -> CONCLUYENTE_TRUE   (el camino ni siquiera tenia evento de fuga)
+
+         match v:
+             case 1:
+                 b = arr
+             case _:
+                 pass
+         arr = None
+         del mm
+         -> CONCLUYENTE_TRUE
+
+     Este era EXACTAMENTE el modo de fallo que Cris describia: un nodo
+     relevante con el alias pasando inadvertido.
+
+  HALLAZGO 2: `global` / `nonlocal` guardan los nombres EN TEXTO (campo
+     .names), no como nodos ast.Name. Un recorrido de nodos Name NUNCA los
+     veria, hiciera lo que hiciera la lista de patrones. Habia que tratarlos
+     aparte por construccion.
+
+  HALLAZGO 3: `del mm` dentro de un `case` se trataba como incondicional.
+     Si el case no coincide, el del no se ejecuta. Ahora se marca condicional.
+
+  HALLAZGO 4: llamadas PURAS (len, id, isinstance, ...) se marcaban como
+     "paso a funcion" y tumbaban controles legitimos. Se anade una lista
+     cerrada de llamadas puras.
+
+  HALLAZGO 5: `with ... as <alias>` re-liga el propio nombre del alias al
+     objeto que devuelve el contexto. Ahora se detecta como forma no seguida.
+
+RESULTADO:
+  - 3 motores reales siguen en CONCLUYENTE_TRUE con el criterio ENDURECIDO.
+  - 177/177 casos en los 6 bancos (44 nuevos + 16 + 16 + 26 + 52 + 23).
+  - Banco de integridad: confirma que los bancos ejecutan EXACTAMENTE el
+    detector de la propuesta, sin copias divergentes.
+
+--------------------------------------------------------------------------------
+1. EL CAMBIO DE MODELO (punto 4 del encargo)
+--------------------------------------------------------------------------------
+
+1.1 LO QUE HABIA (revision 3)
+
+    _formas_conservadoras(fn, alias) recorria el arbol buscando seis patrones
+    concretos: AnnAssign, Assign encadenado, desempaquetado, NamedExpr,
+    Attribute/Subscript como destino, y paso a llamada.
+
+    PROBLEMA ESTRUCTURAL: si una construccion no estaba en esa lista, no se
+    generaba ninguna marca. El silencio era el valor por defecto. Eso es
+    justo lo que el encargo prohibe.
+
+1.2 LO QUE HAY (revision 4)
+
+    Se invierte la carga de la prueba. Para CADA aparicion del alias se examina
+    el nodo PADRE y se clasifica:
+
+        _clasificar_contexto(padre, campo, alias) -> (tipo, descripcion)
+
+    Solo devuelve (None, None) -- es decir, "inocuo" -- en estos casos:
+
+        atributo LEIDO       arr.attr        (padre Attribute, campo value)
+        subindice LEIDO      arr[i]          (padre Subscript, campo value)
+        llamada PURA         len(arr), id(arr), isinstance(arr, T), ...
+
+    Todo lo demas devuelve un tipo con nombre propio y se acumula. Entre otros:
+
+        anotada              b: T = arr
+        encadenada           b = c = arr
+        desempaquetado       b, = (arr,)
+        atributo/contenedor  obj.ref = arr  /  d["k"] = arr
+        asignacion           b = arr        (se exime: la modela el detector)
+        augassign            arr += 1
+        retorno              return arr
+        yield / yield_from   yield arr / yield from arr
+        namedexpr            (b := arr)
+        paso_a_llamada       lista.append(arr), registrar(arr)
+        llamada_callee       arr()  (el alias es la funcion)
+        contenedor_literal   [arr] / (arr,) / {arr}
+        dict_literal         {"k": arr}
+        comprehension        [x for x in arr], (arr for _ in z), ...
+        expresion_derivada   arr is not None, arr + 1, f"{arr}"
+        global_nonlocal      global arr / nonlocal arr
+        with_as_alias        with ... as arr
+        contexto_desconocido CUALQUIER OTRO NODO  <-- fallo cerrado
+
+    La ultima linea es la clave del punto 4: si aparece un padre que no se ha
+    clasificado, NO se ignora; se marca como contexto_desconocido y el
+    resultado pasa a NO_CONCLUYENTE. Una construccion nueva de Python no puede
+    colarse en silencio.
+
+1.3 POR QUE SE EXIME `b = arr`
+
+    `b = arr` (Name simple como destino) NO es una construccion no soportada:
+    es exactamente la fuga que el detector ya modela con el evento _FUGA desde
+    la revision 1. Marcarla aqui la degradaria de "fuga demostrable"
+    (CONCLUYENTE_FALSE) a "no soportada" (NO_CONCLUYENTE), perdiendo
+    informacion y rompiendo 11 casos de los bancos anteriores.
+
+    Esto se detecto al principio de esta revision: el primer intento de fallo
+    cerrado aplicaba tambien a los Store y dejo los bancos en 11/16, 14/16 y
+    22/26. Se corrigio antes de continuar. Se documenta porque es un ejemplo
+    real de que el endurecimiento NO se ajusto para que pasaran los motores.
+
+--------------------------------------------------------------------------------
+2. LOS DOS HALLAZGOS GRAVES: `with` Y `match`
+--------------------------------------------------------------------------------
+
+2.1 EL DEFECTO
+
+    _caminos(cuerpo, ...) recorre las sentencias de un bloque y trata:
+
+        Delete        -> cierra un camino
+        If / Try      -> explota sus ramas
+        For / While   -> explota o aplana
+        TODO LO DEMAS -> _simple(s, cont, alias)
+
+    _simple() solo reconoce Delete, Assign y llamadas. Para un ast.With o un
+    ast.Match devuelve LISTA VACIA. Como esas sentencias tampoco estaban en la
+    cadena de isinstance, sus hijos no se visitaban nunca.
+
+    Consecuencia: un alias creado dentro de un `with` o de un `case` era
+    invisible. El camino quedaba con los eventos de fuera, parecia limpio, y el
+    veredicto era CONCLUYENTE_TRUE.
+
+2.2 REPRODUCCION (ejecutada, propuesta de la revision 3)
+
+    caso                                  estado rev.3   eventos del camino
+    ------------------------------------  --------------  ---------------------
+    with: b = arr dentro del cuerpo       C_TRUE          ruido, muta, lib, del
+    match: b = arr en un case             C_TRUE          ruido, muta, lib, del
+
+    Ninguno de los dos caminos contiene un evento de fuga: el alias
+    simplemente no existia para el detector.
+
+2.3 CORRECCION
+
+    Se anade el recorrido de ambas construcciones en los DOS sitios donde se
+    procesan sentencias, porque cada uno tiene su propio bucle:
+
+      a) _flat()   (para bloques que no contienen el del)
+      b) _caminos() (para bloques que si lo contienen)
+
+    WITH:
+        - cada item se evalua como expresion (el __enter__ puede lanzar);
+        - `with ... as X` anade un evento de mutacion (liga X);
+        - el cuerpo se aplana o se explota, segun contenga el del.
+
+    MATCH:
+        - el sujeto se evalua;
+        - cada `case` es una RAMA, igual que un if/else;
+        - si un case contiene el del, se explota, PERO marcado con un evento
+          condicional: el del solo ocurre si ese case coincide;
+        - si un case no borra y la referencia pudo quedar viva, es un camino
+          valido sin del -> incompleto -> no concluyente.
+
+2.4 VERIFICACION
+
+    caso                                  antes     ahora
+    ------------------------------------  --------  -------------------
+    with: b = arr dentro del cuerpo       C_TRUE    C_FALSE
+    match: b = arr en un case             C_TRUE    C_FALSE
+    with ... as arr                       C_TRUE    NO_CONCLUYENTE
+    match con del dentro de un case       C_TRUE    NO_CONCLUYENTE
+    with abrir() as q: arr = None         C_TRUE    C_TRUE  (control OK)
+
+--------------------------------------------------------------------------------
+3. `global` Y `nonlocal`: INVISIBLES POR CONSTRUCCION
+--------------------------------------------------------------------------------
+
+    ast.Global y ast.Nonlocal no cuelgan ningun ast.Name de sus hijos: guardan
+    los nombres en el campo .names como CADENAS de texto.
+
+        ast.Global(names=['arr'])
+
+    Por tanto, cualquier estrategia basada en "recorrer los nodos Name y mirar
+    su padre" es CIEGA a estas dos construcciones, por muy completa que sea la
+    lista de patrones. Es un caso donde ampliar la lista no habria servido de
+    nada jamas: habia que tratarlas aparte.
+
+    Correccion:
+
+        for nodo in ast.walk(fn):
+            if isinstance(nodo, (ast.Global, ast.Nonlocal)):
+                for nom in nodo.names:
+                    if nom in alias:
+                        fuera.append(('global_nonlocal', nodo.lineno, ...))
+
+    Verificacion: `global arr` y `nonlocal arr` pasan de CONCLUYENTE_TRUE a
+    NO_CONCLUYENTE.
+
+--------------------------------------------------------------------------------
+4. OTROS DOS AJUSTES QUE EL ENDURECIMIENTO HIZO NECESARIOS
+--------------------------------------------------------------------------------
+
+4.1 LLAMADAS PURAS
+
+    Al tratar todo paso a llamada como no soportado, `len(arr)`, `id(arr)` o
+    `isinstance(arr, T)` tumbaban controles legitimos (P05 daba
+    NO_CONCLUYENTE). Estas funciones LEEN el objeto y no guardan su
+    referencia. Se anade una lista CERRADA y conservadora:
+
+        len, id, hash, repr, str, type, bool, int, float, isinstance, callable,
+        iter, abs, hex, oct, bin, format, ascii, vars, dir, getattr, hasattr,
+        sizeof
+
+    La lista se aplica en los dos sitios donde antes se marcaba paso a
+    llamada: _formas_conservadoras (por contexto) y _pasa_a_funcion (que
+    genera el evento _PASA). Ambas deben coincidir o el evento seguiria
+    apareciendo.
+
+    LIMITACION: es una lista cerrada. Una funcion pura que no este en ella se
+    tratara como no soportada -> NO_CONCLUYENTE. El error va en la direccion
+    segura (dudar), nunca en la de dar TRUE.
+
+4.2 `with ... as <alias>`
+
+    `with abrir() as arr:` re-liga el propio nombre del alias. El detector
+    creeria que `arr` sigue siendo el memmap cuando ya no lo es, y ademas el
+    memmap original puede seguir vivo en otro sitio. Se detecta y se marca:
+
+        with_as_alias   'with ... as arr'
+
+--------------------------------------------------------------------------------
+5. RESULTADOS COMPLETOS DEL BANCO NUEVO (_t_det5.py)
+--------------------------------------------------------------------------------
+
+  Cobertura por familia (36 negativos + 8 positivos = 44 casos):
+
+  ID    familia      caso                                                esperado        obtenido        res
+  ----  -----------  --------------------------------------------------  --------------  --------------  ----
+  N01   rev3         anotada  b: object = arr                           != C_TRUE       NO_CONCLUYENTE  PASS
+  N02   rev3         encadenada  b = c = arr                            != C_TRUE       NO_CONCLUYENTE  PASS
+  N03   rev3         desempaquetado  b, = (arr,)                         != C_TRUE       NO_CONCLUYENTE  PASS
+  N04   rev3         NamedExpr  (b := arr)                              != C_TRUE       NO_CONCLUYENTE  PASS
+  N05   rev3         atributo  obj.ref = arr                            != C_TRUE       NO_CONCLUYENTE  PASS
+  N06   rev3         subscript  d["k"] = arr                            != C_TRUE       NO_CONCLUYENTE  PASS
+  N07   rev3         paso a llamada  registrar(arr)                     != C_TRUE       NO_CONCLUYENTE  PASS
+  N08   lambda       lambda que captura el alias                        != C_TRUE       NO_CONCLUYENTE  PASS
+  N09   closure      def interna que retorna el alias                   != C_TRUE       NO_CONCLUYENTE  PASS
+  N10   lambda       lambda como default que captura                    != C_TRUE       NO_CONCLUYENTE  PASS
+  N11   comp         listcomp que captura                              != C_TRUE       NO_CONCLUYENTE  PASS
+  N12   comp         genexp que captura                                != C_TRUE       NO_CONCLUYENTE  PASS
+  N13   comp         setcomp que captura                                != C_TRUE       NO_CONCLUYENTE  PASS
+  N14   comp         dictcomp que captura                               != C_TRUE       NO_CONCLUYENTE  PASS
+  N15   global       global arr                                         != C_TRUE       NO_CONCLUYENTE  PASS
+  N16   nonlocal     nonlocal arr                                       != C_TRUE       NO_CONCLUYENTE  PASS
+  N17   yield        yield arr                                          != C_TRUE       NO_CONCLUYENTE  PASS
+  N18   yield        yield from arr                                     != C_TRUE       NO_CONCLUYENTE  PASS
+  N19   with         alias dentro del cuerpo de with                    != C_TRUE       C_FALSE         PASS
+  N20   with         with ... as arr liga el nombre                    != C_TRUE       NO_CONCLUYENTE  PASS
+  N22   match        alias en un case                                   != C_TRUE       C_FALSE         PASS
+  N23   match        match con un case que libera y otro que no         != C_TRUE       NO_CONCLUYENTE  PASS
+  N24   match        del mm dentro de un case                           != C_TRUE       NO_CONCLUYENTE  PASS
+  N25   retorno      return arr                                         != C_TRUE       NO_CONCLUYENTE  PASS
+  N26   retorno      return de un alias vivo                            != C_TRUE       NO_CONCLUYENTE  PASS
+  N27   captura      metodo de objeto recibe el alias                   != C_TRUE       NO_CONCLUYENTE  PASS
+  N28   fstring      el alias interpolado en f-string                  != C_TRUE       NO_CONCLUYENTE  PASS
+  N29   dict_key     el alias como clave de diccionario                 != C_TRUE       NO_CONCLUYENTE  PASS
+  N30   starred      el alias desempaquetado en una llamada             != C_TRUE       NO_CONCLUYENTE  PASS
+  N31   compare      comparacion que retiene en una expresion          != C_TRUE       NO_CONCLUYENTE  PASS
+  N32   contenedor   el alias dentro de una lista literal               != C_TRUE       NO_CONCLUYENTE  PASS
+  N33   contenedor   el alias dentro de un dict literal                 != C_TRUE       NO_CONCLUYENTE  PASS
+  N34   augassign    augassign sobre el alias                           != C_TRUE       C_FALSE         PASS
+  N35   while        alias creado dentro de un while                    != C_TRUE       C_FALSE         PASS
+  N36   control      alias en rama: la liberacion de b es condicional   != C_TRUE       NO_CONCLUYENTE  PASS
+  N37   control      del mm solo en el else: el otro camino no borra     C_FALSE         C_FALSE         PASS
+  N38   control      alias en rama: b sobrevive en el camino que no entra != C_TRUE      NO_CONCLUYENTE  PASS
+  P01   control      sin alias, libera y borra                          C_TRUE         C_TRUE         PASS
+  P02   control      atributo leido  arr.flush()                        C_TRUE         C_TRUE         PASS
+  P03   control      subindice leido  arr[lo:hi]                         C_TRUE         C_TRUE         PASS
+  P04   control      atributo y subindice, patron real de motor         C_TRUE         C_TRUE         PASS
+  P05   control      len() y dtype                                       C_TRUE         C_TRUE         PASS
+  P06   control      alias creado y liberado                             C_TRUE         C_TRUE         PASS
+  P09   control      libera dentro del with (no liga el alias)          C_TRUE         C_TRUE         PASS
+
+  TOTAL: 44/44 PASS
+
+  NOTA: los positivos P01-P09 son la salvaguarda del punto 5 del encargo:
+  verifican que los controles legitimos SIN fuga siguen produciendo
+  CONCLUYENTE_TRUE. Si el endurecimiento los tumbara, el endurecimiento seria
+  erroneo. Pasaron los 8.
+
+--------------------------------------------------------------------------------
+6. HONESTIDAD SOBRE EL PROCESO: SEIS EXPECTATIVAS MIAS MAL PLANTEADAS
+--------------------------------------------------------------------------------
+
+    En la primera pasada del banco fallaron 6 casos de 43. Se analizo cada uno:
+
+    - N20 (with ... as arr)    DEFECTO REAL del detector -> corregido.
+    - N21 (with ... as q)      MI ERROR: `q` no liga el alias y liberar dentro
+                               del with es seguro (__exit__ se ejecuta aunque
+                               el cuerpo falle). Es un control legitimo, no un
+                               negativo. Movido a positivo P09.
+    - N24 (del dentro de case)  DEFECTO REAL -> corregido (marcado condicional).
+    - P05 (len + dtype)        DEFECTO REAL del endurecimiento -> corregido con
+                               la lista de llamadas puras.
+    - P07 (alias en rama)      MI ERROR: si c es falso, `b` nunca se libera.
+                               Dudar es correcto. Reclasificado como negativo
+                               N36/N38.
+    - P08 (del solo en else)   MI ERROR: `del` solo en una rama es FALSE por
+                               diseno desde la revision 1. Reclasificado N37.
+
+    En NINGUN caso se cambio el detector para que mi expectativa se cumpliera.
+    Cuatro correcciones fueron al codigo (N20, N24, P05 y el fallo cerrado de
+    Store), tres fueron a la expectativa (N21, P07, P08) por estar mal
+    planteadas.
+
+--------------------------------------------------------------------------------
+7. BANCO DE INTEGRIDAD (punto 6 del encargo)
+--------------------------------------------------------------------------------
+
+    Confirma que los bancos ejecutan EXACTAMENTE el detector de la propuesta.
+    Cinco comprobaciones, todas ejecutadas:
+
+    1. Copias con el nombre pruebas_auditoria_cierre_6g1.PROPUESTA.py:
+         /tmp/prop6g1/...                                      5bface04...
+         /tmp/r2/.../05_revision_2/01_propuesta/...            dda62c24...
+         /tmp/r3/.../06_revision_3/01_propuesta/...            9b93108b...
+       Son las TRES revisiones historicas (2, 3 y 4). No hay copias
+       divergentes de la misma revision: cada hash aparece una sola vez.
+
+    2. Hashes distintos: 3, uno por revision. Ninguno duplicado.
+
+    3. Propuesta cargada: /tmp/prop6g1/pruebas_auditoria_cierre_6g1.PROPUESTA.py
+       sha256 5bface0496429baf5ed9f2b4ddf222a5afa33b53b442aa4e51a8c9e825f02631
+
+    4. Origen real de las 11 funciones del detector, por
+       __code__.co_filename: todas apuntan al MISMO fichero.
+         _formas_conservadoras  OK      _caminos        OK
+         _clasificar_contexto   OK      _juzgar         OK
+         _veredicto             OK      _analizar_funcion OK
+         _analizar_cadena       OK      _flat           OK
+         _reasignaciones_previas OK     _alias_de       OK
+         _pasa_a_funcion        OK
+
+    5. sys.modules: no queda ningun modulo `prop` alternativo cargado; los
+       bancos usan `propuesta_6g1` con la ruta resuelta.
+
+    Los seis bancos comparten el MISMO cargador (_localizar_propuesta +
+    _cargar/_asegurar_dependencias) y ninguno importa una copia local.
+
+--------------------------------------------------------------------------------
+8. NO REGRESION: 177/177
+--------------------------------------------------------------------------------
+
+  banco                                  casos   resultado
+  -------------------------------------  ------  -----------
+  _t_det5.py     (NUEVO, revision 4)         44   44/44
+  _t_det4.py     (revision 3)                16   16/16
+  _t_det3.py     (revision 2)                16   16/16
+  _t_det2.py     (revision 1)                26   26/26
+  _t_rutas2.py   (revision 2)                52   52/52
+  _t_rutas.py    (revision 1)                23   23/23
+  -------------------------------------  ------  -----------
+  TOTAL                                     177   177/177
+  _t_integridad.py  (NUEVO)                  5 comprobaciones, todas OK
+
+  Caso de Cris del bloqueo 2 (if/del + else/pass) -> CONCLUYENTE_FALSE
+
+  FUNCIONES Y TABLAS INTACTAS:
+    ESCENARIOS, CHECKS_F, RECURSO_F, atribucion_f(), args_motor(),
+    verificar() ................ identicos al ORIGINAL
+    adjudicacion_hallazgo_f() .. identico a la ENTREGA 1
+
+  MOTORES REALES (analisis ESTATICO del AST, NO ejecutados):
+    Hardened  run_experiment  -> CONCLUYENTE_TRUE
+    EVO       run_experiment  -> CONCLUYENTE_TRUE
+    MQR       _run_core       -> CONCLUYENTE_TRUE
+    GLOBAL                    -> CONCLUYENTE_TRUE
+
+  El criterio de la revision 4 es MAS ESTRICTO que el de la 3, que ya era mas
+  estricto que el de la 2. Los tres motores siguen cumpliendo. Si el
+  endurecimiento los hubiera tumbado, se reportaria tal cual y NO se relajaria
+  el criterio.
+
+  Nota tecnica sobre por que los motores sobreviven al fallo cerrado: en sus
+  funciones con `del mm`, el alias `arr` aparece SOLO en dos contextos, ambos
+  inocuos por lectura:
+      arr[lo:hi]    (Subscript, lectura)  x2 en Hardened, x2 en EVO, x4 en MQR
+      arr.flush     (Attribute, lectura)  x1 en cada motor
+  No hay lambda, comprehension, yield, return ni paso a llamada con el alias
+  en ninguna de las tres funciones analizadas.
+
+--------------------------------------------------------------------------------
+9. LIMITES RESPETADOS
+--------------------------------------------------------------------------------
+
+  NO ejecutado: main(), bateria(), ejecutar(), el inyector, sitecustomize,
+  los motores (solo AST), audio real, bateria de 27 escenarios, C5 historico.
+  NO instalado dependencias. NO modificado ningun fichero funcional del
+  proyecto. NO tocado main ni el PR #4; nada fusionado. NO convertido ningun
+  UNKNOWN en PASS. NO relajado ninguna expectativa.
+  NO implementado PDA-1. NO declarada validacion dinamica de F.
+
+--------------------------------------------------------------------------------
+10. LIMITACIONES QUE SIGUEN ABIERTAS
+--------------------------------------------------------------------------------
+
+  L-1  TOCTOU T-1..T-4 documentadas, sin resolver.
+  L-2  PDA-1 (escrituras ancladas por descriptor) NO implementado.
+  L-3  Validacion de enlaces no atomica. NO se declara aislamiento completo.
+  L-4  El detector F es ESTATICO. validacion_dinamica sigue PENDIENTE.
+  L-5  El fallo cerrado cubre la RELACION padre-hijo directa. Un alias puede
+       viajar por un camino que no produzca un contexto desconocido pero que
+       el modelo de _juzgar no sepa seguir (por ejemplo, un alias liberado
+       bajo una guarda distinta). Eso lo cubre _juzgar con 'dudoso', no la
+       enumeracion de contextos.
+  L-6  _LLAMADAS_PURAS es una lista cerrada; una funcion pura no listada se
+       tratara como no soportada. El error va hacia dudar, nunca hacia TRUE.
+  L-7  No se modela el flujo entre funciones (una funcion llamada puede
+       guardar la referencia en un global). Se marca como paso_a_llamada ->
+       NO_CONCLUYENTE, que es lo conservador.
+  L-8  `with`/`match` se recorren, pero NO se modela la semantica de que un
+       `with` puede suprimir excepciones ni la de los patrones de `match`
+       (guardas, or-patterns). Se aplana el cuerpo; si hay del condicional
+       dentro de un case, se marca condicional -> dudoso.
+  L-9  N19/N22 dan CONCLUYENTE_FALSE y es correcto: el alias se crea dentro
+       del bloque y sobrevive; la fuga es demostrable.
+
+--------------------------------------------------------------------------------
+11. INVENTARIO DE 07_revision_4/
+--------------------------------------------------------------------------------
+
+  01_propuesta/pruebas_auditoria_cierre_6g1.PROPUESTA.py   propuesta rev.4 (1471 l.)
+  01_propuesta/propuesta_6g1.patch                          parche vs original (1274 l.)
+  02_bancos/_t_det5.py                                      NUEVO, 44 casos
+  02_bancos/_t_integridad.py                                NUEVO, integridad
+  02_bancos/_t_det4.py                                      rev.3, 16 casos
+  02_bancos/_t_det3.py                                      rev.2, 16 casos
+  02_bancos/_t_det2.py                                      rev.1, 26 casos
+  02_bancos/_t_rutas2.py                                    rev.2, 52 casos
+  02_bancos/_t_rutas.py                                     rev.1, 23 casos
+  03_salidas/SALIDA_detector_f_r4.txt                       44/44
+  03_salidas/SALIDA_integridad.txt                          5 comprobaciones
+  03_salidas/SALIDA_detector_f_r3.txt                       16/16
+  03_salidas/SALIDA_detector_f_r2.txt                       16/16
+  03_salidas/SALIDA_detector_f.txt                          26/26
+  03_salidas/SALIDA_rutas2.txt                              52/52
+  03_salidas/SALIDA_rutas.txt                               23/23
+  PAQUETE_FASE_6G1_REVISION_4.txt                           este informe
+  SHA256SUMS.txt                                            cobertura explicita
+
+--------------------------------------------------------------------------------
+12. HASHES SHA-256
+--------------------------------------------------------------------------------
+
+  5bface0496429baf5ed9f2b4ddf222a5afa33b53b442aa4e51a8c9e825f02631  01_propuesta/pruebas_auditoria_cierre_6g1.PROPUESTA.py
+  382b1c504439c278b103131eb362828e3dba436566b249847d0baa1b9c9f18f9  01_propuesta/propuesta_6g1.patch
+  9d44d2314e81fdb1fddb9351e86df62cef178465850185652d3bc7be388b473a  02_bancos/_t_det5.py
+  9444eae930ee5d86f5504bc123c6dc0d08c6c8ab1a654a2e3acf52331073fc4d  02_bancos/_t_integridad.py
+  f6feb6c21185c4664f67872bfb23d5e0d82e50b343bfcb156e22531bfcb80ad9  02_bancos/_t_det4.py
+  80a7948b712d61bd53a32fca47ce6dcea97e41cf23fce79018c215aa1fe704e4  02_bancos/_t_det3.py
+  0e278d392b41a136bb14f9825ed6d14f8bb9d8e95cf455f68c9ed6bdd55d07c2  02_bancos/_t_det2.py
+  9e4ce3162006da689e898c13e6970fda5d3cc78a6f24a2f82b328b93f9fc96a0  02_bancos/_t_rutas2.py
+  2eb7d102eb3412f3da877c9e5d330481be22a84f864fde166e7718e97071c18a  02_bancos/_t_rutas.py
+  9aa6e431e5a90d8491eb4f26f129b4310e0d5f8efb0d9a0b56e655fa49d62d49  03_salidas/SALIDA_detector_f_r4.txt
+  cc5903eafcb1fce69acf6ca936f24986590717a2c52fa385939f0ac0a6ab6687  03_salidas/SALIDA_integridad.txt
+  634f27c46bd71d69dc49808a2d9ac373dd9b7056474767f6d1307cb6f8d71308  03_salidas/SALIDA_detector_f_r3.txt
+  dc8209e791682e474b7161da6e30583b33e4d4821ee245e17fdd757504fbf3a7  03_salidas/SALIDA_detector_f_r2.txt
+  28341953f22e229b569e9548bd885d05bb73e29eb1d279002438b495cbfee09c  03_salidas/SALIDA_detector_f.txt
+  272e5e60298833f1d5d6f943a4921934978a6256b16ce4a52f9dcaf74a0a0733  03_salidas/SALIDA_rutas2.txt
+  b84e05fd9ef1b5ed4b9d4181696d90973dab29fc76aa3e5062a2f74b596ff100  03_salidas/SALIDA_rutas.txt
+
+  Referencia historica:
+  7b1165e834bea12ed58f077cb3bf6f9e494c41d1105494c8c82f581663dcb4c5  propuesta rev.1
+  dda62c245a275a633dcc5d17e8ae0ef247dae947f170e19ecc1ded06b746423d  propuesta rev.2
+  9b93108b3538b9468e8bd02e2a0d8570bf4e7546e9003b3038cd083bd484f3c0  propuesta rev.3
+  31f724b3d19b89ea9210cdd02e1d5a94bc5fd5bdfdc86e7c651c9d0acdc54852  original
+
+  EVOLUCION:
+    version         lineas   bytes   hunks  parche (l.)
+    --------------  ------   -----   -----  -----------
+    rev.1             1135   55897      7       938
+    rev.2             1240   61285      7      1043
+    rev.3             1322   65212      7      1125
+    rev.4             1471   73710      7      1274
+    original           394   22391      -         -
+
+--------------------------------------------------------------------------------
+13. Estado final
+--------------------------------------------------------------------------------
+
+  Fallo cerrado por contexto ............ IMPLEMENTADO
+  lambda / closures ..................... CUBIERTO -> NO_CONCLUYENTE
+  comprehensions y generadores .......... CUBIERTO -> NO_CONCLUYENTE
+  global / nonlocal ..................... CUBIERTO -> NO_CONCLUYENTE
+  yield / yield from .................... CUBIERTO -> NO_CONCLUYENTE
+  with ... as ........................... CUBIERTO (recorrido + as_alias)
+  match / case .......................... CUBIERTO (ramas + del condicional)
+  atributos, contenedores, subindices ... CUBIERTO
+  retorno o captura por funciones ....... CUBIERTO -> NO_CONCLUYENTE
+  controles legitimos ................... 8/8 SIGUEN EN CONCLUYENTE_TRUE
+  una sola fuente del detector .......... CONFIRMADO (banco de integridad)
+  Pruebas ............................... 177/177
+  Motores reales (estatico) ............. 3/3 CONCLUYENTE_TRUE
+  Entregas 1, 2 y 3 ..................... INTACTAS
+  Aislamiento completo .................. NO SE DECLARA
+  PDA-1 ................................. NO IMPLEMENTADO
+  validacion_dinamica ................... PENDIENTE
+
+  ESTADO: PENDIENTE_REVISION_CRIS
+
+  No se ha ejecutado la bateria ni los motores. No se ha tocado main ni el
+  PR #4. No se ha fusionado nada. No se ha convertido ningun UNKNOWN en PASS.
+================================================================================
+```

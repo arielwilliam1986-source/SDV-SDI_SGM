@@ -1,0 +1,35 @@
+========================================================================================
+BANCO DE INTEGRIDAD: una sola fuente para el detector
+========================================================================================
+
+1. Copias encontradas con el nombre pruebas_auditoria_cierre_6g1.PROPUESTA.py:
+     5bface0496429baf  /tmp/prop6g1/pruebas_auditoria_cierre_6g1.PROPUESTA.py
+     dda62c245a275a63  /tmp/r2/AUDITORIA_6G1_2026-11-27/05_revision_2/01_propuesta/pruebas_auditoria_cierre_6g1.PROPUESTA.py
+     9b93108b3538b946  /tmp/r3/AUDITORIA_6G1_2026-11-27/06_revision_3/01_propuesta/pruebas_auditoria_cierre_6g1.PROPUESTA.py
+
+2. Hashes distintos: 3
+     5bface0496429baf  -> 1 copia(s)
+     9b93108b3538b946  -> 1 copia(s)
+     dda62c245a275a63  -> 1 copia(s)
+
+3. Propuesta cargada: /tmp/prop6g1/pruebas_auditoria_cierre_6g1.PROPUESTA.py
+   sha256: 5bface0496429baf5ed9f2b4ddf222a5afa33b53b442aa4e51a8c9e825f02631
+
+4. Origen real de las funciones del detector (__code__.co_filename):
+     _formas_conservadoras    OK   /tmp/prop6g1/pruebas_auditoria_cierre_6g1.PROPUESTA.py
+     _clasificar_contexto     OK   /tmp/prop6g1/pruebas_auditoria_cierre_6g1.PROPUESTA.py
+     _caminos                 OK   /tmp/prop6g1/pruebas_auditoria_cierre_6g1.PROPUESTA.py
+     _juzgar                  OK   /tmp/prop6g1/pruebas_auditoria_cierre_6g1.PROPUESTA.py
+     _veredicto               OK   /tmp/prop6g1/pruebas_auditoria_cierre_6g1.PROPUESTA.py
+     _analizar_funcion        OK   /tmp/prop6g1/pruebas_auditoria_cierre_6g1.PROPUESTA.py
+     _analizar_cadena         OK   /tmp/prop6g1/pruebas_auditoria_cierre_6g1.PROPUESTA.py
+     _flat                    OK   /tmp/prop6g1/pruebas_auditoria_cierre_6g1.PROPUESTA.py
+     _reasignaciones_previas  OK   /tmp/prop6g1/pruebas_auditoria_cierre_6g1.PROPUESTA.py
+     _alias_de                OK   /tmp/prop6g1/pruebas_auditoria_cierre_6g1.PROPUESTA.py
+     _pasa_a_funcion          OK   /tmp/prop6g1/pruebas_auditoria_cierre_6g1.PROPUESTA.py
+
+5. Modulos del detector en sys.modules:
+
+========================================================================================
+FIN DEL BANCO DE INTEGRIDAD
+========================================================================================

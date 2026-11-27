@@ -1,0 +1,20 @@
+  ID   caso                                                  esperado       obtenido       res
+  ---  ----------------------------------------------------  -------------  -------------  ----
+  R4   BLOQUEO 2: if con del / else pass                    C_FALSE        C_FALSE        PASS
+  R5   del mm solo en una rama (sin else)                   C_FALSE        C_FALSE        PASS
+  R6   del mm en ambas ramas                                C_TRUE         C_TRUE         PASS
+  R7   ramas anidadas: solo la interna borra                C_FALSE        C_FALSE        PASS
+  R8   ramas anidadas: todas borran                         C_TRUE         C_TRUE         PASS
+  V1   dos variables de bucle sobre mm.values()             NO_CONCLUYENTE  NO_CONCLUYENTE  PASS
+  V2   dos variables, ambas liberadas                       C_TRUE         C_TRUE         PASS
+  A5   cadena de alias, todos liberados                     C_TRUE         C_TRUE         PASS
+  A6   cadena de alias, solo el ultimo liberado             C_FALSE        C_FALSE        PASS
+  H3   helper que recibe y NO libera: no demostrable        NO_CONCLUYENTE  NO_CONCLUYENTE  PASS
+  H4   helper fuera del bucle                               NO_CONCLUYENTE  NO_CONCLUYENTE  PASS
+  D3   tres del mm, el segundo incompleto                   C_FALSE        C_FALSE        PASS
+  T3   try/except/finally completo                          NO_CONCLUYENTE  NO_CONCLUYENTE  PASS
+  M1   mm reasignado antes del del                          NO_CONCLUYENTE  NO_CONCLUYENTE  PASS
+  M2   variable de bucle reasignada con otro memmap         NO_CONCLUYENTE  NO_CONCLUYENTE  PASS
+  M3   variable de bucle reasignada tras liberar            NO_CONCLUYENTE  NO_CONCLUYENTE  PASS
+
+TOTAL: 16/16 PASS

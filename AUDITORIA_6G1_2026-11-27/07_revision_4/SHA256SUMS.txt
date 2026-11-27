@@ -1,0 +1,87 @@
+# SHA-256 de la REVISION 4
+#
+# Verificacion desde la raiz de AUDITORIA_6G1_2026-11-27/:
+#     sha256sum -c 07_revision_4/SHA256SUMS.txt
+#
+# ---------------------------------------------------------------------------
+# ALCANCE DECLARADO
+# ---------------------------------------------------------------------------
+#
+#   Bloque 1  esta carpeta 07_revision_4/ .......... 17 ficheros
+#             (propuesta, parche, 7 bancos, 7 salidas, informe)
+#             NO se incluye este propio fichero.
+#
+#   Bloque 2  ENTREGA 3, 06_revision_3/ ............ 14 ficheros
+#   Bloque 3  ENTREGA 2, 05_revision_2/ ............ 12 ficheros
+#   Bloque 4  ENTREGA 1, raiz + 01/02/03/04 ........ 12 ficheros
+#
+#   Total cubierto: 55 ficheros + este = 56 en la rama.
+#
+#   Las entregas 1, 2 y 3 NO se modifican. Sus 38 hashes se publican aqui para
+#   que exista UNA verificacion completa de todo lo publicado en la rama.
+#   Se calcularon leyendo los commits 9142e40 (rev.3), 0b42974 (rev.2) y
+#   625c9815 (rev.1) con `git cat-file`, sin reescribir ningun fichero.
+#
+
+# --- Bloque 1: REVISION 4 (17 ficheros, sin este SHA256SUMS.txt) ---
+5bface0496429baf5ed9f2b4ddf222a5afa33b53b442aa4e51a8c9e825f02631  07_revision_4/01_propuesta/pruebas_auditoria_cierre_6g1.PROPUESTA.py
+382b1c504439c278b103131eb362828e3dba436566b249847d0baa1b9c9f18f9  07_revision_4/01_propuesta/propuesta_6g1.patch
+9d44d2314e81fdb1fddb9351e86df62cef178465850185652d3bc7be388b473a  07_revision_4/02_bancos/_t_det5.py
+9444eae930ee5d86f5504bc123c6dc0d08c6c8ab1a654a2e3acf52331073fc4d  07_revision_4/02_bancos/_t_integridad.py
+f6feb6c21185c4664f67872bfb23d5e0d82e50b343bfcb156e22531bfcb80ad9  07_revision_4/02_bancos/_t_det4.py
+80a7948b712d61bd53a32fca47ce6dcea97e41cf23fce79018c215aa1fe704e4  07_revision_4/02_bancos/_t_det3.py
+0e278d392b41a136bb14f9825ed6d14f8bb9d8e95cf455f68c9ed6bdd55d07c2  07_revision_4/02_bancos/_t_det2.py
+9e4ce3162006da689e898c13e6970fda5d3cc78a6f24a2f82b328b93f9fc96a0  07_revision_4/02_bancos/_t_rutas2.py
+2eb7d102eb3412f3da877c9e5d330481be22a84f864fde166e7718e97071c18a  07_revision_4/02_bancos/_t_rutas.py
+9aa6e431e5a90d8491eb4f26f129b4310e0d5f8efb0d9a0b56e655fa49d62d49  07_revision_4/03_salidas/SALIDA_detector_f_r4.txt
+cc5903eafcb1fce69acf6ca936f24986590717a2c52fa385939f0ac0a6ab6687  07_revision_4/03_salidas/SALIDA_integridad.txt
+634f27c46bd71d69dc49808a2d9ac373dd9b7056474767f6d1307cb6f8d71308  07_revision_4/03_salidas/SALIDA_detector_f_r3.txt
+dc8209e791682e474b7161da6e30583b33e4d4821ee245e17fdd757504fbf3a7  07_revision_4/03_salidas/SALIDA_detector_f_r2.txt
+28341953f22e229b569e9548bd885d05bb73e29eb1d279002438b495cbfee09c  07_revision_4/03_salidas/SALIDA_detector_f.txt
+272e5e60298833f1d5d6f943a4921934978a6256b16ce4a52f9dcaf74a0a0733  07_revision_4/03_salidas/SALIDA_rutas2.txt
+b84e05fd9ef1b5ed4b9d4181696d90973dab29fc76aa3e5062a2f74b596ff100  07_revision_4/03_salidas/SALIDA_rutas.txt
+8b036e0be23dfa1052d12984246d846edbf625f8ae831a0d3849433f09be15e3  07_revision_4/PAQUETE_FASE_6G1_REVISION_4.txt
+
+# --- Bloque 2: ENTREGA 3 (commit 9142e40, 06_revision_3/, 14 ficheros) ---
+acdce18fd321e35bff6b3118aabcd86ba56369560a779a9bfa14dcae1835b5a5  AUDITORIA_6G1_2026-11-27/06_revision_3/01_propuesta/propuesta_6g1.patch
+9b93108b3538b9468e8bd02e2a0d8570bf4e7546e9003b3038cd083bd484f3c0  AUDITORIA_6G1_2026-11-27/06_revision_3/01_propuesta/pruebas_auditoria_cierre_6g1.PROPUESTA.py
+0e278d392b41a136bb14f9825ed6d14f8bb9d8e95cf455f68c9ed6bdd55d07c2  AUDITORIA_6G1_2026-11-27/06_revision_3/02_bancos/_t_det2.py
+80a7948b712d61bd53a32fca47ce6dcea97e41cf23fce79018c215aa1fe704e4  AUDITORIA_6G1_2026-11-27/06_revision_3/02_bancos/_t_det3.py
+f6feb6c21185c4664f67872bfb23d5e0d82e50b343bfcb156e22531bfcb80ad9  AUDITORIA_6G1_2026-11-27/06_revision_3/02_bancos/_t_det4.py
+2eb7d102eb3412f3da877c9e5d330481be22a84f864fde166e7718e97071c18a  AUDITORIA_6G1_2026-11-27/06_revision_3/02_bancos/_t_rutas.py
+9e4ce3162006da689e898c13e6970fda5d3cc78a6f24a2f82b328b93f9fc96a0  AUDITORIA_6G1_2026-11-27/06_revision_3/02_bancos/_t_rutas2.py
+28341953f22e229b569e9548bd885d05bb73e29eb1d279002438b495cbfee09c  AUDITORIA_6G1_2026-11-27/06_revision_3/03_salidas/SALIDA_detector_f.txt
+dc8209e791682e474b7161da6e30583b33e4d4821ee245e17fdd757504fbf3a7  AUDITORIA_6G1_2026-11-27/06_revision_3/03_salidas/SALIDA_detector_f_r2.txt
+634f27c46bd71d69dc49808a2d9ac373dd9b7056474767f6d1307cb6f8d71308  AUDITORIA_6G1_2026-11-27/06_revision_3/03_salidas/SALIDA_detector_f_r3.txt
+333b4541cf19eb6b3e3b87132c75da09a4482d44111f26d968baf6f426ad86e4  AUDITORIA_6G1_2026-11-27/06_revision_3/03_salidas/SALIDA_rutas.txt
+272e5e60298833f1d5d6f943a4921934978a6256b16ce4a52f9dcaf74a0a0733  AUDITORIA_6G1_2026-11-27/06_revision_3/03_salidas/SALIDA_rutas2.txt
+f382a926fb51a054ed3cf995b148bc9fb6588e3fbb68b9a4cbf4471213e3843f  AUDITORIA_6G1_2026-11-27/06_revision_3/PAQUETE_FASE_6G1_REVISION_3.txt
+30109b84990b8ecbbcc34eafc5fcc953a2d45175f94729b5cfffde76e66f8fdf  AUDITORIA_6G1_2026-11-27/06_revision_3/SHA256SUMS.txt
+
+# --- Bloque 3: ENTREGA 2 (commit 0b42974, 05_revision_2/, 12 ficheros) ---
+929c498fc625f136cb4792ca38e67eb715f1f370b6d6cffaebcd7c89c2b9d987  AUDITORIA_6G1_2026-11-27/05_revision_2/01_propuesta/propuesta_6g1.patch
+dda62c245a275a633dcc5d17e8ae0ef247dae947f170e19ecc1ded06b746423d  AUDITORIA_6G1_2026-11-27/05_revision_2/01_propuesta/pruebas_auditoria_cierre_6g1.PROPUESTA.py
+0e278d392b41a136bb14f9825ed6d14f8bb9d8e95cf455f68c9ed6bdd55d07c2  AUDITORIA_6G1_2026-11-27/05_revision_2/02_bancos/_t_det2.py
+80a7948b712d61bd53a32fca47ce6dcea97e41cf23fce79018c215aa1fe704e4  AUDITORIA_6G1_2026-11-27/05_revision_2/02_bancos/_t_det3.py
+2eb7d102eb3412f3da877c9e5d330481be22a84f864fde166e7718e97071c18a  AUDITORIA_6G1_2026-11-27/05_revision_2/02_bancos/_t_rutas.py
+9e4ce3162006da689e898c13e6970fda5d3cc78a6f24a2f82b328b93f9fc96a0  AUDITORIA_6G1_2026-11-27/05_revision_2/02_bancos/_t_rutas2.py
+28341953f22e229b569e9548bd885d05bb73e29eb1d279002438b495cbfee09c  AUDITORIA_6G1_2026-11-27/05_revision_2/03_salidas/SALIDA_detector_f.txt
+dc8209e791682e474b7161da6e30583b33e4d4821ee245e17fdd757504fbf3a7  AUDITORIA_6G1_2026-11-27/05_revision_2/03_salidas/SALIDA_detector_f_r2.txt
+9ab5aceeb4ee5e25bc640698e4887ebe01546eaed6fabd04ca758c811bfeaa3b  AUDITORIA_6G1_2026-11-27/05_revision_2/03_salidas/SALIDA_rutas.txt
+272e5e60298833f1d5d6f943a4921934978a6256b16ce4a52f9dcaf74a0a0733  AUDITORIA_6G1_2026-11-27/05_revision_2/03_salidas/SALIDA_rutas2.txt
+04c977aa2b2f5c6f710621515745920cfb300a4c261b4263bda6941caf763cbf  AUDITORIA_6G1_2026-11-27/05_revision_2/PAQUETE_FASE_6G1_REVISION_2.txt
+e963a8a40bd72bbb9e47614bb15378457d76aa84215709e7a8beeeafb1764150  AUDITORIA_6G1_2026-11-27/05_revision_2/SHA256SUMS.txt
+
+# --- Bloque 4: ENTREGA 1 (commit 625c9815, 12 ficheros) ---
+79d5501ef1fa2b512f29c37919cc33613094094dc366b2cb077a68d812a92fdb  AUDITORIA_6G1_2026-11-27/01_propuesta/propuesta_6g1.patch
+7b1165e834bea12ed58f077cb3bf6f9e494c41d1105494c8c82f581663dcb4c5  AUDITORIA_6G1_2026-11-27/01_propuesta/pruebas_auditoria_cierre_6g1.PROPUESTA.py
+31f724b3d19b89ea9210cdd02e1d5a94bc5fd5bdfdc86e7c651c9d0acdc54852  AUDITORIA_6G1_2026-11-27/02_original/pruebas_auditoria_cierre_6g1.ORIGINAL.py
+28341953f22e229b569e9548bd885d05bb73e29eb1d279002438b495cbfee09c  AUDITORIA_6G1_2026-11-27/03_pruebas/SALIDA_detector_f.txt
+9073ff1cfd3a7dee863c95a93320b4be48b16dcaee6db107d2b8e4599af9f7af  AUDITORIA_6G1_2026-11-27/03_pruebas/SALIDA_motores_reales.txt
+9d947ede8a35933af4daab482ef61f2e8e15e3e3742db429d9cdd73f0c8036c4  AUDITORIA_6G1_2026-11-27/03_pruebas/SALIDA_rutas.txt
+c4cdf40201e54f569eb6244d07580ea4814909135e75b6b2c02717d256c40a13  AUDITORIA_6G1_2026-11-27/03_pruebas/test_detector_f_sintetico.py
+056be4a080db8cd42426029a1d9176cc8b846d422092f646275bbafa72c05979  AUDITORIA_6G1_2026-11-27/03_pruebas/test_rutas_sinteticas.py
+4cf01ecc8bc5af688fca70aceabf044182e0b9308922d093444ada1f091012ee  AUDITORIA_6G1_2026-11-27/04_informes/PAQUETE_FASE_6G1_A_SUPERADO.txt
+2e18f339bc32b3349a6350ea83c402a4d06e4769f4637ec07ecbbdfc1b0fad0d  AUDITORIA_6G1_2026-11-27/04_informes/PAQUETE_FASE_6G1_B_CORRECCION_DETECTOR.txt
+d9529d2ec536de8d391988f1f03565c055ef196b85e13524ab634cf02a20b0c2  AUDITORIA_6G1_2026-11-27/README.md
+7b976964f6da5f9940a9dcd5ef0c09a3afe5f4142190d37528514e8f32bb4b29  AUDITORIA_6G1_2026-11-27/SHA256SUMS.txt

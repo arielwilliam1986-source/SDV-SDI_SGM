@@ -1,0 +1,79 @@
+==============================================================================
+BANCO REVISION 2: asegurar_dirs / escribir_nuevo / copiar_nuevo
+propuesta: /tmp/prop6g1/pruebas_auditoria_cierre_6g1.PROPUESTA.py
+==============================================================================
+
+A. asegurar_dirs -> creacion de directorios
+  A1  raiz existente + un nivel                              PASS
+  A2  raiz existente + cuatro niveles                        PASS
+  A3  ruta anidada con nombre repetido                       PASS
+  A4  ruta con espacios y guiones                            PASS
+  A5  ruta con punto inicial                                 PASS
+
+B. asegurar_dirs -> directorios ya existentes
+  B1  carpeta ya existente (un nivel)                        PASS
+  B2  cadena ya existente                                    PASS
+  B3  repetir sobre cadena ya existente                      PASS
+  B4  crear parcial sobre cadena mixta                       PASS
+  B5  B1 dejo un directorio real (no enlace)                 PASS
+
+C. asegurar_dirs -> relacion p == raiz
+  C1  p == raiz inexistente -> RechazoRutas                  PASS
+  C2  C1 NO creo la raiz                                     PASS
+  C3  p == raiz existente -> no-op sin error                 PASS
+  C4  p == raiz existente sigue siendo directorio            PASS
+
+D. asegurar_dirs -> rutas que NO cuelgan de la raiz
+  D1  ruta hermana de la raiz -> Rechazo                     PASS
+  D2  D1 no creo nada fuera                                  PASS
+  D3  raiz relativa .. -> Rechazo                            PASS
+  D4  ruta con ../ dentro -> Rechazo                         PASS
+  D5  ruta absoluta distinta -> Rechazo                      PASS
+  D6  raiz que es un fichero -> Rechazo                      PASS
+
+E. asegurar_dirs -> enlaces simbolicos
+  E1  componente que es enlace a directorio -> Rechazo       PASS
+  E2  E1 no escribio a traves del enlace                     PASS
+  E3  componente que es enlace a fichero -> Rechazo          PASS
+  E4  componente enlace roto -> Rechazo                      PASS
+  E5  raiz que es enlace + p==raiz -> no-op sin error        PASS
+  E6  E5 no creo nada                                        PASS
+  E7  raiz enlace -> escribe DENTRO del destino resuelto     PASS
+  E8  E7 no creo nada fuera del arbol de la raiz             PASS
+
+F. escribir_nuevo -> destinos nuevos y existentes
+  F1  destino nuevo -> escribe                               PASS
+  F2  destino existente -> Rechazo                           PASS
+  F3  F2 no sobrescribio                                     PASS
+  F4  destino enlace a existente -> Rechazo                  PASS
+  F5  F4 no sobrescribio el original                         PASS
+  F6  destino enlace roto -> Rechazo                         PASS
+  F7  F6 no creo el destino del enlace                       PASS
+  F8  destino en carpeta inexistente -> excepcion de E/S     PASS
+  F8b F8 no creo las carpetas intermedias                    PASS
+  F9  contenido vacio -> escribe fichero vacio               PASS
+  F10 UTF-8 se conserva                                      PASS
+
+G. copiar_nuevo -> destinos nuevos y existentes
+  G1  destino nuevo -> copia identica                        PASS
+  G2  destino existente -> Rechazo                           PASS
+  G3  G2 no sobrescribio                                     PASS
+  G4  destino enlace -> Rechazo                              PASS
+  G5  G4 no sobrescribio                                     PASS
+  G6  origen inexistente -> excepcion                        PASS
+  G7  G6 no dejo destino a medias                            PASS
+  G8  origen vacio -> copia vacia                            PASS
+
+H. coherencia: crear dir + escribir + copiar en el mismo arbol
+  H1  dir creado bajo evidence-dir                           PASS
+  H2  escritura en el dir creado                             PASS
+  H3  copia en el dir creado                                 PASS
+  H4  el evidence-dir no se salio de si mismo                PASS
+  H5  H no escribio fuera de H_ev                            PASS
+
+  arbol temporal eliminado: True
+
+==============================================================================
+RESULTADO: 52/52 correctos
+TODOS LOS CASOS CORRECTOS
+==============================================================================
