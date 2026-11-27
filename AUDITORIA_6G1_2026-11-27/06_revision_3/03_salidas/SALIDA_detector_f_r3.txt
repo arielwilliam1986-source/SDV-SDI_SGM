@@ -1,0 +1,25 @@
+==========================================================================================
+BANCO REVISION 3: formas de alias no reconocidas
+propuesta: /tmp/prop6g1/pruebas_auditoria_cierre_6g1.PROPUESTA.py
+==========================================================================================
+
+  ID      caso                                                  esperado        obtenido        res
+  ------  ----------------------------------------------------  --------------  --------------  ----
+  R3-A    OBLIGATORIO A: asignacion anotada  b: object = arr    NO_CONCLUYENTE   NO_CONCLUYENTE   PASS
+  R3-B    OBLIGATORIO B: asignacion encadenada  b = c = arr     NO_CONCLUYENTE   NO_CONCLUYENTE   PASS
+  R3-C    desempaquetado  b, = (arr,)                           NO_CONCLUYENTE   NO_CONCLUYENTE   PASS
+  R3-C2   desempaquetado multiple  b, c = (arr, arr)            NO_CONCLUYENTE   NO_CONCLUYENTE   PASS
+  R3-D    NamedExpr  (b := arr)                                 NO_CONCLUYENTE   NO_CONCLUYENTE   PASS
+  R3-E    atributo  obj.ref = arr                               NO_CONCLUYENTE   NO_CONCLUYENTE   PASS
+  R3-F    contenedor  lista.append(arr)                         NO_CONCLUYENTE   NO_CONCLUYENTE   PASS
+  R3-G    subscript  d["k"] = arr                               NO_CONCLUYENTE   NO_CONCLUYENTE   PASS
+  R3-H    alias dentro de rama if                               C_FALSE         C_FALSE         PASS
+  R3-I    alias dentro de try                                   C_FALSE         C_FALSE         PASS
+  R3-J    alias DESPUES de arr = None desde b viva              NO_CONCLUYENTE   NO_CONCLUYENTE   PASS
+  R3-K    alias despues de liberar desde k viva                 NO_CONCLUYENTE   NO_CONCLUYENTE   PASS
+  R3-M    CONTROL: sin alias, libera -> C_TRUE                  C_TRUE          C_TRUE          PASS
+  R3-N    CONTROL: alias simple b = arr -> C_FALSE              C_FALSE         C_FALSE         PASS
+  R3-O    CONTROL: alias liberado despues -> C_TRUE             C_TRUE          C_TRUE          PASS
+  R3-P    CONTROL: alias creado y liberado sin ramas -> C_TRUE  C_TRUE          C_TRUE          PASS
+
+TOTAL: 16/16 PASS

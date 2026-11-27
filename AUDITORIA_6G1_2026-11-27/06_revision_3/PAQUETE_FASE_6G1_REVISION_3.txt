@@ -1,0 +1,447 @@
+```text
+================================================================================
+FASE 6G.1 - REVISION 3
+Cobertura de alias no reconocidos en el detector F
+Bajo las entregas 1 y 2, sin modificarlas
+================================================================================
+
+ESTADO: PENDIENTE_REVISION_CRIS
+FECHA:  2026-11-27
+RAMA:   auditoria-6g1-propuesta
+PADRE:  0b42974fdb293e56d3af1811e09801c2968b7aa2  (entrega 2, INTACTA)
+ABUELO: 625c98151e2ec79b0cfaaa218cae268303f4852c  (entrega 1, INTACTA)
+
+--------------------------------------------------------------------------------
+0. RESUMEN EJECUTIVO
+--------------------------------------------------------------------------------
+
+Cris pide cubrir las asignaciones que crean ALIAS y que el detector no
+analizaba, porque producian CONCLUYENTE_TRUE falso.
+
+REPRODUCIDO ANTES DE TOCAR NADA:
+
+  A  b: object = arr   (anotada)      -> CONCLUYENTE_TRUE   FALSO POSITIVO
+  B  b = c = arr       (encadenada)   -> CONCLUYENTE_TRUE   FALSO POSITIVO
+
+Al auditar las demas formas que pide Cris, el problema era MAS AMPLIO de lo
+reportado. Resultado de la reproduccion inicial con la propuesta de la
+revision 2 (13 casos):
+
+  forma                                   estado rev.2   esperado
+  --------------------------------------  --------------  -------------------
+  A  anotada: b: object = arr             C_TRUE          NO_CONCLUYENTE
+  B  encadenada: b = c = arr              C_TRUE          NO_CONCLUYENTE
+  C  desempaquetado: b, = (arr,)          C_TRUE          NO_CONCLUYENTE
+  D  NamedExpr: (b := arr)                C_TRUE          NO_CONCLUYENTE
+  E  atributo: obj.ref = arr              C_TRUE          NO_CONCLUYENTE
+  F  contenedor: lista.append(arr)        NO_CONCLUYENTE  NO_CONCLUYENTE
+  G  subscript: d["k"] = arr              C_TRUE          NO_CONCLUYENTE
+  H  alias dentro de rama if              C_FALSE         C_FALSE   (correcto)
+  I  alias dentro de try                  C_FALSE         C_FALSE   (correcto)
+  J  alias tras liberar, desde b viva     NO_CONCLUYENTE  NO_CONCLUYENTE
+  K  alias tras liberar, desde k viva     NO_CONCLUYENTE  NO_CONCLUYENTE
+  M  control: sin alias                   C_TRUE         C_TRUE    (correcto)
+  N  control: alias simple b = arr        C_FALSE         C_FALSE   (correcto)
+
+  -> SIETE falsos positivos reales (A, B, C, D, E, G y el mismo patron en las
+     asignaciones encadenadas), no uno.
+
+CAUSA RAIZ: el detector solo seguia la forma exacta `b = arr` (un ast.Assign
+con un unico target Name y un unico value Name). Cualquier otra forma que
+pudiera RETENER el memmap se ignoraba EN SILENCIO, y como el resto de la
+secuencia parecia limpia, se declaraba CONCLUYENTE_TRUE.
+
+CORRECCION: se anade _formas_conservadoras(fn, alias), un barrido que detecta
+las construcciones que pueden conservar la referencia y que el detector NO
+sabe seguir. Si aparece alguna, el resultado NO puede ser CONCLUYENTE_TRUE:
+se devuelve NO_CONCLUYENTE (o FALSE si ademas hay fuga conocida).
+
+PRUEBAS: 133/133
+  _t_det4.py  (NUEVO, 16 casos) ......... 16/16
+  _t_det3.py  (revision 2, 16 casos) .... 16/16
+  _t_det2.py  (revision 1, 26 casos) .... 26/26
+  _t_rutas2.py (revision 2, 52 casos) ... 52/52
+  _t_rutas.py  (revision 1, 23 casos) ... 23/23
+
+MOTORES (solo lectura del AST): 3/3 CONCLUYENTE_TRUE, con el criterio NUEVO.
+Si el criterio endurecido los hubiera tumbado, se reportaria tal cual.
+
+NO se ha relajado ninguna expectativa. NO se ha convertido ningun UNKNOWN ni
+ningun resultado dudoso en PASS.
+
+--------------------------------------------------------------------------------
+1. LAS DOS FORMAS OBLIGATORIAS DE CRIS
+--------------------------------------------------------------------------------
+
+1.1 A. ASIGNACION ANOTADA
+
+    mm = {}
+    for arr in mm.values():
+        arr.flush()
+    b: object = arr          <-- AnnAssign, no Assign
+    arr = None
+    del mm
+
+    Antes: CONCLUYENTE_TRUE (falso positivo).
+    Ahora: NO_CONCLUYENTE.
+    Motivo: "formas no seguidas que pueden retener la referencia: arr:
+             anotada@N".
+
+    Por que se ignoraba: el detector recorria ast.Assign. Un ast.AnnAssign es
+    un nodo DISTINTO; ni se miraba. La anotacion no cambia la semantica: sigue
+    ligando b al mismo objeto que arr.
+
+1.2 B. ASIGNACION ENCADENADA
+
+    mm = {}
+    for arr in mm.values():
+        arr.flush()
+    b = c = arr              <-- Assign con 2 targets
+    arr = None
+    del mm
+
+    Antes: CONCLUYENTE_TRUE (falso positivo).
+    Ahora: NO_CONCLUYENTE.
+    Motivo: "formas no seguidas... encadenada@N".
+
+    Por que se ignoraba: el detector exigia len(s.targets) == 1. Con dos
+    targets, la sentencia entera se descartaba y no se anotaba ninguna fuga,
+    pese a que b y c quedan ligados al memmap.
+
+    NOTA: en una asignacion encadenada, AMBOS nombres quedan vivos. No basta
+    con mirar el primero.
+
+--------------------------------------------------------------------------------
+2. LAS DEMAS FORMAS AUDITADAS (grupo completo)
+--------------------------------------------------------------------------------
+
+  FORMA                    CONSTRUCCION                 ANTES             AHORA
+  -----------------------  ---------------------------  ----------------  ----------------
+  anotada                  b: object = arr              C_TRUE  (falso)   NO_CONCLUYENTE
+  encadenada               b = c = arr                  C_TRUE  (falso)   NO_CONCLUYENTE
+  desempaquetado           b, = (arr,)                  C_TRUE  (falso)   NO_CONCLUYENTE
+  desempaquetado multiple  b, c = (arr, arr)            C_TRUE  (falso)   NO_CONCLUYENTE
+  NamedExpr (walrus)       (b := arr)                   C_TRUE  (falso)   NO_CONCLUYENTE
+  atributo                 obj.ref = arr                C_TRUE  (falso)   NO_CONCLUYENTE
+  contenedor               lista.append(arr)           NO_CONCLUYENTE   NO_CONCLUYENTE
+  subscript                d["k"] = arr                 C_TRUE  (falso)   NO_CONCLUYENTE
+  alias en rama if         if c: b = arr                C_FALSE           C_FALSE
+  alias en try             try: b = arr                 C_FALSE           C_FALSE
+  alias tras liberar       b = arr; arr = None; c = b   NO_CONCLUYENTE   NO_CONCLUYENTE
+  alias desde otra viva    k = arr; arr = None; d = k    NO_CONCLUYENTE   NO_CONCLUYENTE
+
+  Dos formas YA estaban bien y NO se han tocado:
+    - alias dentro de rama if / try: el detector las sigue con ast.walk sobre
+      todo el cuerpo, de modo que encuentra el alias mire donde mire la rama.
+      Da CONCLUYENTE_FALSE, que es CORRECTO: b conserva el memmap.
+    - alias creado despues de liberar desde otra referencia viva: ya daba
+      NO_CONCLUYENTE por la regla de fuga de la revision 2.
+
+  Criterio aplicado: "no es obligatorio soportar todas las construcciones de
+  Python, pero si es obligatorio no ignorar en silencio ninguna que pueda
+  conservar el memmap y luego declarar CONCLUYENTE_TRUE". Por eso las formas
+  que NO se sabe seguir devuelven NO_CONCLUYENTE en lugar de TRUE.
+
+--------------------------------------------------------------------------------
+3. COMO SE CORRIGIO (con detalle tecnico)
+--------------------------------------------------------------------------------
+
+Se anade una funcion nueva, _formas_conservadoras(fn, alias), que recorre el
+cuerpo de la funcion y devuelve la lista de construcciones peligrosas:
+
+  (tipo, linea, fragmento)
+
+  Tipos detectados:
+    anotada             ast.AnnAssign cuyo value toca el alias
+    encadenada          ast.Assign con len(targets) > 1 y value toca el alias
+    desempaquetado      ast.Assign con target Tuple/List y value toca el alias
+    namedexpr           ast.NamedExpr cuyo value toca el alias
+    atributo/contenedor ast.Assign con target Attribute/Subscript y value toca
+                        el alias  (obj.ref = arr  /  d["k"] = arr)
+    paso_a_llamada      llamada con un argumento del alias en cualquier posicion
+                        (lista.append(arr), registrar(arr), ...)
+
+  "toca el alias" = la expresion referencia alguno de los nombres del conjunto
+  de alias de esa variable de bucle, calculado con _alias_de().
+
+Se evalua POR VARIABLE DE BUCLE, con SU conjunto de alias, porque cada
+variable puede tener alias distintos.
+
+En _analizar_funcion(), si aparece alguna forma:
+
+    if formas:
+        detalle = '; '.join('%s: %s@%d' % (v, f[0][0], f[0][1]) ...)
+        out['formas'] = {...}                 # se guarda el detalle
+        return dict(out, estado=F_DUDOSO,
+                    motivo='formas no seguidas que pueden retener la '
+                           'referencia: %s' % detalle)
+
+Se devuelve F_DUDOSO (NO_CONCLUYENTE). Nunca F_OK.
+
+ORDEN DE LAS COMPROBACIONES en _analizar_funcion (importante):
+  1. variables de bucle que recorren el contenedor
+  2. FORMAS CONSERVADORAS nuevas
+  3. rebindings (_reasignaciones_previas, modelo de vidas de la revision 2)
+  4. evaluacion de todos los caminos
+  5. decision final
+
+Las formas se comprueban ANTES que el modelo de vidas, a proposito: el modelo
+de vidas sirve para justificar REASIGNACIONES ya cubiertas, NO para justificar
+alias que el detector no ha identificado (punto 3 del encargo de Cris).
+
+--------------------------------------------------------------------------------
+4. MODELO DE VIDAS: QUE SE CONSERVA Y QUE NO
+--------------------------------------------------------------------------------
+
+Se CONSERVA exactamente igual que en la revision 2:
+
+  - un nombre "vive" desde su definicion hasta su `del`;
+  - `x = None` es LIBERACION;
+  - reasignar un nombre VIVO es rebinding (dudoso);
+  - reasignar un nombre YA BORRADO es una VIDA NUEVA (patron legitimo
+    mm = {}; del mm; mm = {}; del mm);
+  - los nombres de bucle los define el `for`, asi que toda asignacion posterior
+    sobre ellos rebindea.
+
+Se deja CLARO que NO se usa para:
+  - justificar alias no identificados;
+  - convertir en TRUE un caso donde aparezca una forma conservadora.
+
+Prueba de que el modelo sigue vivo y funcionando: el banco _t_det3.py de la
+revision 2 (que contiene M1, M2, M3, D3, V1, V2) sigue 16/16.
+
+--------------------------------------------------------------------------------
+5. PRUEBAS: DETALLE COMPLETO DEL BANCO NUEVO (_t_det4.py, 16 casos)
+--------------------------------------------------------------------------------
+
+  ID      caso                                                  esperado        obtenido        res
+  ------  ----------------------------------------------------  --------------  --------------  ----
+  R3-A    OBLIGATORIO A: asignacion anotada  b: object = arr   NO_CONCLUYENTE  NO_CONCLUYENTE  PASS
+  R3-B    OBLIGATORIO B: asignacion encadenada  b = c = arr    NO_CONCLUYENTE  NO_CONCLUYENTE  PASS
+  R3-C    desempaquetado  b, = (arr,)                           NO_CONCLUYENTE  NO_CONCLUYENTE  PASS
+  R3-C2   desempaquetado multiple  b, c = (arr, arr)            NO_CONCLUYENTE  NO_CONCLUYENTE  PASS
+  R3-D    NamedExpr  (b := arr)                                 NO_CONCLUYENTE  NO_CONCLUYENTE  PASS
+  R3-E    atributo  obj.ref = arr                               NO_CONCLUYENTE  NO_CONCLUYENTE  PASS
+  R3-F    contenedor  lista.append(arr)                         NO_CONCLUYENTE  NO_CONCLUYENTE  PASS
+  R3-G    subscript  d["k"] = arr                               NO_CONCLUYENTE  NO_CONCLUYENTE  PASS
+  R3-H    alias dentro de rama if                               C_FALSE         C_FALSE         PASS
+  R3-I    alias dentro de try                                   C_FALSE         C_FALSE         PASS
+  R3-J    alias DESPUES de arr = None desde b viva              NO_CONCLUYENTE  NO_CONCLUYENTE  PASS
+  R3-K    alias despues de liberar desde k viva                 NO_CONCLUYENTE  NO_CONCLUYENTE  PASS
+  R3-M    CONTROL: sin alias, libera -> C_TRUE                  C_TRUE         C_TRUE         PASS
+  R3-N    CONTROL: alias simple b = arr -> C_FALSE              C_FALSE         C_FALSE         PASS
+  R3-O    CONTROL: alias liberado despues -> C_TRUE             C_TRUE         C_TRUE         PASS
+  R3-P    CONTROL: alias creado y liberado sin ramas -> C_TRUE  C_TRUE         C_TRUE         PASS
+
+  TOTAL: 16/16 PASS
+
+  NOTA DE HONESTIDAD sobre los controles: en la primera pasada R3-P era
+  "alias en rama y liberado en la rama" y daba NO_CONCLUYENTE. Se comprobo que
+  NO era un defecto del detector: en el camino donde `c` es falso, `b` nunca se
+  libera, asi que dudar es lo correcto. La expectativa estaba mal; se sustituyo
+  por un control valido (alias creado y liberado sin ramas) que da C_TRUE.
+
+--------------------------------------------------------------------------------
+6. NO REGRESION SOBRE LAS REVISIONES 1 Y 2
+--------------------------------------------------------------------------------
+
+  banco                                  casos   resultado
+  -------------------------------------  ------  -----------
+  _t_det4.py     (NUEVO, revision 3)         16   16/16
+  _t_det3.py     (revision 2)                16   16/16
+  _t_det2.py     (revision 1)                26   26/26
+  _t_rutas2.py   (revision 2)                52   52/52
+  _t_rutas.py    (revision 1)                23   23/23
+  -------------------------------------  ------  -----------
+  TOTAL                                     133   133/133
+
+  Caso de Cris del bloqueo 2 (if/del + else/pass) -> CONCLUYENTE_FALSE
+  (sigue igual que en la revision 2).
+
+  FUNCIONES Y TABLAS QUE DEBIAN SEGUIR INTACTAS:
+    ESCENARIOS ..................... identico al ORIGINAL
+    CHECKS_F ....................... identico al ORIGINAL
+    RECURSO_F ...................... identico al ORIGINAL
+    atribucion_f() ................. identico al ORIGINAL
+    args_motor() ................... identico al ORIGINAL
+    verificar() .................... identico al ORIGINAL
+    adjudicacion_hallazgo_f() ...... identico a la ENTREGA 1 (la correccion
+                                     ya autorizada de la fase anterior)
+
+  MOTORES REALES (analisis estatico del AST, NO ejecutados):
+    Hardened  run_experiment  -> CONCLUYENTE_TRUE
+    EVO       run_experiment  -> CONCLUYENTE_TRUE
+    MQR       _run_core       -> CONCLUYENTE_TRUE
+    GLOBAL                    -> CONCLUYENTE_TRUE
+
+  Esto es importante: el criterio NUEVO es MAS ESTRICTO que el de la revision
+  2, y aun asi los tres motores siguen cumpliendo. El endurecimiento NO se ha
+  disenado para que pasen; si los hubiera tumbado, se reportaria.
+
+--------------------------------------------------------------------------------
+7. INTEGRIDAD DE LAS ENTREGAS 1 Y 2
+--------------------------------------------------------------------------------
+
+  Entrega 1 (commit 625c9815): 12 ficheros, INTACTOS.
+  Entrega 2 (commit 0b42974): 12 ficheros en 05_revision_2/, INTACTOS.
+
+  Esta revision anade una carpeta nueva, 06_revision_3/, en un commit HIJO de
+  0b42974. No reescribe ni borra nada.
+
+  Propuesta v1: 7b1165e834bea12ed58f077cb3bf6f9e494c41d1105494c8c82f581663dcb4c5
+  (verificada intacta en esta revision)
+
+  Parche VERIFICADO: original + propuesta_6g1.patch == PROPUESTA byte a byte
+  (ambos sha256 = 9b93108b...f3c0).
+
+--------------------------------------------------------------------------------
+8. EVOLUCION DE LA PROPUESTA ENTRE REVISIONES
+--------------------------------------------------------------------------------
+
+  version           lineas   bytes    sha256 (prefijo)
+  ----------------  ------   ------   -----------------
+  revise 1 (v1)       1135    55897   7b1165e8...
+  revise 2            1240    61285   dda62c24...
+  revise 3            1322    65212   9b93108b...
+  original             394    22391   31f724b3...
+
+  El parche crece de 1043 a 1125 lineas (+82); sigue con 7 hunks sobre el
+  original, +981 / -53.
+
+--------------------------------------------------------------------------------
+9. QUE SE HA EJECUTADO Y QUE NO
+--------------------------------------------------------------------------------
+
+EJECUTADO (solo funciones aisladas, en /tmp):
+  - _analizar_cadena(), _analizar_funcion(), _formas_conservadoras(),
+    _caminos(), _juzgar(), _veredicto(), _alias_de(), asegurar_dirs(),
+    escribir_nuevo(), copiar_nuevo()
+  - parseo AST de los tres motores reales (git show, sin escribir en el arbol)
+  - 5 bancos: 16 + 16 + 26 + 52 + 23 = 133 casos
+
+NO EJECUTADO:
+  - main(), bateria(), ejecutar()
+  - el inyector, sitecustomize
+  - los motores (solo AST)
+  - audio real, bateria de 27 escenarios
+  - C5 historico
+  - ninguna instalacion de dependencias
+  - ningun fichero funcional del proyecto modificado
+  - PDA-1 NO implementado
+
+--------------------------------------------------------------------------------
+10. LIMITACIONES QUE SIGUEN ABIERTAS
+--------------------------------------------------------------------------------
+
+  L-1  TOCTOU T-1..T-4 documentadas, sin resolver.
+  L-2  PDA-1 (escrituras ancladas por descriptor) NO implementado. Requiere
+       revision previa.
+  L-3  Validacion de enlaces no atomica. NO se declara aislamiento completo.
+  L-4  El detector F es ESTATICO: no demuestra nada en tiempo de ejecucion.
+       validacion_dinamica sigue PENDIENTE.
+  L-5  _formas_conservadoras() es una lista CERRADA de formas. Una construccion
+       de Python fuera de esa lista y que retenga el memmap podria no
+       detectarse. No se pretende cubrir toda la gramatica; se pretende no
+       ignorar en silencio las formas conocidas. Las formas nuevas deben
+       anadirse aqui y cubrirse con un caso del banco.
+  L-6  R3-F (lista.append(arr)) ya daba NO_CONCLUYENTE antes de esta revision,
+       por la regla de paso a funcion. Se conserva como caso de control.
+  L-7  Los casos R3-H y R3-I dan CONCLUYENTE_FALSE y es correcto: el alias
+       conserva el memmap. No son dudosos porque la fuga es demostrable.
+
+--------------------------------------------------------------------------------
+11. INVENTARIO DE 06_revision_3/
+--------------------------------------------------------------------------------
+
+  01_propuesta/pruebas_auditoria_cierre_6g1.PROPUESTA.py   propuesta rev.3
+  01_propuesta/propuesta_6g1.patch                          parche vs original
+  02_bancos/_t_det4.py                                      NUEVO, 16 casos
+  02_bancos/_t_det3.py                                      rev.2, 16 casos
+  02_bancos/_t_det2.py                                      rev.1, 26 casos
+  02_bancos/_t_rutas2.py                                    rev.2, 52 casos
+  02_bancos/_t_rutas.py                                     rev.1, 23 casos
+  03_salidas/SALIDA_detector_f_r3.txt                       16/16
+  03_salidas/SALIDA_detector_f_r2.txt                       16/16
+  03_salidas/SALIDA_detector_f.txt                          26/26
+  03_salidas/SALIDA_rutas2.txt                              52/52
+  03_salidas/SALIDA_rutas.txt                               23/23
+  PAQUETE_FASE_6G1_REVISION_3.txt                           este informe
+  SHA256SUMS.txt                                            cobertura explicita
+
+  Los bancos son portables: localizan la propuesta por PROPUESTA_6G1, por la
+  carpeta vecina 01_propuesta o por /tmp/prop6g1.
+
+--------------------------------------------------------------------------------
+11-bis. COBERTURA DOCUMENTAL: SHA256SUMS.txt DE ESTA REVISION
+--------------------------------------------------------------------------------
+
+  ALCANCE DECLARADO, con numeros verificados:
+
+    Bloque 1  06_revision_3/ ............ 13 entradas   13/13 OK
+              (las 12 piezas + el propio informe; el SHA256SUMS.txt no se
+               incluye a si mismo, porque ningun fichero puede contener su
+               propio hash)
+    Bloque 2  05_revision_2/ (entrega 2) . 12 entradas   12/12 OK
+    Bloque 3  01/02/03/04 + raiz (entrega 1) 12 entradas 12/12 OK
+    ------------------------------------  ------------  --------
+    TOTAL                                 37 entradas   37/37 OK
+
+  Como se verifico, en arboles separados para que nada se mezcle:
+    Bloque 1 -> sha256sum -c desde la raiz de AUDITORIA_6G1_2026-11-27/
+    Bloque 2 -> arbol de `git archive 0b42974`
+    Bloque 3 -> arbol de `git archive 625c9815`
+
+  Los 24 hashes de las entregas 1 y 2 NO se recalcularon reescribiendo
+  ficheros: se leyeron de los commits con `git cat-file`.
+
+  Nota sobre la entrega 1: su SHA256SUMS.txt tiene 5 entradas para 12
+  ficheros, y su README afirma "lista completa". Eso ya se documento en la
+  revision 2 y aqui se cubre por completo en el bloque 3. La entrega 1 no se
+  modifica.
+
+--------------------------------------------------------------------------------
+--------------------------------------------------------------------------------
+12. HASHES SHA-256
+--------------------------------------------------------------------------------
+
+  9b93108b3538b9468e8bd02e2a0d8570bf4e7546e9003b3038cd083bd484f3c0  01_propuesta/pruebas_auditoria_cierre_6g1.PROPUESTA.py
+  acdce18fd321e35bff6b3118aabcd86ba56369560a779a9bfa14dcae1835b5a5  01_propuesta/propuesta_6g1.patch
+  f6feb6c21185c4664f67872bfb23d5e0d82e50b343bfcb156e22531bfcb80ad9  02_bancos/_t_det4.py
+  80a7948b712d61bd53a32fca47ce6dcea97e41cf23fce79018c215aa1fe704e4  02_bancos/_t_det3.py
+  0e278d392b41a136bb14f9825ed6d14f8bb9d8e95cf455f68c9ed6bdd55d07c2  02_bancos/_t_det2.py
+  9e4ce3162006da689e898c13e6970fda5d3cc78a6f24a2f82b328b93f9fc96a0  02_bancos/_t_rutas2.py
+  2eb7d102eb3412f3da877c9e5d330481be22a84f864fde166e7718e97071c18a  02_bancos/_t_rutas.py
+  634f27c46bd71d69dc49808a2d9ac373dd9b7056474767f6d1307cb6f8d71308  03_salidas/SALIDA_detector_f_r3.txt
+  dc8209e791682e474b7161da6e30583b33e4d4821ee245e17fdd757504fbf3a7  03_salidas/SALIDA_detector_f_r2.txt
+  28341953f22e229b569e9548bd885d05bb73e29eb1d279002438b495cbfee09c  03_salidas/SALIDA_detector_f.txt
+  272e5e60298833f1d5d6f943a4921934978a6256b16ce4a52f9dcaf74a0a0733  03_salidas/SALIDA_rutas2.txt
+  333b4541cf19eb6b3e3b87132c75da09a4482d44111f26d968baf6f426ad86e4  03_salidas/SALIDA_rutas.txt
+
+  Referencia historica:
+  7b1165e834bea12ed58f077cb3bf6f9e494c41d1105494c8c82f581663dcb4c5  propuesta v1 (entrega 1)
+  dda62c245a275a633dcc5d17e8ae0ef247dae947f170e19ecc1ded06b746423d  propuesta rev.2
+  31f724b3d19b89ea9210cdd02e1d5a94bc5fd5bdfdc86e7c651c9d0acdc54852  original
+
+--------------------------------------------------------------------------------
+13. Estado final
+--------------------------------------------------------------------------------
+
+  FORMA OBLIGATORIA A (anotada) ........... CUBIERTA -> NO_CONCLUYENTE
+  FORMA OBLIGATORIA B (encadenada) ........ CUBIERTA -> NO_CONCLUYENTE
+  Otras formas auditadas .................. 10 formas, 7 falsos positivos
+                                            corregidos
+  Modelo de vidas ......................... CONSERVADO, no usado para justificar
+                                            alias no identificados
+  Pruebas ................................. 133/133
+  Motores reales (estatico) ............... 3/3 CONCLUYENTE_TRUE
+  Entregas 1 y 2 .......................... INTACTAS
+  Aislamiento completo .................... NO SE DECLARA
+  PDA-1 ................................... NO IMPLEMENTADO
+  validacion_dinamica ..................... PENDIENTE
+
+  ESTADO: PENDIENTE_REVISION_CRIS
+
+  No se declara cerrada la fase. No se ha ejecutado la bateria ni los motores.
+  No se ha tocado main ni el PR #4. No se ha convertido ningun UNKNOWN en PASS.
+================================================================================
+```
