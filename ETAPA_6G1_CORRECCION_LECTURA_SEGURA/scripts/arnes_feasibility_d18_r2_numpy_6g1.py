@@ -174,6 +174,40 @@ CORRECCIÓN R6-R3 (autorizada por Cris, prioridad Android/Termux):
           desaparición real concurrente en FS regular y en `/proc/self/fd`
           en `R2-C2`), además del contraste real A/B/C en `R2-C13`.
 
+CORRECCIÓN R6-R4 (autorizada por Cris, corrección metodológica de R2-C9):
+  R6-R4-A Sustitución de la expectativa no portable de `R2-C9`: la
+          versión R6-R3 exigía que `os.listdir(dirfd)` siguiera
+          enumerando el directorio tras `shutil.rmtree(d)`. En
+          Android/Termux real esa operación produjo `FileNotFoundError`
+          aunque el descriptor permanecía abierto. La persistencia del
+          descriptor y la enumerabilidad tras eliminar la entrada de
+          ruta son propiedades diferentes.
+  R6-R4-B Nueva `R2-C9`: crea un directorio temporal, lo abre con
+          `os.open(..., os.O_RDONLY | os.O_DIRECTORY)`, acredita la
+          identidad inicial con `os.fstat(dirfd)` (`st_dev`/`st_ino`),
+          elimina la ruta con `shutil.rmtree(d)`, verifica que la ruta
+          ya no existe, ejecuta `os.fstat(dirfd)` posterior y exige la
+          misma identidad (`st_dev` y `st_ino` iguales), cerrando
+          explícitamente en `finally`. Sin `os.listdir(dirfd)` ni
+          `os.scandir(dirfd)` tras la eliminación. La enumeración
+          anclada con directorio existente permanece cubierta por
+          `R2-C8`/`R2-C12`. Se conservan intactos `fds_with_identity()`,
+          `_supports_anchored_scandir()`, la estrategia
+          `os.scandir(dirfd)` en línea, el fallback `path`, la
+          clasificación `R3-D`, el registro de cierre `R5-A`, los
+          controladores A/B/C, `R2-C13`, `R2-C14`, la precedencia
+          `FAIL > UNKNOWN > PASS` y el fallo histórico `C5`.
+
+  R6-R4-C Adjudicación precisa de errores inesperados en `R2-C9`:
+          solo `EBADF` durante el `fstat` posterior acredita como
+          `FAIL` que el descriptor ya no es válido. Una discrepancia
+          de identidad, la persistencia de la ruta tras una comprobación
+          completada o un fallo del cierre explícito también son `FAIL`.
+          Los demás errores inesperados, incluidos los ocurridos durante
+          `rmtree`, la comprobación de ruta o un `fstat` posterior con
+          errno distinto de `EBADF`, quedan `UNKNOWN`. Ninguna excepción
+          inesperada se convierte en `PASS`.
+
 Restricciones: entorno aislado, fixtures sintéticos, sin motores/, sin
 lectura_segura_6g1.py, sin plan v2.3/diseño v5/adjudicación final, sin
 integración Hardened/EVO/MQR, sin audio real, sin D-16, sin main/PR#2/merge.
@@ -1803,52 +1837,154 @@ def test_r2c_fd3_origin():
 
 
 def test_r2c_persistent_dirfd():
-    """R2-C9: demostración del descriptor de directorio mantenido abierto."""
-    d = tempfile.mkdtemp(prefix="feas_r2c_")
-    f5 = os.path.join(d, "5")
-    open(f5, "w").close()
-    dirfd = os.open(d, os.O_RDONLY | os.O_DIRECTORY)
-    names_via_fd = os.listdir(dirfd)
-    ident = os.fstat(dirfd).st_ino
-    gone_ok = False
+    """R2-C9: descriptor mantenido tras eliminar su ruta (R6-R4).
+
+    Corrección metodológica R6-R4: la versión R6-R3 exigía que
+    ``os.listdir(dirfd)`` siguiera enumerando el directorio tras
+    ``shutil.rmtree(d)``. Esa expectativa no es portable: en
+    Android/Termux real produjo ``FileNotFoundError`` aunque el
+    descriptor permanecía abierto. La persistencia del descriptor
+    (``os.fstat(dirfd)`` sigue identificando el mismo objeto) y la
+    enumerabilidad tras eliminar la entrada de ruta son propiedades
+    diferentes. Esta prueba comprueba solo la primera, sin llamar a
+    ``os.listdir`` ni ``os.scandir`` tras la eliminación. La
+    enumeración anclada mientras el directorio existe permanece
+    cubierta por R2-C8/R2-C12.
+    """
+    d = None
+    dirfd = None
+    open_ok = False
+    dev_before = None
+    ino_before = None
+    initial_identity_valid = False
+    path_gone = False
+    dev_after = None
+    ino_after = None
+    fstat_after_ok = False
+    identity_same = False
+    close_ok = False
+    close_error = None
+    unexpected_error = None
+    phase_reached = "inicio"
     try:
-        shutil.rmtree(d)             # desaparición externa del directorio
-        try:
-            os.listdir(d)            # enumeración por ruta -> debe fallar
-            gone_ok = False
-        except OSError:
-            # enumeración por descriptor mantenido -> NO falla (inodo vivo)
-            names_after = os.listdir(dirfd)
-            gone_ok = isinstance(names_after, list)
+        d = tempfile.mkdtemp(prefix="feas_r2c_")
+        phase_reached = "apertura"
+        dirfd = os.open(d, os.O_RDONLY | os.O_DIRECTORY)
+        open_ok = True
+        phase_reached = "fstat_inicial"
+        st_before = os.fstat(dirfd)
+        dev_before = st_before.st_dev
+        ino_before = st_before.st_ino
+        initial_identity_valid = (
+            dev_before is not None and ino_before is not None
+            and ino_before > 0)
+        phase_reached = "eliminacion"
+        shutil.rmtree(d)
+        phase_reached = "verificacion_ruta"
+        path_gone = (not os.path.exists(d)) and (not os.path.lexists(d))
+        phase_reached = "fstat_posterior"
+        st_after = os.fstat(dirfd)
+        dev_after = st_after.st_dev
+        ino_after = st_after.st_ino
+        fstat_after_ok = True
+        identity_same = (dev_after == dev_before
+                         and ino_after == ino_before)
+        phase_reached = "completado"
+    except Exception as e:
+        # No ignorar: registrar el error y adjudicar conservadoramente.
+        # Nunca se convierte una excepción inesperada en PASS.
+        unexpected_error = {
+            "phase": phase_reached,
+            "exception_type": type(e).__name__,
+            "errno": getattr(e, "errno", None),
+            "message": str(e),
+        }
     finally:
-        os.close(dirfd)
-    st = os.stat("/tmp")
-    inv = fds_with_identity(st, fd_dir="/tmp")
-    ok = (names_via_fd == ["5"] and gone_ok and ident > 0
-          and inv.enum_mode == "dirfd" and inv.enum_dirfd is not None
-          and inv.enum_dirfd >= 0)
-    verdict = "PASS" if ok else "FAIL"
+        if dirfd is not None:
+            try:
+                os.close(dirfd)
+                close_ok = True
+            except OSError as e:
+                close_error = {
+                    "exception_type": type(e).__name__,
+                    "errno": getattr(e, "errno", None),
+                    "message": str(e),
+                }
+                close_ok = False
+        if d is not None:
+            shutil.rmtree(d, ignore_errors=True)
+    # PASS solo si se acreditan TODAS las condiciones verificables:
+    # apertura válida, identidad inicial válida, desaparición efectiva
+    # de la ruta, fstat posterior exitoso con la misma identidad y
+    # cierre explícito correcto.
+    all_conditions = (open_ok and initial_identity_valid and path_gone
+                      and fstat_after_ok and identity_same and close_ok
+                      and unexpected_error is None)
+    if all_conditions:
+        verdict = "PASS"
+    elif not open_ok or not initial_identity_valid:
+        # No se pudo acreditar la apertura o la identidad inicial
+        # (p. ej. O_DIRECTORY no disponible): UNKNOWN conservador,
+        # sin inventar garantías de portabilidad.
+        verdict = "UNKNOWN"
+    elif close_error is not None:
+        # Cierre explícito incorrecto, probado.
+        verdict = "FAIL"
+    elif fstat_after_ok and not identity_same:
+        # El descriptor ya no identifica el mismo objeto, probado.
+        verdict = "FAIL"
+    elif not path_gone and unexpected_error is None:
+        # La ruta sigue existiendo tras la eliminación, probado.
+        verdict = "FAIL"
+    elif unexpected_error is not None:
+        # Una excepción inesperada no demuestra por sí sola que el
+        # descriptor haya perdido su identidad. Solo EBADF durante
+        # el fstat posterior acredita que el fd ya no es válido.
+        # Los errores durante rmtree, verificación de ruta u otros
+        # errores de fstat quedan UNKNOWN.
+        error_phase = unexpected_error.get("phase")
+        error_number = unexpected_error.get("errno")
+        if (error_phase == "fstat_posterior"
+                and error_number == errno.EBADF):
+            verdict = "FAIL"
+        else:
+            verdict = "UNKNOWN"
+    else:
+        verdict = "UNKNOWN"
     record("R2-C9", "R2-C",
-           "Descriptor de directorio mantenido abierto (R2-A, demostración)",
-           "dir sintético con entrada '5'; descriptor O_DIRECTORY abierto "
-           "antes de la inspección; borrado externo del directorio.",
-           "Demostrar: (1) el descriptor de enumeración es estable e "
-           "identificable (fstat funciona, se registra en el inventario); "
-           "(2) tras borrar el directorio, la enumeración por ruta falla "
-           "mientras la del descriptor mantenido no; (3) el descriptor "
-           "propio de la enumeración NO se confunde con una desaparición "
-           "externa.",
-           f"names_via_fd={names_via_fd}; ident_dirfd={ident}; "
-           f"post_delete_via_fd_ok={gone_ok}; enum_mode={inv.enum_mode}; "
-           f"enum_dirfd={inv.enum_dirfd}",
-           "R2-A: la enumeración por descriptor mantenido hace explícito y "
-           "estable el descriptor propio de la enumeración, diferenciando "
-           "desapariciones externas. SE DEMUESTRA por esta prueba; el "
-           "origen del antiguo artefacto fd 3 era el cierre prematuro de "
-           "os.listdir(), resuelto en R6-R3 mediante os.scandir(dirfd) en "
-           "línea (ver R2-C8).",
+           "Descriptor mantenido tras eliminar su ruta: identidad por "
+           "fstat (R6-R4)",
+           "dir temporal creado y abierto con os.open(O_RDONLY | "
+           "O_DIRECTORY); fstat inicial acredita st_dev/st_ino; sin "
+           "enumeración tras la eliminación (R2-C8/R2-C12 cubren la "
+           "enumeración anclada con directorio existente).",
+           "Demostrar: (1) apertura válida; (2) identidad inicial "
+           "válida; (3) desaparición efectiva de la ruta tras "
+           "shutil.rmtree; (4) os.fstat(dirfd) posterior exitoso con "
+           "la misma st_dev/st_ino; (5) cierre explícito correcto en "
+           "finally. Sin os.listdir/os.scandir tras la eliminación.",
+           f"open_ok={open_ok}; dev_before={dev_before}; "
+           f"ino_before={ino_before}; "
+           f"initial_identity_valid={initial_identity_valid}; "
+           f"path_gone={path_gone}; dev_after={dev_after}; "
+           f"ino_after={ino_after}; fstat_after_ok={fstat_after_ok}; "
+           f"identity_same={identity_same}; close_ok={close_ok}; "
+           f"close_error={close_error}; "
+           f"unexpected_error={unexpected_error}; "
+           f"phase_reached={phase_reached}",
+           "R6-R4: la persistencia del descriptor se acredita por "
+           "identidad fstat (st_dev/st_ino) tras eliminar la entrada "
+           "de ruta, sin exigir enumerabilidad posterior. La "
+           "expectativa R6-R3 de os.listdir(dirfd) tras rmtree no es "
+           "portable (FileNotFoundError en Android/Termux con el "
+           "descriptor abierto). PASS exige las cinco condiciones; "
+           "si la apertura/identidad inicial no puede acreditarse se "
+           "aplica UNKNOWN conservador; si la identidad difiere, la "
+           "ruta persiste tras una comprobación completada, hay EBADF "
+           "en el fstat posterior o falla el cierre explícito, es FAIL "
+           "probado. Los demás errores inesperados dejan UNKNOWN; "
+           "ninguna excepción se convierte en PASS.",
            verdict)
-    shutil.rmtree(d, ignore_errors=True)
 
 
 def test_r2c10_real_scenarios_propagation():
@@ -2799,7 +2935,7 @@ def main():
     print(f"Entorno: Python {env['python']} | NumPy {env['numpy']} | "
           f"{env['kernel']} | euid {env['euid']}")
     print(f"Workdir aislado: {WORKDIR}\n")
-    print("CORRECCIONES METODOLÓGICAS R1..R6-R3 activas: "
+    print("CORRECCIONES METODOLÓGICAS R1..R6-R4 activas: "
           "count_maps()/parse_maps() distinguen COMPLETA/INCOMPLETA/"
           "ILEGIBLE; fds_with_identity() enumera e inspecciona en línea vía "
           "os.scandir(dirfd) (portabilidad Android/Termux, sin descriptor "
@@ -2811,7 +2947,8 @@ def main():
           "(R5-A), propaga UNKNOWN desde inventario incompleto mediante "
           "escenarios reales A/B/C y controlador real sin cálculo manual "
           "con adjudicación estricta FAIL > UNKNOWN > PASS en R2-C13 "
-          "(R1..R6 + R6-R1 + R6-R3).\n")
+          "(R1..R6 + R6-R1 + R6-R3) y R2-C9 corregida por identidad "
+          "fstat sin enumeración tras eliminar la ruta (R6-R4).\n")
 
     tests = [test_a1, test_a2, test_a3, test_a4, test_a5, test_a6,
              test_b1, test_b2, test_b3, test_b4, test_b5, test_b6,
@@ -2834,9 +2971,11 @@ def main():
     os.makedirs(EVIDENCE_DIR, exist_ok=True)
     out = {"harness": "arnes_feasibility_d18_r2_numpy_6g1.py",
            "scope": "FEASIBILITY-D18-R2 + R1 + R2 + R3 + R4 + R5 + R6 + R6-R1 "
-                    "+ R6-R3 (corrección metodológica del arnés: R1..R6-R1 y "
-                    "corrección de enumeración os.scandir(dirfd) en línea con "
-                    "prioridad Android/Termux R6-R3)",
+                    "+ R6-R3 + R6-R4 (corrección metodológica del arnés: "
+                    "R1..R6-R1, corrección de enumeración "
+                    "os.scandir(dirfd) en línea con prioridad "
+                    "Android/Termux R6-R3 y corrección metodológica de "
+                    "R2-C9 por identidad fstat R6-R4)",
            "r1_correction": {
                "R1-A": "count_maps/parse_maps no descartan líneas no "
                        "interpretables; distinguen COMPLETA/INCOMPLETA/"
@@ -3008,6 +3147,26 @@ def main():
                           "y Caso B (R2-C2 detección conservadora de "
                           "desaparición concurrente real en FS regular y en "
                           "`/proc/self/fd`).",
+           },
+           "r6_r4_correction": {
+               "R6-R4-A": "sustitución de la expectativa no portable de "
+                          "R2-C9 (os.listdir(dirfd) tras rmtree, que en "
+                          "Android/Termux produjo FileNotFoundError con "
+                          "el descriptor abierto).",
+               "R6-R4-B": "nueva R2-C9 por identidad fstat: apertura "
+                          "O_DIRECTORY, fstat inicial (st_dev/st_ino), "
+                          "rmtree, verificación de desaparición de la "
+                          "ruta, fstat posterior con la misma identidad "
+                          "y cierre explícito en finally; sin "
+                          "os.listdir/os.scandir tras la eliminación; "
+                          "enumeración anclada cubierta por R2-C8/R2-C12; "
+                          "PASS solo con las cinco condiciones; "
+                          "UNKNOWN conservador si apertura/identidad "
+                          "inicial no acreditables; FAIL probado si "
+                          "identidad difiere, ruta persiste tras "
+                          "comprobación completada, fstat posterior "
+                          "devuelve EBADF o falla el cierre explícito; "
+                          "los demás errores inesperados quedan UNKNOWN.",
            },
            "conserva_c5": "C5 (SIGSEGV al cerrar _mmap con array vivo) es "
                           "hallazgo histórico de FEASIBILITY-D18-R1; NO se "

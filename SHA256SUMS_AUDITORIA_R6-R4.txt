@@ -1,0 +1,13 @@
+# SHA-256 del paquete documental R6-R4 (cuatro documentos originales + índice + manifiesto).
+# Rama: arena/a2d9ac2e-sdv-sdi-sgm
+# Commit base del paquete incorporado: 9c986bc547c82f7897bfb8cb8ade4350d253ca3e
+# Actualizado para reflejar el estado versionado, la precedencia documental y los límites de las evidencias externas.
+# Los cuatro documentos originales permanecen byte por byte intactos.
+# Los seis JSON de evidencia externa NO se incluyen: permanecen fuera del repositorio y sus hashes fueron verificados previamente por el usuario.
+# Verificar desde la raíz del repositorio: sha256sum -c SHA256SUMS_AUDITORIA_R6-R4.txt
+28bb335a571cd2a13b0720db3b0fbfa598da79dc478a9ab3d1dff660463f1678  AUDITORIA_DE_RESOLUBILIDAD_UNKNOWN_R6-R4.md
+72141b76d9cea1595167677fd3d3537974358facc271d9a84cdc0da4c5a56d8f  ADENDA_RECTIFICACION_AUDITORIA_UNKNOWN_R6-R4.md
+0a61e9e7533acc114b5631d98e15be36c19d6678b6523a419c4bea1abcf19180  ADENDA_COMPLEMENTARIA_EVIDENCIA_LOCAL_R6-R4.md
+8b8dd2700c495a6f7e56aa810ed34378cc2b7f0ab6ea5a4193d70f5c83f1da2e  ADENDA_FINAL_PRECISION_DOCUMENTAL_R6-R4.md
+6bd4be3264f56a92979b8451726d5dccf7799d2f36328a7a35a87f3ea24d5e6c  INDICE_R6-R4.md
+cd3ff164eb7aeb348a36d4e5a515b0369d1516dea839166854b7c012f43dad80  MANIFEST_EVIDENCIAS_EXTERNAS_R6-R4.json
