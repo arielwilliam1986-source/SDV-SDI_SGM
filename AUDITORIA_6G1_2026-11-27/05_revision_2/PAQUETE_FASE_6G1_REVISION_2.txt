@@ -1,0 +1,586 @@
+```text
+================================================================================
+FASE 6G.1 - REVISION 2
+Correccion de los dos bloqueos de Cris + ampliacion de pruebas sinteticas
+Bajo la entrega 1 (commit 625c9815), sin modificarla
+================================================================================
+
+ESTADO: PENDIENTE_REVISION_CRIS
+FECHA:  2026-11-27
+RAMA:   auditoria-6g1-propuesta
+PADRE:  625c98151e2ec79b0cfaaa218cae268303f4852c  (entrega 1, INTACTA)
+
+--------------------------------------------------------------------------------
+0. RESUMEN EJECUTIVO
+--------------------------------------------------------------------------------
+
+Cris bloqueo la entrega 1 con dos objeciones. Ambas se han reproducido primero,
+sin darlas por buenas, y solo despues se han corregido:
+
+  BLOQUEO 1 -> ERROR ev_iny
+     "asegurar_dirs() no crea inyecciones_auditoria_6g1 bajo el evidence-dir"
+
+  BLOQUEO 2 -> DETECTOR F
+     "_caminos() descarta ramas sin `del mm` y produce CONCLUYENTE_TRUE falso
+      en el patron if condicion: del mm / else: pass"
+
+Resultado: los dos bloqueos estan corregidos, y BUSCANDO EL PRIMERO APARECIO UN
+TERCER DEFECTO, MAS GRAVE, QUE CRIS NO HABIA REPORTADO:
+
+  HALLAZGO NUEVO -> EVASION DE RAIZ POR ".."
+     asegurar_dirs(raiz/'../otro', raiz) creaba /otro FUERA de la raiz, sin
+     error. Path.parents compara la forma textual de la ruta, no su resolucion,
+     de modo que 'raiz/../otro' pasaba el filtro de contencion.
+
+  Reproducido:
+      asegurar_dirs(r/'../otro', r)   -> SIN ERROR
+      asegurar_dirs(r/'a/../../x', r) -> SIN ERROR
+      creado: /tmp/_repro_esc/otro  y  /tmp/_repro_esc/x   (fuera de r)
+
+  Corregido y re-verificado:
+      ../otro      -> RechazoRutas
+      a/../../x    -> RechazoRutas
+      sub/./x      -> OK (dentro)
+      sub//y       -> OK (dentro)
+      bien/anidado -> OK (dentro)
+      creado: solo dentro de la raiz
+
+PRUEBAS (todas ejecutadas, ninguna inferida):
+
+    banco                              casos   resultado
+    ---------------------------------  ------  -----------
+    _t_rutas2.py   (rutas, NUEVO)         52   52/52
+    _t_det3.py     (detector, NUEVO)      16   16/16
+    _t_det2.py     (detector, entrega 1)  26   26/26
+    _t_rutas.py    (rutas, entrega 1)     23   23/23
+    ---------------------------------  ------  -----------
+    TOTAL                                117   117/117
+
+    Motores reales (solo lectura del AST, sin ejecutarlos):
+      Hardened run_experiment -> CONCLUYENTE_TRUE
+      EVO      run_experiment -> CONCLUYENTE_TRUE
+      MQR      _run_core      -> CONCLUYENTE_TRUE
+      GLOBAL                  -> CONCLUYENTE_TRUE
+
+    Caso de Cris (if/del + else/pass) -> CONCLUYENTE_FALSE
+
+--------------------------------------------------------------------------------
+1. BLOQUEO 1: ERROR ev_iny
+--------------------------------------------------------------------------------
+
+1.1 CAUSA RAIZ REPRODUCIDA
+
+    La version de la entrega 1 hacia:
+
+        asegurar_dirs(ev_iny, ev_iny)      # p == raiz
+
+    Con p == raiz, la comprobacion `raiz not in p.parents` es cierta
+    (una ruta no esta en su propia lista de padres), de modo que el bucle
+
+        for parte in p.relative_to(raiz).parts:   # parts == ()
+
+    no iteraba NUNCA. Resultado: la funcion terminaba sin crear nada y sin
+    lanzar error. La carpeta no existia, y el fallo aparecia mucho despues, al
+    escribir, como FileNotFoundError. Un no-op silencioso.
+
+    Reproduccion (antes de tocar nada):
+        asegurar_dirs(ev_iny, ev_iny) sobre ruta inexistente
+        -> sin excepcion
+        -> ev_iny.is_dir() == False
+        -> open(ev_iny/'x.json','x') -> FileNotFoundError
+
+1.2 CORRECCION APLICADA
+
+    a)asegurar_dirs(p, raiz) exige que la raiz EXISTA y sea directorio:
+        if not raiz.is_dir():
+            raise RechazoRutas('%s: la raiz no existe o no es un directorio')
+
+      y trata p == raiz como no-op explicito y documentado (devuelve sin
+      crear), nunca como efecto colateral del bucle vacio.
+
+    b) Contencion estricta (HALLAZGO NUEVO, ver seccion 3):
+        - se rechaza cualquier '..' textual en la ruta;
+        - se resuelven p y raiz antes de comparar.
+
+    c) Se ELIMINA la causa del error: ya no se pasa ev_iny como su propia raiz.
+       bateria() acepta el nuevo parametro ev_raiz (por defecto ev_iny.parent) y
+       crea ev_iny BAJO el evidence-dir:
+
+        # bateria()
+        def bateria(..., ev_raiz=None):
+            ...
+            if ev_raiz is None:
+                ev_raiz = ev_iny.parent
+            asegurar_dirs(ev_iny, ev_raiz)          # L1052
+
+        # main()
+        asegurar_dirs(ev_iny, v['ev'])              # L1080
+        ... bateria(..., ev_raiz=v['ev'])           # propaga el evidence-dir
+
+        # ejecutar()
+        asegurar_dirs(work, trabajo)                # L844, llamada unica
+
+    d) ejecutar() paso de un bucle de llamadas a una sola llamada explicita,
+       para que no quede ninguna invocacion con p == raiz.
+
+1.3 VERIFICACION (banco _t_rutas2.py, 52 casos)
+
+    A. creacion de directorios ................................. 5/5
+       A1 raiz existente + un nivel
+       A2 raiz existente + cuatro niveles
+       A3 ruta anidada con nombre repetido
+       A4 ruta con espacios y guiones
+       A5 ruta con punto inicial
+
+    B. directorios YA existentes (idempotencia) ................ 5/5
+       B1 carpeta ya existente
+       B2 cadena ya existente
+       B3 repetir sobre cadena ya existente
+       B4 crear parcial sobre cadena mixta
+       B5 lo existente sigue siendo directorio real (no enlace)
+
+    C. relacion p == raiz ...................................... 4/4
+       C1 p == raiz inexistente -> RechazoRutas
+       C2 C1 NO crea la raiz
+       C3 p == raiz existente -> no-op sin error
+       C4 p == raiz existente sigue siendo directorio
+
+    D. rutas que NO cuelgan de la raiz ......................... 6/6
+       D1 ruta hermana -> Rechazo
+       D2 D1 no crea nada fuera
+       D3 ruta con '..' -> Rechazo            <- HALLAZGO NUEVO
+       D4 ruta con '../..' intermedio -> Rechazo  <- HALLAZGO NUEVO
+       D5 ruta absoluta distinta -> Rechazo
+       D6 raiz que es un fichero -> Rechazo
+
+    E. enlaces simbolicos ...................................... 8/8
+       E1 componente que es enlace a directorio -> Rechazo
+       E2 E1 no escribe a traves del enlace
+       E3 componente enlace a fichero -> Rechazo
+       E4 componente enlace roto -> Rechazo
+       E5 raiz que es enlace + p == raiz -> no-op sin error
+       E6 E5 no crea nada
+       E7 raiz enlace -> escribe DENTRO del destino resuelto
+       E8 E7 no crea nada fuera del arbol de la raiz
+
+    F. escribir_nuevo() ....................................... 12/12
+       F1  destino nuevo -> escribe
+       F2  destino existente -> Rechazo
+       F3  F2 no sobrescribe
+       F4  destino enlace a existente -> Rechazo
+       F5  F4 no sobrescribe el original
+       F6  destino enlace roto -> Rechazo
+       F7  F6 no crea el destino del enlace
+       F8  destino en carpeta inexistente -> excepcion de E/S
+       F8b F8 no crea carpetas intermedias
+       F9  contenido vacio -> fichero vacio
+       F10 UTF-8 se conserva
+
+    G. copiar_nuevo() ......................................... 8/8
+       G1 destino nuevo -> copia identica
+       G2 destino existente -> Rechazo
+       G3 G2 no sobrescribe
+       G4 destino enlace -> Rechazo
+       G5 G4 no sobrescribe
+       G6 origen inexistente -> excepcion
+       G7 G6 no deja destino a medias
+       G8 origen vacio -> copia vacia
+
+    H. coherencia crear + escribir + copiar ................... 5/5
+       H1 dir creado BAJO el evidence-dir (iny.parent == evidence-dir)
+       H2 escritura dentro del dir creado
+       H3 copia dentro del dir creado
+       H4 el evidence-dir no se sale de si mismo
+       H5 H no escribio fuera de H_ev
+
+    NOTA DE HONESTIDAD: seis casos del banco fallaron en la primera pasada.
+    Cuatro eran defectos de mi prueba (E5, F8, G6, H4) y se corrigieron en la
+    prueba, no en el codigo. DOS ERAN DEFECTOS REALES DEL CODIGO (D3 y D4,
+    evasion por '..') y se corrigieron en asegurar_dirs. No se relajo ninguna
+    expectativa para conseguir PASS.
+
+--------------------------------------------------------------------------------
+2. BLOQUEO 2: DETECTOR F
+--------------------------------------------------------------------------------
+
+2.1 CAUSA RAIZ REPRODUCIDA
+
+    La entrega 1 calculaba los caminos con _caminos(). En el patron
+
+        if condicion:
+            del mm
+        else:
+            pass
+
+    la rama else no contiene ningun evento, y _caminos() la descartaba por no
+    llevar `del`. El unico camino que quedaba era el que si borraba, y el
+    detector concluia CONCLUYENTE_TRUE. Falso positivo exactamente en el patron
+    que Cris senalo.
+
+    Reproducido con la propuesta de la entrega 1: caso de Cris -> CONCLUYENTE_TRUE
+    con 1 solo camino (el de la rama que borra).
+
+2.2 REGLA CORRECTA (la que se ha implementado)
+
+    El error no era "descartar" por si mismo. Descartar ramas sin `del` es
+    correcto si esa rama no puede dejar la referencia viva. La regla fina:
+
+      Una rama es un CAMINO INVALIDO (no concluyente) si la referencia pudo
+      quedar VIVA en esa rama: o porque ya lo estaba antes (_LIB previa), o
+      porque hay una fuga (_FUGA: alias, transferencia a helper, reasignacion).
+
+      Y ese camino debe ADEMAS anadirse a la lista de caminos, no solo
+      acumularse: si solo se acumula, un `del` posterior lo "lava" y el
+      resultado vuelve a ser TRUE.
+
+    Ademas hay que mirar la liberacion ACUMULADA (acc), no solo los eventos
+    de la rama (ev): `else: pass` no genera ningun evento, y sin embargo es
+    justo la rama que deja vivo mm.
+
+    Detalle try/finally: el cuerpo del try no termina el camino; solo el
+    finally lo cierra. Exceptuar con_finally de la comprobacion rompia T1
+    (NO_CONCLUYENTE pasaba a FALSE). Con la excepcion: 26/26.
+
+2.3 ITERACIONES DESCARTADAS (registradas para que no se repitan)
+
+    (a) out.append de toda rama sin del ............... 12/26  descartada
+    (b) marcar solo si la referencia esta "viva" ..... 12/26  descartada
+    (c) solo acumular, sin anadir a out ............... 26/26  pero Cris -> TRUE
+    (d) hibrido append + acumular ..................... 25/26  descartada
+    (e) condicion sobre acc && ev ..................... 26/26  rompia T1
+    (f) acumular + append + exceptuar finally ......... 26/26  Cris -> FALSE  OK
+
+    Las variantes (a) a (e) se abandonaron porque o rompian casos legitimos o
+    dejaban el caso de Cris en TRUE. NO se acepto ninguna solucion que
+    convirtiera el caso de Cris en TRUE ni que relajara el criterio.
+
+2.4 CASOS NUEVOS EXIGIDOS POR CRIS (banco _t_det3.py, 16 casos)
+
+    ID   caso                                          esperado        obtenido
+    ---  --------------------------------------------  --------------  --------------
+    R4   BLOQUEO 2: if del / else pass ................ C_FALSE         C_FALSE
+    R5   del mm solo en una rama (sin else) ........... C_FALSE         C_FALSE
+    R6   del mm en ambas ramas ........................ C_TRUE          C_TRUE
+    R7   ramas anidadas: solo la interna borra ........ C_FALSE         C_FALSE
+    R8   ramas anidadas: todas borran ................. C_TRUE          C_TRUE
+    V1   dos variables de bucle sobre mm.values() ..... NO_CONCLUYENTE  NO_CONCLUYENTE
+    V2   dos variables, ambas liberadas ............... C_TRUE          C_TRUE
+    A5   cadena de alias, todos liberados ............. C_TRUE          C_TRUE
+    A6   cadena de alias, solo el ultimo liberado ..... C_FALSE         C_FALSE
+    H3   helper que recibe y NO libera ................ NO_CONCLUYENTE  NO_CONCLUYENTE
+    H4   helper fuera del bucle ....................... NO_CONCLUYENTE  NO_CONCLUYENTE
+    D3   tres del mm, el segundo incompleto ........... C_FALSE         C_FALSE
+    T3   try/except/finally completo .................. NO_CONCLUYENTE  NO_CONCLUYENTE
+    M1   mm reasignado antes del del .................. NO_CONCLUYENTE  NO_CONCLUYENTE
+    M2   variable de bucle reasignada con otro memmap . NO_CONCLUYENTE  NO_CONCLUYENTE
+    M3   variable de bucle reasignada tras liberar .... NO_CONCLUYENTE  NO_CONCLUYENTE
+
+    COBERTURA DE LA LISTA a)-i) DE CRIS:
+      a) del en una sola rama .............. R5
+      b) del en ambas ramas ................ R6
+      c) ramas anidadas .................... R7, R8
+      d) dos variables de bucle ............ V1, V2
+      e) alias y cadenas de alias .......... A5, A6 (y A1-A4 en _t_det2)
+      f) referencias transferidas a helpers  H3, H4 (y H1, H2 en _t_det2)
+      g) varios del mm ..................... D3 (y D1, D2 en _t_det2)
+      h) try/except/finally ................ T3 (y T1, T2 en _t_det2)
+      i) reasignacion de mm y de la var. ... M1, M2, M3
+      +  el caso de Cris del bloqueo 2 ..... R4
+
+2.5 TRES DEFECTOS PROPIOS ENCONTRADOS Y CORREGIDOS AL AMPLIAR EL BANCO
+
+    V1 era CONCLUYENTE_TRUE cuando debia dudar. Causa: el bucle evaluaba la
+    primera variable, veia F_OK y RETORNABA, sin llegar a evaluar la segunda.
+    Corregido: se evaluan TODAS las variables antes de decidir; si hay mas de
+    una sobre el contenedor y alguna no cumple, el resultado es dudoso.
+
+    M1 y M2 eran CONCLUYENTE_TRUE. Causa: no habia ninguna comprobacion de
+    REBINDING. Se anadio _reasignaciones_previas(): un nombre esta "vivo" desde
+    su definicion hasta su `del`; una asignacion a un nombre vivo es un
+    rebinding, salvo `= None` (liberacion). Un nombre borrado que se vuelve a
+    asignar empieza una VIDA NUEVA, y eso NO es rebinding (patron legitimo
+    mm = {}; del mm; mm = {}; del mm). Los nombres de bucle los define el `for`,
+    no una asignacion, asi que toda asignacion posterior sobre ellos rebindea.
+
+    Al corregir M1 se rompio D3 (pasaba a dudoso); el modelo de vidas lo
+    devolvio a C_FALSE. Se volvio a ejecutar la suite completa tras cada
+    cambio; ningun caso quedo en verde por accidente.
+
+2.6 NO SE HA RELAJADO EL CRITERIO
+
+    - NO_CONCLUYENTE se mantiene en todos los casos no demostrables:
+      helpers que reciben la referencia sin liberarla (H3, H4), try con
+      finally ambiguo (T3), rebindings (M1, M2, M3), dos variables de bucle
+      no todas cumplidas (V1).
+    - Ningun UNKNOWN se ha convertido en PASS.
+    - C5 historico no se ha tocado.
+    - El detector NO se ha ajustado para que los motores pasen: los motores
+      ya pasaban con el criterio anterior, y siguen pasando con el endurecido
+      (3/3 CONCLUYENTE_TRUE). Si el criterio nuevo los hubiera tumbado, el
+      resultado se habria reportado como tal.
+
+--------------------------------------------------------------------------------
+3. HALLAZGO NUEVO: EVASION DE RAIZ POR ".."  (no reportado por Cris)
+--------------------------------------------------------------------------------
+
+3.1 DEFECTO
+
+    asegurar_dirs() comprobaba la contencion con:
+
+        if raiz not in p.parents:
+            raise RechazoRutas(...)
+
+    Path.parents opera sobre la FORMA TEXTUAL de la ruta. Para
+    raiz = /tmp/_repro_esc/raiz y p = /tmp/_repro_esc/raiz/../otro, la lista de
+    padres de p es [/tmp/_repro_esc/raiz/.., /tmp/_repro_esc, /tmp, /], y NO
+    incluye /tmp/_repro_esc/raiz. La comparacion fallaba y la ruta se rechazaba
+    ... salvo que el '..' apareciera DESPUES del prefijo de la raiz, en cuyo caso
+    la comprobacion pasaba y os.mkdir creaba la carpeta FUERA.
+
+3.2 REPRODUCCION (ejecutada)
+
+    arbol: /tmp/_repro_esc/raiz
+    llamada: asegurar_dirs(raiz/'../otro', raiz)
+    resultado: SIN ERROR
+    creado: /tmp/_repro_esc/otro        <-- FUERA DE LA RAIZ
+
+    llamada: asegurar_dirs(raiz/'a/../../x', raiz)
+    resultado: SIN ERROR
+    creado: /tmp/_repro_esc/raiz/a  y  /tmp/_repro_esc/x   <-- FUERA DE LA RAIZ
+
+3.3 CORRECCION
+
+    Antes de resolver, se rechaza cualquier '..' textual:
+
+        crudo = Path(p)
+        if '..' in crudo.parts:
+            raise RechazoRutas('%s contiene "..": no se admite' % crudo)
+        p = crudo.resolve()
+        raiz = Path(raiz).resolve()
+
+    Se rechaza aunque normalizada cayera dentro, porque el resultado
+    dependeria del cwd. '.' y '//' se normalizan por resolve() y siguen
+    admitiendose (sub/./x y sub//y crean DENTRO).
+
+3.4 RE-VERIFICACION (ejecutada)
+
+    ../otro      -> RechazoRutas
+    a/../../x    -> RechazoRutas
+    sub/./x      -> OK, creado dentro
+    sub//y       -> OK, creado dentro
+    bien/anidado -> OK, creado dentro
+    contenido final: solo arboles dentro de la raiz
+
+3.5 POR QUE IMPORTA
+
+    Es el mismo tipo de fallo que el bloqueo 1: una comprobacion de seguridad
+    que parece correcta y no lo es, que no falla ruidosamente sino en silencio.
+    Se documenta como hallazgo propio, no como algo que Cris pidiera.
+
+--------------------------------------------------------------------------------
+4. AISLAMIENTO: LO QUE SE MANTIENE Y LO QUE NO SE DECLARA
+--------------------------------------------------------------------------------
+
+NO SE DECLARA AISLAMIENTO COMPLETO. Sigue siendo cierto:
+
+  - TOCTOU T-1 a T-4 siguen documentadas y sin resolver: entre la comprobacion
+    y la creacion/escritura, otro proceso puede cambiar el arbol.
+  - asegurar_dirs() comprueba componente a componente, pero no es atomica
+    frente a un atacante concurrente (no hay openat/O_NOFOLLOW en el mkdir).
+  - escribir_nuevo() y copiar_nuevo() comprueban lexists() y luego abren con
+    'x'/'xb'. El modo exclusivo del kernel cierra la ventana de creacion, pero
+    la comprobacion previa existe solo para dar un mensaje claro: la garantia
+    real la da el flag 'x'.
+  - PDA-1 (escrituras ancladas por descriptor) NO se ha implementado. Requiere
+    revision previa y sigue siendo solo una limitacion documentada.
+  - Los motores NO se han ejecutado. El analisis de los motores es estatico
+    (AST, solo lectura).
+
+Coherencia revisada entre validacion de rutas, creacion de directorios y
+escrituras exclusivas:
+
+  - validacion de rutas: rechaza '..', resuelve, exige raiz existente y
+    contencion real; verifica que ningun componente sea enlace.
+  - creacion: os.mkdir componente a componente; FileExistsError solo se acepta
+    si el componente es un directorio REAL (islink() descarta enlaces).
+  - escrituras: 'x' / 'xb' con comprobacion lexists() previa;
+    os.open(O_NOFOLLOW) donde ya estaba en el codigo.
+  - 16 escrituras inventariadas en la entrega 1; 0 destructivas; ninguna
+    sobrescribe.
+
+--------------------------------------------------------------------------------
+5. GARANTIA DE NO REGRESION SOBRE LA ENTREGA 1
+--------------------------------------------------------------------------------
+
+La entrega 1 NO se ha modificado. Sigue siendo el commit
+625c98151e2ec79b0cfaaa218cae268303f4852c, con su arbol 70d88caf y sus 12
+ficheros. Esta revision anade una carpeta nueva (05_revision_2/) en un commit
+HIJO; no reescribe ni borra nada de la entrega 1.
+
+Comprobaciones ejecutadas:
+
+  - copia intacta de la propuesta v1:
+        PROPUESTA_v1_INTACTA.py
+        7b1165e834bea12ed58f077cb3bf6f9e494c41d1105494c8c82f581663dcb4c5
+    -> sigue coincidiendo (verificado en esta revision)
+
+  - funciones y tablas que DEBEN seguir identicas al original:
+        ESCENARIOS .................. identico
+        CHECKS_F .................... identico
+        RECURSO_F ................... identico
+        atribucion_f() .............. identico
+        args_motor() ................ identico
+        verificar() ................. identico
+        adjudicacion_hallazgo_f() ... identico a la ENTREGA 1
+                                      (difiere del ORIGINAL porque esa es la
+                                       correccion de la fase anterior, ya
+                                       autorizada; se compara contra v1)
+
+  - original de referencia: 31f724b3d19b89ea9210cdd02e1d5a94bc5fd5bdfdc86e7c651c9d0acdc54852
+    (mismo hash en el repo y en la copia de trabajo)
+
+  - parche regenerado y VERIFICADO:
+        original + propuesta_6g1.patch == PROPUESTA byte a byte
+        ambos sha256 = dda62c245a275a633dcc5d17e8ae0ef247dae947f170e19ecc1ded06b746423d
+
+--------------------------------------------------------------------------------
+6. QUE SE HA EJECUTADO Y QUE NO
+--------------------------------------------------------------------------------
+
+EJECUTADO (solo funciones aisladas, en /tmp):
+  - asegurar_dirs(), escribir_nuevo(), copiar_nuevo()
+  - _caminos(), _juzgar(), _veredicto(), _analizar_funcion(), _analizar_cadena()
+  - parseo AST de los tres motores reales (git show, sin escribir en el arbol)
+  - 4 bancos: 52 + 16 + 26 + 23 = 117 casos
+
+NO EJECUTADO (respetando los limites de Cris):
+  - main(), bateria(), ejecutar()
+  - el inyector y sitecustomize
+  - los motores (solo AST)
+  - audio real, bateria de 27 escenarios
+  - C5 historico
+  - ninguna instalacion de dependencias
+  - ningun fichero funcional del proyecto modificado
+
+--------------------------------------------------------------------------------
+7. LIMITACIONES QUE SIGUEN ABIERTAS
+--------------------------------------------------------------------------------
+
+  L-1  TOCTOU T-1..T-4 documentadas, sin resolver.
+  L-2  PDA-1 (escrituras ancladas por descriptor) NO implementado; requiere
+       revision previa.
+  L-3  La validacion de enlaces es por componente y no atomica: un atacante
+       concurrente podria sustituir un componente entre la comprobacion y el
+       mkdir. No se declara aislamiento completo.
+  L-4  El detector F sigue siendo estatico: no demuestra nada en tiempo de
+       ejecucion. validacion_dinamica sigue PENDIENTE.
+  L-5  Los casos M1/M2/M3 y H3/H4 son NO_CONCLUYENTE por diseno: no se ha
+       intentado demostrarlos, solo no darles por buenos.
+
+--------------------------------------------------------------------------------
+8. INVENTARIO DE LA CARPETA 05_revision_2/
+--------------------------------------------------------------------------------
+
+  PAQUETE_FASE_6G1_REVISION_2.txt            este informe
+  01_propuesta/pruebas_...PROPUESTA.py       propuesta revisada (1240 l., 61285 B)
+  01_propuesta/propuesta_6g1.patch           parche contra el original (1043 l.)
+  02_bancos/_t_rutas2.py                     banco de rutas, 52 casos (NUEVO)
+  02_bancos/_t_det3.py                       banco detector, 16 casos (NUEVO)
+  02_bancos/_t_det2.py                       banco detector, 26 casos (entrega 1)
+  02_bancos/_t_rutas.py                      banco rutas, 23 casos (entrega 1)
+  03_salidas/SALIDA_rutas2.txt               52/52
+  03_salidas/SALIDA_detector_f_r2.txt        16/16
+  03_salidas/SALIDA_detector_f.txt           26/26
+  03_salidas/SALIDA_rutas.txt                23/23
+  SHA256SUMS.txt                             cobertura de 05_revision_2/ (11)
+                                             y de la entrega 1 (12)
+
+  Los bancos son portables: localizan la propuesta por
+  PROPUESTA_6G1, por la carpeta vecina 01_propuesta o por /tmp/prop6g1.
+
+--------------------------------------------------------------------------------
+8-bis. COBERTURA DOCUMENTAL: SHA256SUMS DE LA ENTREGA 1
+--------------------------------------------------------------------------------
+
+Cris senalo que el SHA256SUMS.txt de la entrega 1 no completa la cobertura. Es
+correcto, y se ha verificado:
+
+  - el SHA256SUMS.txt de la entrega 1 tiene 5 entradas;
+  - la carpeta AUDITORIA_6G1_2026-11-27/ de la entrega 1 tiene 12 ficheros;
+  - su README.md afirma "El fichero SHA256SUMS.txt contiene la lista completa",
+    lo cual NO era exacto: cubria 5 de 12.
+
+Como la ENTREGA 1 NO SE PUEDE MODIFICAR, la cobertura completa se publica aqui,
+en 05_revision_2/SHA256SUMS.txt, con dos bloques separados y alcance declarado:
+
+  Bloque 1: los 11 ficheros de 05_revision_2/          11/11 verificados OK
+  Bloque 2: los 12 ficheros de la entrega 1 (625c9815) 12/12 verificados OK
+
+  Verificacion ejecutada:
+    Bloque 1 -> sha256sum -c desde la raiz de AUDITORIA_6G1_2026-11-27/
+    Bloque 2 -> sha256sum -c sobre un arbol extraido con
+                `git archive 625c9815 | tar -x`
+
+  Los 12 hashes del bloque 2 se calcularon leyendo el commit 625c9815, no
+  reescribiendo ficheros.
+
+  Hashes de la entrega 1 (bloque 2, los 12):
+    79d5501ef1fa2b512f29c37919cc33613094094dc366b2cb077a68d812a92fdb  01_propuesta/propuesta_6g1.patch
+    7b1165e834bea12ed58f077cb3bf6f9e494c41d1105494c8c82f581663dcb4c5  01_propuesta/pruebas_auditoria_cierre_6g1.PROPUESTA.py
+    31f724b3d19b89ea9210cdd02e1d5a94bc5fd5bdfdc86e7c651c9d0acdc54852  02_original/pruebas_auditoria_cierre_6g1.ORIGINAL.py
+    28341953f22e229b569e9548bd885d05bb73e29eb1d279002438b495cbfee09c  03_pruebas/SALIDA_detector_f.txt
+    9073ff1cfd3a7dee863c95a93320b4be48b16dcaee6db107d2b8e4599af9f7af  03_pruebas/SALIDA_motores_reales.txt
+    9d947ede8a35933af4daab482ef61f2e8e15e3e3742db429d9cdd73f0c8036c4  03_pruebas/SALIDA_rutas.txt
+    c4cdf40201e54f569eb6244d07580ea4814909135e75b6b2c02717d256c40a13  03_pruebas/test_detector_f_sintetico.py
+    056be4a080db8cd42426029a1d9176cc8b846d422092f646275bbafa72c05979  03_pruebas/test_rutas_sinteticas.py
+    4cf01ecc8bc5af688fca70aceabf044182e0b9308922d093444ada1f091012ee  04_informes/PAQUETE_FASE_6G1_A_SUPERADO.txt
+    2e18f339bc32b3349a6350ea83c402a4d06e4769f4637ec07ecbbdfc1b0fad0d  04_informes/PAQUETE_FASE_6G1_B_CORRECCION_DETECTOR.txt
+    d9529d2ec536de8d391988f1f03565c055ef196b85e13524ab634cf02a20b0c2  README.md
+    7b976964f6da5f9940a9dcd5ef0c09a3afe5f4142190d37528514e8f32bb4b29  SHA256SUMS.txt
+
+  Nota: el SHA256SUMS.txt de la entrega 1 se lista a si mismo (ultima linea);
+  su hash no puede figurar dentro de si mismo, por eso la cobertura completa
+  vive en este fichero nuevo.
+
+--------------------------------------------------------------------------------
+--------------------------------------------------------------------------------
+9. HASHES SHA-256
+--------------------------------------------------------------------------------
+
+  dda62c245a275a633dcc5d17e8ae0ef247dae947f170e19ecc1ded06b746423d  pruebas_auditoria_cierre_6g1.PROPUESTA.py
+  929c498fc625f136cb4792ca38e67eb715f1f370b6d6cffaebcd7c89c2b9d987  propuesta_6g1.patch
+  9e4ce3162006da689e898c13e6970fda5d3cc78a6f24a2f82b328b93f9fc96a0  _t_rutas2.py
+  80a7948b712d61bd53a32fca47ce6dcea97e41cf23fce79018c215aa1fe704e4  _t_det3.py
+  0e278d392b41a136bb14f9825ed6d14f8bb9d8e95cf455f68c9ed6bdd55d07c2  _t_det2.py
+  2eb7d102eb3412f3da877c9e5d330481be22a84f864fde166e7718e97071c18a  _t_rutas.py
+  272e5e60298833f1d5d6f943a4921934978a6256b16ce4a52f9dcaf74a0a0733  SALIDA_rutas2.txt
+  dc8209e791682e474b7161da6e30583b33e4d4821ee245e17fdd757504fbf3a7  SALIDA_detector_f_r2.txt
+  28341953f22e229b569e9548bd885d05bb73e29eb1d279002438b495cbfee09c  SALIDA_detector_f.txt
+  9ab5aceeb4ee5e25bc640698e4887ebe01546eaed6fabd04ca758c811bfeaa3b  SALIDA_rutas.txt
+
+  referencia (entrega 1):
+  7b1165e834bea12ed58f077cb3bf6f9e494c41d1105494c8c82f581663dcb4c5  PROPUESTA_v1_INTACTA.py
+  31f724b3d19b89ea9210cdd02e1d5a94bc5fd5bdfdc86e7c651c9d0acdc54852  pruebas_auditoria_cierre_6g1.ORIGINAL.py
+
+--------------------------------------------------------------------------------
+10. ESTADO FINAL
+--------------------------------------------------------------------------------
+
+  BLOQUEO 1 (error ev_iny)          CORREGIDO Y VERIFICADO
+  BLOQUEO 2 (detector F)            CORREGIDO Y VERIFICADO
+  HALLAZGO NUEVO (evasion por "..") REPRODUCIDO, CORREGIDO Y VERIFICADO
+  Pruebas sinteticas                117/117
+  Motores reales (estatico)         3/3 CONCLUYENTE_TRUE
+  Caso de Cris del bloqueo 2        CONCLUYENTE_FALSE
+  Entrega 1                         INTACTA
+  Aislamiento completo              NO SE DECLARA
+  PDA-1                             NO IMPLEMENTADO (sigue como limitacion)
+  validacion_dinamica               PENDIENTE
+
+  ESTADO: PENDIENTE_REVISION_CRIS
+
+  Este documento NO declara la fase cerrada. Queda a la espera de la revision
+  de Cris. No convierte ningun UNKNOWN en PASS, no toca C5 historico, no toca
+  main ni el PR #4, y no fusiona nada.
+================================================================================
+```

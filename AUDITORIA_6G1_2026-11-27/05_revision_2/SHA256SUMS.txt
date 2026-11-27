@@ -1,0 +1,41 @@
+# SHA-256 de los artefactos de la REVISION 2
+# Verificar desde la raiz de AUDITORIA_6G1_2026-11-27/ con:
+#     sha256sum -c 05_revision_2/SHA256SUMS.txt
+#
+# Alcance declarado:
+#   - Bloque 1: los 11 ficheros de esta carpeta 05_revision_2/
+#   - Bloque 2: los 12 ficheros de la ENTREGA 1 (commit 625c9815), que se
+#     publican aqui para completar la cobertura que el SHA256SUMS.txt de la
+#     entrega 1 no alcanzaba (aquel cubria 5 de 12 y su README decia
+#     "lista completa"). La entrega 1 NO se modifica: estos hashes se han
+#     calculado leyendo el commit 625c9815 y sirven para verificarla.
+#
+# Las rutas del bloque 1 van precedidas de 05_revision_2/ porque el comando
+# de verificacion se lanza desde la raiz de AUDITORIA_6G1_2026-11-27/.
+
+# --- Bloque 1: REVISION 2 (11 ficheros) ---
+929c498fc625f136cb4792ca38e67eb715f1f370b6d6cffaebcd7c89c2b9d987  05_revision_2/01_propuesta/propuesta_6g1.patch
+dda62c245a275a633dcc5d17e8ae0ef247dae947f170e19ecc1ded06b746423d  05_revision_2/01_propuesta/pruebas_auditoria_cierre_6g1.PROPUESTA.py
+0e278d392b41a136bb14f9825ed6d14f8bb9d8e95cf455f68c9ed6bdd55d07c2  05_revision_2/02_bancos/_t_det2.py
+80a7948b712d61bd53a32fca47ce6dcea97e41cf23fce79018c215aa1fe704e4  05_revision_2/02_bancos/_t_det3.py
+2eb7d102eb3412f3da877c9e5d330481be22a84f864fde166e7718e97071c18a  05_revision_2/02_bancos/_t_rutas.py
+9e4ce3162006da689e898c13e6970fda5d3cc78a6f24a2f82b328b93f9fc96a0  05_revision_2/02_bancos/_t_rutas2.py
+28341953f22e229b569e9548bd885d05bb73e29eb1d279002438b495cbfee09c  05_revision_2/03_salidas/SALIDA_detector_f.txt
+dc8209e791682e474b7161da6e30583b33e4d4821ee245e17fdd757504fbf3a7  05_revision_2/03_salidas/SALIDA_detector_f_r2.txt
+9ab5aceeb4ee5e25bc640698e4887ebe01546eaed6fabd04ca758c811bfeaa3b  05_revision_2/03_salidas/SALIDA_rutas.txt
+272e5e60298833f1d5d6f943a4921934978a6256b16ce4a52f9dcaf74a0a0733  05_revision_2/03_salidas/SALIDA_rutas2.txt
+04c977aa2b2f5c6f710621515745920cfb300a4c261b4263bda6941caf763cbf  05_revision_2/PAQUETE_FASE_6G1_REVISION_2.txt
+
+# --- Bloque 2: ENTREGA 1 (commit 625c9815, 12 ficheros, sin modificar) ---
+79d5501ef1fa2b512f29c37919cc33613094094dc366b2cb077a68d812a92fdb  AUDITORIA_6G1_2026-11-27/01_propuesta/propuesta_6g1.patch
+7b1165e834bea12ed58f077cb3bf6f9e494c41d1105494c8c82f581663dcb4c5  AUDITORIA_6G1_2026-11-27/01_propuesta/pruebas_auditoria_cierre_6g1.PROPUESTA.py
+31f724b3d19b89ea9210cdd02e1d5a94bc5fd5bdfdc86e7c651c9d0acdc54852  AUDITORIA_6G1_2026-11-27/02_original/pruebas_auditoria_cierre_6g1.ORIGINAL.py
+28341953f22e229b569e9548bd885d05bb73e29eb1d279002438b495cbfee09c  AUDITORIA_6G1_2026-11-27/03_pruebas/SALIDA_detector_f.txt
+9073ff1cfd3a7dee863c95a93320b4be48b16dcaee6db107d2b8e4599af9f7af  AUDITORIA_6G1_2026-11-27/03_pruebas/SALIDA_motores_reales.txt
+9d947ede8a35933af4daab482ef61f2e8e15e3e3742db429d9cdd73f0c8036c4  AUDITORIA_6G1_2026-11-27/03_pruebas/SALIDA_rutas.txt
+c4cdf40201e54f569eb6244d07580ea4814909135e75b6b2c02717d256c40a13  AUDITORIA_6G1_2026-11-27/03_pruebas/test_detector_f_sintetico.py
+056be4a080db8cd42426029a1d9176cc8b846d422092f646275bbafa72c05979  AUDITORIA_6G1_2026-11-27/03_pruebas/test_rutas_sinteticas.py
+4cf01ecc8bc5af688fca70aceabf044182e0b9308922d093444ada1f091012ee  AUDITORIA_6G1_2026-11-27/04_informes/PAQUETE_FASE_6G1_A_SUPERADO.txt
+2e18f339bc32b3349a6350ea83c402a4d06e4769f4637ec07ecbbdfc1b0fad0d  AUDITORIA_6G1_2026-11-27/04_informes/PAQUETE_FASE_6G1_B_CORRECCION_DETECTOR.txt
+d9529d2ec536de8d391988f1f03565c055ef196b85e13524ab634cf02a20b0c2  AUDITORIA_6G1_2026-11-27/README.md
+7b976964f6da5f9940a9dcd5ef0c09a3afe5f4142190d37528514e8f32bb4b29  AUDITORIA_6G1_2026-11-27/SHA256SUMS.txt
