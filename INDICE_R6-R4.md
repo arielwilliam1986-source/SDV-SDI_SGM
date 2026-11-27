@@ -2,7 +2,7 @@
 
 **Fecha:** 2026-11-25 (UTC).
 **Naturaleza:** documento de navegación y trazabilidad. **Solo lectura** respecto de los cuatro documentos que indexa.
-**Estado:** versionado en la rama de la PR #4 mediante el commit `9c986bc547c82f7897bfb8cb8ade4350d253ca3e` (base de esta actualización documental).
+**Estado:** versionado en la rama de la PR #4; commit de incorporación documental `9c986bc547c82f7897bfb8cb8ade4350d253ca3e` (no HEAD actual).
 **Ubicación:** raíz del repositorio, rama `arena/a2d9ac2e-sdv-sdi-sgm`.
 
 ---
@@ -203,7 +203,8 @@ Debe distinguirse con precisión:
 | **Ejecuciones Android/Termux de R6-R4** | **Tres repeticiones completas comunicadas y previamente verificadas por el usuario en Termux** (30 PASS / 0 FAIL / 9 UNKNOWN cada una; R2-C9 PASS). Arena no tuvo acceso a los JSON ni recalculó sus hashes. La certificación independiente por un tercero y la incorporación de los JSON siguen pendientes. |
 | **D18 / D18-R2 global** | **NO RESUELTO** — `D18` sigue `FAIL`; `D18-R2` global sigue `UNKNOWN` |
 | **Conservación de las evidencias** | **ABIERTA** — las tres vías de la Complementaria §12 siguen sin decidir |
-| **PR #3 y PR #4** | **ABIERTOS, sin fusionar** — decisión exclusiva del responsable |
+| **PR #3** | **FUSIONADO** mediante merge commit `3e56256944119e4ce293b07c224905b132bf2cfe` |
+| **PR #4** | **ABIERTO, sin fusionar** — decisión exclusiva del responsable |
 
 **Una cuarta adenda estaría justificada solo si apareciera un defecto nuevo en el contenido de los cuatro documentos.** Ninguno se ha detectado. Cualquier cuestión posterior pertenece a **fases nuevas**, no a esta cadena.
 
@@ -285,7 +286,7 @@ Los siete artefactos documentales están **versionados en la rama de la PR #4** 
 | 4 | **No convierte** ninguna categoría de auditoría en veredicto. |
 | 5 | **No incorpora** los seis JSON externos al repositorio. El manifiesto descriptivo sí está versionado; no convierte esos JSON en evidencia Git ni certifica su conservación. |
 | 6 | **No ejecuta** pruebas ni recalcula los hashes de las evidencias externas. |
-| 7 | Este índice no crea commits ni ramas. La incorporación documental se realizó posteriormente en `9c986bc`; la descripción de PR #4 se actualiza en esta misma fase. PR #3 permanece intacta. |
+| 7 | Este índice no crea commits ni ramas. La incorporación documental se realizó posteriormente en `9c986bc` (commit de incorporación documental, no HEAD actual); la descripción de PR #4 se actualizó en esta fase. PR #3 fue fusionado mediante merge commit `3e56256944119e4ce293b07c224905b132bf2cfe`; PR #4 permanece abierto y sin fusionar. |
 | 8 | **No declara** `D18` ni `D18-R2` globalmente `PASS`. |
 | 9 | **No autoriza** ninguna fase posterior (R6-R5, Hardened, producción, audio real). |
 
@@ -304,14 +305,14 @@ Ese archivo incluye **exclusivamente** los seis documentos del paquete documenta
 ## 10. Enlaces
 
 - Repositorio: https://github.com/arielwilliam1986-source/SDV-SDI_SGM
-- Rama y HEAD de referencia del paquete documental (`9c986bc`): https://github.com/arielwilliam1986-source/SDV-SDI_SGM/tree/arena/a2d9ac2e-sdv-sdi-sgm
+- Rama de referencia del paquete documental (commit de incorporación documental `9c986bc`, no HEAD actual): https://github.com/arielwilliam1986-source/SDV-SDI_SGM/tree/arena/a2d9ac2e-sdv-sdi-sgm
 - Commit funcional R6-R4 (`bbc1aab`): https://github.com/arielwilliam1986-source/SDV-SDI_SGM/commit/bbc1aab50ab1487f81c03697a7f10390088302e5
 - Commit de incorporación documental (`9c986bc`): https://github.com/arielwilliam1986-source/SDV-SDI_SGM/commit/9c986bc547c82f7897bfb8cb8ade4350d253ca3e
 - Arnés R6-R4: https://github.com/arielwilliam1986-source/SDV-SDI_SGM/blob/9c986bc547c82f7897bfb8cb8ade4350d253ca3e/ETAPA_6G1_CORRECCION_LECTURA_SEGURA/scripts/arnes_feasibility_d18_r2_numpy_6g1.py
 - Informe de evidencia D18-R2: https://github.com/arielwilliam1986-source/SDV-SDI_SGM/blob/9c986bc547c82f7897bfb8cb8ade4350d253ca3e/INFORME_FEASIBILITY_D18_R2_NUMPY_6G1.md
-- PR #3 (abierto, sin fusionar): https://github.com/arielwilliam1986-source/SDV-SDI_SGM/pull/3
+- PR #3 (fusionado mediante merge commit `3e56256944119e4ce293b07c224905b132bf2cfe`): https://github.com/arielwilliam1986-source/SDV-SDI_SGM/pull/3
 - PR #4 (abierto, sin fusionar): https://github.com/arielwilliam1986-source/SDV-SDI_SGM/pull/4
 
 ---
 
-**Fin del índice.** Los cuatro documentos originales permanecen intactos. La cadena documental está CERRADA y sus siete artefactos de trazabilidad están versionados en la rama de la PR #4. No se ejecutaron pruebas ni se alteró ningún veredicto `UNKNOWN`. Los seis JSON de evidencia externa siguen fuera del repositorio. La PR #4 continúa abierta y sin fusionar; la PR #3 permanece intacta. Las decisiones de adjudicación, política permanente de conservación e integración siguen reservadas a Cris y al usuario.
+**Fin del índice.** Los cuatro documentos originales permanecen intactos. La cadena documental está CERRADA y sus siete artefactos de trazabilidad están versionados en la rama de la PR #4. No se ejecutaron pruebas ni se alteró ningún veredicto `UNKNOWN`. Los seis JSON de evidencia externa siguen fuera del repositorio. La PR #3 fue fusionada mediante el merge commit `3e56256944119e4ce293b07c224905b132bf2cfe`; la PR #4 continúa abierta y sin fusionar. Las decisiones de adjudicación, política permanente de conservación e integración siguen reservadas a Cris y al usuario.
