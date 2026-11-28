@@ -1,0 +1,213 @@
+--- a/pruebas_auditoria_cierre_6g1.PROPUESTA.py
++++ b/pruebas_auditoria_cierre_6g1.PROPUESTA.py
+@@ -1138,23 +1138,144 @@
+     """
+     if not isinstance(llamada, ast.Call):
+         return False
++    # Revision 7: *args / **kwargs ocultan la posicion real de `copy` y pueden
++    # esconder un `out`. No se puede demostrar nada: se rechaza.
++    if _tiene_expansion(llamada):
++        return False
++    # Revision 7: se exige que `copy=True` este DEMOSTRADO, no que se pueda
++    # suponer por el default. Motivo: si se pasa `order=` o `casting=`, el
++    # resultado puede ser el mismo objeto en segun que combinaciones, y el
++    # default solo se conoce por documentacion, no por analisis. Con `copy=True`
++    # explicito no hay duda; sin el, se prefiere NO_CONCLUYENTE.
++    # (La revision 6 admitia `astype(x, order='K')` apoyandose en el default;
++    # es el caso M18 del banco de la revision 7.)
++    copy_demostrado = False
+     # posicional 2 = copy (0: dtype, 1: order)
+     if len(llamada.args) >= 3:
+         if not _copy_literal_true(llamada.args[2]):
+             return False
++        copy_demostrado = True
+     for kw in llamada.keywords:
+-        if kw.arg == 'copy' and not _copy_literal_true(kw.value):
+-            return False
+         if kw.arg is None:            # **kwargs: no se puede demostrar
+             return False
+-        if kw.arg in ('out', 'subok', 'casting', 'order'):
+-            # `out=` escribe en un array EXTERNO: con ndarray.astype no existe,
+-            # pero si apareciera no seria una copia independiente. Se rechaza.
++        if kw.arg == 'copy':
++            if not _copy_literal_true(kw.value):
++                return False
++            # `copy=True` demostrado: este keyword queda RESUELTO. Hay que
++            # seguir con los demas, no evaluarlo contra la lista de abajo.
++            # (La revision 6 no hacia `continue` y por eso `copy` caia en la
++            # comprobacion de kwargs permitidos, que lo rechazaba. Consecuencia:
++            # `astype(x, copy=True)` NUNCA se admitia. Corregido aqui.)
++            copy_demostrado = True
++            continue
++        # NOTA: `ndarray.astype` NO tiene `out`.
++        # dtype (1er parametro, admite keyword), order, subok y casting NO
++        # cambian la IDENTIDAD: con copy=True el array devuelto es nuevo sea
++        # cual sea su tipo o su layout.
++        if kw.arg not in ('dtype', 'order', 'subok', 'casting'):
+             return False
+     # Un numero de posicionales inesperado (>3) tampoco se admite.
+     if len(llamada.args) > 3:
+         return False
+-    return True
++    # Revision 7: sin `copy=True` DEMOSTRADO no se admite, aunque no haya
++    # kwargs. El default True es documentacion, no analisis.
++    return copy_demostrado
++
++
++# ---------------------------------------------------------------------------
++# ANALISIS DE ARGUMENTOS: `out`, `*args` y `**kwargs`
++#
++# La revision 6 admitia los metodos de reduccion por su NOMBRE, dando por hecho
++# que "devuelven un escalar". Eso es cierto SOLO cuando no se pasa `out`. La
++# documentacion de NumPy dice que, si se pasa `out`, el resultado escribe en ese
++# array y el metodo DEVUELVE UNA REFERENCIA a el:
++#
++#     arr[lo:hi].sum(out=arr)
++#
++# escribe la suma dentro del propio memmap y devuelve `arr`. Es un caso
++# patologico, pero precisamente por eso hay que tratarlo: el detector no puede
++# suponer que el codigo es sensato.
++#
++# REGLA (conservadora, la del encargo): CUALQUIER forma de pasar `out` produce
++# NO_CONCLUYENTE, salvo que se demuestre que el objeto de `out` NO PUEDE ser el
++# alias. Y "no ser el alias" no se demuestra comprobando que no se llama "arr":
++# puede haber otro alias (b = arr).
++#
++# Por eso el criterio es DELIBERADAMENTE ASIMETRICO:
++#   - si el objeto de `out` ES el alias (o una vista suya) -> NO_CONCLUYENTE
++#     (no CONCLUYENTE_FALSE: el detector lo demuestra, pero la decision de
++#     adjudicacion del hallazgo F se mantiene en "dudoso" para no declarar
++#     fuga sin ejecucion; ver limitacion L-12);
++#   - si el objeto de `out` NO es el alias -> NO_CONCLUYENTE tambien, porque el
++#     detector NO tiene un analisis de tipos que pruebe que ese otro objeto no
++#     acaba apuntando al memmap por otra via.
++#
++# Es decir: `out=` presente => NO_CONCLUYENTE, sin excepciones. La unica forma
++# de admitir el metodo es que `out` NO aparezca. Esto cumple el punto 3 del
++# encargo sin necesidad de un analisis de tipos que el detector no tiene.
++#
++# SOBRE `*args` / `**kwargs`: si la llamada expande argumentos, no se puede
++# saber si entre ellos va `out`, ni en que posicion. Se rechaza la llamada.
++# ---------------------------------------------------------------------------
++
++# Posicion del parametro `out` en la firma documentada de cada metodo de
++# reduccion de ndarray. Se usa para RECHAZAR el argumento posicional que
++# corresponde a `out`; no para admitir nada.
++#   sum/mean/std/var/prod/min/max : (axis, dtype, out, keepdims, ...)
++#   argmin/argmax                 : (axis, out, ...)   -> out en 2a posicion
++#   any/all                       : (axis, out, keepdims, ...) -> out en 2a
++#
++# OJO: `min`/`max` de ndarray tienen (axis, out, keepdims, initial, where), NO
++# (axis, dtype, out). Su `out` va en la 2a posicion, igual que argmin/argmax.
++# Tenerlo mal aqui solo afectaria a la posicion que se RECHAZA, y como se
++# rechaza por presencia de posicionales de mas, un error aqui no admite nada.
++_POSICION_OUT = {
++    'sum': 2, 'mean': 2, 'std': 2, 'var': 2, 'prod': 2,
++    'min': 1, 'max': 1, 'argmin': 1, 'argmax': 1, 'any': 1, 'all': 1,
++}
++
++
++def _tiene_expansion(llamada):
++    """True si la llamada usa *args o **kwargs: no se puede resolver."""
++    if not isinstance(llamada, ast.Call):
++        return False
++    for a in llamada.args:
++        if isinstance(a, ast.Starred):
++            return True
++    for kw in llamada.keywords:
++        if kw.arg is None:            # **kwargs
++            return True
++    return False
++
++
++def _analizar_args_out(llamada, metodo):
++    """Decide si `vista.metodo(...)` puede retener el memmap por `out`.
++
++    Devuelve (None, None) si NO hay `out` de ninguna forma y no hay expansion.
++    Devuelve ('vista', motivo) en cualquier otro caso.
++
++    No intenta demostrar que un `out` ajeno es seguro: el detector no tiene
++    analisis de tipos y preferir NO_CONCLUYENTE a una suposicion.
++    """
++    if not isinstance(llamada, ast.Call):
++        return ('vista', '%s(): llamada no resuelta' % metodo)
++    # 1) *args / **kwargs: no se puede saber si esconden `out`.
++    if _tiene_expansion(llamada):
++        return ('vista', '%s() con *args/**kwargs: no se puede resolver si '
++                         'llevan out=' % metodo)
++    # 2) `out=` explicito por keyword.
++    for kw in llamada.keywords:
++        if kw.arg == 'out':
++            return ('vista', '%s(out=...) escribe en un array externo y '
++                             'devuelve una referencia a el' % metodo)
++    # 3) `out` pasado por POSICION. Cualquier posicional en o mas alla de la
++    #    posicion de `out` puede serlo (y los posicionales pueden desplazarlo).
++    #    Se rechaza por prudencia: es mas seguro rechazar de mas que de menos.
++    pos_out = _POSICION_OUT.get(metodo)
++    if pos_out is not None and len(llamada.args) > pos_out:
++        return ('vista', '%s(): argumento posicional en la posicion de out '
++                         '(pos %d)' % (metodo, pos_out + 1))
++    return (None, None)
+ 
+ 
+ # Contextos que se modelan aparte y se informan con su propio nombre.
+@@ -1202,6 +1323,13 @@
+             # devuelven ni almacenan el objeto ni una vista.
+             if isinstance(padre.func, ast.Attribute):
+                 if padre.func.attr in _METODOS_SEGUROS:
++                    # Revision 7: flush()/close() no llevan argumentos, pero si
++                    # la llamada expande *args/**kwargs no se puede demostrar
++                    # que la firma se respeta. Se rechaza.
++                    if _tiene_expansion(padre):
++                        return ('metodo_no_seguro',
++                                '%s() con *args/**kwargs'
++                                % ast.unparse(padre.func)[:30])
+                     return (None, None)
+                 return ('metodo_no_seguro', '%s()' % ast.unparse(padre.func)[:40])
+             return ('llamada_callee', '%s(...)' % ast.unparse(padre.func)[:40])
+@@ -1256,13 +1384,24 @@
+                 # metodo ligado, que retiene la vista). No es inocuo.
+                 return ('vista', '%s (atributo, sin llamada)' % ast.unparse(abuelo)[:40])
+             if attr in _METODOS_VISTA:
+-                # Reduccion a ESCALAR nuevo: no comparte memoria.
+-                return (None, None)
++                # Reduccion a ESCALAR nuevo: no comparte memoria... SALVO que se
++                # pase `out=`. La revision 7 exige analizar los argumentos ANTES
++                # de admitir el metodo.
++                tipo, desc = _analizar_args_out(bisabuelo, attr)
++                if tipo is None:
++                    return (None, None)
++                return ('vista', desc)
+             if attr in _METODOS_COPIA:
+                 # Copia independiente por contrato documentado.
++                if _tiene_expansion(bisabuelo):
++                    return ('vista', '%s() con *args/**kwargs: no demostrable'
++                            % attr)
+                 return (None, None)
+             if attr in _METODOS_SEGUROS:
+-                # None o metadatos escalares.
++                # flush()/close() devuelven None. *args/**kwargs se rechazan.
++                if _tiene_expansion(bisabuelo):
++                    return ('vista', '%s() con *args/**kwargs: no demostrable'
++                            % attr)
+                 return (None, None)
+             if attr == 'astype':
+                 # Solo si los ARGUMENTOS demuestran copia (copy=True literal).
+@@ -1280,8 +1419,17 @@
+     if isinstance(padre, ast.Attribute) and campo == 'value':
+         # a) arr.metodo() con metodo seguro: el metodo ligado solo vive durante
+         #    la llamada y no se guarda.
++        #
++        #    Revision 7: aqui entra `arr.flush()` porque el Name es el `value`
++        #    del Attribute y el Attribute es el `func` del Call. (La otra rama,
++        #    la de `padre` Call, NO se ejecuta para este caso: el padre del Name
++        #    es el Attribute, no el Call.) Por eso el control de expansion tiene
++        #    que estar TAMBIEN aqui, no solo alli.
+         if isinstance(abuelo, ast.Call) and campo_abuelo == 'func' \
+                 and padre.attr in _METODOS_SEGUROS:
++            if _tiene_expansion(abuelo):
++                return ('metodo_no_seguro',
++                        '%s() con *args/**kwargs' % ast.unparse(padre)[:30])
+             return (None, None)
+         # b) ELIMINADO EN LA REVISION 6. Aqui estaba el caso "vista consumida
+         #    en el acto: arr[a:b].sum()", que era CODIGO MUERTO: para llegar

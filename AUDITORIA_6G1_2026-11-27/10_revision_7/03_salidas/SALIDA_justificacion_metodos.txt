@@ -1,0 +1,78 @@
+======================================================================================================================
+REVISION 7 - JUSTIFICACION INDIVIDUAL DE CADA ADMITIDO
+Criterio: se admite <=> NINGUN argumento puede hacer que el resultado
+retenga el memmap. Todo argumento que pueda cambiarlo -> NO_CONCLUYENTE.
+======================================================================================================================
+
+A) _METODOS_VISTA y _METODOS_COPIA  (sobre una VISTA arr[a:b])
+
+  metodo    firma documentada (resumida)                                    tratamiento
+  --------  --------------------------------------------------------------  -----------
+  sum       sum(axis=None, dtype=None, out=None, keepdims=False, initial=,  out presente (kw, posicional o *args/**kwargs) -> NO_CONCLUYENTE
+  mean      mean(axis=None, dtype=None, out=None, keepdims=False, where=)   idem
+  std       std(axis=None, dtype=None, out=None, ddof=0, keepdims=False, w  idem
+  var       var(axis=None, dtype=None, out=None, ddof=0, keepdims=False, w  idem
+  prod      prod(axis=None, dtype=None, out=None, keepdims=False, initial=  idem
+  min       min(axis=None, out=None, keepdims=False, initial=, where=)      posicion de out = 2a; >=2 posicionales -> NO_CONCLUYENTE
+  max       max(axis=None, out=None, keepdims=False, initial=, where=)      idem
+  argmin    argmin(axis=None, out=None, *, keepdims=False)                  posicion de out = 2a; >=2 posicionales -> NO_CONCLUYENTE
+  argmax    argmax(axis=None, out=None, *, keepdims=False)                  idem
+  any       any(axis=None, out=None, keepdims=False, *, where=)             posicion de out = 2a; >=2 posicionales -> NO_CONCLUYENTE
+  all       all(axis=None, out=None, keepdims=False, *, where=)             idem
+  item      item(*args)  (sin argumentos: escalar; con args: indice)        no se pasa out; el resultado sigue siendo escalar
+  tolist    tolist()  (SIN argumentos en ndarray)                           *args/**kwargs -> NO_CONCLUYENTE
+  tobytes   tobytes(order="C")                                              order no cambia la identidad: devuelve bytes nuevos
+
+B) _METODOS_COPIA  (sobre una VISTA)
+
+  metodo    firma documentada                                               tratamiento
+  --------  --------------------------------------------------------------  -----------
+  copy      copy(order="C")                                                 order no cambia la identidad: .base es None siempre
+  flatten   flatten(order="C")                                              SIEMPRE copia; order solo cambia el orden de recorrido
+
+C) _METODOS_SEGUROS  (sobre el ALIAS arr)
+
+  flush     flush()  (SIN argumentos)                                       *args/**kwargs -> NO_CONCLUYENTE
+  close     close()  (SIN argumentos)                                       *args/**kwargs -> NO_CONCLUYENTE
+
+D) astype  (caso especial: se analizan los ARGUMENTOS)
+
+  astype    astype(dtype, order="K", casting="unsafe", subok=True, copy=True)
+           argumento que cambia la identidad: copy  (la UNICA que cambia la identidad)
+           tratamiento: exige copy=True DEMOSTRADO
+
+E) _ATRIBUTOS_METADATO  (sobre el ALIAS)
+
+  atributo    tipo del resultado    por que no retiene
+  ----------  --------------------  --------------------
+  shape       tupla de enteros      inmutable, sin buffer
+  strides     tupla de enteros      inmutable, sin buffer
+  ndim        entero                inmutable
+  size        entero                inmutable
+  nbytes      entero                inmutable
+  itemsize    entero                inmutable
+  dtype       numpy.dtype           objeto inmutable, sin ref al array
+
+F) _METODOS_VISTA_RETIRADOS (NO_CONCLUYENTE, con motivo)
+
+  metodo       firma                                     motivo del rechazo
+  -----------  ----------------------------------------  ----------------------
+  ravel        ravel(order="C")                          PUEDE devolver vista
+  reshape      reshape(*shape)                           PUEDE devolver vista
+  transpose    transpose(*axes)                          SIEMPRE vista
+  swapaxes     swapaxes(a1, a2)                          SIEMPRE vista
+  clip         clip(min=, max=, out=None)                out= escribe fuera; puede devolver el propio array
+  round        round(decimals=0, out=None)               out= escribe fuera
+  take         take(indices, axis=None, out=None, mode=  out= escribe fuera
+  repeat       repeat(repeats, axis=None)                contrato no simple
+  count        (NO EXISTE en ndarray)                    -
+  index        (NO EXISTE en ndarray)                    -
+
+G) ATRIBUTOS NO ADMITIDOS
+
+  data, __array_interface__, base, T, real, imag, flat
+  motivo: devuelven el BUFFER (data, __array_interface__), el objeto del
+  que se tomo la vista (base) o VISTAS (T, real, imag) o un iterador VIVO
+  sobre el array (flat).
+
+======================================================================================================================

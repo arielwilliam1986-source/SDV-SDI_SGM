@@ -1,0 +1,56 @@
+==========================================================================================================================
+BANCO REVISION 7  -  argumentos de SALIDA (out) y expansion de argumentos
+Detector cargado desde: pruebas_auditoria_cierre_6g1.PROPUESTA.py
+sha256 detector: aa320059a08bca1d738eeebf57d76063ae973071ee889336dc434011a5831146
+==========================================================================================================================
+
+  ID    familia   caso                                                  esperado         obtenido         res
+  ----  --------  ----------------------------------------------------  ---------------  ---------------  ----
+  O01   out       arr[lo:hi].sum(out=arr)                               != C_TRUE        NO_CONCLUYENTE   PASS
+  O02   out       arr[lo:hi].mean(out=arr)                              != C_TRUE        NO_CONCLUYENTE   PASS
+  O03   out       arr[lo:hi].std(out=arr)                               != C_TRUE        NO_CONCLUYENTE   PASS
+  O04   out       arr[lo:hi].var(out=arr)                               != C_TRUE        NO_CONCLUYENTE   PASS
+  O05   out       arr[lo:hi].prod(out=arr)                              != C_TRUE        NO_CONCLUYENTE   PASS
+  O06   out       arr[lo:hi].min(out=arr)                               != C_TRUE        NO_CONCLUYENTE   PASS
+  O07   out       arr[lo:hi].max(out=arr)                               != C_TRUE        NO_CONCLUYENTE   PASS
+  O08   out       arr[lo:hi].argmin(out=arr)                            != C_TRUE        NO_CONCLUYENTE   PASS
+  O09   out       arr[lo:hi].argmax(out=arr)                            != C_TRUE        NO_CONCLUYENTE   PASS
+  O10   out       arr[lo:hi].any(out=arr)                               != C_TRUE        NO_CONCLUYENTE   PASS
+  O11   out       arr[lo:hi].all(out=arr)                               != C_TRUE        NO_CONCLUYENTE   PASS
+  O12   out       out= con ALIAS distinto (b = arr)                     != C_TRUE        NO_CONCLUYENTE   PASS
+  O13   out       out= con un objeto ARBITRARIO (no demostrable)        != C_TRUE        NO_CONCLUYENTE   PASS
+  O14   out       out como POSICIONAL (sum: axis, dtype, out)           != C_TRUE        NO_CONCLUYENTE   PASS
+  O15   out       out como POSICIONAL (mean)                            != C_TRUE        NO_CONCLUYENTE   PASS
+  O16   out       out como POSICIONAL (min: axis, out)                  != C_TRUE        NO_CONCLUYENTE   PASS
+  O17   out       *args puede esconder un out                           != C_TRUE        NO_CONCLUYENTE   PASS
+  O18   out       **kwargs puede esconder un out                        != C_TRUE        NO_CONCLUYENTE   PASS
+  O19   out       out en otra EXPRESION (dentro de int)                 != C_TRUE        NO_CONCLUYENTE   PASS
+  O20   out       out SIN asignar (sentencia suelta)                    != C_TRUE        NO_CONCLUYENTE   PASS
+  O21   out       out= con VISTA del alias (arr[0:1])                   != C_TRUE        NO_CONCLUYENTE   PASS
+  O22   out       out= en any/all                                       != C_TRUE        NO_CONCLUYENTE   PASS
+  O23   out       out= en argmin/argmax                                 != C_TRUE        NO_CONCLUYENTE   PASS
+  M19   metodo    astype SIN copy=True demostrado (default)             != C_TRUE        NO_CONCLUYENTE   PASS
+  M20   metodo    astype con *args                                      != C_TRUE        NO_CONCLUYENTE   PASS
+  M21   metodo    astype con **kwargs                                   != C_TRUE        NO_CONCLUYENTE   PASS
+  M22   metodo    astype con kwarg NO permitido                         != C_TRUE        NO_CONCLUYENTE   PASS
+  M23   metodo    copy() con *args                                      != C_TRUE        NO_CONCLUYENTE   PASS
+  M24   metodo    tolist() con *args                                    != C_TRUE        NO_CONCLUYENTE   PASS
+  M25   metodo    tobytes() con **kwargs                                != C_TRUE        NO_CONCLUYENTE   PASS
+  M26   metodo    item() con *args                                      != C_TRUE        NO_CONCLUYENTE   PASS
+  M27   metodo    flush() con *args (alias)                             != C_TRUE        NO_CONCLUYENTE   PASS
+  M28   metodo    close() con **kwargs (alias)                          != C_TRUE        NO_CONCLUYENTE   PASS
+  M29   metodo    sum() posicional MAS ALLA de out                      != C_TRUE        NO_CONCLUYENTE   PASS
+  P13   control   CONTROL: los 11 metodos SIN out siguen admitidos      CONCLUYENTE_TRU  CONCLUYENTE_TRU  PASS
+  P14   control   CONTROL: sum(axis=0) / sum(dtype=...) sin out         CONCLUYENTE_TRU  CONCLUYENTE_TRU  PASS
+  P15   control   CONTROL: copy() / flatten() sin expansion             CONCLUYENTE_TRU  CONCLUYENTE_TRU  PASS
+  P16   control   CONTROL: tolist() / tobytes() / item()                CONCLUYENTE_TRU  CONCLUYENTE_TRU  PASS
+  P17   control   CONTROL: astype(x, copy=True) explicito               CONCLUYENTE_TRU  CONCLUYENTE_TRU  PASS
+  P18   control   CONTROL: astype(dtype=x, order="K", copy=True)        CONCLUYENTE_TRU  CONCLUYENTE_TRU  PASS
+  P19   control   CONTROL: astype(x, order, casting, copy=True)         CONCLUYENTE_TRU  CONCLUYENTE_TRU  PASS
+  P20   control   CONTROL: flush() / close() sin argumentos             CONCLUYENTE_TRU  CONCLUYENTE_TRU  PASS
+  P21   control   CONTROL: metadatos del alias (nbytes, shape, dtype)   CONCLUYENTE_TRU  CONCLUYENTE_TRU  PASS
+  P22   control   CONTROL: patron real de motor (flush + comprehension  CONCLUYENTE_TRU  CONCLUYENTE_TRU  PASS
+  P23   control   CONTROL: no se rechaza indiscriminadamente (mezcla)   CONCLUYENTE_TRU  CONCLUYENTE_TRU  PASS
+
+  TOTAL: 45/45 PASS   negativos (nunca C_TRUE): 34   positivos (deben ser C_TRUE): 11
+==========================================================================================================================

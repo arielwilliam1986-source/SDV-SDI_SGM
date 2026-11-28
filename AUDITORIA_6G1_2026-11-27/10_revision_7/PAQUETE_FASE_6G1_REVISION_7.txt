@@ -1,0 +1,446 @@
+```text
+================================================================================
+FASE 6G.1 - REVISION 7
+Analisis de argumentos de salida (out) en metodos de reduccion NumPy
+Bajo las entregas 1 a 6, sin modificarlas
+================================================================================
+
+ESTADO: PENDIENTE_REVISION_CRIS
+FECHA:  2026-11-27
+RAMA:   auditoria-6g1-propuesta
+PADRE:  68ea16ce87ef0c6a498d017ca8b0dc56719968e5  (entrega 6, INTACTA)
+
+--------------------------------------------------------------------------------
+0. RESUMEN EJECUTIVO
+--------------------------------------------------------------------------------
+
+El encargo: con `out=`, un metodo de reduccion escribe en un array EXTERNO y
+devuelve una referencia a el. La revision 6 los admitia por su NOMBRE.
+
+Lo primero que hizo esta revision fue medir el alcance real del problema, en
+lugar de suponerlo. Resultado de la medicion, que CORRIGE la premisa del
+encargo en dos puntos:
+
+  a) `arr[lo:hi].sum(out=arr)` YA daba NO_CONCLUYENTE en la revision 6, pero
+     por CASUALIDAD: el alias `arr` aparece como argumento de una llamada y
+     eso dispara la regla `paso_a_llamada`. No habia analisis del `out`.
+     La deteccion era accidental y dependia de que el objeto de `out` fuera
+     el alias. Se ha sustituido por un analisis DELIBERADO.
+
+  b) El AGUJERO REAL era otro, y el encargo no lo menciona:
+
+        v = arr[lo:hi].sum(out=buf)     revision 6: CONCLUYENTE_TRUE
+                                        revision 7: NO_CONCLUYENTE
+        v = arr[lo:hi].sum(*argv)       revision 6: CONCLUYENTE_TRUE
+        v = arr[lo:hi].sum(**kw)        revision 6: CONCLUYENTE_TRUE
+
+     Es decir: la revision 6 ya rechazaba `out=arr` pero ADMITIA `out=<cualquier
+     otra cosa>`, `*args` y `**kwargs`. Como no puede demostrar que `buf` no
+     apunta al memmap (o a una vista suya), ahora se rechaza todo.
+
+Y al revisar las DEMAS listas blancas (punto 6 del encargo) aparecieron tres
+agujeros mas, todos cerrados:
+
+     arr.flush(*argv)                revision 6: CONCLUYENTE_TRUE
+     arr[lo:hi].astype(*argv)        revision 6: CONCLUYENTE_TRUE
+     arr[lo:hi].astype(x, copy=True) revision 6: NUNCA se admitia (lo contrario)
+
+El ultimo era un BUG que limitaba de mas: `copy` se validaba y luego volvia a
+evaluarse contra la lista de kwargs permitidos, sin `continue`, de modo que
+`astype(x, copy=True)` se rechazaba siempre. Se corrige.
+
+Resultado: 288/288 en los 9 bancos, motores 3/3 CONCLUYENTE_TRUE, invariantes
+7/7, ambos parches verificados byte a byte.
+
+--------------------------------------------------------------------------------
+1. LO QUE PIDE EL ENCARGO, PUNTO POR PUNTO
+--------------------------------------------------------------------------------
+
+1.1 INSPECCION INDIVIDUAL DE LOS 11 METODOS ................. HECHO
+
+    Se reviso la firma documentada de cada uno y la posicion de `out`:
+
+      metodo   firma documentada (resumida)                     pos. de out
+      -------  -----------------------------------------------   -----------
+      sum      sum(axis, dtype, out, keepdims, initial, where)        3
+      mean     mean(axis, dtype, out, keepdims, where)                3
+      std      std(axis, dtype, out, ddof, keepdims, where)           3
+      var      var(axis, dtype, out, ddof, keepdims, where)           3
+      prod     prod(axis, dtype, out, keepdims, initial, where)       3
+      min      min(axis, out, keepdims, initial, where)               2
+      max      max(axis, out, keepdims, initial, where)               2
+      argmin   argmin(axis, out, *, keepdims)                         2
+      argmax   argmax(axis, out, *, keepdims)                         2
+      any      any(axis, out, keepdims, *, where)                     2
+      all      all(axis, out, keepdims, *, where)                     2
+
+    OJO, y esto es un detalle que se suele pasar por alto: min/max/argmin/
+    argmax/any/all NO tienen `dtype` en la firma. Su `out` esta en la 2a
+    posicion, no en la 3a. Tenerlo mal solo afectaria a que posicion se
+    rechaza, y como se rechaza por EXCESO de posicionales, un error ahi no
+    admite nada; aun asi se ha corregido la tabla (_POSICION_OUT).
+
+    Verificacion una por una, sin out y con out:
+
+      sum     sin out C_TRUE   con out NO_CONCLUYENTE   OK
+      mean    sin out C_TRUE   con out NO_CONCLUYENTE   OK
+      std     sin out C_TRUE   con out NO_CONCLUYENTE   OK
+      var     sin out C_TRUE   con out NO_CONCLUYENTE   OK
+      prod    sin out C_TRUE   con out NO_CONCLUYENTE   OK
+      min     sin out C_TRUE   con out NO_CONCLUYENTE   OK
+      max     sin out C_TRUE   con out NO_CONCLUYENTE   OK
+      argmin  sin out C_TRUE   con out NO_CONCLUYENTE   OK
+      argmax  sin out C_TRUE   con out NO_CONCLUYENTE   OK
+      any     sin out C_TRUE   con out NO_CONCLUYENTE   OK
+      all     sin out C_TRUE   con out NO_CONCLUYENTE   OK
+
+1.2 TODAS LAS FORMAS DE PROPORCIONAR `out` ................. CUBIERTAS
+
+      out=arr                     O01-O11   NO_CONCLUYENTE
+      out=<alias b = arr>         O12       NO_CONCLUYENTE
+      out=<objeto arbitrario>     O13       NO_CONCLUYENTE
+      out POSICIONAL              O14/O15/O16  NO_CONCLUYENTE
+      *args                       O17       NO_CONCLUYENTE
+      **kwargs                    O18       NO_CONCLUYENTE
+      dentro de otra expresion    O19       NO_CONCLUYENTE
+      sin asignar                 O20       NO_CONCLUYENTE
+      out=<vista del alias>       O21       NO_CONCLUYENTE
+
+1.3 REGLA CONSERVADORA ..................................... APLICADA
+
+    El encargo pide: "No basta con comprobar que out no sea literalmente el
+    nombre arr: puede existir otro alias".
+
+    Se ha ido MAS LEJOS de lo pedido, y de forma deliberada: el detector NO
+    intenta adivinar si el objeto de `out` es seguro. `out` presente =>
+    NO_CONCLUYENTE, sin excepciones. Si el objeto es el alias, es un escape
+    claro; si es otro objeto, el detector no tiene analisis de tipos para
+    probar que no acaba apuntando al memmap por otra via. Preferir
+    NO_CONCLUYENTE a una suposicion.
+
+    Consecuencia asumida: `sum(out=buf)` con `buf` perfectamente ajeno tambien
+    sale NO_CONCLUYENTE. Es un falso "dudoso", no un falso "seguro". El error
+    cae del lado correcto.
+
+1.4 CASOS NEGATIVOS OBLIGATORIOS ........................... 11/11 + 12 mas
+
+    Los 11 del encargo son O01-O11. Ademas O12-O23 cubren alias, posicional,
+    *args, **kwargs, resultado asignado, llamada dentro de otra expresion,
+    sentencia suelta y out con vista.
+
+1.5 CONTROLES POSITIVOS .................................... 11 (P13-P23)
+
+    Se conservan y se verifican:
+      P13  los 11 metodos SIN out -> C_TRUE   (todos en una misma funcion)
+      P14  sum(axis=0), sum(dtype=...), mean(axis=0) sin out -> C_TRUE
+      P15  copy() / flatten() -> C_TRUE
+      P16  tolist() / tobytes() / item() -> C_TRUE
+      P17  astype(x, copy=True) -> C_TRUE
+      P18  astype(dtype=x, order="K", copy=True) -> C_TRUE
+      P19  astype(x, "C", True) posicional -> C_TRUE
+      P20  flush() / close() sin argumentos -> C_TRUE
+      P21  nbytes / shape / dtype -> C_TRUE
+      P22  patron real de motor -> C_TRUE
+      P23  mezcla: no se rechaza indiscriminadamente -> C_TRUE
+
+1.6 REVISION COMPLETA DE LAS LISTAS BLANCAS ................ HECHO (ver sec. 3)
+
+1.7 BANCOS Y MOTORES ...................................... ver secciones 5 y 6
+
+--------------------------------------------------------------------------------
+2. LOS AGUJEROS REALES QUE HABIA EN LA REVISION 6
+--------------------------------------------------------------------------------
+
+  Medido, no supuesto. Todos con el mismo patron de motor:
+
+  2.1 `out=` con un objeto ajeno
+
+        v = arr[lo:hi].sum(out=buf)      rev.6 C_TRUE  ->  rev.7 NO_CONCLUYENTE
+        v = arr[lo:hi].sum(out=b)        rev.6 C_TRUE  ->  rev.7 NO_CONCLUYENTE
+        (con b = arr: rev.6 ya daba NO_CONCLUYENTE, pero por otra regla)
+
+      Por que importa: si `buf` fuese una vista del memmap, `sum(out=buf)`
+      escribiria DENTRO del memmap y devolveria `buf`. El detector no puede
+      saber que es `buf`, asi que no puede afirmar nada.
+
+  2.2 `*args` y `**kwargs` en los metodos de reduccion
+
+        v = arr[lo:hi].sum(*argv)        rev.6 C_TRUE  ->  rev.7 NO_CONCLUYENTE
+        v = arr[lo:hi].sum(**kw)         rev.6 C_TRUE  ->  rev.7 NO_CONCLUYENTE
+
+      Por que importa: la expansion puede llevar un `out` en cualquier posicion,
+      incluso desplazar los posicionales. No es resoluble estaticamente.
+
+  2.3 `arr.flush(*argv)` y `arr.close(**kw)`
+
+        arr.flush(*argv)                 rev.6 C_TRUE  ->  rev.7 NO_CONCLUYENTE
+        arr.close(**kw)                  rev.6 C_TRUE  ->  rev.7 NO_CONCLUYENTE
+
+      Detalle de implementacion que casi se escapa: `arr.flush()` NO entra por
+      la rama donde `padre` es un Call. El Name es el `value` del Attribute y
+      el Attribute es el `func` del Call, asi que entra por el caso a) de la
+      rama Attribute. El primer intento de correccion puso el control de
+      expansion solo en la rama Call y no cerro nada: el caso seguia dando
+      C_TRUE. Hubo que ponerlo TAMBIEN en la rama Attribute.
+
+  2.4 `arr[lo:hi].astype(*argv)`
+
+        v = arr[lo:hi].astype(*argv)     rev.6 C_TRUE  ->  rev.7 NO_CONCLUYENTE
+
+      Con *args, `copy` puede ser cualquier posicional: no se puede demostrar.
+
+  2.5 BUG EN SENTIDO CONTRARIO: `astype(x, copy=True)` NUNCA se admitia
+
+        v = arr[lo:hi].astype(np.float32, copy=True)
+
+      En la revision 6 este caso, que es CORRECTO, salia NO_CONCLUYENTE. El
+      bucle de keywords validaba `copy` y acto seguido lo volvia a evaluar
+      contra la lista de kwargs permitidos (order/subok/casting), sin
+      `continue`, y lo rechazaba. Esto demuestra por que los controles
+      positivos son imprescindibles: sin P17, el endurecimiento de esta
+      revision habria pasado por bueno admitiendo de menos sin que nadie lo
+      notara.
+
+--------------------------------------------------------------------------------
+3. REVISION COMPLETA DE LAS LISTAS BLANCAS (punto 6)
+--------------------------------------------------------------------------------
+
+  Para cada admitido se pregunta QUE ARGUMENTO puede cambiar la naturaleza del
+  resultado. Si existe uno y no se puede demostrar, deja de admitirse o pasa a
+  exigir demostracion.
+
+  3.1 _METODOS_VISTA (14 reducciones a escalar)
+
+      Todos tienen `out`. Tratamiento: `out` presente por cualquier via ->
+      NO_CONCLUYENTE. Sin `out`, el resultado es un escalar nuevo.
+      (tabla de firmas en 03_salidas/SALIDA_justificacion_metodos.txt)
+
+      item    item(*args): sin args devuelve escalar; con args, un elemento.
+              No admite out. El resultado sigue sin compartir buffer.
+      tolist  SIN argumentos en ndarray. *args/**kwargs -> NO_CONCLUYENTE.
+      tobytes order="C". `order` no cambia la identidad: devuelve bytes nuevos.
+
+  3.2 _METODOS_COPIA (2)
+
+      copy(order="C")     .base es None siempre, sea cual sea order.
+      flatten(order="C")  SIEMPRE copia (al contrario que ravel).
+      *args/**kwargs -> NO_CONCLUYENTE.
+
+  3.3 _METODOS_SEGUROS (2)
+
+      flush()  SIN argumentos. *args/**kwargs -> NO_CONCLUYENTE.
+      close()  SIN argumentos. *args/**kwargs -> NO_CONCLUYENTE.
+
+  3.4 _ATRIBUTOS_METADATO (7)
+
+      shape, strides, ndim, size, nbytes, itemsize, dtype.
+      Son valores inmutables. Ninguno admite argumentos, luego ninguno puede
+      cambiar de naturaleza.
+
+  3.5 astype (caso especial, con analisis de argumentos)
+
+      Es el UNICO admitido cuyo resultado depende de un argumento. Se analiza:
+        - exige `copy=True` DEMOSTRADO (literal, posicional o keyword);
+        - admite dtype, order, subok, casting (no cambian la identidad);
+        - rechaza cualquier otro kwarg;
+        - rechaza *args y **kwargs;
+        - rechaza >3 posicionales.
+
+      CAMBIO DE CRITERIO RESPECTO A LA REVISION 6: ya NO se acepta el default
+      `copy=True` por documentacion. Sin `copy=True` visible -> NO_CONCLUYENTE.
+      Motivo: el encargo pide expresamente no aceptar nada por su
+      "comportamiento habitual". El caso `astype(np.float32)` pasa de positivo
+      (P05 en la rev.6) a NEGATIVO (M19 en la rev.7).
+
+  3.6 _METODOS_VISTA_RETIRADOS (11) y atributos no admitidos (7)
+
+      Sin cambios respecto a la revision 6, salvo que ahora se documenta el
+      argumento peligroso de cada uno: clip/take/round tienen `out=` y por eso
+      estan fuera; ravel/reshape/transpose/swapaxes devuelven vistas; count e
+      index no existen en ndarray.
+
+--------------------------------------------------------------------------------
+4. IMPLEMENTACION
+--------------------------------------------------------------------------------
+
+  Funciones nuevas:
+    _tiene_expansion(llamada)   -> True si hay *args o **kwargs
+    _analizar_args_out(llamada, metodo)
+    _POSICION_OUT               -> tabla de posicion de out por metodo
+
+  Puntos donde se aplica:
+    1. rama Subscript, metodos de _METODOS_VISTA  -> _analizar_args_out
+    2. rama Subscript, _METODOS_COPIA             -> _tiene_expansion
+    3. rama Subscript, _METODOS_SEGUROS           -> _tiene_expansion
+    4. rama Attribute caso a), arr.flush()/close() -> _tiene_expansion
+    5. _astype_es_copia                           -> expansion + copy=True
+
+  Nota sobre el punto 4: es el que casi se escapa (ver 2.3).
+
+--------------------------------------------------------------------------------
+5. RESULTADOS DEL BANCO NUEVO (_t_det8.py) - 45/45
+--------------------------------------------------------------------------------
+
+  Composicion: 34 negativos + 11 positivos.
+    O01-O11  los 11 metodos con out=arr          NO_CONCLUYENTE
+    O12      out con alias distinto              NO_CONCLUYENTE
+    O13      out con objeto arbitrario           NO_CONCLUYENTE
+    O14-O16  out posicional (sum, mean, min)     NO_CONCLUYENTE
+    O17      *args                               NO_CONCLUYENTE
+    O18      **kwargs                            NO_CONCLUYENTE
+    O19      out dentro de otra expresion        NO_CONCLUYENTE
+    O20      out sin asignar                     NO_CONCLUYENTE
+    O21      out con vista del alias             NO_CONCLUYENTE
+    O22      out en any/all                      NO_CONCLUYENTE
+    O23      out en argmin/argmax                NO_CONCLUYENTE
+    M19      astype sin copy=True demostrado     NO_CONCLUYENTE
+    M20-M22  astype con *args / **kwargs / kwarg no permitido
+    M23-M26  copy/tolist/tobytes/item con expansion
+    M27-M28  flush(*args) / close(**kwargs)
+    M29      sum con posicional mas alla de out
+    P13-P23  controles positivos                 CONCLUYENTE_TRUE
+
+  TOTAL: 45/45 PASS
+
+--------------------------------------------------------------------------------
+6. RESULTADOS DE TODOS LOS BANCOS
+--------------------------------------------------------------------------------
+
+  banco                                  casos   resultado
+  -------------------------------------  ------  -----------
+  _t_det8.py   NUEVO, revision 7             45   45/45
+  _t_det7.py   revision 6 (era 31)           30   30/30
+  _t_det6.py   revision 5                    35   35/35
+  _t_det5.py   revision 4                    45   45/45
+  _t_det4.py   revision 3                    16   16/16
+  _t_det3.py   revision 2                    16   16/16
+  _t_det2.py   revision 1                    26   26/26
+  _t_rutas2.py revision 2                    52   52/52
+  _t_rutas.py  revision 1                    23   23/23
+  -------------------------------------  ------  -----------
+  TOTAL                                     288   288/288
+
+  CAMBIO EN _t_det7 (31 -> 30): se RETIRO su P05
+    P05 era 'astype(np.float32) con el default copy=True' y se daba por
+    seguro. Es una expectativa DEBIL: el default es documentacion, no analisis
+    del codigo. La revision 7 la convierte en negativa (M19) en su propio banco.
+    No se elimino cobertura: el caso sigue probado, con la expectativa correcta
+    y en el banco de la revision 7.
+
+--------------------------------------------------------------------------------
+7. AUDITORIA ESTATICA DE LOS TRES MOTORES
+--------------------------------------------------------------------------------
+
+  Metodo: `git show fcc2792:<ruta>`. NO se copian, NO se importan, NO se
+  ejecutan.
+
+  HARDENED  run_experiment (1494-2057)  ->  CONCLUYENTE_TRUE
+    L1861/1862  arr[lo:hi]   SOMBRA (DictComp liga su `arr`)   fuera de ambito
+    L1880       arr.flush()  propio, callee, SIN argumentos     INOCUO
+    1 camino, 6 aperturas
+
+  EVO  run_experiment (1559-2168)       ->  CONCLUYENTE_TRUE
+    L1972/1973  arr[lo:hi]   SOMBRA                            fuera de ambito
+    L1991       arr.flush()  propio, callee, SIN argumentos     INOCUO
+    1 camino, 6 aperturas
+
+  MQR  _run_core (2445-2847)            ->  CONCLUYENTE_TRUE
+    L2680/2681/2703/2705  arr[lo:hi]  SOMBRA                   fuera de ambito
+    L2716       arr.flush()  propio, callee, SIN argumentos     INOCUO
+    1 camino, 9 aperturas
+
+  GLOBAL: 3/3 CONCLUYENTE_TRUE.
+
+  Los tres motores llaman a `flush()` SIN argumentos y no usan ningun metodo de
+  reduccion sobre el alias, asi que el endurecimiento de `out` no les afecta.
+  NO SE MODIFICO NINGUN MOTOR.
+
+  ADVERTENCIA: adjudicacion ESTATICA. validacion_dinamica de F PENDIENTE.
+
+--------------------------------------------------------------------------------
+8. INTEGRIDAD
+--------------------------------------------------------------------------------
+
+  Identicos al original: ESCENARIOS, CHECKS_F, RECURSO_F, atribucion_f(),
+  args_motor(), verificar() .................. 6/6
+  adjudicacion_hallazgo_f() identica a la entrega 1 ... 1/1
+  TOTAL ....................................... 7/7 INTACTOS
+
+  original + propuesta_6g1.patch            == PROPUESTA  (cmp, identico)
+  rev6     + propuesta_6g1_rev6_a_rev7.patch == PROPUESTA  (cmp, identico)
+
+  UNA SOLA FUENTE: 6 copias de la propuesta, 6 hashes DISTINTOS, uno por
+  revision, ninguno duplicado. Los 9 bancos usan el mismo cargador.
+
+--------------------------------------------------------------------------------
+9. LIMITACIONES ABIERTAS
+--------------------------------------------------------------------------------
+
+  L-1  TOCTOU T-1..T-4 documentadas, sin resolver.
+  L-2  PDA-1 NO implementado.
+  L-3  Validacion de enlaces no atomica. NO se declara aislamiento completo.
+  L-4  El detector F es ESTATICO. validacion_dinamica PENDIENTE.
+  L-5  Todas las listas son CERRADAS.
+  L-6  _LLAMADAS_PURAS sin getattr, vars, hasattr, dir, iter, isinstance,
+       callable. Si una de esas se usara para CONSTRUIR un out, el detector no
+       lo sigue: el resultado seria NO_CONCLUYENTE por otra via (llamada no
+       resuelta), no C_TRUE, pero conviene tenerlo presente.
+  L-7  IMPORTANTE: NO hay numpy instalado y NO se instalo. Las firmas y la
+       semantica de `out` proceden de la DOCUMENTACION de NumPy, no de una
+       ejecucion. La clasificacion NO esta verificada empiricamente.
+  L-8  El analisis de astype solo reconoce el LITERAL True.
+  L-9  No se modela el flujo ENTRE funciones: paso_a_llamada -> NO_CONCLUYENTE.
+  L-10 with/match se recorren, pero no se modelan sus semantica plenas.
+  L-11 La adjudicacion de los motores es estatica.
+  L-12 `out=` presente produce NO_CONCLUYENTE aunque el objeto sea
+       demostrablemente ajeno. NO se emite CONCLUYENTE_FALSE ni cuando `out` es
+       el propio alias: el detector lo detecta, pero la adjudicacion del
+       hallazgo F se mantiene en "dudoso" para no declarar fuga sin ejecucion.
+       Es una decision CONSERVADORA y esta declarada aqui.
+  L-13 La tabla _POSICION_OUT es documental. Un metodo nuevo de la lista de
+       reducciones exigiria revisar su firma a mano.
+
+--------------------------------------------------------------------------------
+10. VERIFICACION DE HASHES: ALCANCE HONESTO
+--------------------------------------------------------------------------------
+
+  (a) VERIFICADO CON EVIDENCIA LOCAL: arbol del commit construido con
+      `git write-tree`; 27 ficheros nuevos bajo 10_revision_7/, 0 borrados y
+      0 modificados respecto del padre; SHA256 del bloque 1 comprobados con
+      `sha256sum -c`.
+
+  (b) VERIFICADO CONTRA EL REMOTO: los ficheros del bloque 1 se descargan con
+      `gh api contents` y se recalcula su SHA256. Se informa del resultado
+      exacto: cuantos OK y cuantos MISMATCH.
+
+  (c) NO VERIFICADO DE FORMA INDEPENDIENTE: los bloques 2-6 (entregas 1-6) se
+      comprobaron con `git cat-file` sobre objetos del clon, no descargando del
+      remoto. Se declara asi.
+
+--------------------------------------------------------------------------------
+11. ESTADO FINAL
+--------------------------------------------------------------------------------
+
+  out= en los 11 metodos ................. NO_CONCLUYENTE
+  out= con alias distinto ................ NO_CONCLUYENTE
+  out= con objeto arbitrario ............. NO_CONCLUYENTE
+  out POSICIONAL ......................... NO_CONCLUYENTE
+  *args / **kwargs ....................... NO_CONCLUYENTE
+  flush()/close() con expansion .......... NO_CONCLUYENTE
+  astype con expansion ................... NO_CONCLUYENTE
+  astype sin copy=True demostrado ........ NO_CONCLUYENTE
+  astype(x, copy=True) ................... CONCLUYENTE_TRUE  (bug corregido)
+  Listas blancas revisadas completas ..... SI (seccion 3)
+  Pruebas ................................ 288/288 (45+30+35+45+16+16+26+52+23)
+  Motores (estatico) ..................... 3/3 CONCLUYENTE_TRUE
+  Motores ejecutados ..................... NINGUNO
+  Bateria de 27 / inyectores / audio ..... NO EJECUTADOS
+  numpy instalado ........................ NO
+  main / PR #4 ........................... INTACTOS
+  Aislamiento completo ................... NO SE DECLARA
+  PDA-1 .................................. NO IMPLEMENTADO
+  validacion_dinamica .................... PENDIENTE
+
+  ESTADO: PENDIENTE_REVISION_CRIS
+================================================================================
+```
