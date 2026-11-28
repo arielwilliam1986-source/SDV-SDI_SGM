@@ -1,0 +1,91 @@
+====================================================================================================
+AUDITORIA ESTATICA DE LOS TRES MOTORES  (revision 5)
+Fuente: git show fcc2792:<ruta>   (lectura, sin copia ni ejecucion)
+====================================================================================================
+
+====================================================================================================
+MOTOR Hardened
+  fichero: ETAPA_6G1_CORRECCION_LECTURA_SEGURA/motores/MOTOR_SEP_SDV-SDI_v3.1.1_Hardened_Final.py
+  lineas:  2313
+====================================================================================================
+  funcion run_experiment  (lineas 1494-2057)   variable(s) de bucle: arr
+
+    Usos de `arr`:
+      linea  ctx     contexto real                              ambito  veredicto
+      -----  ------  -----------------------------------------  ------  ---------
+      1880   Store   for arr in mm.values():     arr.flush()    n/a     modelado por el detector
+      1881   Store   arr = None                                 n/a     modelado por el detector
+      1861   Load    arr[lo:hi]                                 SOMBRE  vista
+      1862   Load    arr[lo:hi]                                 SOMBRE  vista
+      1880   Load    arr.flush                                  propio  INOCUO
+      1861   Store   (pid, arr)                                 n/a     modelado por el detector
+      1862   Store   (pid, arr)                                 n/a     modelado por el detector
+
+    Veredicto del detector: CONCLUYENTE_TRUE
+      motivo: todos los caminos (1) liberan antes de `del`
+      caminos: 1 | aperturas: 6
+
+====================================================================================================
+MOTOR EVO
+  fichero: ETAPA_6G1_CORRECCION_LECTURA_SEGURA/motores/MOTOR_SEP_SDV-SDI_EVO.py
+  lineas:  2441
+====================================================================================================
+  funcion run_experiment  (lineas 1559-2168)   variable(s) de bucle: arr
+
+    Usos de `arr`:
+      linea  ctx     contexto real                              ambito  veredicto
+      -----  ------  -----------------------------------------  ------  ---------
+      1991   Store   for arr in mm.values():     arr.flush()    n/a     modelado por el detector
+      1992   Store   arr = None                                 n/a     modelado por el detector
+      1972   Load    arr[lo:hi]                                 SOMBRE  vista
+      1973   Load    arr[lo:hi]                                 SOMBRE  vista
+      1991   Load    arr.flush                                  propio  INOCUO
+      1972   Store   (pid, arr)                                 n/a     modelado por el detector
+      1973   Store   (pid, arr)                                 n/a     modelado por el detector
+
+    Veredicto del detector: CONCLUYENTE_TRUE
+      motivo: todos los caminos (1) liberan antes de `del`
+      caminos: 1 | aperturas: 6
+
+====================================================================================================
+MOTOR MQR
+  fichero: ETAPA_6G1_CORRECCION_LECTURA_SEGURA/motores/sdv_sdi_mqr_engine.py
+  lineas:  3841
+====================================================================================================
+  funcion _run_core  (lineas 2445-2847)   variable(s) de bucle: arr
+
+    Usos de `arr`:
+      linea  ctx     contexto real                              ambito  veredicto
+      -----  ------  -----------------------------------------  ------  ---------
+      2715   Store   for arr in mm.values():     arr.flush()    n/a     modelado por el detector
+      2717   Store   arr = None                                 n/a     modelado por el detector
+      2716   Load    arr.flush                                  propio  INOCUO
+      2680   Load    arr[lo:hi]                                 SOMBRE  vista
+      2681   Load    arr[lo:hi]                                 SOMBRE  vista
+      2680   Store   (pid, arr)                                 n/a     modelado por el detector
+      2681   Store   (pid, arr)                                 n/a     modelado por el detector
+      2703   Load    arr[lo:hi]                                 SOMBRE  vista
+      2705   Load    arr[lo:hi]                                 SOMBRE  vista
+      2704   Store   (pid, arr)                                 n/a     modelado por el detector
+      2706   Store   (pid, arr)                                 n/a     modelado por el detector
+
+    Veredicto del detector: CONCLUYENTE_TRUE
+      motivo: todos los caminos (1) liberan antes de `del`
+      caminos: 1 | aperturas: 6
+
+====================================================================================================
+RESUMEN DE ADJUDICACION ESTATICA
+====================================================================================================
+  Hardened  CONCLUYENTE_TRUE
+            todas las funciones con `del mm` cumplen
+  EVO       CONCLUYENTE_TRUE
+            todas las funciones con `del mm` cumplen
+  MQR       CONCLUYENTE_TRUE
+            todas las funciones con `del mm` cumplen
+
+  GLOBAL: CONCLUYENTE_TRUE
+
+  ADVERTENCIA: esta adjudicacion es ESTATICA. NO demuestra nada en tiempo
+  de ejecucion. validacion_dinamica sigue PENDIENTE. No se han ejecutado
+  los motores.
+====================================================================================================

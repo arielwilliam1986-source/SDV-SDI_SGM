@@ -1,0 +1,475 @@
+```text
+================================================================================
+FASE 6G.1 - REVISION 5
+Subindices y vistas, atributos y llamadas indirectas
+Bajo las entregas 1, 2, 3 y 4, sin modificarlas
+================================================================================
+
+ESTADO: PENDIENTE_REVISION_CRIS
+FECHA:  2026-11-27
+RAMA:   auditoria-6g1-propuesta
+PADRE:  597c0f59ab506f631a6e48ca4ec39f5d2edbb31d  (entrega 4, INTACTA)
+
+--------------------------------------------------------------------------------
+0. RESUMEN EJECUTIVO
+--------------------------------------------------------------------------------
+
+La revision 4 declaraba INOCUOS dos contextos por su TIPO de nodo AST:
+Attribute y Subscript. El encargo demuestra que eso es falso. Se reproduce:
+
+  caso                            rev.4              motivo real
+  ------------------------------  -----------------  --------------------------
+  view = arr[:]                   C_TRUE (falso)     vista = almacenamiento
+  view = arr[lo:hi]               C_TRUE (falso)     vista = almacenamiento
+  view = arr[i]                   C_TRUE (falso)     Subscript no es escalar
+  data = arr.data                 C_TRUE (falso)     devuelve el buffer
+  method = arr.flush              C_TRUE (falso)     metodo LIGADO al objeto
+  vars(arr)                       C_TRUE (falso)     __dict__ con referencias
+  dir(arr)                        C_TRUE (falso)     estaba en la lista blanca
+  iter(arr)                       C_TRUE (falso)     iterador sobre el objeto
+
+  OCHO falsos positivos de seguridad, exactamente los que reporta Cris.
+
+CAUSA RAIZ: la lista blanca de contextos de la revision 4 era una lista de
+TIPOS AST:
+
+    _CONTEXTO_INOCUO = ((ast.Attribute, 'value'), (ast.Subscript, 'value'))
+
+    "Si el padre es un Attribute o un Subscript y el campo es value, es una
+     lectura, luego es inocuo."
+
+  Eso es exactamente lo que el encargo prohibe: "no utilizar listas genericas
+  de tipos AST como prueba suficiente de inocuidad". Un Attribute puede
+  devolver el buffer (arr.data) o el metodo ligado (arr.flush). Un Subscript
+  devuelve una VISTA que comparte el almacenamiento del memmap.
+
+CORRECCION: la lista blanca pasa a ser VACIA por defecto. Solo dos casos
+concretos, ambos demostrables, se admiten:
+
+  1. arr.METODO()  con METODO en una lista CERRADA de metodos seguros
+     (flush, close, shape, dtype, ndim, strides, size, nbytes, itemsize).
+     El metodo ligado solo vive durante la llamada y no se guarda.
+
+  2. arr[a:b].METODO()  con METODO en una lista CERRADA de metodos de vista
+     (sum, mean, std, min, max, tolist, ...) y sin envoltorio que la guarde.
+     La vista se consume en la expresion y muere al terminarla.
+
+  Todo lo demas: vista / atributo_valor / metodo_no_seguro -> NO_CONCLUYENTE.
+
+Y se RETIRAN de _LLAMADAS_PURAS: getattr, vars, hasattr, dir, iter, isinstance,
+callable. Quedan solo las que garantizan un escalar NUEVO (len, id, hash,
+repr, str, type, bool, int, float, abs, hex, oct, bin, format, ascii, sizeof).
+
+--------------------------------------------------------------------------------
+HALLAZGO NUEVO, NO REPORTADO: EL AMBITO LEXICO DE LOS COMPREHENSIONS
+--------------------------------------------------------------------------------
+
+Al aplicar lo anterior, los TRES MOTORES pasaron de CONCLUYENTE_TRUE a
+NO_CONCLUYENTE. Se investigo por que en lugar de aceptarlo o de relajar el
+criterio. Resultado: el detector estaba contando usos del alias que NO LO ERAN.
+
+  En los tres motores:
+
+      v_regs_r = {pid: arr[lo:hi] for pid, arr in v_regs.items()}
+                                      ^^^^^^^^^^
+                                      este `arr` NO es el del `del mm`
+
+  El comprehension liga su PROPIO `arr` en el `for ... in ...`. Ese nombre
+  sombrea al de la funcion y se refiere a otro memmap (una entrada de v_regs).
+  Tratarlo como el alias producia un falso NEGATIVO de seguridad: el detector
+  se bloqueaba por una vista de OTRO objeto.
+
+  Se anade _ambito(fn, nodo, nombre): sube por los ancestros y distingue
+
+      SOMBRA    el nombre lo liga un comprehension/lambda/def interna -> NO
+                es el alias de la funcion.
+      CAPTURA   el comprehension NO liga el nombre y lo usa en su elt
+                (xs = [arr for _ in z]) -> SI es el alias, y retiene.
+      PROPIO    cualquier otro caso -> es el alias de la funcion.
+
+  Este matiz es el punto delicado: [arr for _ in z] CAPTURA y retiene;
+  [arr[0] for arr in v] SOMBREA y no tiene nada que ver. Un filtro burdo
+  ("ignorar todo lo que este dentro de un comprehension") habria convertido
+  S01-S03 en falsos positivos de seguridad. Por eso hay banco para ambos.
+
+  Nota de honestidad: los motores vuelven a CONCLUYENTE_TRUE DESPUES de
+  corregir el ambito, no antes. Si el ambito no se hubiera implementado, el
+  resultado habria sido NO_CONCLUYENTE, y se habria reportado asi. No se
+  relajo ninguna condicion para que pasaran.
+
+--------------------------------------------------------------------------------
+1. CORRECCIONES OBLIGATORIAS: UNA A UNA
+--------------------------------------------------------------------------------
+
+1.1 SUBINDICES Y VISTAS
+
+  view = arr[:]          antes C_TRUE   ahora NO_CONCLUYENTE
+  view = arr[lo:hi]      antes C_TRUE   ahora NO_CONCLUYENTE
+  view = arr[i]          antes C_TRUE   ahora NO_CONCLUYENTE
+  cache["v"] = arr[a:b]  antes C_TRUE   ahora NO_CONCLUYENTE
+  return arr[lo:hi]      antes C_TRUE   ahora NO_CONCLUYENTE
+  registrar(arr[lo:hi])  antes C_TRUE   ahora NO_CONCLUYENTE
+
+  Una vista comparte el almacenamiento del memmap. Mientras la vista exista,
+  el recurso no se libera aunque se haga `arr = None` y `del mm`.
+
+  CONSUMO INMEDIATO (si se admite):
+      total = int(arr[lo:hi].sum())      C_TRUE
+      total = arr[lo:hi].sum()           C_TRUE
+  La vista no se asigna ni se pasa: se consume en la expresion y muere. El
+  resultado es un escalar NUEVO. Hay caso positivo V07 para probarlo.
+
+  Un metodo NO seguro sobre la vista se rechaza:
+      r6 = arr.reshape(-1)               NO_CONCLUYENTE
+      c  = arr.copy()                    NO_CONCLUYENTE
+
+1.2 ATRIBUTOS
+
+  data   = arr.data                    antes C_TRUE  ahora NO_CONCLUYENTE
+  method = arr.flush                   antes C_TRUE  ahora NO_CONCLUYENTE
+  cb     = arr.__array_interface__      antes C_TRUE  ahora NO_CONCLUYENTE
+  b      = arr.base                    antes C_TRUE  ahora NO_CONCLUYENTE
+  d      = arr.dtype                   antes C_TRUE  ahora NO_CONCLUYENTE
+
+  arr.flush()  como llamada inmediata  antes C_TRUE  ahora C_TRUE  (correcto)
+  arr.close()  como llamada inmediata  antes C_TRUE  ahora C_TRUE  (correcto)
+
+  El Attribute solo es inocuo cuando es el CALLEE de una llamada y el metodo
+  esta en la lista cerrada. Guardar el atributo (aunque sea un metodo) retiene
+  el objeto, porque el metodo ligado tiene `self`.
+
+1.3 LLAMADAS INDIRECTAS
+
+  getattr(arr, "data")   antes NO_CONCLUYENTE  ahora NO_CONCLUYENTE
+  vars(arr)              antes C_TRUE          ahora NO_CONCLUYENTE
+  hasattr(arr, "x")      antes NO_CONCLUYENTE  ahora NO_CONCLUYENTE
+  dir(arr)               antes C_TRUE          ahora NO_CONCLUYENTE
+  iter(arr)              antes C_TRUE          ahora NO_CONCLUYENTE
+
+  Se retiran de la lista blanca. hasattr y dir no devuelven la referencia, pero
+  tampoco hay nada demostrable en el contexto: se prefiere dudar.
+
+  QUEDAN como puras (escalar nuevo garantizado):
+      len, id, hash, repr, str, type, bool, int, float, abs, hex, oct, bin,
+      format, ascii, sizeof
+
+  Se RETIRAN tambien de la lista original de la revision 4: isinstance y
+  callable (no devuelven el objeto, pero se dejan fuera por prudencia con el
+  criterio "solo lo demostrado"). Nota: si se quisieran recuperar, hay que
+  documentarlo y anadir su caso.
+
+--------------------------------------------------------------------------------
+2. CRITERIO DE ADJUDICACION APLICADO
+--------------------------------------------------------------------------------
+
+  CONCLUYENTE_FALSE : hay evidencia estatica de que la referencia escapa o
+                      sigue viva (fuga demostrable: alias, vista en rama,
+                      del solo en una rama...).
+  CONCLUYENTE_TRUE  : TODOS los caminos cubiertos y se demuestra que no queda
+                      referencia retenida. Requiere que todo uso del alias caiga
+                      en un contexto de la lista blanca DEMOSTRADA.
+  NO_CONCLUYENTE    : hay una ruta no analizada, una operacion indirecta o una
+                      semantica que el detector no puede demostrar.
+
+  El detector prioriza evitar falsos positivos de SEGURIDAD. No se conserva
+  CONCLUYENTE_TRUE a costa de debilitar condiciones: la lista blanca es vacia
+  por defecto y hay que ganarse cada excepcion.
+
+--------------------------------------------------------------------------------
+3. RESULTADOS DEL BANCO NUEVO (_t_det6.py) - 33/33
+--------------------------------------------------------------------------------
+
+  Cobertura: 22 negativos + 11 positivos.
+
+  ID    familia      caso                                                esperado        obtenido        res
+  ----  -----------  --------------------------------------------------  --------------  --------------  ----
+  V01   vista        view = arr[:]                                       != C_TRUE       NO_CONCLUYENTE  PASS
+  V02   vista        view = arr[lo:hi]                                   != C_TRUE       NO_CONCLUYENTE  PASS
+  V03   vista        view = arr[i]                                       != C_TRUE       NO_CONCLUYENTE  PASS
+  V04   vista        vista guardada en un contenedor                    != C_TRUE       NO_CONCLUYENTE  PASS
+  V05   vista        vista devuelta al llamador                          != C_TRUE       NO_CONCLUYENTE  PASS
+  V06   vista        vista pasada a una funcion                         != C_TRUE       NO_CONCLUYENTE  PASS
+  V07   vista        CONTROL: consumo inmediato que no asigna ni pasa    C_TRUE         C_TRUE         PASS
+  V08   vista        CONTROL: vista en comprehension SOMBREADO (motor)   C_TRUE         C_TRUE         PASS
+  A01   atributo     data = arr.data                                     != C_TRUE       NO_CONCLUYENTE  PASS
+  A02   atributo     method = arr.flush                                  != C_TRUE       NO_CONCLUYENTE  PASS
+  A03   atributo     cb = arr.__array_interface__                        != C_TRUE       NO_CONCLUYENTE  PASS
+  A04   atributo     arr.base                                            != C_TRUE       NO_CONCLUYENTE  PASS
+  A05   atributo     arr.dtype como valor                                != C_TRUE       NO_CONCLUYENTE  PASS
+  A06   atributo     CONTROL: arr.flush() llamada inmediata              C_TRUE         C_TRUE         PASS
+  A07   atributo     CONTROL: arr.close() llamada inmediata              C_TRUE         C_TRUE         PASS
+  A08   atributo     metodo NO seguro (arr.copy)                         != C_TRUE       NO_CONCLUYENTE  PASS
+  A09   atributo     metodo NO seguro (arr.reshape)                      != C_TRUE       NO_CONCLUYENTE  PASS
+  I01   indirecta    getattr(arr, "data")                                != C_TRUE       NO_CONCLUYENTE  PASS
+  I02   indirecta    vars(arr)                                           != C_TRUE       NO_CONCLUYENTE  PASS
+  I03   indirecta    hasattr(arr, "x")                                   != C_TRUE       NO_CONCLUYENTE  PASS
+  I04   indirecta    dir(arr)                                            != C_TRUE       NO_CONCLUYENTE  PASS
+  I05   indirecta    iter(arr)                                           != C_TRUE       NO_CONCLUYENTE  PASS
+  I06   indirecta    CONTROL: len(arr), id(arr), repr(arr) puras         C_TRUE         C_TRUE         PASS
+  S01   ambito       comprehension que CAPTURA el alias                  != C_TRUE       NO_CONCLUYENTE  PASS
+  S02   ambito       genexp que captura                                  != C_TRUE       NO_CONCLUYENTE  PASS
+  S03   ambito       dictcomp que captura en el valor                    != C_TRUE       NO_CONCLUYENTE  PASS
+  S04   ambito       CONTROL: comprehension con su PROPIO arr (sombra)    C_TRUE         C_TRUE         PASS
+  S05   ambito       lambda que captura el alias                          != C_TRUE       NO_CONCLUYENTE  PASS
+  S06   ambito       CONTROL: lambda con su propio parametro arr          C_TRUE         C_TRUE         PASS
+  G01   control      sin alias, libera y borra                            C_TRUE         C_TRUE         PASS
+  G02   control      patron COMPLETO de motor                             C_TRUE         C_TRUE         PASS
+  G03   control      alias creado y liberado                              C_TRUE         C_TRUE         PASS
+  G04   control      del mm solo en una rama                              C_FALSE         C_FALSE        PASS
+
+  TOTAL: 33/33 PASS
+
+--------------------------------------------------------------------------------
+4. RESULTADOS DE TODOS LOS BANCOS ANTERIORES
+--------------------------------------------------------------------------------
+
+  banco                                  casos   resultado
+  -------------------------------------  ------  -----------
+  _t_det6.py     (NUEVO, revision 5)         33   33/33
+  _t_det5.py     (revision 4)                45   45/45
+  _t_det4.py     (revision 3)                16   16/16
+  _t_det3.py     (revision 2)                16   16/16
+  _t_det2.py     (revision 1)                26   26/26
+  _t_rutas2.py   (revision 2)                52   52/52
+  _t_rutas.py    (revision 1)                23   23/23
+  -------------------------------------  ------  -----------
+  TOTAL                                     211   211/211
+
+  Nota sobre _t_det5 (revision 4): tres de sus casos hubo que reformularlos
+  porque la revision 5 demuestra que sus expectativas eran erroneas:
+    P03  `x = arr[lo:hi]`  era POSITIVO (C_TRUE). Es una vista ASIGNADA:
+                            ahora es negativo N39. Tenerlo como positivo
+                            habria sido un falso positivo de seguridad.
+    P04  `x = arr[lo:hi]; y = arr[...]` era positivo con vistas asignadas.
+                            Se sustituyo por el patron real de motor (vistas
+                            dentro de comprehension SOMBREADO), que si es
+                            inocuo.
+    P05  `len(arr)` y `arr.dtype`: arr.dtype es un descriptor, no un metodo
+                            seguro. Se dejo len/id/repr, y arr.dtype paso a
+                            negativo N40.
+  Ademas se anadieron N39 y N40 al banco de la revision 4 (45 casos ahora).
+  No se relajo ninguna expectativa: se corrigieron expectativas que la
+  revision 5 demostro falsas.
+
+--------------------------------------------------------------------------------
+5. AUDITORIA ESTATICA DE LOS TRES MOTORES
+--------------------------------------------------------------------------------
+
+  Metodo: lectura con `git show fcc2792:<ruta>`. NO se copian los ficheros, NO
+  se importan, NO se ejecutan. Se enumeran TODAS las apariciones de la variable
+  de bucle, su contexto y el veredicto del detector para cada una.
+
+  HARDENED  run_experiment (1494-2057)
+    linea  ctx     contexto                              ambito    veredicto
+    -----  ------  ------------------------------------  --------  ---------
+    1880   Store   for arr in mm.values(): arr.flush()   n/a       modelado
+    1881   Store   arr = None                            n/a       modelado
+    1861   Load    arr[lo:hi]                            SOMBRA    vista
+    1862   Load    arr[lo:hi]                            SOMBRA    vista
+    1880   Load    arr.flush                             propio    INOCUO
+    1861   Store   (pid, arr)                            n/a       modelado
+    1862   Store   (pid, arr)                            n/a       modelado
+    Veredicto: CONCLUYENTE_TRUE   (1 camino, 6 aperturas)
+
+  EVO  run_experiment (1559-2168)
+    linea  ctx     contexto                              ambito    veredicto
+    -----  ------  ------------------------------------  --------  ---------
+    1991   Store   for arr in mm.values(): arr.flush()   n/a       modelado
+    1992   Store   arr = None                            n/a       modelado
+    1972   Load    arr[lo:hi]                            SOMBRA    vista
+    1973   Load    arr[lo:hi]                            SOMBRA    vista
+    1991   Load    arr.flush                             propio    INOCUO
+    1972   Store   (pid, arr)                            n/a       modelado
+    1973   Store   (pid, arr)                            n/a       modelado
+    Veredicto: CONCLUYENTE_TRUE   (1 camino, 6 aperturas)
+
+  MQR  _run_core (2445-2847)
+    linea  ctx     contexto                              ambito    veredicto
+    -----  ------  ------------------------------------  --------  ---------
+    2715   Store   for arr in mm.values(): arr.flush()   n/a       modelado
+    2717   Store   arr = None                            n/a       modelado
+    2716   Load    arr.flush                             propio    INOCUO
+    2680   Load    arr[lo:hi]                            SOMBRA    vista
+    2681   Load    arr[lo:hi]                            SOMBRA    vista
+    2703   Load    arr[lo:hi]                            SOMBRA    vista
+    2705   Load    arr[lo:hi]                            SOMBRA    vista
+    2680   Store   (pid, arr)                            n/a       modelado
+    2681   Store   (pid, arr)                            n/a       modelado
+    2703   Store   (pid, arr)                            n/a       modelado
+    2705   Store   (pid, arr)                            n/a       modelado
+    Veredicto: CONCLUYENTE_TRUE   (1 camino, 9 aperturas)
+
+  CONCLUSION DE LA AUDITORIA:
+    En las tres funciones, el alias `arr` aparece SOLO en tres formas:
+      - el `for arr in mm.values()` que lo liga;
+      - `arr = None`, que lo libera;
+      - `arr.flush()`, metodo de la lista cerrada, como callee de llamada.
+    Los `arr[lo:hi]` que aparecen en el codigo NO son el alias: estan dentro de
+    comprehensions que ligan su propio `arr` (SOMBRA). El detector lo verifica
+    ahora con _ambito(), no por suposicion.
+
+    ADJUDICACION: los tres motores -> CONCLUYENTE_TRUE, con el criterio
+    ENDURECIDO de la revision 5.
+
+    ADVERTENCIA OBLIGATORIA: esta adjudicacion es ESTATICA. NO demuestra nada
+    en tiempo de ejecucion. validacion_dinamica sigue PENDIENTE. No se han
+    ejecutado los motores.
+
+  NO SE MODIFICO NINGUN MOTOR. El unico cambio fue en el detector.
+
+--------------------------------------------------------------------------------
+6. UNA SOLA FUENTE DEL DETECTOR (verificado)
+--------------------------------------------------------------------------------
+
+  Copias con el nombre pruebas_auditoria_cierre_6g1.PROPUESTA.py:
+    7b1165e8...  revision 1
+    dda62c24...  revision 2
+    9b93108b...  revision 3
+    5bface04...  revision 4
+    8bfedb10...  revision 5   <-- la vigente
+  Cinco hashes, uno por revision, NINGUNO duplicado: no hay copias
+  divergentes de la misma revision.
+
+  Origen real de las funciones del detector por __code__.co_filename: las 11
+  apuntan al MISMO fichero. sys.modules sin modulos `prop` alternativos.
+
+  Los 7 bancos comparten el mismo cargador (_localizar_propuesta +
+  _asegurar_dependencias) y ninguno importa una copia local.
+
+--------------------------------------------------------------------------------
+7. INTEGRIDAD DE LOS ARTEFACTOS
+--------------------------------------------------------------------------------
+
+  FUNCIONES Y TABLAS QUE DEBIAN SEGUIR INTACTAS:
+    ESCENARIOS, CHECKS_F, RECURSO_F, atribucion_f(), args_motor(),
+    verificar() ................ identicos al ORIGINAL
+    adjudicacion_hallazgo_f() .. identico a la ENTREGA 1
+
+  PARCHE CONTRA EL ORIGINAL (1452 l., 7 hunks):
+    original + propuesta_6g1.patch == PROPUESTA byte a byte
+  PARCHE CONTRA LA REVISION 4 (244 l., 6 hunks):
+    rev4 + propuesta_6g1_rev4_a_rev5.patch == PROPUESTA byte a byte
+
+  ENTREGAS ANTERIORES: 1 (625c9815), 2 (0b42974), 3 (9142e40) y 4 (597c0f59)
+  quedan INTACTAS. Esta revision anade 08_revision_5/ en un commit hijo.
+
+--------------------------------------------------------------------------------
+8. LIMITES RESPETADOS
+--------------------------------------------------------------------------------
+
+  NO ejecutado: bateria de 27 escenarios, motores Hardened/EVO/MQR, inyectores,
+  sitecustomize, audio real, main(), bateria(), ejecutar(), C5 historico.
+  NO instalado dependencias.
+  NO modificado main, ni PR #4, ni codigo funcional de los motores, ni los
+  archivos de R6-R4.
+  NO hecho commits en otras ramas, ni pull requests, ni merges.
+  NO convertido ningun UNKNOWN en PASS.
+  NO declarado cierre dinamico de F.
+
+--------------------------------------------------------------------------------
+9. LIMITACIONES QUE CONTINUAN ABIERTAS
+--------------------------------------------------------------------------------
+
+  L-1  TOCTOU T-1..T-4 documentadas, sin resolver.
+  L-2  PDA-1 (escrituras ancladas por descriptor) NO implementado.
+  L-3  Validacion de enlaces no atomica. NO se declara aislamiento completo.
+  L-4  El detector F es ESTATICO. validacion_dinamica PENDIENTE.
+  L-5  _METODOS_SEGUROS y _METODOS_VISTA son listas CERRADAS. Un metodo seguro
+       no listado se trata como no concluyente. El error va hacia dudar.
+  L-6  _LLAMADAS_PURAS es una lista cerrada; se han RETIRADO getattr, vars,
+       hasattr, dir, iter (y tambien isinstance, callable). Una funcion pura no
+       listada se trata como no concluyente.
+  L-7  El consumo de vista se admite solo como `arr[a:b].metodo()` con metodo
+       de la lista y sin envoltorio que la guarde. `f(arr[a:b])` con f no pura
+       se rechaza (V06).
+  L-8  _ambito() distingue sombra de captura en comprehensions, lambdas y defs
+       internas. NO modela `nonlocal`/`global` para ambitos: esos ya se marcan
+       por otra via (global_nonlocal).
+  L-9  No se modela el flujo ENTRE funciones (una funcion llamada puede guardar
+       la referencia en un global). paso_a_llamada -> NO_CONCLUYENTE.
+  L-10 `with`/`match` se recorren, pero NO se modela que `with` puede suprimir
+       excepciones ni los patrones de `match` (guardas, or-patterns).
+  L-11 Una vista pasada a un metodo de la propia vista que DEVUELVA la vista
+       (p.ej. arr[a:b].ravel() en algunos casos) se admite por lista; la lista
+       es deliberadamente corta y revisable.
+  L-12 La adjudicacion de los motores es estatica. NO sustituye a la
+       validacion dinamica, que sigue PENDIENTE.
+
+--------------------------------------------------------------------------------
+10. INVENTARIO DE 08_revision_5/
+--------------------------------------------------------------------------------
+
+  01_propuesta/pruebas_auditoria_cierre_6g1.PROPUESTA.py   propuesta rev.5
+  01_propuesta/propuesta_6g1.patch                          parche vs ORIGINAL
+  01_propuesta/propuesta_6g1_rev4_a_rev5.patch              parche vs REVISION 4
+  02_bancos/_t_det6.py                                      NUEVO, 33 casos
+  02_bancos/_t_det5.py                                      rev.4, 45 casos
+  02_bancos/_t_det4.py                                      rev.3, 16 casos
+  02_bancos/_t_det3.py                                      rev.2, 16 casos
+  02_bancos/_t_det2.py                                      rev.1, 26 casos
+  02_bancos/_t_rutas2.py                                    rev.2, 52 casos
+  02_bancos/_t_rutas.py                                     rev.1, 23 casos
+  02_bancos/_t_integridad.py                                una sola fuente
+  02_bancos/_auditoria_motores_r5.py                        auditoria estatica
+  03_salidas/SALIDA_detector_f_r5.txt                       33/33
+  03_salidas/SALIDA_auditoria_motores.txt                   auditoria completa
+  03_salidas/SALIDA_integridad.txt                          5 comprobaciones
+  03_salidas/SALIDA_detector_f_r4.txt                       45/45
+  03_salidas/SALIDA_detector_f_r3.txt                       16/16
+  03_salidas/SALIDA_detector_f_r2.txt                       16/16
+  03_salidas/SALIDA_detector_f.txt                          26/26
+  03_salidas/SALIDA_rutas2.txt                              52/52
+  03_salidas/SALIDA_rutas.txt                               23/23
+  PAQUETE_FASE_6G1_REVISION_5.txt                           este informe
+  SHA256SUMS.txt                                            manifiesto
+
+--------------------------------------------------------------------------------
+11. HASHES SHA-256
+--------------------------------------------------------------------------------
+
+  8bfedb10419e0fe55f10396e1363af15fd4d6de91817179a42a72fff6473ad6a  01_propuesta/pruebas_auditoria_cierre_6g1.PROPUESTA.py
+  b0b3eed4e4d7852499ca4d07a8e0826925dd1b64ccbe2d53c58769ab8de18a3c  01_propuesta/propuesta_6g1.patch
+  942d222d62f06014280a38a996f0bc22f7930d0817ae81fabf52cea9b59594e0  01_propuesta/propuesta_6g1_rev4_a_rev5.patch
+  3460c4b7f34d00d344f487bc746b7a96830d142849698284ef32fa58a8065fac  02_bancos/_t_det6.py
+  dbcfb7f16f17ce12322bba8f91df6f797313c72c083ecf32814532f2f8971448  02_bancos/_auditoria_motores_r5.py
+
+  Referencia historica:
+  7b1165e834bea12ed58f077cb3bf6f9e494c41d1105494c8c82f581663dcb4c5  rev.1
+  dda62c245a275a633dcc5d17e8ae0ef247dae947f170e19ecc1ded06b746423d  rev.2
+  9b93108b3538b9468e8bd02e2a0d8570bf4e7546e9003b3038cd083bd484f3c0  rev.3
+  5bface0496429baf5ed9f2b4ddf222a5afa33b53b442aa4e51a8c9e825f02631  rev.4
+  31f724b3d19b89ea9210cdd02e1d5a94bc5fd5bdfdc86e7c651c9d0acdc54852  original
+
+  EVOLUCION:
+    version         lineas   bytes   hunks  parche vs original (l.)
+    --------------  ------   -----   -----  ----------------------
+    rev.1             1135   55897      7                        938
+    rev.2             1240   61285      7                       1043
+    rev.3             1322   65212      7                       1125
+    rev.4             1471   73710      7                       1274
+    rev.5             1649   82696      7                       1452
+    original           394   22391      -                          -
+
+--------------------------------------------------------------------------------
+12. ESTADO FINAL
+--------------------------------------------------------------------------------
+
+  Subindices/vistas (Subscript no inocuo) .. CORREGIDO
+  Atributos (Attribute no inocuo) ......... CORREGIDO
+  Llamadas indirectas retiradas ........... getattr, vars, hasattr, dir, iter
+  Ambito lexico (sombra vs captura) ....... IMPLEMENTADO
+  Lista blanca por tipo AST ............... ELIMINADA (vacia por defecto)
+  Pruebas ................................. 211/211 (33+45+16+16+26+52+23)
+  Motores (estatico) ...................... 3/3 CONCLUYENTE_TRUE
+  Una sola fuente del detector ............ CONFIRMADO
+  Entregas 1, 2, 3 y 4 .................... INTACTAS
+  Motores ejecutados ...................... NINGUNO
+  Bateria de 27 / inyectores / audio ...... NO EJECUTADOS
+  main / PR #4 ............................ INTACTOS
+  Aislamiento completo .................... NO SE DECLARA
+  PDA-1 ................................... NO IMPLEMENTADO
+  validacion_dinamica ..................... PENDIENTE
+
+  ESTADO: PENDIENTE_REVISION_CRIS
+================================================================================
+```

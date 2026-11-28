@@ -1,0 +1,56 @@
+========================================================================================================
+BANCO REVISION 4: cierre conservador de formas AST no soportadas
+propuesta: /tmp/prop6g1/pruebas_auditoria_cierre_6g1.PROPUESTA.py
+========================================================================================================
+
+  ID    familia      caso                                                esperado        obtenido        res
+  ----  -----------  --------------------------------------------------  --------------  --------------  ----
+  N01   rev3         anotada  b: object = arr                            != C_TRUE       NO_CONCLUYENTE   PASS
+  N02   rev3         encadenada  b = c = arr                             != C_TRUE       NO_CONCLUYENTE   PASS
+  N03   rev3         desempaquetado  b, = (arr,)                         != C_TRUE       NO_CONCLUYENTE   PASS
+  N04   rev3         NamedExpr  (b := arr)                               != C_TRUE       NO_CONCLUYENTE   PASS
+  N05   rev3         atributo  obj.ref = arr                             != C_TRUE       NO_CONCLUYENTE   PASS
+  N06   rev3         subscript  d["k"] = arr                             != C_TRUE       NO_CONCLUYENTE   PASS
+  N07   rev3         paso a llamada  registrar(arr)                      != C_TRUE       NO_CONCLUYENTE   PASS
+  N08   lambda       lambda que captura el alias                         != C_TRUE       NO_CONCLUYENTE   PASS
+  N09   closure      def interna que retorna el alias                    != C_TRUE       NO_CONCLUYENTE   PASS
+  N10   lambda       lambda como default que captura                     != C_TRUE       NO_CONCLUYENTE   PASS
+  N11   comp         listcomp que captura                                != C_TRUE       NO_CONCLUYENTE   PASS
+  N12   comp         genexp que captura                                  != C_TRUE       NO_CONCLUYENTE   PASS
+  N13   comp         setcomp que captura                                 != C_TRUE       NO_CONCLUYENTE   PASS
+  N14   comp         dictcomp que captura                                != C_TRUE       NO_CONCLUYENTE   PASS
+  N15   global       global arr                                          != C_TRUE       NO_CONCLUYENTE   PASS
+  N16   nonlocal     nonlocal arr                                        != C_TRUE       NO_CONCLUYENTE   PASS
+  N17   yield        yield arr                                           != C_TRUE       NO_CONCLUYENTE   PASS
+  N18   yield        yield from arr                                      != C_TRUE       NO_CONCLUYENTE   PASS
+  N19   with         alias dentro del cuerpo de with                     != C_TRUE       C_FALSE         PASS
+  N20   with         with ... as arr liga el nombre                      != C_TRUE       NO_CONCLUYENTE   PASS
+  P09   with         libera dentro del with (no liga el alias)           C_TRUE          C_TRUE          PASS
+  N22   match        alias en un case                                    != C_TRUE       C_FALSE         PASS
+  N23   match        match con un case que libera y otro que no          != C_TRUE       C_FALSE         PASS
+  N24   match        del mm dentro de un case                            != C_TRUE       NO_CONCLUYENTE   PASS
+  N25   retorno      return arr                                          != C_TRUE       NO_CONCLUYENTE   PASS
+  N26   retorno      return de un alias vivo                             != C_TRUE       NO_CONCLUYENTE   PASS
+  N27   captura      metodo de objeto recibe el alias                    != C_TRUE       NO_CONCLUYENTE   PASS
+  N28   fstring      el alias interpolado en f-string                    != C_TRUE       NO_CONCLUYENTE   PASS
+  N29   dict_key     el alias como clave de diccionario                  != C_TRUE       NO_CONCLUYENTE   PASS
+  N30   starred      el alias desempaquetado en una llamada              != C_TRUE       NO_CONCLUYENTE   PASS
+  N31   compare      comparacion que retiene en una expresion            != C_TRUE       NO_CONCLUYENTE   PASS
+  N32   contenedor   el alias dentro de una lista literal                != C_TRUE       NO_CONCLUYENTE   PASS
+  N33   contenedor   el alias dentro de un dict literal                  != C_TRUE       NO_CONCLUYENTE   PASS
+  N34   augassign    augassign sobre el alias                            != C_TRUE       C_FALSE         PASS
+  N35   while        alias creado dentro de un while                     != C_TRUE       C_FALSE         PASS
+  P01   control      sin alias, libera y borra                           C_TRUE          C_TRUE          PASS
+  P02   control      atributo leido  arr.flush()                         C_TRUE          C_TRUE          PASS
+  N39   vista        vista asignada  x = arr[lo:hi]  retiene             != C_TRUE       NO_CONCLUYENTE   PASS
+  P04   control      patron real de motor: vistas en comprehension somb  C_TRUE          C_TRUE          PASS
+  P05   control      len(), id(), repr() puras                           C_TRUE          C_TRUE          PASS
+  N40   atributo     arr.dtype como valor, no como llamada               != C_TRUE       NO_CONCLUYENTE   PASS
+  P06   control      alias creado y liberado                             C_TRUE          C_TRUE          PASS
+  N36   control      alias en rama: la liberacion de b es condicional    != C_TRUE       NO_CONCLUYENTE   PASS
+  N37   control      del mm solo en el else: el otro camino no borra     C_FALSE         C_FALSE         PASS
+  N38   control      alias en rama: b sobrevive en el camino que no ent  != C_TRUE       NO_CONCLUYENTE   PASS
+
+TOTAL: 45/45 PASS
+  negativos (nunca C_TRUE): 38
+  positivos (deben ser C_TRUE): 7

@@ -1,0 +1,244 @@
+--- a/pruebas_auditoria_cierre_6g1.py
++++ b/pruebas_auditoria_cierre_6g1.py
+@@ -418,6 +418,88 @@
+     return nodo.id if isinstance(nodo, ast.Name) else None
+ 
+ 
++def _ligaduras_locales(nodo):
++    """Nombres que un comprehension, lambda o def INTERNA ligan en su propio
++    ambito. Un `arr` ligado ahi NO es el alias del cuerpo de la funcion."""
++    fuera = set()
++    if isinstance(nodo, (ast.ListComp, ast.SetComp, ast.GeneratorExp, ast.DictComp)):
++        for gen in nodo.generators:
++            for n in ast.walk(gen.target):
++                if isinstance(n, ast.Name):
++                    fuera.add(n.id)
++    elif isinstance(nodo, (ast.Lambda, ast.FunctionDef, ast.AsyncFunctionDef)):
++        a = nodo.args
++        for arg in list(a.posonlyargs) + list(a.args) + list(a.kwonlyargs):
++            fuera.add(arg.arg)
++        if a.vararg:
++            fuera.add(a.vararg.arg)
++        if a.kwarg:
++            fuera.add(a.kwarg.arg)
++    return fuera
++
++
++def _ambito(fn, nodo, nombre):
++    """True si el `nombre` de `nodo` se refiere al nombre del AMBITO DE `fn`.
++
++    Un comprehension puede tener un `for arr in ...` que liga su PROPIO arr.
++    Ese arr sombrea al de la funcion y no es el alias del `del mm`.
++
++    Pero un comprehension tambien puede CAPTURAR el alias de la funcion:
++        xs = [arr for _ in z]        <-- aqui `arr` ES el alias externo
++    y eso SI retiene la referencia.
++
++    Regla: se sube por los ancestros. Para cada comprehension encontrado se
++    comprueba si el nodo esta DENTRO de alguno de sus `generators`. Si lo esta,
++    el nombre es local de ese comprehension (sombreado). Si no lo esta (esta en
++    el `elt`, en la `key`/`value` o en el `if` de una comp), es una CAPTURA
++    del alias externo.
++
++    Un lambda o una def anidada que usa el alias tambien lo captura: se
++    considera captura (no sombra), salvo que el alias sea un parametro suyo.
++    """
++    cam = {}
++    for padre in ast.walk(fn):
++        for hijo in ast.iter_child_nodes(padre):
++            cam[hijo] = padre
++
++    act = cam.get(nodo)
++    hijo = nodo
++    while act is not None and act is not fn:
++        if isinstance(act, (ast.ListComp, ast.SetComp, ast.GeneratorExp, ast.DictComp)):
++            # Un comprehension forma su PROPIO ambito. Si alguno de sus
++            # `for ... in ...` liga el nombre, TODO uso del nombre dentro del
++            # comprehension (target, iter, ifs, y el elt/key/value) se refiere
++            # a la variable local, no al alias de la funcion.
++            #
++            # Ojo: si el comprehension NO liga el nombre, entonces un uso
++            # dentro de su elt SI es una captura del alias externo
++            # (xs = [arr for _ in z]), y eso retiene la referencia.
++            liga = any(isinstance(n, ast.Name) and n.id == nombre
++                       for g in act.generators
++                       for n in ast.walk(g.target))
++            if liga:
++                return False
++        elif isinstance(act, (ast.Lambda, ast.FunctionDef, ast.AsyncFunctionDef)):
++            a = act.args
++            params = {x.arg for x in list(a.posonlyargs) + list(a.args) + list(a.kwonlyargs)}
++            if a.vararg:
++                params.add(a.vararg.arg)
++            if a.kwarg:
++                params.add(a.kwarg.arg)
++            if nombre in params:
++                return False
++        hijo = act
++        act = cam.get(act)
++    return True
++
++
++def _es_descendiente(nodo, raiz):
++    for n in ast.walk(raiz):
++        if n is nodo:
++            return True
++    return False
++
++
+ def _alias_de(cuerpo, var):
+     """Variables que acaban referenciando el mismo objeto que var (b = arr)."""
+     alias, cambio = {var}, True
+@@ -896,18 +978,45 @@
+ # ESCRIBE, el padre es un Assign y cae fuera de esta lista (no inocuo).
+ # Funciones que LEEN el objeto y no guardan su referencia. Lista cerrada y
+ # conservadora: solo las que no pueden almacenar el argumento.
++# Revision 5: se RETIRAN getattr, vars, hasattr, dir, iter.
++#   getattr(arr, 'x') puede devolver arr.data o arr[...]: una referencia.
++#   vars(arr)         devuelve el __dict__ del objeto (referencias).
++#   hasattr / dir     no devuelven la referencia, pero tampoco aportan nada
++#                     demostrable: se tratan como no concluyentes por prudencia.
++#   iter(arr)         devuelve un iterador que apunta al objeto.
++# Solo quedan funciones cuyo contrato garantiza un valor escalar nuevo.
+ _LLAMADAS_PURAS = frozenset({'len', 'id', 'hash', 'repr', 'str', 'type', 'bool',
+-                             'int', 'float', 'isinstance', 'callable', 'iter',
+-                             'abs', 'hex', 'oct', 'bin', 'format', 'ascii',
+-                             'vars', 'dir', 'getattr', 'hasattr', 'sizeof'})
++                             'int', 'float', 'abs', 'hex', 'oct', 'bin',
++                             'format', 'ascii', 'sizeof'})
++
++# Metodos que se pueden invocar sobre el alias sin que devuelvan ni guarden
++# el objeto ni una vista del mismo. flush() escribe a disco; close() suelta
++# el mmap; shape/dtype/ndim/strides/size/nbytes son metadatos escalares.
++_METODOS_SEGUROS = frozenset({'flush', 'close', 'shape', 'dtype', 'ndim',
++                              'strides', 'size', 'nbytes', 'itemsize'})
++
++# Metodos que se pueden invocar sobre una VISTA recien creada
++# (arr[lo:hi].sum()) porque devuelven un escalar NUEVO y no guardan la vista.
++# Cualquier otro metodo sobre una vista se trata como no concluyente.
++_METODOS_VISTA = frozenset({'sum', 'mean', 'std', 'var', 'min', 'max', 'argmin',
++                            'argmax', 'prod', 'any', 'all', 'tolist',
++                            'tobytes', 'item', 'count', 'index', 'round',
++                            'astype', 'copy', 'flatten', 'ravel'})
+ 
+ _CONTEXTO_INOCUO = (
+-    (ast.Attribute, 'value'),      # arr.attr        (lectura)
+-    (ast.Subscript, 'value'),      # arr[i]          (lectura)
++    # NADA por defecto. La revision 4 declaraba inocuos Attribute y Subscript
++    # "por ser lecturas". Es falso:
++    #   arr[lo:hi]  devuelve una VISTA que comparte el almacenamiento del
++    #               memmap; si se guarda o se pasa, el recurso sigue vivo.
++    #   arr.data    devuelve la referencia al buffer subyacente.
++    #   arr.flush   devuelve el METODO ligado, que retiene el objeto.
++    # El unico acceso que se admite como inocuo es el Attribute que es
++    # CALLEE de una llamada, y solo para metodos de la lista cerrada de abajo.
+ )
+ 
+ # Contextos que se modelan aparte y se informan con su propio nombre.
+-def _clasificar_contexto(padre, campo, alias):
++def _clasificar_contexto(padre, campo, alias, abuelo=None, campo_abuelo=None,
++                         bisabuelo=None):
+     """Devuelve (tipo, descripcion) para una referencia al alias en `padre`."""
+     # --- formas que RETIENEN la referencia: no soportadas, dudoso ---
+     if isinstance(padre, ast.AnnAssign) and campo == 'value':
+@@ -943,6 +1052,16 @@
+     if isinstance(padre, ast.NamedExpr) and campo == 'value':
+         return ('namedexpr', '%s := ...' % ast.unparse(padre.target))
+     if isinstance(padre, ast.Call):
++        if campo == 'func':
++            # arr.metodo() : el Attribute ES el callee. El metodo ligado
++            # retiene el objeto mientras dura la llamada, pero NO se guarda.
++            # Se admite solo para los metodos de _METODOS_SEGUROS, que no
++            # devuelven ni almacenan el objeto ni una vista.
++            if isinstance(padre.func, ast.Attribute):
++                if padre.func.attr in _METODOS_SEGUROS:
++                    return (None, None)
++                return ('metodo_no_seguro', '%s()' % ast.unparse(padre.func)[:40])
++            return ('llamada_callee', '%s(...)' % ast.unparse(padre.func)[:40])
+         if campo in ('args', 'keywords'):
+             # Funciones PURAS conocidas sobre el objeto: leen, no retienen.
+             if isinstance(padre.func, ast.Name) and padre.func.id in _LLAMADAS_PURAS \
+@@ -970,6 +1089,41 @@
+         return ('with_as', 'with ... as ...')
+     if isinstance(padre, ast.keyword):
+         return ('paso_a_llamada', '%s=...' % padre.arg)
++    # --- Subscript: una vista comparte el almacenamiento ---
++    if isinstance(padre, ast.Subscript) and campo == 'value':
++        # Una vista retiene el memmap. Solo hay un caso en que no escapa: cuando
++        # la vista se CONSUME en el acto.
++        #
++        # OJO con la profundidad: para `arr[a:b].sum()` la cadena real es
++        #     Subscript --Attribute(value)--> Attribute --Call(func)--> Call
++        # es decir, el Subscript NO es hijo del Call; lo es el Attribute.
++        # Este mismo caso se resuelve en la rama del Attribute (que puede ver
++        # su propio padre). Aqui solo hay que decidir si el Subscript se queda
++        # colgando de un Attribute, en cuyo caso la decision se toma ALLI.
++        if isinstance(abuelo, ast.Attribute) and campo_abuelo == 'value':
++            return (None, None)      # se evalua en la rama del Attribute
++        return ('vista', ast.unparse(padre)[:44])
++
++    # --- Attribute: el valor NO es inocuo por ser un Attribute ---
++    if isinstance(padre, ast.Attribute) and campo == 'value':
++        # a) arr.metodo() con metodo seguro: el metodo ligado solo vive durante
++        #    la llamada y no se guarda.
++        if isinstance(abuelo, ast.Call) and campo_abuelo == 'func' \
++                and padre.attr in _METODOS_SEGUROS:
++            return (None, None)
++        # b) vista consumida en el acto: arr[a:b].sum()  (y envoltorios puros).
++        if isinstance(padre.value, ast.Subscript) \
++                and padre.attr in _METODOS_VISTA \
++                and isinstance(abuelo, ast.Call) and campo_abuelo == 'func':
++            if bisabuelo is None:
++                return (None, None)
++            if isinstance(bisabuelo, ast.Call) \
++                    and isinstance(bisabuelo.func, ast.Name) \
++                    and bisabuelo.func.id in _LLAMADAS_PURAS:
++                return (None, None)
++            return ('vista', ast.unparse(padre)[:44])
++        return ('atributo_valor', ast.unparse(padre)[:44])
++
+     # --- lecturas modeladas: no retienen ---
+     for tipo, campito in _CONTEXTO_INOCUO:
+         if isinstance(padre, tipo) and campo == campito:
+@@ -992,6 +1146,12 @@
+     """
+     alias = set(alias)
+     fuera = []
++    # Mapa de padres, para poder mirar el ABUELO (arr.flush -> el Attribute es
++    # el `func` del Call, y hay que ver la llamada, no solo el atributo).
++    cam = {}
++    for _p in ast.walk(fn):
++        for _h in ast.iter_child_nodes(_p):
++            cam[_h] = _p
+ 
+     # global/nonlocal guardan NOMBRES EN TEXTO (campos .names), no nodos Name:
+     # un recorrido de nodos Name jamas los veria. Se comprueban aparte.
+@@ -1019,9 +1179,27 @@
+             for h in hijos:
+                 if not isinstance(h, ast.Name) or h.id not in alias:
+                     continue
++                if isinstance(h.ctx, (ast.Store, ast.Del)) and not _ambito(fn, h, h.id):
++                    continue
+                 if not isinstance(h.ctx, ast.Load):
+                     continue          # store/del: los modela el detector
+-                tipo, desc = _clasificar_contexto(padre, campo, alias)
++                # Revision 5: si el nombre esta ligado en un ambito lexico
++                # INTERNO (comprehension, lambda, def anidada), no es el alias
++                # de la funcion aunque se llame igual. Los motores tienen
++                # {pid: arr[lo:hi] for pid, arr in v_regs.items()}: ese `arr`
++                # es una variable del comprehension, no el alias del `del mm`.
++                if not _ambito(fn, h, h.id):
++                    continue
++                abuelo = cam.get(padre)
++                campo_abuelo = None
++                if abuelo is not None:
++                    for _c, _v in ast.iter_fields(abuelo):
++                        if _v is padre:
++                            campo_abuelo = _c
++                            break
++                bisabuelo = cam.get(abuelo) if abuelo is not None else None
++                tipo, desc = _clasificar_contexto(padre, campo, alias,
++                                                  abuelo, campo_abuelo, bisabuelo)
+                 if tipo is None:
+                     continue          # contexto inocuo demostrado
+                 fuera.append((tipo, getattr(h, 'lineno', 0), desc))
