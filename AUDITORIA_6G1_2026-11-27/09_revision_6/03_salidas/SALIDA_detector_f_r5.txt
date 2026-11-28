@@ -1,0 +1,46 @@
+====================================================================================================
+BANCO REVISION 5: subindices/vistas, atributos y llamadas indirectas
+propuesta: /tmp/prop6g1/pruebas_auditoria_cierre_6g1.PROPUESTA.py
+====================================================================================================
+
+  ID    familia      caso                                                esperado        obtenido        res
+  ----  -----------  --------------------------------------------------  --------------  --------------  ----
+  V01   vista        view = arr[:]                                       != C_TRUE       NO_CONCLUYENTE   PASS
+  V02   vista        view = arr[lo:hi]                                   != C_TRUE       NO_CONCLUYENTE   PASS
+  V03   vista        view = arr[i] (escalar, pero Subscript)             != C_TRUE       NO_CONCLUYENTE   PASS
+  V04   vista        vista guardada en un contenedor                     != C_TRUE       NO_CONCLUYENTE   PASS
+  V05   vista        vista devuelta al llamador                          != C_TRUE       NO_CONCLUYENTE   PASS
+  V06   vista        vista pasada a una funcion                          != C_TRUE       NO_CONCLUYENTE   PASS
+  V07   vista        CONTROL: consumo inmediato que no asigna ni pasa    C_TRUE          C_TRUE          PASS
+  V08   vista        CONTROL: vista dentro de comprehension SOMBREADO (  C_TRUE          C_TRUE          PASS
+  A01   atributo     data = arr.data (buffer subyacente)                 != C_TRUE       NO_CONCLUYENTE   PASS
+  A02   atributo     method = arr.flush (metodo ligado)                  != C_TRUE       NO_CONCLUYENTE   PASS
+  A03   atributo     cb = arr.__array_interface__                        != C_TRUE       NO_CONCLUYENTE   PASS
+  A04   atributo     arr.base (memmap de origen)                         != C_TRUE       NO_CONCLUYENTE   PASS
+  A10   atributo     arr.T como valor devuelve una VISTA                 != C_TRUE       NO_CONCLUYENTE   PASS
+  A11   atributo     arr.real / arr.imag devuelven VISTAS                != C_TRUE       NO_CONCLUYENTE   PASS
+  A12   atributo     arr.flat: iterador VIVO sobre el array              != C_TRUE       NO_CONCLUYENTE   PASS
+  A06   atributo     CONTROL: arr.flush() como llamada inmediata         C_TRUE          C_TRUE          PASS
+  A07   atributo     CONTROL: arr.close() como llamada inmediata         C_TRUE          C_TRUE          PASS
+  A08   atributo     metodo NO seguro llamado (arr.copy)                 != C_TRUE       NO_CONCLUYENTE   PASS
+  A09   atributo     metodo NO seguro llamado (arr.reshape)              != C_TRUE       NO_CONCLUYENTE   PASS
+  I01   indirecta    getattr(arr, "data")                                != C_TRUE       NO_CONCLUYENTE   PASS
+  I02   indirecta    vars(arr)                                           != C_TRUE       NO_CONCLUYENTE   PASS
+  I03   indirecta    hasattr(arr, "x")                                   != C_TRUE       NO_CONCLUYENTE   PASS
+  I04   indirecta    dir(arr)                                            != C_TRUE       NO_CONCLUYENTE   PASS
+  I05   indirecta    iter(arr)                                           != C_TRUE       NO_CONCLUYENTE   PASS
+  I06   indirecta    CONTROL: len(arr), id(arr), repr(arr) puras         C_TRUE          C_TRUE          PASS
+  S01   ambito       comprehension que CAPTURA el alias  [arr for _ in   != C_TRUE       NO_CONCLUYENTE   PASS
+  S02   ambito       genexp que captura                                  != C_TRUE       NO_CONCLUYENTE   PASS
+  S03   ambito       dictcomp que captura en el valor                    != C_TRUE       NO_CONCLUYENTE   PASS
+  S04   ambito       CONTROL: comprehension con su PROPIO arr (sombra)   C_TRUE          C_TRUE          PASS
+  S05   ambito       lambda que captura el alias                         != C_TRUE       NO_CONCLUYENTE   PASS
+  S06   ambito       CONTROL: lambda con su propio parametro arr         C_TRUE          C_TRUE          PASS
+  G01   control      sin alias, libera y borra                           C_TRUE          C_TRUE          PASS
+  G02   control      patron COMPLETO de motor (vistas sombreadas + flus  C_TRUE          C_TRUE          PASS
+  G03   control      alias creado y liberado                             C_TRUE          C_TRUE          PASS
+  G04   control      del mm solo en una rama                             C_FALSE         C_FALSE         PASS
+
+TOTAL: 35/35 PASS
+  negativos (nunca C_TRUE): 24
+  positivos (deben ser C_TRUE): 11

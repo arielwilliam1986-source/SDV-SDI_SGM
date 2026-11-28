@@ -1,0 +1,467 @@
+```text
+================================================================================
+FASE 6G.1 - REVISION 6
+Correccion de la lista blanca de metodos de vistas NumPy
+Bajo las entregas 1, 2, 3, 4 y 5, sin modificarlas
+================================================================================
+
+ESTADO: PENDIENTE_REVISION_CRIS
+FECHA:  2026-11-27
+RAMA:   auditoria-6g1-propuesta
+PADRE:  8a414c7ee55cfd97fa40dec7f99e8f28366ced38  (entrega 5, INTACTA)
+
+--------------------------------------------------------------------------------
+0. RESUMEN EJECUTIVO
+--------------------------------------------------------------------------------
+
+El encargo pide retirar `ravel` y `astype` de la lista blanca y readmitirlos
+solo tras analizar los argumentos. Se hizo, y al comprobarlo aparecieron DOS
+defectos mas graves que los reportados, que se corrigen tambien en esta
+revision:
+
+  DEFECTO 1 (el reportado). `ravel` y `astype` estaban admitidos por NOMBRE.
+
+  DEFECTO 2 (NO reportado, MAS GRAVE). La revision 5 DELEGABA la decision del
+  Subscript en la rama del Attribute, pero esa rama NUNCA VE el Name de
+  `arr[a:b].metodo()`. Consecuencia: _METODOS_VISTA no se consultaba jamas y
+  CUALQUIER metodo sobre una vista pasaba como inocuo, estuviera o no en la
+  lista. Se comprobo con un metodo que NI EXISTE en NumPy:
+
+      v = arr[lo:hi].zzz()        revision 5: CONCLUYENTE_TRUE   <-- absurdo
+                                  revision 6: NO_CONCLUYENTE
+
+  Tambien daban CONCLUYENTE_TRUE en la revision 5: .reshape(), .count(),
+  .index(), .clip(), .transpose(), y el atributo SIN llamada arr[a:b].sum.
+
+  DEFECTO 3 (NO reportado). _METODOS_SEGUROS contenia shape, dtype, ndim,
+  strides, size, nbytes e itemsize como si fueran METODOS. En NumPy son
+  ATRIBUTOS: `arr.shape()` no existe. La lista era enganosa y ademas no admitia
+  el uso REAL `n = arr.nbytes`, que caia en NO_CONCLUYENTE sin motivo.
+
+Los tres se corrigen. Resultado: 244/244 en los 8 bancos, motores 3/3
+CONCLUYENTE_TRUE sin relajar nada, invariantes 7/7.
+
+--------------------------------------------------------------------------------
+1. LO QUE PIDE EL ENCARGO, PUNTO POR PUNTO
+--------------------------------------------------------------------------------
+
+1.1 RETIRAR "ravel" DE LA LISTA BLANCA INCONDICIONAL ......... HECHO
+
+    ravel() devuelve una VISTA CONTIGUA siempre que pueda; solo copia cuando
+    no puede. No hay ningun argumento que garantice la copia: `order='C'`,
+    `order='F'` y `order='K'` cambian la forma de recorrer, no la garantia de
+    independencia. Se retira de forma INCONDICIONAL: no hay ninguna variante de
+    ravel que se pueda demostrar independiente sin ejecutar.
+
+      v = arr[lo:hi].ravel()              NO_CONCLUYENTE
+      v = arr[lo:hi].ravel(order='K')     NO_CONCLUYENTE
+      arr[lo:hi].ravel()                  NO_CONCLUYENTE  (sentencia suelta)
+      registrar(arr[lo:hi].ravel())       NO_CONCLUYENTE  (pasada a funcion)
+
+1.2 RETIRAR "astype" DE LA LISTA BLANCA INCONDICIONAL  ....... HECHO
+
+    astype(copy=False) devuelve EL MISMO objeto cuando el dtype de destino
+    coincide con el de origen, y el dtype de origen es un valor de EJECUCION.
+    Se retira el nombre como pase libre.
+
+1.3 READMITIR SOLO CON ANALISIS DE ARGUMENTOS ................ HECHO
+
+    Se anadio `_astype_es_copia(llamada)`, que devuelve True UNICAMENTE si:
+
+      - no se pasa `copy`, con lo que aplica el default documentado True;
+      - o `copy` es el LITERAL `True`, sea posicional (3er argumento) o por
+        keyword;
+      - y no aparece `out=`, ni `**kwargs`, ni un numero de posicionales
+        inesperado (>3).
+
+    Cualquier `copy=` que no sea el literal True devuelve False:
+
+      astype(np.float32)                  CONCLUYENTE_TRUE   (default copy=True)
+      astype(np.float32, copy=True)       CONCLUYENTE_TRUE   (explicito)
+      astype(dtype=np.float32, copy=True) CONCLUYENTE_TRUE   (por keyword)
+      astype(copy=False)                  NO_CONCLUYENTE
+      astype(arr.dtype, copy=False)       NO_CONCLUYENTE
+      astype(np.float32, copy=flag)       NO_CONCLUYENTE     (valor de ejecucion)
+      astype(np.float32, copy=None)       NO_CONCLUYENTE     (None = "si se puede")
+      astype(np.float32, order='C', casting='unsafe')  NO_CONCLUYENTE (kwargs no
+                                                       demostrados)
+
+    NOTA IMPORTANTE sobre el punto 4 del encargo: el caso pedido
+    `arr[lo:hi].astype(arr.dtype, copy=False)` YA daba NO_CONCLUYENTE en la
+    revision 5 (por una razon casual: el `arr.dtype` de dentro disparaba otra
+    regla). El que SI daba CONCLUYENTE_TRUE era `astype(copy=False)` y
+    `astype(np.float32)`. Por eso no basta con arreglar el caso del encargo:
+    habia que analizar los argumentos, que es lo que se ha hecho.
+
+1.4 PRUEBAS NEGATIVAS ....................................... HECHO
+
+      M01  arr[lo:hi].ravel()                      NO_CONCLUYENTE
+      M02  arr[lo:hi].ravel(order="K")             NO_CONCLUYENTE
+      M03  arr[lo:hi].astype(copy=False)           NO_CONCLUYENTE
+      M04  arr[lo:hi].astype(arr.dtype, copy=False) NO_CONCLUYENTE
+      M05  arr[lo:hi].astype(np.float32, copy=flag) NO_CONCLUYENTE
+      M06  arr[lo:hi].astype(np.float32, copy=None) NO_CONCLUYENTE
+      M07  arr[lo:hi].reshape(-1)                  NO_CONCLUYENTE
+      M08  arr[lo:hi].round(2)                     NO_CONCLUYENTE
+      M09  arr[lo:hi].clip(0, 1)                   NO_CONCLUYENTE
+      M10  arr[lo:hi].transpose()                  NO_CONCLUYENTE
+      M11  arr[lo:hi].zzz()   (NO EXISTE)          NO_CONCLUYENTE
+      M12  arr[lo:hi].count(1) (NO EXISTE)         NO_CONCLUYENTE
+      M13  arr[lo:hi].index(1) (NO EXISTE)         NO_CONCLUYENTE
+      M14  arr[lo:hi].real    (atributo sin call)  NO_CONCLUYENTE
+      M15  arr[lo:hi].sum     (metodo ligado)      NO_CONCLUYENTE
+      M16  arr[lo:hi].ravel() (sentencia suelta)   NO_CONCLUYENTE
+      M17  registrar(arr[lo:hi].ravel())           NO_CONCLUYENTE
+      M18  arr[lo:hi].astype(np.float32, order='C', casting='unsafe')
+                                                   NO_CONCLUYENTE
+
+1.5 CONTROLES POSITIVOS .................................... HECHO
+
+    Trece controles demuestran que NO se rechaza indiscriminadamente. Todos
+    devuelven CONCLUYENTE_TRUE:
+
+      P01  arr[lo:hi].sum()                        escalar nuevo
+      P02  int(arr[lo:hi].sum())                   envuelto en funcion pura
+      P03  arr[lo:hi].copy()                       copia por contrato
+      P04  arr[lo:hi].flatten()                    copia por contrato
+      P05  arr[lo:hi].astype(np.float32)           default copy=True
+      P06  arr[lo:hi].astype(np.float32, copy=True) explicito
+      P07  arr[lo:hi].astype(dtype=..., copy=True) por keyword
+      P08  arr[lo:hi].tolist()                     list de Python
+      P09  arr[lo:hi].tobytes()                    bytes
+      P10  mean/std/argmax/item                    escalares
+      P11  arr.flush(), arr.nbytes, arr.shape      metodos y metadatos del alias
+      P12  solo flush -> patron tipico de motor
+      G01  patron completo de motor con comprehension sombreado
+
+--------------------------------------------------------------------------------
+2. JUSTIFICACION INDIVIDUAL DE CADA METODO ADMITIDO
+--------------------------------------------------------------------------------
+
+  Criterio UNICO, aplicado a todos: se admite si y solo si el RESULTADO
+  documentado no comparte almacenamiento con el ndarray del memmap. No se
+  admite nada por su nombre.
+
+  A) REDUCCIONES A ESCALAR (_METODOS_VISTA, 14 metodos)
+
+  metodo     resultado documentado            por que no retiene
+  ---------  -------------------------------  ---------------------------------
+  sum        escalar (np.float64, etc.)       Valor nuevo. Un np.float64 no
+                                              tiene .base que apunte al array.
+  mean       escalar                          idem
+  std        escalar                          idem
+  var        escalar                          idem
+  prod       escalar                          idem
+  min        escalar                          idem
+  max        escalar                          idem
+  argmin     entero (np.intp)                 Escalar de indice; sin buffer.
+  argmax     entero (np.intp)                 idem
+  any        bool de NumPy                    Escalar logico.
+  all        bool de NumPy                    idem
+  item       escalar Python nativo            Conversion a objeto Python.
+  tolist     list de escalares Python         Copia explicita a estructura
+                                              Python; no hay buffer compartido.
+  tobytes    bytes                            Copia explicita a un objeto
+                                              bytes inmutable.
+
+  NINGUNO de estos 14 puede devolver una vista: todos reducen dimensionalidad
+  hasta un escalar o serializan a un tipo sin memoria compartida. Ese es el
+  fundamento, no el nombre.
+
+  B) COPIAS INDEPENDIENTES POR CONTRATO (_METODOS_COPIA, 2 metodos)
+
+  copy       "Return a copy of the array."    .base es None por definicion.
+  flatten    "Return a copy of the array      Copia explicita, siempre. No
+              collapsed into one dimension."  existe flatten() que devuelva
+                                              vista (al contrario que ravel).
+
+  CONTRASTE QUE IMPORTA: ravel y flatten se confunden a menudo. flatten SIEMPRE
+  copia; ravel puede devolver vista. Por eso flatten se admite y ravel no.
+
+  C) METODOS DEL ALIAS (_METODOS_SEGUROS, 2 metodos)
+
+  flush      devuelve None, escribe a disco. No retiene.
+  close      devuelve None, suelta el mmap. No retiene.
+
+  D) ATRIBUTOS METADATO (_ATRIBUTOS_METADATO, 7 atributos, NO metodos)
+
+  shape      tupla de enteros Python. Inmutable, sin referencia al array.
+  strides    tupla de enteros Python. Inmutable.
+  ndim       entero Python.
+  size       entero Python.
+  nbytes     entero Python.
+  itemsize   entero Python.
+  dtype      numpy.dtype: objeto INMUTABLE que describe el tipo. No guarda
+             referencia al array del que se obtuvo.
+
+  E) RETIRADOS EN LA REVISION 6 (_METODOS_VISTA_RETIRADOS)
+
+  ravel      PUEDE DEVOLVER VISTA. Sin variante demostrable.
+  astype     copy=False puede devolver el MISMO array. Solo se readmite por
+             analisis de argumentos (ver 1.3).
+  reshape    PUEDE DEVOLVER VISTA (siempre que el array sea compatible).
+  round      Devuelve array nuevo, pero su independencia no es tan clara como
+             copy/flatten y ningun motor lo necesita como vista: se retira.
+  clip       Puede devolver el propio array si esta fuera de los limites.
+  transpose  Devuelve SIEMPRE una vista.
+  take       Copia, pero con `out=` puede escribir en un array externo.
+  repeat     Copia, pero admite axis y su contrato no es tan simple: prudencia.
+  swapaxes   Devuelve SIEMPRE una vista.
+  count      NO EXISTE en ndarray. Es de numpy.ma (MaskedArray) y de listas.
+  index      NO EXISTE en ndarray. Es de listas.
+
+  F) ATRIBUTOS QUE NO SE ADMITEN (siguen NO_CONCLUYENTE)
+
+  data                 devuelve el BUFFER subyacente.
+  base                 devuelve el objeto del que se tomo la vista.
+  __array_interface__  descriptor del buffer (puntero + forma).
+  T                    devuelve una VISTA (transpuesta).
+  real / imag          devuelven VISTAS.
+  flat                 devuelve un iterador VIVO sobre el array.
+
+  Se anadieron los casos A10 (arr.T), A11 (real/imag) y A12 (flat) al banco
+  de la revision 5 para demostrarlo.
+
+--------------------------------------------------------------------------------
+3. DEFECTO 2: LA DELEGACION ROTA (lo mas grave de esta revision)
+--------------------------------------------------------------------------------
+
+  Para `arr[a:b].metodo()` el AST real es:
+
+      Name --(value)--> Subscript --(value)--> Attribute --(func)--> Call
+
+  El Name cuelga del SUBScript. La rama del Attribute solo se ejecuta cuando el
+  Name es el `value` del Attribute, cosa que en esta cadena NUNCA ocurre.
+
+  La revision 5 hacia, en la rama del Subscript:
+
+      if isinstance(abuelo, ast.Attribute) and campo_abuelo == 'value':
+          return (None, None)      # "se evalua en la rama del Attribute"
+
+  Ese comentario era falso: la rama del Attribute jamas recibia el caso. La
+  delegacion no se resolvia y el Subscript devolvia INOCUO. Por tanto la lista
+  _METODOS_VISTA de la revision 5 era CODIGO MUERTO en los dos sentidos:
+
+    - no filtraba nada: cualquier metodo pasaba;
+    - aunque hubiera filtrado, habria dado falsos positivos de seguridad con
+      ravel/astype, como reporta el encargo.
+
+  La revision 6 toma la decision EN LA RAMA DEL SUBScript, que es el unico punto
+  donde se ve el Name, y ordena las comprobaciones asi:
+
+    1. si el Attribute NO es el callee de una Call -> es un atributo guardado
+       (o un metodo ligado): NO_CONCLUYENTE;
+    2. reduccion a escalar        -> INOCUO
+    3. copia por contrato         -> INOCUO
+    4. metodo seguro del alias    -> INOCUO
+    5. astype con copy=True demostrado -> INOCUO
+    6. metodo retirado conocido   -> NO_CONCLUYENTE con motivo explicito
+    7. cualquier otro             -> NO_CONCLUYENTE
+
+  La rama antigua del Attribute se ELIMINO (era codigo muerto) y se deja un
+  comentario explicando por que, para que nadie la reintroduzca.
+
+--------------------------------------------------------------------------------
+4. DEFECTO 3: _METODOS_SEGUROS MEZCLABA METODOS Y ATRIBUTOS
+--------------------------------------------------------------------------------
+
+  La revision 5 tenia:
+
+      _METODOS_SEGUROS = {flush, close, shape, dtype, ndim, strides,
+                          size, nbytes, itemsize}
+
+  shape, dtype, ndim, strides, size, nbytes e itemsize NO son metodos de
+  ndarray. `arr.shape()` lanza TypeError. La lista era enganosa.
+
+  Revision 6:
+
+      _METODOS_SEGUROS   = {flush, close}                  (metodos reales)
+      _ATRIBUTOS_METADATO = {shape, strides, ndim, size,
+                             nbytes, itemsize, dtype}      (atributos)
+
+  Efecto observable: `n = arr.nbytes` pasa de NO_CONCLUYENTE (revision 5) a
+  CONCLUYENTE_TRUE (revision 6). Es una ADMISION NUEVA, y por eso hay control
+  positivo P11 que la fija.
+
+  Esto OBLIGO a corregir dos expectativas de bancos anteriores, que se habian
+  escrito sobre la lista equivocada (ver seccion 6).
+
+--------------------------------------------------------------------------------
+5. RESULTADOS DEL BANCO NUEVO (_t_det7.py) - 31/31
+--------------------------------------------------------------------------------
+
+  Composicion: 18 negativos + 13 positivos.
+  M01-M18 negativos (ver 1.4).  P01-P12 + G01 positivos (ver 1.5).
+
+  TOTAL: 31/31 PASS
+
+  Ademas se ejecuta _repro_retencion.py, que compara variante por variante la
+  semantica DOCUMENTADA de NumPy con la decision del detector:
+
+    18 variantes, 0 incorrectas  (ver 03_salidas/SALIDA_lista_blanca_por_resultado.txt)
+
+--------------------------------------------------------------------------------
+6. RESULTADOS DE TODOS LOS BANCOS
+--------------------------------------------------------------------------------
+
+  banco                                  casos   resultado
+  -------------------------------------  ------  -----------
+  _t_det7.py   NUEVO, revision 6             31   31/31
+  _t_det6.py   revision 5 (era 33)           35   35/35
+  _t_det5.py   revision 4                     45   45/45
+  _t_det4.py   revision 3                     16   16/16
+  _t_det3.py   revision 2                     16   16/16
+  _t_det2.py   revision 1                     26   26/26
+  _t_rutas2.py revision 2                     52   52/52
+  _t_rutas.py  revision 1                     23   23/23
+  -------------------------------------  ------  -----------
+  TOTAL                                     244   244/244
+
+  CAMBIOS EN BANCOS ANTERIORES (por que y con que criterio):
+
+  _t_det6 (33 -> 35)
+    A05 'arr.dtype como valor' esperaba NO_CONCLUYENTE. Es una expectativa
+    ERRONEA a la luz de la revision 6: numpy.dtype es inmutable y no referencia
+    el array. Se sustituyo por TRES negativos que si son correctos:
+      A10  arr.T        devuelve VISTA
+      A11  arr.real / arr.imag  devuelven VISTAS
+      A12  arr.flat     iterador VIVO sobre el array
+
+  _t_det5 (45 -> 45, sin cambio de numero)
+    N40 'arr.dtype como valor' tenia el mismo defecto. Se sustituyo por
+    N41 'arr.T como valor devuelve una VISTA', conservando el espiritu del caso
+    (un atributo NO es inocuo por ser atributo) con un atributo que si retiene.
+
+  CRITERIO: en ambos casos se corrigio la EXPECTATIVA, no el detector, y el
+  caso se reemplazo por otro que sigue probando lo mismo que se queria probar.
+  No se elimino cobertura: 1 caso sustituido por 3 en _t_det6, 1 por 1 en
+  _t_det5. Ningun banco quedo con menos casos que antes.
+
+--------------------------------------------------------------------------------
+7. AUDITORIA ESTATICA DE LOS TRES MOTORES
+--------------------------------------------------------------------------------
+
+  Metodo: `git show fcc2792:<ruta>`. NO se copian, NO se importan, NO se
+  ejecutan. Se enumeran TODAS las apariciones de la variable de bucle.
+
+  HARDENED  run_experiment (1494-2057)   ->  CONCLUYENTE_TRUE
+    L1861/1862  arr[lo:hi]   SOMBRA (DictComp liga su `arr`)   fuera de ambito
+    L1880       arr.flush()  propio, callee, metodo seguro      INOCUO
+    L1880/1881  for arr in mm.values(): / arr = None            modelado
+    1 camino, 6 aperturas
+
+  EVO  run_experiment (1559-2168)        ->  CONCLUYENTE_TRUE
+    L1972/1973  arr[lo:hi]   SOMBRA                             fuera de ambito
+    L1991       arr.flush()  propio, callee, metodo seguro      INOCUO
+    L1991/1992  for / None                                      modelado
+    1 camino, 6 aperturas
+
+  MQR  _run_core (2445-2847)             ->  CONCLUYENTE_TRUE
+    L2680/2681/2703/2705  arr[lo:hi]  SOMBRA                    fuera de ambito
+    L2716       arr.flush()  propio, callee, metodo seguro      INOCUO
+    L2715/2717  for / None                                      modelado
+    1 camino, 9 aperturas
+
+  GLOBAL: 3/3 CONCLUYENTE_TRUE.
+
+  Los tres motores NO se ven afectados por el endurecimiento porque no usan
+  NINGUN metodo de vista sobre el alias: sus `arr[lo:hi]` estan en
+  comprehensions sombreados y su unico metodo sobre el alias es flush().
+  Se verifico explicitamente que ninguno usa ravel ni astype SOBRE EL ALIAS
+  (las apariciones de ravel/astype en los motores son sobre arrays locales,
+  no sobre `arr`, y por tanto no entran en el analisis del hallazgo F).
+
+  ADVERTENCIA: adjudicacion ESTATICA. No demuestra nada en tiempo de ejecucion.
+  validacion_dinamica de F sigue PENDIENTE. No se ejecutaron los motores.
+
+  NO SE MODIFICO NINGUN MOTOR.
+
+--------------------------------------------------------------------------------
+8. INTEGRIDAD
+--------------------------------------------------------------------------------
+
+  IDENTICOS AL ORIGINAL: ESCENARIOS, CHECKS_F, RECURSO_F, atribucion_f(),
+  args_motor(), verificar()                         6/6 INTACTOS
+  adjudicacion_hallazgo_f() identica a la ENTREGA 1   INTACTA
+  TOTAL: 7/7 INTACTOS
+
+  PARCHE vs ORIGINAL:   original + propuesta_6g1.patch          == PROPUESTA
+  PARCHE vs REVISION 5: rev5     + propuesta_6g1_rev5_a_rev6.patch == PROPUESTA
+  Ambos verificados byte a byte con cmp.
+
+  UNA SOLA FUENTE DEL DETECTOR: 5 copias de la propuesta, 5 hashes DISTINTOS,
+  uno por revision, ninguno duplicado. Los 8 bancos usan el mismo cargador.
+
+--------------------------------------------------------------------------------
+9. LIMITACIONES ABIERTAS
+--------------------------------------------------------------------------------
+
+  L-1  TOCTOU T-1..T-4 documentadas, sin resolver.
+  L-2  PDA-1 (escrituras ancladas por descriptor) NO implementado.
+  L-3  Validacion de enlaces no atomica. NO se declara aislamiento completo.
+  L-4  El detector F es ESTATICO. validacion_dinamica PENDIENTE.
+  L-5  _METODOS_VISTA, _METODOS_COPIA, _METODOS_SEGUROS, _ATRIBUTOS_METADATO y
+       _METODOS_VISTA_RETIRADOS son listas CERRADAS. Un metodo real no listado
+       -> NO_CONCLUYENTE. El error cae del lado de dudar.
+  L-6  _LLAMADAS_PURAS es una lista cerrada (sin getattr, vars, hasattr, dir,
+       iter, isinstance, callable).
+  L-7  La semantica de cada metodo se tomo de la DOCUMENTACION de NumPy, NO de
+       una ejecucion. NO HAY numpy INSTALADO en este entorno y NO se instalo
+       (lo prohibe el encargo). Por tanto la clasificacion NO esta verificada
+       empiricamente en esta revision; se apoya en el contrato documentado y en
+       el contraste ravel/flatten, que es el punto critico.
+  L-8  El analisis de argumentos de astype solo reconoce el LITERAL True. Un
+       `copy=True` pasado por una variable, aunque su valor sea True, se rechaza.
+       Es deliberado: preferimos NO_CONCLUYENTE a una suposicion.
+  L-9  No se modela el flujo ENTRE funciones: paso_a_llamada -> NO_CONCLUYENTE.
+  L-10 with/match se recorren, pero no se modela la supresion de excepciones en
+       `with` ni las guardas de los patrones `match`.
+  L-11 La adjudicacion de los motores es estatica; no sustituye a la validacion
+       dinamica.
+
+--------------------------------------------------------------------------------
+10. VERIFICACION DE HASHES: ALCANCE HONESTO
+--------------------------------------------------------------------------------
+
+  Se distingue expresamente entre dos cosas:
+
+  a) VERIFICADO CON EVIDENCIA LOCAL: el arbol del commit se construyo con
+     `git write-tree` y se verifico que tiene 23 ficheros nuevos bajo
+     09_revision_6/, 0 borrados y 0 modificados respecto del padre. El push
+     devolvio la actualizacion de la ref. Los SHA256 del bloque 1 se comprueban
+     con `sha256sum -c` sobre los ficheros del arbol.
+
+  b) NO VERIFICADO DE FORMA INDEPENDIENTE: no se ha descargado el contenido
+     remoto para recalcular sus hashes en esta revision. La comprobacion de
+     contenido remoto se hara, si procede, con `gh api contents` y se informara
+     de su resultado SIN afirmar nada que no se haya comprobado.
+
+  Los hashes de los bloques 2 a 6 se calcularon leyendo los commits publicados
+  con `git cat-file`, que es evidencia local sobre objetos ya presentes en el
+  clon; no es una verificacion del remoto.
+
+--------------------------------------------------------------------------------
+11. ESTADO FINAL
+--------------------------------------------------------------------------------
+
+  ravel retirado ......................... SI, incondicionalmente
+  astype retirado ........................ SI, readmitido solo con copy=True
+                                            demostrado en los argumentos
+  Pruebas negativas pedidas .............. 4/4 presentes (M01-M04) + 14 mas
+  Controles positivos .................... 13
+  Justificacion individual de metodos .... 16 admitidos, uno por uno (sec. 2)
+  Reejecucion de todos los bancos ........ 244/244 con UNA fuente
+  Auditoria de los 3 motores ............. 3/3 CONCLUYENTE_TRUE
+  Defectos extra encontrados ............. 2 (delegacion rota; metodos vs
+                                            atributos) - ambos corregidos
+  Motores ejecutados ..................... NINGUNO
+  Bateria de 27 / inyectores / audio ..... NO EJECUTADOS
+  numpy instalado ........................ NO
+  main / PR #4 ........................... INTACTOS
+  Aislamiento completo ................... NO SE DECLARA
+  PDA-1 .................................. NO IMPLEMENTADO
+  validacion_dinamica .................... PENDIENTE
+
+  ESTADO: PENDIENTE_REVISION_CRIS
+================================================================================
+```

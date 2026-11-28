@@ -1,0 +1,42 @@
+======================================================================================================================
+BANCO REVISION 6  -  metodos sobre vistas (lista blanca por RESULTADO, no por nombre)
+Detector cargado desde: pruebas_auditoria_cierre_6g1.PROPUESTA.py
+sha256 detector: 1778806f5fd296bc66d2fa805ff833715bc41ca8b3564442e95d1d4bf1f8429d
+======================================================================================================================
+
+  ID    familia   caso                                                  esperado         obtenido         res
+  ----  --------  ----------------------------------------------------  ---------------  ---------------  ----
+  M01   metodo    arr[lo:hi].ravel() asignado                           != C_TRUE        NO_CONCLUYENTE   PASS
+  M02   metodo    arr[lo:hi].ravel(order="K") asignado                  != C_TRUE        NO_CONCLUYENTE   PASS
+  M03   metodo    arr[lo:hi].astype(copy=False) asignado                != C_TRUE        NO_CONCLUYENTE   PASS
+  M04   metodo    arr[lo:hi].astype(arr.dtype, copy=False)              != C_TRUE        NO_CONCLUYENTE   PASS
+  M05   metodo    arr[lo:hi].astype(copy=flag) no literal               != C_TRUE        NO_CONCLUYENTE   PASS
+  M06   metodo    arr[lo:hi].astype(np.float32, copy=None)              != C_TRUE        NO_CONCLUYENTE   PASS
+  M07   metodo    arr[lo:hi].reshape(-1) (vista posible)                != C_TRUE        NO_CONCLUYENTE   PASS
+  M08   metodo    arr[lo:hi].round(2) retirado por prudencia            != C_TRUE        NO_CONCLUYENTE   PASS
+  M09   metodo    arr[lo:hi].clip(0, 1) (no demostrado)                 != C_TRUE        NO_CONCLUYENTE   PASS
+  M10   metodo    arr[lo:hi].transpose() (vista posible)                != C_TRUE        NO_CONCLUYENTE   PASS
+  M11   metodo    METODO INVENTADO arr[lo:hi].zzz()                     != C_TRUE        NO_CONCLUYENTE   PASS
+  M12   metodo    arr[lo:hi].count(1) (no existe en ndarray)            != C_TRUE        NO_CONCLUYENTE   PASS
+  M13   metodo    arr[lo:hi].index(1) (no existe en ndarray)            != C_TRUE        NO_CONCLUYENTE   PASS
+  M14   metodo    atributo de vista SIN llamada: arr[lo:hi].real        != C_TRUE        NO_CONCLUYENTE   PASS
+  M15   metodo    metodo ligado de vista guardado: arr[lo:hi].sum       != C_TRUE        NO_CONCLUYENTE   PASS
+  M16   metodo    arr[lo:hi].ravel() como sentencia suelta              != C_TRUE        NO_CONCLUYENTE   PASS
+  M17   metodo    arr[lo:hi].ravel() pasado a otra funcion              != C_TRUE        NO_CONCLUYENTE   PASS
+  M18   metodo    arr[lo:hi].astype(np.float32) sin copy explicito      != C_TRUE        NO_CONCLUYENTE   PASS
+  P01   control   CONTROL: arr[lo:hi].sum() -> escalar nuevo            CONCLUYENTE_TRU  CONCLUYENTE_TRU  PASS
+  P02   control   CONTROL: int(arr[lo:hi].sum()) envuelto en pura       CONCLUYENTE_TRU  CONCLUYENTE_TRU  PASS
+  P03   control   CONTROL: arr[lo:hi].copy() -> copia independiente     CONCLUYENTE_TRU  CONCLUYENTE_TRU  PASS
+  P04   control   CONTROL: arr[lo:hi].flatten() -> copia independiente  CONCLUYENTE_TRU  CONCLUYENTE_TRU  PASS
+  P05   control   CONTROL: arr[lo:hi].astype(np.float32) default copy=  CONCLUYENTE_TRU  CONCLUYENTE_TRU  PASS
+  P06   control   CONTROL: arr[lo:hi].astype(np.float32, copy=True) ex  CONCLUYENTE_TRU  CONCLUYENTE_TRU  PASS
+  P07   control   CONTROL: arr[lo:hi].astype(dtype=x, copy=True) por k  CONCLUYENTE_TRU  CONCLUYENTE_TRU  PASS
+  P08   control   CONTROL: arr[lo:hi].tolist() -> list de Python        CONCLUYENTE_TRU  CONCLUYENTE_TRU  PASS
+  P09   control   CONTROL: arr[lo:hi].tobytes() -> bytes                CONCLUYENTE_TRU  CONCLUYENTE_TRU  PASS
+  P10   control   CONTROL: arr[lo:hi].mean(), .std(), .argmax() escala  CONCLUYENTE_TRU  CONCLUYENTE_TRU  PASS
+  P11   control   CONTROL: metodos seguros del alias siguen admitidos   CONCLUYENTE_TRU  CONCLUYENTE_TRU  PASS
+  P12   control   CONTROL: ninguna vista, solo flush -> motor tipico    CONCLUYENTE_TRU  CONCLUYENTE_TRU  PASS
+  G01   control   CONTROL: patron completo de motor con comprehension   CONCLUYENTE_TRU  CONCLUYENTE_TRU  PASS
+
+  TOTAL: 31/31 PASS   negativos (nunca C_TRUE): 18   positivos (deben ser C_TRUE): 13
+======================================================================================================================

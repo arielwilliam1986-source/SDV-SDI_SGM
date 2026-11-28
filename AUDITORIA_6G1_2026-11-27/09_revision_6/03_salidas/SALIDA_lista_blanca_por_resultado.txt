@@ -1,0 +1,32 @@
+========================================================================================================
+LISTA BLANCA POR RESULTADO  (revision 6)
+Comparacion entre la semantica documentada de NumPy y la decision del detector.
+========================================================================================================
+
+  variante                         indep.?  veredicto          correcto?
+  -------------------------------- -------- ------------------ ---------
+  ravel()                          NO       NO_CONCLUYENTE     OK
+  ravel(order='C')                 NO       NO_CONCLUYENTE     OK
+  ravel(order='K')                 NO       NO_CONCLUYENTE     OK
+  reshape(-1)                      NO       NO_CONCLUYENTE     OK
+  transpose()                      NO       NO_CONCLUYENTE     OK
+  astype(copy=False)               NO       NO_CONCLUYENTE     OK
+  astype(arr.dtype, copy=False)    NO       NO_CONCLUYENTE     OK
+  clip(0,1)                        NO       NO_CONCLUYENTE     OK
+  round(2)                         NO       NO_CONCLUYENTE     OK
+  zzz() (no existe)                NO       NO_CONCLUYENTE     OK
+  copy()                           SI       CONCLUYENTE_TRUE   OK
+  flatten()                        SI       CONCLUYENTE_TRUE   OK
+  astype(np.float32)               SI       CONCLUYENTE_TRUE   OK
+  astype(np.float32, copy=True)    SI       CONCLUYENTE_TRUE   OK
+  tolist()                         SI       CONCLUYENTE_TRUE   OK
+  tobytes()                        SI       CONCLUYENTE_TRUE   OK
+  sum()                            SI       CONCLUYENTE_TRUE   OK
+  mean()/std()/argmax()/item()     SI       CONCLUYENTE_TRUE   OK
+
+  18 variantes, 0 incorrectas.
+
+  Criterio aplicado: se admite <=> el RESULTADO documentado no comparte
+  almacenamiento con el memmap. Es una condicion sobre el resultado, no
+  sobre el nombre del metodo, y en astype se comprueban los ARGUMENTOS.
+========================================================================================================

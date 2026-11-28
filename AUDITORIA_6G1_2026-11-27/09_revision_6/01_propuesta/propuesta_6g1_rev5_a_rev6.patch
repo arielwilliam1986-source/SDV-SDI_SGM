@@ -1,0 +1,272 @@
+--- a/pruebas_auditoria_cierre_6g1.PROPUESTA.py
++++ b/pruebas_auditoria_cierre_6g1.PROPUESTA.py
+@@ -989,19 +989,107 @@
+                              'int', 'float', 'abs', 'hex', 'oct', 'bin',
+                              'format', 'ascii', 'sizeof'})
+ 
+-# Metodos que se pueden invocar sobre el alias sin que devuelvan ni guarden
+-# el objeto ni una vista del mismo. flush() escribe a disco; close() suelta
+-# el mmap; shape/dtype/ndim/strides/size/nbytes son metadatos escalares.
+-_METODOS_SEGUROS = frozenset({'flush', 'close', 'shape', 'dtype', 'ndim',
+-                              'strides', 'size', 'nbytes', 'itemsize'})
+-
+-# Metodos que se pueden invocar sobre una VISTA recien creada
+-# (arr[lo:hi].sum()) porque devuelven un escalar NUEVO y no guardan la vista.
+-# Cualquier otro metodo sobre una vista se trata como no concluyente.
++# Metodos REALES del alias cuyo resultado no es el objeto ni una vista suya.
++#
++# Revision 6: se CORRIGE una clasificacion erronea de la revision 5. Aqui
++# estaban tambien shape, dtype, ndim, strides, size, nbytes e itemsize. En
++# NumPy esos NO son metodos, son ATRIBUTOS: `arr.shape()` no existe y lanzaria
++# TypeError. Tenerlos aqui no hacia dano (nadie los llama), pero dejaba una
++# lista enganosa y, sobre todo, no admitia el uso REAL `n = arr.nbytes`.
++#
++#   flush()  -> escribe a disco. Devuelve None. Cierra el objeto a cambios.
++#   close()  -> suelta el mmap. Devuelve None.
++#
++# Ambos devuelven None y no guardan una referencia al objeto. El metodo LIGADO
++# vive solo mientras dura la llamada.
++_METODOS_SEGUROS = frozenset({'flush', 'close'})
++
++# ATRIBUTOS de solo lectura que devuelven metadatos INMUTABLES, sin ninguna
++# referencia al buffer del memmap. Justificacion INDIVIDUAL:
++#
++#   shape    -> tupla de enteros Python. Inmutable. Sin ref al array.
++#   strides  -> tupla de enteros Python. Inmutable. Sin ref al array.
++#   ndim     -> entero Python.
++#   size     -> entero Python.
++#   nbytes   -> entero Python.
++#   itemsize -> entero Python.
++#   dtype    -> numpy.dtype: objeto INMUTABLE que describe el tipo; NO guarda
++#               referencia al array del que se obtuvo.
++#
++# NINGUNO puede compartir almacenamiento con el memmap: son valores nuevos
++# (o singletons de tipo), no vistas. Por eso se admiten COMO VALOR, cosa que
++# la revision 5 no permitia.
++#
++# NO se incluyen a proposito, y por eso siguen siendo NO_CONCLUYENTE:
++#   data, base, __array_interface__   -> devuelven el BUFFER o su descriptor.
++#   T, real, imag, flat               -> devuelven VISTAS del array.
++#   resize, setflags, ...             -> no son metadatos.
++_ATRIBUTOS_METADATO = frozenset({'shape', 'strides', 'ndim', 'size', 'nbytes',
++                                 'itemsize', 'dtype'})
++
++# ---------------------------------------------------------------------------
++# REDUCCIONES: metodos que devuelven un ESCALAR NUEVO.
++#
++# Justificacion INDIVIDUAL (revision 6). Cada uno esta aqui porque su resultado
++# documentado en NumPy es un escalar o un array NUEVO de rango 0, sin memoria
++# compartida con el `ndarray` de partida:
++#
++#   sum/mean/std/var/prod/min/max  -> reduccion a escalar (np.float64, etc.).
++#       `ndarray` no tiene `.reduce` sobre si mismo: el resultado es un objeto
++#       Python/NumPy nuevo; no hay atributo `.base` que apunte a la vista.
++#   argmin/argmax                  -> indice entero (np.intp).
++#   any/all                        -> bool de NumPy.
++#   item                           -> escalar Python nativo.
++#   tolist                         -> list de escalares Python; copia explicita.
++#   tobytes                        -> bytes; copia explicita.
++#   count                          -> EN REALIDAD NO EXISTE EN ndarray Y ADEMAS
++#       NO ES UNA REDUCCION: proviene de numpy.ma (MaskedArray.count devuelve
++#       un entero) y en listas cuenta ocurrencias. Se MANTIENE porque, si
++#       existiera, devolveria un entero; aun asi se rebaja a no concluyente en
++#       la revision 6 por no poder demostrar la independencia. Ver _METODOS_VISTA_RETIRADOS.
++#   index                          -> idem: ndarray no lo tiene; se retira.
++#
++# OJO: ninguno de estos es seguro si el resultado se GUARDA y luego se sigue
++# usando... salvo que el resultado sea un escalar, que no comparte memoria.
++# Por eso la lista es solo de reducciones a escalar.
++# ---------------------------------------------------------------------------
+ _METODOS_VISTA = frozenset({'sum', 'mean', 'std', 'var', 'min', 'max', 'argmin',
+-                            'argmax', 'prod', 'any', 'all', 'tolist',
+-                            'tobytes', 'item', 'count', 'index', 'round',
+-                            'astype', 'copy', 'flatten', 'ravel'})
++                            'argmax', 'prod', 'any', 'all', 'item', 'tolist',
++                            'tobytes'})
++
++# Metodos RETIRADOS de la lista blanca en la revision 6, con su motivo. Se
++# conservan aqui para trazabilidad: un caso que los use debe dar
++# NO_CONCLUYENTE, y el mensaje debe explicar POR QUE no se admite.
++#   ravel          -> PUEDE DEVOLVER UNA VISTA. `arr[lo:hi].ravel()` sobre un
++#                     array contiguo devuelve una vista del mismo buffer; no
++#                     hay ningun argumento (ni order='K') que lo garantice.
++#   astype         -> `astype(copy=False)` devuelve el MISMO array cuando el
++#                     dtype coincide; y aunque copie, la decision depende del
++#                     dtype que se pase, que es un valor de ejecucion.
++#   copy           -> copy() SI es independiente, pero "copia" no demuestra que
++#                     el resultado no comparta memoria en todos los casos sin
++#                     analizar el metodo: se admite solo por analisis del
++#                     resultado, no por nombre. Se retira de la lista de
++#                     VISTA y se readmite aparte como COPIA INDEPENDIENTE.
++#   flatten        -> igual que copy: devuelve una copia. Se readmite aparte.
++#   round          -> ndarray.round devuelve un array NUEVO, pero `round` puede
++#                     recibir `out=` (aunque ndarray no lo expone) y su
++#                     independencia no es tan clara: se retira por prudencia.
++#   reshape        -> PUEDE DEVOLVER UNA VISTA (siempre que sea posible).
++#   count/index    -> no existen en ndarray (ver arriba).
++_METODOS_VISTA_RETIRADOS = frozenset({'ravel', 'astype', 'copy', 'flatten',
++                                      'round', 'reshape', 'count', 'index',
++                                      'ravel', 'clip', 'take', 'repeat',
++                                      'transpose', 'swapaxes'})
++
++# Metodos que devuelven una COPIA INDEPENDIENTE, DEMOSTRABLE POR SU CONTRATO
++# documentado: el resultado no comparte memoria con el objeto de partida.
++#   copy()      -> "Return a copy of the array." .base is None.
++#   flatten()   -> "Return a copy of the array collapsed into one dimension."
++#   numpy.ascontiguousarray / np.array(..., copy=True) no son metodos: van aparte.
++# Solo se admite la llamada SIN argumentos que puedan cambiar la semantica
++# (se comprueba en _es_copia_independiente).
++_METODOS_COPIA = frozenset({'copy', 'flatten'})
+ 
+ _CONTEXTO_INOCUO = (
+     # NADA por defecto. La revision 4 declaraba inocuos Attribute y Subscript
+@@ -1013,6 +1101,61 @@
+     # El unico acceso que se admite como inocuo es el Attribute que es
+     # CALLEE de una llamada, y solo para metodos de la lista cerrada de abajo.
+ )
++
++# ---------------------------------------------------------------------------
++# ANALISIS DE ARGUMENTOS: astype
++#
++# El encargo exige que un metodo solo se readmita "cuando el detector analice
++# los argumentos y demuestre que el resultado es independiente". astype es el
++# caso concreto donde esto se puede intentar:
++#
++#   astype(float)                  -> copy=True por defecto -> COPIA. Se admite.
++#   astype(float, copy=True)       -> COPIA explicita. Se admite.
++#   astype(float, copy=copy_q)     -> `copy` es un valor de EJECUCION. NO se
++#                                     admite: no se puede demostrar.
++#   astype(arr.dtype, copy=False)  -> puede devolver EL MISMO array. NO se admite.
++#   astype(copy=False)             -> idem. NO se admite.
++#   astype(dtype=x, copy=True)     -> copia; el dtype por keyword no molesta.
++#
++# La condicion para admitir es EXACTAMENTE: no aparece `copy` con un valor que
++# no sea el literal True. Es decir, se exige copy=True de forma explicita O la
++# ausencia total de `copy` (que usa el default True).
++#
++# NO se hace distincion por el dtype: da igual el dtype, si copy es True el
++# resultado es un array nuevo con su propio buffer.
++# ---------------------------------------------------------------------------
++def _copy_literal_true(nodo):
++    """True si `nodo` es el literal booleano True (y nada mas)."""
++    return isinstance(nodo, ast.Constant) and nodo.value is True
++
++
++def _astype_es_copia(llamada):
++    """Decide si arr[...].astype(...) devuelve un array INDEPENDIENTE.
++
++    Solo devuelve True cuando se puede DEMOSTRAR estaticamente que copy=True,
++    o bien cuando `copy` no se pasa y se aplica el default documentado (True).
++    Cualquier `copy=` con otro valor, o un valor no literal, devuelve False.
++    """
++    if not isinstance(llamada, ast.Call):
++        return False
++    # posicional 2 = copy (0: dtype, 1: order)
++    if len(llamada.args) >= 3:
++        if not _copy_literal_true(llamada.args[2]):
++            return False
++    for kw in llamada.keywords:
++        if kw.arg == 'copy' and not _copy_literal_true(kw.value):
++            return False
++        if kw.arg is None:            # **kwargs: no se puede demostrar
++            return False
++        if kw.arg in ('out', 'subok', 'casting', 'order'):
++            # `out=` escribe en un array EXTERNO: con ndarray.astype no existe,
++            # pero si apareciera no seria una copia independiente. Se rechaza.
++            return False
++    # Un numero de posicionales inesperado (>3) tampoco se admite.
++    if len(llamada.args) > 3:
++        return False
++    return True
++
+ 
+ # Contextos que se modelan aparte y se informan con su propio nombre.
+ def _clasificar_contexto(padre, campo, alias, abuelo=None, campo_abuelo=None,
+@@ -1091,17 +1234,46 @@
+         return ('paso_a_llamada', '%s=...' % padre.arg)
+     # --- Subscript: una vista comparte el almacenamiento ---
+     if isinstance(padre, ast.Subscript) and campo == 'value':
+-        # Una vista retiene el memmap. Solo hay un caso en que no escapa: cuando
+-        # la vista se CONSUME en el acto.
++        # Una vista retiene el memmap: mientras la vista viva, el recurso no se
++        # libera aunque se haga `arr = None` y `del mm`.
+         #
+-        # OJO con la profundidad: para `arr[a:b].sum()` la cadena real es
+-        #     Subscript --Attribute(value)--> Attribute --Call(func)--> Call
+-        # es decir, el Subscript NO es hijo del Call; lo es el Attribute.
+-        # Este mismo caso se resuelve en la rama del Attribute (que puede ver
+-        # su propio padre). Aqui solo hay que decidir si el Subscript se queda
+-        # colgando de un Attribute, en cuyo caso la decision se toma ALLI.
++        # CADENA REAL de `arr[a:b].metodo()`:
++        #     Name --Subscript(value)--> Subscript --Attribute(value)--> Attribute
++        #          --Call(func)--> Call
++        # El Name cuelga del Subscript, NO del Attribute. Por eso la decision
++        # tiene que tomarse AQUI: es el unico punto donde se ve el Name.
++        #
++        # DEFECTO CORREGIDO EN LA REVISION 6: la revision 5 devolvia aqui
++        # (None, None) "delegando en la rama del Attribute". Esa rama solo se
++        # ejecuta cuando el Name es el `value` del Attribute, cosa que NUNCA
++        # ocurre en esta cadena. La delegacion no se resolvia jamas y el
++        # resultado era que CUALQUIER metodo sobre una vista pasaba como
++        # inocuo, estuviera o no en _METODOS_VISTA (incluso arr[a:b].zzz()).
+         if isinstance(abuelo, ast.Attribute) and campo_abuelo == 'value':
+-            return (None, None)      # se evalua en la rama del Attribute
++            attr = abuelo.attr
++            if not (isinstance(bisabuelo, ast.Call) and bisabuelo.func is abuelo):
++                # arr[a:b].attr  sin llamada: se GUARDA el atributo (o el
++                # metodo ligado, que retiene la vista). No es inocuo.
++                return ('vista', '%s (atributo, sin llamada)' % ast.unparse(abuelo)[:40])
++            if attr in _METODOS_VISTA:
++                # Reduccion a ESCALAR nuevo: no comparte memoria.
++                return (None, None)
++            if attr in _METODOS_COPIA:
++                # Copia independiente por contrato documentado.
++                return (None, None)
++            if attr in _METODOS_SEGUROS:
++                # None o metadatos escalares.
++                return (None, None)
++            if attr == 'astype':
++                # Solo si los ARGUMENTOS demuestran copia (copy=True literal).
++                if _astype_es_copia(bisabuelo):
++                    return (None, None)
++                return ('vista', 'astype sin copy=True demostrable: %s'
++                        % ast.unparse(abuelo)[:34])
++            if attr in _METODOS_VISTA_RETIRADOS:
++                return ('vista', "'%s' puede devolver una vista o compartir "
++                                 "almacenamiento" % attr)
++            return ('vista', '%s (metodo no demostrado)' % ast.unparse(abuelo)[:38])
+         return ('vista', ast.unparse(padre)[:44])
+ 
+     # --- Attribute: el valor NO es inocuo por ser un Attribute ---
+@@ -1111,17 +1283,20 @@
+         if isinstance(abuelo, ast.Call) and campo_abuelo == 'func' \
+                 and padre.attr in _METODOS_SEGUROS:
+             return (None, None)
+-        # b) vista consumida en el acto: arr[a:b].sum()  (y envoltorios puros).
+-        if isinstance(padre.value, ast.Subscript) \
+-                and padre.attr in _METODOS_VISTA \
+-                and isinstance(abuelo, ast.Call) and campo_abuelo == 'func':
+-            if bisabuelo is None:
+-                return (None, None)
+-            if isinstance(bisabuelo, ast.Call) \
+-                    and isinstance(bisabuelo.func, ast.Name) \
+-                    and bisabuelo.func.id in _LLAMADAS_PURAS:
+-                return (None, None)
+-            return ('vista', ast.unparse(padre)[:44])
++        # b) ELIMINADO EN LA REVISION 6. Aqui estaba el caso "vista consumida
++        #    en el acto: arr[a:b].sum()", que era CODIGO MUERTO: para llegar
++        #    aqui el Name tendria que ser el `value` del Attribute, y en
++        #    `arr[a:b].sum()` el Name es el `value` del Subscript. El caso se
++        #    resuelve ahora en la rama del Subscript, que es donde se ve el Name.
++        # c) metadatos inmutables SIN referencia al buffer: se admiten como
++        #    valor porque devuelven enteros, tuplas de enteros o un dtype.
++        #    No pueden compartir almacenamiento con el memmap.
++        if padre.attr in _ATRIBUTOS_METADATO:
++            return (None, None)
++        # d) cualquier otro atributo: NO es inocuo por ser Attribute. arr.data
++        #    devuelve el buffer; arr.flush devuelve el metodo ligado, que
++        #    retiene el objeto; arr.base, arr.__array_interface__, arr.T,
++        #    arr.real, arr.flat devuelven vistas o descriptores del buffer.
+         return ('atributo_valor', ast.unparse(padre)[:44])
+ 
+     # --- lecturas modeladas: no retienen ---
